@@ -44,6 +44,7 @@ const IndexIntegrations = lazy(() => import('./components/integrations/Index'));
 const IndexAgents = lazy(() => import('./components/agents/Agents'));
 const IndexCustomDashboard = lazy(() => import('./components/workspaces/custom_dashboards/Index'));
 const Payloads = lazy(() => import('./components/payloads/Payloads'));
+const VeriguardConsole = lazy(() => import('./components/veriguard/VeriguardConsole'));
 const IndexSettings = lazy(() => import('./components/settings/Index'));
 
 const useStyles = makeStyles()(theme => ({ toolbar: theme.mixins.toolbar as CSSObject }));
@@ -207,6 +208,18 @@ const Index = () => {
               )}
             />
             <Route path="payloads" element={errorWrapper(Payloads)()} />
+            <Route
+              path="veriguard"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.PLATFORM_SETTINGS,
+                  }]}
+                  Component={errorWrapper(VeriguardConsole)()}
+                />
+              )}
+            />
             <Route
               path="integrations/*"
               element={(
