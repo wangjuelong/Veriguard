@@ -55,6 +55,7 @@
 
 | 命令 | 结果 |
 | --- | --- |
-| `git diff --check -- openaev-api openaev-model openaev-front docs` | 需要在最终提交前执行 |
-| `mvn -pl openaev-api -am compile -DskipTests` | 当前环境 Maven 依赖解析遇到外部仓库 `502 Bad Gateway`，未进入源码编译 |
-| `corepack yarn --version` | 当前环境下载 Yarn 4.13.0 超时，前端类型检查需在网络可达后重试 |
+| `git diff --check -- docs AGENTS.md openaev-api openaev-model openaev-front` | 通过 |
+| `corepack yarn install --immutable` | 通过，存在仓库已有 peer dependency warning |
+| `corepack yarn check-ts` | 通过 |
+| `mvn -pl openaev-api -am compile -DskipTests` | 当前环境 Maven 依赖解析遇到 `co.elastic.clients:elasticsearch-java:8.19.14` 镜像 `502 Bad Gateway`，未进入源码编译 |
