@@ -1,8 +1,8 @@
-# OpenAEV Copilot Instructions
+# Veriguard Copilot Instructions
 
 ## Repository Overview
 
-**OpenAEV** is an open source platform for planning, scheduling, and conducting cyber adversary simulation campaigns and
+**Veriguard** is an open source platform for planning, scheduling, and conducting cyber adversary simulation campaigns and
 tests. It helps organizations identify security gaps through simulations, training, and exercises from technical to
 strategic levels.
 
@@ -10,11 +10,11 @@ strategic levels.
 
 - **Backend**: Spring Boot (Java), PostgreSQL, Elasticsearch/OpenSearch, MinIO, RabbitMQ
 - **Frontend**: React, TypeScript, Vite, Material-UI
-- **Multi-module Maven project** with 3 modules: `openaev-model`, `openaev-framework`, `openaev-api`
-- ⚠️ **`openaev-framework` is deprecated** — it will be removed. **Never add new code to `openaev-framework`**. Place
-  new utilities in `openaev-api` or `openaev-model` instead.
+- **Multi-module Maven project** with 3 modules: `veriguard-model`, `veriguard-framework`, `veriguard-api`
+- ⚠️ **`veriguard-framework` is deprecated** — it will be removed. **Never add new code to `veriguard-framework`**. Place
+  new utilities in `veriguard-api` or `veriguard-model` instead.
 
-> For exact framework/library versions, read `pom.xml` (backend) and `openaev-front/package.json` (frontend).
+> For exact framework/library versions, read `pom.xml` (backend) and `veriguard-front/package.json` (frontend).
 
 ## Critical Build Requirements
 
@@ -25,7 +25,7 @@ Building with an older version will fail with: `release version XX not supported
 
 ### Node.js Version Requirement
 
-The minimum Node.js version is specified in `openaev-front/package.json` (`engines` field).
+The minimum Node.js version is specified in `veriguard-front/package.json` (`engines` field).
 
 ## Build & Development Workflow
 
@@ -34,8 +34,8 @@ The minimum Node.js version is specified in `openaev-front/package.json` (`engin
 **ALWAYS follow this sequence:**
 
 1. **Start services**:
-   `cd openaev-dev && docker-compose up -d openaev-dev-pgsql openaev-dev-minio openaev-dev-elasticsearch openaev-dev-rabbitmq`
-2. **Build frontend**: `cd openaev-front && yarn install && yarn build` (~4min)
+   `cd veriguard-dev && docker-compose up -d veriguard-dev-pgsql veriguard-dev-minio veriguard-dev-elasticsearch veriguard-dev-rabbitmq`
+2. **Build frontend**: `cd veriguard-front && yarn install && yarn build` (~4min)
 3. **Build backend**: `cd .. && mvn clean install -DskipTests -Pdev`
 
 ### Linting & Formatting
@@ -76,20 +76,20 @@ Primary CI runs on every push:
 
 - `pom.xml` - Parent Maven POM
 - `.drone.yml` - Primary CI/CD pipeline
-- `docker-compose.yml` - Dev services (in `openaev-dev/`)
+- `docker-compose.yml` - Dev services (in `veriguard-dev/`)
 - `Dockerfile` / `Dockerfile_ga` - Production / GitHub Actions images
 
 ### Backend
 
 ```
-openaev-model/       # Domain models, entities, DTOs
-openaev-framework/   # ⚠️ DEPRECATED — will be removed (see Architecture section above)
-openaev-api/         # REST API, main application
-  src/main/java/io/openaev/
+veriguard-model/       # Domain models, entities, DTOs
+veriguard-framework/   # ⚠️ DEPRECATED — will be removed (see Architecture section above)
+veriguard-api/         # REST API, main application
+  src/main/java/io/veriguard/
     api/             # REST controllers
     injectors/       # Integration modules
     service/         # Business logic
-    OpenAevApplication.java
+    VeriguardApplication.java
   src/main/resources/
     application.properties  # 352 lines
     db/migration/    # Flyway migrations
@@ -98,7 +98,7 @@ openaev-api/         # REST API, main application
 ### Frontend
 
 ```
-openaev-front/
+veriguard-front/
   src/
     actions/         # Redux actions
     admin/           # Admin UI
@@ -209,6 +209,6 @@ Examples:
 4. **Frontend must build first**: The backend copies frontend build artifacts.
 5. **Services required**: PostgreSQL, MinIO, Elasticsearch/OpenSearch, and RabbitMQ must be running for tests.
 6. **Java 21 is mandatory**: The project will not compile with earlier versions.
-7. **Node.js version**: Check `openaev-front/package.json` engines field for the minimum required version.
+7. **Node.js version**: Check `veriguard-front/package.json` engines field for the minimum required version.
 8. **API types**: After API changes, run `yarn generate-types-from-api` in frontend to update TypeScript types.
 9. **Coverage enforcement**: Backend tests must maintain 50% line coverage, 30% branch coverage.

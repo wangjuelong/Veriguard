@@ -2,7 +2,7 @@ FROM eclipse-temurin:21.0.10_7-jre AS app
 
 WORKDIR /opt
 RUN apt update && apt install -y tini git --no-install-recommends && rm -rf /var/lib/apt/lists/*
-COPY openaev-build ./
+COPY veriguard-build ./
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["java", "-jar", "openaev-api.jar"]
+CMD ["java", "-jar", "veriguard-api.jar"]

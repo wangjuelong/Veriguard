@@ -1,0 +1,64 @@
+package io.veriguard.config;
+
+import static io.veriguard.database.model.User.ROLE_ADMIN;
+import static io.veriguard.database.model.User.ROLE_USER;
+
+import io.veriguard.database.model.User;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.*;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+@Getter
+public class VeriguardOAuth2User implements VeriguardPrincipal, OAuth2User, Serializable {
+
+  @Serial private static final long serialVersionUID = 1L;
+  private final User user;
+
+  public VeriguardOAuth2User(@NotNull final User user) {
+    this.user = user;
+  }
+
+  @Override
+  public Map<String, Object> getAttributes() {
+    HashMap<String, Object> attributes = new HashMap<>();
+    attributes.put("id", this.user.getId());
+    attributes.put("name", this.user.getFirstname() + " " + this.user.getLastname());
+    attributes.put("email", this.user.getEmail());
+    return attributes;
+  }
+
+  @Override
+  public String getId() {
+    return this.user.getId();
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    List<SimpleGrantedAuthority> roles = new ArrayList<>();
+    roles.add(new SimpleGrantedAuthority(ROLE_USER));
+    if (this.user.isAdmin()) {
+      roles.add(new SimpleGrantedAuthority(ROLE_ADMIN));
+    }
+    return roles;
+  }
+
+  @Override
+  public boolean isAdmin() {
+    return false;
+  }
+
+  @Override
+  public String getLang() {
+    return this.user.getLang();
+  }
+
+  @Override
+  public String getName() {
+    return this.user.getFirstname() + " " + this.user.getLastname();
+  }
+}

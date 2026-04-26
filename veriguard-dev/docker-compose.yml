@@ -1,0 +1,285 @@
+services:
+  # Development PostgreSQL database (persistent storage)
+  veriguard-dev-pgsql:
+    container_name: veriguard-dev-pgsql
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: veriguard
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d veriguard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # Test PostgreSQL database (ephemeral - no volume for clean test runs)
+  veriguard-test-pgsql:
+    container_name: veriguard-test-pgsql
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: veriguard
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d veriguard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # MinIO object storage (S3-compatible)
+  # API: http://localhost:10000, Console: http://localhost:10001
+  # Credentials: minioadmin/minioadmin
+  veriguard-dev-minio:
+    container_name: veriguard-dev-minio
+    image: minio/minio:RELEASE.2025-06-13T11-33-47Z
+    ports:
+      - "10000:9000"
+      - "10001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+  # RabbitMQ message queue with management UI (default credentials: guest/guest)
+  veriguard-dev-rabbitmq:
+    container_name: veriguard-dev-rabbitmq
+    image: rabbitmq:4.2-management
+    restart: unless-stopped
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  # Caldera adversary simulation platform
+  # See caldera.yml for configuration (update credentials before production use)
+  veriguard-dev-caldera:
+    container_name: veriguard-dev-caldera
+    image: openbas/caldera-server:5.1.0
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    environment:
+      CALDERA_URL: http://localhost:8888
+    volumes:
+      - type: bind
+        source: ./caldera.yml
+        target: /usr/src/app/conf/local.yml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+#  veriguard-pyroscope:
+#    container_name: veriguard-pyroscope
+#    image: grafana/pyroscope:latest
+#    restart: unless-stopped
+#    ports:
+#      - "4040:4040"
+#  veriguard-telemetry-otlp:
+#    container_name: veriguard-telemetry-otlp
+#    image: otel/opentelemetry-collector-contrib:0.119.0
+#    restart: unless-stopped
+#    volumes:
+#      - "./otlp-config.yaml:/etc/config/otlp-config.yaml"
+#      - "./telemetry.json:/telemetry.json"
+#    command:
+#      - '--config=/etc/config/otlp-config.yaml'
+#    ports:
+#      - "1010:1010"
+  # pgAdmin - PostgreSQL management UI
+  # Default credentials: see PGADMIN_USER/PGADMIN_PASSWORD in .env
+  veriguard-dev-pgadmin:
+    image: dpage/pgadmin4
+    container_name: veriguard-dev-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    depends_on:
+      veriguard-dev-pgsql:
+        condition: service_healthy
+  # Development Elasticsearch (persistent storage)
+  veriguard-dev-elasticsearch:
+    container_name: veriguard-dev-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.3
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - essnapshots:/usr/share/elasticsearch/snapshots
+    environment:
+      - discovery.type=single-node
+      - xpack.ml.enabled=false
+      - xpack.security.enabled=false
+      # -XX:UseSVE=0 is necessary for Apple Silicon architecture (M1/M2/M3/M4)
+      - "ES_JAVA_OPTS=-Xms2G -Xmx2G -XX:+IgnoreUnrecognizedVMOptions -XX:UseSVE=0"
+      - "CLI_JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:UseSVE=0"
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9200:9200
+      - 9300:9300
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  # Development OpenSearch (alternative to Elasticsearch, persistent storage)
+  # NOTE: OpenSearch and Elasticsearch both use port 9200 by default internally.
+  # OpenSearch is mapped to external port 9202 to avoid conflicts.
+  # You typically only need to run one search engine at a time.
+  veriguard-dev-opensearch:
+    container_name: veriguard-dev-opensearch
+    image: opensearchproject/opensearch:3.5.0
+    volumes:
+      - osdata:/usr/share/opensearch/data
+      - ossnapshots:/usr/share/opensearch/snapshots
+    environment:
+      - discovery.type=single-node
+      # -XX:UseSVE=0 is necessary for Apple Silicon architecture (M1/M2/M3/M4)
+      - "OPENSEARCH_JAVA_OPTS=-Xms2G -Xmx2G -XX:+IgnoreUnrecognizedVMOptions -XX:UseSVE=0"
+      - "DISABLE_SECURITY_PLUGIN=true"
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9202:9200
+      - 9600:9600
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  # Test Elasticsearch (ephemeral - no volume for clean test runs)
+  veriguard-test-elasticsearch:
+    container_name: veriguard-test-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.3
+    environment:
+      - discovery.type=single-node
+      - xpack.ml.enabled=false
+      - xpack.security.enabled=false
+      # -XX:UseSVE=0 is necessary for Apple Silicon architecture (M1/M2/M3/M4)
+      - "ES_JAVA_OPTS=-Xms2G -Xmx2G -XX:+IgnoreUnrecognizedVMOptions -XX:UseSVE=0"
+      - "CLI_JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:UseSVE=0"
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9201:9200
+      - 9301:9300
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  # Kibana - Elasticsearch UI for development
+  veriguard-dev-kibana:
+    container_name: veriguard-dev-kibana
+    image: docker.elastic.co/kibana/kibana:8.18.3
+    environment:
+      - ELASTICSEARCH_HOSTS=http://veriguard-dev-elasticsearch:9200
+    restart: unless-stopped
+    ports:
+      - 5601:5601
+    depends_on:
+      veriguard-dev-elasticsearch:
+        condition: service_healthy
+  # Kibana - Elasticsearch UI for testing
+  veriguard-test-kibana:
+    container_name: veriguard-test-kibana
+    image: docker.elastic.co/kibana/kibana:8.18.3
+    environment:
+      - ELASTICSEARCH_HOSTS=http://veriguard-test-elasticsearch:9200
+    restart: unless-stopped
+    ports:
+      - 5602:5601
+    depends_on:
+      veriguard-test-elasticsearch:
+        condition: service_healthy
+  rsa-key-generator:
+    container_name: rsa-key-generator
+    image: alpine/openssl:3.5.5
+    volumes:
+      - rsakeys:/keys
+    entrypoint: [ "/bin/ash" ]
+    command: [ "-c", "if [ ! -f /keys/private_key.pem ]; then openssl genpkey -algorithm RSA -out /keys/private_key.pem -pkeyopt rsa_keygen_bits:4096; fi && tail -f /dev/null" ]
+    healthcheck:
+      test: [ "CMD", "test", "-f", "/keys/private_key.pem" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: always
+  xtm-composer:
+    container_name: xtm-composer
+    image: filigran/xtm-composer:latest
+    platform: linux/amd64
+    network_mode: host # allow connecting to non docker local instance
+    environment:
+      - MANAGER__ID=${XTM_COMPOSER_ID}
+      - "MANAGER__NAME=XTM Integrations Manager"
+      - MANAGER__CREDENTIALS_KEY_FILEPATH=/keys/private_key.pem
+      - VERIGUARD__ENABLE=true
+      - OPENCTI__ENABLE=false
+      - VERIGUARD__URL=${VERIGUARD_URL:-http://localhost:8080}
+      - VERIGUARD__TOKEN=${VERIGUARD_ADMIN_TOKEN}
+      - VERIGUARD__DAEMON__SELECTOR=docker
+      # Workaround: pending https://github.com/FiligranHQ/xtm-composer/issues/64,
+      # use OPENCTI__ keys to customise the docker daemon
+      - OPENCTI__DAEMON__DOCKER__NETWORK_MODE=host
+      # Provision the equivalent VERIGUARD__ key for when this is fixed
+      - VERIGUARD__DAEMON__DOCKER__NETWORK_MODE=host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - rsakeys:/keys:ro  # RSA key mounted as read-only
+    depends_on:
+      rsa-key-generator:
+        condition: service_healthy
+      veriguard-dev-rabbitmq:
+        condition: service_healthy
+    restart: always
+volumes:
+  esdata:
+    driver: local
+  osdata:
+    driver: local
+  essnapshots:
+    driver: local
+  ossnapshots:
+    driver: local
+  pgdata:
+    driver: local
+  rsakeys:
+    driver: local

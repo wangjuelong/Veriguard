@@ -1,0 +1,262 @@
+package io.veriguard.rest.asset.endpoint;
+
+import static io.veriguard.helper.StreamHelper.fromIterable;
+
+import io.veriguard.aop.LogExecutionTime;
+import io.veriguard.aop.RBAC;
+import io.veriguard.database.model.Action;
+import io.veriguard.database.model.AssetAgentJob;
+import io.veriguard.database.model.Endpoint;
+import io.veriguard.database.model.ResourceType;
+import io.veriguard.database.repository.AssetAgentJobRepository;
+import io.veriguard.database.repository.EndpointRepository;
+import io.veriguard.database.specification.AssetAgentJobSpecification;
+import io.veriguard.database.specification.EndpointSpecification;
+import io.veriguard.rest.asset.endpoint.form.*;
+import io.veriguard.rest.asset.endpoint.output.EndpointTargetOutput;
+import io.veriguard.rest.exception.BadRequestException;
+import io.veriguard.rest.helper.RestBehavior;
+import io.veriguard.rest.inject.service.InjectStatusService;
+import io.veriguard.service.EndpointService;
+import io.veriguard.utils.FilterUtilsJpa;
+import io.veriguard.utils.HttpReqRespUtils;
+import io.veriguard.utils.InputFilterOptions;
+import io.veriguard.utils.mapper.EndpointMapper;
+import io.veriguard.utils.pagination.SearchPaginationInput;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.io.IOException;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+@RequiredArgsConstructor
+@RestController
+@Slf4j
+public class EndpointApi extends RestBehavior {
+
+  public static final String ENDPOINT_URI = "/api/endpoints";
+
+  private final EndpointService endpointService;
+  private final InjectStatusService injectStatusService;
+  private final EndpointRepository endpointRepository;
+  private final AssetAgentJobRepository assetAgentJobRepository;
+
+  private final EndpointMapper endpointMapper;
+
+  @PostMapping(ENDPOINT_URI + "/agentless")
+  @RBAC(actionPerformed = Action.CREATE, resourceType = ResourceType.ASSET)
+  @Transactional(rollbackFor = Exception.class)
+  public Endpoint createEndpoint(@Valid @RequestBody final EndpointInput input) {
+    return this.endpointService.createEndpoint(input);
+  }
+
+  @PostMapping(ENDPOINT_URI + "/agentless/upsert")
+  @RBAC(actionPerformed = Action.CREATE, resourceType = ResourceType.ASSET)
+  @Transactional(rollbackFor = Exception.class)
+  public Endpoint upsertAgentLessEndpoint(@Valid @RequestBody final EndpointInput input) {
+    return this.endpointService.upsertEndpoint(input);
+  }
+
+  @PostMapping(ENDPOINT_URI + "/register")
+  @RBAC(actionPerformed = Action.CREATE, resourceType = ResourceType.ASSET)
+  @Transactional(rollbackFor = Exception.class)
+  public Endpoint upsertEndpoint(@Valid @RequestBody final EndpointRegisterInput input)
+      throws IOException {
+    input.setSeenIp(HttpReqRespUtils.getClientIpAddressIfServletRequestExist());
+    return this.endpointService.register(input);
+  }
+
+  @LogExecutionTime
+  @PostMapping(ENDPOINT_URI + "/jobs")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.ASSET)
+  @Transactional(rollbackFor = Exception.class)
+  public List<AssetAgentJob> getEndpointJobs(@RequestBody final EndpointRegisterInput input) {
+    List<AssetAgentJob> jobs = this.endpointService.getEndpointJobs(input);
+    this.injectStatusService.addJobRetrievalTraces(jobs);
+    return jobs;
+  }
+
+  @Deprecated(since = "1.11.0")
+  @LogExecutionTime
+  @GetMapping(ENDPOINT_URI + "/jobs/{endpointExternalReference}")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.ASSET)
+  @Transactional(rollbackFor = Exception.class)
+  public List<AssetAgentJob> getEndpointJobs(
+      @PathVariable @NotBlank final String endpointExternalReference) {
+    return this.assetAgentJobRepository.findAll(
+        AssetAgentJobSpecification.forEndpoint(endpointExternalReference));
+  }
+
+  @DeleteMapping(ENDPOINT_URI + "/jobs/{assetAgentJobId}")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.JOB)
+  @Transactional(rollbackFor = Exception.class)
+  public void cleanupAssetAgentJob(@PathVariable @NotBlank final String assetAgentJobId) {
+    this.assetAgentJobRepository.deleteById(assetAgentJobId);
+  }
+
+  @Deprecated(since = "1.11.0")
+  @PostMapping(ENDPOINT_URI + "/jobs/{assetAgentJobId}")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.JOB)
+  @Transactional(rollbackFor = Exception.class)
+  public void cleanupAssetAgentJobDepreacted(@PathVariable @NotBlank final String assetAgentJobId) {
+    this.assetAgentJobRepository.deleteById(assetAgentJobId);
+  }
+
+  @LogExecutionTime
+  @GetMapping(ENDPOINT_URI)
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.ASSET)
+  public List<Endpoint> endpoints() {
+    return this.endpointService.endpoints(
+        EndpointSpecification.findEndpointsForInjectionOrAgentlessEndpoints());
+  }
+
+  @LogExecutionTime
+  @GetMapping(ENDPOINT_URI + "/{endpointId}")
+  @RBAC(
+      resourceId = "#endpointId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.ASSET)
+  public EndpointOverviewOutput endpoint(@PathVariable @NotBlank final String endpointId) {
+    return endpointMapper.toEndpointOverviewOutput(this.endpointService.getEndpoint(endpointId));
+  }
+
+  @LogExecutionTime
+  @PostMapping(ENDPOINT_URI + "/search")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.ASSET)
+  public Page<EndpointOutput> endpoints(
+      @RequestBody @Valid SearchPaginationInput searchPaginationInput) {
+    Page<Endpoint> endpointPage = endpointService.searchEndpoints(searchPaginationInput);
+    // Convert the Page of Endpoint to a Page of EndpointOutput
+    List<EndpointOutput> endpointOutputs =
+        endpointPage.getContent().stream().map(endpointMapper::toEndpointOutput).toList();
+    return new PageImpl<>(
+        endpointOutputs, endpointPage.getPageable(), endpointPage.getTotalElements());
+  }
+
+  @LogExecutionTime
+  @PostMapping(ENDPOINT_URI + "/targets")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.ASSET)
+  public Page<EndpointTargetOutput> targetEndpoints(
+      @RequestBody @Valid SearchPaginationInput searchPaginationInput) {
+
+    Page<Endpoint> endpointPage = endpointService.searchManagedEndpoints(searchPaginationInput);
+    List<EndpointTargetOutput> endpointTargetOutputs =
+        endpointPage.getContent().stream().map(endpointMapper::toEndpointTargetOutput).toList();
+    return new PageImpl<>(
+        endpointTargetOutputs, endpointPage.getPageable(), endpointPage.getTotalElements());
+  }
+
+  @LogExecutionTime
+  @PostMapping(ENDPOINT_URI + "/find")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.ASSET)
+  @Transactional(readOnly = true)
+  public List<Endpoint> findEndpoints(@RequestBody @Valid @NotNull final List<String> endpointIds) {
+    return this.endpointService.endpoints(endpointIds);
+  }
+
+  @PutMapping(ENDPOINT_URI + "/{endpointId}")
+  @RBAC(
+      resourceId = "#endpointId",
+      actionPerformed = Action.WRITE,
+      resourceType = ResourceType.ASSET)
+  @Transactional(rollbackFor = Exception.class)
+  public EndpointOverviewOutput updateEndpoint(
+      @PathVariable @NotBlank final String endpointId,
+      @Valid @RequestBody final EndpointInput input) {
+    return endpointMapper.toEndpointOverviewOutput(
+        this.endpointService.updateEndpoint(endpointId, input));
+  }
+
+  @DeleteMapping(ENDPOINT_URI + "/{endpointId}")
+  @RBAC(
+      resourceId = "#endpointId",
+      actionPerformed = Action.DELETE,
+      resourceType = ResourceType.ASSET)
+  @Transactional(rollbackFor = Exception.class)
+  public void deleteEndpoint(@PathVariable @NotBlank final String endpointId) {
+    this.endpointService.deleteEndpoint(endpointId);
+  }
+
+  // -- OPTION --
+
+  @GetMapping(ENDPOINT_URI + "/options")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.ASSET)
+  public List<FilterUtilsJpa.Option> optionsByName(
+      @RequestParam(required = false) final String searchText,
+      @RequestParam(required = false) final String sourceId,
+      @RequestParam(required = false) final String inputFilterOption) {
+    List<FilterUtilsJpa.Option> options = List.of();
+    InputFilterOptions injectFilterOptionEnum;
+    try {
+      injectFilterOptionEnum = InputFilterOptions.valueOf(inputFilterOption);
+    } catch (Exception e) {
+      if (StringUtils.isEmpty(inputFilterOption)) {
+        log.warn("InputFilterOption is null, fall back to backwards compatible case");
+        if (StringUtils.isNotEmpty(sourceId)) {
+          injectFilterOptionEnum = InputFilterOptions.SIMULATION_OR_SCENARIO;
+        } else {
+          injectFilterOptionEnum = InputFilterOptions.ATOMIC_TESTING;
+        }
+      } else {
+        throw new BadRequestException(
+            String.format("Invalid input filter option %s", inputFilterOption));
+      }
+    }
+
+    switch (injectFilterOptionEnum) {
+      case ALL_INJECTS:
+        {
+          options =
+              endpointRepository.findAllEndpointsForAtomicTestingsSimulationsAndScenarios().stream()
+                  .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
+                  .toList();
+          break;
+        }
+      case SIMULATION_OR_SCENARIO:
+        {
+          if (StringUtils.isEmpty(sourceId)) {
+            throw new BadRequestException("Missing simulation or scenario id");
+          }
+          // fall through intentional
+        }
+      case ATOMIC_TESTING:
+        {
+          options =
+              endpointRepository
+                  .findAllBySimulationOrScenarioIdAndName(
+                      StringUtils.trimToNull(sourceId), StringUtils.trimToNull(searchText))
+                  .stream()
+                  .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
+                  .toList();
+          break;
+        }
+    }
+    return options;
+  }
+
+  @LogExecutionTime
+  @GetMapping(ENDPOINT_URI + "/findings/options")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.ASSET)
+  public List<FilterUtilsJpa.Option> optionsByNameLinkedToFindings(
+      @RequestParam(required = false) final String searchText,
+      @RequestParam(required = false) final String sourceId) {
+    return endpointService.getOptionsByNameLinkedToFindings(
+        searchText, sourceId, PageRequest.of(0, 50));
+  }
+
+  @PostMapping(ENDPOINT_URI + "/options")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.ASSET)
+  public List<FilterUtilsJpa.Option> optionsById(@RequestBody final List<String> ids) {
+    return fromIterable(this.endpointRepository.findAllById(ids)).stream()
+        .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
+        .toList();
+  }
+}

@@ -1,5 +1,5 @@
 ---
-applyTo: "openaev-api/src/main/java/**/*.java,openaev-model/src/main/java/**/*.java"
+applyTo: "veriguard-api/src/main/java/**/*.java,veriguard-model/src/main/java/**/*.java"
 description: "Performance conventions: N+1 queries, lazy/eager loading, pagination, caching, indexing"
 ---
 
@@ -24,7 +24,7 @@ description: "Performance conventions: N+1 queries, lazy/eager loading, paginati
 
 When a service receives a list of entity IDs to set as associations (e.g. role IDs on a group):
 - **Never** loop with `findById()` — that's N SELECT queries
-- **Use `ReferenceResolver`** (`io.openaev.utils.ReferenceResolver`):
+- **Use `ReferenceResolver`** (`io.veriguard.utils.ReferenceResolver`):
   - 1 `COUNT` query to validate all IDs exist
   - 0 `SELECT` queries to build proxies via `EntityManager.getReference()`
   - Throws `EntityNotFoundException` with a clear message if any ID is invalid

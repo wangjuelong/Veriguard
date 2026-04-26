@@ -18,17 +18,17 @@ description: >-
 ### Step 1 — Find the next version number
 
 ```bash
-ls openaev-api/src/main/java/io/openaev/migration/ | sort | tail -5
+ls veriguard-api/src/main/java/io/veriguard/migration/ | sort | tail -5
 ```
 
 Pattern: `V4_{XX}__Description.java` — increment `XX`.
 
 ### Step 2 — Create the migration class
 
-Location: `openaev-api/src/main/java/io/openaev/migration/`
+Location: `veriguard-api/src/main/java/io/veriguard/migration/`
 
 ```java
-package io.openaev.migration;
+package io.veriguard.migration;
 
 import java.sql.Statement;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
