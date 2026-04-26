@@ -9,7 +9,7 @@ description: "Testing conventions: integration tests, unit tests, fixtures, comp
 
 - Extend `IntegrationTest`
 - `@TestInstance(PER_CLASS) @Transactional` on the class
-- `@WithMockUser` → `io.openaev.utils.mockUser.WithMockUser` (NOT `org.springframework`)
+- `@WithMockUser` → `io.veriguard.utils.mockUser.WithMockUser` (NOT `org.springframework`)
 - Group with `@Nested` + `@DisplayName`
 - **Method naming**: `given_X_should_Y` → e.g. `given_validInput_should_createGroup()`, `given_crowdstrike_should_not_LaunchAtomicTesting()`
 - **AAA pattern**: `// Arrange` / `// Act` / `// Assert`
@@ -20,7 +20,7 @@ description: "Testing conventions: integration tests, unit tests, fixtures, comp
 
 - Extend `IntegrationTest` (same base as API tests)
 - `@TestInstance(PER_CLASS) @Transactional` on the class
-- `@WithMockUser` → `io.openaev.utils.mockUser.WithMockUser` (NOT `org.springframework`)
+- `@WithMockUser` → `io.veriguard.utils.mockUser.WithMockUser` (NOT `org.springframework`)
 - `@Autowired` for the service under test and repositories
 - Use **Fixtures** (`ExerciseFixture`, `InjectFixture`, `ScenarioFixture`, …) and **repositories** to set up real data
 - Group with `@Nested` + `@DisplayName`

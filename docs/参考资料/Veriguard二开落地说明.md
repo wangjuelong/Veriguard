@@ -1,8 +1,8 @@
-# OpenAEV 二开落地说明
+# Veriguard 二开落地说明
 
 ## 一、目标范围
 
-本次二开目标是将 OpenAEV 改造成面向 `docs/prd/产品要求.md` 的 Veriguard 控制平面，优先补齐 PRD 可验收的管理界面、能力目录、策略模型和沙箱管理闭环。
+本次二开目标是将 Veriguard 改造成面向 `docs/prd/产品要求.md` 的 Veriguard 控制平面，优先补齐 PRD 可验收的管理界面、能力目录、策略模型和沙箱管理闭环。
 
 真实流量回放、HIDS 告警采集、SOC 查询、虚拟化沙箱驱动属于外部执行与采集适配器，不在本次代码中伪造执行结果；系统通过接口和界面显式列出这些集成边界。
 
@@ -10,12 +10,12 @@
 
 | 类型 | 路径 | 说明 |
 | --- | --- | --- |
-| 后端 API | `openaev-api/src/main/java/io/openaev/rest/veriguard/` | 新增 Veriguard 能力矩阵、用例目录、攻击编排策略、沙箱管理接口 |
-| 后端模型 | `openaev-model/src/main/java/io/openaev/database/model/VeriguardSandbox.java` | 新增沙箱平台实体，包含网络策略、样本类型、自动还原开关 |
-| 数据迁移 | `openaev-api/src/main/java/io/openaev/migration/V4_72__Add_veriguard_sandbox.java` | 新增 `veriguard_sandboxes` 表与查询索引 |
-| 前端入口 | `openaev-front/src/admin/components/veriguard/VeriguardConsole.tsx` | 新增 Veriguard 管理控制台 |
-| 前端路由 | `openaev-front/src/admin/Index.tsx` | 新增 `/admin/veriguard` 路由 |
-| 前端导航 | `openaev-front/src/admin/components/nav/LeftBar.tsx` | 左侧菜单新增 Veriguard 入口 |
+| 后端 API | `veriguard-api/src/main/java/io/veriguard/rest/veriguard/` | 新增 Veriguard 能力矩阵、用例目录、攻击编排策略、沙箱管理接口 |
+| 后端模型 | `veriguard-model/src/main/java/io/veriguard/database/model/VeriguardSandbox.java` | 新增沙箱平台实体，包含网络策略、样本类型、自动还原开关 |
+| 数据迁移 | `veriguard-api/src/main/java/io/veriguard/migration/V4_72__Add_veriguard_sandbox.java` | 新增 `veriguard_sandboxes` 表与查询索引 |
+| 前端入口 | `veriguard-front/src/admin/components/veriguard/VeriguardConsole.tsx` | 新增 Veriguard 管理控制台 |
+| 前端路由 | `veriguard-front/src/admin/Index.tsx` | 新增 `/admin/veriguard` 路由 |
+| 前端导航 | `veriguard-front/src/admin/components/nav/LeftBar.tsx` | 左侧菜单新增 Veriguard 入口 |
 
 ## 三、PRD 映射
 
@@ -55,7 +55,7 @@
 
 | 命令 | 结果 |
 | --- | --- |
-| `git diff --check -- docs AGENTS.md openaev-api openaev-model openaev-front` | 通过 |
+| `git diff --check -- docs AGENTS.md veriguard-api veriguard-model veriguard-front` | 通过 |
 | `corepack yarn install --immutable` | 通过，存在仓库已有 peer dependency warning |
 | `corepack yarn check-ts` | 通过 |
-| `mvn -pl openaev-api -am compile -DskipTests` | 当前环境 Maven 依赖解析遇到 `co.elastic.clients:elasticsearch-java:8.19.14` 镜像 `502 Bad Gateway`，未进入源码编译 |
+| `mvn -pl veriguard-api -am compile -DskipTests` | 当前环境 Maven 依赖解析遇到 `co.elastic.clients:elasticsearch-java:8.19.14` 镜像 `502 Bad Gateway`，未进入源码编译 |

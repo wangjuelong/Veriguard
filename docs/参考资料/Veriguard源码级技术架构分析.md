@@ -1,31 +1,31 @@
-# OpenAEV 源码级技术架构分析
+# Veriguard 源码级技术架构分析
 
 ## 说明
 
-- 目标仓库：`https://github.com/OpenAEV-Platform/openaev`
+- 目标仓库：`https://github.com/Veriguard-Platform/veriguard`
 - 分析粒度：源码级静态分析
 - 本次分析对应源码提交：`dd437fb4f09b39641caa4290e121f193cc03b148`
-- 说明：该项目已从 OpenBAS 演进并更名为 OpenAEV，源码中保留了大量 `openbas.*` 到 `openaev.*` 的兼容配置
+- 说明：该项目已从 OpenBAS 演进并更名为 Veriguard，源码中保留了大量 `openbas.*` 到 `veriguard.*` 的兼容配置
 
 ## 一、仓库整体结构
 
-从源码看，OpenAEV 采用“前后端分离 + Java 模块化单体 + 多运行时依赖”的架构。
+从源码看，Veriguard 采用“前后端分离 + Java 模块化单体 + 多运行时依赖”的架构。
 
 ### 1.1 顶层目录
 
-- `openaev-api/`：Spring Boot 主应用，包含 REST API、调度、执行、集成实现、认证授权、实时流
-- `openaev-framework/`：共享配置、队列、资产相关基础能力、集成基类依赖
-- `openaev-model/`：JPA 实体、Repository、搜索引擎抽象、对象存储/搜索驱动、Schema 元数据
-- `openaev-front/`：前端应用，React + TypeScript + Vite
-- `openaev-dev/`：开发环境编排，含 PostgreSQL、RabbitMQ、MinIO、Elastic/OpenSearch、Caldera 等
+- `veriguard-api/`：Spring Boot 主应用，包含 REST API、调度、执行、集成实现、认证授权、实时流
+- `veriguard-framework/`：共享配置、队列、资产相关基础能力、集成基类依赖
+- `veriguard-model/`：JPA 实体、Repository、搜索引擎抽象、对象存储/搜索驱动、Schema 元数据
+- `veriguard-front/`：前端应用，React + TypeScript + Vite
+- `veriguard-dev/`：开发环境编排，含 PostgreSQL、RabbitMQ、MinIO、Elastic/OpenSearch、Caldera 等
 
 ### 1.2 后端模块关系
 
 根 `pom.xml` 显示后端是标准 Maven 多模块工程：
 
-- `openaev-model`
-- `openaev-framework`
-- `openaev-api`
+- `veriguard-model`
+- `veriguard-framework`
+- `veriguard-api`
 
 依赖方向也很清晰：
 
@@ -54,7 +54,7 @@
 
 ### 2.2 前端基础技术栈
 
-从 `openaev-front/package.json` 和 `src/` 可以确认：
+从 `veriguard-front/package.json` 和 `src/` 可以确认：
 
 - React 19
 - TypeScript 5.9
@@ -70,7 +70,7 @@
 
 ### 2.3 运行时依赖
 
-`openaev-api/src/main/resources/application.properties` 和 `openaev-dev/docker-compose.yml` 说明 OpenAEV 运行至少依赖：
+`veriguard-api/src/main/resources/application.properties` 和 `veriguard-dev/docker-compose.yml` 说明 Veriguard 运行至少依赖：
 
 - PostgreSQL：主事务数据
 - RabbitMQ：异步消息与执行分发
@@ -86,9 +86,9 @@
 
 ## 三、源码级模块划分
 
-### 3.1 数据模型层：`openaev-model`
+### 3.1 数据模型层：`veriguard-model`
 
-这是 OpenAEV 的核心领域模型层。仅 `database/model` 目录就有 **146 个实体类**，说明平台建模非常完整，不是“几张任务表 + 几个脚本执行器”的轻量产品。
+这是 Veriguard 的核心领域模型层。仅 `database/model` 目录就有 **146 个实体类**，说明平台建模非常完整，不是“几张任务表 + 几个脚本执行器”的轻量产品。
 
 主要实体类型包括：
 
@@ -105,25 +105,25 @@
 - 搜索引擎模型与索引服务
 - 对象存储和搜索驱动
 
-### 3.2 共享基础层：`openaev-framework`
+### 3.2 共享基础层：`veriguard-framework`
 
 这一层的职责不是业务编排，而是给 API 模块提供可复用基础设施。
 
 重点包括：
 
-- `config/OpenAEVConfig.java`
+- `config/VeriguardConfig.java`
 - `config/RabbitmqConfig.java`
 - `config/QueueConfig.java`
 - `asset/QueueService.java`
 - `model/ExecutionProcess.java`
 
-其中最关键的是 `OpenAEVConfig.java`：它几乎把平台所有核心配置都统一到一个配置对象里，并且通过：
+其中最关键的是 `VeriguardConfig.java`：它几乎把平台所有核心配置都统一到一个配置对象里，并且通过：
 
-- `${openbas.xxx:${openaev.xxx:...}}`
+- `${openbas.xxx:${veriguard.xxx:...}}`
 
-实现了 OpenBAS 到 OpenAEV 的平滑兼容。
+实现了 OpenBAS 到 Veriguard 的平滑兼容。
 
-### 3.3 应用编排层：`openaev-api`
+### 3.3 应用编排层：`veriguard-api`
 
 这是主业务应用层，也是平台真正的“控制平面”。
 
@@ -169,7 +169,7 @@
 - `src/private/`：玩家/参与者视图
 - `src/admin/`：管理员/运营控制台
 
-这种结构说明 OpenAEV 从前端层就区分了：
+这种结构说明 Veriguard 从前端层就区分了：
 
 - 平台运营者
 - 演练参与者
@@ -207,7 +207,7 @@
 
 ### 5.1 启动与基础配置机制
 
-主启动类：`openaev-api/src/main/java/io/openaev/App.java`
+主启动类：`veriguard-api/src/main/java/io/veriguard/App.java`
 
 核心特点：
 
@@ -218,7 +218,7 @@
 
 这意味着：
 
-- OpenAEV 把“平台实例身份”当成核心元数据管理
+- Veriguard 把“平台实例身份”当成核心元数据管理
 - 启动阶段不只是拉起服务，还会做平台状态初始化
 
 ## 5.2 安全认证与授权模型
@@ -242,7 +242,7 @@
 `TokenAuthenticationFilter` 的设计很实用：
 
 - 优先从 `Authorization` 头取 token
-- 若不存在则退回 `openaev_token` Cookie
+- 若不存在则退回 `veriguard_token` Cookie
 - Bearer Token 既兼容 JWT，也兼容明文 token
 
 ### 权限控制
@@ -279,7 +279,7 @@
 - `ElasticService`
 - `OpenSearchService`
 
-这说明 OpenAEV 在源码级做了搜索引擎可替换抽象，而不是把 ES API 写死在业务中。
+这说明 Veriguard 在源码级做了搜索引擎可替换抽象，而不是把 ES API 写死在业务中。
 
 ### 可索引模型
 
@@ -337,7 +337,7 @@
 - `OpenCTIConnectorRegisterPingJob`
 - `ExecutionTracesBatchRequeueJob`
 
-这说明 OpenAEV 的运行模型是典型的“调度驱动型平台”，不是同步请求驱动型系统。
+这说明 Veriguard 的运行模型是典型的“调度驱动型平台”，不是同步请求驱动型系统。
 
 ## 5.5 场景到演练的生成机制
 
@@ -358,7 +358,7 @@
 
 ## 5.6 注入执行主链路
 
-这一部分是 OpenAEV 最关键的源码链路之一。
+这一部分是 Veriguard 最关键的源码链路之一。
 
 ### 主入口
 
@@ -395,7 +395,7 @@
 - 如果是 external injector，则将 DTO 发到 RabbitMQ
 - 如果是 internal injector，则通过 Integration Manager 找到对应实现并直接执行
 
-也就是说，OpenAEV 的执行路径天然分成两类：
+也就是说，Veriguard 的执行路径天然分成两类：
 
 - **外部执行**：消息投递给外部消费方
 - **内部执行**：平台内集成实例直接处理
@@ -437,7 +437,7 @@
 - 单 agent executor 子流程
 - 失败时写入 `ExecutionTrace`
 
-这体现出 OpenAEV 对“不同终端执行通道”的抽象已经深入到调度器级别，而不是 UI 层概念。
+这体现出 Veriguard 对“不同终端执行通道”的抽象已经深入到调度器级别，而不是 UI 层概念。
 
 ## 5.8 RabbitMQ 队列与批处理机制
 
@@ -451,7 +451,7 @@
 - `QueueService` 负责基础发布与 exchange / queue / routing key 组织
 - `BatchQueueService` 进一步实现生产者、消费者、worker、QoS、缓冲、重连、批处理
 
-这说明 RabbitMQ 在 OpenAEV 中不是点缀，而是核心执行总线。
+这说明 RabbitMQ 在 Veriguard 中不是点缀，而是核心执行总线。
 
 ## 5.9 实时事件流机制
 
@@ -474,7 +474,7 @@
 
 说明作者明确考虑了前端长连接的背压与浏览器承载问题。
 
-## 5.10 集成框架：OpenAEV 的核心壁垒之一
+## 5.10 集成框架：Veriguard 的核心壁垒之一
 
 关键文件：
 
@@ -505,7 +505,7 @@
 - 配置 hash 变化后的重启
 - requested status 到 current status 的同步
 
-这意味着 OpenAEV 的“连接器实例”不是静态配置，而是平台内部可管理的运行单元。
+这意味着 Veriguard 的“连接器实例”不是静态配置，而是平台内部可管理的运行单元。
 
 ### 已实现的集成类型
 
@@ -517,7 +517,7 @@
   - SentinelOne
   - Tanium
   - Palo Alto Cortex
-  - OpenAEV
+  - Veriguard
 - Injectors：
   - Email
   - Channel
@@ -525,9 +525,9 @@
   - Challenge
   - OpenCTI
   - OVH
-  - OpenAEV
+  - Veriguard
 
-这证明 OpenAEV 的产品形态是“平台 + 集成生态”，不是单体功能应用。
+这证明 Veriguard 的产品形态是“平台 + 集成生态”，不是单体功能应用。
 
 ## 5.11 健康检查与运行治理
 
@@ -560,7 +560,7 @@
 
 源码注释明确提到它是为“高并发场景，例如同一 inject 触发 10000+ implants”做的资源竞争控制。
 
-这说明 OpenAEV 在设计时已经考虑过大规模并发执行。
+这说明 Veriguard 在设计时已经考虑过大规模并发执行。
 
 ## 六、功能模块与源码目录的对应关系
 
@@ -584,7 +584,7 @@
 
 ### 7.1 它不是简单 BAS，而是完整控制平面
 
-从实体规模、REST 模块数量、调度数量、集成框架复杂度来看，OpenAEV 不是“攻击脚本管理平台”，而是一个完整的：
+从实体规模、REST 模块数量、调度数量、集成框架复杂度来看，Veriguard 不是“攻击脚本管理平台”，而是一个完整的：
 
 - 建模平台
 - 编排平台
@@ -617,25 +617,25 @@
 1. 单独拆解 `Scenario / Exercise / Inject / ExecutionTrace` 四类核心实体关系  
 2. 单独分析 `Integration` 体系，梳理如何新增一个自定义 Executor / Injector  
 3. 单独分析 `Agent + ExecutorContextService + ExecutionTrace` 的终端执行链  
-4. 将 OpenAEV 与当前仓库目标产品做能力矩阵对标
+4. 将 Veriguard 与当前仓库目标产品做能力矩阵对标
 
 ## 九、关键源码路径
 
-- 根模块：`/tmp/openaev/pom.xml`
-- 主应用：`/tmp/openaev/openaev-api/src/main/java/io/openaev/App.java`
-- 安全配置：`/tmp/openaev/openaev-api/src/main/java/io/openaev/config/AppSecurityConfig.java`
-- RBAC 切面：`/tmp/openaev/openaev-api/src/main/java/io/openaev/aop/RBACAspect.java`
-- 锁切面：`/tmp/openaev/openaev-api/src/main/java/io/openaev/aop/lock/LockAspect.java`
-- 调度定义：`/tmp/openaev/openaev-api/src/main/java/io/openaev/scheduler/PlatformJobDefinitions.java`
-- 场景调度：`/tmp/openaev/openaev-api/src/main/java/io/openaev/scheduler/jobs/ScenarioExecutionJob.java`
-- 注入调度：`/tmp/openaev/openaev-api/src/main/java/io/openaev/scheduler/jobs/InjectsExecutionJob.java`
-- 执行分发：`/tmp/openaev/openaev-api/src/main/java/io/openaev/executors/Executor.java`
-- Executor 上下文：`/tmp/openaev/openaev-api/src/main/java/io/openaev/execution/ExecutionExecutorService.java`
-- 搜索引擎工厂：`/tmp/openaev/openaev-model/src/main/java/io/openaev/service/EngineComponent.java`
-- 索引监听：`/tmp/openaev/openaev-model/src/main/java/io/openaev/database/audit/ModelBaseListener.java`
-- 集成管理：`/tmp/openaev/openaev-api/src/main/java/io/openaev/integration/Manager.java`
-- 集成工厂：`/tmp/openaev/openaev-api/src/main/java/io/openaev/integration/IntegrationFactory.java`
-- 队列服务：`/tmp/openaev/openaev-framework/src/main/java/io/openaev/asset/QueueService.java`
-- 前端根入口：`/tmp/openaev/openaev-front/src/root.tsx`
-- 前端管理路由：`/tmp/openaev/openaev-front/src/admin/Index.tsx`
-- 前端状态：`/tmp/openaev/openaev-front/src/store.ts`
+- 根模块：`/tmp/veriguard/pom.xml`
+- 主应用：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/App.java`
+- 安全配置：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/config/AppSecurityConfig.java`
+- RBAC 切面：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/aop/RBACAspect.java`
+- 锁切面：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/aop/lock/LockAspect.java`
+- 调度定义：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/scheduler/PlatformJobDefinitions.java`
+- 场景调度：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/scheduler/jobs/ScenarioExecutionJob.java`
+- 注入调度：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/scheduler/jobs/InjectsExecutionJob.java`
+- 执行分发：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/executors/Executor.java`
+- Executor 上下文：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/execution/ExecutionExecutorService.java`
+- 搜索引擎工厂：`/tmp/veriguard/veriguard-model/src/main/java/io/veriguard/service/EngineComponent.java`
+- 索引监听：`/tmp/veriguard/veriguard-model/src/main/java/io/veriguard/database/audit/ModelBaseListener.java`
+- 集成管理：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/integration/Manager.java`
+- 集成工厂：`/tmp/veriguard/veriguard-api/src/main/java/io/veriguard/integration/IntegrationFactory.java`
+- 队列服务：`/tmp/veriguard/veriguard-framework/src/main/java/io/veriguard/asset/QueueService.java`
+- 前端根入口：`/tmp/veriguard/veriguard-front/src/root.tsx`
+- 前端管理路由：`/tmp/veriguard/veriguard-front/src/admin/Index.tsx`
+- 前端状态：`/tmp/veriguard/veriguard-front/src/store.ts`
