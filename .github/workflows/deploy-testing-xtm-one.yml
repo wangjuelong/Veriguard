@@ -35,19 +35,19 @@ jobs:
       - name: Build into Alpine
         run: |
           export JAVA_HOME=/usr/lib/jvm/default-jvm/
-          cd openaev-front
+          cd veriguard-front
           yarn install
           yarn build
           cd ../
           mvn install -DskipTests -Pdev
         shell: alpine.sh {0}
-      - run: mkdir -p openaev-build/
-      - run: cp openaev-api/target/openaev-api.jar openaev-build/
+      - run: mkdir -p veriguard-build/
+      - run: cp veriguard-api/target/veriguard-api.jar veriguard-build/
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: filigran/openaev-platform
+          images: filigran/veriguard-platform
           tags: |
             type=raw,value=testing-xtm-one
 
@@ -69,8 +69,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=filigran/openaev-platform:buildcache
-          cache-to: type=registry,ref=filigran/openaev-platform:buildcache,mode=max
+          cache-from: type=registry,ref=filigran/veriguard-platform:buildcache
+          cache-to: type=registry,ref=filigran/veriguard-platform:buildcache,mode=max
 
   deploy:
       name: Restart testing-xtm-one instance
@@ -87,6 +87,6 @@ jobs:
               --conf.password ${{ secrets.AWX_PASSWORD }} \
               job_templates launch 'Rollout restart an instance resources' \
               --inventory eu-west-staging \
-              --extra_vars '{"solution":"openaev", "customer":"testing-xtm-one-oaev"}' \
+              --extra_vars '{"solution":"veriguard", "customer":"testing-xtm-one-oaev"}' \
               --wait \
               -f human

@@ -42,7 +42,7 @@
       ],
       "enabled": false,
       "matchPackageNames": [
-        "/^io\\.openaev:/"
+        "/^io\\.veriguard:/"
       ]
     },
     {

@@ -1,0 +1,87 @@
+package io.veriguard.service;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+
+import io.veriguard.IntegrationTest;
+import io.veriguard.config.VeriguardConfig;
+import io.veriguard.config.RabbitmqConfig;
+import io.veriguard.rest.settings.PreviewFeature;
+import io.veriguard.rest.settings.response.PlatformSettings;
+import io.veriguard.utils.mockUser.WithMockUser;
+import io.veriguard.utilstest.RabbitMQTestListener;
+import jakarta.annotation.Resource;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
+@SpringBootTest
+@TestExecutionListeners(
+    value = {RabbitMQTestListener.class},
+    mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
+@ExtendWith(MockitoExtension.class)
+@TestInstance(PER_CLASS)
+public class PlatformServiceSettingsTest extends IntegrationTest {
+
+  @Autowired private PlatformSettingsService platformSettingsService;
+  @Resource private RabbitmqConfig rabbitmqConfig;
+  @Resource private VeriguardConfig veriguardConfig;
+
+  @BeforeAll
+  public void beforeAll() {
+    // some repetitive setup necessary to mock config
+    rabbitmqConfig.setUser("admin");
+    rabbitmqConfig.setPass("pass");
+  }
+
+  @Test
+  @WithMockUser(isAdmin = true)
+  public void given_config_has_null_flags_enabled_features_is_empty() {
+    veriguardConfig.setEnabledDevFeatures(null);
+
+    PlatformSettings settings = platformSettingsService.findSettings();
+
+    assertThat(settings.getEnabledDevFeatures(), is(equalTo(List.of())));
+  }
+
+  @Test
+  @WithMockUser(isAdmin = true)
+  public void given_config_has_invalid_flags_enabled_features_does_not_account_for_these_flags() {
+    veriguardConfig.setEnabledDevFeatures("non existing feature flag");
+
+    PlatformSettings settings = platformSettingsService.findSettings();
+
+    assertThat(settings.getEnabledDevFeatures(), is(empty()));
+  }
+
+  @Test
+  @WithMockUser(isAdmin = true)
+  public void given_config_has_valid_flags_enabled_features_accounts_for_these_flags() {
+    veriguardConfig.setEnabledDevFeatures(PreviewFeature._RESERVED.name());
+
+    PlatformSettings settings = platformSettingsService.findSettings();
+
+    assertThat(settings.getEnabledDevFeatures(), is(equalTo(List.of(PreviewFeature._RESERVED))));
+  }
+
+  @Test
+  @WithMockUser(isAdmin = true)
+  public void
+      given_config_has_valid_flags_when_same_flag_stated_twice_enabled_features_accounts_for_flag_once() {
+    veriguardConfig.setEnabledDevFeatures(
+        "%s, %s".formatted(PreviewFeature._RESERVED.name(), PreviewFeature._RESERVED.name()));
+
+    PlatformSettings settings = platformSettingsService.findSettings();
+
+    assertThat(settings.getEnabledDevFeatures(), is(equalTo(List.of(PreviewFeature._RESERVED))));
+  }
+}

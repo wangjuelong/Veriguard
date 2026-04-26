@@ -4,7 +4,7 @@ orbs:
   kubernetes: circleci/kubernetes@2.0.2
 jobs:
   build_frontend:
-    working_directory: ~/openaev
+    working_directory: ~/veriguard
     docker:
       - image: nikolaik/python-nodejs:python3.10-nodejs22
     resource_class: large
@@ -13,80 +13,80 @@ jobs:
           command: apt-get update --allow-insecure-repositories --allow-unauthenticated && apt-get install -y build-essential libffi-dev curl
       - checkout
       - run:
-          working_directory: ~/openaev/openaev-front
+          working_directory: ~/veriguard/veriguard-front
           command: yarn install
       - run:
-          working_directory: ~/openaev/openaev-front
+          working_directory: ~/veriguard/veriguard-front
           command: NODE_OPTIONS=--max-old-space-size=8096 yarn build
           no_output_timeout: 30m
       - run:
           working_directory: ~/
-          command: cp -a openaev openaev_docker && cp -a openaev openaev_musl
+          command: cp -a veriguard veriguard_docker && cp -a veriguard veriguard_musl
       - slack/notify:
           event: fail
           template: basic_fail_1
       - persist_to_workspace:
           root: ~/
           paths:
-            - openaev
-            - openaev_docker
-            - openaev_musl
+            - veriguard
+            - veriguard_docker
+            - veriguard_musl
 
   build_platform:
-    working_directory: ~/openaev
+    working_directory: ~/veriguard
     docker:
       - image: maven:3.9.14-eclipse-temurin-21
     steps:
       - attach_workspace:
           at: ~/
       - run:
-          working_directory: ~/openaev
+          working_directory: ~/veriguard
           command: |
             apt-get update && apt-get install -y jq
             LATEST_VERSION=$(git describe --tags --abbrev=0)
             
-            CATALOG_FILE=openaev-api/src/main/resources/catalog/catalog-integrators.json
+            CATALOG_FILE=veriguard-api/src/main/resources/catalog/catalog-integrators.json
             cat $CATALOG_FILE | jq --arg ver "${CIRCLE_TAG:-$LATEST_VERSION}" '.contracts[].container_version = $ver' | jq --arg ver "${CIRCLE_TAG:-$LATEST_VERSION}" '.version = $ver'  > manifest.tmp
             mv manifest.tmp $CATALOG_FILE
 
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/arm64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/linux/arm64/openaev-agent-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/x86_64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/linux/x86_64/openaev-agent-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/arm64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/macos/arm64/openaev-agent-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/x86_64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/macos/x86_64/openaev-agent-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/arm64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-implant/linux/arm64/openaev-implant-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/x86_64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-implant/linux/x86_64/openaev-implant-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/arm64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-implant/macos/arm64/openaev-implant-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/x86_64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-implant/macos/x86_64/openaev-implant-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/arm64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/arm64/openaev-implant-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/x86_64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/x86_64/openaev-implant-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/arm64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/linux/arm64/veriguard-agent-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/x86_64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/linux/x86_64/veriguard-agent-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/arm64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/arm64/veriguard-agent-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/x86_64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/x86_64/veriguard-agent-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/arm64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-implant/linux/arm64/veriguard-implant-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/x86_64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-implant/linux/x86_64/veriguard-implant-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/arm64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-implant/macos/arm64/veriguard-implant-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/x86_64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-implant/macos/x86_64/veriguard-implant-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/arm64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/arm64/veriguard-implant-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/x86_64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/x86_64/veriguard-implant-${CIRCLE_TAG:-latest}.exe
       - run:
-          working_directory: ~/openaev
+          working_directory: ~/veriguard
           command: mvn install -DskipTests -Pdev
       - slack/notify:
           event: fail
@@ -94,10 +94,10 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - openaev
+            - veriguard
 
   build_platform_musl:
-    working_directory: ~/openaev_musl
+    working_directory: ~/veriguard_musl
     docker:
       - image: maven:3.9.14-eclipse-temurin-21-alpine
     resource_class: large
@@ -105,53 +105,53 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          working_directory: ~/openaev_musl
+          working_directory: ~/veriguard_musl
           command: |
             apk add git jq
             LATEST_VERSION=$(git describe --tags --abbrev=0)
             
-            CATALOG_FILE=openaev-api/src/main/resources/catalog/catalog-integrators.json
+            CATALOG_FILE=veriguard-api/src/main/resources/catalog/catalog-integrators.json
             cat $CATALOG_FILE | jq --arg ver "${CIRCLE_TAG:-$LATEST_VERSION}" '.contracts[].container_version = $ver' | jq --arg ver "${CIRCLE_TAG:-$LATEST_VERSION}" '.version = $ver'  > manifest.tmp
             mv manifest.tmp $CATALOG_FILE
 
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/arm64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/linux/arm64/openaev-agent-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/x86_64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/linux/x86_64/openaev-agent-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/arm64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/macos/arm64/openaev-agent-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/x86_64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/macos/x86_64/openaev-agent-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-service-user-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-session-user-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.ps1
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/arm64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-implant/linux/arm64/openaev-implant-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/x86_64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-implant/linux/x86_64/openaev-implant-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/arm64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-implant/macos/arm64/openaev-implant-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/x86_64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-implant/macos/x86_64/openaev-implant-${CIRCLE_TAG:-latest}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/arm64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/arm64/openaev-implant-${CIRCLE_TAG:-latest}.exe
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/x86_64/openaev-implant-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/x86_64/openaev-implant-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/arm64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/linux/arm64/veriguard-agent-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/x86_64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/linux/x86_64/veriguard-agent-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/arm64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/arm64/veriguard-agent-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/x86_64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/x86_64/veriguard-agent-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-service-user-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-session-user-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-service-user-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-session-user-${CIRCLE_TAG:-latest}.ps1
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/arm64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-implant/linux/arm64/veriguard-implant-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/x86_64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-implant/linux/x86_64/veriguard-implant-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/arm64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-implant/macos/arm64/veriguard-implant-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/x86_64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-implant/macos/x86_64/veriguard-implant-${CIRCLE_TAG:-latest}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/arm64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/arm64/veriguard-implant-${CIRCLE_TAG:-latest}.exe
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/x86_64/veriguard-implant-${CIRCLE_TAG:-$LATEST_VERSION}.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/x86_64/veriguard-implant-${CIRCLE_TAG:-latest}.exe
       - run:
-          working_directory: ~/openaev_musl
+          working_directory: ~/veriguard_musl
           command: mvn install -DskipTests -Pdev
       - slack/notify:
           event: fail
@@ -159,42 +159,42 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - openaev_musl
+            - veriguard_musl
 
   package_rolling:
-    working_directory: ~/openaev
+    working_directory: ~/veriguard
     docker:
       - image: maven:3.9.14-eclipse-temurin-21
     steps:
       - attach_workspace:
           at: ~/
-      - run: mkdir -p release/openaev
-      - run: cp -a ./openaev-api/target/openaev-api.jar release/openaev/ && cp -a ./openaev-api/target/classes/application.properties release/openaev/
+      - run: mkdir -p release/veriguard
+      - run: cp -a ./veriguard-api/target/veriguard-api.jar release/veriguard/ && cp -a ./veriguard-api/target/classes/application.properties release/veriguard/
       - run:
-          working_directory: ~/openaev/release
-          command: tar -zcvf "openaev-$(date '+%Y%m%d').tar.gz" openaev
+          working_directory: ~/veriguard/release
+          command: tar -zcvf "veriguard-$(date '+%Y%m%d').tar.gz" veriguard
       - run:
-          working_directory: ~/openaev/release
-          command: curl -usamuel.hassine@filigran.io:$JFROG_TOKEN -T openaev-$(date '+%Y%m%d').tar.gz "https://filigran.jfrog.io/artifactory/openaev/openaev-$(date '+%Y%m%d').tar.gz"
+          working_directory: ~/veriguard/release
+          command: curl -usamuel.hassine@filigran.io:$JFROG_TOKEN -T veriguard-$(date '+%Y%m%d').tar.gz "https://filigran.jfrog.io/artifactory/veriguard/veriguard-$(date '+%Y%m%d').tar.gz"
       - slack/notify:
           event: fail
           template: basic_fail_1
 
   package_rolling_musl:
-    working_directory: ~/openaev_musl
+    working_directory: ~/veriguard_musl
     docker:
       - image: maven:3.9.14-eclipse-temurin-21
     steps:
       - attach_workspace:
           at: ~/
-      - run: mkdir -p release/openaev
-      - run: cp -a ./openaev-api/target/openaev-api.jar release/openaev/ && cp -a ./openaev-api/target/classes/application.properties release/openaev/
+      - run: mkdir -p release/veriguard
+      - run: cp -a ./veriguard-api/target/veriguard-api.jar release/veriguard/ && cp -a ./veriguard-api/target/classes/application.properties release/veriguard/
       - run:
-          working_directory: ~/openaev_musl/release
-          command: tar -zcvf "openaev-$(date '+%Y%m%d')_musl.tar.gz" openaev
+          working_directory: ~/veriguard_musl/release
+          command: tar -zcvf "veriguard-$(date '+%Y%m%d')_musl.tar.gz" veriguard
       - run:
-          working_directory: ~/openaev_musl/release
-          command: curl -usamuel.hassine@filigran.io:$JFROG_TOKEN -T openaev-$(date '+%Y%m%d')_musl.tar.gz "https://filigran.jfrog.io/artifactory/openaev/openaev-$(date '+%Y%m%d')_musl.tar.gz"
+          working_directory: ~/veriguard_musl/release
+          command: curl -usamuel.hassine@filigran.io:$JFROG_TOKEN -T veriguard-$(date '+%Y%m%d')_musl.tar.gz "https://filigran.jfrog.io/artifactory/veriguard/veriguard-$(date '+%Y%m%d')_musl.tar.gz"
       - slack/notify:
           event: fail
           template: basic_fail_1
@@ -205,7 +205,7 @@ jobs:
     steps:
       - checkout
       - kubernetes/install_kubectl
-      - run: kubectl --server=https://api.staging.eu-west.filigran.io --token=$K8S_TOKEN -n customer-testing-oaev rollout restart deployment -l app=openaev
+      - run: kubectl --server=https://api.staging.eu-west.filigran.io --token=$K8S_TOKEN -n customer-testing-oaev rollout restart deployment -l app=veriguard
 
   deploy_prerelease:
     docker:
@@ -213,7 +213,7 @@ jobs:
     steps:
       - checkout
       - kubernetes/install_kubectl
-      - run: kubectl --server=https://api.staging.eu-west.filigran.io --token=$K8S_TOKEN_PRE_RELEASE -n customer-prerelease-oaev rollout restart deployment -l app=openaev
+      - run: kubectl --server=https://api.staging.eu-west.filigran.io --token=$K8S_TOKEN_PRE_RELEASE -n customer-prerelease-oaev rollout restart deployment -l app=veriguard
 
   deploy_dev_aws:
     docker:
@@ -229,10 +229,10 @@ jobs:
           chmod 700 ~/.ssh
           ssh-keyscan -H bastion.dev-oaev-aws.filigran.io >> ~/.ssh/known_hosts
           cat ~/.ssh/known_hosts
-          ssh admin@bastion.dev-oaev-aws.filigran.io "kubectl -n customer-dev-oaev-aws rollout restart deployment -l app=openaev"
+          ssh admin@bastion.dev-oaev-aws.filigran.io "kubectl -n customer-dev-oaev-aws rollout restart deployment -l app=veriguard"
 
   docker_build_platform:
-    working_directory: ~/openaev_docker
+    working_directory: ~/veriguard_docker
     machine:
       image: ubuntu-2004:202111-02
       resource_class: large
@@ -247,46 +247,46 @@ jobs:
             sudo apt-get update
             sudo apt-get -y install git jq    
 
-            CATALOG_FILE=openaev-api/src/main/resources/catalog/catalog-integrators.json
+            CATALOG_FILE=veriguard-api/src/main/resources/catalog/catalog-integrators.json
             cat $CATALOG_FILE | jq --arg ver "${CIRCLE_TAG}" '.contracts[].container_version = $ver' | jq --arg ver "${CIRCLE_TAG}" '.version = $ver' > manifest.tmp
             mv manifest.tmp $CATALOG_FILE
 
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/arm64/openaev-agent-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/openaev-agent/linux/arm64/openaev-agent-${CIRCLE_TAG}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/x86_64/openaev-agent-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/openaev-agent/linux/x86_64/openaev-agent-${CIRCLE_TAG}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-service-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-service-user-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-session-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-session-user-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-service-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-service-user-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-session-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-session-user-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/arm64/openaev-agent-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/openaev-agent/macos/arm64/openaev-agent-${CIRCLE_TAG}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/x86_64/openaev-agent-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/openaev-agent/macos/x86_64/openaev-agent-${CIRCLE_TAG}
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-service-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-service-user-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-session-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-session-user-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-service-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-service-user-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-session-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-session-user-${CIRCLE_TAG}.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-service-user-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-service-user-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-session-user-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-session-user-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-${CIRCLE_TAG}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-service-user-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-service-user-${CIRCLE_TAG}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-session-user-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-session-user-${CIRCLE_TAG}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-${CIRCLE_TAG}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-service-user-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-service-user-${CIRCLE_TAG}.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-session-user-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-session-user-${CIRCLE_TAG}.ps1
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/arm64/openaev-implant-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/openaev-implant/linux/arm64/openaev-implant-${CIRCLE_TAG}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/x86_64/openaev-implant-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/openaev-implant/linux/x86_64/openaev-implant-${CIRCLE_TAG}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/arm64/openaev-implant-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/openaev-implant/macos/arm64/openaev-implant-${CIRCLE_TAG}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/x86_64/openaev-implant-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/openaev-implant/macos/x86_64/openaev-implant-${CIRCLE_TAG}
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/arm64/openaev-implant-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/arm64/openaev-implant-${CIRCLE_TAG}.exe
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/x86_64/openaev-implant-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/x86_64/openaev-implant-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/arm64/veriguard-agent-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/veriguard-agent/linux/arm64/veriguard-agent-${CIRCLE_TAG}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/x86_64/veriguard-agent-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/veriguard-agent/linux/x86_64/veriguard-agent-${CIRCLE_TAG}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-service-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-service-user-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-session-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-session-user-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-service-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-service-user-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-session-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-session-user-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/arm64/veriguard-agent-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/arm64/veriguard-agent-${CIRCLE_TAG}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/x86_64/veriguard-agent-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/x86_64/veriguard-agent-${CIRCLE_TAG}
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-service-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-service-user-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-session-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-session-user-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-service-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-service-user-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-session-user-${CIRCLE_TAG}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-session-user-${CIRCLE_TAG}.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-${CIRCLE_TAG}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-service-user-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-service-user-${CIRCLE_TAG}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-session-user-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-session-user-${CIRCLE_TAG}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-${CIRCLE_TAG}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-service-user-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-service-user-${CIRCLE_TAG}.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-session-user-${CIRCLE_TAG}.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-session-user-${CIRCLE_TAG}.ps1
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/arm64/veriguard-implant-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/veriguard-implant/linux/arm64/veriguard-implant-${CIRCLE_TAG}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/x86_64/veriguard-implant-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/veriguard-implant/linux/x86_64/veriguard-implant-${CIRCLE_TAG}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/arm64/veriguard-implant-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/veriguard-implant/macos/arm64/veriguard-implant-${CIRCLE_TAG}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/x86_64/veriguard-implant-${CIRCLE_TAG} https://filigran.jfrog.io/artifactory/veriguard-implant/macos/x86_64/veriguard-implant-${CIRCLE_TAG}
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/arm64/veriguard-implant-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/arm64/veriguard-implant-${CIRCLE_TAG}.exe
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/x86_64/veriguard-implant-${CIRCLE_TAG}.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/x86_64/veriguard-implant-${CIRCLE_TAG}.exe
       - run:
           name: Install buildx
           command: |
@@ -305,11 +305,11 @@ jobs:
           name: Login
           command: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - run:
-          name: Build Docker image openaev/platform
+          name: Build Docker image veriguard/platform
           command: |
             LATEST_SEMANTIC_VERSION=$(git tag --sort=-v:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-            TAGS="-t openbas/platform:${CIRCLE_TAG} -t openaev/platform:${CIRCLE_TAG}"
-            [ "$CIRCLE_TAG" = "$LATEST_SEMANTIC_VERSION" ] && TAGS="$TAGS -t openbas/platform:latest -t openaev/platform:latest"
+            TAGS="-t openbas/platform:${CIRCLE_TAG} -t veriguard/platform:${CIRCLE_TAG}"
+            [ "$CIRCLE_TAG" = "$LATEST_SEMANTIC_VERSION" ] && TAGS="$TAGS -t openbas/platform:latest -t veriguard/platform:latest"
             docker buildx build --progress=plain --platform $BUILDX_PLATFORMS -f Dockerfile_circleci $TAGS --push .
           no_output_timeout: 30m
       - slack/notify:
@@ -317,7 +317,7 @@ jobs:
           template: basic_fail_1
 
   docker_build_platform_rolling:
-    working_directory: ~/openaev_docker
+    working_directory: ~/veriguard_docker
     machine:
       image: ubuntu-2004:202111-02
       resource_class: large
@@ -333,46 +333,46 @@ jobs:
             sudo apt-get -y install git jq
             LATEST_VERSION=$(git describe --tags --abbrev=0)
 
-            CATALOG_FILE=openaev-api/src/main/resources/catalog/catalog-integrators.json
+            CATALOG_FILE=veriguard-api/src/main/resources/catalog/catalog-integrators.json
             cat $CATALOG_FILE | jq --arg ver "rolling" '.contracts[].container_version = $ver' | jq --arg ver "rolling" '.version = $ver'  > manifest.tmp
             mv manifest.tmp $CATALOG_FILE
             
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/arm64/openaev-agent-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-agent/linux/arm64/openaev-agent-latest
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/x86_64/openaev-agent-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-agent/linux/x86_64/openaev-agent-latest
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-service-user-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-session-user-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-service-user-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-session-user-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/arm64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/macos/arm64/openaev-agent-latest
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/x86_64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/macos/x86_64/openaev-agent-latest
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-service-user-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-session-user-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-service-user-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-session-user-latest.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-latest.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-latest.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-service-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-service-user-latest.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-session-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-session-user-latest.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-latest.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-latest.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-latest.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-latest.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-latest.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-service-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-service-user-latest.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-session-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-session-user-latest.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-latest.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-service-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-service-user-latest.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-session-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-session-user-latest.ps1
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/arm64/openaev-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-implant/linux/arm64/openaev-implant-latest
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/x86_64/openaev-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-implant/linux/x86_64/openaev-implant-latest
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/arm64/openaev-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-implant/macos/arm64/openaev-implant-latest
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/x86_64/openaev-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-implant/macos/x86_64/openaev-implant-latest
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/arm64/openaev-implant-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/arm64/openaev-implant-latest.exe
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/x86_64/openaev-implant-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/x86_64/openaev-implant-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/arm64/veriguard-agent-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-agent/linux/arm64/veriguard-agent-latest
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/x86_64/veriguard-agent-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-agent/linux/x86_64/veriguard-agent-latest
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-service-user-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-session-user-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-service-user-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-session-user-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/arm64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/arm64/veriguard-agent-latest
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/x86_64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/x86_64/veriguard-agent-latest
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-service-user-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-session-user-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-service-user-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-session-user-latest.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-latest.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-latest.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-service-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-service-user-latest.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-session-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-session-user-latest.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-latest.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-service-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-service-user-latest.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-session-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-session-user-latest.ps1
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/arm64/veriguard-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-implant/linux/arm64/veriguard-implant-latest
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/x86_64/veriguard-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-implant/linux/x86_64/veriguard-implant-latest
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/arm64/veriguard-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-implant/macos/arm64/veriguard-implant-latest
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/x86_64/veriguard-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-implant/macos/x86_64/veriguard-implant-latest
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/arm64/veriguard-implant-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/arm64/veriguard-implant-latest.exe
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/x86_64/veriguard-implant-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/x86_64/veriguard-implant-latest.exe
       - run:
           name: Install buildx
           command: |
@@ -392,16 +392,16 @@ jobs:
           name: Login
           command: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - run:
-          working_directory: ~/openaev_docker
-          name: Build Docker image openaev/platform
-          command: docker buildx build --progress=plain --platform $BUILDX_PLATFORMS -f Dockerfile_circleci -t openbas/platform:rolling -t openaev/platform:rolling --push .
+          working_directory: ~/veriguard_docker
+          name: Build Docker image veriguard/platform
+          command: docker buildx build --progress=plain --platform $BUILDX_PLATFORMS -f Dockerfile_circleci -t openbas/platform:rolling -t veriguard/platform:rolling --push .
           no_output_timeout: 30m
       - slack/notify:
           event: fail
           template: basic_fail_1
 
   docker_build_platform_prerelease:
-    working_directory: ~/openaev_docker
+    working_directory: ~/veriguard_docker
     machine:
       image: ubuntu-2004:202111-02
       resource_class: large
@@ -417,46 +417,46 @@ jobs:
             sudo apt-get -y install git jq
             LATEST_VERSION=$(git describe --tags --abbrev=0)
             
-            CATALOG_FILE=openaev-api/src/main/resources/catalog/catalog-integrators.json
+            CATALOG_FILE=veriguard-api/src/main/resources/catalog/catalog-integrators.json
             cat $CATALOG_FILE | jq --arg ver "prerelease" '.contracts[].container_version = $ver' | jq --arg ver "prerelease" '.version = $ver'  > manifest.tmp
             mv manifest.tmp $CATALOG_FILE
 
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/arm64/openaev-agent-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-agent/linux/arm64/openaev-agent-prerelease
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/x86_64/openaev-agent-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-agent/linux/x86_64/openaev-agent-prerelease
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-service-user-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-installer-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-installer-session-user-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-service-user-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/linux/openaev-agent-upgrade-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/linux/openaev-agent-upgrade-session-user-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/arm64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/macos/arm64/openaev-agent-prerelease
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/x86_64/openaev-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/openaev-agent/macos/x86_64/openaev-agent-prerelease
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-service-user-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-installer-session-user-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-service-user-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/macos/openaev-agent-upgrade-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/openaev-agent/macos/openaev-agent-upgrade-session-user-prerelease.sh
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-service-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-service-user-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/arm64/openaev-agent-installer-session-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/arm64/openaev-agent-installer-session-user-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-service-user-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-agent/windows/x86_64/openaev-agent-installer-session-user-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-prerelease.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-service-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-service-user-prerelease.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-installer-session-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-installer-session-user-prerelease.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-prerelease.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-service-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-service-user-prerelease.ps1
-            curl -L -o openaev-api/src/main/resources/agents/openaev-agent/windows/openaev-agent-upgrade-session-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/openaev-agent/windows/openaev-agent-upgrade-session-user-prerelease.ps1
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/arm64/openaev-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-implant/linux/arm64/openaev-implant-prerelease
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/linux/x86_64/openaev-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-implant/linux/x86_64/openaev-implant-prerelease
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/arm64/openaev-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-implant/macos/arm64/openaev-implant-prerelease
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/macos/x86_64/openaev-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/openaev-implant/macos/x86_64/openaev-implant-prerelease
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/arm64/openaev-implant-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/arm64/openaev-implant-prerelease.exe
-            curl -L -o openaev-api/src/main/resources/implants/openaev-implant/windows/x86_64/openaev-implant-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/openaev-implant/windows/x86_64/openaev-implant-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/arm64/veriguard-agent-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-agent/linux/arm64/veriguard-agent-prerelease
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/x86_64/veriguard-agent-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-agent/linux/x86_64/veriguard-agent-prerelease
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-service-user-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-installer-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-installer-session-user-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-service-user-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/linux/veriguard-agent-upgrade-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/linux/veriguard-agent-upgrade-session-user-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/arm64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/arm64/veriguard-agent-prerelease
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/x86_64/veriguard-agent-${CIRCLE_TAG:-$LATEST_VERSION} https://filigran.jfrog.io/artifactory/veriguard-agent/macos/x86_64/veriguard-agent-prerelease
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-service-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-service-user-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-installer-session-user-${CIRCLE_TAG:-$LATEST_VERSION}.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-installer-session-user-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-service-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-service-user-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/macos/veriguard-agent-upgrade-session-user-$LATEST_VERSION.sh https://filigran.jfrog.io/artifactory/veriguard-agent/macos/veriguard-agent-upgrade-session-user-prerelease.sh
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-service-user-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/arm64/veriguard-agent-installer-session-user-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-service-user-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-agent/windows/x86_64/veriguard-agent-installer-session-user-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-prerelease.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-service-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-service-user-prerelease.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-installer-session-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-installer-session-user-prerelease.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-prerelease.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-service-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-service-user-prerelease.ps1
+            curl -L -o veriguard-api/src/main/resources/agents/veriguard-agent/windows/veriguard-agent-upgrade-session-user-$LATEST_VERSION.ps1 https://filigran.jfrog.io/artifactory/veriguard-agent/windows/veriguard-agent-upgrade-session-user-prerelease.ps1
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/arm64/veriguard-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-implant/linux/arm64/veriguard-implant-prerelease
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/linux/x86_64/veriguard-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-implant/linux/x86_64/veriguard-implant-prerelease
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/arm64/veriguard-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-implant/macos/arm64/veriguard-implant-prerelease
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/macos/x86_64/veriguard-implant-$LATEST_VERSION https://filigran.jfrog.io/artifactory/veriguard-implant/macos/x86_64/veriguard-implant-prerelease
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/arm64/veriguard-implant-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/arm64/veriguard-implant-prerelease.exe
+            curl -L -o veriguard-api/src/main/resources/implants/veriguard-implant/windows/x86_64/veriguard-implant-$LATEST_VERSION.exe https://filigran.jfrog.io/artifactory/veriguard-implant/windows/x86_64/veriguard-implant-prerelease.exe
       - run:
           name: Install buildx
           command: |
@@ -476,9 +476,9 @@ jobs:
           name: Login
           command: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - run:
-          working_directory: ~/openaev_docker
-          name: Build Docker image openaev/platform
-          command: docker buildx build --progress=plain --platform $BUILDX_PLATFORMS -f Dockerfile_circleci -t openbas/platform:prerelease -t openaev/platform:prerelease --push .
+          working_directory: ~/veriguard_docker
+          name: Build Docker image veriguard/platform
+          command: docker buildx build --progress=plain --platform $BUILDX_PLATFORMS -f Dockerfile_circleci -t openbas/platform:prerelease -t veriguard/platform:prerelease --push .
           no_output_timeout: 30m
       - slack/notify:
           event: fail
@@ -502,7 +502,7 @@ jobs:
           template: basic_success_1
 
 workflows:
-  openaev:
+  veriguard:
     jobs:
       - build_frontend:
           filters:

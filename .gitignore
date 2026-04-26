@@ -5,8 +5,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 logs/**
-openaev-dev/.env
-openaev-dev/.telemetry.json
+veriguard-dev/.env
+veriguard-dev/.telemetry.json
 
 ### STS ###
 .apt_generated

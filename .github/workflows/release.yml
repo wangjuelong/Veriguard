@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: openaev
+        working-directory: veriguard
     steps:
       - name: checkout repo content
         uses: actions/checkout@v6
         with:
-          repository: OpenAEV-Platform/openaev
+          repository: Veriguard-Platform/veriguard
           ref: ${{ inputs.branch_platform }}
       - name: setup python
         uses: actions/setup-python@v6

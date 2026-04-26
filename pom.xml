@@ -9,13 +9,13 @@
         <version>3.3.7</version>
     </parent>
 
-    <groupId>io.openaev</groupId>
-    <artifactId>openaev-platform</artifactId>
+    <groupId>io.veriguard</groupId>
+    <artifactId>veriguard-platform</artifactId>
     <version>2.3.3</version>
     <packaging>pom</packaging>
 
-    <name>OpenAEV platform</name>
-    <description>OpenAEV platform</description>
+    <name>Veriguard platform</name>
+    <description>Veriguard platform</description>
 
     <properties>
         <java.version>21</java.version>
@@ -177,8 +177,8 @@
     </build>
 
     <modules>
-        <module>openaev-model</module>
-        <module>openaev-framework</module>
-        <module>openaev-api</module>
+        <module>veriguard-model</module>
+        <module>veriguard-framework</module>
+        <module>veriguard-api</module>
     </modules>
 </project>
