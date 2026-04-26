@@ -2,6 +2,7 @@ package io.openaev.rest.veriguard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.openaev.database.model.VeriguardSandbox;
+import io.openaev.database.model.VeriguardSandbox.SampleType;
 import io.openaev.database.model.VeriguardSandboxNetworkRule;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -22,5 +23,5 @@ public record VeriguardSandboxInput(
     @JsonProperty("sandbox_auto_restore_enabled") @AssertTrue boolean autoRestoreEnabled,
     @JsonProperty("sandbox_supported_sample_types")
         @NotEmpty
-        List<@NotNull VeriguardSandbox.SampleType> supportedSampleTypes,
+        List<@NotNull SampleType> supportedSampleTypes,
     @JsonProperty("sandbox_status") @NotNull VeriguardSandbox.Status status) {}
