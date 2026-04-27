@@ -50,7 +50,7 @@ class SandboxServiceTest {
 
   @Test
   void create_persists_sandbox_with_empty_network_rules() throws Exception {
-    when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+    when(repository.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
 
     SecurityValidationDtos.SandboxOutput output = service.createSandbox(baseInput);
 
@@ -94,7 +94,7 @@ class SandboxServiceTest {
 
   @Test
   void create_translates_unique_violation_to_input_validation() {
-    when(repository.save(any())).thenThrow(new DataIntegrityViolationException("dup"));
+    when(repository.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException("dup"));
 
     assertThatThrownBy(() -> service.createSandbox(baseInput))
         .isInstanceOf(InputValidationException.class)
@@ -103,7 +103,7 @@ class SandboxServiceTest {
 
   @Test
   void create_accepts_multiple_network_rules() throws Exception {
-    lenient().when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+    lenient().when(repository.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
 
     VeriguardSandboxNetworkRule rule1 =
         new VeriguardSandboxNetworkRule(
@@ -137,7 +137,7 @@ class SandboxServiceTest {
     existing.setSupportedSampleTypes(List.of(SampleType.RANSOMWARE));
     existing.setStatus(Status.ACTIVE);
     when(repository.findById("sb-001")).thenReturn(Optional.of(existing));
-    when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+    when(repository.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
 
     SandboxInput input =
         new SandboxInput(
@@ -158,7 +158,7 @@ class SandboxServiceTest {
     assertThat(output.supportedSampleTypes()).containsExactly(SampleType.MINER, SampleType.WORM);
 
     ArgumentCaptor<VeriguardSandbox> captor = ArgumentCaptor.forClass(VeriguardSandbox.class);
-    verify(repository).save(captor.capture());
+    verify(repository).saveAndFlush(captor.capture());
     assertThat(captor.getValue().getName()).isEqualTo("新名称");
   }
 

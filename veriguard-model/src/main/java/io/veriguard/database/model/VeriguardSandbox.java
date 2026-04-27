@@ -93,13 +93,11 @@ public class VeriguardSandbox implements Base {
 
   @Column(name = "veriguard_sandbox_created_at")
   @JsonProperty("sandbox_created_at")
-  @NotNull
   @CreationTimestamp
   private Instant createdAt;
 
   @Column(name = "veriguard_sandbox_updated_at")
   @JsonProperty("sandbox_updated_at")
-  @NotNull
   @UpdateTimestamp
   private Instant updatedAt;
 

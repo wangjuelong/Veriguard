@@ -1,5 +1,6 @@
 package io.veriguard.rest.security_validation;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -41,7 +42,7 @@ class SandboxApiIntegrationTest extends IntegrationTest {
   @Test
   void create_returns_201_and_persists() throws Exception {
     mockMvc
-        .perform(post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+        .perform(post("/api/sandboxes").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.sandbox_id").exists())
         .andExpect(jsonPath("$.sandbox_provider_type").doesNotExist())
@@ -54,7 +55,7 @@ class SandboxApiIntegrationTest extends IntegrationTest {
         VALID_BODY.replace(
             "\"sandbox_auto_restore_enabled\": true", "\"sandbox_auto_restore_enabled\": false");
     mockMvc
-        .perform(post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(body))
+        .perform(post("/api/sandboxes").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(body))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.errors.children.sandbox_auto_restore_required").exists());
   }
@@ -62,10 +63,10 @@ class SandboxApiIntegrationTest extends IntegrationTest {
   @Test
   void create_with_duplicate_name_returns_400_duplicated() throws Exception {
     mockMvc
-        .perform(post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+        .perform(post("/api/sandboxes").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
         .andExpect(status().isCreated());
     mockMvc
-        .perform(post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+        .perform(post("/api/sandboxes").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.errors.children.sandbox_name_duplicated").exists());
   }
@@ -73,7 +74,7 @@ class SandboxApiIntegrationTest extends IntegrationTest {
   @Test
   void list_returns_persisted_sandbox() throws Exception {
     mockMvc
-        .perform(post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+        .perform(post("/api/sandboxes").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
         .andExpect(status().isCreated());
     mockMvc
         .perform(get("/api/sandboxes"))
@@ -86,7 +87,7 @@ class SandboxApiIntegrationTest extends IntegrationTest {
     String created =
         mockMvc
             .perform(
-                post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+                post("/api/sandboxes").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
             .andReturn()
             .getResponse()
             .getContentAsString();
@@ -109,7 +110,7 @@ class SandboxApiIntegrationTest extends IntegrationTest {
     String created =
         mockMvc
             .perform(
-                post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+                post("/api/sandboxes").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
             .andReturn()
             .getResponse()
             .getContentAsString();

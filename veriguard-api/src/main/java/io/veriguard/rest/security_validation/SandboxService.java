@@ -58,7 +58,7 @@ public class SandboxService {
   private SecurityValidationDtos.SandboxOutput persist(VeriguardSandbox sandbox)
       throws InputValidationException {
     try {
-      return toOutput(sandboxRepository.save(sandbox));
+      return toOutput(sandboxRepository.saveAndFlush(sandbox));
     } catch (DataIntegrityViolationException ex) {
       log.warn(
           "Sandbox persist failed with data integrity violation, treating as duplicate name", ex);
