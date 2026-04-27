@@ -1,3 +1,10 @@
+// M1 sandbox preset network-rule validator (spec §6.2): UI-only.
+// Intentionally permissive — uses simple regex without a network library.
+// Known accepted-but-malformed inputs that the back-end / iptables runtime
+// will still reject:
+//   - IPv6 with multiple "::" shorthands (e.g. "::1::/64")
+//   - IPv4 octets with leading zeros (e.g. "010.0.0.0/8")
+
 const IPV4_OCTET = '(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)';
 const IPV4 = `${IPV4_OCTET}(?:\\.${IPV4_OCTET}){3}`;
 const IPV4_CIDR = new RegExp(`^${IPV4}/(?:[0-9]|[12][0-9]|3[0-2])$`);
