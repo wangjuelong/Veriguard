@@ -275,7 +275,8 @@ public class RestBehavior {
         "Sandbox integration failed: reason={} remoteStatus={} message={}",
         ex.getReasonCode(),
         ex.getRemoteStatusCode(),
-        ex.getMessage());
+        ex.getMessage(),
+        ex);
     ValidationErrorBag bag =
         new ValidationErrorBag(status.value(), "SANDBOX_INTEGRATION_FAILED");
     ValidationError errors = new ValidationError();
