@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import io.veriguard.aop.lock.LockAcquisitionException;
 import io.veriguard.database.model.User;
 import io.veriguard.database.repository.UserRepository;
+import io.veriguard.integration.sandbox.SandboxIntegrationException;
 import io.veriguard.rest.exception.*;
 import io.veriguard.stix.parsing.ParsingException;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -261,6 +262,29 @@ public class RestBehavior {
     ErrorMessage message = new ErrorMessage(ex.getMessage());
     log.warn(String.format("AlreadyExistingException: %s", ex.getMessage()), ex);
     return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(SandboxIntegrationException.class)
+  public ResponseEntity<ValidationErrorBag> handleSandboxIntegrationException(
+      SandboxIntegrationException ex) {
+    HttpStatus status =
+        ex.getReasonCode() == SandboxIntegrationException.ReasonCode.TIMEOUT
+            ? HttpStatus.GATEWAY_TIMEOUT
+            : HttpStatus.BAD_GATEWAY;
+    log.warn(
+        "Sandbox integration failed: reason={} remoteStatus={} message={}",
+        ex.getReasonCode(),
+        ex.getRemoteStatusCode(),
+        ex.getMessage());
+    ValidationErrorBag bag =
+        new ValidationErrorBag(status.value(), "SANDBOX_INTEGRATION_FAILED");
+    ValidationError errors = new ValidationError();
+    Map<String, ValidationContent> errorsBag = new HashMap<>();
+    errorsBag.put(
+        ex.getReasonCode().name().toLowerCase(), new ValidationContent(ex.getMessage()));
+    errors.setChildren(errorsBag);
+    bag.setErrors(errors);
+    return ResponseEntity.status(status).body(bag);
   }
 
   // --- Open channel access
