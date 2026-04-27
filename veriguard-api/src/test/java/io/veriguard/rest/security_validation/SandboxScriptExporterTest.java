@@ -57,4 +57,46 @@ class SandboxScriptExporterTest {
     assertThat(filename).doesNotContain(" ");
     assertThat(filename).endsWith(".iptables.sh");
   }
+
+  @Test
+  void to_iptables_neutralizes_newlines_in_sandbox_name_comment() {
+    String script = exporter.toIptables("evil\nrm -rf /\n#", List.of());
+
+    // Newlines collapsed to spaces in comments — no line escapes the leading '#'.
+    assertThat(script).doesNotContain("\nrm -rf /");
+    assertThat(script).contains("evil rm -rf / #");
+  }
+
+  @Test
+  void to_iptables_uses_multiport_for_comma_separated_ports() {
+    VeriguardSandboxNetworkRule rule =
+        new VeriguardSandboxNetworkRule(Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "80,443");
+
+    String script = exporter.toIptables("preset", List.of(rule));
+
+    assertThat(script).contains("-m multiport --dports 80,443");
+    assertThat(script).doesNotContain("--dport 80,443");
+  }
+
+  @Test
+  void to_iptables_uses_multiport_for_range_ports() {
+    VeriguardSandboxNetworkRule rule =
+        new VeriguardSandboxNetworkRule(Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "1-65535");
+
+    String script = exporter.toIptables("preset", List.of(rule));
+
+    assertThat(script).contains("-m multiport --dports 1-65535");
+    assertThat(script).doesNotContain("--dport 1-65535");
+  }
+
+  @Test
+  void to_iptables_uses_dport_for_single_port() {
+    VeriguardSandboxNetworkRule rule =
+        new VeriguardSandboxNetworkRule(Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "443");
+
+    String script = exporter.toIptables("preset", List.of(rule));
+
+    assertThat(script).contains("--dport 443");
+    assertThat(script).doesNotContain("-m multiport");
+  }
 }

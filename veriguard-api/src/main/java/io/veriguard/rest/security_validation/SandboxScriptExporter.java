@@ -11,11 +11,11 @@ public class SandboxScriptExporter {
   public String toIptables(String sandboxName, List<VeriguardSandboxNetworkRule> rules) {
     StringBuilder out = new StringBuilder();
     out.append("#!/bin/sh\n");
-    out.append("# 沙箱预设「").append(sandboxName).append("」iptables 规则导出。\n");
+    out.append("# 沙箱预设「").append(commentSafe(sandboxName)).append("」iptables 规则导出。\n");
     out.append("# 在 CAPEv2 主机以 root 执行。\n\n");
 
     if (rules.isEmpty()) {
-      out.append("# 沙箱预设「").append(sandboxName).append("」未配置网络访问控制规则。\n");
+      out.append("# 沙箱预设「").append(commentSafe(sandboxName)).append("」未配置网络访问控制规则。\n");
       return out.toString();
     }
 
@@ -27,7 +27,7 @@ public class SandboxScriptExporter {
 
   public String toRoutingConf(String sandboxName, List<VeriguardSandboxNetworkRule> rules) {
     StringBuilder out = new StringBuilder();
-    out.append("# 沙箱预设「").append(sandboxName).append("」routing.conf 片段。\n");
+    out.append("# 沙箱预设「").append(commentSafe(sandboxName)).append("」routing.conf 片段。\n");
     out.append("# 将以下内容追加到 CAPEv2 主机的 conf/routing.conf 并重启沙箱服务。\n\n");
     if (rules.isEmpty()) {
       out.append("# 未配置规则。\n");
@@ -61,19 +61,28 @@ public class SandboxScriptExporter {
     return sandboxName.replaceAll("[^A-Za-z0-9_\\u4e00-\\u9fa5-]+", "_");
   }
 
+  private static String commentSafe(String sandboxName) {
+    return sandboxName.replace('\r', ' ').replace('\n', ' ');
+  }
+
   private static void appendIptablesRule(StringBuilder out, VeriguardSandboxNetworkRule rule) {
     String chain = rule.direction() == VeriguardSandboxNetworkRule.Direction.INGRESS ? "INPUT" : "OUTPUT";
     String action = rule.action() == VeriguardSandboxNetworkRule.RuleAction.ALLOW ? "ACCEPT" : "DROP";
-    String proto = rule.protocol().toLowerCase();
+    String proto = rule.protocol().toLowerCase(java.util.Locale.ROOT);
     out.append("iptables -A ").append(chain);
     out.append(" -s ").append(rule.cidr());
-    if (!"icmp".equalsIgnoreCase(proto) && !"all".equalsIgnoreCase(proto)) {
-      out.append(" -p ").append(proto);
-      if (!"all".equalsIgnoreCase(rule.ports())) {
-        out.append(" --dport ").append(rule.ports().replace(',', ','));
-      }
-    } else if ("icmp".equalsIgnoreCase(proto)) {
+    if ("icmp".equals(proto)) {
       out.append(" -p icmp");
+    } else if (!"all".equals(proto)) {
+      out.append(" -p ").append(proto);
+      String ports = rule.ports();
+      if (!"all".equalsIgnoreCase(ports) && !"none".equalsIgnoreCase(ports)) {
+        if (ports.contains(",") || ports.contains("-")) {
+          out.append(" -m multiport --dports ").append(ports);
+        } else {
+          out.append(" --dport ").append(ports);
+        }
+      }
     }
     out.append(" -j ").append(action).append("\n");
   }
