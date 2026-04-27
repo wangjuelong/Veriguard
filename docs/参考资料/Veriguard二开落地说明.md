@@ -10,10 +10,13 @@
 
 | 类型 | 路径 | 说明 |
 | --- | --- | --- |
-| 后端 API | `veriguard-api/src/main/java/io/veriguard/rest/security_validation/` | 新增能力矩阵、用例目录、攻击编排策略、沙箱管理接口 |
-| 后端模型 | `veriguard-model/src/main/java/io/veriguard/database/model/VeriguardSandbox.java` | 新增沙箱平台实体，包含网络策略、样本类型、自动还原开关 |
+| 后端 API | `veriguard-api/src/main/java/io/veriguard/rest/security_validation/` | 能力矩阵、用例目录、攻击编排策略、沙箱预设管理接口；M1 拆出 `SandboxApi` / `SandboxService` / `SandboxScriptExporter` |
+| 后端驱动 | `veriguard-api/src/main/java/io/veriguard/integration/sandbox/` | M1 新增 `SandboxDriver` 接口、`NotImplementedSandboxDriver` 占位、`SandboxIntegrationException`、4 个 DTO records；为 M2 CAPEv2 接入预留 |
+| 后端模型 | `veriguard-model/src/main/java/io/veriguard/database/model/VeriguardSandbox.java` | 沙箱预设实体（网络策略、样本类型、自动还原开关）；M1 收窄移除 `endpoint`/`providerType`，凭据改走配置 |
 | 数据迁移 | `veriguard-api/src/main/java/io/veriguard/migration/V4_72__Add_veriguard_sandbox.java` | 新增 `veriguard_sandboxes` 表与查询索引 |
-| 前端入口 | `veriguard-front/src/admin/components/veriguard/VeriguardConsole.tsx` | 新增 Veriguard 管理控制台 |
+| 数据迁移 | `veriguard-api/src/main/java/io/veriguard/migration/V4_73__Extend_veriguard_sandbox.java` | M1 新增：删除 `endpoint`/`provider_type` 列、增加 `uk_veriguard_sandboxes_name` 唯一约束 |
+| 前端入口 | `veriguard-front/src/admin/components/veriguard/VeriguardConsole.tsx` | Veriguard 管理控制台；M1 沙箱 Tab 由 `SandboxList` 接管 |
+| 前端组件 | `veriguard-front/src/admin/components/veriguard/sandbox/` | M1 新增：`SandboxList`、`SandboxDialog`、`NetworkRuleEditor`、`DeleteConfirmDialog`、`utils/cidr-port-validators` |
 | 前端路由 | `veriguard-front/src/admin/Index.tsx` | 新增 `/admin/veriguard` 路由 |
 | 前端导航 | `veriguard-front/src/admin/components/nav/LeftBar.tsx` | 左侧菜单新增 Veriguard 入口 |
 
@@ -39,6 +42,8 @@
 | `GET` | `/api/sandboxes/{sandboxId}` | 查询单个沙箱平台 |
 | `PUT` | `/api/sandboxes/{sandboxId}` | 更新沙箱平台 |
 | `DELETE` | `/api/sandboxes/{sandboxId}` | 删除沙箱平台 |
+| `GET` | `/api/sandboxes/{sandboxId}/network-rules/exports/iptables` | M1 新增：导出沙箱网络规则的 iptables 脚本（`text/plain`，含 `Content-Disposition`） |
+| `GET` | `/api/sandboxes/{sandboxId}/network-rules/exports/routing-conf` | M1 新增：导出沙箱网络规则的 CAPEv2 routing.conf 片段 |
 
 ## 五、验收要点
 
@@ -57,5 +62,8 @@
 | --- | --- |
 | `git diff --check -- docs AGENTS.md veriguard-api veriguard-model veriguard-front` | 通过 |
 | `corepack yarn install --immutable` | 通过，存在仓库已有 peer dependency warning |
-| `corepack yarn check-ts` | 通过 |
+| `corepack yarn check-ts` | 通过（M1 后仅剩 `AtomicTesting.tsx` 等无关模块的预存错误） |
 | `mvn -pl veriguard-api -am compile -DskipTests` | 当前环境 Maven 依赖解析遇到 `co.elastic.clients:elasticsearch-java:8.19.14` 镜像 `502 Bad Gateway`，未进入源码编译 |
+| `mvn -pl veriguard-api -am test -Dtest='NotImplementedSandboxDriverTest,SandboxIntegrationExceptionMappingTest,SandboxServiceTest,SandboxScriptExporterTest' -Dsurefire.failIfNoSpecifiedTests=false` | M1 后端单元测试 4+2+5+8=19 PASS |
+| `cd veriguard-front && yarn vitest run src/admin/components/veriguard/sandbox` | M1 前端组件 + 工具单元测试 5+5+19=29 PASS |
+| `mvn -pl veriguard-api -am test -Dtest=SandboxApiIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false` | M1 集成测试编译通过；运行时验证待 dev stack 启动后回归（依赖 V4_73 迁移与 Postgres 实例） |
