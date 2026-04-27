@@ -1,7 +1,7 @@
 # Veriguard 沙箱二开 M1 收尾说明
 
-**完成日期**：2026-04-27（首版）/ 2026-04-27 续（Task 22 部分 + Task #26 + 覆盖率补齐）
-**分支**：`feature/sandbox-m1` HEAD `1bc4e117b`
+**完成日期**：2026-04-27（首版 / Task 22 部分 / Task #26 / 覆盖率补齐 / application.properties 占位回填）
+**分支**：`feature/sandbox-m1` HEAD `9c1991678`
 **Plan**：`docs/superpowers/plans/2026-04-27-veriguard-sandbox-m1.md`
 
 ---
@@ -30,8 +30,9 @@
 | **Task #26（spotless 工具链）** | `539d40ce3` | 升级 google-java-format 1.24.0 → 1.27.0 + ratchetFrom=main；只重排 12 个 M1 文件 |
 | **Task 22 部分（lint）** | `c1757e977` | yarn lint 254→3 错误（仅剩预存的 AtomicTesting）；235/235 vitest PASS |
 | **Task 22 部分（覆盖率补齐）** | `1bc4e117b` | 安装 @vitest/coverage-v8；补 DeleteConfirmDialog/SandboxList 前端测试 + routing.conf/Service update-delete 后端测试；235→242 / 19→27 PASS |
+| **Task 22 收尾（application.properties 占位）** | `9c1991678` | 回填 plan §10.1 列出但首轮漏交付的 `veriguard.sandbox.cape.*` 配置占位 + multipart 上限 |
 
-**25 个 commit，全部带 `Co-Authored-By: Claude Opus 4.7` trailer。**
+**26 个 commit，全部带 `Co-Authored-By: Claude Opus 4.7` trailer。**
 
 `git log --oneline main..feature/sandbox-m1` 展示完整列表。
 
