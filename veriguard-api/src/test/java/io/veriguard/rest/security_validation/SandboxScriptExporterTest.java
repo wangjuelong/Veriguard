@@ -105,4 +105,39 @@ class SandboxScriptExporterTest {
     assertThat(script).contains("--dport 443");
     assertThat(script).doesNotContain("-m multiport");
   }
+
+  @Test
+  void to_routing_conf_with_empty_rules_returns_header_only_stub() {
+    String conf = exporter.toRoutingConf("勒索沙箱", List.of());
+
+    assertThat(conf).contains("沙箱预设「勒索沙箱」routing.conf 片段");
+    assertThat(conf).contains("# 未配置规则。");
+    assertThat(conf).doesNotContain("EGRESS");
+    assertThat(conf).doesNotContain("INGRESS");
+  }
+
+  @Test
+  void to_routing_conf_renders_each_rule_as_summary_comment() {
+    VeriguardSandboxNetworkRule egress =
+        new VeriguardSandboxNetworkRule(
+            Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "443");
+    VeriguardSandboxNetworkRule ingress =
+        new VeriguardSandboxNetworkRule(
+            Direction.INGRESS, RuleAction.DENY, "TCP", "0.0.0.0/0", "all");
+
+    String conf = exporter.toRoutingConf("preset", List.of(ingress, egress));
+
+    assertThat(conf).contains("# INGRESS DENY TCP 0.0.0.0/0:all");
+    assertThat(conf).contains("# EGRESS ALLOW TCP 10.0.0.0/8:443");
+  }
+
+  @Test
+  void routing_conf_filename_sanitizes_unsafe_characters() {
+    String filename = exporter.routingConfFilename("勒索 \"沙箱\"\\test");
+
+    assertThat(filename).doesNotContain("\"");
+    assertThat(filename).doesNotContain("\\");
+    assertThat(filename).doesNotContain(" ");
+    assertThat(filename).endsWith(".routing.conf");
+  }
 }

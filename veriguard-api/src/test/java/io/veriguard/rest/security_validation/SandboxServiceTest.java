@@ -4,18 +4,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.veriguard.database.model.VeriguardSandbox;
 import io.veriguard.database.model.VeriguardSandbox.NetworkPolicy;
 import io.veriguard.database.model.VeriguardSandbox.SampleType;
 import io.veriguard.database.model.VeriguardSandbox.Status;
 import io.veriguard.database.model.VeriguardSandboxNetworkRule;
 import io.veriguard.database.repository.VeriguardSandboxRepository;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.exception.InputValidationException;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -119,5 +125,83 @@ class SandboxServiceTest {
     SecurityValidationDtos.SandboxOutput output = service.createSandbox(input);
 
     assertThat(output.networkRules()).hasSize(2);
+  }
+
+  @Test
+  void update_persists_changes_to_existing_sandbox() throws Exception {
+    VeriguardSandbox existing = new VeriguardSandbox();
+    existing.setId("sb-001");
+    existing.setName("旧名称");
+    existing.setNetworkPolicy(NetworkPolicy.DENY_ALL);
+    existing.setAutoRestoreEnabled(true);
+    existing.setSupportedSampleTypes(List.of(SampleType.RANSOMWARE));
+    existing.setStatus(Status.ACTIVE);
+    when(repository.findById("sb-001")).thenReturn(Optional.of(existing));
+    when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+    SandboxInput input =
+        new SandboxInput(
+            "新名称",
+            "updated description",
+            NetworkPolicy.ALLOWLIST,
+            List.of(),
+            true,
+            List.of(SampleType.MINER, SampleType.WORM),
+            Status.INACTIVE);
+
+    SecurityValidationDtos.SandboxOutput output = service.updateSandbox("sb-001", input);
+
+    assertThat(output.name()).isEqualTo("新名称");
+    assertThat(output.description()).isEqualTo("updated description");
+    assertThat(output.networkPolicy()).isEqualTo(NetworkPolicy.ALLOWLIST);
+    assertThat(output.status()).isEqualTo(Status.INACTIVE);
+    assertThat(output.supportedSampleTypes()).containsExactly(SampleType.MINER, SampleType.WORM);
+
+    ArgumentCaptor<VeriguardSandbox> captor = ArgumentCaptor.forClass(VeriguardSandbox.class);
+    verify(repository).save(captor.capture());
+    assertThat(captor.getValue().getName()).isEqualTo("新名称");
+  }
+
+  @Test
+  void update_throws_element_not_found_when_sandbox_missing() {
+    when(repository.findById("missing")).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> service.updateSandbox("missing", baseInput))
+        .isInstanceOf(ElementNotFoundException.class);
+  }
+
+  @Test
+  void delete_removes_sandbox_by_id() {
+    VeriguardSandbox existing = new VeriguardSandbox();
+    existing.setId("sb-002");
+    when(repository.findById("sb-002")).thenReturn(Optional.of(existing));
+
+    service.deleteSandbox("sb-002");
+
+    verify(repository, times(1)).delete(existing);
+  }
+
+  @Test
+  void sandbox_returns_output_for_existing_id() {
+    VeriguardSandbox existing = new VeriguardSandbox();
+    existing.setId("sb-003");
+    existing.setName("查询沙箱");
+    existing.setNetworkPolicy(NetworkPolicy.DENY_ALL);
+    existing.setAutoRestoreEnabled(true);
+    existing.setSupportedSampleTypes(List.of(SampleType.RANSOMWARE));
+    existing.setStatus(Status.ACTIVE);
+    when(repository.findById("sb-003")).thenReturn(Optional.of(existing));
+
+    SecurityValidationDtos.SandboxOutput output = service.sandbox("sb-003");
+
+    assertThat(output.id()).isEqualTo("sb-003");
+    assertThat(output.name()).isEqualTo("查询沙箱");
+  }
+
+  @Test
+  void sandbox_throws_element_not_found_when_missing() {
+    when(repository.findById("nope")).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> service.sandbox("nope")).isInstanceOf(ElementNotFoundException.class);
   }
 }
