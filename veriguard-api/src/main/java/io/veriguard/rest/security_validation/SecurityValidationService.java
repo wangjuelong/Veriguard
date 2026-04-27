@@ -101,13 +101,7 @@ public class SecurityValidationService {
     return new SecurityValidationDtos.AttackCatalogOutput(
         attackTypes("traffic", TRAFFIC_ATTACK_TYPES),
         attackTypes("host", HOST_ATTACK_TYPES),
-        List.of(
-            "构造 web 攻击包",
-            "上传 pcap 流量包",
-            "上传样本文件",
-            "配置执行的命令",
-            "上传可执行文件并配置执行命令",
-            "配置邮件形式"),
+        List.of("构造 web 攻击包", "上传 pcap 流量包", "上传样本文件", "配置执行的命令", "上传可执行文件并配置执行命令", "配置邮件形式"),
         templates.size(),
         TRAFFIC_ATTACK_TYPES.size() >= 10 && HOST_ATTACK_TYPES.size() >= 10,
         true,

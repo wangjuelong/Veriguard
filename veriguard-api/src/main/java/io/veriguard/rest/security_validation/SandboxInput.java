@@ -16,5 +16,6 @@ public record SandboxInput(
     @JsonProperty("sandbox_network_rules") @NotNull
         List<@Valid VeriguardSandboxNetworkRule> networkRules,
     @JsonProperty("sandbox_auto_restore_enabled") boolean autoRestoreEnabled,
-    @JsonProperty("sandbox_supported_sample_types") @NotNull List<@NotNull SampleType> supportedSampleTypes,
+    @JsonProperty("sandbox_supported_sample_types") @NotNull
+        List<@NotNull SampleType> supportedSampleTypes,
     @JsonProperty("sandbox_status") @NotNull VeriguardSandbox.Status status) {}

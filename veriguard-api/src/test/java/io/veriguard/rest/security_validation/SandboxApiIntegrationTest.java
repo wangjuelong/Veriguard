@@ -83,29 +83,41 @@ class SandboxApiIntegrationTest extends IntegrationTest {
 
   @Test
   void export_iptables_returns_text_plain_with_attachment_header() throws Exception {
-    String created = mockMvc.perform(post("/api/sandboxes")
-            .contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
-        .andReturn().getResponse().getContentAsString();
+    String created =
+        mockMvc
+            .perform(
+                post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
     String id = objectMapper.readTree(created).get("sandbox_id").asText();
 
-    mockMvc.perform(get("/api/sandboxes/" + id + "/network-rules/exports/iptables"))
+    mockMvc
+        .perform(get("/api/sandboxes/" + id + "/network-rules/exports/iptables"))
         .andExpect(status().isOk())
         .andExpect(header().string("Content-Type", "text/plain;charset=UTF-8"))
-        .andExpect(header().string("Content-Disposition",
-            org.hamcrest.Matchers.containsString("attachment; filename=\"")))
+        .andExpect(
+            header()
+                .string(
+                    "Content-Disposition",
+                    org.hamcrest.Matchers.containsString("attachment; filename=\"")))
         .andExpect(content().string(org.hamcrest.Matchers.containsString("#!/bin/sh")));
   }
 
   @Test
   void export_routing_conf_returns_text_plain() throws Exception {
-    String created = mockMvc.perform(post("/api/sandboxes")
-            .contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
-        .andReturn().getResponse().getContentAsString();
+    String created =
+        mockMvc
+            .perform(
+                post("/api/sandboxes").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
     String id = objectMapper.readTree(created).get("sandbox_id").asText();
 
-    mockMvc.perform(get("/api/sandboxes/" + id + "/network-rules/exports/routing-conf"))
+    mockMvc
+        .perform(get("/api/sandboxes/" + id + "/network-rules/exports/routing-conf"))
         .andExpect(status().isOk())
-        .andExpect(content().string(
-            org.hamcrest.Matchers.containsString("routing.conf 片段")));
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("routing.conf 片段")));
   }
 }

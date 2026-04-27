@@ -66,8 +66,10 @@ public class SandboxScriptExporter {
   }
 
   private static void appendIptablesRule(StringBuilder out, VeriguardSandboxNetworkRule rule) {
-    String chain = rule.direction() == VeriguardSandboxNetworkRule.Direction.INGRESS ? "INPUT" : "OUTPUT";
-    String action = rule.action() == VeriguardSandboxNetworkRule.RuleAction.ALLOW ? "ACCEPT" : "DROP";
+    String chain =
+        rule.direction() == VeriguardSandboxNetworkRule.Direction.INGRESS ? "INPUT" : "OUTPUT";
+    String action =
+        rule.action() == VeriguardSandboxNetworkRule.RuleAction.ALLOW ? "ACCEPT" : "DROP";
     String proto = rule.protocol().toLowerCase(java.util.Locale.ROOT);
     out.append("iptables -A ").append(chain);
     out.append(" -s ").append(rule.cidr());

@@ -24,9 +24,11 @@ class SandboxScriptExporterTest {
   @Test
   void to_iptables_renders_ingress_before_egress() {
     VeriguardSandboxNetworkRule egress =
-        new VeriguardSandboxNetworkRule(Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "443");
+        new VeriguardSandboxNetworkRule(
+            Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "443");
     VeriguardSandboxNetworkRule ingress =
-        new VeriguardSandboxNetworkRule(Direction.INGRESS, RuleAction.DENY, "TCP", "0.0.0.0/0", "all");
+        new VeriguardSandboxNetworkRule(
+            Direction.INGRESS, RuleAction.DENY, "TCP", "0.0.0.0/0", "all");
 
     String script = exporter.toIptables("preset", List.of(egress, ingress));
 
@@ -40,7 +42,8 @@ class SandboxScriptExporterTest {
   @Test
   void to_iptables_handles_icmp_with_no_ports() {
     VeriguardSandboxNetworkRule icmp =
-        new VeriguardSandboxNetworkRule(Direction.EGRESS, RuleAction.ALLOW, "ICMP", "10.0.0.0/8", "none");
+        new VeriguardSandboxNetworkRule(
+            Direction.EGRESS, RuleAction.ALLOW, "ICMP", "10.0.0.0/8", "none");
 
     String script = exporter.toIptables("preset", List.of(icmp));
 
@@ -70,7 +73,8 @@ class SandboxScriptExporterTest {
   @Test
   void to_iptables_uses_multiport_for_comma_separated_ports() {
     VeriguardSandboxNetworkRule rule =
-        new VeriguardSandboxNetworkRule(Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "80,443");
+        new VeriguardSandboxNetworkRule(
+            Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "80,443");
 
     String script = exporter.toIptables("preset", List.of(rule));
 
@@ -81,7 +85,8 @@ class SandboxScriptExporterTest {
   @Test
   void to_iptables_uses_multiport_for_range_ports() {
     VeriguardSandboxNetworkRule rule =
-        new VeriguardSandboxNetworkRule(Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "1-65535");
+        new VeriguardSandboxNetworkRule(
+            Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "1-65535");
 
     String script = exporter.toIptables("preset", List.of(rule));
 
@@ -92,7 +97,8 @@ class SandboxScriptExporterTest {
   @Test
   void to_iptables_uses_dport_for_single_port() {
     VeriguardSandboxNetworkRule rule =
-        new VeriguardSandboxNetworkRule(Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "443");
+        new VeriguardSandboxNetworkRule(
+            Direction.EGRESS, RuleAction.ALLOW, "TCP", "10.0.0.0/8", "443");
 
     String script = exporter.toIptables("preset", List.of(rule));
 

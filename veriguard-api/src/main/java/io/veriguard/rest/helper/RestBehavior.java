@@ -1,22 +1,22 @@
 package io.veriguard.rest.helper;
 
-import static io.veriguard.config.VeriguardAnonymous.ANONYMOUS;
 import static io.veriguard.config.SessionHelper.currentUser;
+import static io.veriguard.config.VeriguardAnonymous.ANONYMOUS;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.lock.LockAcquisitionException;
 import io.veriguard.database.model.User;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.integration.sandbox.SandboxIntegrationException;
 import io.veriguard.rest.exception.*;
 import io.veriguard.stix.parsing.ParsingException;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
@@ -277,12 +277,10 @@ public class RestBehavior {
         ex.getRemoteStatusCode(),
         ex.getMessage(),
         ex);
-    ValidationErrorBag bag =
-        new ValidationErrorBag(status.value(), "SANDBOX_INTEGRATION_FAILED");
+    ValidationErrorBag bag = new ValidationErrorBag(status.value(), "SANDBOX_INTEGRATION_FAILED");
     ValidationError errors = new ValidationError();
     Map<String, ValidationContent> errorsBag = new HashMap<>();
-    errorsBag.put(
-        ex.getReasonCode().name().toLowerCase(), new ValidationContent(ex.getMessage()));
+    errorsBag.put(ex.getReasonCode().name().toLowerCase(), new ValidationContent(ex.getMessage()));
     errors.setChildren(errorsBag);
     bag.setErrors(errors);
     return ResponseEntity.status(status).body(bag);

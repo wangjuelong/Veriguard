@@ -19,15 +19,14 @@ class NotImplementedSandboxDriverTest {
 
   @Test
   void listMachines_throwsIntegrationException() {
-    assertThatThrownBy(driver::listMachines)
-        .isInstanceOf(SandboxIntegrationException.class);
+    assertThatThrownBy(driver::listMachines).isInstanceOf(SandboxIntegrationException.class);
   }
 
   @Test
   void submitSample_throwsIntegrationException() {
     SampleSubmissionRequest request =
-        new SampleSubmissionRequest("preset-1", "RANSOMWARE", "demo.exe",
-            "deadbeef", new byte[] {0x4d, 0x5a}, null, null);
+        new SampleSubmissionRequest(
+            "preset-1", "RANSOMWARE", "demo.exe", "deadbeef", new byte[] {0x4d, 0x5a}, null, null);
     assertThatThrownBy(() -> driver.submitSample(request))
         .isInstanceOf(SandboxIntegrationException.class);
   }

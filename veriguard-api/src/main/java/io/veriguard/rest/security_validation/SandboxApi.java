@@ -71,7 +71,8 @@ public class SandboxApi {
     return ResponseEntity.noContent().build();
   }
 
-  @GetMapping(value = SANDBOXES_URI + "/{sandboxId}/network-rules/exports/iptables",
+  @GetMapping(
+      value = SANDBOXES_URI + "/{sandboxId}/network-rules/exports/iptables",
       produces = "text/plain;charset=UTF-8")
   @Operation(summary = "Export iptables script for a sandbox preset")
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
@@ -84,7 +85,8 @@ public class SandboxApi {
         .body(body);
   }
 
-  @GetMapping(value = SANDBOXES_URI + "/{sandboxId}/network-rules/exports/routing-conf",
+  @GetMapping(
+      value = SANDBOXES_URI + "/{sandboxId}/network-rules/exports/routing-conf",
       produces = "text/plain;charset=UTF-8")
   @Operation(summary = "Export CAPEv2 routing.conf snippet for a sandbox preset")
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
