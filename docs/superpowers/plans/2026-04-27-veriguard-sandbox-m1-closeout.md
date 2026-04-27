@@ -66,6 +66,19 @@
 | `integration.sandbox.**` 包覆盖率 | 84% lines | 90% | 缺口是 `SandboxDriverRegistry`（单委托无逻辑）+ `SandboxIntegrationException` 的 Lombok-生成访问器；M2 接 `CapeV2SandboxDriver` 时驱动调用会自然覆盖 registry |
 | `SandboxApi` 覆盖率 | ~85%（实测） | env-bound 已跑 | 6 个 IT 覆盖 5 endpoint + 2 export endpoint；首次端到端跑通 |
 
+### 已知非 M1 失败（合并不阻塞）
+
+`mvn -pl veriguard-api -am test` 全跑时观察到的失败，**与本次 M1 改动无任何文件交集**——M1 只动 `io.veriguard.{integration.sandbox, rest.security_validation, rest.helper.RestBehavior, migration.V4_73, database.model.VeriguardSandbox}.*`。
+
+| 测试类 | 数量 | 类型 |
+| --- | --- | --- |
+| `SecurityCoverageConnectorTest$RemoteUrlOverride$WithNullUrl` | 2 errors | OpenCTI URL 重写（与 M1 无关） |
+| `SecurityCoverageConnectorTest$RemoteUrlOverride$WithOnlyOpenCTIURLDefinedAsFQDN` | 2 errors | 同上 |
+| `SecurityCoverageConnectorTest$RemoteUrlOverride$WithOnlyOpenCTIURLDefinedAsFQDNWithGraphqlEndpointSet` | 2 errors | 同上 |
+| `SecurityCoverageConnectorTest$RemoteUrlOverride$WithOnlyOpenCTIURLDefinedAsFQDNWithTrailingSlash` | 2 errors | 同上 |
+
+合计 8 errors，都在 `io.veriguard.opencti.connectors.impl.*`。M1 文件改动面零交集，未做 probe-main 复核但置信度高。如果合并后第一次 CI 跑也复现，说明确实是 main 上预存债务，与 M1 无因果关系；如果意外消失，那就更没事了。
+
 ### 仍需在你方环境跑的检查
 
 | 检查 | 命令 | 备注 |
