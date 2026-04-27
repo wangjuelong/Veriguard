@@ -25,14 +25,6 @@ import org.hibernate.annotations.UuidGenerator;
 @EntityListeners(ModelBaseListener.class)
 public class VeriguardSandbox implements Base {
 
-  public enum ProviderType {
-    VMWARE,
-    OPENSTACK,
-    KVM,
-    KUBERNETES,
-    CUSTOM
-  }
-
   public enum NetworkPolicy {
     DENY_ALL,
     ALLOWLIST,
@@ -72,17 +64,6 @@ public class VeriguardSandbox implements Base {
   @Column(name = "veriguard_sandbox_description")
   @JsonProperty("sandbox_description")
   private String description;
-
-  @Column(name = "veriguard_sandbox_provider_type")
-  @Enumerated(EnumType.STRING)
-  @JsonProperty("sandbox_provider_type")
-  @NotNull
-  private ProviderType providerType;
-
-  @Column(name = "veriguard_sandbox_endpoint")
-  @JsonProperty("sandbox_endpoint")
-  @NotBlank
-  private String endpoint;
 
   @Column(name = "veriguard_sandbox_network_policy")
   @Enumerated(EnumType.STRING)

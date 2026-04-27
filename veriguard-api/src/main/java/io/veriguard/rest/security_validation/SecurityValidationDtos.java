@@ -62,8 +62,6 @@ public final class SecurityValidationDtos {
       @JsonProperty("sandbox_id") String id,
       @JsonProperty("sandbox_name") String name,
       @JsonProperty("sandbox_description") String description,
-      @JsonProperty("sandbox_provider_type") VeriguardSandbox.ProviderType providerType,
-      @JsonProperty("sandbox_endpoint") String endpoint,
       @JsonProperty("sandbox_network_policy") VeriguardSandbox.NetworkPolicy networkPolicy,
       @JsonProperty("sandbox_network_rules") List<VeriguardSandboxNetworkRule> networkRules,
       @JsonProperty("sandbox_auto_restore_enabled") boolean autoRestoreEnabled,
