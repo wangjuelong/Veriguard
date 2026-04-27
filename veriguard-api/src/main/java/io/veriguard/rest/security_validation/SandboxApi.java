@@ -24,9 +24,11 @@ public class SandboxApi {
   public static final String SANDBOXES_URI = "/api/sandboxes";
 
   private final SandboxService sandboxService;
+  private final SandboxScriptExporter scriptExporter;
 
-  public SandboxApi(SandboxService sandboxService) {
+  public SandboxApi(SandboxService sandboxService, SandboxScriptExporter scriptExporter) {
     this.sandboxService = sandboxService;
+    this.scriptExporter = scriptExporter;
   }
 
   @PostMapping(SANDBOXES_URI)
@@ -67,5 +69,31 @@ public class SandboxApi {
   public ResponseEntity<Void> deleteSandbox(@PathVariable @NotBlank String sandboxId) {
     sandboxService.deleteSandbox(sandboxId);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping(value = SANDBOXES_URI + "/{sandboxId}/network-rules/exports/iptables",
+      produces = "text/plain;charset=UTF-8")
+  @Operation(summary = "Export iptables script for a sandbox preset")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
+  public ResponseEntity<String> exportIptables(@PathVariable @NotBlank String sandboxId) {
+    SecurityValidationDtos.SandboxOutput sandbox = sandboxService.sandbox(sandboxId);
+    String body = scriptExporter.toIptables(sandbox.name(), sandbox.networkRules());
+    String filename = scriptExporter.iptablesFilename(sandbox.name());
+    return ResponseEntity.ok()
+        .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
+        .body(body);
+  }
+
+  @GetMapping(value = SANDBOXES_URI + "/{sandboxId}/network-rules/exports/routing-conf",
+      produces = "text/plain;charset=UTF-8")
+  @Operation(summary = "Export CAPEv2 routing.conf snippet for a sandbox preset")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
+  public ResponseEntity<String> exportRoutingConf(@PathVariable @NotBlank String sandboxId) {
+    SecurityValidationDtos.SandboxOutput sandbox = sandboxService.sandbox(sandboxId);
+    String body = scriptExporter.toRoutingConf(sandbox.name(), sandbox.networkRules());
+    String filename = scriptExporter.routingConfFilename(sandbox.name());
+    return ResponseEntity.ok()
+        .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
+        .body(body);
   }
 }

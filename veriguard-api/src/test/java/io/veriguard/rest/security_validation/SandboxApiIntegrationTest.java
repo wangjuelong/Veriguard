@@ -2,9 +2,12 @@ package io.veriguard.rest.security_validation;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.IntegrationTest;
 import io.veriguard.utils.mockUser.WithMockUser;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 class SandboxApiIntegrationTest extends IntegrationTest {
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
 
   private static final String VALID_BODY =
       """
@@ -75,5 +79,33 @@ class SandboxApiIntegrationTest extends IntegrationTest {
         .perform(get("/api/sandboxes"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].sandbox_name").value("勒索沙箱"));
+  }
+
+  @Test
+  void export_iptables_returns_text_plain_with_attachment_header() throws Exception {
+    String created = mockMvc.perform(post("/api/sandboxes")
+            .contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+        .andReturn().getResponse().getContentAsString();
+    String id = objectMapper.readTree(created).get("sandbox_id").asText();
+
+    mockMvc.perform(get("/api/sandboxes/" + id + "/network-rules/exports/iptables"))
+        .andExpect(status().isOk())
+        .andExpect(header().string("Content-Type", "text/plain;charset=UTF-8"))
+        .andExpect(header().string("Content-Disposition",
+            org.hamcrest.Matchers.containsString("attachment; filename=\"")))
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("#!/bin/sh")));
+  }
+
+  @Test
+  void export_routing_conf_returns_text_plain() throws Exception {
+    String created = mockMvc.perform(post("/api/sandboxes")
+            .contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
+        .andReturn().getResponse().getContentAsString();
+    String id = objectMapper.readTree(created).get("sandbox_id").asText();
+
+    mockMvc.perform(get("/api/sandboxes/" + id + "/network-rules/exports/routing-conf"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(
+            org.hamcrest.Matchers.containsString("routing.conf 片段")));
   }
 }
