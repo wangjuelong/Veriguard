@@ -1,15 +1,7 @@
 package io.veriguard.rest.security_validation;
 
-import static io.veriguard.rest.security_validation.SandboxMapper.toOutput;
-import static io.veriguard.rest.security_validation.SandboxMapper.updateEntity;
-
-import io.veriguard.database.model.VeriguardSandbox;
-import io.veriguard.database.repository.VeriguardSandboxRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.exception.InputValidationException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,8 +41,6 @@ public class SecurityValidationService {
           "病毒样本落盘",
           "痕迹清理",
           "主机持久化");
-
-  private final VeriguardSandboxRepository sandboxRepository;
 
   /** Returns the PRD-oriented module matrix used by the Veriguard management console. */
   @Transactional(readOnly = true)
@@ -111,13 +101,7 @@ public class SecurityValidationService {
     return new SecurityValidationDtos.AttackCatalogOutput(
         attackTypes("traffic", TRAFFIC_ATTACK_TYPES),
         attackTypes("host", HOST_ATTACK_TYPES),
-        List.of(
-            "构造 web 攻击包",
-            "上传 pcap 流量包",
-            "上传样本文件",
-            "配置执行的命令",
-            "上传可执行文件并配置执行命令",
-            "配置邮件形式"),
+        List.of("构造 web 攻击包", "上传 pcap 流量包", "上传样本文件", "配置执行的命令", "上传可执行文件并配置执行命令", "配置邮件形式"),
         templates.size(),
         TRAFFIC_ATTACK_TYPES.size() >= 10 && HOST_ATTACK_TYPES.size() >= 10,
         true,
@@ -146,62 +130,6 @@ public class SecurityValidationService {
             "soc_field_conditions",
             "soc_minimum_event_count"),
         List.of("FULL_CHAIN_EFFECTIVE", "FULL_CHAIN_FAILED", "PARTIAL_FAILED"));
-  }
-
-  /** Creates a sandbox platform after enforcing PRD-required automatic restoration. */
-  public SecurityValidationDtos.SandboxOutput createSandbox(SandboxInput input)
-      throws InputValidationException {
-    validateSandboxInput(input);
-    VeriguardSandbox sandbox = new VeriguardSandbox();
-    updateEntity(sandbox, input);
-    return toOutput(sandboxRepository.save(sandbox));
-  }
-
-  /** Lists sandbox platforms configured for malicious sample execution. */
-  @Transactional(readOnly = true)
-  public List<SecurityValidationDtos.SandboxOutput> sandboxes() {
-    return sandboxRepository.findAll().stream().map(SandboxMapper::toOutput).toList();
-  }
-
-  /** Returns one sandbox platform by identifier. */
-  @Transactional(readOnly = true)
-  public SecurityValidationDtos.SandboxOutput sandbox(String sandboxId) {
-    return toOutput(findSandbox(sandboxId));
-  }
-
-  /** Updates a sandbox platform and keeps PRD-required restoration enforcement enabled. */
-  public SecurityValidationDtos.SandboxOutput updateSandbox(String sandboxId, SandboxInput input)
-      throws InputValidationException {
-    validateSandboxInput(input);
-    VeriguardSandbox sandbox = findSandbox(sandboxId);
-    updateEntity(sandbox, input);
-    return toOutput(sandboxRepository.save(sandbox));
-  }
-
-  /** Deletes a sandbox platform configuration. */
-  public void deleteSandbox(String sandboxId) {
-    VeriguardSandbox sandbox = findSandbox(sandboxId);
-    sandboxRepository.delete(sandbox);
-  }
-
-  private VeriguardSandbox findSandbox(String sandboxId) {
-    return sandboxRepository.findById(sandboxId).orElseThrow(ElementNotFoundException::new);
-  }
-
-  private void validateSandboxInput(SandboxInput input) throws InputValidationException {
-    Objects.requireNonNull(input, "Sandbox input must not be null");
-    if (!input.autoRestoreEnabled()) {
-      throw new InputValidationException(
-          "sandbox_auto_restore_enabled", "Sandbox auto restore must be enabled.");
-    }
-    if (input.networkRules() == null || input.networkRules().isEmpty()) {
-      throw new InputValidationException(
-          "sandbox_network_rules", "At least one network control rule is required.");
-    }
-    if (input.supportedSampleTypes() == null || input.supportedSampleTypes().isEmpty()) {
-      throw new InputValidationException(
-          "sandbox_supported_sample_types", "At least one sample type is required.");
-    }
   }
 
   private int totalUseCaseTemplates() {

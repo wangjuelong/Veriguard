@@ -3,8 +3,8 @@ package io.veriguard.database.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-import io.veriguard.database.audit.ModelBaseListener;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.database.audit.ModelBaseListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,14 +24,6 @@ import org.hibernate.annotations.UuidGenerator;
 @Table(name = "veriguard_sandboxes")
 @EntityListeners(ModelBaseListener.class)
 public class VeriguardSandbox implements Base {
-
-  public enum ProviderType {
-    VMWARE,
-    OPENSTACK,
-    KVM,
-    KUBERNETES,
-    CUSTOM
-  }
 
   public enum NetworkPolicy {
     DENY_ALL,
@@ -73,17 +65,6 @@ public class VeriguardSandbox implements Base {
   @JsonProperty("sandbox_description")
   private String description;
 
-  @Column(name = "veriguard_sandbox_provider_type")
-  @Enumerated(EnumType.STRING)
-  @JsonProperty("sandbox_provider_type")
-  @NotNull
-  private ProviderType providerType;
-
-  @Column(name = "veriguard_sandbox_endpoint")
-  @JsonProperty("sandbox_endpoint")
-  @NotBlank
-  private String endpoint;
-
   @Column(name = "veriguard_sandbox_network_policy")
   @Enumerated(EnumType.STRING)
   @JsonProperty("sandbox_network_policy")
@@ -112,13 +93,11 @@ public class VeriguardSandbox implements Base {
 
   @Column(name = "veriguard_sandbox_created_at")
   @JsonProperty("sandbox_created_at")
-  @NotNull
   @CreationTimestamp
   private Instant createdAt;
 
   @Column(name = "veriguard_sandbox_updated_at")
   @JsonProperty("sandbox_updated_at")
-  @NotNull
   @UpdateTimestamp
   private Instant updatedAt;
 

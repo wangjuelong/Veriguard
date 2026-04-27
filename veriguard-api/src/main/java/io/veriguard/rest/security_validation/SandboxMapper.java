@@ -12,8 +12,6 @@ public final class SandboxMapper {
         sandbox.getId(),
         sandbox.getName(),
         sandbox.getDescription(),
-        sandbox.getProviderType(),
-        sandbox.getEndpoint(),
         sandbox.getNetworkPolicy(),
         sandbox.getNetworkRules(),
         sandbox.isAutoRestoreEnabled(),
@@ -26,8 +24,6 @@ public final class SandboxMapper {
   public static void updateEntity(VeriguardSandbox sandbox, SandboxInput input) {
     sandbox.setName(input.name());
     sandbox.setDescription(input.description());
-    sandbox.setProviderType(input.providerType());
-    sandbox.setEndpoint(input.endpoint());
     sandbox.setNetworkPolicy(input.networkPolicy());
     sandbox.setNetworkRules(new ArrayList<>(input.networkRules()));
     sandbox.setAutoRestoreEnabled(input.autoRestoreEnabled());

@@ -1,28 +1,13 @@
-import {
-  AddOutlined,
-  DeleteOutline,
-  EditOutlined,
-  RefreshOutlined,
-} from '@mui/icons-material';
+/* eslint-disable i18next/no-literal-string -- spec §6.7: M1 sandbox UI uses
+   hardcoded Chinese to match existing VeriguardConsole.tsx pattern; future
+   M-x will migrate to react-intl when sandbox UI stabilizes. */
+import { RefreshOutlined } from '@mui/icons-material';
 import {
   Box,
-  Button,
-  Checkbox,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormControlLabel,
   IconButton,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
-  type SelectChangeEvent,
   Stack,
-  Switch,
   Tab,
   Table,
   TableBody,
@@ -30,88 +15,34 @@ import {
   TableHead,
   TableRow,
   Tabs,
-  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useState } from 'react';
 
 import {
-  createVeriguardSandbox,
-  deleteVeriguardSandbox,
+  type AttackCatalogOutput,
+  type CapabilityMatrixOutput,
   fetchVeriguardAttackCatalog,
   fetchVeriguardCapabilityMatrix,
   fetchVeriguardOrchestrationSchema,
-  fetchVeriguardSandboxes,
-  type AttackCatalogOutput,
-  type CapabilityMatrixOutput,
   type OrchestrationSchemaOutput,
-  type SandboxInput,
-  type SandboxNetworkRule,
-  type SandboxNetworkPolicy,
-  type SandboxOutput,
-  type SandboxProviderType,
-  type SandboxRuleAction,
-  type SandboxRuleDirection,
-  type SandboxSampleType,
-  type SandboxStatus,
-  updateVeriguardSandbox,
 } from '../../../actions/veriguard/veriguard-actions';
 import Loader from '../../../components/Loader';
+import SandboxList from './sandbox/SandboxList';
 
 type TabValue = 'matrix' | 'catalog' | 'orchestration' | 'sandboxes';
-
-const PROVIDER_TYPES: SandboxProviderType[] = ['VMWARE', 'OPENSTACK', 'KVM', 'KUBERNETES', 'CUSTOM'];
-const NETWORK_POLICIES: SandboxNetworkPolicy[] = ['DENY_ALL', 'ALLOWLIST', 'ISOLATED_LAB', 'CUSTOM'];
-const SAMPLE_TYPES: SandboxSampleType[] = [
-  'RANSOMWARE',
-  'MINER',
-  'WORM',
-  'MALICIOUS_DRIVER',
-  'PRIVILEGE_ESCALATION',
-  'ACCOUNT_THEFT',
-  'PROXY_EXECUTION',
-  'SECURITY_COMPONENT_BYPASS',
-];
-const STATUS_TYPES: SandboxStatus[] = ['ACTIVE', 'INACTIVE'];
-const RULE_DIRECTIONS: SandboxRuleDirection[] = ['INGRESS', 'EGRESS'];
-const RULE_ACTIONS: SandboxRuleAction[] = ['ALLOW', 'DENY'];
-
-const sampleTypeLabels: Record<SandboxSampleType, string> = {
-  RANSOMWARE: '勒索病毒样本执行',
-  MINER: '挖矿病毒样本执行',
-  WORM: '蠕虫病毒样本执行',
-  MALICIOUS_DRIVER: '终端恶意驱动加载',
-  PRIVILEGE_ESCALATION: '终端权限提升',
-  ACCOUNT_THEFT: '终端系统账号窃取',
-  PROXY_EXECUTION: '终端代理执行',
-  SECURITY_COMPONENT_BYPASS: '终端安全组件对抗',
-};
-
-const defaultSandboxInput: SandboxInput = {
-  sandbox_name: '',
-  sandbox_description: '',
-  sandbox_provider_type: 'CUSTOM',
-  sandbox_endpoint: '',
-  sandbox_network_policy: 'DENY_ALL',
-  sandbox_network_rules: [{
-    rule_direction: 'EGRESS',
-    rule_action: 'DENY',
-    rule_protocol: 'TCP',
-    rule_cidr: '0.0.0.0/0',
-    rule_ports: 'all',
-  }],
-  sandbox_auto_restore_enabled: true,
-  sandbox_supported_sample_types: ['RANSOMWARE'],
-  sandbox_status: 'ACTIVE',
-};
-
-const enumLabel = (value: string) => value.replaceAll('_', ' ');
 
 const compactList = (items: string[]) => items.join(' / ');
 
 const Section = ({ children }: { children: ReactNode }) => (
-  <Paper variant="outlined" sx={{ p: 2, borderRadius: 1 }}>
+  <Paper
+    variant="outlined"
+    sx={{
+      p: 2,
+      borderRadius: 1,
+    }}
+  >
     {children}
   </Paper>
 );
@@ -122,23 +53,17 @@ const VeriguardConsole = () => {
   const [matrix, setMatrix] = useState<CapabilityMatrixOutput | null>(null);
   const [catalog, setCatalog] = useState<AttackCatalogOutput | null>(null);
   const [orchestration, setOrchestration] = useState<OrchestrationSchemaOutput | null>(null);
-  const [sandboxes, setSandboxes] = useState<SandboxOutput[]>([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingSandboxId, setEditingSandboxId] = useState<string | null>(null);
-  const [form, setForm] = useState<SandboxInput>(defaultSandboxInput);
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [matrixResponse, catalogResponse, orchestrationResponse, sandboxResponse] = await Promise.all([
+    const [matrixResponse, catalogResponse, orchestrationResponse] = await Promise.all([
       fetchVeriguardCapabilityMatrix(),
       fetchVeriguardAttackCatalog(),
       fetchVeriguardOrchestrationSchema(),
-      fetchVeriguardSandboxes(),
     ]);
     setMatrix(matrixResponse);
     setCatalog(catalogResponse);
     setOrchestration(orchestrationResponse);
-    setSandboxes(sandboxResponse);
     setLoading(false);
   }, []);
 
@@ -146,92 +71,17 @@ const VeriguardConsole = () => {
     void loadData();
   }, [loadData]);
 
-  const selectedRule = form.sandbox_network_rules[0] ?? defaultSandboxInput.sandbox_network_rules[0];
-  const formValid = useMemo(() => {
-    return form.sandbox_name.trim().length > 0
-      && form.sandbox_endpoint.trim().length > 0
-      && selectedRule.rule_protocol.trim().length > 0
-      && selectedRule.rule_cidr.trim().length > 0
-      && selectedRule.rule_ports.trim().length > 0
-      && form.sandbox_supported_sample_types.length > 0
-      && form.sandbox_auto_restore_enabled;
-  }, [form, selectedRule]);
-
-  const openCreateDialog = () => {
-    setEditingSandboxId(null);
-    setForm(defaultSandboxInput);
-    setDialogOpen(true);
-  };
-
-  const openEditDialog = (sandbox: SandboxOutput) => {
-    setEditingSandboxId(sandbox.sandbox_id);
-    setForm({
-      sandbox_name: sandbox.sandbox_name,
-      sandbox_description: sandbox.sandbox_description ?? '',
-      sandbox_provider_type: sandbox.sandbox_provider_type,
-      sandbox_endpoint: sandbox.sandbox_endpoint,
-      sandbox_network_policy: sandbox.sandbox_network_policy,
-      sandbox_network_rules: sandbox.sandbox_network_rules.length > 0
-        ? sandbox.sandbox_network_rules
-        : defaultSandboxInput.sandbox_network_rules,
-      sandbox_auto_restore_enabled: sandbox.sandbox_auto_restore_enabled,
-      sandbox_supported_sample_types: sandbox.sandbox_supported_sample_types,
-      sandbox_status: sandbox.sandbox_status,
-    });
-    setDialogOpen(true);
-  };
-
-  const updateField = <K extends keyof SandboxInput>(key: K, value: SandboxInput[K]) => {
-    setForm(current => ({ ...current, [key]: value }));
-  };
-
-  const updateRuleField = <K extends keyof SandboxNetworkRule>(key: K, value: SandboxNetworkRule[K]) => {
-    setForm((current) => {
-      const currentRule = current.sandbox_network_rules[0] ?? defaultSandboxInput.sandbox_network_rules[0];
-      return {
-        ...current,
-        sandbox_network_rules: [{
-          ...currentRule,
-          [key]: value,
-        }],
-      };
-    });
-  };
-
-  const toggleSampleType = (sampleType: SandboxSampleType) => {
-    setForm((current) => {
-      const exists = current.sandbox_supported_sample_types.includes(sampleType);
-      const next = exists
-        ? current.sandbox_supported_sample_types.filter(item => item !== sampleType)
-        : [...current.sandbox_supported_sample_types, sampleType];
-      return { ...current, sandbox_supported_sample_types: next };
-    });
-  };
-
-  const submitSandbox = async () => {
-    if (!formValid) {
-      return;
-    }
-    if (editingSandboxId) {
-      await updateVeriguardSandbox(editingSandboxId, form);
-    } else {
-      await createVeriguardSandbox(form);
-    }
-    setDialogOpen(false);
-    await loadData();
-  };
-
-  const removeSandbox = async (sandboxId: string) => {
-    await deleteVeriguardSandbox(sandboxId);
-    await loadData();
-  };
-
   if (loading || !matrix || !catalog || !orchestration) {
     return <Loader />;
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 2,
+    }}
+    >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h4">Veriguard</Typography>
@@ -246,7 +96,12 @@ const VeriguardConsole = () => {
         </Tooltip>
       </Stack>
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 2 }}>
+      <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+        gap: 2,
+      }}
+      >
         <Section>
           <Typography variant="overline">PRD 模块</Typography>
           <Typography variant="h5">{matrix.summary.prd_module_count}</Typography>
@@ -306,7 +161,12 @@ const VeriguardConsole = () => {
       )}
 
       {tab === 'catalog' && (
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 2,
+        }}
+        >
           <Section>
             <Typography variant="h6" sx={{ mb: 1 }}>流量安全验证</Typography>
             <Table size="small">
@@ -369,7 +229,12 @@ const VeriguardConsole = () => {
       )}
 
       {tab === 'orchestration' && (
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 2 }}>
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: 2,
+        }}
+        >
           <Section>
             <Typography variant="h6" sx={{ mb: 1 }}>节点策略字段</Typography>
             <Stack direction="row" gap={1} flexWrap="wrap">
@@ -397,212 +262,7 @@ const VeriguardConsole = () => {
         </Box>
       )}
 
-      {tab === 'sandboxes' && (
-        <Section>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-            <Typography variant="h6">沙箱平台</Typography>
-            <Button startIcon={<AddOutlined />} variant="contained" onClick={openCreateDialog}>
-              新建
-            </Button>
-          </Stack>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>名称</TableCell>
-                <TableCell>类型</TableCell>
-                <TableCell>网络策略</TableCell>
-                <TableCell>样本类型</TableCell>
-                <TableCell>自动还原</TableCell>
-                <TableCell>状态</TableCell>
-                <TableCell align="right">操作</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sandboxes.map(sandbox => (
-                <TableRow key={sandbox.sandbox_id}>
-                  <TableCell>{sandbox.sandbox_name}</TableCell>
-                  <TableCell>{enumLabel(sandbox.sandbox_provider_type)}</TableCell>
-                  <TableCell>{enumLabel(sandbox.sandbox_network_policy)}</TableCell>
-                  <TableCell>{sandbox.sandbox_supported_sample_types.length}</TableCell>
-                  <TableCell>
-                    <Chip
-                      size="small"
-                      color={sandbox.sandbox_auto_restore_enabled ? 'success' : 'error'}
-                      label={sandbox.sandbox_auto_restore_enabled ? '已开启' : '未开启'}
-                    />
-                  </TableCell>
-                  <TableCell>{enumLabel(sandbox.sandbox_status)}</TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="编辑">
-                      <IconButton onClick={() => openEditDialog(sandbox)}>
-                        <EditOutlined />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="删除">
-                      <IconButton onClick={() => void removeSandbox(sandbox.sandbox_id)}>
-                        <DeleteOutline />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Section>
-      )}
-
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>{editingSandboxId ? '编辑沙箱平台' : '新建沙箱平台'}</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, pt: 1 }}>
-            <TextField
-              label="名称"
-              value={form.sandbox_name}
-              onChange={event => updateField('sandbox_name', event.target.value)}
-              required
-            />
-            <TextField
-              label="管理端点"
-              value={form.sandbox_endpoint}
-              onChange={event => updateField('sandbox_endpoint', event.target.value)}
-              required
-            />
-            <FormControl>
-              <InputLabel>类型</InputLabel>
-              <Select
-                label="类型"
-                value={form.sandbox_provider_type}
-                onChange={(event: SelectChangeEvent) => updateField(
-                  'sandbox_provider_type',
-                  event.target.value as SandboxProviderType,
-                )}
-              >
-                {PROVIDER_TYPES.map(provider => (
-                  <MenuItem key={provider} value={provider}>{enumLabel(provider)}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel>网络策略</InputLabel>
-              <Select
-                label="网络策略"
-                value={form.sandbox_network_policy}
-                onChange={(event: SelectChangeEvent) => updateField(
-                  'sandbox_network_policy',
-                  event.target.value as SandboxNetworkPolicy,
-                )}
-              >
-                {NETWORK_POLICIES.map(policy => (
-                  <MenuItem key={policy} value={policy}>{enumLabel(policy)}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              label="描述"
-              value={form.sandbox_description ?? ''}
-              onChange={event => updateField('sandbox_description', event.target.value)}
-              multiline
-              minRows={2}
-              sx={{ gridColumn: '1 / -1' }}
-            />
-            <FormControl>
-              <InputLabel>规则方向</InputLabel>
-              <Select
-                label="规则方向"
-                value={selectedRule.rule_direction}
-                onChange={(event: SelectChangeEvent) => updateRuleField(
-                  'rule_direction',
-                  event.target.value as SandboxRuleDirection,
-                )}
-              >
-                {RULE_DIRECTIONS.map(direction => (
-                  <MenuItem key={direction} value={direction}>{direction}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel>规则动作</InputLabel>
-              <Select
-                label="规则动作"
-                value={selectedRule.rule_action}
-                onChange={(event: SelectChangeEvent) => updateRuleField(
-                  'rule_action',
-                  event.target.value as SandboxRuleAction,
-                )}
-              >
-                {RULE_ACTIONS.map(action => (
-                  <MenuItem key={action} value={action}>{action}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              label="协议"
-              value={selectedRule.rule_protocol}
-              onChange={event => updateRuleField('rule_protocol', event.target.value)}
-              required
-            />
-            <TextField
-              label="CIDR"
-              value={selectedRule.rule_cidr}
-              onChange={event => updateRuleField('rule_cidr', event.target.value)}
-              required
-            />
-            <TextField
-              label="端口"
-              value={selectedRule.rule_ports}
-              onChange={event => updateRuleField('rule_ports', event.target.value)}
-              required
-            />
-            <FormControl>
-              <InputLabel>状态</InputLabel>
-              <Select
-                label="状态"
-                value={form.sandbox_status}
-                onChange={(event: SelectChangeEvent) => updateField(
-                  'sandbox_status',
-                  event.target.value as SandboxStatus,
-                )}
-              >
-                {STATUS_TYPES.map(status => (
-                  <MenuItem key={status} value={status}>{enumLabel(status)}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControlLabel
-              control={(
-                <Switch
-                  checked={form.sandbox_auto_restore_enabled}
-                  onChange={event => updateField('sandbox_auto_restore_enabled', event.target.checked)}
-                />
-              )}
-              label="执行完成后自动还原"
-            />
-            <Box sx={{ gridColumn: '1 / -1' }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>样本类型</Typography>
-              <Stack direction="row" gap={1} flexWrap="wrap">
-                {SAMPLE_TYPES.map(sampleType => (
-                  <FormControlLabel
-                    key={sampleType}
-                    control={(
-                      <Checkbox
-                        checked={form.sandbox_supported_sample_types.includes(sampleType)}
-                        onChange={() => toggleSampleType(sampleType)}
-                      />
-                    )}
-                    label={sampleTypeLabels[sampleType]}
-                  />
-                ))}
-              </Stack>
-            </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>取消</Button>
-          <Button variant="contained" disabled={!formValid} onClick={() => void submitSandbox()}>
-            保存
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {tab === 'sandboxes' && <SandboxList />}
     </Box>
   );
 };
