@@ -5,9 +5,11 @@ import io.veriguard.integration.sandbox.dto.SampleSubmissionRequest;
 import io.veriguard.integration.sandbox.dto.SandboxTaskStatus;
 import io.veriguard.integration.sandbox.dto.SubmissionResult;
 import java.util.List;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 @Component
+@Primary
 public class NotImplementedSandboxDriver implements SandboxDriver {
 
   @Override
