@@ -1,4 +1,4 @@
-package io.veriguard.rest.veriguard;
+package io.veriguard.rest.security_validation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.veriguard.database.model.VeriguardSandbox;
@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record VeriguardSandboxInput(
+public record SandboxInput(
     @JsonProperty("sandbox_name") @NotBlank String name,
     @JsonProperty("sandbox_description") String description,
     @JsonProperty("sandbox_provider_type") @NotNull VeriguardSandbox.ProviderType providerType,

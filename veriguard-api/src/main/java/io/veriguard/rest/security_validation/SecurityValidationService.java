@@ -1,7 +1,7 @@
-package io.veriguard.rest.veriguard;
+package io.veriguard.rest.security_validation;
 
-import static io.veriguard.rest.veriguard.VeriguardSandboxMapper.toOutput;
-import static io.veriguard.rest.veriguard.VeriguardSandboxMapper.updateEntity;
+import static io.veriguard.rest.security_validation.SandboxMapper.toOutput;
+import static io.veriguard.rest.security_validation.SandboxMapper.updateEntity;
 
 import io.veriguard.database.model.VeriguardSandbox;
 import io.veriguard.database.repository.VeriguardSandboxRepository;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class VeriguardCapabilityService {
+public class SecurityValidationService {
 
   private static final int TEMPLATES_PER_ATTACK_TYPE = 15;
 
@@ -54,61 +54,61 @@ public class VeriguardCapabilityService {
 
   /** Returns the PRD-oriented module matrix used by the Veriguard management console. */
   @Transactional(readOnly = true)
-  public VeriguardDtos.CapabilityMatrixOutput capabilityMatrix() {
-    List<VeriguardDtos.CapabilityModuleOutput> modules =
+  public SecurityValidationDtos.CapabilityMatrixOutput capabilityMatrix() {
+    List<SecurityValidationDtos.CapabilityModuleOutput> modules =
         List.of(
-            new VeriguardDtos.CapabilityModuleOutput(
+            new SecurityValidationDtos.CapabilityModuleOutput(
                 "traffic-validation",
                 "2.1 流量安全验证",
                 "已落地控制平面",
                 true,
                 List.of("边界覆盖度指标", "设备稳定性趋势", "NTA / IDS 用例目录", "多四元组用例模板"),
                 List.of("流量回放引擎", "NTA / IDS 事件采集适配器")),
-            new VeriguardDtos.CapabilityModuleOutput(
+            new SecurityValidationDtos.CapabilityModuleOutput(
                 "host-validation",
                 "2.2 应用与服务器安全验证",
                 "已落地控制平面",
                 true,
                 List.of("HIDS 攻击分类", "Atomic testing / Payload 映射", "Agent / Executor 执行通道"),
                 List.of("HIDS 告警采集适配器")),
-            new VeriguardDtos.CapabilityModuleOutput(
+            new SecurityValidationDtos.CapabilityModuleOutput(
                 "custom-validation",
                 "2.3 自定义验证",
                 "已落地控制平面",
                 true,
                 List.of("6 类自定义用例", "批量导入入口", "ATT&CK 与纵深防御维度", "动态筛选场景模型"),
                 List.of("PCAP 解析器", "Web 攻击包构造执行器")),
-            new VeriguardDtos.CapabilityModuleOutput(
+            new SecurityValidationDtos.CapabilityModuleOutput(
                 "attack-orchestration",
                 "2.4 攻击编排",
                 "已落地控制平面",
                 true,
                 List.of("路径图节点策略", "延迟与重复执行参数", "拦截结果条件", "SOC 规则匹配条件", "链路级结果"),
                 List.of("SOC 查询适配器")),
-            new VeriguardDtos.CapabilityModuleOutput(
+            new SecurityValidationDtos.CapabilityModuleOutput(
                 "sandbox-management",
                 "2.5 沙箱管理",
                 "已落地并持久化",
                 true,
                 List.of("沙箱平台 CRUD", "网络访问控制策略", "恶意样本类型", "自动还原强制校验"),
                 List.of("虚拟化 / 容器沙箱驱动")));
-    VeriguardDtos.CapabilitySummaryOutput summary =
-        new VeriguardDtos.CapabilitySummaryOutput(
+    SecurityValidationDtos.CapabilitySummaryOutput summary =
+        new SecurityValidationDtos.CapabilitySummaryOutput(
             modules.size(),
             (int)
                 modules.stream()
-                    .filter(VeriguardDtos.CapabilityModuleOutput::acceptanceReady)
+                    .filter(SecurityValidationDtos.CapabilityModuleOutput::acceptanceReady)
                     .count(),
             modules.stream().mapToInt(module -> module.externalIntegrationsRequired().size()).sum(),
             totalUseCaseTemplates());
-    return new VeriguardDtos.CapabilityMatrixOutput(modules, summary);
+    return new SecurityValidationDtos.CapabilityMatrixOutput(modules, summary);
   }
 
   /** Returns the generated attack-use-case catalog aligned with the PRD attack categories. */
   @Transactional(readOnly = true)
-  public VeriguardDtos.AttackCatalogOutput attackCatalog() {
-    List<VeriguardDtos.UseCaseTemplateOutput> templates = generatedTemplates();
-    return new VeriguardDtos.AttackCatalogOutput(
+  public SecurityValidationDtos.AttackCatalogOutput attackCatalog() {
+    List<SecurityValidationDtos.UseCaseTemplateOutput> templates = generatedTemplates();
+    return new SecurityValidationDtos.AttackCatalogOutput(
         attackTypes("traffic", TRAFFIC_ATTACK_TYPES),
         attackTypes("host", HOST_ATTACK_TYPES),
         List.of(
@@ -126,8 +126,8 @@ public class VeriguardCapabilityService {
 
   /** Returns the orchestration policy schema used by the frontend path editor. */
   @Transactional(readOnly = true)
-  public VeriguardDtos.OrchestrationSchemaOutput orchestrationSchema() {
-    return new VeriguardDtos.OrchestrationSchemaOutput(
+  public SecurityValidationDtos.OrchestrationSchemaOutput orchestrationSchema() {
+    return new SecurityValidationDtos.OrchestrationSchemaOutput(
         List.of(
             "node_delay_enabled",
             "node_delay_seconds",
@@ -149,7 +149,7 @@ public class VeriguardCapabilityService {
   }
 
   /** Creates a sandbox platform after enforcing PRD-required automatic restoration. */
-  public VeriguardDtos.SandboxOutput createSandbox(VeriguardSandboxInput input)
+  public SecurityValidationDtos.SandboxOutput createSandbox(SandboxInput input)
       throws InputValidationException {
     validateSandboxInput(input);
     VeriguardSandbox sandbox = new VeriguardSandbox();
@@ -159,18 +159,18 @@ public class VeriguardCapabilityService {
 
   /** Lists sandbox platforms configured for malicious sample execution. */
   @Transactional(readOnly = true)
-  public List<VeriguardDtos.SandboxOutput> sandboxes() {
-    return sandboxRepository.findAll().stream().map(VeriguardSandboxMapper::toOutput).toList();
+  public List<SecurityValidationDtos.SandboxOutput> sandboxes() {
+    return sandboxRepository.findAll().stream().map(SandboxMapper::toOutput).toList();
   }
 
   /** Returns one sandbox platform by identifier. */
   @Transactional(readOnly = true)
-  public VeriguardDtos.SandboxOutput sandbox(String sandboxId) {
+  public SecurityValidationDtos.SandboxOutput sandbox(String sandboxId) {
     return toOutput(findSandbox(sandboxId));
   }
 
   /** Updates a sandbox platform and keeps PRD-required restoration enforcement enabled. */
-  public VeriguardDtos.SandboxOutput updateSandbox(String sandboxId, VeriguardSandboxInput input)
+  public SecurityValidationDtos.SandboxOutput updateSandbox(String sandboxId, SandboxInput input)
       throws InputValidationException {
     validateSandboxInput(input);
     VeriguardSandbox sandbox = findSandbox(sandboxId);
@@ -188,7 +188,7 @@ public class VeriguardCapabilityService {
     return sandboxRepository.findById(sandboxId).orElseThrow(ElementNotFoundException::new);
   }
 
-  private void validateSandboxInput(VeriguardSandboxInput input) throws InputValidationException {
+  private void validateSandboxInput(SandboxInput input) throws InputValidationException {
     Objects.requireNonNull(input, "Sandbox input must not be null");
     if (!input.autoRestoreEnabled()) {
       throw new InputValidationException(
@@ -208,25 +208,25 @@ public class VeriguardCapabilityService {
     return (TRAFFIC_ATTACK_TYPES.size() + HOST_ATTACK_TYPES.size()) * TEMPLATES_PER_ATTACK_TYPE;
   }
 
-  private List<VeriguardDtos.AttackTypeOutput> attackTypes(
+  private List<SecurityValidationDtos.AttackTypeOutput> attackTypes(
       String surface, List<String> attackTypes) {
     return attackTypes.stream()
         .map(
             type ->
-                new VeriguardDtos.AttackTypeOutput(
+                new SecurityValidationDtos.AttackTypeOutput(
                     surface, type, TEMPLATES_PER_ATTACK_TYPE, true))
         .toList();
   }
 
-  private List<VeriguardDtos.UseCaseTemplateOutput> generatedTemplates() {
-    List<VeriguardDtos.UseCaseTemplateOutput> templates = new ArrayList<>();
+  private List<SecurityValidationDtos.UseCaseTemplateOutput> generatedTemplates() {
+    List<SecurityValidationDtos.UseCaseTemplateOutput> templates = new ArrayList<>();
     appendTemplates(templates, "traffic", TRAFFIC_ATTACK_TYPES, "TRAFFIC_REPLAY", "上传 pcap 流量包");
     appendTemplates(templates, "host", HOST_ATTACK_TYPES, "HOST_AGENT", "配置执行的命令");
     return templates;
   }
 
   private void appendTemplates(
-      List<VeriguardDtos.UseCaseTemplateOutput> templates,
+      List<SecurityValidationDtos.UseCaseTemplateOutput> templates,
       String surface,
       List<String> attackTypes,
       String executorKind,
@@ -235,7 +235,7 @@ public class VeriguardCapabilityService {
     for (String attackType : attackTypes) {
       for (int offset = 0; offset < TEMPLATES_PER_ATTACK_TYPE; offset++) {
         templates.add(
-            new VeriguardDtos.UseCaseTemplateOutput(
+            new SecurityValidationDtos.UseCaseTemplateOutput(
                 "VG-" + surface.toUpperCase() + "-" + String.format("%03d", index++),
                 surface,
                 attackType,

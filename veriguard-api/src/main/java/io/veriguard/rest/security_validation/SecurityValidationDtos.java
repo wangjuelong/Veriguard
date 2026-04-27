@@ -1,4 +1,4 @@
-package io.veriguard.rest.veriguard;
+package io.veriguard.rest.security_validation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.veriguard.database.model.VeriguardSandbox;
@@ -6,9 +6,9 @@ import io.veriguard.database.model.VeriguardSandboxNetworkRule;
 import java.time.Instant;
 import java.util.List;
 
-public final class VeriguardDtos {
+public final class SecurityValidationDtos {
 
-  private VeriguardDtos() {}
+  private SecurityValidationDtos() {}
 
   public record CapabilityMatrixOutput(
       @JsonProperty("modules") List<CapabilityModuleOutput> modules,

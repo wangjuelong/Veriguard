@@ -10,7 +10,7 @@
 
 | 类型 | 路径 | 说明 |
 | --- | --- | --- |
-| 后端 API | `veriguard-api/src/main/java/io/veriguard/rest/veriguard/` | 新增 Veriguard 能力矩阵、用例目录、攻击编排策略、沙箱管理接口 |
+| 后端 API | `veriguard-api/src/main/java/io/veriguard/rest/security_validation/` | 新增能力矩阵、用例目录、攻击编排策略、沙箱管理接口 |
 | 后端模型 | `veriguard-model/src/main/java/io/veriguard/database/model/VeriguardSandbox.java` | 新增沙箱平台实体，包含网络策略、样本类型、自动还原开关 |
 | 数据迁移 | `veriguard-api/src/main/java/io/veriguard/migration/V4_72__Add_veriguard_sandbox.java` | 新增 `veriguard_sandboxes` 表与查询索引 |
 | 前端入口 | `veriguard-front/src/admin/components/veriguard/VeriguardConsole.tsx` | 新增 Veriguard 管理控制台 |
@@ -31,14 +31,14 @@
 
 | 方法 | 路径 | 用途 |
 | --- | --- | --- |
-| `GET` | `/api/veriguard/capability-matrix` | 查询 PRD 能力矩阵 |
-| `GET` | `/api/veriguard/use-case-catalog` | 查询攻击类型、自定义用例类型和生成模板 |
-| `GET` | `/api/veriguard/orchestration-schema` | 查询攻击编排节点策略、执行模式、SOC 匹配字段和链路结果 |
-| `GET` | `/api/veriguard/sandboxes` | 查询沙箱平台列表 |
-| `POST` | `/api/veriguard/sandboxes` | 新建沙箱平台 |
-| `GET` | `/api/veriguard/sandboxes/{sandboxId}` | 查询单个沙箱平台 |
-| `PUT` | `/api/veriguard/sandboxes/{sandboxId}` | 更新沙箱平台 |
-| `DELETE` | `/api/veriguard/sandboxes/{sandboxId}` | 删除沙箱平台 |
+| `GET` | `/api/capabilities/matrix` | 查询 PRD 能力矩阵 |
+| `GET` | `/api/attack-use-cases/catalog` | 查询攻击类型、自定义用例类型和生成模板 |
+| `GET` | `/api/attack-orchestration/schema` | 查询攻击编排节点策略、执行模式、SOC 匹配字段和链路结果 |
+| `GET` | `/api/sandboxes` | 查询沙箱平台列表 |
+| `POST` | `/api/sandboxes` | 新建沙箱平台 |
+| `GET` | `/api/sandboxes/{sandboxId}` | 查询单个沙箱平台 |
+| `PUT` | `/api/sandboxes/{sandboxId}` | 更新沙箱平台 |
+| `DELETE` | `/api/sandboxes/{sandboxId}` | 删除沙箱平台 |
 
 ## 五、验收要点
 

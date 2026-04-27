@@ -1,14 +1,14 @@
-package io.veriguard.rest.veriguard;
+package io.veriguard.rest.security_validation;
 
 import io.veriguard.database.model.VeriguardSandbox;
 import java.util.ArrayList;
 
-public final class VeriguardSandboxMapper {
+public final class SandboxMapper {
 
-  private VeriguardSandboxMapper() {}
+  private SandboxMapper() {}
 
-  public static VeriguardDtos.SandboxOutput toOutput(VeriguardSandbox sandbox) {
-    return new VeriguardDtos.SandboxOutput(
+  public static SecurityValidationDtos.SandboxOutput toOutput(VeriguardSandbox sandbox) {
+    return new SecurityValidationDtos.SandboxOutput(
         sandbox.getId(),
         sandbox.getName(),
         sandbox.getDescription(),
@@ -23,7 +23,7 @@ public final class VeriguardSandboxMapper {
         sandbox.getUpdatedAt());
   }
 
-  public static void updateEntity(VeriguardSandbox sandbox, VeriguardSandboxInput input) {
+  public static void updateEntity(VeriguardSandbox sandbox, SandboxInput input) {
     sandbox.setName(input.name());
     sandbox.setDescription(input.description());
     sandbox.setProviderType(input.providerType());

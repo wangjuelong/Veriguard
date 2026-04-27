@@ -5,7 +5,10 @@ import {
   simplePutCall,
 } from '../../utils/Action';
 
-const VERIGUARD_URI = '/api/veriguard';
+const CAPABILITIES_URI = '/api/capabilities';
+const ATTACK_USE_CASES_URI = '/api/attack-use-cases';
+const ATTACK_ORCHESTRATION_URI = '/api/attack-orchestration';
+const SANDBOXES_URI = '/api/sandboxes';
 
 export type CapabilityModuleOutput = {
   module_key: string;
@@ -102,35 +105,35 @@ export type SandboxOutput = SandboxInput & {
 };
 
 export const fetchVeriguardCapabilityMatrix = async () => {
-  const response = await simpleCall(`${VERIGUARD_URI}/capability-matrix`);
+  const response = await simpleCall(`${CAPABILITIES_URI}/matrix`);
   return response.data as CapabilityMatrixOutput;
 };
 
 export const fetchVeriguardAttackCatalog = async () => {
-  const response = await simpleCall(`${VERIGUARD_URI}/use-case-catalog`);
+  const response = await simpleCall(`${ATTACK_USE_CASES_URI}/catalog`);
   return response.data as AttackCatalogOutput;
 };
 
 export const fetchVeriguardOrchestrationSchema = async () => {
-  const response = await simpleCall(`${VERIGUARD_URI}/orchestration-schema`);
+  const response = await simpleCall(`${ATTACK_ORCHESTRATION_URI}/schema`);
   return response.data as OrchestrationSchemaOutput;
 };
 
 export const fetchVeriguardSandboxes = async () => {
-  const response = await simpleCall(`${VERIGUARD_URI}/sandboxes`);
+  const response = await simpleCall(SANDBOXES_URI);
   return response.data as SandboxOutput[];
 };
 
 export const createVeriguardSandbox = async (input: SandboxInput) => {
-  const response = await simplePostCall(`${VERIGUARD_URI}/sandboxes`, input);
+  const response = await simplePostCall(SANDBOXES_URI, input);
   return response.data as SandboxOutput;
 };
 
 export const updateVeriguardSandbox = async (sandboxId: string, input: SandboxInput) => {
-  const response = await simplePutCall(`${VERIGUARD_URI}/sandboxes/${sandboxId}`, input);
+  const response = await simplePutCall(`${SANDBOXES_URI}/${sandboxId}`, input);
   return response.data as SandboxOutput;
 };
 
 export const deleteVeriguardSandbox = async (sandboxId: string) => {
-  await simpleDelCall(`${VERIGUARD_URI}/sandboxes/${sandboxId}`);
+  await simpleDelCall(`${SANDBOXES_URI}/${sandboxId}`);
 };
