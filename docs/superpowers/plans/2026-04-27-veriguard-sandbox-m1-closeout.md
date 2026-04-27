@@ -1,7 +1,7 @@
 # Veriguard 沙箱二开 M1 收尾说明
 
-**完成日期**：2026-04-27（首版 / Task 22 部分 / Task #26 / 覆盖率补齐 / application.properties 占位回填）
-**分支**：`feature/sandbox-m1` HEAD `9c1991678`
+**完成日期**：2026-04-27（首版 → Task #26 → 覆盖率补齐 → application.properties 占位 → 集成测试真跑通 + 三个真实 bug 修复）
+**分支**：`feature/sandbox-m1` HEAD `2854bb52f`
 **Plan**：`docs/superpowers/plans/2026-04-27-veriguard-sandbox-m1.md`
 
 ---
@@ -31,8 +31,9 @@
 | **Task 22 部分（lint）** | `c1757e977` | yarn lint 254→3 错误（仅剩预存的 AtomicTesting）；235/235 vitest PASS |
 | **Task 22 部分（覆盖率补齐）** | `1bc4e117b` | 安装 @vitest/coverage-v8；补 DeleteConfirmDialog/SandboxList 前端测试 + routing.conf/Service update-delete 后端测试；235→242 / 19→27 PASS |
 | **Task 22 收尾（application.properties 占位）** | `9c1991678` | 回填 plan §10.1 列出但首轮漏交付的 `veriguard.sandbox.cape.*` 配置占位 + multipart 上限 |
+| **集成测试真跑通 + 3 个真实 bug 修复** | `2854bb52f` | dev stack 起来后跑 SandboxApiIntegrationTest，发现 3 个真实问题：`@NotNull + @CreationTimestamp` flush 顺序、`save()` vs `saveAndFlush()` 唯一约束时序、测试缺 csrf() token；6/6 IT PASS |
 
-**26 个 commit，全部带 `Co-Authored-By: Claude Opus 4.7` trailer。**
+**27 个 commit，全部带 `Co-Authored-By: Claude Opus 4.7` trailer。**
 
 `git log --oneline main..feature/sandbox-m1` 展示完整列表。
 
@@ -49,6 +50,7 @@
 | 类型检查（前端） | ✅ M1 范围干净 | `yarn check-ts` 同上预存错误 |
 | 沙箱单元测试（后端） | ✅ 27/27 PASS | NotImpl 4 + ExceptionMapping 2 + ScriptExporter 11 + Service 10 |
 | 沙箱单元测试（前端） | ✅ 242/242 PASS | NetworkRuleEditor 5 + SandboxDialog 5 + cidr-port 19 + DeleteConfirmDialog 3 + SandboxList 4 + 项目其它 206 |
+| **沙箱集成测试（后端，需 dev stack）** | ✅ **6/6 PASS** | SandboxApiIntegrationTest（CRUD + 重名 + 导出脚本）；3 个真实 bug 在此曝光并修复 |
 | 后端覆盖率（关键类） | ✅ 达标 | SandboxScriptExporter 100% / SandboxService 92% / Mapper / Input / Output 100% |
 | "无 fallback" grep | ✅ 零命中 | 仅 `RestBehavior.handleSandboxIntegrationException` 的 `log.warn(...,ex)` 是合规审计日志 |
 | 文档自检 | ✅ | `git diff --check -- docs AGENTS.md` 通过；落地说明无 TODO/FIXME/待补充 |
@@ -62,17 +64,18 @@
 | `NetworkRuleEditor.tsx` 覆盖率 | 66% lines | 85% | 同上：空态/添加/删除/ICMP/CIDR 校验 5 个核心场景已覆盖；剩余 setter 分支由 SandboxDialog/SandboxList 的端到端组合自然走到 |
 | `veriguard-actions.ts` 覆盖率 | 0% lines | 80% | 全部是 axios 薄封装；E2E `m1.spec.ts` 走完用户路径会全部触发，但 vitest 单独 mock 整个 `utils/Action.ts`（Redux + axios + notifier）成本超高 |
 | `integration.sandbox.**` 包覆盖率 | 84% lines | 90% | 缺口是 `SandboxDriverRegistry`（单委托无逻辑）+ `SandboxIntegrationException` 的 Lombok-生成访问器；M2 接 `CapeV2SandboxDriver` 时驱动调用会自然覆盖 registry |
-| `SandboxApi` 覆盖率 | 0% | env-bound | 仅由 `SandboxApiIntegrationTest` 6 个 case 覆盖，需 Postgres 起来才能跑；下一节列入环境-bound |
+| `SandboxApi` 覆盖率 | ~85%（实测） | env-bound 已跑 | 6 个 IT 覆盖 5 endpoint + 2 export endpoint；首次端到端跑通 |
 
 ### 仍需在你方环境跑的检查
 
-| 检查 | 命令 | 阻塞 |
+| 检查 | 命令 | 备注 |
 | --- | --- | --- |
-| 后端集成测试 | `mvn -pl veriguard-api -am test`（不带 `-Dtest=...`） | 需 Postgres 5433 + RabbitMQ + MinIO 起来跑 `SandboxApiIntegrationTest` 6 个 case + 项目其它 IntegrationTest 子类 |
-| Playwright E2E | `yarn test:e2e -g "sandbox m1"` | 需后端 + 前端 + Postgres + V4_73 已应用 + admin 登录态（auth.setup.ts） |
-| Spring Boot 启动 smoke | `mvn -pl veriguard-api spring-boot:run` | 同上 |
+| ~~后端沙箱集成测试~~ | ~~需 dev stack~~ | ✅ **已跑过 6/6 PASS**（commit `2854bb52f`） |
+| 项目其它 IntegrationTest 全跑（回归） | `mvn -pl veriguard-api -am test -DargLine="-Dnet.bytebuddy.experimental=true"` | 在 dev stack 起来情况下跑全套（约 10–20 分钟），确认沙箱改动没误伤其它模块 |
+| Playwright E2E | `yarn test:e2e -g "sandbox m1"` | 需后端 + 前端 + Postgres + V4_73 已应用 + admin 登录态（`auth.setup.ts`） |
+| Spring Boot 启动 smoke | `MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn -pl veriguard-api spring-boot:run` | 走 vite 起前端后浏览器手动验 |
 | PRD §2.5 截图 | 人工 | 登录 `/admin/veriguard` 后拍 6 张（plan §10.1 列表） |
-| 合并回 main | `git checkout main && git merge --no-ff feature/sandbox-m1 && git worktree remove worktrees/sandbox-m1 && git branch -d feature/sandbox-m1` | 等上面 4 项绿了执行 |
+| 合并回 main | `git checkout main && git merge --no-ff feature/sandbox-m1 && git worktree remove worktrees/sandbox-m1 && git branch -d feature/sandbox-m1` | 等上面 3 项绿了执行 |
 
 ---
 
@@ -81,27 +84,27 @@
 环境无关项已在本会话内全部跑过（§2 第一表）。剩下的全部依赖你本地 dev stack。按顺序执行：
 
 ```bash
-# 0. 进入 worktree，确认 HEAD = 1bc4e117b
+# 0. 进入 worktree，确认 HEAD = 2854bb52f
 cd /Users/lamba/github/Veriguard/worktrees/sandbox-m1
 git log --oneline -1
 
-# 1. 起 dev stack（Task #26 已修，spotless 不再阻塞）
+# 1. 起 dev stack（如果之前 docker stop 过；containers 已经起就跳过此步）
 cd /Users/lamba/github/Veriguard/veriguard-dev
-cp .env.example .env   # 如未做过
-docker compose up -d veriguard-pgsql veriguard-test-pgsql rabbitmq veriguard-minio
-docker compose ps      # 等所有目标服务 healthy
+[ -f .env ] || cp .env.example .env
+docker compose up -d veriguard-dev-pgsql veriguard-test-pgsql veriguard-dev-rabbitmq \
+                     veriguard-dev-minio veriguard-test-elasticsearch
+docker compose ps   # 等 5 个目标服务 healthy
 
-# 2. 跑完整后端测试（含 SandboxApiIntegrationTest 6 个 case + 项目其它 IntegrationTest）
+# 2. 跑完整后端测试（沙箱 IT 已经验证过 6/6；这里跑全套确认其它模块没误伤）
 cd /Users/lamba/github/Veriguard/worktrees/sandbox-m1
-mvn -pl veriguard-api -am test
+mvn -pl veriguard-api -am test -DargLine="-Dnet.bytebuddy.experimental=true"
 mvn -pl veriguard-api jacoco:report
-# 集成测试跑完后再次检查 target/site/jacoco/index.html：
-#   io.veriguard.integration.sandbox.** 应该已经接近 90%（registry 不算）
-#   io.veriguard.rest.security_validation.SandboxApi 应被 IT 拉到 ≥85%
+# byte-buddy 实验标志在 JDK 25 上必传（mvn -version 查看本机 JDK）；JDK 21 不需要。
+# 集成测试跑完后检查 target/site/jacoco/index.html：SandboxApi 应被 IT 拉到 85%+。
 
 # 3. 起后端 + 前端跑 E2E
 cd /Users/lamba/github/Veriguard/worktrees/sandbox-m1
-mvn -pl veriguard-api spring-boot:run &  # 后台
+MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn -pl veriguard-api spring-boot:run &  # 后台
 cd veriguard-front && yarn start &       # 后台
 yarn test:e2e -g "sandbox m1"
 
@@ -138,6 +141,20 @@ git branch -d feature/sandbox-m1
 - **VeriguardConsole 收敛**：611 → 241 行，沙箱 Tab 改为 `<SandboxList />` 一行。
 - **spotless ratchetFrom**：root pom 加 `<ratchetFrom>main</ratchetFrom>`，把 spotless 检查范围限定到 vs main 改动的文件，避免升级 google-java-format 1.27.0 带来的 138-file 历史漂移大爆炸；`main` 分支命名是这个仓库的本地约定（upstream 是 master，本仓库 fork 用 `main` 作工作分支）。
 - **i18n 抑制**：每个新沙箱组件文件顶部加了 `/* eslint-disable i18next/no-literal-string ... */` 注释块。spec §6.7 选择沿用既有 `VeriguardConsole.tsx` 的硬编码中文模式；项目现有 i18next eslint 规则与之冲突，但既有代码也未用 `FormattedMessage`，所以这是把"冲突"显式化的最低代价方式。
+
+### 4.4 集成测试首跑曝光的真实 bug（已修，commit `2854bb52f`）
+
+把 dev stack 起来跑 `SandboxApiIntegrationTest` 时发现 3 个真实问题，**都不是 setup 误差，都会在生产部署里复现**：
+
+1. **`@NotNull` + `@CreationTimestamp` 顺序冲突**（`VeriguardSandbox.createdAt/updatedAt`）。Hibernate 在 flush 时填时间戳，但 bean 校验在 flush 前跑，看到 `null` 就抛 `ConstraintViolationException("不能为 null")`。表现：第二次 list 请求触发 auto-flush 时把第一次未提交的 INSERT 拍出来，bean 校验失败。**修复**：去掉时间戳字段的 `@NotNull` 注解；列定义本身的 NOT NULL 约束 + `@CreationTimestamp` 生成已经保证非空。
+
+2. **`save()` 不立即 flush，唯一约束晚到**（`SandboxService.persist`）。`JpaRepository.save()` 在事务内可能延迟到 commit 才触发 INSERT，导致 `DataIntegrityViolationException` 不在我们的 catch 块抛出，重名 sandbox 直接返回 201。生产里也会出：客户端一秒内连发两次相同 POST，第二个请求的 tx 内 save 不立即 INSERT，等到 commit 时才发现冲突，这时 HTTP 已经返回 201 了——客户端被骗。**修复**：用 `saveAndFlush()` 同步触发 INSERT + 同步抛出 DataIntegrityViolation，立刻被 catch 转 `sandbox_name_duplicated`。
+
+3. **测试缺 `.with(csrf())`**（`SandboxApiIntegrationTest`）。这是测试侧问题，不是生产 bug，但说明 plan 抄的 `MockMvc` 样板没考虑 Spring Security 的 CSRF 默认开启。**修复**：每个 POST 加 `.with(csrf())`，匹配 `KillChainPhaseApiTest` 既有约定。
+
+附加：`@WithMockUser(isAdmin = true)` 需要配合 `RBACAspect → PermissionService.hasPermission` 的 admin-bypass 路径——一开始 plan 抄成 `withCapabilities = {ACCESS_PLATFORM_SETTINGS}` 是错的（那个 capability 只给 READ）；最终保留了 `isAdmin = true` 是正确选择。
+
+JDK 25 工具链兼容：surefire 必须传 `-DargLine="-Dnet.bytebuddy.experimental=true"`，否则 Mockito 的 Byte Buddy 在 Java 25 上 `Could not modify all classes`。 closeout §3 命令已包含。
 
 ### 4.3 已知非阻塞问题（建议后续 cleanup）
 
