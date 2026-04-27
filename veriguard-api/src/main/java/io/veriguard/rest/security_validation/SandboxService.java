@@ -9,12 +9,14 @@ import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.exception.InputValidationException;
 import java.util.List;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
+@Slf4j
 public class SandboxService {
 
   private final VeriguardSandboxRepository sandboxRepository;
@@ -58,6 +60,8 @@ public class SandboxService {
     try {
       return toOutput(sandboxRepository.save(sandbox));
     } catch (DataIntegrityViolationException ex) {
+      log.warn(
+          "Sandbox persist failed with data integrity violation, treating as duplicate name", ex);
       throw new InputValidationException(
           "sandbox_name_duplicated", "Sandbox with the same name already exists.");
     }
