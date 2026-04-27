@@ -1,12 +1,14 @@
+/* eslint-disable i18next/no-literal-string -- spec §6.7: M1 sandbox UI uses
+   hardcoded Chinese to match existing VeriguardConsole.tsx pattern; future
+   M-x will migrate to react-intl when sandbox UI stabilizes. */
 import {
   Alert, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle,
   FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack, Switch,
   TextField, Typography,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import type {
-  SandboxInput, SandboxNetworkPolicy, SandboxSampleType, SandboxStatus,
-} from '../../../../actions/veriguard/veriguard-actions';
+
+import type { SandboxInput, SandboxNetworkPolicy, SandboxSampleType, SandboxStatus } from '../../../../actions/veriguard/veriguard-actions';
 import NetworkRuleEditor from './NetworkRuleEditor';
 
 const NETWORK_POLICIES: SandboxNetworkPolicy[] = ['DENY_ALL', 'ALLOWLIST', 'ISOLATED_LAB', 'CUSTOM'];
@@ -36,22 +38,28 @@ type Props = {
 
 const SandboxDialog = ({ open, mode, initialValue, onCancel, onSubmit }: Props) => {
   const [form, setForm] = useState<SandboxInput>(initialValue);
-  useEffect(() => { setForm(initialValue); }, [initialValue]);
+  useEffect(() => {
+    setForm(initialValue);
+  }, [initialValue]);
 
   const formValid = useMemo(() => (
     form.sandbox_name.trim().length > 0
-      && form.sandbox_supported_sample_types.length > 0
-      && form.sandbox_auto_restore_enabled
+    && form.sandbox_supported_sample_types.length > 0
+    && form.sandbox_auto_restore_enabled
   ), [form]);
 
   const updateField = <K extends keyof SandboxInput>(key: K, value: SandboxInput[K]) => {
-    setForm(prev => ({ ...prev, [key]: value }));
+    setForm(prev => ({
+      ...prev,
+      [key]: value,
+    }));
   };
   const toggleSampleType = (st: SandboxSampleType) => {
     const exists = form.sandbox_supported_sample_types.includes(st);
     updateField('sandbox_supported_sample_types',
-      exists ? form.sandbox_supported_sample_types.filter(s => s !== st)
-             : [...form.sandbox_supported_sample_types, st]);
+      exists
+        ? form.sandbox_supported_sample_types.filter(s => s !== st)
+        : [...form.sandbox_supported_sample_types, st]);
   };
 
   return (
@@ -61,34 +69,60 @@ const SandboxDialog = ({ open, mode, initialValue, onCancel, onSubmit }: Props) 
         <Alert severity="info" sx={{ mb: 2 }}>
           网络访问控制策略与自动还原快照由沙箱平台主机管理员负责实际生效。本系统仅持久化策略并提供导出脚本，对快照配置缺失给出可视化告警；不参与运行时下发与执行。
         </Alert>
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, pt: 1 }}>
-          <TextField label="名称" value={form.sandbox_name}
-            onChange={e => updateField('sandbox_name', e.target.value)} required />
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 2,
+          pt: 1,
+        }}
+        >
+          <TextField
+            label="名称"
+            value={form.sandbox_name}
+            onChange={e => updateField('sandbox_name', e.target.value)}
+            required
+          />
           <FormControl>
             <InputLabel>网络策略</InputLabel>
-            <Select label="网络策略" value={form.sandbox_network_policy}
-              onChange={e => updateField('sandbox_network_policy', e.target.value as SandboxNetworkPolicy)}>
+            <Select
+              label="网络策略"
+              value={form.sandbox_network_policy}
+              onChange={e => updateField('sandbox_network_policy', e.target.value as SandboxNetworkPolicy)}
+            >
               {NETWORK_POLICIES.map(p => <MenuItem key={p} value={p}>{p}</MenuItem>)}
             </Select>
           </FormControl>
-          <TextField label="描述" value={form.sandbox_description ?? ''}
+          <TextField
+            label="描述"
+            value={form.sandbox_description ?? ''}
             onChange={e => updateField('sandbox_description', e.target.value)}
-            multiline minRows={2} sx={{ gridColumn: '1 / -1' }} />
+            multiline
+            minRows={2}
+            sx={{ gridColumn: '1 / -1' }}
+          />
           <Box sx={{ gridColumn: '1 / -1' }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>网络访问控制规则（可选）</Typography>
-            <NetworkRuleEditor value={form.sandbox_network_rules}
-              onChange={v => updateField('sandbox_network_rules', v)} />
+            <NetworkRuleEditor
+              value={form.sandbox_network_rules}
+              onChange={v => updateField('sandbox_network_rules', v)}
+            />
           </Box>
           <FormControlLabel
             control={(
-              <Switch checked={form.sandbox_auto_restore_enabled}
-                onChange={e => updateField('sandbox_auto_restore_enabled', e.target.checked)} />
+              <Switch
+                checked={form.sandbox_auto_restore_enabled}
+                onChange={e => updateField('sandbox_auto_restore_enabled', e.target.checked)}
+              />
             )}
-            label="执行完成后自动还原" />
+            label="执行完成后自动还原"
+          />
           <FormControl>
             <InputLabel>状态</InputLabel>
-            <Select label="状态" value={form.sandbox_status}
-              onChange={e => updateField('sandbox_status', e.target.value as SandboxStatus)}>
+            <Select
+              label="状态"
+              value={form.sandbox_status}
+              onChange={e => updateField('sandbox_status', e.target.value as SandboxStatus)}
+            >
               {STATUS_TYPES.map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </Select>
           </FormControl>
@@ -96,12 +130,16 @@ const SandboxDialog = ({ open, mode, initialValue, onCancel, onSubmit }: Props) 
             <Typography variant="subtitle2" sx={{ mb: 1 }}>样本类型</Typography>
             <Stack direction="row" gap={1} flexWrap="wrap">
               {SAMPLE_TYPES.map(st => (
-                <FormControlLabel key={st}
+                <FormControlLabel
+                  key={st}
                   control={(
-                    <Checkbox checked={form.sandbox_supported_sample_types.includes(st)}
-                      onChange={() => toggleSampleType(st)} />
+                    <Checkbox
+                      checked={form.sandbox_supported_sample_types.includes(st)}
+                      onChange={() => toggleSampleType(st)}
+                    />
                   )}
-                  label={SAMPLE_TYPE_LABELS[st]} />
+                  label={SAMPLE_TYPE_LABELS[st]}
+                />
               ))}
             </Stack>
           </Box>

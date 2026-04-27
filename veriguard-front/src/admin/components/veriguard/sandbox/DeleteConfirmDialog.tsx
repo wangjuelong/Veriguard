@@ -1,6 +1,7 @@
-import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-} from '@mui/material';
+/* eslint-disable i18next/no-literal-string -- spec §6.7: M1 sandbox UI uses
+   hardcoded Chinese to match existing VeriguardConsole.tsx pattern; future
+   M-x will migrate to react-intl when sandbox UI stabilizes. */
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 type Props = {
   open: boolean;

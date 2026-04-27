@@ -1,3 +1,6 @@
+/* eslint-disable i18next/no-literal-string -- spec §6.7: M1 sandbox UI uses
+   hardcoded Chinese to match existing VeriguardConsole.tsx pattern; future
+   M-x will migrate to react-intl when sandbox UI stabilizes. */
 import { RefreshOutlined } from '@mui/icons-material';
 import {
   Box,
@@ -18,11 +21,11 @@ import {
 import { type ReactNode, useCallback, useEffect, useState } from 'react';
 
 import {
+  type AttackCatalogOutput,
+  type CapabilityMatrixOutput,
   fetchVeriguardAttackCatalog,
   fetchVeriguardCapabilityMatrix,
   fetchVeriguardOrchestrationSchema,
-  type AttackCatalogOutput,
-  type CapabilityMatrixOutput,
   type OrchestrationSchemaOutput,
 } from '../../../actions/veriguard/veriguard-actions';
 import Loader from '../../../components/Loader';
@@ -33,7 +36,13 @@ type TabValue = 'matrix' | 'catalog' | 'orchestration' | 'sandboxes';
 const compactList = (items: string[]) => items.join(' / ');
 
 const Section = ({ children }: { children: ReactNode }) => (
-  <Paper variant="outlined" sx={{ p: 2, borderRadius: 1 }}>
+  <Paper
+    variant="outlined"
+    sx={{
+      p: 2,
+      borderRadius: 1,
+    }}
+  >
     {children}
   </Paper>
 );
@@ -67,7 +76,12 @@ const VeriguardConsole = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 2,
+    }}
+    >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h4">Veriguard</Typography>
@@ -82,7 +96,12 @@ const VeriguardConsole = () => {
         </Tooltip>
       </Stack>
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 2 }}>
+      <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+        gap: 2,
+      }}
+      >
         <Section>
           <Typography variant="overline">PRD 模块</Typography>
           <Typography variant="h5">{matrix.summary.prd_module_count}</Typography>
@@ -142,7 +161,12 @@ const VeriguardConsole = () => {
       )}
 
       {tab === 'catalog' && (
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 2,
+        }}
+        >
           <Section>
             <Typography variant="h6" sx={{ mb: 1 }}>流量安全验证</Typography>
             <Table size="small">
@@ -205,7 +229,12 @@ const VeriguardConsole = () => {
       )}
 
       {tab === 'orchestration' && (
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 2 }}>
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: 2,
+        }}
+        >
           <Section>
             <Typography variant="h6" sx={{ mb: 1 }}>节点策略字段</Typography>
             <Stack direction="row" gap={1} flexWrap="wrap">

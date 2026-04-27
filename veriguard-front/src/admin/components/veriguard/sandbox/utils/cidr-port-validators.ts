@@ -33,7 +33,8 @@ export const isValidPortExpression = (input: string): boolean => {
     }
     const range = /^(\d+)-(\d+)$/.exec(trimmed);
     if (range) {
-      const a = Number(range[1]); const b = Number(range[2]);
+      const a = Number(range[1]);
+      const b = Number(range[2]);
       return a >= 1 && a <= 65535 && b >= a && b <= 65535;
     }
     return false;

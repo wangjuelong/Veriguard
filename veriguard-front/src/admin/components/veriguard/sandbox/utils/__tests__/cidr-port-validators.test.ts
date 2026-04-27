@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { isValidCidr, isValidPortExpression } from '../cidr-port-validators';
 
 describe('isValidCidr', () => {
