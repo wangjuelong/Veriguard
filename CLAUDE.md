@@ -50,6 +50,12 @@ git diff --check -- docs AGENTS.md
 rg -n 'TODO|FIXME|待补充' docs AGENTS.md
 ```
 
+## Dev Environment
+
+- 如果仓库已提供开发环境（本仓库为 `veriguard-dev/docker-compose.yml` + 相关运行配置），**优先使用既有环境**——不自起平行栈，避免端口冲突与状态分裂。
+- 仓库未提供开发环境时，**默认用 docker + docker-compose 自行搭建**；新增的 `docker-compose.yml`（以及必要的 `.env.example`、初始化脚本等）必须与代码一同提交到仓库，便于其他人 / 后续会话复用。
+- 不要把"本机已装某服务"作为前提编进代码或文档；运行依赖必须由仓库内的开发环境承担。
+
 ## Architecture Notes
 
 - The API is a single Spring Boot app exposing REST under `/api/...`. Controllers are organized by feature folder (`rest/<feature>/`). Custom Veriguard二开 endpoints live under `rest/security_validation/` (capability matrix, attack use cases, attack orchestration, sandbox CRUD); URI constants are declared on `SecurityValidationApi`.
