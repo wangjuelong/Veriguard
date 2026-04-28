@@ -76,8 +76,6 @@ const InjectContentFieldComponent = ({
             label={t(label)}
             style={{ height: 250 }}
             disabled={readOnly}
-            askAi={true}
-            inInject={true}
             control={control}
             required={field.settings?.required}
           />

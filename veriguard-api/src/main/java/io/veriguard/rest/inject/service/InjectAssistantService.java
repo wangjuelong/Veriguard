@@ -9,7 +9,6 @@ import io.veriguard.database.repository.InjectorContractRepository;
 import io.veriguard.injectors.manual.ManualContract;
 import io.veriguard.rest.attack_pattern.service.AttackPatternService;
 import io.veriguard.rest.exception.UnprocessableContentException;
-import io.veriguard.rest.inject.form.InjectAssistantInput;
 import io.veriguard.rest.injector_contract.InjectorContractService;
 import io.veriguard.service.AssetGroupService;
 import io.veriguard.service.EndpointService;
@@ -35,92 +34,6 @@ public class InjectAssistantService {
   private final InjectorContractService injectorContractService;
 
   private final InjectorContractRepository injectorContractRepository;
-
-  // -- Used in Assistance AI
-
-  /**
-   * Generate injects for a given scenario based on the provided input.
-   *
-   * @param scenario the scenario for which injects are generated
-   * @param input the input containing details for inject generation, such as attack pattern IDs,
-   *     asset IDs, asset group IDs, and the number of injects per AttackPattern
-   * @return a list of generated injects
-   */
-  public List<Inject> generateInjectsForScenario(Scenario scenario, InjectAssistantInput input) {
-    if (input.getInjectByTTPNumber() > MAX_NUMBER_INJECTS) {
-      throw new UnsupportedOperationException(
-          "Number of inject by Attack Pattern must be less than or equal to 5");
-    }
-    List<Endpoint> endpoints = this.endpointService.endpoints(input.getAssetIds());
-    List<AssetGroup> assetGroups = this.assetGroupService.assetGroups(input.getAssetGroupIds());
-
-    Map<AssetGroup, List<Endpoint>> assetsFromGroupMap =
-        assetGroupService.assetsFromAssetGroupMap(assetGroups);
-
-    InjectorContract contractForPlaceholder =
-        injectorContractService.injectorContract(ManualContract.MANUAL_DEFAULT);
-
-    // Process injects generation for each attack pattern
-    List<Inject> injects = new ArrayList<>();
-    input
-        .getAttackPatternIds()
-        .forEach(
-            attackPatternId -> {
-              try {
-                Set<Inject> injectsToAdd =
-                    this.generateInjectsByAttackPatternId(
-                        attackPatternId,
-                        endpoints,
-                        assetsFromGroupMap,
-                        input.getInjectByTTPNumber(),
-                        contractForPlaceholder);
-                injects.addAll(injectsToAdd);
-              } catch (UnprocessableContentException e) {
-                throw new UnsupportedOperationException(e);
-              }
-            });
-
-    for (Inject inject : injects) {
-      inject.setScenario(scenario);
-    }
-
-    return injects;
-  }
-
-  /**
-   * Generates injects based on the provided attack pattern ID, endpoints, asset groups, and the
-   * number of injects to create for each AttackPattern.
-   *
-   * @param attackPatternId the internal ID of the attack pattern to generate injects for
-   * @param endpoints the list of endpoints to consider for the injects
-   * @param assetsFromGroupMap the list of asset groups to consider for the injects
-   * @param injectsPerAttackPattern the maximum number of injects to create for each AttackPattern
-   * @return a set of generated injects
-   */
-  private Set<Inject> generateInjectsByAttackPatternId(
-      String attackPatternId,
-      List<Endpoint> endpoints,
-      Map<AssetGroup, List<Endpoint>> assetsFromGroupMap,
-      Integer injectsPerAttackPattern,
-      InjectorContract contractForPlaceholder)
-      throws UnprocessableContentException {
-
-    // Check if attack pattern exist
-    AttackPattern attackPattern = attackPatternService.findById(attackPatternId);
-
-    Set<Inject> injects =
-        buildInjectsBasedOnAttackPatternsAndAssetsAndAssetGroups(
-            attackPattern,
-            endpoints,
-            assetsFromGroupMap,
-            injectsPerAttackPattern,
-            contractForPlaceholder);
-
-    if (injects.isEmpty()) {
-      throw new UnprocessableContentException("No target found");
-    }
-    return injects;
-  }
 
   // -- Used in Stix Import
 

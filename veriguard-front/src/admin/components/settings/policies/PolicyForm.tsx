@@ -46,27 +46,18 @@ const PolicyForm: FunctionComponent<Props> = ({
           name="platform_login_message"
           label={t('Platform login message')}
           style={{ marginTop: 0 }}
-          askAi={false}
-          inInject={false}
-          inArticle={false}
           disabled={ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS)}
         />
         <MarkDownFieldController
           name="platform_consent_message"
           label={t('Platform consent message')}
           style={{ marginTop: 20 }}
-          askAi={false}
-          inInject={false}
-          inArticle={false}
           disabled={ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS)}
         />
         <MarkDownFieldController
           name="platform_consent_confirm_text"
           label={t('Platform consent confirm text')}
           style={{ marginTop: 20 }}
-          askAi={false}
-          inInject={false}
-          inArticle={false}
           disabled={ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS)}
         />
         <div style={{ marginTop: 20 }}>
