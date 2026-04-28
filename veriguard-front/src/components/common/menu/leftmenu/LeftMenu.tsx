@@ -13,7 +13,7 @@ import useLeftMenu from './useLeftMenu';
 
 const LeftMenu: FunctionComponent<{
   entries: LeftMenuEntries[];
-  bottomEntries: LeftMenuEntries[];
+  bottomEntries?: LeftMenuEntries[];
 }> = ({ entries = [], bottomEntries = [] }) => {
   // Standard hooks
   const theme = useTheme();

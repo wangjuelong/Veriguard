@@ -89,7 +89,6 @@ const ThemeLight = (
       lightBackground: hexToRGB(EE_COLOR, 0.08),
       contrastText: '#ffffff',
     },
-    xtmhub: { main: '#00f1bd' },
     widgets: {
       securityDomains: {
         colors: {

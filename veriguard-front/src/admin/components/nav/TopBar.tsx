@@ -1,7 +1,7 @@
 import { AccountCircleOutlined, AppsOutlined, ImportantDevicesOutlined } from '@mui/icons-material';
 import { AppBar, Badge, Box, Grid, IconButton, Menu, MenuItem, Popover, Toolbar, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { type FunctionComponent, type MouseEvent as ReactMouseEvent, useContext, useEffect, useState } from 'react';
+import { type FunctionComponent, type MouseEvent as ReactMouseEvent, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
@@ -14,13 +14,9 @@ import oaevDark from '../../../static/images/xtm/oaev_dark.png';
 import oaevLight from '../../../static/images/xtm/oaev_light.png';
 import octiDark from '../../../static/images/xtm/octi_dark.png';
 import octiLight from '../../../static/images/xtm/octi_light.png';
-import xtmhubDark from '../../../static/images/xtm/xtm_hub_dark.png';
-import xtmhubLight from '../../../static/images/xtm/xtm_hub_light.png';
-import { MESSAGING$, XTM_HUB_DEFAULT_URL } from '../../../utils/Environment';
+import { MESSAGING$ } from '../../../utils/Environment';
 import { useAppDispatch } from '../../../utils/hooks';
 import useAuth from '../../../utils/hooks/useAuth';
-import { AbilityContext } from '../../../utils/permissions/permissionsContext';
-import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
 
 const useStyles = makeStyles()(theme => ({
   appBar: {
@@ -98,7 +94,6 @@ const TopBar: FunctionComponent = () => {
   const { t } = useFormatter();
   const { settings } = useAuth();
   const { bannerHeightNumber } = computeBannerSettings(settings);
-  const ability = useContext(AbilityContext);
 
   const [xtmOpen, setXtmOpen] = useState<{
     open: boolean;
@@ -169,20 +164,6 @@ const TopBar: FunctionComponent = () => {
 
   const [searchParams] = useSearchParams();
   const [search] = searchParams.getAll('search');
-
-  const xtmhubBadgeImg = (
-    <img
-      style={{
-        width: '100%',
-        paddingRight: theme.spacing(2),
-        paddingLeft: theme.spacing(2),
-      }}
-      src={theme.palette.mode === 'dark' ? xtmhubDark : xtmhubLight}
-      alt="XTM Hub"
-    />
-  );
-  const shouldXtmHubRedirectToSite = settings.xtm_hub_registration_status === 'registered'
-    || !ability.can(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS);
 
   return (
     <AppBar
@@ -259,29 +240,6 @@ const TopBar: FunctionComponent = () => {
               >
                 <div className={classes.subtitle}>{t('Filigran eXtended Threat Management')}</div>
                 <Grid container spacing={3}>
-                  <Grid size={12}>
-                    <Tooltip title="XTM Hub">
-                      { shouldXtmHubRedirectToSite ? (
-                        <a
-                          className={classes.xtmItem}
-                          href={settings.xtm_hub_enable && settings.xtm_hub_url ? settings.xtm_hub_url : XTM_HUB_DEFAULT_URL}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={handleCloseXtm}
-                        >
-                          <Badge variant="dot" color={settings.xtm_hub_registration_status === 'registered' ? 'success' : 'warning'}>
-                            {xtmhubBadgeImg}
-                          </Badge>
-                        </a>
-                      ) : (
-                        <Link className={classes.xtmItem} to="/admin/settings/experience" onClick={handleCloseXtm}>
-                          <Badge variant="dot" color="warning">
-                            {xtmhubBadgeImg}
-                          </Badge>
-                        </Link>
-                      )}
-                    </Tooltip>
-                  </Grid>
                   <Grid size={6}>
                     <Tooltip title={settings.xtm_opencti_enable && settings.xtm_opencti_url ? t('Platform connected') : t('Get OpenCTI now')}>
                       <a

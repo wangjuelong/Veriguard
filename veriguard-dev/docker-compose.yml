@@ -242,34 +242,6 @@ services:
       timeout: 5s
       retries: 3
     restart: always
-  xtm-composer:
-    container_name: xtm-composer
-    image: filigran/xtm-composer:latest
-    platform: linux/amd64
-    network_mode: host # allow connecting to non docker local instance
-    environment:
-      - MANAGER__ID=${XTM_COMPOSER_ID}
-      - "MANAGER__NAME=XTM Integrations Manager"
-      - MANAGER__CREDENTIALS_KEY_FILEPATH=/keys/private_key.pem
-      - VERIGUARD__ENABLE=true
-      - OPENCTI__ENABLE=false
-      - VERIGUARD__URL=${VERIGUARD_URL:-http://localhost:8080}
-      - VERIGUARD__TOKEN=${VERIGUARD_ADMIN_TOKEN}
-      - VERIGUARD__DAEMON__SELECTOR=docker
-      # Workaround: pending https://github.com/FiligranHQ/xtm-composer/issues/64,
-      # use OPENCTI__ keys to customise the docker daemon
-      - OPENCTI__DAEMON__DOCKER__NETWORK_MODE=host
-      # Provision the equivalent VERIGUARD__ key for when this is fixed
-      - VERIGUARD__DAEMON__DOCKER__NETWORK_MODE=host
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - rsakeys:/keys:ro  # RSA key mounted as read-only
-    depends_on:
-      rsa-key-generator:
-        condition: service_healthy
-      veriguard-dev-rabbitmq:
-        condition: service_healthy
-    restart: always
 volumes:
   esdata:
     driver: local

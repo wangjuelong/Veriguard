@@ -15,13 +15,10 @@ import Loader from './components/Loader';
 import Message from './components/Message';
 import NotFound from './components/NotFound';
 import SystemBanners from './public/components/systembanners/SystemBanners';
-import LicenseBanner from './public/components/trialbanners/LicenseBanner';
-import StartTrialBanner from './public/components/trialbanners/StartTrialBanner';
 import { useHelper } from './store';
 import ErrorHandler from './utils/error/ErrorHandler';
 import { useAppDispatch } from './utils/hooks';
 import { UserContext } from './utils/hooks/useAuth';
-import useNetworkCheck from './utils/hooks/useCheckNetwork';
 import PermissionsProvider from './utils/permissions/PermissionsProvider';
 
 const RootPublic = lazy(() => import('./public/Root'));
@@ -59,12 +56,11 @@ const Root = () => {
     }
   }, [logged, me]);
 
-  const { isReachable } = useNetworkCheck(settings?.xtm_hub_url && `${settings?.xtm_hub_url}/health`);
   if (logged && typeof logged === 'object' && Object.keys(logged).length === 0) {
     return <div />;
   }
 
-  if (!logged || !me || !settings || isReachable === undefined) {
+  if (!logged || !me || !settings) {
     return (
       <Suspense fallback={<Loader />}>
         <RootPublic />
@@ -78,7 +74,6 @@ const Root = () => {
         value={{
           me,
           settings,
-          isXTMHubAccessible: isReachable,
         }}
       >
         <StyledEngineProvider injectFirst>
@@ -90,8 +85,6 @@ const Root = () => {
                 <ErrorHandler />
                 <EnterpriseEditionAgreementDialog />
                 <SystemBanners settings={settings} />
-                <LicenseBanner settings={settings} />
-                <StartTrialBanner settings={settings} />
                 <Suspense fallback={<Loader />}>
                   <Routes>
                     <Route

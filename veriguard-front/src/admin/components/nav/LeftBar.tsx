@@ -1,11 +1,10 @@
-import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, OnlinePredictionOutlined, PersonOutlined, RocketLaunchOutlined, RowingOutlined, SchoolOutlined, SettingsOutlined, SmartButtonOutlined, SubscriptionsOutlined, TerminalOutlined, VerifiedUserOutlined, Widgets } from '@mui/icons-material';
+import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, OnlinePredictionOutlined, PersonOutlined, RowingOutlined, SchoolOutlined, SettingsOutlined, SmartButtonOutlined, SubscriptionsOutlined, TerminalOutlined, VerifiedUserOutlined, Widgets } from '@mui/icons-material';
 import { Binoculars, NewspaperVariantMultipleOutline, PostOutline, SecurityNetwork, SelectGroup, Target } from 'mdi-material-ui';
 import { useContext } from 'react';
 
 import LeftMenu from '../../../components/common/menu/leftmenu/LeftMenu';
 import { AbilityContext } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
-import { GETTING_STARTED_URI } from '../getting_started/GettingStartedRoutes';
 
 const LeftBar = () => {
   const ability = useContext(AbilityContext);
@@ -230,31 +229,13 @@ const LeftBar = () => {
               label: 'Data ingestion',
               userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
             },
-            {
-              link: '/admin/settings/experience',
-              label: 'Filigran Experience',
-              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
-            },
           ],
         },
       ],
     },
   ];
-  const bottomEntries = [
-    {
-      userRight: true,
-      items: [
-        {
-          path: `/admin/${GETTING_STARTED_URI}`,
-          icon: () => (<RocketLaunchOutlined />),
-          label: 'Getting Started',
-          userRight: true,
-        },
-      ],
-    },
-  ];
   return (
-    <LeftMenu entries={entries} bottomEntries={bottomEntries} />
+    <LeftMenu entries={entries} />
   );
 };
 

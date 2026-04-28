@@ -4,7 +4,6 @@ import { lazy, Suspense, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router';
 import { type CSSObject } from 'tss-react';
 import { makeStyles } from 'tss-react/mui';
-import { useLocalStorage } from 'usehooks-ts';
 
 import { fetchAttackPatterns } from '../actions/AttackPattern';
 import fetchDomains from '../actions/domains/domain-actions';
@@ -20,11 +19,8 @@ import { useAppDispatch } from '../utils/hooks';
 import useDataLoader from '../utils/hooks/useDataLoader';
 import ProtectedRoute from '../utils/permissions/ProtectedRoute';
 import { ACTIONS, SUBJECTS } from '../utils/permissions/types';
-import { GETTING_STARTED_LOCAL_STORAGE_KEY } from './components/getting_started/GettingStartedPage';
-import GettingStartedRoutes, { GETTING_STARTED_URI } from './components/getting_started/GettingStartedRoutes';
 import LeftBar from './components/nav/LeftBar';
 import TopBar from './components/nav/TopBar';
-import DeployScenario from './components/scenarios/DeployScenario';
 import InjectIndex from './components/simulations/simulation/injects/InjectIndex';
 
 const Home = lazy(() => import('./components/Home'));
@@ -86,13 +82,6 @@ const Index = () => {
     dispatch(fetchDomains());
   });
   const { bannerHeight } = computeBannerSettings(settings);
-  const [goToGettingStarted, setGoToGettingStarted] = useLocalStorage<boolean>(GETTING_STARTED_LOCAL_STORAGE_KEY, true);
-  useEffect(() => {
-    if (goToGettingStarted) {
-      navigate('/admin/' + GETTING_STARTED_URI, { replace: true });
-      setGoToGettingStarted(false);
-    }
-  }, [goToGettingStarted, navigate, setGoToGettingStarted]);
 
   return (
     <Box
@@ -175,7 +164,6 @@ const Index = () => {
               )}
             />
             <Route path="scenarios" element={errorWrapper(Scenarios)()} />
-            <Route path="deploy-scenario/:serviceInstanceId/:fileId" element={errorWrapper(DeployScenario)()} />
             <Route
               path="scenarios/:scenarioId/*"
               element={(
@@ -233,7 +221,6 @@ const Index = () => {
               )}
             />
             <Route path="agents/*" element={errorWrapper(IndexAgents)()} />
-            {GettingStartedRoutes}
             <Route
               path="settings/*"
               element={(

@@ -190,28 +190,6 @@ class V1_DataImporterTest extends IntegrationTest {
 
   @Test
   @Transactional
-  void testImportXTMHubScenarios() throws IOException {
-    MockitoAnnotations.openMocks(this);
-
-    ObjectMapper mapper = new ObjectMapper();
-    Path xtmHubScenariosDir = Paths.get("src/test/resources/xtmhub-scenarios");
-
-    List<Path> xtmScenariosFilesPath =
-        Files.list(xtmHubScenariosDir)
-            .filter(Files::isRegularFile)
-            .filter(p -> p.toString().endsWith(".json"))
-            .toList();
-
-    for (Path xtmScenariosFilePath : xtmScenariosFilesPath) {
-      String jsonContent = Files.readString(xtmScenariosFilePath);
-      JsonNode importNode = mapper.readTree(jsonContent);
-      this.importer.importData(
-          importNode, Map.of(), null, null, null, null, Constants.IMPORTED_OBJECT_NAME_SUFFIX);
-    }
-  }
-
-  @Test
-  @Transactional
   void test_empty() throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     String jsonContent =
