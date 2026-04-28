@@ -2,6 +2,7 @@ HELP.md
 *.bat
 **/application-dev.properties
 target/
+!veriguard-front/src/utils/target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 logs/**
