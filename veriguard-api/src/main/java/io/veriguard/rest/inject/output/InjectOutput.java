@@ -8,7 +8,6 @@ import io.veriguard.database.model.InjectorContract;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.helper.InjectModelHelper;
 import io.veriguard.injectors.email.EmailContract;
-import io.veriguard.injectors.ovh.OvhSmsContract;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
@@ -95,8 +94,7 @@ public class InjectOutput {
   @JsonProperty("inject_testable")
   @Schema(description = "Testable state of the inject")
   public boolean canBeTested() {
-    return EmailContract.TYPE.equals(this.getInjectType())
-        || OvhSmsContract.TYPE.equals(this.getInjectType());
+    return EmailContract.TYPE.equals(this.getInjectType());
   }
 
   @JsonProperty("inject_contract_domains")
