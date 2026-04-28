@@ -239,9 +239,12 @@ rg -l 'XtmHub\|xtm.?hub\|xtm_hub' veriguard-api/src/test/ veriguard-front/src/ 2
 ```bash
 rm -rf veriguard-api/src/main/java/io/veriguard/xtmhub/
 rm -rf veriguard-api/src/main/java/io/veriguard/api/xtmhub/
-find veriguard-api/src/test -path '*Xtm*' -delete
-find veriguard-api/src/test -name '*XtmHub*Test.java' -delete
+rm -rf veriguard-api/src/test/java/io/veriguard/api/xtmhub/ 2>/dev/null
+find veriguard-api/src/test -name 'XtmHub*Test.java' -delete
+find veriguard-api/src/test -name 'WithMockXtmHubConfig*' -delete
 ```
+
+> 注意：不要用 `find ... -path '*Xtm*' -delete` 这类通配符。`XtmComposer` 是另一个仍保留的子系统（管理 connector 实例），其测试 `XtmComposerApiTest.java` 必须保留。仅匹配 `XtmHub*` 名称才安全。
 
 - [ ] **Step 3: PlatformSettingsService 中去 XtmHub 字段**
 
