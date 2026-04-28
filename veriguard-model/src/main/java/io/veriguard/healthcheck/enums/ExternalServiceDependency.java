@@ -81,6 +81,12 @@ public enum ExternalServiceDependency {
       throw new IllegalArgumentException("Injector type cannot be null or blank");
     }
 
+    // Why: legacy data packs (zip scenarios) reference the old "openaev_*" identifiers.
+    // Map them to the renamed "veriguard_*" equivalents so historical content keeps importing.
+    if (injectorType.regionMatches(true, 0, "openaev_", 0, 8)) {
+      injectorType = "veriguard_" + injectorType.substring(8);
+    }
+
     // Special cases
     if ("veriguard_email".equalsIgnoreCase(injectorType)) {
       return new ExternalServiceDependency[] {SMTP, IMAP};
