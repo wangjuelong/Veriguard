@@ -21,7 +21,6 @@ import io.veriguard.ee.License;
 import io.veriguard.engine.EngineService;
 import io.veriguard.expectation.ExpectationPropertiesConfig;
 import io.veriguard.helper.RabbitMQHelper;
-import io.veriguard.opencti.config.OpenCTIConfig;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.settings.PreviewFeature;
 import io.veriguard.rest.settings.form.*;
@@ -58,7 +57,6 @@ public class PlatformSettingsService {
   private final ApplicationContext context;
   private final Environment env;
   private final SettingRepository settingRepository;
-  private final OpenCTIConfig openCTIConfig;
   private final AiConfig aiConfig;
   private final Ee eeService;
   private final EngineService engineService;
@@ -300,8 +298,6 @@ public class PlatformSettingsService {
             .orElse(PLATFORM_NAME.defaultValue()));
     platformSettings.setPlatformBaseUrl(veriguardConfig.getBaseUrl());
     platformSettings.setPlatformAgentUrl(veriguardConfig.getBaseUrlForAgent());
-    platformSettings.setXtmOpenctiEnable(openCTIConfig.getEnable());
-    platformSettings.setXtmOpenctiUrl(openCTIConfig.getUrl());
     platformSettings.setAiEnabled(aiConfig.isEnabled());
     platformSettings.setAiHasToken(StringUtils.hasText(aiConfig.getToken()));
     platformSettings.setAiType(aiConfig.getType());

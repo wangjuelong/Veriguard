@@ -1,13 +1,10 @@
 package io.veriguard.rest.attack_pattern.service;
 
 import static io.veriguard.helper.StreamHelper.fromIterable;
-import static io.veriguard.utils.SecurityCoverageUtils.getExternalIds;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.AttackPattern;
-import io.veriguard.database.model.SecurityCoverage;
-import io.veriguard.database.model.StixRefToExternalRef;
 import io.veriguard.database.repository.AttackPatternRepository;
 import io.veriguard.ee.Ee;
 import io.veriguard.rest.attack_pattern.form.AnalysisResultFromTTPExtractionAIWebserviceOutput;
@@ -232,21 +229,6 @@ public class AttackPatternService {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  // -- STIX --
-
-  /**
-   * Resolves external AttackPattern references from a {@link SecurityCoverage} into internal {@link
-   * AttackPattern} entities.
-   *
-   * @param stixRefs list of tuples linking an atatck pattern ext ID with a stix ID
-   * @return list of resolved internal AttackPattern entities
-   */
-  public Map<String, AttackPattern> fetchInternalAttackPatternIds(
-      Set<StixRefToExternalRef> stixRefs) {
-    return getAttackPatternsByExternalIds(getExternalIds(stixRefs)).stream()
-        .collect(Collectors.toMap(attack -> attack.getId(), Function.identity()));
   }
 
   public List<AttackPattern> getAttackPattern(List<String> idsAttackPattern) {

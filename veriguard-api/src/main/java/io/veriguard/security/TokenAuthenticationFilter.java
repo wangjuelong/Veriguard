@@ -3,12 +3,9 @@ package io.veriguard.security;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.StringUtils.hasLength;
 
-import io.jsonwebtoken.JwtException;
 import io.veriguard.database.model.Token;
 import io.veriguard.database.model.User;
 import io.veriguard.database.repository.TokenRepository;
-import io.veriguard.opencti.errors.ConnectorError;
-import io.veriguard.security.token.JwtExtractor;
 import io.veriguard.security.token.PlainTokenExtractor;
 import io.veriguard.service.UserService;
 import jakarta.servlet.FilterChain;
@@ -31,7 +28,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
   private static final String BEARER_PREFIX = "bearer ";
   private TokenRepository tokenRepository;
   private UserService userService;
-  private JwtExtractor jwtExtractor;
   private PlainTokenExtractor plainTokenExtractor;
 
   @Autowired
@@ -45,11 +41,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
   }
 
   @Autowired
-  public void setJwtExtractor(JwtExtractor jwtExtractor) {
-    this.jwtExtractor = jwtExtractor;
-  }
-
-  @Autowired
   public void setPlainTokenExtractor(PlainTokenExtractor plainTokenExtractor) {
     this.plainTokenExtractor = plainTokenExtractor;
   }
@@ -57,11 +48,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
   private String parseAuthorization(String value) {
     if (value.toLowerCase().startsWith(BEARER_PREFIX)) {
       String candidate = value.substring(BEARER_PREFIX.length());
-      try {
-        return this.jwtExtractor.extractToken(candidate);
-      } catch (ConnectorError | JwtException | IllegalArgumentException e) {
-        return this.plainTokenExtractor.extractToken(candidate);
-      }
+      return this.plainTokenExtractor.extractToken(candidate);
     }
     return value;
   }

@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.Group;
 import io.veriguard.database.model.User;
-import io.veriguard.opencti.connectors.Constants;
 import io.veriguard.service.UserMappingService;
 import io.veriguard.utils.fixtures.GroupFixture;
 import io.veriguard.utils.fixtures.UserFixture;
@@ -34,6 +33,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 @Transactional
 public class UserMappingServiceTest extends IntegrationTest {
 
+  private static final String FIXED_GROUP_ID = "0b4db570-fdf4-44e9-8daa-39130189fec8";
+  private static final String FIXED_ROLE_ID = "2c24790b-fa69-4565-8dc8-b00f85ca47d5";
+
   @Autowired private GroupComposer groupComposer;
   @Autowired UserComposer userComposer;
   @Autowired private UserMappingService userMappingService;
@@ -53,7 +55,7 @@ public class UserMappingServiceTest extends IntegrationTest {
     String object =
         "[{\"idpGroup\": \"observer\",\"userGroup\": \"observerUserGroup\",\"autoCreate\": \"false\"}]";
     Group specificGroup = GroupFixture.createGroupWithName("observerUserGroup");
-    specificGroup.setId(Constants.PROCESS_STIX_GROUP_ID);
+    specificGroup.setId(FIXED_GROUP_ID);
     specificGroup.setDescription("a description");
     specificGroup.setRoles(new ArrayList<>());
     groupComposer.forGroup(specificGroup).persist();
@@ -122,7 +124,7 @@ public class UserMappingServiceTest extends IntegrationTest {
     String object =
         "[{\"idpGroup\": \"observer\",\"userGroup\": \"admin\",\"autoCreate\": \"false\"}]";
     Group specificGroup = GroupFixture.createGroupWithName("admin");
-    specificGroup.setId(Constants.PROCESS_STIX_GROUP_ID);
+    specificGroup.setId(FIXED_GROUP_ID);
     specificGroup.setDescription("a description");
     specificGroup.setRoles(new ArrayList<>());
     groupComposer.forGroup(specificGroup).persist();
@@ -149,7 +151,7 @@ public class UserMappingServiceTest extends IntegrationTest {
     String object =
         "[{\"idpGroup\": \"observer\",\"userGroup\": \"admin1\",\"autoCreate\": \"false\"},{\"idpGroup\": \"observer\",\"userGroup\": \"admin2\",\"autoCreate\": \"true\"}]";
     Group specificGroup = GroupFixture.createGroupWithName("observer");
-    specificGroup.setId(Constants.PROCESS_STIX_GROUP_ID);
+    specificGroup.setId(FIXED_GROUP_ID);
     specificGroup.setDescription("a description");
     specificGroup.setRoles(new ArrayList<>());
     groupComposer.forGroup(specificGroup).persist();
@@ -177,12 +179,12 @@ public class UserMappingServiceTest extends IntegrationTest {
     String object =
         "[{\"idpGroup\": \"observer1\",\"userGroup\": \"observerOAEV1\",\"autoCreate\": \"true\"},{\"idpGroup\": \"observer2\",\"userGroup\": \"observerOAEV2\",\"autoCreate\": \"true\"}]";
     Group specificGroup1 = GroupFixture.createGroupWithName("observerOAEV1");
-    specificGroup1.setId(Constants.PROCESS_STIX_GROUP_ID);
+    specificGroup1.setId(FIXED_GROUP_ID);
     specificGroup1.setDescription("a description");
     specificGroup1.setRoles(new ArrayList<>());
     groupComposer.forGroup(specificGroup1).persist();
     Group specificGroup2 = GroupFixture.createGroupWithName("observerOAEV2");
-    specificGroup2.setId(Constants.PROCESS_STIX_ROLE_ID);
+    specificGroup2.setId(FIXED_ROLE_ID);
     specificGroup2.setDescription("a description");
     specificGroup2.setRoles(new ArrayList<>());
     groupComposer.forGroup(specificGroup2).persist();

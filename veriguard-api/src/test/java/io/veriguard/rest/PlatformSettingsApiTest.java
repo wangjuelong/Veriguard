@@ -39,9 +39,6 @@ class PlatformSettingsApiTest extends IntegrationTest {
           "platform_id",
           "platform_name",
           "platform_base_url",
-          // OpenCTI
-          "xtm_opencti_enable",
-          "xtm_opencti_url",
           // AI config
           "platform_ai_enabled",
           "platform_ai_has_token",
