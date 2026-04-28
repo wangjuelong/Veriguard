@@ -43,7 +43,6 @@ const ScenarioForm: FunctionComponent<Props> = ({
     control,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
-    setValue,
   } = useForm<ScenarioInput>({
     mode: 'onTouched',
     resolver: zodResolver(
@@ -104,8 +103,6 @@ const ScenarioForm: FunctionComponent<Props> = ({
               inputProps={register('scenario_name')}
               InputLabelProps={{ required: true }}
               control={control}
-              setValue={setValue}
-              askAi={true}
             />
             <div style={{
               display: 'flex',
@@ -189,8 +186,6 @@ const ScenarioForm: FunctionComponent<Props> = ({
               helperText={errors.scenario_description?.message}
               inputProps={register('scenario_description')}
               control={control}
-              setValue={setValue}
-              askAi={true}
             />
             <Controller
               control={control}

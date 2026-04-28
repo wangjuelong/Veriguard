@@ -6,12 +6,7 @@ import static java.util.Collections.emptyList;
 import io.veriguard.database.helper.InjectorContractRepositoryHelper;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.InjectorContractRepository;
-import io.veriguard.injectors.manual.ManualContract;
-import io.veriguard.rest.attack_pattern.service.AttackPatternService;
 import io.veriguard.rest.exception.UnprocessableContentException;
-import io.veriguard.rest.injector_contract.InjectorContractService;
-import io.veriguard.service.AssetGroupService;
-import io.veriguard.service.EndpointService;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,15 +19,8 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class InjectAssistantService {
 
-  public static final int MAX_NUMBER_INJECTS = 5;
-
   private final InjectorContractRepositoryHelper injectorContractRepositoryHelper;
-  private final AssetGroupService assetGroupService;
-  private final EndpointService endpointService;
   private final InjectService injectService;
-  private final AttackPatternService attackPatternService;
-  private final InjectorContractService injectorContractService;
-
   private final InjectorContractRepository injectorContractRepository;
 
   // -- Used in Stix Import
