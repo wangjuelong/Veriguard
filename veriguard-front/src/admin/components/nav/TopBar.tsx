@@ -59,14 +59,6 @@ const useStyles = makeStyles()(theme => ({
     fontSize: '15px',
     marginBottom: 20,
   },
-  xtmItem: {
-    'display': 'block',
-    'color': theme.palette.text?.primary,
-    'textAlign': 'center',
-    'padding': '15px 0 10px 0',
-    'borderRadius': 4,
-    '&:hover': { backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' },
-  },
   xtmItemCurrent: {
     display: 'block',
     color: theme.palette.text?.primary,
