@@ -109,7 +109,7 @@ public class InjectSpecification {
   // -- TEST --
 
   public static final Set<String> VALID_TESTABLE_TYPES =
-      new HashSet<>(Arrays.asList("veriguard_email", "veriguard_ovh_sms"));
+      new HashSet<>(Arrays.asList("veriguard_email"));
 
   public static Specification<Inject> testable() {
     return (root, query, cb) ->

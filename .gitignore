@@ -35,3 +35,4 @@ veriguard-dev/.telemetry.json
 
 ### VS Code ###
 .vscode/
+/.claude/

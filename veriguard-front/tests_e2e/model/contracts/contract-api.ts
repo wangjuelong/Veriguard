@@ -248,68 +248,6 @@ class ContractApiMock {
               },
               manual: false,
             },
-            {
-              config: {
-                color_dark: '#9c27b0',
-                color_light: '#9c27b0',
-                expose: false,
-                icon: '/img/sms.png',
-                label: { en: 'SMS (OVH)' },
-                type: 'openex_ovh_sms',
-              },
-              context: {},
-              contract_id: 'e9e902bc-b03d-4223-89e1-fca093ac79dd',
-              fields: [
-                {
-                  cardinality: 'n',
-                  defaultValue: [
-                  ],
-                  key: 'teams',
-                  label: 'Teams',
-                  linkedFields: [
-                  ],
-                  linkedValues: [
-                  ],
-                  mandatory: true,
-                  mandatoryGroups: null,
-                  type: 'team',
-                },
-                {
-                  defaultValue: '',
-                  key: 'message',
-                  label: 'Message',
-                  linkedFields: [
-                  ],
-                  linkedValues: [
-                  ],
-                  mandatory: true,
-                  mandatoryGroups: null,
-                  richText: false,
-                  type: 'textarea',
-                },
-                {
-                  cardinality: 'n',
-                  defaultValue: [
-                  ],
-                  key: 'expectations',
-                  label: 'Expectations',
-                  linkedFields: [
-                  ],
-                  linkedValues: [
-                  ],
-                  mandatory: false,
-                  mandatoryGroups: null,
-                  predefinedExpectations: [
-                  ],
-                  type: 'expectation',
-                },
-              ],
-              label: {
-                en: 'Send a SMS',
-                fr: 'Envoyer un SMS',
-              },
-              manual: false,
-            },
           ],
           empty: false,
           first: true,
