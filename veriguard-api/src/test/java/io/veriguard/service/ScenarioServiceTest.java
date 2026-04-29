@@ -20,7 +20,6 @@ import io.veriguard.healthcheck.utils.HealthCheckUtils;
 import io.veriguard.rest.inject.service.InjectDuplicateService;
 import io.veriguard.rest.inject.service.InjectService;
 import io.veriguard.service.scenario.ScenarioService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.TargetType;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.mapper.ExerciseMapper;
@@ -67,7 +66,6 @@ class ScenarioServiceTest extends IntegrationTest {
 
   @Mock private LicenseCacheManager licenseCacheManager;
   @Autowired private ExerciseMapper exerciseMapper;
-  @Mock private ActionMetricCollector actionMetricCollector;
 
   private static String USER_ID;
   private static String TEAM_ID;
@@ -85,7 +83,6 @@ class ScenarioServiceTest extends IntegrationTest {
             scenarioTeamUserRepository,
             articleRepository,
             exerciseMapper,
-            actionMetricCollector,
             licenseCacheManager,
             eeService,
             variableService,
@@ -112,7 +109,6 @@ class ScenarioServiceTest extends IntegrationTest {
             scenarioTeamUserRepository,
             articleRepository,
             exerciseMapper,
-            actionMetricCollector,
             licenseCacheManager,
             eeService,
             variableService,

@@ -54,10 +54,6 @@ public class PlatformSettings extends PublicPlatformSettings {
   @Schema(description = "URL of the server containing the map tile with dark theme")
   private String mapTileServerDark;
 
-  @JsonProperty("telemetry_manager_enable")
-  @Schema(description = "True if telemetry manager enable")
-  private Boolean telemetryManagerEnable;
-
   @JsonProperty("platform_version")
   @Schema(description = "Current version of the platform")
   private String platformVersion;

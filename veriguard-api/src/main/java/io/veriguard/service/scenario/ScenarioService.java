@@ -46,7 +46,6 @@ import io.veriguard.rest.scenario.response.ScenarioOutput;
 import io.veriguard.rest.scenario.response.ScenarioTeamUserOutput;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.TargetType;
 import io.veriguard.utils.mapper.ExerciseMapper;
 import io.veriguard.utils.mapper.ScenarioMapper;
@@ -109,7 +108,6 @@ public class ScenarioService {
   private final ArticleRepository articleRepository;
 
   private final ExerciseMapper exerciseMapper;
-  private final ActionMetricCollector actionMetricCollector;
   private final LicenseCacheManager licenseCacheManager;
 
   private final Ee eeService;
@@ -132,7 +130,6 @@ public class ScenarioService {
   @Transactional
   public Scenario createScenario(@NotNull final Scenario scenario) {
     computeEmails(scenario);
-    this.actionMetricCollector.addScenarioCreatedCount();
     return this.scenarioRepository.save(scenario);
   }
 
@@ -760,7 +757,6 @@ public class ScenarioService {
       getListOfVariables(scenarioDuplicate, scenarioOrigin);
       getObjectives(scenarioDuplicate, scenarioOrigin);
       getLessonsCategories(scenarioDuplicate, scenarioOrigin);
-      this.actionMetricCollector.addScenarioCreatedCount();
       return scenarioRepository.save(scenario);
     }
     throw new ElementNotFoundException();

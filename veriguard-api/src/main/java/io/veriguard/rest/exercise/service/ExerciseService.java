@@ -39,7 +39,6 @@ import io.veriguard.rest.scenario.service.ScenarioStatisticService;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.ScenarioRecurrenceService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.InjectExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;
@@ -99,7 +98,6 @@ public class ExerciseService {
   private final ExerciseMapper exerciseMapper;
   private final InjectMapper injectMapper;
   private final ResultUtils resultUtils;
-  private final ActionMetricCollector actionMetricCollector;
   private final LicenseCacheManager licenseCacheManager;
 
   private final AssetRepository assetRepository;
@@ -147,7 +145,6 @@ public class ExerciseService {
       }
     }
 
-    actionMetricCollector.addSimulationCreatedCount();
     return exerciseRepository.save(exercise);
   }
 
@@ -189,7 +186,6 @@ public class ExerciseService {
     Exercise exerciseOrigin = exerciseRepository.findById(exerciseId).orElseThrow();
     Exercise exercise = copyExercice(exerciseOrigin);
     Exercise exerciseDuplicate = exerciseRepository.save(exercise);
-    actionMetricCollector.addSimulationCreatedCount();
     duplicateGrants(exerciseDuplicate, exerciseOrigin);
     getListOfDuplicatedInjects(exerciseDuplicate, exerciseOrigin);
     Map<String, Team> contextualTeams = getListOfExerciseTeams(exerciseDuplicate, exerciseOrigin);
@@ -486,7 +482,6 @@ public class ExerciseService {
       this.throwIfExerciseNotLaunchable(exercise);
       Instant nextMinute = now().truncatedTo(MINUTES).plus(1, MINUTES);
       exercise.setStart(nextMinute);
-      actionMetricCollector.addSimulationPlayedCount();
     }
     // If exercise move from pause to running state,
     // we log the pause date to be able to recompute inject dates.

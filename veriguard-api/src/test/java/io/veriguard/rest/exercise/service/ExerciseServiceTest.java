@@ -23,7 +23,6 @@ import io.veriguard.rest.inject.service.InjectDuplicateService;
 import io.veriguard.rest.inject.service.InjectService;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.ScenarioRecurrenceService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.InjectExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.TargetType;
@@ -63,7 +62,6 @@ class ExerciseServiceTest extends IntegrationTest {
   @Mock private ExerciseMapper exerciseMapper;
   @Mock private InjectMapper injectMapper;
   @Mock private ResultUtils resultUtils;
-  @Mock private ActionMetricCollector actionMetricCollector;
   @Mock private LicenseCacheManager licenseCacheManager;
 
   @Mock private AssetRepository assetRepository;
@@ -110,7 +108,6 @@ class ExerciseServiceTest extends IntegrationTest {
             exerciseMapper,
             injectMapper,
             resultUtils,
-            actionMetricCollector,
             licenseCacheManager,
             assetRepository,
             assetGroupRepository,

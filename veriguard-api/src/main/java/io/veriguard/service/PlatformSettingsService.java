@@ -303,7 +303,6 @@ public class PlatformSettingsService {
     platformSettings.setAiType(aiConfig.getType());
     platformSettings.setAiModel(aiConfig.getModel());
     platformSettings.setExecutorTaniumEnable(false);
-    platformSettings.setTelemetryManagerEnable(true);
 
     // Admin-only settings
     VeriguardPrincipal user = currentUser();

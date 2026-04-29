@@ -19,7 +19,6 @@ import io.veriguard.rest.exercise.service.PauseExerciseService;
 import io.veriguard.rest.inject.service.InjectDuplicateService;
 import io.veriguard.rest.inject.service.InjectService;
 import io.veriguard.service.scenario.ScenarioRecurrenceService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.fixtures.ExerciseFixture;
 import io.veriguard.utils.fixtures.InjectorContractFixture;
@@ -59,7 +58,6 @@ class ExerciseServiceIntegrationTest extends IntegrationTest {
   @Autowired private ExerciseMapper exerciseMapper;
   @Autowired private InjectMapper injectMapper;
   @Autowired private ResultUtils resultUtils;
-  @Mock private ActionMetricCollector actionMetricCollector;
   @Autowired private ArticleRepository articleRepository;
   @Autowired private ExerciseRepository exerciseRepository;
   @Autowired private TeamRepository teamRepository;
@@ -102,7 +100,6 @@ class ExerciseServiceIntegrationTest extends IntegrationTest {
             exerciseMapper,
             injectMapper,
             resultUtils,
-            actionMetricCollector,
             licenseCacheManager,
             assetRepository,
             assetGroupRepository,

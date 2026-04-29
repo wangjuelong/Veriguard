@@ -224,10 +224,6 @@ const Parameters = () => {
                   </ListItem>
                 )}
               <ListItem divider>
-                <ListItemText primary={t('Telemetry manager')} />
-                <ItemBoolean status={settings?.telemetry_manager_enable} variant="large" label={settings?.telemetry_manager_enable ? t('Enable') : t('Disabled')} />
-              </ListItem>
-              <ListItem divider>
                 <ListItemText primary={t('SMTP')} />
                 <ItemBoolean status={settings?.smtp_service_available === 'true'} variant="large" label={settings?.smtp_service_available === 'true' ? t('Enable') : t('Disabled')} />
               </ListItem>

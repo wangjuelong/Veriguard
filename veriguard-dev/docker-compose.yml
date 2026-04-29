@@ -86,23 +86,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-#  veriguard-pyroscope:
-#    container_name: veriguard-pyroscope
-#    image: grafana/pyroscope:latest
-#    restart: unless-stopped
-#    ports:
-#      - "4040:4040"
-#  veriguard-telemetry-otlp:
-#    container_name: veriguard-telemetry-otlp
-#    image: otel/opentelemetry-collector-contrib:0.119.0
-#    restart: unless-stopped
-#    volumes:
-#      - "./otlp-config.yaml:/etc/config/otlp-config.yaml"
-#      - "./telemetry.json:/telemetry.json"
-#    command:
-#      - '--config=/etc/config/otlp-config.yaml'
-#    ports:
-#      - "1010:1010"
   # pgAdmin - PostgreSQL management UI
   # Default credentials: see PGADMIN_USER/PGADMIN_PASSWORD in .env
   veriguard-dev-pgadmin:

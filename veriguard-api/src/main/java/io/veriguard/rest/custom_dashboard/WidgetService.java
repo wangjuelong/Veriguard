@@ -10,7 +10,6 @@ import io.veriguard.database.repository.CustomDashboardRepository;
 import io.veriguard.database.repository.WidgetRepository;
 import io.veriguard.engine.api.*;
 import io.veriguard.rest.custom_dashboard.utils.WidgetUtils;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.CustomDashboardTimeRange;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotBlank;
@@ -27,7 +26,6 @@ public class WidgetService {
 
   private final CustomDashboardRepository customDashboardRepository;
   private final WidgetRepository widgetRepository;
-  private final ActionMetricCollector actionMetricCollector;
 
   // -- CRUD --
 
@@ -45,7 +43,6 @@ public class WidgetService {
                     new EntityNotFoundException(
                         "Custom dashboard not found with id: " + customDashboardId));
     widget.setCustomDashboard(customDashboard);
-    this.sendTelemetryEvent(widget, false);
     return this.widgetRepository.save(widget);
   }
 
@@ -81,7 +78,6 @@ public class WidgetService {
     if (widget.isEmpty()) {
       throw new EntityNotFoundException("Widget not found with id: " + widgetId);
     }
-    this.sendTelemetryEvent(widget.get(), true);
     this.widgetRepository.deleteById(widgetId);
   }
 
@@ -168,19 +164,4 @@ public class WidgetService {
     return listInjectExpectationsConfig;
   }
 
-  /**
-   * Manage telemetry event for widgets management
-   *
-   * @param widget to apply telemetry
-   * @param isDeletedEvent to manage event
-   */
-  private void sendTelemetryEvent(Widget widget, boolean isDeletedEvent) {
-    if (WidgetType.AVERAGE.equals(widget.getType())) {
-      if (isDeletedEvent) {
-        actionMetricCollector.removeAverageCreatedCount();
-      } else {
-        actionMetricCollector.addAverageCreatedCount();
-      }
-    }
-  }
 }
