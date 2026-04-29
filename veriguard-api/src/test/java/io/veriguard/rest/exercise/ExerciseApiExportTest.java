@@ -14,8 +14,6 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.export.Mixins;
 import io.veriguard.integration.Manager;
-import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
-import io.veriguard.integration.impl.injectors.channel.ChannelInjectorIntegrationFactory;
 import io.veriguard.rest.exercise.exports.ExerciseFileExport;
 import io.veriguard.rest.exercise.exports.VariableMixin;
 import io.veriguard.rest.exercise.exports.VariableWithValueMixin;
@@ -65,8 +63,6 @@ class ExerciseApiExportTest extends IntegrationTest {
   @Autowired private ArticleService articleService;
   @Resource protected ObjectMapper mapper;
   @Autowired private FileService fileService;
-  @Autowired private ChannelInjectorIntegrationFactory channelInjectorIntegrationFactory;
-  @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
 
   @BeforeEach
   void before() throws Exception {
@@ -85,8 +81,7 @@ class ExerciseApiExportTest extends IntegrationTest {
     tagComposer.reset();
     exerciseComposer.reset();
     payloadComposer.reset();
-    new Manager(List.of(channelInjectorIntegrationFactory, challengeInjectorIntegrationFactory))
-        .monitorIntegrations();
+    new Manager(List.of()).monitorIntegrations();
 
     // delete the test files from the minio service
     for (String fileName : WELL_KNOWN_FILES.keySet()) {

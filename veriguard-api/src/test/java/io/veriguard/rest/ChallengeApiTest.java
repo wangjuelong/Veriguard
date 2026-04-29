@@ -21,7 +21,6 @@ import io.veriguard.database.repository.ChallengeRepository;
 import io.veriguard.database.repository.InjectRepository;
 import io.veriguard.database.repository.InjectorContractRepository;
 import io.veriguard.integration.Manager;
-import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
 import io.veriguard.service.scenario.ScenarioService;
 import io.veriguard.utils.mockUser.WithMockUser;
 import jakarta.annotation.Resource;
@@ -43,12 +42,11 @@ class ChallengeApiTest extends IntegrationTest {
   @Autowired private InjectRepository injectRepository;
   @Autowired private ChallengeRepository challengeRepository;
   @Autowired private InjectorContractRepository injectorContractRepository;
-  @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
   @Resource private ObjectMapper objectMapper;
 
   @BeforeEach
   public void before() throws Exception {
-    new Manager(List.of(challengeInjectorIntegrationFactory)).monitorIntegrations();
+    new Manager(List.of()).monitorIntegrations();
   }
 
   // -- SCENARIOS --

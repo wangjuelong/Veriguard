@@ -22,8 +22,6 @@ import io.veriguard.database.repository.InjectRepository;
 import io.veriguard.database.repository.ScenarioRepository;
 import io.veriguard.ee.Ee;
 import io.veriguard.integration.Manager;
-import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
-import io.veriguard.integration.impl.injectors.channel.ChannelInjectorIntegrationFactory;
 import io.veriguard.rest.exercise.exports.ExportOptions;
 import io.veriguard.rest.inject.service.InjectExportService;
 import io.veriguard.service.ArticleService;
@@ -85,13 +83,10 @@ class InjectImportTest extends IntegrationTest {
   @Autowired private ArticleService articleService;
   @Autowired private InjectorFixture injectorFixture;
   @MockBean private Ee eeService;
-  @Autowired private ChannelInjectorIntegrationFactory channelInjectorIntegrationFactory;
-  @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
 
   @BeforeEach
   void before() throws Exception {
-    new Manager(List.of(channelInjectorIntegrationFactory, challengeInjectorIntegrationFactory))
-        .monitorIntegrations();
+    new Manager(List.of()).monitorIntegrations();
 
     teamComposer.reset();
     userComposer.reset();

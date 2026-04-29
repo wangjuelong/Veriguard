@@ -18,8 +18,6 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.repository.InjectRepository;
 import io.veriguard.export.Mixins;
 import io.veriguard.integration.Manager;
-import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
-import io.veriguard.integration.impl.injectors.channel.ChannelInjectorIntegrationFactory;
 import io.veriguard.rest.inject.form.*;
 import io.veriguard.service.FileService;
 import io.veriguard.utils.ZipUtils;
@@ -75,8 +73,6 @@ public class InjectExportTest extends IntegrationTest {
   @Autowired private GrantHelper grantHelper;
   @Autowired private EntityManager entityManager;
   @Autowired private InjectRepository injectRepository;
-  @Autowired private ChannelInjectorIntegrationFactory channelInjectorIntegrationFactory;
-  @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
 
   private User testUser;
 
@@ -98,8 +94,7 @@ public class InjectExportTest extends IntegrationTest {
     scenarioComposer.reset();
     payloadComposer.reset();
 
-    new Manager(List.of(channelInjectorIntegrationFactory, challengeInjectorIntegrationFactory))
-        .monitorIntegrations();
+    new Manager(List.of()).monitorIntegrations();
 
     // delete the test files from the minio service
     for (String fileName : WELL_KNOWN_FILES.keySet()) {
