@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import io.veriguard.IntegrationTest;
 import io.veriguard.integration.Manager;
+import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
+import io.veriguard.integration.impl.injectors.channel.ChannelInjectorIntegrationFactory;
 import io.veriguard.integration.impl.injectors.email.EmailInjectorIntegrationFactory;
 import io.veriguard.integration.impl.injectors.manual.ManualInjectorIntegrationFactory;
 import io.veriguard.utils.fixtures.PaginationFixture;
@@ -30,6 +32,8 @@ class InjectorContratApiTest extends IntegrationTest {
 
   @Autowired private MockMvc mvc;
   @Autowired private EmailInjectorIntegrationFactory emailInjectorIntegrationFactory;
+  @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
+  @Autowired private ChannelInjectorIntegrationFactory channelInjectorIntegrationFactory;
   @Autowired private ManualInjectorIntegrationFactory manualInjectorIntegrationFactory;
 
   @BeforeEach
@@ -37,6 +41,8 @@ class InjectorContratApiTest extends IntegrationTest {
     new Manager(
             List.of(
                 emailInjectorIntegrationFactory,
+                challengeInjectorIntegrationFactory,
+                channelInjectorIntegrationFactory,
                 manualInjectorIntegrationFactory))
         .monitorIntegrations();
   }

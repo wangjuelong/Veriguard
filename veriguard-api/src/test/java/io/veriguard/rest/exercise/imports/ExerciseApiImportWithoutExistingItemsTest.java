@@ -12,6 +12,7 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.*;
 import io.veriguard.integration.Manager;
+import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
 import io.veriguard.rest.exercise.exports.ExportOptions;
 import io.veriguard.rest.exercise.service.ExportService;
 import io.veriguard.service.ChallengeService;
@@ -67,6 +68,7 @@ public class ExerciseApiImportWithoutExistingItemsTest extends IntegrationTest {
   @Autowired private ExportService exportService;
   @Autowired private EntityManager entityManager;
   @Autowired private ChallengeService challengeService;
+  @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
 
   private static final int FULL_EXPORT_OPTIONS = ExportOptions.mask(true, true, true);
 
@@ -86,7 +88,7 @@ public class ExerciseApiImportWithoutExistingItemsTest extends IntegrationTest {
     documentComposer.reset();
     tagComposer.reset();
     exerciseComposer.reset();
-    new Manager(List.of()).monitorIntegrations();
+    new Manager(List.of(challengeInjectorIntegrationFactory)).monitorIntegrations();
   }
 
   // this is part of the "Arrange" part of the AAA pattern for the following tests

@@ -12,6 +12,8 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.*;
 import io.veriguard.integration.Manager;
+import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
+import io.veriguard.integration.impl.injectors.channel.ChannelInjectorIntegrationFactory;
 import io.veriguard.rest.exercise.exports.ExportOptions;
 import io.veriguard.rest.exercise.service.ExportService;
 import io.veriguard.service.ChallengeService;
@@ -68,12 +70,15 @@ public class ExerciseApiImportWithExistingItemsTest extends IntegrationTest {
   @Autowired private ExportService exportService;
   @Autowired private EntityManager entityManager;
   @Autowired private ChallengeService challengeService;
+  @Autowired private ChannelInjectorIntegrationFactory channelInjectorIntegrationFactory;
+  @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
 
   private static final int FULL_EXPORT_OPTIONS = ExportOptions.mask(true, true, true);
 
   @BeforeEach
   void before() throws Exception {
-    new Manager(List.of()).monitorIntegrations();
+    new Manager(List.of(channelInjectorIntegrationFactory, challengeInjectorIntegrationFactory))
+        .monitorIntegrations();
 
     lessonsQuestionsComposer.reset();
     lessonsCategoryComposer.reset();

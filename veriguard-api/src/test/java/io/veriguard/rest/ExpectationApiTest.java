@@ -31,6 +31,7 @@ import io.veriguard.injectors.challenge.ChallengeContract;
 import io.veriguard.injectors.email.EmailContract;
 import io.veriguard.injectors.veriguard.VeriguardImplantContract;
 import io.veriguard.integration.Manager;
+import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
 import io.veriguard.integration.impl.injectors.email.EmailInjectorIntegrationFactory;
 import io.veriguard.integration.impl.injectors.veriguard.VeriguardInjectorIntegrationFactory;
 import io.veriguard.model.Expectation;
@@ -68,6 +69,7 @@ class ExpectationApiTest extends IntegrationTest {
   @Autowired private InjectExpectationRepository injectExpectationRepository;
   @Autowired private InjectExpectationService injectExpectationService;
   @Autowired private EmailInjectorIntegrationFactory emailInjectorIntegrationFactory;
+  @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
   @Autowired private VeriguardInjectorIntegrationFactory veriguardInjectorIntegrationFactory;
 
   // Saved entities for test setup
@@ -836,6 +838,7 @@ class ExpectationApiTest extends IntegrationTest {
       new Manager(
               List.of(
                   emailInjectorIntegrationFactory,
+                  challengeInjectorIntegrationFactory,
                   veriguardInjectorIntegrationFactory))
           .monitorIntegrations();
       List<InjectorContract> injectorContracts =
