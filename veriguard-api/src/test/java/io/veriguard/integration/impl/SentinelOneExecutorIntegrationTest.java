@@ -5,10 +5,8 @@ import static io.veriguard.integration.impl.executors.sentinelone.SentinelOneExe
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.CatalogConnectorRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorContextService;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.sentinelone.client.SentinelOneExecutorClient;
@@ -52,8 +50,6 @@ public class SentinelOneExecutorIntegrationTest {
   @Autowired private AgentService agentService;
   @Autowired private AssetGroupService assetGroupService;
   @Autowired private ExecutorService executorService;
-  @Autowired private Ee eeService;
-  @Autowired private LicenseCacheManager licenseCacheManager;
   @Autowired private ComponentRequestEngine componentRequestEngine;
   @Autowired private ThreadPoolTaskScheduler taskScheduler;
   @Autowired private CatalogConnectorService catalogConnectorService;
@@ -79,8 +75,6 @@ public class SentinelOneExecutorIntegrationTest {
         agentService,
         endpointService,
         assetGroupService,
-        eeService,
-        licenseCacheManager,
         taskScheduler,
         fileService,
         baseIntegrationConfigurationBuilder,

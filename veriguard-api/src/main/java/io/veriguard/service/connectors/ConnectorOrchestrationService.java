@@ -1,16 +1,13 @@
 package io.veriguard.service.connectors;
 
 import io.veriguard.api.xtm_composer.dto.XtmComposerInstanceOutput;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.rest.collector.service.CollectorService;
 import io.veriguard.rest.connector_instance.dto.ConnectorInstanceHealthInput;
 import io.veriguard.rest.connector_instance.dto.CreateConnectorInstanceInput;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.exception.LicenseRestrictionException;
 import io.veriguard.service.InjectorService;
 import io.veriguard.service.catalog_connectors.CatalogConnectorService;
 import io.veriguard.service.connector_instances.ConnectorInstanceLogService;
@@ -34,15 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ConnectorOrchestrationService {
   private final ConnectorInstanceService connectorInstanceService;
   private final XtmComposerService xtmComposerService;
-  private final Ee eeService;
   private final CatalogConnectorService catalogConnectorService;
 
   private final CollectorService collectorService;
   private final InjectorService injectorService;
   private final ExecutorService executorService;
   private final ConnectorInstanceLogService connectorInstanceLogService;
-
-  private final LicenseCacheManager licenseCacheManager;
 
   /**
    * Find connector instances managed by xtm Composer
@@ -80,12 +74,6 @@ public class ConnectorOrchestrationService {
     return xtmComposerService.toXtmComposerInstanceOutput(instances);
   }
 
-  private void throwIfEnterpriseLicenseNotActive() throws LicenseRestrictionException {
-    if (!eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      throw new LicenseRestrictionException("Manage instance is enterprise edition");
-    }
-  }
-
   private void throwIfXtmComposerDownAndNeeded(CatalogConnector catalogConnector)
       throws BadRequestException {
     if (catalogConnector.isManagerSupported()) {
@@ -103,10 +91,6 @@ public class ConnectorOrchestrationService {
    */
   public ConnectorInstancePersisted updateRequestedStatus(
       String connectorInstanceId, ConnectorInstance.REQUESTED_STATUS_TYPE requestedStatus) {
-    if (requestedStatus.equals(ConnectorInstance.REQUESTED_STATUS_TYPE.starting)) {
-      throwIfEnterpriseLicenseNotActive();
-    }
-
     ConnectorInstancePersisted instance =
         connectorInstanceService.connectorInstanceById(connectorInstanceId);
     throwIfXtmComposerDownAndNeeded(instance.getCatalogConnector());
@@ -230,8 +214,6 @@ public class ConnectorOrchestrationService {
   public ConnectorInstancePersisted createConnectorInstance(
       CatalogConnectorWithConfigMap catalogConnectorWithConfigMap,
       CreateConnectorInstanceInput input) {
-    throwIfEnterpriseLicenseNotActive();
-
     throwIfXtmComposerDownAndNeeded(catalogConnectorWithConfigMap.catalogConnector);
     // If we already have an ID in the input, then we're migrating from an existing connector
     // meaning that we do not check if the connector type already exists
@@ -274,7 +256,6 @@ public class ConnectorOrchestrationService {
       CatalogConnectorWithConfigMap catalogConnectorWithConfigMap,
       String connectorInstanceId,
       CreateConnectorInstanceInput input) {
-    throwIfEnterpriseLicenseNotActive();
     throwIfXtmComposerDownAndNeeded(catalogConnectorWithConfigMap.catalogConnector);
 
     return connectorInstanceService.updateConnectorInstanceConfigurations(

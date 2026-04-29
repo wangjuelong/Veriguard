@@ -4,12 +4,9 @@ import static io.veriguard.database.model.Command.COMMAND_TYPE;
 import static io.veriguard.database.model.DnsResolution.DNS_RESOLUTION_TYPE;
 import static io.veriguard.database.model.Executable.EXECUTABLE_TYPE;
 import static io.veriguard.database.model.FileDrop.FILE_DROP_TYPE;
-import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.atomic_testing.form.AttackPatternSimple;
 import io.veriguard.rest.atomic_testing.form.StatusPayloadOutput;
 import io.veriguard.rest.document.form.RelatedEntityOutput;
@@ -29,8 +26,7 @@ import org.springframework.stereotype.Component;
  * Mapper component for converting Payload entities to output DTOs.
  *
  * <p>Handles complex payload mapping including different payload types (Command, Executable,
- * FileDrop, DnsResolution), status output generation, and detection remediation mapping. Some
- * features are gated by Enterprise Edition licensing.
+ * FileDrop, DnsResolution), status output generation, and detection remediation mapping.
  *
  * @see io.veriguard.database.model.Payload
  * @see io.veriguard.rest.atomic_testing.form.StatusPayloadOutput
@@ -40,8 +36,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class PayloadMapper {
 
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ApplicationContext context;
 
   /**
@@ -267,22 +261,14 @@ public class PayloadMapper {
   /**
    * Converts detection remediations to output DTOs.
    *
-   * <p>This feature requires an active Enterprise Edition license. Returns an empty list if the
-   * license is inactive.
-   *
    * @param detectionRemediations the detection remediations to convert
-   * @return list of detection remediation output DTOs, or empty list if EE inactive
+   * @return list of detection remediation output DTOs
    */
   public List<DetectionRemediationOutput> toDetectionRemediationOutputs(
       List<DetectionRemediation> detectionRemediations) {
-    if (eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      return detectionRemediations.stream()
-          .map(PayloadMapper::toDetectionRemediationOutput)
-          .toList();
-    } else {
-      log.debug("Enterprise Edition license inactive - omitting remediation information");
-      return emptyList();
-    }
+    return detectionRemediations.stream()
+        .map(PayloadMapper::toDetectionRemediationOutput)
+        .toList();
   }
 
   public static DetectionRemediationOutput toDetectionRemediationOutput(

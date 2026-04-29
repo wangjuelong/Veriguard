@@ -22,12 +22,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.veriguard.config.VeriguardConfig;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.*;
 import io.veriguard.database.repository.*;
 import io.veriguard.database.specification.ScenarioSpecification;
-import io.veriguard.ee.Ee;
 import io.veriguard.export.Mixins;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.healthcheck.utils.HealthCheckUtils;
@@ -108,9 +106,7 @@ public class ScenarioService {
   private final ArticleRepository articleRepository;
 
   private final ExerciseMapper exerciseMapper;
-  private final LicenseCacheManager licenseCacheManager;
 
-  private final Ee eeService;
   private final VariableService variableService;
   private final ChallengeService challengeService;
   private final TeamService teamService;
@@ -299,9 +295,6 @@ public class ScenarioService {
   }
 
   public void throwIfScenarioNotLaunchable(Scenario scenario) {
-    if (eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      return;
-    }
     scenario.getInjects().forEach(injectService::throwIfInjectNotLaunchable);
   }
 

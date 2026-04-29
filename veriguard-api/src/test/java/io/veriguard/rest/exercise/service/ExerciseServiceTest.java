@@ -12,10 +12,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.exercise.form.ExercisesGlobalScoresInput;
@@ -50,7 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @ExtendWith(MockitoExtension.class)
 class ExerciseServiceTest extends IntegrationTest {
 
-  @Mock private Ee eeService;
   @Mock private InjectDuplicateService injectDuplicateService;
   @Mock private TeamService teamService;
   @Mock private VariableService variableService;
@@ -62,7 +59,6 @@ class ExerciseServiceTest extends IntegrationTest {
   @Mock private ExerciseMapper exerciseMapper;
   @Mock private InjectMapper injectMapper;
   @Mock private ResultUtils resultUtils;
-  @Mock private LicenseCacheManager licenseCacheManager;
 
   @Mock private AssetRepository assetRepository;
   @Mock private AssetGroupRepository assetGroupRepository;
@@ -95,7 +91,6 @@ class ExerciseServiceTest extends IntegrationTest {
   void setUp() {
     mockedExerciseService =
         new ExerciseService(
-            eeService,
             injectDuplicateService,
             teamService,
             variableService,
@@ -108,7 +103,6 @@ class ExerciseServiceTest extends IntegrationTest {
             exerciseMapper,
             injectMapper,
             resultUtils,
-            licenseCacheManager,
             assetRepository,
             assetGroupRepository,
             injectExpectationRepository,

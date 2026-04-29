@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.authorisation.HttpClientFactory;
 import io.veriguard.collectors.utils.CollectorsUtils;
-import io.veriguard.ee.Ee;
 import io.veriguard.service.PlatformSettingsService;
 import jakarta.annotation.Resource;
 import java.io.IOException;
@@ -31,7 +30,6 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class DetectionRemediationAIService {
-  private static final String X_VERIGUARD_CERTIFICATE = "X-Veriguard-Certificate";
   private static final String CROWDSTRIKE_URI = "/remediation/crowdstrike";
   private static final String SPLUNK_URI = "/remediation/splunk";
 
@@ -44,16 +42,12 @@ public class DetectionRemediationAIService {
   @Value("#{${remediation.detection.webservice.retry.waiting.milliseconds: null} ?: 30000}")
   Long RETRY_CONNECTION_WAITING_MILLISECONDS;
 
-  private final Ee ee;
   private final HttpClientFactory httpClientFactory;
   @Resource protected ObjectMapper mapper;
   private final PlatformSettingsService platformSettingsService;
 
   public DetectionRemediationAIResponse callRemediationDetectionAIWebservice(
       DetectionRemediationRequest payload, String collectorType) {
-    // Check if account has EE licence
-    String certificate = ee.getEncodedCertificate();
-
     payload.setSessionId(
         platformSettingsService.findSettings().getPlatformId() + "-" + new Date().getTime());
     String url;
@@ -85,7 +79,6 @@ public class DetectionRemediationAIService {
 
     HttpPost httpPost = new HttpPost(url);
 
-    httpPost.addHeader(X_VERIGUARD_CERTIFICATE, certificate);
     httpPost.addHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE);
 
     StringEntity httpBody;
@@ -116,9 +109,6 @@ public class DetectionRemediationAIService {
   }
 
   public DetectionRemediationHealthResponse checkHealthWebservice() {
-    // Check if account has EE licence
-    ee.getEncodedCertificate();
-
     String url = REMEDIATION_DETECTION_WEBSERVICE + "/health";
     String errorMessage = "Connection to Remediation Detection AI Webservice failed: ";
 

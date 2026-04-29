@@ -1,8 +1,6 @@
 import { Button } from '@mui/material';
 
 import { useFormatter } from '../../../../components/i18n';
-import useEnterpriseEdition from '../../../../utils/hooks/useEnterpriseEdition';
-import EEChip from '../../common/entreprise_edition/EEChip';
 
 interface Props {
   onUpdate: () => void;
@@ -12,20 +10,6 @@ interface Props {
 
 const ActionButton = ({ onUpdate, disabled, status }: Props) => {
   const { t } = useFormatter();
-  const {
-    isValidated: isEnterpriseEdition,
-    openDialog: openEnterpriseEditionDialog,
-    setEEFeatureDetectedInfo,
-  } = useEnterpriseEdition();
-
-  const onClickAction = () => {
-    if (!isEnterpriseEdition) {
-      setEEFeatureDetectedInfo(t('Starting connectors'));
-      openEnterpriseEditionDialog();
-    } else {
-      onUpdate();
-    }
-  };
 
   if (status === 'starting') {
     return (
@@ -42,13 +26,12 @@ const ActionButton = ({ onUpdate, disabled, status }: Props) => {
 
   return (
     <Button
-      variant={isEnterpriseEdition ? 'contained' : 'outlined'}
+      variant="contained"
       sx={{
-        color: isEnterpriseEdition ? 'primary' : 'action.disabled',
-        borderColor: isEnterpriseEdition ? 'primary' : 'action.disabledBackground',
+        color: 'primary',
+        borderColor: 'primary',
       }}
-      onClick={onClickAction}
-      endIcon={isEnterpriseEdition ? null : <span><EEChip /></span>}
+      onClick={onUpdate}
       disabled={disabled}
     >
       { t('Start')}

@@ -6,14 +6,12 @@ import { makeStyles } from 'tss-react/mui';
 
 import { fetchExecutors } from '../../../../../actions/executors/executor-action';
 import { type ExecutorHelper } from '../../../../../actions/executors/executor-helper';
-import type { LoggedHelper } from '../../../../../actions/helper';
 import useBodyItemsStyles from '../../../../../components/common/queryable/style/style';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
 import { type AgentOutput } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
-import EEChip from '../../../common/entreprise_edition/EEChip';
 import AssetStatus from '../../AssetStatus';
 import AgentDeploymentMode from '../AgentDeploymentMode';
 import AgentPrivilege from '../AgentPrivilege';
@@ -54,10 +52,7 @@ const AgentList: FunctionComponent<Props> = ({ agents }) => {
   const dispatch = useAppDispatch();
   const { t } = useFormatter();
   // Fetching data
-  const { settings, executorsMap } = useHelper((helper: ExecutorHelper & LoggedHelper) => ({
-    settings: helper.getPlatformSettings(),
-    executorsMap: helper.getExecutorsMap(),
-  }));
+  const { executorsMap } = useHelper((helper: ExecutorHelper) => ({ executorsMap: helper.getExecutorsMap() }));
   useDataLoader(() => {
     dispatch(fetchExecutors());
   });
@@ -83,7 +78,6 @@ const AgentList: FunctionComponent<Props> = ({ agents }) => {
         }
 
         const { executor_type, executor_name } = executor;
-        const showEEChip = !settings.platform_license?.license_is_validated && (executor_type === 'veriguard_tanium' || executor_type === 'veriguard_crowdstrike_executor' || executor_type === 'veriguard_sentinelone_executor' || executor_type === 'veriguard_paloaltocortex_executor');
 
         return (
           <>
@@ -98,13 +92,6 @@ const AgentList: FunctionComponent<Props> = ({ agents }) => {
               }}
             />
             {executor_name}
-            {showEEChip && (
-              <EEChip
-                style={{ marginLeft: theme.spacing(1) }}
-                clickable
-                featureDetectedInfo={executor_name}
-              />
-            )}
           </>
         );
       },

@@ -6,8 +6,6 @@ import static io.veriguard.database.specification.InjectorContractSpecification.
 import static io.veriguard.utils.JsonTestUtils.asJsonString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,7 +21,6 @@ import io.veriguard.database.repository.CollectorRepository;
 import io.veriguard.database.repository.DocumentRepository;
 import io.veriguard.database.repository.InjectorContractRepository;
 import io.veriguard.database.repository.PayloadRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.integration.Manager;
 import io.veriguard.integration.impl.injectors.veriguard.VeriguardInjectorIntegrationFactory;
 import io.veriguard.rest.collector.form.CollectorCreateInput;
@@ -42,7 +39,6 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -64,8 +60,6 @@ class PayloadApiTest extends IntegrationTest {
   @Autowired private DomainComposer domainComposer;
 
   @Resource private ObjectMapper objectMapper;
-
-  @MockBean private Ee eeService;
 
   @BeforeAll
   void beforeAll() {
@@ -193,7 +187,6 @@ class PayloadApiTest extends IntegrationTest {
     void
         given_payload_create_input_with_detection_remediation_should_return_payload_with_detection_remediation()
             throws Exception {
-      when(eeService.isEnterpriseLicenseInactive(any())).thenReturn(false);
 
       Domain domain = domainComposer.forDomain(DomainFixture.getRandomDomain()).persist().get();
       PayloadCreateInput input =
@@ -215,7 +208,6 @@ class PayloadApiTest extends IntegrationTest {
     void
         given_payload_update_input_with_detection_remediation_should_return_payload_with_detection_remediation_updated()
             throws Exception {
-      when(eeService.isEnterpriseLicenseInactive(any())).thenReturn(false);
       /******* Create *******/
       Domain domain = domainComposer.forDomain(DomainFixture.getRandomDomain()).persist().get();
       PayloadCreateInput input =
@@ -500,7 +492,6 @@ class PayloadApiTest extends IntegrationTest {
   void
       given_payload_update_input_with_detection_remediations_should_return_updated_payload_with_detection_remediations()
           throws Exception {
-    when(eeService.isEnterpriseLicenseInactive(any())).thenReturn(false);
 
     Domain domain = domainComposer.forDomain(DomainFixture.getRandomDomain()).persist().get();
     PayloadCreateInput createInput =
@@ -632,7 +623,6 @@ class PayloadApiTest extends IntegrationTest {
   void
       given_payload_upsert_input_with_detection_remediation_should_return_updated_payload_with_detection_remediations()
           throws Exception {
-    when(eeService.isEnterpriseLicenseInactive(any())).thenReturn(false);
 
     Domain domain = domainComposer.forDomain(DomainFixture.getRandomDomain()).persist().get();
     PayloadCreateInput input =

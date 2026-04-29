@@ -39,7 +39,6 @@ const Parameters = () => {
   const cannotManagePlatformSettings = ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS);
 
   const { settings }: { settings: PlatformSettings } = useHelper((helper: LoggedHelper) => ({ settings: helper.getPlatformSettings() }));
-  const isEnterpriseEditionValid = settings.platform_license?.license_is_validated;
   useDataLoader(() => {
     dispatch(fetchPlatformParameters());
   });
@@ -129,18 +128,6 @@ const Parameters = () => {
               <ItemBoolean variant="large" status={null} neutralLabel={settings?.platform_version?.replace('-SNAPSHOT', '')} />
             </ListItem>
             <ListItem divider>
-              <ListItemText primary={t('Edition')} />
-              <ItemBoolean
-                variant="large"
-                neutralLabel={
-                  isEnterpriseEditionValid
-                    ? t('Enterprise')
-                    : t('Community')
-                }
-                status={null}
-              />
-            </ListItem>
-            <ListItem divider>
               <ListItemText
                 primary={t('AI Powered')}
               />
@@ -162,7 +149,7 @@ const Parameters = () => {
             <ListItem divider>
               <ListItemText primary={t('Remove Filigran logos')} />
               <Switch
-                disabled={settings.platform_license?.license_is_validated === false || ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS)}
+                disabled={ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS)}
                 checked={settings.platform_whitemark === 'true'}
                 onChange={(_event, checked) => updatePlatformWhitemark({ platform_whitemark: checked.toString() })}
               />

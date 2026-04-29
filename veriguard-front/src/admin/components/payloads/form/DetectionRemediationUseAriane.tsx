@@ -1,13 +1,10 @@
-import { Button, SvgIcon, Typography } from '@mui/material';
+import { Button, SvgIcon, Tooltip, Typography } from '@mui/material';
 import { LogoXtmOneIcon } from 'filigran-icon';
 import { useState } from 'react';
 
 import { useFormatter } from '../../../../components/i18n';
 import useAI from '../../../../utils/hooks/useAI';
-import useEnterpriseEdition from '../../../../utils/hooks/useEnterpriseEdition';
 import { isNotEmptyField } from '../../../../utils/utils';
-import EEChip from '../../common/entreprise_edition/EEChip';
-import EETooltip from '../../common/entreprise_edition/EETooltip';
 import useIsEligibleArianeCollector from '../hook/useIsEligibleArianeCollector';
 import useIsEligibleArianePayloadType from '../hook/useIsEligibleArianePayloadType';
 import Loader from '../Loader';
@@ -30,14 +27,8 @@ const DetectionRemediationUseAriane = ({
 }: Props) => {
   const { snapshot } = useSnapshotRemediation();
   const { t } = useFormatter();
-  // Fetch data
-  const {
-    isValidated: isEnterpriseEdition,
-    openDialog: openEnterpriseEditionDialog,
-    setEEFeatureDetectedInfo,
-  } = useEnterpriseEdition();
   const { enabled, configured } = useAI();
-  const isAvailable = isEnterpriseEdition && enabled && configured;
+  const isAvailable = enabled && configured;
 
   const [loading, setLoading] = useState(false);
   const isEligibleArianeCollector = useIsEligibleArianeCollector(collectorType);
@@ -45,19 +36,11 @@ const DetectionRemediationUseAriane = ({
   const hasContent = isNotEmptyField(detectionRemediationContent);
 
   const handleClick = async () => {
-    if (!isEnterpriseEdition) {
-      setEEFeatureDetectedInfo(t('Ariane AI'));
-      openEnterpriseEditionDialog();
-    } else {
-      setLoading(true);
-      onSubmit().finally(() => setLoading(false));
-    }
+    setLoading(true);
+    onSubmit().finally(() => setLoading(false));
   };
 
   let btnLabel = t('Use Ariane');
-  if (!isAvailable) {
-    btnLabel = btnLabel + ' (EE)';
-  }
   if (!isEligibleArianeCollector) {
     btnLabel = btnLabel + t(' is not available for current collector');
   } else if (!isEligibleArianePayload) {
@@ -71,7 +54,7 @@ const DetectionRemediationUseAriane = ({
   const disabled = !isEligibleArianeCollector || !isAvailable || hasContent || !isValidForm || !isEligibleArianePayload;
 
   return (
-    <EETooltip forAi title={btnLabel}>
+    <Tooltip title={btnLabel}>
       <span>
         {(loading || snapshot?.get(collectorType)?.isLoading) ? (
           <div style={{
@@ -96,20 +79,19 @@ const DetectionRemediationUseAriane = ({
             variant="outlined"
             sx={{
               marginLeft: 'auto',
-              color: isEnterpriseEdition ? 'ai.main' : 'action.disabled',
-              borderColor: isEnterpriseEdition ? 'ai.main' : 'action.disabledBackground',
+              color: 'ai.main',
+              borderColor: 'ai.main',
             }}
             size="small"
             onClick={handleClick}
             startIcon={<SvgIcon component={LogoXtmOneIcon} fontSize="small" inheritViewBox />}
-            endIcon={isEnterpriseEdition ? <></> : <span><EEChip /></span>}
             disabled={disabled || loading}
           >
             {t('Use Ariane ')}
           </Button>
         )}
       </span>
-    </EETooltip>
+    </Tooltip>
   );
 };
 export default DetectionRemediationUseAriane;

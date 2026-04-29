@@ -9,7 +9,7 @@ import type { PlatformSettings } from '../../../utils/api-types';
 const Loader = () => {
   const theme = useTheme();
   const { settings }: { settings: PlatformSettings } = useHelper((helper: LoggedHelper) => ({ settings: helper.getPlatformSettings() }));
-  const hasFiligranLoader = theme && !(settings?.platform_license?.license_is_validated && settings?.platform_whitemark);
+  const hasFiligranLoader = theme && !settings?.platform_whitemark;
 
   return (
     <>

@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.AttackPattern;
 import io.veriguard.database.repository.AttackPatternRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.utils.fixtures.files.AttackPatternFixture;
 import io.veriguard.utils.mockUser.WithMockUser;
 import jakarta.servlet.ServletException;
@@ -39,7 +38,6 @@ public class AttackPatternApiTest extends IntegrationTest {
   @Autowired private Environment env;
 
   @MockBean private RestTemplate mockRestTemplate;
-  @MockBean private Ee mockEe;
 
   @Autowired private MockMvc mvc;
   @Autowired private AttackPatternRepository attackPatternRepository;
@@ -127,7 +125,6 @@ public class AttackPatternApiTest extends IntegrationTest {
                           ]
                         }""",
                   HttpStatus.OK));
-      Mockito.when(mockEe.getEnterpriseEditionLicensePem()).thenReturn("mock-certificate");
       MockPart jsonPart = new MockPart("text", "Test".getBytes());
       byte[] content = new byte[] {1, 2, 3, 4, 5}; // Example binary content
       MockMultipartFile mockFile =

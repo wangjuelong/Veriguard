@@ -4,11 +4,9 @@ import static io.veriguard.helper.StreamHelper.fromIterable;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.CatalogConnector;
 import io.veriguard.database.model.ConnectorInstanceInMemory;
 import io.veriguard.database.repository.CatalogConnectorRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.paloaltocortex.client.PaloAltoCortexExecutorClient;
 import io.veriguard.integration.ComponentRequestEngine;
@@ -42,8 +40,6 @@ public class PaloAltoCortexExecutorIntegrationTest {
   @Autowired private AgentService agentService;
   @Autowired private AssetGroupService assetGroupService;
   @Autowired private ExecutorService executorService;
-  @Autowired private Ee enterpriseEditionService;
-  @Autowired private LicenseCacheManager licenseCacheManager;
   @Autowired private ComponentRequestEngine componentRequestEngine;
   @Autowired private ThreadPoolTaskScheduler taskScheduler;
   @Autowired private CatalogConnectorService catalogConnectorService;
@@ -64,8 +60,6 @@ public class PaloAltoCortexExecutorIntegrationTest {
         agentService,
         endpointService,
         assetGroupService,
-        enterpriseEditionService,
-        licenseCacheManager,
         taskScheduler,
         fileService,
         baseIntegrationConfigurationBuilder,

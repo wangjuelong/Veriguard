@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { fetchExecutors } from '../../../actions/executors/executor-action';
 import { type ExecutorHelper } from '../../../actions/executors/executor-helper';
-import { type LoggedHelper, type MeTokensHelper } from '../../../actions/helper';
+import { type MeTokensHelper } from '../../../actions/helper';
 import { meTokens } from '../../../actions/users/User';
 import Breadcrumbs from '../../../components/Breadcrumbs';
 import Transition from '../../../components/common/Transition';
@@ -20,10 +20,6 @@ import PlatformSelector from './PlatformSelector';
 
 const VERIGUARD_CALDERA = 'veriguard_caldera_executor';
 const VERIGUARD_AGENT = 'veriguard_agent';
-const VERIGUARD_CROWDSTRIKE = 'veriguard_crowdstrike_executor';
-const VERIGUARD_TANIUM = 'veriguard_tanium';
-const VERIGUARD_SENTINELONE = 'veriguard_sentinelone_executor';
-const VERIGUARD_PALOALTOCORTEX = 'veriguard_paloaltocortex_executor';
 
 const Executors = () => {
   // Standard hooks
@@ -35,8 +31,7 @@ const Executors = () => {
   const dispatch = useAppDispatch();
 
   // Fetching data
-  const { settings, executors, tokens } = useHelper((helper: ExecutorHelper & MeTokensHelper & LoggedHelper) => ({
-    settings: helper.getPlatformSettings(),
+  const { executors, tokens } = useHelper((helper: ExecutorHelper & MeTokensHelper) => ({
     executors: helper.getExistingExecutors(),
     tokens: helper.getMeTokens(),
   }));
@@ -57,9 +52,6 @@ const Executors = () => {
 
   const sortedExecutors = executors.sort((a: ExecutorOutput, b: ExecutorOutput) => order[a.executor_type as keyof typeof order] - order[b.executor_type as keyof typeof order]);
   const needInformationStepper = (selectedExecutor?.executor_type === VERIGUARD_AGENT || selectedExecutor?.executor_type === VERIGUARD_CALDERA);
-  const showEEChip = (executor: ExecutorOutput) => !settings.platform_license?.license_is_validated
-    && (executor.executor_type === VERIGUARD_TANIUM || executor.executor_type === VERIGUARD_CROWDSTRIKE
-      || executor.executor_type === VERIGUARD_SENTINELONE || executor.executor_type === VERIGUARD_PALOALTOCORTEX);
 
   // -- Manage Dialogs
   const steps = [t('Choose your platform'), t('Installation Instructions')];
@@ -96,7 +88,6 @@ const Executors = () => {
             <ExecutorSelector
               executor={executor}
               setSelectedExecutor={setSelectedExecutor}
-              showEEChip={showEEChip(executor)}
             />
           </Grid>
         ))}
@@ -145,7 +136,6 @@ const Executors = () => {
             )}
           {!needInformationStepper && selectedExecutor && (
             <ExecutorDocumentationLink
-              showEEChip={showEEChip(selectedExecutor)}
               executor={selectedExecutor}
             />
           )}

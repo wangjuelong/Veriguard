@@ -6,11 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.Agent;
 import io.veriguard.database.model.AssetGroup;
 import io.veriguard.database.model.Executor;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.model.AgentRegisterInput;
 import io.veriguard.executors.paloaltocortex.client.PaloAltoCortexExecutorClient;
@@ -34,9 +32,7 @@ public class PaloAltoCortexExecutorServiceTest {
 
   @Mock private PaloAltoCortexExecutorClient client;
   @Mock private PaloAltoCortexExecutorConfig config;
-  @Mock private LicenseCacheManager licenseCacheManager;
   @Mock private AssetGroupService assetGroupService;
-  @Mock private Ee enterpriseEditionService;
   @Mock private EndpointService endpointService;
   @Mock private AgentService agentService;
   @Mock private ExecutorService executorService;

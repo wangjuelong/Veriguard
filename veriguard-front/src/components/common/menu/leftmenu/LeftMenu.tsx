@@ -19,8 +19,7 @@ const LeftMenu: FunctionComponent<{
   const theme = useTheme();
   const { settings } = useAuth();
   const { bannerHeightNumber } = computeBannerSettings(settings);
-  const isWhitemarkEnable = settings.platform_whitemark === 'true'
-    && settings.platform_license?.license_is_validated === true;
+  const isWhitemarkEnable = settings.platform_whitemark === 'true';
   const { state, helpers } = useLeftMenu(entries);
 
   const getWidth = () => {

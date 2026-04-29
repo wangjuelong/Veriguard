@@ -1,14 +1,11 @@
-import { Box, Tab, Tabs } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Tab, Tabs } from '@mui/material';
+import { Link, useLocation } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { BACK_LABEL, BACK_URI } from '../../../../../components/Breadcrumbs';
 import { useFormatter } from '../../../../../components/i18n';
 import type { Exercise as ExerciseType, InjectResultOverviewOutput } from '../../../../../utils/api-types';
-import useEnterpriseEdition from '../../../../../utils/hooks/useEnterpriseEdition';
 import { externalContractTypesWithFindings } from '../../../../../utils/injector_contract/InjectorContractUtils';
-import EEChip from '../../../common/entreprise_edition/EEChip';
 
 const useStyles = makeStyles()(theme => ({
   item: {
@@ -29,9 +26,7 @@ interface Props {
 const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }: Props) => {
   const { classes } = useStyles();
   const { t } = useFormatter();
-  const theme = useTheme();
   const location = useLocation();
-  const navigate = useNavigate();
   const tabValue = location.pathname;
 
   const computePath = (path: string) => {
@@ -39,22 +34,6 @@ const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }:
       return path + `?${BACK_LABEL}=${backlabel}&${BACK_URI}=${backuri}`;
     }
     return path;
-  };
-
-  const {
-    isValidated: isValidatedEnterpriseEdition,
-    openDialog: openEnterpriseEditionDialog,
-    setEEFeatureDetectedInfo,
-  } = useEnterpriseEdition();
-
-  const handleRemediationClick = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-    if (!isValidatedEnterpriseEdition) {
-      setEEFeatureDetectedInfo(t('Remediation'));
-      openEnterpriseEditionDialog();
-    } else {
-      navigate(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`);
-    }
   };
 
   return (
@@ -96,20 +75,8 @@ const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }:
         <Tab
           component={Link}
           to={computePath(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`)}
-          onClick={handleRemediationClick}
           value={computePath(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`)}
-          label={(
-            <Box display="flex" alignItems="center">
-              {t('Remediations')}
-              {!isValidatedEnterpriseEdition && (
-                <EEChip
-                  style={{ marginLeft: theme.spacing(1) }}
-                  clickable
-                  featureDetectedInfo={t('Remediation')}
-                />
-              )}
-            </Box>
-          )}
+          label={t('Remediations')}
           className={classes.item}
         />
       )}

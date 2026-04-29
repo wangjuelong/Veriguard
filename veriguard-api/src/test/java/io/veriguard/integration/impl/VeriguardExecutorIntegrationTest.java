@@ -5,14 +5,12 @@ import static io.veriguard.integration.impl.executors.veriguard.VeriguardExecuto
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.CatalogConnector;
 import io.veriguard.database.model.ConnectorInstance;
 import io.veriguard.database.model.ConnectorInstanceConfiguration;
 import io.veriguard.database.model.ConnectorType;
 import io.veriguard.database.repository.AssetAgentJobRepository;
 import io.veriguard.database.repository.CatalogConnectorRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorContextService;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.veriguard.service.VeriguardExecutorContextService;
@@ -47,8 +45,6 @@ public class VeriguardExecutorIntegrationTest {
   @Autowired private AgentService agentService;
   @Autowired private AssetGroupService assetGroupService;
   @Autowired private ExecutorService executorService;
-  @Autowired private Ee eeService;
-  @Autowired private LicenseCacheManager licenseCacheManager;
   @Autowired private ComponentRequestEngine componentRequestEngine;
   @Autowired private ThreadPoolTaskScheduler taskScheduler;
   @Autowired private CatalogConnectorService catalogConnectorService;

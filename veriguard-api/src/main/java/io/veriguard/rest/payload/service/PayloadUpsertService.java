@@ -2,11 +2,9 @@ package io.veriguard.rest.payload.service;
 
 import static io.veriguard.rest.payload.PayloadUtils.validateArchitecture;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AttackPatternRepository;
 import io.veriguard.database.repository.PayloadRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.collector.service.CollectorService;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.domain.DomainService;
@@ -30,8 +28,6 @@ public class PayloadUpsertService {
   private final PayloadUtils payloadUtils;
 
   private final PayloadService payloadService;
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
 
   private final TagService tagService;
   private final AttackPatternRepository attackPatternRepository;
@@ -43,9 +39,6 @@ public class PayloadUpsertService {
   @Transactional(rollbackOn = Exception.class)
   public Payload upsertPayload(PayloadUpsertInput input) {
     Optional<Payload> payload = payloadRepository.findByExternalId(input.getExternalId());
-    if (eeService.isEnterpriseLicenseInactive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      input.setDetectionRemediations(null);
-    }
 
     Collector collector = null;
     if (input.getCollector() != null) {

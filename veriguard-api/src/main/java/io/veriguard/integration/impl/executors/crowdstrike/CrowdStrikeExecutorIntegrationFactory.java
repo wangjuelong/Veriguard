@@ -3,11 +3,9 @@ package io.veriguard.integration.impl.executors.crowdstrike;
 import static io.veriguard.integration.impl.executors.crowdstrike.CrowdStrikeExecutorIntegration.CROWDSTRIKE_EXECUTOR_TYPE;
 
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.CatalogConnector;
 import io.veriguard.database.model.ConnectorInstance;
 import io.veriguard.database.model.ConnectorType;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.crowdstrike.config.CrowdStrikeExecutorConfig;
 import io.veriguard.integration.ComponentRequestEngine;
@@ -35,8 +33,6 @@ public class CrowdStrikeExecutorIntegrationFactory extends IntegrationFactory {
   private final AgentService agentService;
   private final AssetGroupService assetGroupService;
   private final ExecutorService executorService;
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ComponentRequestEngine componentRequestEngine;
   private final ThreadPoolTaskScheduler taskScheduler;
   private final CatalogConnectorService catalogConnectorService;
@@ -52,8 +48,6 @@ public class CrowdStrikeExecutorIntegrationFactory extends IntegrationFactory {
       AgentService agentService,
       AssetGroupService assetGroupService,
       ExecutorService executorService,
-      Ee eeService,
-      LicenseCacheManager licenseCacheManager,
       ComponentRequestEngine componentRequestEngine,
       ThreadPoolTaskScheduler taskScheduler,
       CrowdStrikeExecutorConfigurationMigration crowdStrikeExecutorConfigurationMigration,
@@ -65,8 +59,6 @@ public class CrowdStrikeExecutorIntegrationFactory extends IntegrationFactory {
     this.agentService = agentService;
     this.assetGroupService = assetGroupService;
     this.executorService = executorService;
-    this.eeService = eeService;
-    this.licenseCacheManager = licenseCacheManager;
     this.componentRequestEngine = componentRequestEngine;
     this.taskScheduler = taskScheduler;
     this.catalogConnectorService = catalogConnectorService;
@@ -122,8 +114,6 @@ public class CrowdStrikeExecutorIntegrationFactory extends IntegrationFactory {
         agentService,
         assetGroupService,
         executorService,
-        eeService,
-        licenseCacheManager,
         componentRequestEngine,
         taskScheduler,
         baseIntegrationConfigurationBuilder,

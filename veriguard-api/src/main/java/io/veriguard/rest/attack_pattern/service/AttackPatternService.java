@@ -6,12 +6,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.AttackPattern;
 import io.veriguard.database.repository.AttackPatternRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.attack_pattern.form.AnalysisResultFromTTPExtractionAIWebserviceOutput;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import jakarta.annotation.Resource;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,7 +37,6 @@ public class AttackPatternService {
 
   private final Environment env;
   private final AttackPatternRepository attackPatternRepository;
-  private final Ee ee;
   private final RestTemplate restTemplate;
 
   /**
@@ -53,17 +50,10 @@ public class AttackPatternService {
   private String callTTPExtractionAIWebservice(List<MultipartFile> files, String text)
       throws IOException {
     String url = Objects.requireNonNull(env.getProperty("ttp.extraction.ai.webservice.url"));
-    String certificate = ee.getEnterpriseEditionLicensePem();
-    if (certificate == null || certificate.isBlank()) {
-      throw new IllegalStateException("Enterprise Edition is not available");
-    }
-    String encodedCertificate =
-        Base64.getEncoder().encodeToString(certificate.getBytes(StandardCharsets.UTF_8));
 
     // Set up the headers for the request
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-    headers.add("X-Veriguard-Certificate", encodedCertificate);
 
     // Set up the request body
     MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();

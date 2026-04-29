@@ -7,7 +7,6 @@ import { makeStyles } from 'tss-react/mui';
 
 import { logout } from '../../../actions/Application';
 import { useFormatter } from '../../../components/i18n';
-import ItemBoolean from '../../../components/ItemBoolean';
 import SearchInput from '../../../components/SearchFilter';
 import { computeBannerSettings } from '../../../public/components/systembanners/utils';
 import oaevDark from '../../../static/images/xtm/oaev_dark.png';
@@ -187,7 +186,6 @@ const TopBar: FunctionComponent = () => {
         </div>
         <div className={classes.barRight}>
           <div className={classes.barRightContainer}>
-            { settings.platform_license?.license_type === 'nfr' && <ItemBoolean variant="large" label="EE DEV LICENSE" status={false} /> }
             <Tooltip title={t('Install simulation agents')}>
               <IconButton
                 size="medium"

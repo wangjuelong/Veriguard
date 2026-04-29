@@ -4,9 +4,7 @@ import static io.veriguard.executors.ExecutorHelper.*;
 import static io.veriguard.executors.utils.ExecutorUtils.getAgentsFromOS;
 import static io.veriguard.integration.impl.executors.paloaltocortex.PaloAltoCortexExecutorIntegration.PALOALTOCORTEX_EXECUTOR_NAME;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorContextService;
 import io.veriguard.executors.ExecutorHelper;
 import io.veriguard.executors.ExecutorService;
@@ -35,8 +33,6 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
 
   private final PaloAltoCortexExecutorConfig config;
   private final PaloAltoCortexExecutorClient client;
-  private final Ee enterpriseEditionService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ExecutorService executorService;
 
   ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -52,9 +48,6 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
       Inject inject, Set<Agent> agents, InjectStatus injectStatus) {
-
-    enterpriseEditionService.throwEEExecutorService(
-        licenseCacheManager.getEnterpriseEditionInfo(), SERVICE_NAME, injectStatus);
 
     List<Agent> paloAltoCortexAgents = new ArrayList<>(agents);
 

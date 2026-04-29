@@ -2,12 +2,10 @@ package io.veriguard.integration.impl.executors.sentinelone;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.ConnectorInstance;
 import io.veriguard.database.model.ConnectorType;
 import io.veriguard.database.model.Endpoint;
 import io.veriguard.database.model.Executor;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.exception.ExecutorException;
 import io.veriguard.executors.sentinelone.client.SentinelOneExecutorClient;
@@ -53,8 +51,6 @@ public class SentinelOneExecutorIntegration extends Integration {
   private final EndpointService endpointService;
   private final AssetGroupService assetGroupService;
   private final ExecutorService executorService;
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ThreadPoolTaskScheduler taskScheduler;
   private final ConnectorInstanceService connectorInstanceService;
   private final ConnectorInstance connectorInstance;
@@ -69,8 +65,6 @@ public class SentinelOneExecutorIntegration extends Integration {
       EndpointService endpointService,
       AgentService agentService,
       AssetGroupService assetGroupService,
-      Ee eeService,
-      LicenseCacheManager licenseCacheManager,
       ComponentRequestEngine componentRequestEngine,
       ExecutorService executorService,
       ThreadPoolTaskScheduler taskScheduler,
@@ -80,8 +74,6 @@ public class SentinelOneExecutorIntegration extends Integration {
     this.endpointService = endpointService;
     this.agentService = agentService;
     this.assetGroupService = assetGroupService;
-    this.eeService = eeService;
-    this.licenseCacheManager = licenseCacheManager;
     this.executorService = executorService;
     this.taskScheduler = taskScheduler;
     this.connectorInstanceService = connectorInstanceService;
@@ -122,8 +114,7 @@ public class SentinelOneExecutorIntegration extends Integration {
 
     client = new SentinelOneExecutorClient(config, httpClientFactory);
     sentinelOneExecutorContextService =
-        new SentinelOneExecutorContextService(
-            config, client, eeService, licenseCacheManager, executorService);
+        new SentinelOneExecutorContextService(config, client, executorService);
     sentinelOneExecutorService =
         new SentinelOneExecutorService(
             executor, client, endpointService, agentService, assetGroupService);

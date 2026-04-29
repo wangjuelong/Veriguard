@@ -3,13 +3,10 @@ package io.veriguard.executors.sentinelone.service;
 import static io.veriguard.integration.impl.executors.sentinelone.SentinelOneExecutorIntegration.SENTINELONE_EXECUTOR_NAME;
 import static io.veriguard.integration.impl.executors.sentinelone.SentinelOneExecutorIntegration.SENTINELONE_EXECUTOR_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.model.AgentRegisterInput;
 import io.veriguard.executors.sentinelone.client.SentinelOneExecutorClient;
@@ -34,9 +31,7 @@ public class SentinelOneExecutorServiceTest {
 
   @Mock private SentinelOneExecutorClient client;
   @Mock private SentinelOneExecutorConfig config;
-  @Mock private LicenseCacheManager licenseCacheManager;
   @Mock private AssetGroupService assetGroupService;
-  @Mock private Ee eeService;
   @Mock private EndpointService endpointService;
   @Mock private AgentService agentService;
   @Mock private ExecutorService executorService;
@@ -92,8 +87,6 @@ public class SentinelOneExecutorServiceTest {
   void test_launchBatchExecutorSubprocess_sentinelone()
       throws JsonProcessingException, InterruptedException {
     // Init datas
-    when(licenseCacheManager.getEnterpriseEditionInfo()).thenReturn(null);
-    doNothing().when(eeService).throwEEExecutorService(any(), any(), any());
     when(config.getApiBatchExecutionActionPagination()).thenReturn(1);
     when(config.getWindowsScriptId()).thenReturn("1234567890");
     Command payloadCommand =

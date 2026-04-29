@@ -18,13 +18,11 @@ import static java.util.Optional.ofNullable;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.veriguard.config.VeriguardConfig;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawExerciseSimple;
 import io.veriguard.database.raw.RawInjectExpectation;
 import io.veriguard.database.raw.RawSimulation;
 import io.veriguard.database.repository.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.rest.atomic_testing.form.TargetSimple;
 import io.veriguard.rest.document.DocumentService;
@@ -84,7 +82,6 @@ public class ExerciseService {
 
   @PersistenceContext private EntityManager entityManager;
 
-  private final Ee eeService;
   private final InjectDuplicateService injectDuplicateService;
   private final TeamService teamService;
   private final VariableService variableService;
@@ -98,7 +95,6 @@ public class ExerciseService {
   private final ExerciseMapper exerciseMapper;
   private final InjectMapper injectMapper;
   private final ResultUtils resultUtils;
-  private final LicenseCacheManager licenseCacheManager;
 
   private final AssetRepository assetRepository;
   private final AssetGroupRepository assetGroupRepository;
@@ -547,9 +543,6 @@ public class ExerciseService {
   }
 
   public void throwIfExerciseNotLaunchable(Exercise exercise) {
-    if (eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      return;
-    }
     exercise.getInjects().forEach(injectService::throwIfInjectNotLaunchable);
   }
 
