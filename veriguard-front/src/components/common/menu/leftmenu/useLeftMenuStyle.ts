@@ -8,11 +8,12 @@ const useLeftMenuStyle: () => {
   const theme = useTheme();
 
   return ({
-    listItemIcon: { minWidth: 20 },
+    // Icon block sized to fit a 18px SVG with ~10px gap (VeriGuard scale).
+    listItemIcon: { minWidth: 28, fontSize: 18 },
     listItemText: {
-      paddingLeft: theme.spacing(1),
+      paddingLeft: theme.spacing(0.5),
       fontWeight: theme.typography.h2.fontWeight,
-      fontSize: 14,
+      fontSize: 13,
     },
   });
 };

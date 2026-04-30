@@ -34,6 +34,11 @@ const MenuItemSingle: FunctionComponent<Props> = ({ navOpen, item }) => {
           'borderRadius': '7px',
           'marginBottom': '1px',
           'transition': 'background-color 220ms cubic-bezier(.2,.7,.2,1)',
+          '& .MuiListItemIcon-root .MuiSvgIcon-root, & .MuiListItemIcon-root svg': {
+            fontSize: 18,
+            width: 18,
+            height: 18,
+          },
           '&.Mui-selected': {
             backgroundColor: 'action.hover',
             boxShadow: 'none',
@@ -57,6 +62,9 @@ const MenuItemSingle: FunctionComponent<Props> = ({ navOpen, item }) => {
                   fontSize: 13,
                   fontWeight: isCurrentTab ? 500 : 400,
                   color: isCurrentTab ? 'text.primary' : 'text.secondary',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
                 },
               },
             }}

@@ -21,7 +21,7 @@ const LeftMenu: FunctionComponent<{
   const { state, helpers } = useLeftMenu(entries);
 
   const getWidth = () => {
-    return state.navOpen ? 232 : 64;
+    return state.navOpen ? 220 : 64;
   };
 
   return (
@@ -39,8 +39,10 @@ const LeftMenu: FunctionComponent<{
           overflowX: 'hidden',
           backgroundColor: theme.palette.background.nav,
           borderRight: `0.5px solid ${theme.palette.divider}`,
-          paddingLeft: 8,
-          paddingRight: 8,
+        },
+        '& .MuiList-root': {
+          paddingLeft: '8px',
+          paddingRight: '8px',
         },
       }}
     >
