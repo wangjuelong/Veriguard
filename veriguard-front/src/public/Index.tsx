@@ -9,8 +9,6 @@ import Reset from './components/login/Reset';
 
 const Login = lazy(() => import('./components/login/Login'));
 const Comcheck = lazy(() => import('./components/comcheck/Comcheck'));
-const Channel = lazy(() => import('./components/channels/Channel'));
-const Challenges = lazy(() => import('./components/challenges/ChallengesPlayer'));
 const ExerciseViewLessons = lazy(() => import('./components/lessons/ExerciseViewLessons'));
 const ScenarioViewLessons = lazy(() => import('./components/lessons/ScenarioViewLessons'));
 
@@ -39,8 +37,6 @@ const Index = () => {
           <Routes>
             <Route path="comcheck/:statusId" element={errorWrapper(Comcheck)()} />
             <Route path="reset" element={errorWrapper(Reset)()} />
-            <Route path="channels/:exerciseId/:channelId" element={errorWrapper(Channel)()} />
-            <Route path="challenges/:exerciseId" element={errorWrapper(Challenges)()} />
             <Route path="lessons/simulation/:exerciseId" element={errorWrapper(ExerciseViewLessons)()} />
             <Route path="lessons/scenario/:scenarioId" element={errorWrapper(ScenarioViewLessons)()} />
             <Route path="*" element={<Login />} />

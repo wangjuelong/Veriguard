@@ -63,7 +63,6 @@ class ExerciseServiceTest extends IntegrationTest {
   @Mock private AssetRepository assetRepository;
   @Mock private AssetGroupRepository assetGroupRepository;
   @Mock private InjectExpectationRepository injectExpectationRepository;
-  @Mock private ArticleRepository articleRepository;
   @Mock private ExerciseRepository exerciseRepository;
   @Mock private TeamRepository teamRepository;
   @Mock private UserRepository userRepository;
@@ -106,7 +105,6 @@ class ExerciseServiceTest extends IntegrationTest {
             assetRepository,
             assetGroupRepository,
             injectExpectationRepository,
-            articleRepository,
             exerciseRepository,
             teamRepository,
             userRepository,

@@ -222,20 +222,6 @@ public class InjectExpectation implements Base, Cloneable {
 
   // endregion
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "article_id")
-  @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("inject_expectation_article")
-  @Schema(type = "string")
-  private Article article;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "challenge_id")
-  @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("inject_expectation_challenge")
-  @Schema(type = "string")
-  private Challenge challenge;
-
   @OneToMany(
       mappedBy = "injectExpectation",
       cascade = CascadeType.ALL,
@@ -243,16 +229,6 @@ public class InjectExpectation implements Base, Cloneable {
       fetch = FetchType.LAZY)
   @JsonProperty("inject_expectation_traces")
   private List<InjectExpectationTrace> traces = new ArrayList<>();
-
-  public void setArticle(Article article) {
-    this.type = EXPECTATION_TYPE.ARTICLE;
-    this.article = article;
-  }
-
-  public void setChallenge(Challenge challenge) {
-    this.type = EXPECTATION_TYPE.CHALLENGE;
-    this.challenge = challenge;
-  }
 
   public void setManual(final Agent agent, final Asset asset, final AssetGroup assetGroup) {
     this.type = EXPECTATION_TYPE.MANUAL;

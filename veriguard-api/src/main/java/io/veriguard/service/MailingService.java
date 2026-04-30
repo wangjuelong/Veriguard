@@ -1,86 +1,64 @@
 package io.veriguard.service;
 
-import static io.veriguard.config.VeriguardAnonymous.ANONYMOUS;
-import static io.veriguard.config.SessionHelper.currentUser;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.veriguard.database.model.Exercise;
-import io.veriguard.database.model.Inject;
+import io.veriguard.config.VeriguardConfig;
 import io.veriguard.database.model.User;
-import io.veriguard.database.repository.InjectorContractRepository;
-import io.veriguard.database.repository.UserRepository;
-import io.veriguard.execution.ExecutableInject;
-import io.veriguard.execution.ExecutionContext;
-import io.veriguard.execution.ExecutionContextService;
-import io.veriguard.injectors.email.EmailContract;
-import io.veriguard.injectors.email.model.EmailContent;
-import io.veriguard.integration.ManagerFactory;
-import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.injectors.email.service.SmtpService;
 import jakarta.annotation.Resource;
+import jakarta.mail.Message;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Lightweight admin notification mailer used for password reset, lessons feedback, and platform
+ * notifications. The full attack-simulation Email injector pipeline is removed in 二开 — this
+ * service relies on {@link SmtpService} only.
+ */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MailingService {
 
-  @Resource protected ObjectMapper mapper;
-
-  private final UserRepository userRepository;
-  private final InjectorContractRepository injectorContractRepository;
-  private final ExecutionContextService executionContextService;
-  private final ManagerFactory managerFactory;
-
-  public void sendEmail(
-      String subject, String body, List<User> users, Optional<Exercise> exercise) {
-    EmailContent emailContent = new EmailContent();
-    emailContent.setSubject(subject);
-    emailContent.setBody(body);
-
-    Inject inject = new Inject();
-    inject.setInjectorContract(
-        this.injectorContractRepository
-            .findById(EmailContract.EMAIL_DEFAULT)
-            .orElseThrow(ElementNotFoundException::new));
-
-    inject
-        .getInjectorContract()
-        .ifPresent(
-            injectorContract -> {
-              inject.setContent(this.mapper.valueToTree(emailContent));
-
-              // When resetting the password, the user is not logged in (anonymous),
-              // so there's no need to add the user to the inject.
-              if (!ANONYMOUS.equals(currentUser().getId())) {
-                inject.setUser(
-                    this.userRepository
-                        .findById(currentUser().getId())
-                        .orElseThrow(() -> new ElementNotFoundException("Current user not found")));
-              }
-
-              exercise.ifPresent(inject::setExercise);
-
-              List<ExecutionContext> userInjectContexts =
-                  users.stream()
-                      .distinct()
-                      .map(
-                          user ->
-                              this.executionContextService.executionContext(
-                                  user, inject, "Direct execution"))
-                      .toList();
-              ExecutableInject injection =
-                  new ExecutableInject(false, true, inject, userInjectContexts);
-              io.veriguard.executors.Injector executor =
-                  managerFactory
-                      .getManager()
-                      .requestInjectorExecutorByType(injectorContract.getInjector().getType());
-              executor.executeInjection(injection);
-            });
-  }
+  @Resource private VeriguardConfig veriguardConfig;
+  private final SmtpService smtpService;
 
   public void sendEmail(String subject, String body, List<User> users) {
-    sendEmail(subject, body, users, Optional.empty());
+    if (users == null || users.isEmpty()) {
+      return;
+    }
+    String from = veriguardConfig.getDefaultMailer();
+    String replyTo = veriguardConfig.getDefaultReplyTo();
+    for (User user : users) {
+      if (user == null || user.getEmail() == null || user.getEmail().isBlank()) {
+        continue;
+      }
+      try {
+        MimeMessage mimeMessage = smtpService.createMimeMessage();
+        if (from != null) {
+          mimeMessage.setFrom(new InternetAddress(from));
+        }
+        if (replyTo != null) {
+          mimeMessage.setReplyTo(new InternetAddress[] {new InternetAddress(replyTo)});
+        }
+        mimeMessage.setRecipients(
+            Message.RecipientType.TO, new InternetAddress[] {new InternetAddress(user.getEmail())});
+        mimeMessage.setSubject(subject, "utf-8");
+
+        MimeMultipart multipart = new MimeMultipart("mixed");
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setContent(body, "text/html;charset=utf-8");
+        multipart.addBodyPart(bodyPart);
+        mimeMessage.setContent(multipart);
+
+        smtpService.send(mimeMessage);
+      } catch (Exception e) {
+        log.warn("Failed to send notification mail to {}: {}", user.getEmail(), e.getMessage());
+      }
+    }
   }
 }

@@ -93,22 +93,6 @@ public class Document implements Base {
   @JsonProperty("document_scenarios")
   private Set<Scenario> scenarios = new HashSet<>();
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "articles_documents",
-      joinColumns = @JoinColumn(name = "document_id"),
-      inverseJoinColumns = @JoinColumn(name = "article_id"))
-  @JsonIgnore
-  private Set<Article> articles = new HashSet<>();
-
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "challenges_documents",
-      joinColumns = @JoinColumn(name = "document_id"),
-      inverseJoinColumns = @JoinColumn(name = "challenge_id"))
-  @JsonIgnore
-  private Set<Challenge> challenges = new HashSet<>();
-
   @OneToMany(mappedBy = "document", fetch = FetchType.LAZY)
   @JsonIgnore
   private Set<InjectDocument> injectDocuments = new HashSet<>();
@@ -120,14 +104,6 @@ public class Document implements Base {
   @OneToMany(mappedBy = "executableFile", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JsonIgnore
   private Set<Executable> payloadsByExecutableFile = new HashSet<>();
-
-  @OneToMany(mappedBy = "logoDark", fetch = FetchType.LAZY)
-  @JsonIgnore
-  private Set<Channel> channelsByLogoDark = new HashSet<>();
-
-  @OneToMany(mappedBy = "logoLight", fetch = FetchType.LAZY)
-  @JsonIgnore
-  private Set<Channel> channelsByLogoLight = new HashSet<>();
 
   @OneToMany(mappedBy = "logoDark", fetch = FetchType.LAZY)
   @JsonIgnore

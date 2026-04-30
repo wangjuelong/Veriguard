@@ -434,18 +434,6 @@ public class Inject implements GrantableBase, Injection {
     return ofNullable(this.status);
   }
 
-  public List<InjectExpectation> getUserExpectationsForArticle(User user, Article article) {
-    return this.expectations.stream()
-        .filter(execution -> execution.getType().equals(InjectExpectation.EXPECTATION_TYPE.ARTICLE))
-        .filter(execution -> execution.getArticle().equals(article))
-        .filter(
-            execution ->
-                execution.getUser()
-                    != null) // We include only the expectations from players, because the
-        // validation link is always from a player
-        .filter(execution -> execution.getUser().equals(user))
-        .toList();
-  }
 
   @JsonProperty("inject_communications_number")
   public long getCommunicationsNumber() {

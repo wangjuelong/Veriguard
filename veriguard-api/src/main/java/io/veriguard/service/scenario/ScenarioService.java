@@ -9,7 +9,6 @@ import static io.veriguard.rest.scenario.utils.ScenarioUtils.handleCustomFilter;
 import static io.veriguard.service.ImportService.EXPORT_ENTRY_ATTACHMENT;
 import static io.veriguard.service.ImportService.EXPORT_ENTRY_SCENARIO;
 import static io.veriguard.utils.StringUtils.duplicateString;
-import static io.veriguard.utils.constants.Constants.ARTICLES;
 import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationCriteriaBuilder;
 import static io.veriguard.utils.pagination.SortUtilsCriteriaBuilder.toSortCriteriaBuilder;
 import static java.time.Instant.now;
@@ -103,12 +102,10 @@ public class ScenarioService {
   private final UserRepository userRepository;
   private final DocumentRepository documentRepository;
   private final ScenarioTeamUserRepository scenarioTeamUserRepository;
-  private final ArticleRepository articleRepository;
 
   private final ExerciseMapper exerciseMapper;
 
   private final VariableService variableService;
-  private final ChallengeService challengeService;
   private final TeamService teamService;
   private final FileService fileService;
   private final InjectDuplicateService injectDuplicateService;
@@ -531,32 +528,7 @@ public class ScenarioService {
                       });
             });
 
-    // Add Articles
-    objectMapper.addMixIn(Article.class, Mixins.Article.class);
-    scenarioFileExport.setArticles(scenario.getArticles());
-    // Add Channels
-    objectMapper.addMixIn(Channel.class, Mixins.Channel.class);
-    List<Channel> channels =
-        scenario.getArticles().stream().map(Article::getChannel).distinct().toList();
-    scenarioFileExport.setChannels(channels);
-    documentIds.addAll(
-        channels.stream()
-            .flatMap(channel -> channel.getLogos().stream())
-            .map(Document::getId)
-            .toList());
-
-    // Add Challenges
-    objectMapper.addMixIn(Challenge.class, Mixins.Challenge.class);
-    List<Challenge> challenges =
-        fromIterable(this.challengeService.getScenarioChallenges(scenario));
-    scenarioFileExport.setChallenges(challenges);
-    scenarioTags.addAll(
-        challenges.stream().flatMap(challenge -> challenge.getTags().stream()).toList());
-    documentIds.addAll(
-        challenges.stream()
-            .flatMap(challenge -> challenge.getDocuments().stream())
-            .map(Document::getId)
-            .toList());
+    // 二开移除 Channel/Article/Challenge — 不再写入 ScenarioFileExport。
 
     // Tags
     scenarioFileExport.setTags(scenarioTags.stream().distinct().toList());
@@ -746,7 +718,6 @@ public class ScenarioService {
       Scenario scenarioDuplicate = scenarioRepository.save(scenario);
       getListOfDuplicatedInjects(scenarioDuplicate, scenarioOrigin);
       getListOfScenarioTeams(scenarioDuplicate, scenarioOrigin);
-      getListOfArticles(scenarioDuplicate, scenarioOrigin);
       getListOfVariables(scenarioDuplicate, scenarioOrigin);
       getObjectives(scenarioDuplicate, scenarioOrigin);
       getLessonsCategories(scenarioDuplicate, scenarioOrigin);
@@ -840,45 +811,7 @@ public class ScenarioService {
     scenario.setInjects(new HashSet<>(injectListForScenario));
   }
 
-  private void getListOfArticles(@NotNull Scenario scenario, @NotNull Scenario scenarioOrigin) {
-    Map<String, String> mapIdArticleOriginNew = new HashMap<>();
-    List<Article> articleList = new ArrayList<>();
-    scenarioOrigin
-        .getArticles()
-        .forEach(
-            article -> {
-              Article scenarioArticle = new Article();
-              scenarioArticle.setName(article.getName());
-              scenarioArticle.setContent(article.getContent());
-              scenarioArticle.setAuthor(article.getAuthor());
-              scenarioArticle.setShares(article.getShares());
-              scenarioArticle.setLikes(article.getLikes());
-              scenarioArticle.setComments(article.getComments());
-              scenarioArticle.setChannel(article.getChannel());
-              scenarioArticle.setDocuments(new ArrayList<>(article.getDocuments()));
-              scenarioArticle.setScenario(scenario);
-              Article save = articleRepository.save(scenarioArticle);
-              articleList.add(save);
-              mapIdArticleOriginNew.put(article.getId(), scenarioArticle.getId());
-            });
-    scenario.setArticles(articleList);
-    for (Inject inject : scenario.getInjects()) {
-      if (ofNullable(inject.getContent()).map(c -> c.has(ARTICLES)).orElse(Boolean.FALSE)) {
-        List<String> articleNode = new ArrayList<>();
-        JsonNode articles = inject.getContent().findValue(ARTICLES);
-        if (articles.isArray()) {
-          for (final JsonNode node : articles) {
-            if (mapIdArticleOriginNew.containsKey(node.textValue())) {
-              articleNode.add(mapIdArticleOriginNew.get(node.textValue()));
-            }
-          }
-        }
-        inject.getContent().remove(ARTICLES);
-        ArrayNode arrayNode = inject.getContent().putArray(ARTICLES);
-        articleNode.forEach(arrayNode::add);
-      }
-    }
-  }
+  // 二开移除 Articles/Channels — 复制不再处理 article 字段。
 
   private void getListOfVariables(Scenario scenario, Scenario scenarioOrigin) {
     List<Variable> variables = variableService.variablesFromScenario(scenarioOrigin.getId());

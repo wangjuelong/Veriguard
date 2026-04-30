@@ -98,26 +98,6 @@ public class ExpectationBuilderService {
   }
 
   /**
-   * Builds a challenge expectation with default configuration.
-   *
-   * @return a configured challenge expectation
-   */
-  public Expectation buildChallengeExpectation() {
-    return buildExpectation(
-        CHALLENGE, CHALLENGE_NAME, expectationPropertiesConfig.getChallengeExpirationTime());
-  }
-
-  /**
-   * Builds an article/channel expectation with default configuration.
-   *
-   * @return a configured article expectation
-   */
-  public Expectation buildArticleExpectation() {
-    return buildExpectation(
-        ARTICLE, ARTICLE_NAME, expectationPropertiesConfig.getArticleExpirationTime());
-  }
-
-  /**
    * Builds a text expectation with default configuration.
    *
    * @return a configured text expectation

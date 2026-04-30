@@ -9,8 +9,6 @@ import io.veriguard.rest.exercise.exports.ExportOptions;
 import io.veriguard.rest.exercise.exports.VariableMixin;
 import io.veriguard.rest.exercise.exports.VariableWithValueMixin;
 import io.veriguard.rest.inject.exports.InjectsFileExport;
-import io.veriguard.service.ArticleService;
-import io.veriguard.service.ChallengeService;
 import lombok.Getter;
 
 @Getter
@@ -21,14 +19,9 @@ public class FileExportBase {
   @JsonIgnore protected int exportOptionsMask = ExportOptions.mask(false, false, false);
 
   @JsonIgnore public final ObjectMapper objectMapper;
-  @JsonIgnore protected final ChallengeService challengeService;
-  @JsonIgnore protected final ArticleService articleService;
 
-  protected FileExportBase(
-      ObjectMapper objectMapper, ChallengeService challengeService, ArticleService articleService) {
+  protected FileExportBase(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
-    this.challengeService = challengeService;
-    this.articleService = articleService;
 
     this.objectMapper.addMixIn(Base.class, Mixins.Base.class);
     this.objectMapper.addMixIn(Exercise.class, Mixins.Exercise.class);
@@ -39,9 +32,6 @@ public class FileExportBase {
     this.objectMapper.addMixIn(User.class, Mixins.User.class);
     this.objectMapper.addMixIn(Organization.class, Mixins.Organization.class);
     this.objectMapper.addMixIn(Inject.class, Mixins.Inject.class);
-    this.objectMapper.addMixIn(Article.class, Mixins.Article.class);
-    this.objectMapper.addMixIn(Channel.class, Mixins.Channel.class);
-    this.objectMapper.addMixIn(Challenge.class, Mixins.Challenge.class);
     this.objectMapper.addMixIn(Tag.class, Mixins.Tag.class);
     this.objectMapper.addMixIn(InjectorContract.class, Mixins.InjectorContract.class);
     this.objectMapper.addMixIn(AttackPattern.class, Mixins.AttackPattern.class);

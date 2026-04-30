@@ -11,8 +11,6 @@ import io.veriguard.database.repository.DocumentRepository;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.exercise.exports.ExportOptions;
 import io.veriguard.rest.inject.exports.InjectsFileExport;
-import io.veriguard.service.ArticleService;
-import io.veriguard.service.ChallengeService;
 import io.veriguard.service.FileService;
 import jakarta.annotation.Resource;
 import java.io.ByteArrayOutputStream;
@@ -30,8 +28,6 @@ import org.springframework.stereotype.Service;
 public class InjectExportService {
   @Resource protected ObjectMapper mapper;
   @Resource private DocumentRepository documentRepository;
-  @Resource private ChallengeService challengeService;
-  @Resource private ArticleService articleService;
   @Resource private FileService fileService;
 
   public String getZipFileName(int exportOptionsMask) {
@@ -56,9 +52,7 @@ public class InjectExportService {
     ObjectMapper objectMapper = mapper.copy();
 
     InjectsFileExport importExport =
-        InjectsFileExport.fromInjects(
-                injects, objectMapper, this.challengeService, this.articleService)
-            .withOptions(exportOptionsMask);
+        InjectsFileExport.fromInjects(injects, objectMapper).withOptions(exportOptionsMask);
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     ZipOutputStream zipExport = new ZipOutputStream(outputStream);

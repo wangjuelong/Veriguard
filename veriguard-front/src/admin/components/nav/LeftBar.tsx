@@ -112,8 +112,6 @@ const LeftBar = () => {
           label: 'Components',
           href: 'components',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.DOCUMENTS)
-            || ability.can(ACTIONS.ACCESS, SUBJECTS.CHANNELS)
-            || ability.can(ACTIONS.ACCESS, SUBJECTS.CHALLENGES)
             || ability.can(ACTIONS.ACCESS, SUBJECTS.LESSONS_LEARNED),
           subItems: [
             {
@@ -121,18 +119,6 @@ const LeftBar = () => {
               label: 'Documents',
               icon: () => (<DescriptionOutlined fontSize="small" />),
               userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.DOCUMENTS),
-            },
-            {
-              link: '/admin/components/channels',
-              label: 'Channels',
-              icon: () => (<PostOutline fontSize="small" />),
-              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.CHANNELS),
-            },
-            {
-              link: '/admin/components/challenges',
-              label: 'Challenges',
-              icon: () => (<RowingOutlined fontSize="small" />),
-              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.CHALLENGES),
             },
             {
               link: '/admin/components/lessons',

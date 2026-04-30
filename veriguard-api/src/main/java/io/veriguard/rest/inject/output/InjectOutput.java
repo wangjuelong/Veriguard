@@ -7,7 +7,6 @@ import io.veriguard.database.model.InjectDependency;
 import io.veriguard.database.model.InjectorContract;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.helper.InjectModelHelper;
-import io.veriguard.injectors.email.EmailContract;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
@@ -94,7 +93,8 @@ public class InjectOutput {
   @JsonProperty("inject_testable")
   @Schema(description = "Testable state of the inject")
   public boolean canBeTested() {
-    return EmailContract.TYPE.equals(this.getInjectType());
+    // 二开移除 Email injector — 其他注入器目前都不支持单独 test
+    return false;
   }
 
   @JsonProperty("inject_contract_domains")

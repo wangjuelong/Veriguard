@@ -103,12 +103,6 @@ public class InjectExpectationUtils {
             .orElse(expectationPropertiesConfig.getExpirationTimeByType(expectation.type())));
 
     switch (expectation) {
-      case ChannelExpectation e when expectation.type() == ARTICLE -> {
-        injectExpectation.setArticle(e.getArticle());
-      }
-      case ChallengeExpectation e when expectation.type() == CHALLENGE -> {
-        injectExpectation.setChallenge(e.getChallenge());
-      }
       case Expectation ignored when expectation.type() == DOCUMENT -> {
         injectExpectation.setType(DOCUMENT);
       }

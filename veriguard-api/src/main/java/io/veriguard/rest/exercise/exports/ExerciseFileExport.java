@@ -1,7 +1,6 @@
 package io.veriguard.rest.exercise.exports;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static io.veriguard.helper.StreamHelper.fromIterable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,8 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.*;
 import io.veriguard.export.FileExportBase;
-import io.veriguard.service.ArticleService;
-import io.veriguard.service.ChallengeService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -119,10 +116,6 @@ public class ExerciseFileExport extends FileExportBase {
                 .toList());
         allTags.addAll(
             this.getDocuments().stream().flatMap(doc -> doc.getTags().stream()).toList());
-        allTags.addAll(
-            this.getChallenges().stream()
-                .flatMap(challenge -> challenge.getTags().stream())
-                .toList());
         this.getInjects()
             .forEach(
                 inject -> {
@@ -171,42 +164,6 @@ public class ExerciseFileExport extends FileExportBase {
     return documents;
   }
 
-  @JsonProperty("exercise_channels")
-  private List<Channel> channels;
-
-  public List<Channel> getChannels() {
-    if (channels == null) {
-      return this.exercise == null
-          ? new ArrayList<>()
-          : this.exercise.getArticles().stream().map(Article::getChannel).distinct().toList();
-    }
-    return channels;
-  }
-
-  @JsonProperty("exercise_articles")
-  private List<Article> articles;
-
-  public List<Article> getArticles() {
-    if (articles == null) {
-      return this.exercise == null ? new ArrayList<>() : this.exercise.getArticles();
-    }
-    return articles;
-  }
-
-  @JsonProperty("exercise_challenges")
-  private List<Challenge> challenges;
-
-  public List<Challenge> getChallenges() {
-    if (challenges == null) {
-      return this.exercise == null
-          ? new ArrayList<>()
-          // this forces export to first persist to database before this can work
-          // TODO: refactor to allow for pure in-memory simulation export
-          : fromIterable(challengeService.getExerciseChallenges(this.exercise.getId()));
-    }
-    return challenges;
-  }
-
   @JsonProperty("exercise_lessons_categories")
   private List<LessonsCategory> lessonsCategories;
 
@@ -249,36 +206,16 @@ public class ExerciseFileExport extends FileExportBase {
 
   @JsonIgnore
   public List<String> getAllDocumentIds() {
-    List<String> documentIds = new ArrayList<>();
-    documentIds.addAll(this.getDocuments().stream().map(Document::getId).toList());
-    documentIds.addAll(
-        this.getChannels().stream()
-            .flatMap(channel -> channel.getLogos().stream())
-            .map(Document::getId)
-            .toList());
-    documentIds.addAll(
-        this.getChallenges().stream()
-            .flatMap(challenge -> challenge.getDocuments().stream())
-            .map(Document::getId)
-            .toList());
-    return documentIds;
+    return new ArrayList<>(this.getDocuments().stream().map(Document::getId).toList());
   }
 
-  private ExerciseFileExport(
-      Exercise exercise,
-      ObjectMapper objectMapper,
-      ChallengeService challengeService,
-      ArticleService articleService) {
-    super(objectMapper, challengeService, articleService);
+  private ExerciseFileExport(Exercise exercise, ObjectMapper objectMapper) {
+    super(objectMapper);
     this.exercise = exercise;
   }
 
-  public static ExerciseFileExport fromExercise(
-      Exercise exercise,
-      ObjectMapper objectMapper,
-      ChallengeService challengeService,
-      ArticleService articleService) {
-    return new ExerciseFileExport(exercise, objectMapper, challengeService, articleService);
+  public static ExerciseFileExport fromExercise(Exercise exercise, ObjectMapper objectMapper) {
+    return new ExerciseFileExport(exercise, objectMapper);
   }
 
   @Override

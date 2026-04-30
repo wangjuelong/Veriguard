@@ -1,16 +1,12 @@
 package io.veriguard.utils.fixtures;
 
-import static io.veriguard.integration.impl.injectors.email.EmailInjectorIntegration.EMAIL_INJECTOR_ID;
-
 import io.veriguard.database.model.Injector;
 import io.veriguard.database.repository.InjectorRepository;
-import io.veriguard.injectors.email.EmailContract;
 import io.veriguard.injectors.veriguard.VeriguardImplantContract;
 import io.veriguard.integration.Manager;
 import io.veriguard.integration.impl.injectors.veriguard.VeriguardInjectorIntegrationFactory;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,29 +57,12 @@ public class InjectorFixture {
                     "Injector not found after initialization: " + VeriguardImplantContract.TYPE));
   }
 
-  public Injector createOAEVEmailInjector() {
-    return createInjector(EMAIL_INJECTOR_ID, "Email", EmailContract.TYPE);
-  }
-
   public Injector getWellKnownOaevImplantInjector() {
     Injector injector =
         injectorRepository
             .findByType(VeriguardImplantContract.TYPE)
             .orElseGet(this::initializeOAEVImplantInjector);
-    // ensure the injector is marked for payloads
-    // some tests not running in a transaction may flip this
     injector.setPayloads(true);
-    injectorRepository.save(injector);
-    return injector;
-  }
-
-  public Injector getWellKnownEmailInjector(boolean isPayload) {
-    Optional<Injector> injectorOptional = injectorRepository.findByType(EmailContract.TYPE);
-    Injector injector =
-        injectorOptional.orElseGet(() -> injectorRepository.save(createOAEVEmailInjector()));
-    // ensure the injector is marked for payloads
-    // some tests not running in a transaction may flip this
-    injector.setPayloads(isPayload);
     injectorRepository.save(injector);
     return injector;
   }

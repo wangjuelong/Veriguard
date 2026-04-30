@@ -305,7 +305,7 @@ public class ExerciseLessonsApi extends RestBehavior {
                     lessonsCategory.getTeams().stream().flatMap(team -> team.getUsers().stream()))
             .distinct()
             .toList();
-    mailingService.sendEmail(input.getSubject(), input.getBody(), users, Optional.of(exercise));
+    mailingService.sendEmail(input.getSubject(), input.getBody(), users);
   }
 
   @GetMapping(EXERCISE_URL + "{exerciseId}/lessons_answers")

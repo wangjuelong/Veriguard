@@ -43,16 +43,6 @@ public class ScenarioMapper {
   }
 
   /**
-   * Converts a set of articles to related entity outputs with scenario context.
-   *
-   * @param articles the articles to convert
-   * @return set of related entity output DTOs including scenario context
-   */
-  public static Set<RelatedEntityOutput> toScenarioArticles(Set<Article> articles) {
-    return articles.stream().map(article -> toScenarioArticle(article)).collect(Collectors.toSet());
-  }
-
-  /**
    * Converts raw scenario data to a full output DTO.
    *
    * <p>Assembles a comprehensive scenario output from raw database results and pre-resolved related
@@ -102,14 +92,6 @@ public class ScenarioMapper {
             rawScenario.getScenario_all_users_number() != null
                 ? rawScenario.getScenario_all_users_number()
                 : 0)
-        .build();
-  }
-
-  private static RelatedEntityOutput toScenarioArticle(Article article) {
-    return RelatedEntityOutput.builder()
-        .id(article.getId())
-        .name(article.getName())
-        .context(article.getScenario().getId())
         .build();
   }
 

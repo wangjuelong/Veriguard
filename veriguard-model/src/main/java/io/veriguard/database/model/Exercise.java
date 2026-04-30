@@ -313,13 +313,6 @@ public class Exercise implements GrantableBase {
 
   @ArraySchema(schema = @Schema(type = "string"))
   @Getter
-  @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY)
-  @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("exercise_articles")
-  private List<Article> articles = new ArrayList<>();
-
-  @ArraySchema(schema = @Schema(type = "string"))
-  @Getter
   @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("exercise_lessons_categories")
@@ -483,10 +476,6 @@ public class Exercise implements GrantableBase {
     return injects.stream()
         .sorted(Inject.executionComparator)
         .collect(Collectors.toList()); // Should be modifiable
-  }
-
-  public List<Article> getArticlesForChannel(Channel channel) {
-    return articles.stream().filter(article -> article.getChannel().equals(channel)).toList();
   }
 
   public void addReplyTos(List<String> replyTos) {

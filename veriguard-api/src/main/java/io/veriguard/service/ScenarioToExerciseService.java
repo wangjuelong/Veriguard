@@ -2,16 +2,11 @@ package io.veriguard.service;
 
 import static io.veriguard.database.model.Grant.GRANT_RESOURCE_TYPE.SIMULATION;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.injectors.channel.ChannelContract;
-import io.veriguard.injectors.channel.model.ChannelContent;
 import io.veriguard.rest.custom_dashboard.CustomDashboardService;
 import io.veriguard.utils.CopyObjectListUtils;
 import jakarta.annotation.Nullable;
-import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +26,6 @@ public class ScenarioToExerciseService {
   private final ExerciseTeamUserRepository exerciseTeamUserRepository;
   private final ObjectiveRepository objectiveRepository;
   private final DocumentRepository documentRepository;
-  private final ArticleRepository articleRepository;
   private final LessonsCategoryRepository lessonsCategoryRepository;
   private final LessonsQuestionRepository lessonsQuestionRepository;
   private final InjectRepository injectRepository;
@@ -41,7 +35,6 @@ public class ScenarioToExerciseService {
   private final GrantService grantService;
   private final PlatformSettingsService platformSettingsService;
   private final CustomDashboardService customDashboardService;
-  @Resource protected ObjectMapper mapper;
 
   @Transactional(rollbackFor = Exception.class)
   public Exercise toExercise(
@@ -143,31 +136,7 @@ public class ScenarioToExerciseService {
         addExerciseToDocuments(scenario.getDocuments(), exerciseSaved);
     this.documentRepository.saveAll(scenarioDocuments);
 
-    // Articles
-    Map<String, Article> articles = new HashMap<>();
-    List<Article> scenarioArticles = scenario.getArticles();
-    List<Article> exerciseArticles =
-        scenarioArticles.stream()
-            .map(
-                scenarioArticle -> {
-                  Article exerciseArticle = new Article();
-                  exerciseArticle.setName(scenarioArticle.getName());
-                  exerciseArticle.setContent(scenarioArticle.getContent());
-                  exerciseArticle.setAuthor(scenarioArticle.getAuthor());
-                  exerciseArticle.setShares(scenarioArticle.getShares());
-                  exerciseArticle.setLikes(scenarioArticle.getLikes());
-                  exerciseArticle.setComments(scenarioArticle.getComments());
-                  exerciseArticle.setExercise(exerciseSaved);
-                  exerciseArticle.setChannel(scenarioArticle.getChannel());
-
-                  List<Document> articleDocuments =
-                      addExerciseToDocuments(scenarioArticle.getDocuments(), exerciseSaved);
-                  exerciseArticle.setDocuments(articleDocuments);
-                  articles.put(scenarioArticle.getId(), exerciseArticle);
-                  return exerciseArticle;
-                })
-            .toList();
-    this.articleRepository.saveAll(exerciseArticles);
+    // 二开移除 Articles / Channels — no exercise-level article copy.
 
     // Lessons
     exercise.setLessonsAnonymized(scenario.isLessonsAnonymized());
@@ -229,26 +198,7 @@ public class ScenarioToExerciseService {
           exerciseInject.setTags(CopyObjectListUtils.copy(scenarioInject.getTags(), Tag.class));
           exerciseInject.setContent(scenarioInject.getContent());
 
-          // Content
-          scenarioInject
-              .getInjectorContract()
-              .ifPresentOrElse(
-                  injectorContract -> {
-                    if (ChannelContract.TYPE.equals(injectorContract.getInjector().getType())) {
-                      try {
-                        ChannelContent content =
-                            mapper.treeToValue(scenarioInject.getContent(), ChannelContent.class);
-                        content.setArticles(
-                            content.getArticles().stream()
-                                .map(articleId -> articles.get(articleId).getId())
-                                .toList());
-                        exerciseInject.setContent(mapper.valueToTree(content));
-                      } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                      }
-                    }
-                  },
-                  () -> exerciseInject.setContent(scenarioInject.getContent()));
+          // 二开移除 Channel injector — no contract-specific content remapping.
 
           // Teams
           List<Team> teams = new ArrayList<>();

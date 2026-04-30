@@ -67,7 +67,6 @@ public class ScenarioApi extends RestBehavior {
   private final TeamService teamService;
   private final AssetGroupService assetGroupService;
   private final EndpointService endpointService;
-  private final ChannelService channelService;
   private final DocumentService documentService;
   private final PlatformSettingsService platformSettingsService;
 
@@ -444,18 +443,6 @@ public class ScenarioApi extends RestBehavior {
       @PathVariable String scenarioId,
       @RequestBody @Valid @NotNull final List<String> assetGroupIds) {
     return this.assetGroupService.assetGroupsByIdsForScenario(scenarioId, assetGroupIds);
-  }
-
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/channels")
-  @RBAC(
-      resourceId = "#scenarioId",
-      actionPerformed = Action.READ,
-      resourceType = ResourceType.SCENARIO)
-  @Operation(
-      summary = "Get channels. Can only be called if the user has access to the given scenario.",
-      description = "Get all channels used by articles for a given scenario")
-  public Iterable<Channel> channels(@PathVariable String scenarioId) {
-    return this.channelService.channelsForScenario(scenarioId);
   }
 
   @GetMapping(SCENARIO_URI + "/{scenarioId}/endpoints")

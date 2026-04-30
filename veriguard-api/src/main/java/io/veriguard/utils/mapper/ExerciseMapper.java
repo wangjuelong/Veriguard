@@ -2,7 +2,6 @@ package io.veriguard.utils.mapper;
 
 import static java.util.Collections.emptyList;
 
-import io.veriguard.database.model.Article;
 import io.veriguard.database.model.Exercise;
 import io.veriguard.database.model.ExerciseStatus;
 import io.veriguard.database.model.Inject;
@@ -219,26 +218,6 @@ public class ExerciseMapper {
 
   private static RelatedEntityOutput toRelatedEntityOutput(Exercise exercise) {
     return RelatedEntityOutput.builder().id(exercise.getId()).name(exercise.getName()).build();
-  }
-
-  /**
-   * Converts a set of articles to related entity outputs with simulation context.
-   *
-   * @param articles the articles to convert
-   * @return set of related entity output DTOs including exercise context
-   */
-  public static Set<RelatedEntityOutput> toSimulationArticles(Set<Article> articles) {
-    return articles.stream()
-        .map(article -> toSimulationArticle(article))
-        .collect(Collectors.toSet());
-  }
-
-  private static RelatedEntityOutput toSimulationArticle(Article article) {
-    return RelatedEntityOutput.builder()
-        .id(article.getId())
-        .name(article.getName())
-        .context(article.getExercise().getId())
-        .build();
   }
 
   /**
