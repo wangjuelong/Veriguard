@@ -21,7 +21,7 @@ const LeftMenu: FunctionComponent<{
   const { state, helpers } = useLeftMenu(entries);
 
   const getWidth = () => {
-    return state.navOpen ? 180 : 55;
+    return state.navOpen ? 232 : 64;
   };
 
   return (
@@ -37,6 +37,10 @@ const LeftMenu: FunctionComponent<{
           width: getWidth(),
           minHeight: '100vh',
           overflowX: 'hidden',
+          backgroundColor: theme.palette.background.nav,
+          borderRight: `0.5px solid ${theme.palette.divider}`,
+          paddingLeft: 8,
+          paddingRight: 8,
         },
       }}
     >

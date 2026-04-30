@@ -39,8 +39,20 @@ const MenuItemGroup: FunctionComponent<Props> = ({ item, state, helpers }) => {
         selected={isCurrentTab}
         dense
         sx={{
-          paddingRight: '2px',
-          height: 35,
+          'paddingLeft': '10px',
+          'paddingRight': '10px',
+          'height': 32,
+          'borderRadius': '7px',
+          'marginBottom': '1px',
+          'transition': 'background-color 220ms cubic-bezier(.2,.7,.2,1)',
+          '&.Mui-selected': {
+            backgroundColor: 'action.hover',
+            boxShadow: 'none',
+          },
+          '&.Mui-selected:hover': {
+            backgroundColor: 'action.hover',
+            boxShadow: 'none',
+          },
         }}
         onClick={() =>
           isMobile || navOpen
@@ -56,12 +68,21 @@ const MenuItemGroup: FunctionComponent<Props> = ({ item, state, helpers }) => {
           <>
             <ListItemText
               primary={t(item.label)}
-              slotProps={{ primary: { sx: { ...leftMenuStyle.listItemText } } }}
+              slotProps={{
+                primary: {
+                  sx: {
+                    ...leftMenuStyle.listItemText,
+                    fontSize: 13,
+                    fontWeight: isCurrentTab ? 500 : 400,
+                    color: isCurrentTab ? 'text.primary' : 'text.secondary',
+                  },
+                },
+              }}
             />
             {selectedMenu === item.href ? (
-              <ExpandLessOutlined />
+              <ExpandLessOutlined fontSize="small" />
             ) : (
-              <ExpandMoreOutlined />
+              <ExpandMoreOutlined fontSize="small" />
             )}
           </>
         )}
