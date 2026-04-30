@@ -24,7 +24,7 @@ public class VeriguardAdminConfig {
    * <p>This token grants administrative access to the platform API.
    */
   @JsonIgnore
-  @Value("${openbas.admin.token:${veriguard.admin.token:#{null}}}")
+  @Value("${veriguard.admin.token:#{null}}")
   private String token;
 
   @JsonIgnore

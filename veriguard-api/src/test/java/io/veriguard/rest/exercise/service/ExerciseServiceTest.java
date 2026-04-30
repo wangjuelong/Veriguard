@@ -12,10 +12,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.exercise.form.ExercisesGlobalScoresInput;
@@ -23,7 +21,6 @@ import io.veriguard.rest.inject.service.InjectDuplicateService;
 import io.veriguard.rest.inject.service.InjectService;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.ScenarioRecurrenceService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.InjectExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.TargetType;
@@ -51,7 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @ExtendWith(MockitoExtension.class)
 class ExerciseServiceTest extends IntegrationTest {
 
-  @Mock private Ee eeService;
   @Mock private InjectDuplicateService injectDuplicateService;
   @Mock private TeamService teamService;
   @Mock private VariableService variableService;
@@ -63,8 +59,6 @@ class ExerciseServiceTest extends IntegrationTest {
   @Mock private ExerciseMapper exerciseMapper;
   @Mock private InjectMapper injectMapper;
   @Mock private ResultUtils resultUtils;
-  @Mock private ActionMetricCollector actionMetricCollector;
-  @Mock private LicenseCacheManager licenseCacheManager;
 
   @Mock private AssetRepository assetRepository;
   @Mock private AssetGroupRepository assetGroupRepository;
@@ -97,7 +91,6 @@ class ExerciseServiceTest extends IntegrationTest {
   void setUp() {
     mockedExerciseService =
         new ExerciseService(
-            eeService,
             injectDuplicateService,
             teamService,
             variableService,
@@ -110,8 +103,6 @@ class ExerciseServiceTest extends IntegrationTest {
             exerciseMapper,
             injectMapper,
             resultUtils,
-            actionMetricCollector,
-            licenseCacheManager,
             assetRepository,
             assetGroupRepository,
             injectExpectationRepository,

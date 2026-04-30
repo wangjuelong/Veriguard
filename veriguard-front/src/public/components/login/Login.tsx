@@ -7,10 +7,8 @@ import { makeStyles } from 'tss-react/mui';
 import { askToken, checkKerberos } from '../../../actions/Application';
 import { type LoggedHelper } from '../../../actions/helper';
 import { useFormatter } from '../../../components/i18n';
-import byFiligranDark from '../../../static/images/by_filigran_dark.png';
-import byFiligranLight from '../../../static/images/by_filigran_light.png';
-import logoDark from '../../../static/images/logo_text_dark.png';
-import logoLight from '../../../static/images/logo_text_light.png';
+import logoDark from '../../../static/images/logo_text_dark.svg';
+import logoLight from '../../../static/images/logo_text_light.svg';
 import { useHelper } from '../../../store';
 import { fileUri } from '../../../utils/Environment';
 import { useAppDispatch } from '../../../utils/hooks';
@@ -35,10 +33,6 @@ const useStyles = makeStyles()(() => ({
   logo: {
     width: 400,
     margin: 0,
-  },
-  byFiligranLogo: {
-    width: 100,
-    margin: '-10px 0 0 295px',
   },
   paper: {
     margin: '0 auto',
@@ -100,8 +94,7 @@ const Login = () => {
     ? settings?.platform_dark_theme?.logo_login_url
     : settings?.platform_light_theme?.logo_login_url;
 
-  const isWhitemarkEnable = settings.platform_whitemark === 'true'
-    && settings.platform_license?.license_is_validated === true;
+  const isWhitemarkEnable = settings.platform_whitemark === 'true';
 
   // POLICIES
   const loginMessage = settings.platform_policies?.platform_login_message;
@@ -135,16 +128,6 @@ const Login = () => {
         className={classes.logo}
         style={{ marginBottom: isWhitemarkEnable ? 20 : 0 }}
       />
-      {!isWhitemarkEnable && (
-        <div style={{ marginBottom: 20 }}>
-          <img
-            src={fileUri(theme.palette.mode === 'dark'
-              ? byFiligranDark
-              : byFiligranLight)}
-            className={classes.byFiligranLogo}
-          />
-        </div>
-      )}
       {isLoginMessage && (
         <Paper classes={{ root: classes.paper }} variant="outlined">
           <Markdown>{loginMessage}</Markdown>

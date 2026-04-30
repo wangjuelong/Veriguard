@@ -4,9 +4,7 @@ import static io.veriguard.executors.ExecutorHelper.replaceArgs;
 import static io.veriguard.executors.utils.ExecutorUtils.getAgentsFromOSAndArch;
 import static io.veriguard.integration.impl.executors.tanium.TaniumExecutorIntegration.TANIUM_EXECUTOR_NAME;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorContextService;
 import io.veriguard.executors.ExecutorHelper;
 import io.veriguard.executors.ExecutorService;
@@ -29,8 +27,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TaniumExecutorContextService extends ExecutorContextService {
 
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
   private final TaniumExecutorConfig taniumExecutorConfig;
   private final TaniumExecutorClient taniumExecutorClient;
   private final ExecutorService executorService;
@@ -49,9 +45,6 @@ public class TaniumExecutorContextService extends ExecutorContextService {
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
       Inject inject, Set<Agent> agents, InjectStatus injectStatus) {
-
-    eeService.throwEEExecutorService(
-        licenseCacheManager.getEnterpriseEditionInfo(), SERVICE_NAME, injectStatus);
 
     List<Agent> taniumAgents = new ArrayList<>(agents);
 

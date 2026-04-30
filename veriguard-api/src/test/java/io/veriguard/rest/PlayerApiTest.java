@@ -40,7 +40,7 @@ class PlayerApiTest extends IntegrationTest {
 
   @Autowired private MockMvc mvc;
 
-  @Value("${openbas.admin.email:${veriguard.admin.email:#{null}}}")
+  @Value("${veriguard.admin.email:#{null}}")
   private String adminEmail;
 
   @Autowired private OrganizationRepository organizationRepository;

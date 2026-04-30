@@ -7,11 +7,9 @@ import Tabs, { type TabsEntry } from '../../../components/common/tabs/Tabs';
 import useTabs from '../../../components/common/tabs/useTabs';
 import { useFormatter } from '../../../components/i18n';
 import { type AggregatedFindingOutput, type RelatedFindingOutput, type SearchPaginationInput, type VulnerabilityOutput } from '../../../utils/api-types';
-import useEnterpriseEdition from '../../../utils/hooks/useEnterpriseEdition';
 import GeneralVulnerabilityInfoTab from '../settings/vulnerabilities/GeneralVulnerabilityInfoTab';
 import RelatedInjectsTab from '../settings/vulnerabilities/RelatedInjectsTab';
 import RemediationInfoTab from '../settings/vulnerabilities/RemediationInfoTab';
-import TabLabelWithEE from '../settings/vulnerabilities/TabLabelWithEE';
 import { type VulnerabilityStatus } from '../settings/vulnerabilities/VulnerabilityDetail';
 import VulnerabilityTabPanel from '../settings/vulnerabilities/VulnerabilityTabPanel';
 
@@ -33,12 +31,6 @@ const FindingDetail = ({
   onCvssScore,
 }: Props) => {
   const { t } = useFormatter();
-
-  const {
-    isValidated: isEE,
-    openDialog: openEEDialog,
-    setEEFeatureDetectedInfo,
-  } = useEnterpriseEdition();
 
   const isCVE = selectedFinding.finding_type === 'cve';
 
@@ -71,7 +63,7 @@ const FindingDetail = ({
         label: t('Related Injects'),
       }, {
         key: 'Remediation',
-        label: <TabLabelWithEE label={t('Remediation')} />,
+        label: t('Remediation'),
       }]
     : [{
         key: 'Related Injects',
@@ -98,25 +90,15 @@ const FindingDetail = ({
           />
         );
       case 'Remediation':
-        return isEE
-          ? (
-              <VulnerabilityTabPanel status={vulnerabilityStatus} vulnerability={vulnerability}>
-                <RemediationInfoTab vulnerability={vulnerability!} />
-              </VulnerabilityTabPanel>
-            )
-          : null;
+        return (
+          <VulnerabilityTabPanel status={vulnerabilityStatus} vulnerability={vulnerability}>
+            <RemediationInfoTab vulnerability={vulnerability!} />
+          </VulnerabilityTabPanel>
+        );
       default:
         return null;
     }
   };
-
-  useEffect(() => {
-    if (currentTab === 'Remediation' && !isEE) {
-      handleChangeTab('General');
-      setEEFeatureDetectedInfo(t('Remediation'));
-      openEEDialog();
-    }
-  }, [currentTab, isEE]);
 
   return (
     <>

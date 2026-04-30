@@ -2,12 +2,10 @@ package io.veriguard.integration.impl.executors.tanium;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.ConnectorInstance;
 import io.veriguard.database.model.ConnectorType;
 import io.veriguard.database.model.Endpoint;
 import io.veriguard.database.model.Executor;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.exception.ExecutorException;
 import io.veriguard.executors.tanium.client.TaniumExecutorClient;
@@ -52,8 +50,6 @@ public class TaniumExecutorIntegration extends Integration {
   private final EndpointService endpointService;
   private final AssetGroupService assetGroupService;
   private final ExecutorService executorService;
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ThreadPoolTaskScheduler taskScheduler;
   private final ConnectorInstanceService connectorInstanceService;
   private final ConnectorInstance connectorInstance;
@@ -68,8 +64,6 @@ public class TaniumExecutorIntegration extends Integration {
       EndpointService endpointService,
       AgentService agentService,
       AssetGroupService assetGroupService,
-      Ee eeService,
-      LicenseCacheManager licenseCacheManager,
       ComponentRequestEngine componentRequestEngine,
       ExecutorService executorService,
       ThreadPoolTaskScheduler taskScheduler,
@@ -79,8 +73,6 @@ public class TaniumExecutorIntegration extends Integration {
     this.endpointService = endpointService;
     this.agentService = agentService;
     this.assetGroupService = assetGroupService;
-    this.eeService = eeService;
-    this.licenseCacheManager = licenseCacheManager;
     this.executorService = executorService;
     this.taskScheduler = taskScheduler;
     this.connectorInstanceService = connectorInstanceService;
@@ -121,8 +113,7 @@ public class TaniumExecutorIntegration extends Integration {
 
     client = new TaniumExecutorClient(config, httpClientFactory);
     taniumExecutorContextService =
-        new TaniumExecutorContextService(
-            eeService, licenseCacheManager, config, client, executorService);
+        new TaniumExecutorContextService(config, client, executorService);
     taniumExecutorService =
         new TaniumExecutorService(
             executor, client, config, endpointService, agentService, assetGroupService);

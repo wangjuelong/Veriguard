@@ -1,11 +1,4 @@
-import 'cronstrue/locales/fr';
 import 'cronstrue/locales/en';
-import 'cronstrue/locales/es';
-import 'cronstrue/locales/de';
-import 'cronstrue/locales/it';
-import 'cronstrue/locales/ja';
-import 'cronstrue/locales/ko';
-import 'cronstrue/locales/ru';
 import 'cronstrue/locales/zh_CN';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';

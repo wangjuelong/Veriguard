@@ -20,7 +20,6 @@ import io.veriguard.injector_contract.fields.ContractFieldType;
 import io.veriguard.rest.atomic_testing.form.*;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.inject.service.InjectService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.mapper.InjectMapper;
 import io.veriguard.utils.mapper.PayloadMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;
@@ -44,7 +43,6 @@ public class AtomicTestingService {
 
   @Resource protected ObjectMapper mapper;
   private final InjectMapper injectMapper;
-  private final ActionMetricCollector actionMetricCollector;
 
   private final AssetGroupRepository assetGroupRepository;
   private final AssetRepository assetRepository;
@@ -147,9 +145,6 @@ public class AtomicTestingService {
                           : injectDocumentRepository.save(injectDocument));
             });
 
-    if (injectId == null) {
-      actionMetricCollector.addAtomicTestingCreatedCount();
-    }
     injectToSave = injectRepository.save(injectToSave);
     return injectMapper.toInjectResultOverviewOutput(injectToSave);
   }
@@ -218,7 +213,6 @@ public class AtomicTestingService {
   // -- ACTIONS --
 
   public InjectResultOverviewOutput duplicate(String id) {
-    this.actionMetricCollector.addAtomicTestingCreatedCount();
     return injectService.duplicate(id);
   }
 

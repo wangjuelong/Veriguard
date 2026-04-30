@@ -1,7 +1,6 @@
 package io.veriguard.rest.settings.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.ee.License;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -53,18 +52,6 @@ public class PlatformSettings extends PublicPlatformSettings {
   @JsonProperty("map_tile_server_dark")
   @Schema(description = "URL of the server containing the map tile with dark theme")
   private String mapTileServerDark;
-
-  @JsonProperty("xtm_opencti_enable")
-  @Schema(description = "True if connection with OpenCTI is enabled")
-  private Boolean xtmOpenctiEnable;
-
-  @JsonProperty("xtm_opencti_url")
-  @Schema(description = "Url of OpenCTI")
-  private String xtmOpenctiUrl;
-
-  @JsonProperty("telemetry_manager_enable")
-  @Schema(description = "True if telemetry manager enable")
-  private Boolean telemetryManagerEnable;
 
   @JsonProperty("platform_version")
   @Schema(description = "Current version of the platform")
@@ -161,47 +148,6 @@ public class PlatformSettings extends PublicPlatformSettings {
   @Schema(description = "Reply to mail to use by default for injects")
   private String defaultReplyTo;
 
-  // XTM Hub
-  @JsonProperty("xtm_hub_enable")
-  @Schema(description = "True if connection with XTM Hub is enabled")
-  private Boolean xtmHubEnable;
-
-  @JsonProperty("xtm_hub_url")
-  @Schema(description = "Url of XTM Hub")
-  private String xtmHubUrl;
-
-  @JsonProperty("xtm_hub_reachable")
-  @Schema(description = "True if xtmhub backend is reachable")
-  private Boolean xtmHubReachable;
-
-  @JsonProperty("xtm_hub_token")
-  @Schema(description = "XTM Hub token")
-  private String xtmHubToken;
-
-  @JsonProperty("xtm_hub_registration_status")
-  @Schema(description = "XTM Hub registration status")
-  private String xtmHubRegistrationStatus;
-
-  @JsonProperty("xtm_hub_registration_date")
-  @Schema(description = "XTM Hub registration date")
-  private String xtmHubRegistrationDate;
-
-  @JsonProperty("xtm_hub_registration_user_id")
-  @Schema(description = "XTM Hub registration user id")
-  private String xtmHubRegistrationUserId;
-
-  @JsonProperty("xtm_hub_registration_user_name")
-  @Schema(description = "XTM Hub registration user name")
-  private String xtmHubRegistrationUserName;
-
-  @JsonProperty("xtm_hub_last_connectivity_check")
-  @Schema(description = "XTM Hub last connectivity check")
-  private String xtmHubLastConnectivityCheck;
-
-  @JsonProperty("xtm_hub_should_send_connectivity_email")
-  @Schema(description = "XTM Hub should send connectivity email")
-  private String xtmHubShouldSendConnectivityEmail;
-
   @JsonProperty("smtp_service_available")
   @Schema(description = "SMTP Service availability")
   private String smtpServiceAvailable;
@@ -209,8 +155,4 @@ public class PlatformSettings extends PublicPlatformSettings {
   @JsonProperty("imap_service_available")
   @Schema(description = "IMAP Service availability")
   private String imapServiceAvailable;
-
-  @JsonProperty("platform_license")
-  @Schema(description = "Platform licensing information")
-  private License platformLicense;
 }

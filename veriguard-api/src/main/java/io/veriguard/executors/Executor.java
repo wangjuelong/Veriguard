@@ -16,7 +16,6 @@ import io.veriguard.integration.ManagerFactory;
 import io.veriguard.rest.inject.service.InjectStatusService;
 import io.veriguard.service.InjectorService;
 import io.veriguard.service.connector_instances.ConnectorInstanceService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.time.Instant;
@@ -40,7 +39,6 @@ public class Executor {
   private final InjectorRepository injectorRepository;
 
   private final QueueService queueService;
-  private final ActionMetricCollector actionMetricCollector;
   private final ManagerFactory managerFactory;
 
   private final ExecutionExecutorService executionExecutorService;
@@ -92,9 +90,6 @@ public class Executor {
             .getInjectorContract()
             .orElseThrow(
                 () -> new UnsupportedOperationException("Inject does not have a contract"));
-
-    // Telemetry
-    actionMetricCollector.addInjectPlayedCount(injectorContract.getInjector().getType());
 
     // Depending on injector type (internal or external) execution must be done differently
     Injector injector =

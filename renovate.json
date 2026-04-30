@@ -5,8 +5,7 @@
     "docker:enableMajor"
   ],
   "labels": [
-    "dependencies",
-    "filigran team"
+    "dependencies"
   ],
   "minimumReleaseAge": "3 days",
   "prHourlyLimit": 2,

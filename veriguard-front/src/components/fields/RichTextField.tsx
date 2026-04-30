@@ -2,7 +2,6 @@ import { FormHelperText, InputLabel } from '@mui/material';
 import { type CSSProperties } from 'react';
 import { type Control, Controller } from 'react-hook-form';
 
-import TextFieldAskAI from '../../admin/components/common/form/TextFieldAskAI';
 import CKEditor from '../CKEditor';
 
 interface Props {
@@ -11,8 +10,6 @@ interface Props {
   name: string;
   style?: CSSProperties;
   disabled: boolean;
-  askAi: boolean;
-  inInject: boolean;
   required?: boolean;
 }
 
@@ -22,8 +19,6 @@ const RichTextField = ({
   name,
   style = {},
   disabled,
-  askAi,
-  inInject,
   required,
 }: Props) => {
   return (
@@ -62,18 +57,6 @@ const RichTextField = ({
               <FormHelperText error>
                 {(fieldError?.message)}
               </FormHelperText>
-            )}
-            {askAi && (
-              <TextFieldAskAI
-                currentValue={value ?? ''}
-                setFieldValue={(val) => {
-                  onChange(val);
-                }}
-                format="html"
-                variant="ckeditor"
-                disabled={disabled}
-                inInject={inInject}
-              />
             )}
           </>
         )}

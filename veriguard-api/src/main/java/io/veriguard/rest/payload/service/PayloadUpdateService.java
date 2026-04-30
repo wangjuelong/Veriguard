@@ -4,13 +4,11 @@ import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
 import static io.veriguard.rest.payload.PayloadUtils.validateArchitecture;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AttackPatternRepository;
 import io.veriguard.database.repository.DomainRepository;
 import io.veriguard.database.repository.PayloadRepository;
 import io.veriguard.database.repository.TagRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.payload.PayloadUtils;
@@ -30,8 +28,6 @@ public class PayloadUpdateService {
   private final PayloadUtils payloadUtils;
 
   private final PayloadService payloadService;
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
 
   private final TagRepository tagRepository;
   private final AttackPatternRepository attackPatternRepository;
@@ -41,10 +37,6 @@ public class PayloadUpdateService {
 
   @Transactional(rollbackOn = Exception.class)
   public Payload updatePayload(String payloadId, PayloadUpdateInput input) {
-    if (eeService.isEnterpriseLicenseInactive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      input.setDetectionRemediations(null);
-    }
-
     Payload payload =
         this.payloadRepository.findById(payloadId).orElseThrow(ElementNotFoundException::new);
     List<AttackPattern> attackPatterns =

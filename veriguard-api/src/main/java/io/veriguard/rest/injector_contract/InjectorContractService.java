@@ -21,7 +21,6 @@ import io.veriguard.database.repository.InjectorRepository;
 import io.veriguard.database.specification.InjectorContractSpecification;
 import io.veriguard.injector_contract.Contract;
 import io.veriguard.injectors.email.EmailContract;
-import io.veriguard.injectors.ovh.OvhSmsContract;
 import io.veriguard.rest.attack_pattern.service.AttackPatternService;
 import io.veriguard.rest.domain.DomainService;
 import io.veriguard.rest.exception.ElementNotFoundException;
@@ -86,10 +85,6 @@ public class InjectorContractService {
   /** Configuration flag for enabling email import from XLS files. */
   @Value("${veriguard.xls.import.mail.enable}")
   private boolean mailImportEnabled;
-
-  /** Configuration flag for enabling SMS import from XLS files. */
-  @Value("${veriguard.xls.import.sms.enable}")
-  private boolean smsImportEnabled;
 
   // -- CRUD --
 
@@ -330,9 +325,6 @@ public class InjectorContractService {
     if (Arrays.asList(EmailContract.EMAIL_GLOBAL, EmailContract.EMAIL_DEFAULT)
         .contains(injectorContract.getId())) {
       injectorContract.setImportAvailable(mailImportEnabled);
-    }
-    if (OvhSmsContract.OVH_DEFAULT.equals(injectorContract.getId())) {
-      injectorContract.setImportAvailable(smsImportEnabled);
     }
   }
 

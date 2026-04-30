@@ -22,12 +22,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.veriguard.config.VeriguardConfig;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.*;
 import io.veriguard.database.repository.*;
 import io.veriguard.database.specification.ScenarioSpecification;
-import io.veriguard.ee.Ee;
 import io.veriguard.export.Mixins;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.healthcheck.utils.HealthCheckUtils;
@@ -46,7 +44,6 @@ import io.veriguard.rest.scenario.response.ScenarioOutput;
 import io.veriguard.rest.scenario.response.ScenarioTeamUserOutput;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.TargetType;
 import io.veriguard.utils.mapper.ExerciseMapper;
 import io.veriguard.utils.mapper.ScenarioMapper;
@@ -109,10 +106,7 @@ public class ScenarioService {
   private final ArticleRepository articleRepository;
 
   private final ExerciseMapper exerciseMapper;
-  private final ActionMetricCollector actionMetricCollector;
-  private final LicenseCacheManager licenseCacheManager;
 
-  private final Ee eeService;
   private final VariableService variableService;
   private final ChallengeService challengeService;
   private final TeamService teamService;
@@ -132,7 +126,6 @@ public class ScenarioService {
   @Transactional
   public Scenario createScenario(@NotNull final Scenario scenario) {
     computeEmails(scenario);
-    this.actionMetricCollector.addScenarioCreatedCount();
     return this.scenarioRepository.save(scenario);
   }
 
@@ -302,9 +295,6 @@ public class ScenarioService {
   }
 
   public void throwIfScenarioNotLaunchable(Scenario scenario) {
-    if (eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      return;
-    }
     scenario.getInjects().forEach(injectService::throwIfInjectNotLaunchable);
   }
 
@@ -760,7 +750,6 @@ public class ScenarioService {
       getListOfVariables(scenarioDuplicate, scenarioOrigin);
       getObjectives(scenarioDuplicate, scenarioOrigin);
       getLessonsCategories(scenarioDuplicate, scenarioOrigin);
-      this.actionMetricCollector.addScenarioCreatedCount();
       return scenarioRepository.save(scenario);
     }
     throw new ElementNotFoundException();

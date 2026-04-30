@@ -39,7 +39,6 @@ const Parameters = () => {
   const cannotManagePlatformSettings = ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS);
 
   const { settings }: { settings: PlatformSettings } = useHelper((helper: LoggedHelper) => ({ settings: helper.getPlatformSettings() }));
-  const isEnterpriseEditionValid = settings.platform_license?.license_is_validated;
   useDataLoader(() => {
     dispatch(fetchPlatformParameters());
   });
@@ -129,18 +128,6 @@ const Parameters = () => {
               <ItemBoolean variant="large" status={null} neutralLabel={settings?.platform_version?.replace('-SNAPSHOT', '')} />
             </ListItem>
             <ListItem divider>
-              <ListItemText primary={t('Edition')} />
-              <ItemBoolean
-                variant="large"
-                neutralLabel={
-                  isEnterpriseEditionValid
-                    ? t('Enterprise')
-                    : t('Community')
-                }
-                status={null}
-              />
-            </ListItem>
-            <ListItem divider>
               <ListItemText
                 primary={t('AI Powered')}
               />
@@ -153,16 +140,16 @@ const Parameters = () => {
                     : `${settings.platform_ai_type} - ${t('Missing token')}`
                 }
                 status={(settings.platform_ai_enabled) && (settings.platform_ai_has_token)}
-                tooltip={settings.platform_ai_has_token ? `${settings.platform_ai_type} - ${settings.platform_ai_model}` : t('The token is missing in your platform configuration, please ask your Filigran representative to provide you with it or with on-premise deployment instructions. Your can open a support ticket to do so.')}
+                tooltip={settings.platform_ai_has_token ? `${settings.platform_ai_type} - ${settings.platform_ai_model}` : t('The token is missing in your platform configuration, please ask your Veriguard administrator to provide you with it or with on-premise deployment instructions. You can open a support ticket to do so.')}
               />
             </ListItem>
             <ListItem divider>
-              <TextField fullWidth label={t('Filigran support key')} variant="standard" disabled />
+              <TextField fullWidth label={t('Support key')} variant="standard" disabled />
             </ListItem>
             <ListItem divider>
-              <ListItemText primary={t('Remove Filigran logos')} />
+              <ListItemText primary={t('Remove platform logos')} />
               <Switch
-                disabled={settings.platform_license?.license_is_validated === false || ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS)}
+                disabled={ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS)}
                 checked={settings.platform_whitemark === 'true'}
                 onChange={(_event, checked) => updatePlatformWhitemark({ platform_whitemark: checked.toString() })}
               />
@@ -223,10 +210,6 @@ const Parameters = () => {
                     <ItemBoolean status={null} variant="large" neutralLabel={settings?.analytics_engine_version} />
                   </ListItem>
                 )}
-              <ListItem divider>
-                <ListItemText primary={t('Telemetry manager')} />
-                <ItemBoolean status={settings?.telemetry_manager_enable} variant="large" label={settings?.telemetry_manager_enable ? t('Enable') : t('Disabled')} />
-              </ListItem>
               <ListItem divider>
                 <ListItemText primary={t('SMTP')} />
                 <ItemBoolean status={settings?.smtp_service_available === 'true'} variant="large" label={settings?.smtp_service_available === 'true' ? t('Enable') : t('Disabled')} />

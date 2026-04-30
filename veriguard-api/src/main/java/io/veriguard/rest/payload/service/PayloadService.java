@@ -14,7 +14,6 @@ import static io.veriguard.injector_contract.fields.ContractAssetGroup.assetGrou
 import static io.veriguard.injector_contract.fields.ContractExpectations.expectationsField;
 import static io.veriguard.injector_contract.fields.ContractSelect.selectFieldWithDefault;
 import static io.veriguard.injector_contract.fields.ContractText.textField;
-import static io.veriguard.service.stix.SecurityCoverageInjectService.ALL_PLATFORMS;
 import static io.veriguard.utils.ArchitectureFilterUtils.handleArchitectureFilter;
 import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationJPA;
 
@@ -64,6 +63,10 @@ public class PayloadService {
   public static final String DYNAMIC_DNS_RESOLUTION_HOSTNAME_VARIABLE =
       "#{" + DYNAMIC_DNS_RESOLUTION_HOSTNAME_KEY + "}";
   private static final String DYNAMIC_DNS_RESOLUTION_UUID = "ff16dc60-ea6f-4925-8509-20557e09c676";
+  private static final Endpoint.PLATFORM_TYPE[] ALL_PLATFORMS =
+      new Endpoint.PLATFORM_TYPE[] {
+        Endpoint.PLATFORM_TYPE.Windows, Endpoint.PLATFORM_TYPE.Linux, Endpoint.PLATFORM_TYPE.MacOS
+      };
 
   @Resource protected ObjectMapper mapper;
 
@@ -355,7 +358,7 @@ public class PayloadService {
     PayloadArgument argument = new PayloadArgument();
     argument.setType("text");
     argument.setKey(DYNAMIC_DNS_RESOLUTION_HOSTNAME_KEY);
-    argument.setDefaultValue("filigran.io");
+    argument.setDefaultValue("example.com");
     dynamicDnsResolutionPayload.setArguments(new ArrayList<>(List.of(argument)));
 
     dynamicDnsResolutionPayload.setExpectations(

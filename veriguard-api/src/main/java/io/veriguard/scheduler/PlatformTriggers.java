@@ -72,29 +72,6 @@ public class PlatformTriggers {
   }
 
   @Bean
-  @Profile("!test")
-  public Trigger securityCoverageTrigger() {
-    SimpleScheduleBuilder _15_seconds = simpleSchedule().withIntervalInSeconds(15).repeatForever();
-    return newTrigger()
-        .forJob(this.platformJobs.getSecurityCoverageJobExecution())
-        .withIdentity("securityCoverageTrigger")
-        .withSchedule(_15_seconds)
-        .build();
-  }
-
-  @Bean
-  @Profile("!test")
-  public Trigger connectorPingTrigger() {
-    // 40 seconds is recommended for OCTI connectors pings
-    SimpleScheduleBuilder _40_seconds = simpleSchedule().withIntervalInSeconds(40).repeatForever();
-    return newTrigger()
-        .forJob(this.platformJobs.getConnectorPingJob())
-        .withIdentity("connectorPingJob")
-        .withSchedule(_40_seconds)
-        .build();
-  }
-
-  @Bean
   public Trigger userEventRetentionTrigger() {
     return newTrigger()
         .forJob(this.platformJobs.userEventRetentionJobDetail())

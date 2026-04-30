@@ -259,8 +259,6 @@ const ArticleForm = ({
               label={t('Content')}
               fullWidth
               style={{ marginTop: 20 }}
-              askAi={true}
-              inArticle={true}
             />
             <GridLegacy container spacing={3} style={{ marginTop: 0 }}>
               <GridLegacy item xs={4}>

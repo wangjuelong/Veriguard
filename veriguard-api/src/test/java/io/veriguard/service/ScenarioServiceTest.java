@@ -9,18 +9,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.healthcheck.enums.ExternalServiceDependency;
 import io.veriguard.healthcheck.utils.HealthCheckUtils;
 import io.veriguard.rest.inject.service.InjectDuplicateService;
 import io.veriguard.rest.inject.service.InjectService;
 import io.veriguard.service.scenario.ScenarioService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.TargetType;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.mapper.ExerciseMapper;
@@ -53,7 +50,6 @@ class ScenarioServiceTest extends IntegrationTest {
   @Autowired private LessonsCategoryRepository lessonsCategoryRepository;
   @Autowired private HealthCheckUtils healthCheckUtils;
 
-  @Mock Ee eeService;
   @Mock VariableService variableService;
   @Mock ChallengeService challengeService;
   @Autowired private TeamService teamService;
@@ -65,9 +61,7 @@ class ScenarioServiceTest extends IntegrationTest {
   @InjectMocks private ScenarioService scenarioService;
   @Autowired private ScenarioMapper scenarioMapper;
 
-  @Mock private LicenseCacheManager licenseCacheManager;
   @Autowired private ExerciseMapper exerciseMapper;
-  @Mock private ActionMetricCollector actionMetricCollector;
 
   private static String USER_ID;
   private static String TEAM_ID;
@@ -85,9 +79,6 @@ class ScenarioServiceTest extends IntegrationTest {
             scenarioTeamUserRepository,
             articleRepository,
             exerciseMapper,
-            actionMetricCollector,
-            licenseCacheManager,
-            eeService,
             variableService,
             challengeService,
             teamService,
@@ -112,9 +103,6 @@ class ScenarioServiceTest extends IntegrationTest {
             scenarioTeamUserRepository,
             articleRepository,
             exerciseMapper,
-            actionMetricCollector,
-            licenseCacheManager,
-            eeService,
             variableService,
             challengeService,
             teamService,

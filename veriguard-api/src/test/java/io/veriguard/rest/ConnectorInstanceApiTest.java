@@ -23,7 +23,6 @@ import io.veriguard.database.repository.ConnectorInstanceConfigurationRepository
 import io.veriguard.database.repository.ConnectorInstanceLogRepository;
 import io.veriguard.database.repository.ConnectorInstanceRepository;
 import io.veriguard.database.repository.TokenRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.connector_instance.dto.CreateConnectorInstanceInput;
 import io.veriguard.rest.connector_instance.dto.UpdateConnectorInstanceRequestedStatus;
 import io.veriguard.service.PlatformSettingsService;
@@ -61,7 +60,6 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
   @MockBean private TokenRepository tokenRepository;
 
   @Autowired private PlatformSettingsService platformSettingsService;
-  @MockBean private Ee eeService;
   @MockBean private XtmComposerEncryptionService xtmComposerEncryptionService;
 
   @Autowired private CatalogConnectorComposer catalogConnectorComposer;
@@ -109,26 +107,9 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
   @DisplayName("Create connector instance")
   class CreateConnectorInstanceTests {
     @Test
-    @DisplayName("Given no enterprise edition license should throw an error")
-    void givenNoEnterpriseEditionLicense_should_throwError() throws Exception {
-      CatalogConnector catalogConnector = getCatalogConnector();
-      CreateConnectorInstanceInput input = new CreateConnectorInstanceInput();
-      input.setCatalogConnectorId(catalogConnector.getId());
-      mvc.perform(
-              post(CONNECTOR_INSTANCE_URI)
-                  .content(asJsonString(input))
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .accept(MediaType.APPLICATION_JSON)
-                  .with(csrf()))
-          .andExpect(status().isForbidden())
-          .andExpect(jsonPath("$.message").value("LICENSE_RESTRICTION"));
-    }
-
-    @Test
     @DisplayName("Given connector supported by manager should throw an error when xtmComposer down")
     void givenConnectorSupportedByManager_should_throwErrorIfXtmComposerDown() throws Exception {
       CatalogConnector catalogConnector = getCatalogConnector();
-      when(eeService.isLicenseActive(any())).thenReturn(true);
 
       CreateConnectorInstanceInput input = new CreateConnectorInstanceInput();
       input.setCatalogConnectorId(catalogConnector.getId());
@@ -171,7 +152,6 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
     @Test
     @DisplayName("Duplicate catalog connector instance id should throw an error")
     void duplicateCatalogConnectorInstance_should_throwError() throws Exception {
-      when(eeService.isLicenseActive(any())).thenReturn(true);
       CatalogConnector catalogConnector = getCatalogConnector();
       ConnectorInstancePersisted instance = createDefaultConnectorInstance();
       instance.setCatalogConnector(catalogConnector);
@@ -209,7 +189,6 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
     @DisplayName(
         "Given a collector of the same type already exists should throw an error on create")
     void givenCollectorOfSameTypeAlreadyExists_should_throwError() throws Exception {
-      when(eeService.isLicenseActive(any())).thenReturn(true);
 
       CatalogConnector catalogConnector = getCatalogConnector();
 
@@ -248,7 +227,6 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
         "Given a collector of the same type already exists should successfully migrate it when COLLECTOR_ID is provided")
     void givenCollectorOfSameTypeAlreadyExists_should_successfullyMigrateWhenCollectorIdProvided()
         throws Exception {
-      when(eeService.isLicenseActive(any())).thenReturn(true);
       when(xtmComposerEncryptionService.encrypt(any())).thenReturn("fake-encrypted-value");
       Token token = new Token();
       token.setValue("fake-token-value");
@@ -327,7 +305,6 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
     @DisplayName(
         "Given a COLLECTOR_ID that does not match any existing collector should throw an error")
     void givenCollectorIdNotMatchingAnyCollector_should_throwError() throws Exception {
-      when(eeService.isLicenseActive(any())).thenReturn(true);
 
       CatalogConnectorConfiguration confDef1 =
           createCatalogConfiguration(
@@ -385,7 +362,6 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
     @Test
     @DisplayName("Should successfully create a connector instance from a catalog connector")
     void should_successfullyCreateConnectorInstance() throws Exception {
-      when(eeService.isLicenseActive(any())).thenReturn(true);
       when(xtmComposerEncryptionService.encrypt(any())).thenReturn("fake-encrypted-value");
       Token token = new Token();
       token.setValue("fake-token-value");
@@ -587,27 +563,10 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
   @DisplayName("Update connector instance configuration")
   class UpdateConnectorInstanceConfigurations {
     @Test
-    @DisplayName("Given no enterprise edition license should throw an error")
-    void givenNoEnterpriseEditionLicense_should_throwError() throws Exception {
-      CatalogConnector catalogConnector = getCatalogConnector();
-      CreateConnectorInstanceInput input = new CreateConnectorInstanceInput();
-      input.setCatalogConnectorId(catalogConnector.getId());
-      mvc.perform(
-              put(CONNECTOR_INSTANCE_URI + "/fake-instance-id/configurations")
-                  .content(asJsonString(input))
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .accept(MediaType.APPLICATION_JSON)
-                  .with(csrf()))
-          .andExpect(status().isForbidden())
-          .andExpect(jsonPath("$.message").value("LICENSE_RESTRICTION"));
-    }
-
-    @Test
     @DisplayName("Given connector supported by manager should throw an error when xtmComposer down")
     void givenConnectorSupportedByManager_should_throwErrorIfXtmComposerDown() throws Exception {
       CatalogConnector catalogConnector = getCatalogConnector();
       ConnectorInstance instance = getConnectorInstance(catalogConnector, new HashSet<>());
-      when(eeService.isLicenseActive(any())).thenReturn(true);
 
       CreateConnectorInstanceInput input = new CreateConnectorInstanceInput();
       input.setCatalogConnectorId(catalogConnector.getId());
@@ -651,7 +610,6 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
     @DisplayName(
         "Should successfully update connector instance configuration and remove old configurations")
     void shouldSuccessfullyUpdateConnectorInstanceConfiguration() throws Exception {
-      when(eeService.isLicenseActive(any())).thenReturn(true);
 
       CatalogConnectorConfiguration confDef1 =
           createCatalogConfiguration(
@@ -727,24 +685,8 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
   class UpdateInstanceRequestedStatus {
 
     @Test
-    @DisplayName("Given no enterprise edition license should throw an error")
-    void givenNoEnterpriseEditionLicense_should_throwError() throws Exception {
-      UpdateConnectorInstanceRequestedStatus input = new UpdateConnectorInstanceRequestedStatus();
-      input.setRequestedStatus(ConnectorInstance.REQUESTED_STATUS_TYPE.starting);
-      mvc.perform(
-              put(CONNECTOR_INSTANCE_URI + "/fake-instance-id/requested-status")
-                  .content(asJsonString(input))
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .accept(MediaType.APPLICATION_JSON)
-                  .with(csrf()))
-          .andExpect(status().isForbidden())
-          .andExpect(jsonPath("$.message").value("LICENSE_RESTRICTION"));
-    }
-
-    @Test
     @DisplayName("Given connector supported by manager should throw an error when xtmComposer down")
     void givenConnectorSupportedByManager_should_throwErrorIfXtmComposerDown() throws Exception {
-      when(eeService.isLicenseActive(any())).thenReturn(true);
 
       CatalogConnector catalogConnector = getCatalogConnector();
       ConnectorInstance connectorInstance = getConnectorInstance(catalogConnector, Set.of());
@@ -791,7 +733,6 @@ public class ConnectorInstanceApiTest extends IntegrationTest {
     @Test
     @DisplayName("Should successfully update requested status")
     void shouldSuccessfullyUpdateRequestedStatus() throws Exception {
-      when(eeService.isLicenseActive(any())).thenReturn(true);
 
       CatalogConnector catalogConnector = getCatalogConnector();
       ConnectorInstance connectorInstance = getConnectorInstance(catalogConnector, Set.of());

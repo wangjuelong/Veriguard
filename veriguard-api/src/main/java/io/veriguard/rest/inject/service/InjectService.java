@@ -20,12 +20,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
 import io.veriguard.database.specification.InjectSpecification;
 import io.veriguard.database.specification.SpecificationUtils;
-import io.veriguard.ee.Ee;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.healthcheck.enums.ExternalServiceDependency;
 import io.veriguard.healthcheck.utils.HealthCheckUtils;
@@ -40,7 +38,6 @@ import io.veriguard.rest.collector.service.CollectorService;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.exception.LicenseRestrictionException;
 import io.veriguard.rest.inject.form.*;
 import io.veriguard.rest.inject.output.AgentsAndAssetsAgentless;
 import io.veriguard.rest.injector_contract.InjectorContractContentUtils;
@@ -92,7 +89,6 @@ public class InjectService {
   private final AssetService assetService;
   private final AssetGroupService assetGroupService;
   private final CollectorService collectorService;
-  private final Ee eeService;
   private final EndpointService endpointService;
   private final InjectRepository injectRepository;
   private final InjectDocumentRepository injectDocumentRepository;
@@ -114,7 +110,6 @@ public class InjectService {
   private final HealthCheckUtils healthCheckUtils;
   private final InjectorContractContentUtils injectorContractContentUtils;
 
-  private final LicenseCacheManager licenseCacheManager;
   @Resource protected ObjectMapper mapper;
 
   private SecurityExpression getAmbientSecurityExpression() {
@@ -398,16 +393,7 @@ public class InjectService {
   }
 
   public void throwIfInjectNotLaunchable(Inject inject) {
-    if (eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      return;
-    }
-    List<Agent> agents = this.getAgentsByInject(inject);
-    List<String> eeExecutors = eeService.detectEEExecutors(agents);
-
-    if (!eeExecutors.isEmpty()) {
-      throw new LicenseRestrictionException(
-          "Some asset will be executed through " + String.join(" and ", eeExecutors));
-    }
+    // No license restrictions in community edition
   }
 
   @Transactional

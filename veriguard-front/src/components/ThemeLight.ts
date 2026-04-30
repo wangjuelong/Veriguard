@@ -1,7 +1,7 @@
 import { buttonClasses, type ThemeOptions } from '@mui/material';
 
-import LogoCollapsed from '../static/images/logo_light.png';
-import LogoText from '../static/images/logo_text_light.png';
+import LogoCollapsed from '../static/images/logo_light.svg';
+import LogoText from '../static/images/logo_text_light.svg';
 import { hexToRGB } from '../utils/Colors';
 import { fileUri } from '../utils/Environment';
 import { FONT_FAMILY_CODE, type LabelColor, LabelColorDict } from './Theme';
@@ -89,7 +89,6 @@ const ThemeLight = (
       lightBackground: hexToRGB(EE_COLOR, 0.08),
       contrastText: '#ffffff',
     },
-    xtmhub: { main: '#00f1bd' },
     widgets: {
       securityDomains: {
         colors: {

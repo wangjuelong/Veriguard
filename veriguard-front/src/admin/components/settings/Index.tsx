@@ -5,7 +5,6 @@ import NotFound from '../../../components/NotFound';
 import Organizations from '../teams/Organizations';
 import AttackPatterns from './attack_patterns/AttackPatterns';
 import XlsMappers from './data_ingestion/XlsMappers';
-import Experience from './experience/Experience';
 import Groups from './groups/Groups';
 import KillChainPhases from './kill_chain_phases/KillChainPhases';
 import Parameters from './Parameters';
@@ -35,7 +34,6 @@ const Index = () => {
       <Route path="data_ingestion" element={<Navigate to="xls_mappers" replace={true} />} />
       <Route path="data_ingestion/xls_mappers" element={errorWrapper(XlsMappers)()} />
       <Route path="asset_rules" element={errorWrapper(TagRules)()} />
-      <Route path="experience" element={errorWrapper(Experience)()} />
 
       {/* Not found */}
       <Route path="*" element={<NotFound />} />

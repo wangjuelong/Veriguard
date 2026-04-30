@@ -2,8 +2,6 @@ import { Badge, Button, Tooltip } from '@mui/material';
 import { type CSSProperties, type SyntheticEvent } from 'react';
 
 import { useFormatter } from '../../../../components/i18n';
-import useEnterpriseEdition from '../../../../utils/hooks/useEnterpriseEdition';
-import EEChip from '../../common/entreprise_edition/EEChip';
 
 interface Props {
   onDeployBtnClick: (e: SyntheticEvent) => void;
@@ -13,20 +11,7 @@ interface Props {
 
 const DeployButton = ({ onDeployBtnClick, style = {}, deploymentCount }: Props) => {
   const { t } = useFormatter();
-  const {
-    isValidated: isEnterpriseEdition,
-    openDialog: openEnterpriseEditionDialog,
-    setEEFeatureDetectedInfo,
-  } = useEnterpriseEdition();
 
-  const onDeployClickAction = (e: SyntheticEvent) => {
-    if (!isEnterpriseEdition) {
-      setEEFeatureDetectedInfo(t('Connectors deployment'));
-      openEnterpriseEditionDialog();
-    } else {
-      onDeployBtnClick(e);
-    }
-  };
   return (
     <Tooltip title={t('Can not deploy more than one instance')}>
       <div style={{
@@ -35,15 +20,14 @@ const DeployButton = ({ onDeployBtnClick, style = {}, deploymentCount }: Props) 
       }}
       >
         <Button
-          variant={isEnterpriseEdition ? 'contained' : 'outlined'}
+          variant="contained"
           sx={{
-            color: isEnterpriseEdition ? 'primary' : 'action.disabled',
-            borderColor: isEnterpriseEdition ? 'primary' : 'action.disabledBackground',
+            color: 'primary',
+            borderColor: 'primary',
           }}
           size="small"
-          onClick={onDeployClickAction}
+          onClick={onDeployBtnClick}
           disabled={deploymentCount > 0}
-          endIcon={isEnterpriseEdition ? null : <span><EEChip /></span>}
         >
           {t('Deploy')}
         </Button>

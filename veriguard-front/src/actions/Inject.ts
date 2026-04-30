@@ -7,10 +7,9 @@ import {
   postReferential,
   putReferential,
   simpleDelCall,
-  simplePostCall,
   simplePutCall,
 } from '../utils/Action';
-import type { Inject, InjectAssistantInput, InjectBulkProcessingInput, InjectBulkUpdateInputs, InjectInput, InjectUpdateActivationInput } from '../utils/api-types';
+import type { Inject, InjectBulkProcessingInput, InjectBulkUpdateInputs, InjectInput, InjectUpdateActivationInput } from '../utils/api-types';
 import * as schema from './Schema';
 
 type AppDispatch = Dispatch;
@@ -107,11 +106,6 @@ export const injectDone = (exerciseId: string, injectId: string) => (dispatch: A
 export const addInjectForScenario = (scenarioId: string, data: Inject | InjectInput) => (dispatch: AppDispatch) => {
   const uri = `/api/scenarios/${scenarioId}/injects`;
   return postReferential(schema.inject, uri, data)(dispatch);
-};
-
-export const playInjectsAssistantForScenario = (scenarioId: string, data: InjectAssistantInput) => {
-  const uri = `/api/scenarios/${scenarioId}/injects/assistant`;
-  return simplePostCall(uri, data);
 };
 
 export const duplicateInjectForScenario = (scenarioId: string, injectId: string) => (dispatch: AppDispatch) => {

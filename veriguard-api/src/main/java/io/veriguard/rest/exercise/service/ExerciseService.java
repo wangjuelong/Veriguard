@@ -18,13 +18,11 @@ import static java.util.Optional.ofNullable;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.veriguard.config.VeriguardConfig;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawExerciseSimple;
 import io.veriguard.database.raw.RawInjectExpectation;
 import io.veriguard.database.raw.RawSimulation;
 import io.veriguard.database.repository.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.rest.atomic_testing.form.TargetSimple;
 import io.veriguard.rest.document.DocumentService;
@@ -39,7 +37,6 @@ import io.veriguard.rest.scenario.service.ScenarioStatisticService;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.ScenarioRecurrenceService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.InjectExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;
@@ -85,7 +82,6 @@ public class ExerciseService {
 
   @PersistenceContext private EntityManager entityManager;
 
-  private final Ee eeService;
   private final InjectDuplicateService injectDuplicateService;
   private final TeamService teamService;
   private final VariableService variableService;
@@ -99,8 +95,6 @@ public class ExerciseService {
   private final ExerciseMapper exerciseMapper;
   private final InjectMapper injectMapper;
   private final ResultUtils resultUtils;
-  private final ActionMetricCollector actionMetricCollector;
-  private final LicenseCacheManager licenseCacheManager;
 
   private final AssetRepository assetRepository;
   private final AssetGroupRepository assetGroupRepository;
@@ -147,7 +141,6 @@ public class ExerciseService {
       }
     }
 
-    actionMetricCollector.addSimulationCreatedCount();
     return exerciseRepository.save(exercise);
   }
 
@@ -189,7 +182,6 @@ public class ExerciseService {
     Exercise exerciseOrigin = exerciseRepository.findById(exerciseId).orElseThrow();
     Exercise exercise = copyExercice(exerciseOrigin);
     Exercise exerciseDuplicate = exerciseRepository.save(exercise);
-    actionMetricCollector.addSimulationCreatedCount();
     duplicateGrants(exerciseDuplicate, exerciseOrigin);
     getListOfDuplicatedInjects(exerciseDuplicate, exerciseOrigin);
     Map<String, Team> contextualTeams = getListOfExerciseTeams(exerciseDuplicate, exerciseOrigin);
@@ -486,7 +478,6 @@ public class ExerciseService {
       this.throwIfExerciseNotLaunchable(exercise);
       Instant nextMinute = now().truncatedTo(MINUTES).plus(1, MINUTES);
       exercise.setStart(nextMinute);
-      actionMetricCollector.addSimulationPlayedCount();
     }
     // If exercise move from pause to running state,
     // we log the pause date to be able to recompute inject dates.
@@ -552,9 +543,6 @@ public class ExerciseService {
   }
 
   public void throwIfExerciseNotLaunchable(Exercise exercise) {
-    if (eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      return;
-    }
     exercise.getInjects().forEach(injectService::throwIfInjectNotLaunchable);
   }
 

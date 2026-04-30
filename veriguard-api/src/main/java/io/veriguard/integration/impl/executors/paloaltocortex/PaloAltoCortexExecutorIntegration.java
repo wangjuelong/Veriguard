@@ -2,12 +2,10 @@ package io.veriguard.integration.impl.executors.paloaltocortex;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.ConnectorInstance;
 import io.veriguard.database.model.ConnectorType;
 import io.veriguard.database.model.Endpoint;
 import io.veriguard.database.model.Executor;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.exception.ExecutorException;
 import io.veriguard.executors.paloaltocortex.client.PaloAltoCortexExecutorClient;
@@ -53,8 +51,6 @@ public class PaloAltoCortexExecutorIntegration extends Integration {
   private final EndpointService endpointService;
   private final AssetGroupService assetGroupService;
   private final ExecutorService executorService;
-  private final Ee enterpriseEditionService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ThreadPoolTaskScheduler taskScheduler;
   private final ConnectorInstanceService connectorInstanceService;
   private final ConnectorInstance connectorInstance;
@@ -69,8 +65,6 @@ public class PaloAltoCortexExecutorIntegration extends Integration {
       EndpointService endpointService,
       AgentService agentService,
       AssetGroupService assetGroupService,
-      Ee enterpriseEditionService,
-      LicenseCacheManager licenseCacheManager,
       ComponentRequestEngine componentRequestEngine,
       ExecutorService executorService,
       ThreadPoolTaskScheduler taskScheduler,
@@ -80,8 +74,6 @@ public class PaloAltoCortexExecutorIntegration extends Integration {
     this.endpointService = endpointService;
     this.agentService = agentService;
     this.assetGroupService = assetGroupService;
-    this.enterpriseEditionService = enterpriseEditionService;
-    this.licenseCacheManager = licenseCacheManager;
     this.executorService = executorService;
     this.taskScheduler = taskScheduler;
     this.connectorInstanceService = connectorInstanceService;
@@ -122,8 +114,7 @@ public class PaloAltoCortexExecutorIntegration extends Integration {
 
     client = new PaloAltoCortexExecutorClient(config, httpClientFactory);
     paloAltoCortexExecutorContextService =
-        new PaloAltoCortexExecutorContextService(
-            config, client, enterpriseEditionService, licenseCacheManager, executorService);
+        new PaloAltoCortexExecutorContextService(config, client, executorService);
     paloAltoCortexExecutorService =
         new PaloAltoCortexExecutorService(
             executor, client, config, endpointService, agentService, assetGroupService);

@@ -59,7 +59,7 @@ rg -n 'TODO|FIXME|待补充' docs AGENTS.md
 ## Architecture Notes
 
 - The API is a single Spring Boot app exposing REST under `/api/...`. Controllers are organized by feature folder (`rest/<feature>/`). Custom Veriguard二开 endpoints live under `rest/security_validation/` (capability matrix, attack use cases, attack orchestration, sandbox CRUD); URI constants are declared on `SecurityValidationApi`.
-- Persistence uses JPA against Postgres with Flyway migrations under `veriguard-api/src/main/java/io/veriguard/migration/` (e.g. `V4_72__Add_veriguard_sandbox.java`). Add a new migration rather than editing existing ones.
+- Persistence uses JPA against Postgres with Flyway migrations under `veriguard-api/src/main/resources/db/migration/` (baseline `V1__Init.sql`, generated from `pg_dump -s` in Phase 11). Add new SQL migrations starting from `V2__...` rather than editing the baseline.
 - AuthZ uses an `@RBAC` AOP annotation referencing `io.veriguard.database.model.Action` / `ResourceType` — preserve those when adding endpoints.
 - The frontend admin shell mounts at `/admin/...`; the Veriguard二开 console is at `/admin/veriguard` (`veriguard-front/src/admin/components/veriguard/VeriguardConsole.tsx`), wired through `admin/Index.tsx` and the left nav.
 - Real traffic replay, HIDS collection, SOC queries, and sandbox virtualization drivers are **external adapters**. Do not fake their results in code — expose them as integration boundaries on the API/UI per the PRD.

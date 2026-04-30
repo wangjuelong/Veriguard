@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { type FormEvent, useEffect } from 'react';
 import { type FieldValues, FormProvider, type SubmitHandler, useForm, useWatch } from 'react-hook-form';
@@ -10,8 +10,6 @@ import useTabs from '../../../components/common/tabs/useTabs';
 import { useFormatter } from '../../../components/i18n';
 import { type DetectionRemediationInput } from '../../../utils/api-types';
 import { type PayloadCreateInput } from '../../../utils/api-types-custom';
-import useEnterpriseEdition from '../../../utils/hooks/useEnterpriseEdition';
-import EEChip from '../common/entreprise_edition/EEChip';
 import { CONTRACT_OUTPUT_ELEMENT_TYPE_KEYS } from '../findings/ContractOutputElementType';
 import CommandsFormTab from './form/CommandsFormTab';
 import GeneralFormTab from './form/GeneralFormTab';
@@ -58,11 +56,6 @@ const PayloadForm = ({
 }: Props) => {
   const { t } = useFormatter();
   const theme = useTheme();
-  const {
-    isValidated: isValidatedEnterpriseEdition,
-    openDialog: openEnterpriseEditionDialog,
-    setEEFeatureDetectedInfo,
-  } = useEnterpriseEdition();
   const { snapshot } = useSnapshotRemediation();
 
   const regexGroupObject = z.object({
@@ -192,18 +185,7 @@ const PayloadForm = ({
     label: 'Output',
   }, {
     key: 'Remediation',
-    label: (
-      <Box display="flex" alignItems="center">
-        {t('Remediation')}
-        {!isValidatedEnterpriseEdition && (
-          <EEChip
-            style={{ marginLeft: theme.spacing(1) }}
-            clickable
-            featureDetectedInfo={t('Remediation')}
-          />
-        )}
-      </Box>
-    ),
+    label: t('Remediation'),
   }];
   const { currentTab, handleChangeTab } = useTabs(tabEntries[0].key);
 
@@ -257,14 +239,6 @@ const PayloadForm = ({
       }
     });
   }, [trackedUseWatch]);
-
-  useEffect(() => {
-    if (currentTab === 'Remediation' && !isValidatedEnterpriseEdition) {
-      handleChangeTab('General');
-      setEEFeatureDetectedInfo(t('Remediation'));
-      openEnterpriseEditionDialog();
-    }
-  }, [currentTab, isValidatedEnterpriseEdition]);
 
   return (
     <>

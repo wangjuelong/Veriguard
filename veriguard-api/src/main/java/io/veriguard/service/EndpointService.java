@@ -68,7 +68,7 @@ public class EndpointService {
   public static final String SESSION_USER = "session-user";
 
   public static final String VERIGUARD_INSTALL_DIR_WINDOWS_SERVICE =
-      "C:\\Program Files (x86)\\Filigran\\OAEV Agent";
+      "C:\\Program Files\\Veriguard\\Agent";
   public static final String VERIGUARD_INSTALL_DIR_WINDOWS_SERVICE_USER = ".veriguard";
   public static final String VERIGUARD_INSTALL_DIR_WINDOWS_SESSION_USER = "$HOME\\.veriguard";
   public static final String VERIGUARD_INSTALL_DIR_UNIX_SERVICE = "/opt/veriguard-agent";
@@ -86,7 +86,7 @@ public class EndpointService {
 
   private final EndpointMapper endpointMapper;
 
-  @Value("${openbas.admin.token:${veriguard.admin.token:#{null}}}")
+  @Value("${veriguard.admin.token:#{null}}")
   private String adminToken;
 
   @Value("${info.app.version:unknown}")

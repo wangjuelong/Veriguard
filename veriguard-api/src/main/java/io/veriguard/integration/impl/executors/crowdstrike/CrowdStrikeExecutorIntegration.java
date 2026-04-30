@@ -2,12 +2,10 @@ package io.veriguard.integration.impl.executors.crowdstrike;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.ConnectorInstance;
 import io.veriguard.database.model.ConnectorType;
 import io.veriguard.database.model.Endpoint;
 import io.veriguard.database.model.Executor;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.crowdstrike.client.CrowdStrikeExecutorClient;
 import io.veriguard.executors.crowdstrike.config.CrowdStrikeExecutorConfig;
@@ -56,8 +54,6 @@ public class CrowdStrikeExecutorIntegration extends Integration {
   private final AgentService agentService;
   private final AssetGroupService assetGroupService;
   private final ExecutorService executorService;
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ThreadPoolTaskScheduler taskScheduler;
   private final ConnectorInstanceService connectorInstanceService;
   private final ConnectorInstance connectorInstance;
@@ -71,8 +67,6 @@ public class CrowdStrikeExecutorIntegration extends Integration {
       AgentService agentService,
       AssetGroupService assetGroupService,
       ExecutorService executorService,
-      Ee eeService,
-      LicenseCacheManager licenseCacheManager,
       ComponentRequestEngine componentRequestEngine,
       ThreadPoolTaskScheduler taskScheduler,
       BaseIntegrationConfigurationBuilder baseIntegrationConfigurationBuilder,
@@ -83,8 +77,6 @@ public class CrowdStrikeExecutorIntegration extends Integration {
     this.agentService = agentService;
     this.assetGroupService = assetGroupService;
     this.executorService = executorService;
-    this.eeService = eeService;
-    this.licenseCacheManager = licenseCacheManager;
     this.connectorInstanceService = connectorInstanceService;
     this.connectorInstance = connectorInstance;
     this.httpClientFactory = httpClientFactory;
@@ -123,8 +115,7 @@ public class CrowdStrikeExecutorIntegration extends Integration {
 
     client = new CrowdStrikeExecutorClient(config, httpClientFactory);
     crowdStrikeExecutorContextService =
-        new CrowdStrikeExecutorContextService(
-            config, client, eeService, licenseCacheManager, executorService);
+        new CrowdStrikeExecutorContextService(config, client, executorService);
     crowdStrikeExecutorService =
         new CrowdStrikeExecutorService(
             executor, client, config, endpointService, agentService, assetGroupService);

@@ -51,7 +51,6 @@ const ExerciseForm: FunctionComponent<Props> = ({
     control,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
-    setValue,
   } = useForm<CreateExerciseInput>({
     mode: 'onTouched',
     resolver: zodResolver(
@@ -95,8 +94,6 @@ const ExerciseForm: FunctionComponent<Props> = ({
         inputProps={register('exercise_name')}
         InputLabelProps={{ required: true }}
         control={control}
-        setValue={setValue}
-        askAi={true}
         maxLength={255}
       />
       <GridLegacy container spacing={2}>
@@ -185,8 +182,6 @@ const ExerciseForm: FunctionComponent<Props> = ({
         helperText={errors.exercise_description?.message}
         inputProps={register('exercise_description')}
         control={control}
-        setValue={setValue}
-        askAi={true}
       />
       {!edit
         && (

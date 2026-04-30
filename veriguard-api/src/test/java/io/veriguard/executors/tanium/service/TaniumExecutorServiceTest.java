@@ -1,13 +1,10 @@
 package io.veriguard.executors.tanium.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.model.AgentRegisterInput;
 import io.veriguard.executors.tanium.client.TaniumExecutorClient;
@@ -37,9 +34,7 @@ public class TaniumExecutorServiceTest {
 
   @Mock private TaniumExecutorClient client;
   @Mock private TaniumExecutorConfig config;
-  @Mock private LicenseCacheManager licenseCacheManager;
   @Mock private AssetGroupService assetGroupService;
-  @Mock private Ee eeService;
   @Mock private EndpointService endpointService;
   @Mock private AgentService agentService;
   @Mock private ExecutorService executorService;
@@ -93,8 +88,6 @@ public class TaniumExecutorServiceTest {
   void test_launchBatchExecutorSubprocess_tanium()
       throws JsonProcessingException, InterruptedException {
     // Init datas
-    when(licenseCacheManager.getEnterpriseEditionInfo()).thenReturn(null);
-    doNothing().when(eeService).throwEEExecutorService(any(), any(), any());
     when(config.getApiBatchExecutionActionPagination()).thenReturn(1);
     when(config.getWindowsPackageId()).thenReturn(112200);
     Command payloadCommand =

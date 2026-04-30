@@ -4,9 +4,7 @@ import static io.veriguard.executors.ExecutorHelper.replaceArgs;
 import static io.veriguard.executors.utils.ExecutorUtils.getAgentsFromOS;
 import static io.veriguard.integration.impl.executors.crowdstrike.CrowdStrikeExecutorIntegration.CROWDSTRIKE_EXECUTOR_NAME;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorContextService;
 import io.veriguard.executors.ExecutorHelper;
 import io.veriguard.executors.ExecutorService;
@@ -44,8 +42,6 @@ public class CrowdStrikeExecutorContextService extends ExecutorContextService {
 
   private final CrowdStrikeExecutorConfig crowdStrikeExecutorConfig;
   private final CrowdStrikeExecutorClient crowdStrikeExecutorClient;
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ExecutorService executorService;
 
   ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -59,9 +55,6 @@ public class CrowdStrikeExecutorContextService extends ExecutorContextService {
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
       Inject inject, Set<Agent> agents, InjectStatus injectStatus) {
-
-    eeService.throwEEExecutorService(
-        licenseCacheManager.getEnterpriseEditionInfo(), SERVICE_NAME, injectStatus);
 
     List<Agent> csAgents = new ArrayList<>(agents);
 

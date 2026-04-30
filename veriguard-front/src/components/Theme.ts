@@ -63,7 +63,6 @@ declare module '@mui/material/styles' {
     chip: PaletteColor;
     ee: PaletteColor;
     ai: PaletteColor;
-    xtmhub: PaletteColor;
     widgets: {
       securityDomains: {
         colors: {
@@ -95,7 +94,6 @@ declare module '@mui/material/styles' {
     ee: PaletteColorOptions;
     ai: PaletteColorOptions;
     labelChipMap: Map<string, LabelColor>;
-    xtmhub: PaletteColorOptions;
     widgets: {
       securityDomains: {
         colors: {

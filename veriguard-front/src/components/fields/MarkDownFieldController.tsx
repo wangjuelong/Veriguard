@@ -2,7 +2,6 @@ import { Box, FormHelperText, InputLabel } from '@mui/material';
 import { type CSSProperties, type FunctionComponent } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 
-import TextFieldAskAI from '../../admin/components/common/form/TextFieldAskAI';
 import MarkDownField from './MarkDownField';
 
 interface Props {
@@ -10,9 +9,6 @@ interface Props {
   label: string;
   style: CSSProperties;
   disabled?: boolean;
-  askAi?: boolean;
-  inInject: boolean;
-  inArticle?: boolean;
 }
 
 const MarkDownFieldController: FunctionComponent<Props> = ({
@@ -20,9 +16,6 @@ const MarkDownFieldController: FunctionComponent<Props> = ({
   label,
   style,
   disabled,
-  askAi,
-  inInject,
-  inArticle,
 }) => {
   const { control } = useFormContext();
   const {
@@ -56,19 +49,6 @@ const MarkDownFieldController: FunctionComponent<Props> = ({
         <FormHelperText error={true}>
           {error?.message}
         </FormHelperText>
-      )}
-      {askAi && (
-        <TextFieldAskAI
-          currentValue={value ?? ''}
-          setFieldValue={(val) => {
-            onChange(val);
-          }}
-          format="markdown"
-          variant="markdown"
-          disabled={disabled}
-          inInject={inInject}
-          inArticle={inArticle}
-        />
       )}
     </div>
   );

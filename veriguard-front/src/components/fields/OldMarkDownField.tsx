@@ -3,7 +3,6 @@ import MDEditor, { commands } from '@uiw/react-md-editor/nohighlight';
 import { type CSSProperties, type FunctionComponent } from 'react';
 import { Field, type FieldInputProps, type FieldMetaState } from 'react-final-form';
 
-import TextFieldAskAI from '../../admin/components/common/form/TextFieldAskAI';
 import { useFormatter } from '../i18n';
 
 interface Props {
@@ -12,9 +11,6 @@ interface Props {
   disabled?: boolean;
   input: FieldInputProps<string, HTMLElement>;
   meta: FieldMetaState<string>;
-  askAi?: boolean;
-  inInject: boolean;
-  inArticle?: boolean;
 }
 
 const MarkDownFieldBase: FunctionComponent<Props> = ({
@@ -23,9 +19,6 @@ const MarkDownFieldBase: FunctionComponent<Props> = ({
   disabled,
   input: { onChange, value },
   meta: { touched, invalid, error, submitError },
-  askAi,
-  inInject,
-  inArticle,
 }) => {
   const { t } = useFormatter();
   const theme = useTheme();
@@ -103,19 +96,6 @@ const MarkDownFieldBase: FunctionComponent<Props> = ({
         <FormHelperText error={true}>
           {(error && t(error)) || (submitError && t(submitError))}
         </FormHelperText>
-      )}
-      {askAi && (
-        <TextFieldAskAI
-          currentValue={value ?? ''}
-          setFieldValue={(val) => {
-            onChange(val);
-          }}
-          format="markdown"
-          variant="markdown"
-          disabled={disabled}
-          inInject={inInject}
-          inArticle={inArticle}
-        />
       )}
     </div>
   );

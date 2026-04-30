@@ -24,8 +24,7 @@ import org.springframework.stereotype.Component;
  *   <li>Queue configuration for background processing
  * </ul>
  *
- * <p>Configuration can be provided via properties with either {@code openbas.*} or {@code
- * veriguard.*} prefixes for backward compatibility.
+ * <p>Configuration is provided via properties with the {@code veriguard.*} prefix.
  */
 @Component
 @Data
@@ -33,91 +32,91 @@ import org.springframework.stereotype.Component;
 public class VeriguardConfig {
 
   @JsonProperty("parameters_id")
-  @Value("${openbas.id:${veriguard.id:global}}")
+  @Value("${veriguard.id:global}")
   private String id;
 
   @JsonProperty("application_name")
-  @Value("${openbas.name:${veriguard.name:Veriguard}}")
+  @Value("${veriguard.name:Veriguard}")
   private String name;
 
   @JsonProperty("application_license")
-  @Value("${openbas.application-license:${veriguard.application-license:}}")
+  @Value("${veriguard.application-license:}")
   private String applicationLicense;
 
   @JsonProperty("application_base_url")
-  @Value("${openbas.base-url:${veriguard.base-url:#{null}}}")
+  @Value("${veriguard.base-url:#{null}}")
   private String baseUrl;
 
   @JsonProperty("application_version")
-  @Value("${openbas.version:${veriguard.version:#{null}}}")
+  @Value("${veriguard.version:#{null}}")
   private String version;
 
   @JsonProperty("map_tile_server_light")
-  @Value("${openbas.map-tile-server-light:${veriguard.map-tile-server-light:#{null}}}")
+  @Value("${veriguard.map-tile-server-light:#{null}}")
   private String mapTileServerLight;
 
   @JsonProperty("map_tile_server_dark")
-  @Value("${openbas.map-tile-server-dark:${veriguard.map-tile-server-dark:#{null}}}")
+  @Value("${veriguard.map-tile-server-dark:#{null}}")
   private String mapTileServerDark;
 
   @JsonProperty("auth_local_enable")
-  @Value("${openbas.auth-local-enable:${veriguard.auth-local-enable:false}}")
+  @Value("${veriguard.auth-local-enable:false}")
   private boolean authLocalEnable;
 
   @JsonProperty("auth_openid_enable")
-  @Value("${openbas.auth-openid-enable:${veriguard.auth-openid-enable:false}}")
+  @Value("${veriguard.auth-openid-enable:false}")
   private boolean authOpenidEnable;
 
   @JsonProperty("auth_saml2_enable")
-  @Value("${openbas.auth-saml2-enable:${veriguard.auth-saml2-enable:false}}")
+  @Value("${veriguard.auth-saml2-enable:false}")
   private boolean authSaml2Enable;
 
   @JsonProperty("auth_kerberos_enable")
-  @Value("${openbas.auth-kerberos-enable:${veriguard.auth-kerberos-enable:false}}")
+  @Value("${veriguard.auth-kerberos-enable:false}")
   private boolean authKerberosEnable;
 
   @JsonProperty("default_mailer")
-  @Value("${openbas.default-mailer:${veriguard.default-mailer:#{null}}}")
+  @Value("${veriguard.default-mailer:#{null}}")
   private String defaultMailer;
 
   @JsonProperty("default_reply_to")
-  @Value("${openbas.default-reply-to:${veriguard.default-reply-to:#{null}}}")
+  @Value("${veriguard.default-reply-to:#{null}}")
   private String defaultReplyTo;
 
   @JsonProperty("admin_token")
-  @Value("${openbas.admin.token:${veriguard.admin.token:#{null}}}")
+  @Value("${veriguard.admin.token:#{null}}")
   private String adminToken;
 
   @JsonProperty("enabled_dev_features")
-  @Value("${openbas.enabled-dev-features:${veriguard.enabled-dev-features:}}")
+  @Value("${veriguard.enabled-dev-features:}")
   private String enabledDevFeatures;
 
   @JsonProperty("instance_id")
-  @Value("${openbas.instance-id:${veriguard.instance-id:#{null}}}")
+  @Value("${veriguard.instance-id:#{null}}")
   private String instanceId;
 
   @JsonIgnore
-  @Value("${openbas.cookie-name:${veriguard.cookie-name:veriguard_token}}")
+  @Value("${veriguard.cookie-name:veriguard_token}")
   private String cookieName;
 
   @JsonIgnore
-  @Value("${openbas.cookie-duration:${veriguard.cookie-duration:P1D}}")
+  @Value("${veriguard.cookie-duration:P1D}")
   private String cookieDuration;
 
   @JsonIgnore
-  @Value("${openbas.cookie-secure:${veriguard.cookie-secure:false}}")
+  @Value("${veriguard.cookie-secure:false}")
   private boolean cookieSecure;
 
   @JsonProperty("application_agent_url")
-  @Value("${openbas.agent-url:${veriguard.agent-url:#{null}}}")
+  @Value("${veriguard.agent-url:#{null}}")
   private String agentUrl;
 
   @JsonProperty("unsecured_certificate")
-  @Value("${openbas.unsecured-certificate:${veriguard.unsecured-certificate:false}}")
+  @Value("${veriguard.unsecured-certificate:false}")
   private boolean unsecuredCertificate;
 
   @JsonProperty("with_proxy")
-  @Value("${openbas.with-proxy:${veriguard.with-proxy:false}}")
+  @Value("${veriguard.with-proxy:false}")
   private boolean withProxy;
 
   @JsonProperty("max_size")
@@ -125,19 +124,19 @@ public class VeriguardConfig {
   private int logsMaxSize;
 
   @JsonProperty("extra_trusted_certs_dir")
-  @Value("${openbas.extra-trusted-certs-dir:${veriguard.extra-trusted-certs-dir:#{null}}}")
+  @Value("${veriguard.extra-trusted-certs-dir:#{null}}")
   private String extraTrustedCertsDir;
 
   @JsonProperty("queue-config")
-  @Value("${openbas.queue-config:${veriguard.queue-config:#{null}}}")
+  @Value("${veriguard.queue-config:#{null}}")
   private Map<String, QueueConfig> queueConfig;
 
   @JsonProperty("logout_success_url")
-  @Value("${openbas.logout-success-url:${veriguard.logout-success-url:/}}")
+  @Value("${veriguard.logout-success-url:/}")
   private String logoutSuccessUrl;
 
   @JsonProperty("frontend_url")
-  @Value("${openbas.frontend-url:${veriguard.frontend-url:}}")
+  @Value("${veriguard.frontend-url:}")
   private String frontendUrl;
 
   /**

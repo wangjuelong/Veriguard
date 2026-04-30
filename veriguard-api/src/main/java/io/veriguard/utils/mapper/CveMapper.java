@@ -1,10 +1,8 @@
 package io.veriguard.utils.mapper;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.Cve;
 import io.veriguard.database.model.Cwe;
 import io.veriguard.database.model.Vulnerability;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.cve.form.CveOutput;
 import io.veriguard.rest.cve.form.CveSimple;
 import io.veriguard.rest.vulnerability.form.CweOutput;
@@ -20,9 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class CveMapper {
-
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
 
   private Cve.VulnerabilityStatus mapVulnerabilityStatus(Vulnerability.VulnerabilityStatus status) {
     if (status == null) {
@@ -59,7 +54,7 @@ public class CveMapper {
         .cisaExploitAdd(vulnerability.getCisaExploitAdd())
         .cisaRequiredAction(vulnerability.getCisaRequiredAction())
         .cisaVulnerabilityName(vulnerability.getCisaVulnerabilityName())
-        .remediation(getRemediationIfLicensed(vulnerability))
+        .remediation(vulnerability.getRemediation())
         .referenceUrls(new ArrayList<>(vulnerability.getReferenceUrls()))
         .cwes(toCweOutputs(vulnerability.getCwes()))
         .build();
@@ -77,14 +72,5 @@ public class CveMapper {
       return null;
     }
     return CweOutput.builder().externalId(cwe.getExternalId()).source(cwe.getSource()).build();
-  }
-
-  private String getRemediationIfLicensed(final Vulnerability vulnerability) {
-    if (eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      return vulnerability.getRemediation();
-    } else {
-      log.debug("Enterprise Edition license inactive - omitting remediation field");
-      return null;
-    }
   }
 }

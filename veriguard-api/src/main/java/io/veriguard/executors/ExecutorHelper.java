@@ -10,11 +10,11 @@ public class ExecutorHelper {
   // Only used in Tanium / CS / Caldera executors, the native Veriguard agent will determine a
   // relative path at its level
   public static final String IMPLANT_LOCATION_WINDOWS =
-      "\"C:\\Program Files (x86)\\Filigran\\OAEV Agent\\runtimes\\";
+      "\"C:\\Program Files\\Veriguard\\Agent\\runtimes\\";
   public static final String IMPLANT_LOCATION_UNIX = "/opt/veriguard-agent/runtimes/";
   // Clean payloads older than 24 hours
   public static final String WINDOWS_CLEAN_PAYLOADS_COMMAND =
-      "Get-ChildItem -Path \"C:\\Program Files (x86)\\Filigran\\OAEV Agent\\payloads\",\"C:\\Program Files (x86)\\Filigran\\OAEV Agent\\runtimes\" -Directory -Recurse | Where-Object {$_.CreationTime -lt (Get-Date).AddHours(-24)} | Remove-Item -Recurse -Force";
+      "Get-ChildItem -Path \"C:\\Program Files\\Veriguard\\Agent\\payloads\",\"C:\\Program Files\\Veriguard\\Agent\\runtimes\" -Directory -Recurse | Where-Object {$_.CreationTime -lt (Get-Date).AddHours(-24)} | Remove-Item -Recurse -Force";
   public static final String UNIX_CLEAN_PAYLOADS_COMMAND =
       "find /opt/veriguard-agent/payloads /opt/veriguard-agent/runtimes -type d -mmin +1440 -exec rm -rf {} + 2>/dev/null";
   // Get arch from command

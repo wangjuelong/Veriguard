@@ -10,33 +10,23 @@ import io.veriguard.config.EngineConfig;
 import io.veriguard.config.VeriguardConfig;
 import io.veriguard.config.VeriguardPrincipal;
 import io.veriguard.config.RabbitmqConfig;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.BannerMessage;
 import io.veriguard.database.model.Setting;
 import io.veriguard.database.model.SettingKeys;
 import io.veriguard.database.model.Theme;
 import io.veriguard.database.repository.SettingRepository;
-import io.veriguard.ee.Ee;
-import io.veriguard.ee.License;
 import io.veriguard.engine.EngineService;
 import io.veriguard.expectation.ExpectationPropertiesConfig;
 import io.veriguard.helper.RabbitMQHelper;
-import io.veriguard.opencti.config.OpenCTIConfig;
-import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.settings.PreviewFeature;
 import io.veriguard.rest.settings.form.*;
 import io.veriguard.rest.settings.response.OAuthProvider;
 import io.veriguard.rest.settings.response.PlatformSettings;
 import io.veriguard.rest.settings.response.PublicPlatformSettings;
 import io.veriguard.rest.stream.ai.AiConfig;
-import io.veriguard.xtmhub.XtmHubConnectivityService;
-import io.veriguard.xtmhub.XtmHubRegistererRecord;
-import io.veriguard.xtmhub.XtmHubRegistrationStatus;
-import io.veriguard.xtmhub.config.XtmHubConfig;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,12 +53,8 @@ public class PlatformSettingsService {
   private final ApplicationContext context;
   private final Environment env;
   private final SettingRepository settingRepository;
-  private final OpenCTIConfig openCTIConfig;
-  private final XtmHubConfig xtmHubConfig;
   private final AiConfig aiConfig;
-  private final Ee eeService;
   private final EngineService engineService;
-  private final XtmHubConnectivityService xtmHubConnectivityService;
 
   @Autowired private TransactionTemplate transactionTemplate;
 
@@ -82,7 +68,6 @@ public class PlatformSettingsService {
   @Resource private ExpectationPropertiesConfig expectationPropertiesConfig;
   @Resource private RabbitmqConfig rabbitmqConfig;
   @Resource private EngineConfig engineConfig;
-  @Autowired private LicenseCacheManager licenseCacheManager;
 
   // -- PROVIDERS --
   private List<OAuthProvider> buildOpenIdProviders() {
@@ -265,7 +250,6 @@ public class PlatformSettingsService {
     populatePublicSettings(platformSettings, dbSettings);
 
     // Authenticated-only fields
-    platformSettings.setPlatformLicense(licenseCacheManager.getEnterpriseEditionInfo());
     platformSettings.setPlatformHomeDashboard(
         ofNullable(dbSettings.get(DEFAULT_HOME_DASHBOARD.key()))
             .map(Setting::getValue)
@@ -307,14 +291,11 @@ public class PlatformSettingsService {
             .orElse(PLATFORM_NAME.defaultValue()));
     platformSettings.setPlatformBaseUrl(veriguardConfig.getBaseUrl());
     platformSettings.setPlatformAgentUrl(veriguardConfig.getBaseUrlForAgent());
-    platformSettings.setXtmOpenctiEnable(openCTIConfig.getEnable());
-    platformSettings.setXtmOpenctiUrl(openCTIConfig.getUrl());
     platformSettings.setAiEnabled(aiConfig.isEnabled());
     platformSettings.setAiHasToken(StringUtils.hasText(aiConfig.getToken()));
     platformSettings.setAiType(aiConfig.getType());
     platformSettings.setAiModel(aiConfig.getModel());
     platformSettings.setExecutorTaniumEnable(false);
-    platformSettings.setTelemetryManagerEnable(true);
 
     // Admin-only settings
     VeriguardPrincipal user = currentUser();
@@ -342,23 +323,6 @@ public class PlatformSettingsService {
     platformSettings.setExpectationDefaultScoreValue(
         expectationPropertiesConfig.getDefaultExpectationScoreValue());
 
-    // XTM Hub
-    platformSettings.setXtmHubEnable(xtmHubConfig.getEnable());
-    platformSettings.setXtmHubUrl(xtmHubConfig.getUrl());
-    platformSettings.setXtmHubReachable(xtmHubConnectivityService.isReachable());
-    platformSettings.setXtmHubToken(getValueFromMapOfSettings(dbSettings, XTM_HUB_TOKEN.key()));
-    platformSettings.setXtmHubRegistrationStatus(
-        getValueFromMapOfSettings(dbSettings, XTM_HUB_REGISTRATION_STATUS.key()));
-    platformSettings.setXtmHubRegistrationDate(
-        getValueFromMapOfSettings(dbSettings, XTM_HUB_REGISTRATION_DATE.key()));
-    platformSettings.setXtmHubRegistrationUserId(
-        getValueFromMapOfSettings(dbSettings, XTM_HUB_REGISTRATION_USER_ID.key()));
-    platformSettings.setXtmHubRegistrationUserName(
-        getValueFromMapOfSettings(dbSettings, XTM_HUB_REGISTRATION_USER_NAME.key()));
-    platformSettings.setXtmHubLastConnectivityCheck(
-        getValueFromMapOfSettings(dbSettings, XTM_HUB_LAST_CONNECTIVITY_CHECK.key()));
-    platformSettings.setXtmHubShouldSendConnectivityEmail(
-        getValueFromMapOfSettings(dbSettings, XTM_HUB_SHOULD_SEND_CONNECTIVITY_EMAIL.key()));
     return platformSettings;
   }
 
@@ -434,23 +398,6 @@ public class PlatformSettingsService {
         DEFAULT_SIMULATION_DASHBOARD.key(),
         input.getSimulationDashboard());
     settingRepository.saveAll(settingsToSave);
-    return findSettings();
-  }
-
-  public PlatformSettings updateSettingsEnterpriseEdition(
-      SettingsEnterpriseEditionUpdateInput input) throws Exception {
-    Map<String, Setting> dbSettings = mapOfSettings(fromIterable(this.settingRepository.findAll()));
-    List<Setting> settingsToSave = new ArrayList<>();
-    String certPem = input.getEnterpriseEdition();
-    if (certPem != null && !certPem.isEmpty()) {
-      License license = eeService.verifyCertificate(certPem);
-      if (!license.isLicenseValidated()) {
-        throw new BadRequestException("Invalid certificate");
-      }
-    }
-    settingsToSave.add(resolveFromMap(dbSettings, PLATFORM_ENTERPRISE_LICENSE.key(), certPem));
-    settingRepository.saveAll(settingsToSave);
-    licenseCacheManager.refreshLicense();
     return findSettings();
   }
 
@@ -602,70 +549,6 @@ public class PlatformSettingsService {
     Setting setting = settingRepository.findByKey(key).orElse(new Setting(key, value));
     setting.setValue(value);
     return settingRepository.save(setting);
-  }
-
-  public PlatformSettings updateXTMHubRegistration(
-      String token,
-      LocalDateTime registrationDate,
-      XtmHubRegistrationStatus registrationStatus,
-      XtmHubRegistererRecord registerer,
-      LocalDateTime lastConnectivityCheck,
-      Boolean shouldSendConnectivityEmail) {
-    Map<String, Setting> dbSettings = mapOfSettings(fromIterable(this.settingRepository.findAll()));
-
-    Map<SettingKeys, String> xtmhubSettingsMap = new HashMap<>();
-    xtmhubSettingsMap.put(XTM_HUB_TOKEN, token);
-    xtmhubSettingsMap.put(
-        XTM_HUB_REGISTRATION_DATE, registrationDate != null ? registrationDate.toString() : null);
-    xtmhubSettingsMap.put(XTM_HUB_REGISTRATION_STATUS, registrationStatus.label);
-    xtmhubSettingsMap.put(
-        XTM_HUB_REGISTRATION_USER_ID, registerer != null ? registerer.id() : null);
-    xtmhubSettingsMap.put(
-        XTM_HUB_REGISTRATION_USER_NAME, registerer != null ? registerer.name() : null);
-    xtmhubSettingsMap.put(
-        XTM_HUB_LAST_CONNECTIVITY_CHECK,
-        lastConnectivityCheck != null ? lastConnectivityCheck.toString() : null);
-    xtmhubSettingsMap.put(
-        XTM_HUB_SHOULD_SEND_CONNECTIVITY_EMAIL,
-        shouldSendConnectivityEmail != null ? shouldSendConnectivityEmail.toString() : null);
-
-    List<Setting> settingsToSave = new ArrayList<>();
-
-    xtmhubSettingsMap.forEach(
-        (settingKey, value) -> {
-          if (value != null) {
-            settingsToSave.add(resolveFromMap(dbSettings, settingKey.key(), value));
-          }
-        });
-
-    settingRepository.saveAll(settingsToSave);
-
-    return findSettings();
-  }
-
-  public PlatformSettings deleteXTMHubRegistration() {
-    Map<String, Setting> dbSettings = mapOfSettings(fromIterable(this.settingRepository.findAll()));
-
-    List<String> keys =
-        Arrays.asList(
-            XTM_HUB_TOKEN.key(),
-            XTM_HUB_REGISTRATION_DATE.key(),
-            XTM_HUB_REGISTRATION_STATUS.key(),
-            XTM_HUB_REGISTRATION_USER_ID.key(),
-            XTM_HUB_REGISTRATION_USER_NAME.key(),
-            XTM_HUB_LAST_CONNECTIVITY_CHECK.key(),
-            XTM_HUB_SHOULD_SEND_CONNECTIVITY_EMAIL.key());
-
-    List<String> toDelete = new ArrayList<>();
-    keys.forEach(
-        settingsKey -> {
-          if (dbSettings.containsKey(settingsKey)) {
-            toDelete.add(dbSettings.get(settingsKey).getId());
-          }
-        });
-
-    this.settingRepository.deleteByIdsNative(toDelete);
-    return findSettings();
   }
 
   // -- PLATFORM MESSAGE --

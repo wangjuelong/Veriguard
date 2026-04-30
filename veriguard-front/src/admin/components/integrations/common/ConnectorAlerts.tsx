@@ -7,13 +7,11 @@ import { useFormatter } from '../../../../components/i18n';
 import type { CatalogConnectorOutput } from '../../../../utils/api-types';
 
 interface ConnectorAlertsProps {
-  isEnterpriseEdition: boolean;
   isXtmComposerUp: boolean;
   catalogConnector?: CatalogConnectorOutput;
 }
 
 const ConnectorAlerts: FunctionComponent<ConnectorAlertsProps> = ({
-  isEnterpriseEdition,
   isXtmComposerUp,
   catalogConnector,
 }) => {
@@ -36,7 +34,7 @@ const ConnectorAlerts: FunctionComponent<ConnectorAlertsProps> = ({
 
   return (
     <>
-      {isEnterpriseEdition && !isXtmComposerUp && catalogConnector?.catalog_connector_manager_supported && (
+      {!isXtmComposerUp && catalogConnector?.catalog_connector_manager_supported && (
         <Alert severity="warning" style={alertStyle}>
           {t('Xtm composer is not reachable', { catalogType: catalogConnector.catalog_connector_type.toLowerCase() })}
         </Alert>

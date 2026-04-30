@@ -177,7 +177,8 @@ class SecurityUtilsTest {
     URI uri = SecurityUtils.validateJFrogUri("/path/to/", "jfrog.agent");
 
     assertNotNull(uri);
-    assertEquals("https://filigran.jfrog.io/artifactory/path/to/jfrog.agent", uri.toString());
+    assertEquals(
+        "https://artifactory.veriguard.local/artifactory/path/to/jfrog.agent", uri.toString());
   }
 
   @ParameterizedTest

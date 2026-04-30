@@ -4,12 +4,10 @@ import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
 import static io.veriguard.rest.payload.PayloadUtils.validateArchitecture;
 
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AttackPatternRepository;
 import io.veriguard.database.repository.PayloadRepository;
 import io.veriguard.database.repository.TagRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.domain.DomainService;
 import io.veriguard.rest.payload.PayloadUtils;
@@ -28,8 +26,6 @@ public class PayloadCreationService {
   private final PayloadUtils payloadUtils;
 
   private final PayloadService payloadService;
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
 
   private final TagRepository tagRepository;
   private final AttackPatternRepository attackPatternRepository;
@@ -39,9 +35,6 @@ public class PayloadCreationService {
 
   @Transactional(rollbackOn = Exception.class)
   public Payload createPayload(PayloadCreateInput input) {
-    if (eeService.isEnterpriseLicenseInactive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      input.setDetectionRemediations(null);
-    }
     List<AttackPattern> attackPatterns =
         fromIterable(attackPatternRepository.findAllById(input.getAttackPatternsIds()));
     return create(input, attackPatterns);

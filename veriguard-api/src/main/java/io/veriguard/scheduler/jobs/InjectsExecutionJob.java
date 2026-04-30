@@ -23,7 +23,6 @@ import io.veriguard.rest.inject.service.InjectStatusService;
 import io.veriguard.scheduler.jobs.exception.ErrorMessagesPreExecutionException;
 import io.veriguard.service.NotificationEventService;
 import io.veriguard.service.SecurityCoverageSendJobService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.ExecutionTraceUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
@@ -72,7 +71,6 @@ public class InjectsExecutionJob implements Job {
   private final InjectExpectationRepository injectExpectationRepository;
   private final InjectStatusService injectStatusService;
   private final io.veriguard.executors.Executor executor;
-  private final ActionMetricCollector actionMetricCollector;
   private final NotificationEventService notificationEventService;
   private final SecurityCoverageSendJobService securityCoverageSendJobService;
 
@@ -102,7 +100,6 @@ public class InjectsExecutionJob implements Job {
     if (exercises.isEmpty()) {
       return;
     }
-    actionMetricCollector.addSimulationPlayedCount(exercises.size());
     exerciseRepository.saveAll(
         exercises.stream()
             .peek(

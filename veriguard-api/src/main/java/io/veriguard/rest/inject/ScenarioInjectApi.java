@@ -8,18 +8,15 @@ import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.form.InjectAssistantInput;
 import io.veriguard.rest.inject.form.InjectInput;
 import io.veriguard.rest.inject.form.InjectUpdateActivationInput;
 import io.veriguard.rest.inject.output.InjectOutput;
-import io.veriguard.rest.inject.service.InjectAssistantService;
 import io.veriguard.rest.inject.service.InjectDuplicateService;
 import io.veriguard.rest.inject.service.InjectService;
 import io.veriguard.rest.inject.service.ScenarioInjectService;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.ScenarioService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.criteria.Join;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -35,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ScenarioInjectApi extends RestBehavior {
 
-  private final InjectAssistantService injectAssistantService;
   private final InjectSearchService injectSearchService;
   private final InjectRepository injectRepository;
   private final ScenarioService scenarioService;
@@ -124,23 +120,6 @@ public class ScenarioInjectApi extends RestBehavior {
       @Valid @RequestBody List<InjectInput> inputs) {
     Scenario scenario = this.scenarioService.scenario(scenarioId);
     return this.injectService.createAndSaveInjectList(null, scenario, inputs);
-  }
-
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/injects/assistant")
-  @RBAC(
-      resourceId = "#scenarioId",
-      actionPerformed = Action.WRITE,
-      resourceType = ResourceType.SCENARIO)
-  @Transactional(rollbackFor = Exception.class)
-  @Operation(
-      summary = "Assistant to generate injects for scenario",
-      description = "Generates injects based on the provided attack pattern and targets.")
-  public List<Inject> generateInjectsForScenario(
-      @PathVariable @NotBlank final String scenarioId,
-      @Valid @RequestBody InjectAssistantInput input) {
-    Scenario scenario = this.scenarioService.scenario(scenarioId);
-    return injectService.saveAll(
-        this.injectAssistantService.generateInjectsForScenario(scenario, input));
   }
 
   @PostMapping(SCENARIO_URI + "/{scenarioId}/injects/{injectId}")

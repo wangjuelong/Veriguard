@@ -51,8 +51,6 @@ export const isDemoInstance = (settings: PlatformSettings) => {
   return settings.platform_base_url === DEMO_PLATFORM_URL;
 };
 
-export const XTM_HUB_DEFAULT_URL = 'https://hub.filigran.io';
-
 // Network
 const isEmptyPath = R.isNil(window.BASE_PATH) || R.isEmpty(window.BASE_PATH);
 const contextPath = isEmptyPath || window.BASE_PATH === '/' ? '' : window.BASE_PATH;

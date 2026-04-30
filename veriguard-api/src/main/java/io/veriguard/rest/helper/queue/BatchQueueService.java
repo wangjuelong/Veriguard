@@ -298,7 +298,7 @@ public class BatchQueueService<T extends Queueable> {
 
   /**
    * Process messages in the queue buffer. It will only process as many messages as what's
-   * configures in openbas.queue-config.<name of the queue>.max-size
+   * configures in veriguard.queue-config.<name of the queue>.max-size
    */
   public void processBufferedBatch(int workerId) {
     if (insertInProgress

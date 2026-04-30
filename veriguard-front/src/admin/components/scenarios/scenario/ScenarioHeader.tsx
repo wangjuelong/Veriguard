@@ -1,32 +1,27 @@
 import { PlayArrowOutlined, Stop } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Tooltip, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { type Dispatch, type SetStateAction, useContext, useEffect, useState } from 'react';
+import { type Dispatch, type SetStateAction, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { playInjectsAssistantForScenario } from '../../../../actions/Inject';
 import { createRunningExerciseFromScenario, updateScenarioRecurrence } from '../../../../actions/scenarios/scenario-actions';
 import { type ScenariosHelper } from '../../../../actions/scenarios/scenario-helper';
-import LoaderDialog from '../../../../components/common/loader/LoaderDialog';
 import Transition from '../../../../components/common/Transition';
 import { useFormatter } from '../../../../components/i18n';
 import { SIMULATION_BASE_URL } from '../../../../constants/BaseUrls';
 import { useHelper } from '../../../../store';
 import {
   type Exercise,
-  type InjectAssistantInput,
   type Scenario,
 } from '../../../../utils/api-types';
-import { MESSAGING$, useQueryParameter } from '../../../../utils/Environment';
+import { MESSAGING$ } from '../../../../utils/Environment';
 import { useAppDispatch } from '../../../../utils/hooks';
 import { type Cron } from '../../../../utils/period/Cron';
 import handle from '../../../../utils/period/Period';
 import { type PeriodExpressionHandler } from '../../../../utils/period/PeriodExpressionHandler';
 import useScenarioPermissions from '../../../../utils/permissions/useScenarioPermissions';
 import { truncate } from '../../../../utils/String';
-import { InjectContext } from '../../common/Context';
-import ScenarioAssistantDrawer from './scenario_assistant/ScenarioAssistantDrawer';
 import ScenarioPopover from './ScenarioPopover';
 import ScenarioRecurringFormDialog from './ScenarioRecurringFormDialog';
 
@@ -89,13 +84,8 @@ const ScenarioHeader = ({
   const { classes } = useStyles();
   const theme = useTheme();
   const { scenarioId } = useParams() as { scenarioId: Scenario['scenario_id'] };
-  const [openScenarioAssistantQueryParam] = useQueryParameter(['openScenarioAssistant']);
-  const { injects, setInjects } = useContext(InjectContext);
-  const { canLaunch, canManage } = useScenarioPermissions(scenarioId);
+  const { canLaunch } = useScenarioPermissions(scenarioId);
 
-  const [openScenarioAssistant, setOpenScenarioAssistant] = useState(openScenarioAssistantQueryParam === 'true');
-  const [openLoaderDialog, setOpenLoaderDialog] = useState(false);
-  const [isInjectAssistantLoading, setIsInjectAssistantLoading] = useState(false);
   // Fetching data
   const { scenario }: { scenario: Scenario } = useHelper((helper: ScenariosHelper) => ({ scenario: helper.getScenario(scenarioId) }));
 
@@ -112,16 +102,6 @@ const ScenarioHeader = ({
       }
     });
     setOpenScenarioRecurringFormDialog(false);
-  };
-
-  const onScenarioInjectAssistantSubmit = (data: InjectAssistantInput) => {
-    setOpenScenarioAssistant(false);
-    setIsInjectAssistantLoading(true);
-    setOpenLoaderDialog(true);
-    playInjectsAssistantForScenario(scenarioId, data).then((results) => {
-      setInjects([...injects, ...results.data]);
-      setIsInjectAssistantLoading(false);
-    }).catch(() => setOpenLoaderDialog(false));
   };
 
   useEffect(() => {
@@ -180,22 +160,6 @@ const ScenarioHeader = ({
             )
           : (
               <>
-                {canManage
-                  && (
-                    <Button
-                      style={{
-                        marginRight: theme.spacing(1),
-                        lineHeight: 'initial',
-                        borderColor: theme.palette.divider,
-                      }}
-                      variant="outlined"
-                      color="inherit"
-                      size="small"
-                      onClick={() => setOpenScenarioAssistant(true)}
-                    >
-                      {t('Scenario assistant')}
-                    </Button>
-                  )}
                 {canLaunch
                   && (
                     <Button
@@ -258,21 +222,7 @@ const ScenarioHeader = ({
           </Button>
         </DialogActions>
       </Dialog>
-      <ScenarioAssistantDrawer
-        open={openScenarioAssistant}
-        onClose={() => setOpenScenarioAssistant(false)}
-        onSubmit={(data: InjectAssistantInput) => onScenarioInjectAssistantSubmit(data)}
-      />
       <div className="clearfix" />
-      <LoaderDialog
-        open={openLoaderDialog}
-        isSubmitting={isInjectAssistantLoading}
-        loadMessage={t('Injects generation in progress...')}
-        successMessage={t('Injects successfully generated.')}
-        redirectButtonLabel={t('Access these injects')}
-        redirectLink={`/admin/scenarios/${scenarioId}/injects`}
-        onClose={() => setOpenLoaderDialog(false)}
-      />
     </>
   );
 };

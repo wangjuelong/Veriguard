@@ -7,9 +7,7 @@ import static io.veriguard.utils.StringUtils.duplicateString;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.payload.form.PayloadCreateInput;
 import io.veriguard.rest.payload.form.PayloadUpdateInput;
@@ -31,8 +29,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PayloadUtils {
 
-  private final Ee eeService;
-  private final LicenseCacheManager licenseCacheManager;
   private final OutputParserService outputParserService;
   private final DetectionRemediationUtils detectionRemediationUtils;
 
@@ -149,9 +145,7 @@ public class PayloadUtils {
     duplicate.setStatus(Payload.PAYLOAD_STATUS.UNVERIFIED);
     outputParserService.copyOutputParsersFromEntity(origin.getOutputParsers(), duplicate);
 
-    if (eeService.isLicenseActive(licenseCacheManager.getEnterpriseEditionInfo())) {
-      detectionRemediationUtils.copy(origin.getDetectionRemediations(), duplicate, false);
-    }
+    detectionRemediationUtils.copy(origin.getDetectionRemediations(), duplicate, false);
 
     // Copy grants (each one needs to be a fully new object)
     List<Grant> grantCopies =

@@ -58,7 +58,7 @@ import org.springframework.util.StringUtils;
 public class UserService {
   @Resource private SessionManager sessionManager;
 
-  @Value("${openbas.admin.email:${veriguard.admin.email:#{null}}}")
+  @Value("${veriguard.admin.email:#{null}}")
   private String adminEmail;
 
   private static final long tenMinutes = 1000L * 60L * 10L;

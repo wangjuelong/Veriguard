@@ -9,17 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.ee.Ee;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.exercise.service.ExerciseService;
 import io.veriguard.rest.exercise.service.PauseExerciseService;
 import io.veriguard.rest.inject.service.InjectDuplicateService;
 import io.veriguard.rest.inject.service.InjectService;
 import io.veriguard.service.scenario.ScenarioRecurrenceService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.fixtures.ExerciseFixture;
 import io.veriguard.utils.fixtures.InjectorContractFixture;
@@ -44,7 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ExerciseServiceIntegrationTest extends IntegrationTest {
 
-  @Mock Ee eeService;
   @Mock InjectDuplicateService injectDuplicateService;
   @Mock VariableService variableService;
 
@@ -59,7 +55,6 @@ class ExerciseServiceIntegrationTest extends IntegrationTest {
   @Autowired private ExerciseMapper exerciseMapper;
   @Autowired private InjectMapper injectMapper;
   @Autowired private ResultUtils resultUtils;
-  @Mock private ActionMetricCollector actionMetricCollector;
   @Autowired private ArticleRepository articleRepository;
   @Autowired private ExerciseRepository exerciseRepository;
   @Autowired private TeamRepository teamRepository;
@@ -71,7 +66,6 @@ class ExerciseServiceIntegrationTest extends IntegrationTest {
   @Autowired private InjectRepository injectRepository;
   @Autowired private ExerciseTeamUserRepository exerciseTeamUserRepository;
   @Autowired private LessonsCategoryRepository lessonsCategoryRepository;
-  @Autowired private LicenseCacheManager licenseCacheManager;
   @Autowired private InjectExpectationMapper injectExpectationMapper;
   @Autowired private ScenarioRecurrenceService scenarioRecurrenceService;
   @Autowired private InjectorContractFixture injectorContractFixture;
@@ -89,7 +83,6 @@ class ExerciseServiceIntegrationTest extends IntegrationTest {
   void setUp() {
     exerciseService =
         new ExerciseService(
-            eeService,
             injectDuplicateService,
             teamService,
             variableService,
@@ -102,8 +95,6 @@ class ExerciseServiceIntegrationTest extends IntegrationTest {
             exerciseMapper,
             injectMapper,
             resultUtils,
-            actionMetricCollector,
-            licenseCacheManager,
             assetRepository,
             assetGroupRepository,
             injectExpectationRepository,

@@ -54,22 +54,6 @@ public class PlatformJobDefinitions {
   }
 
   @Bean
-  public JobDetail getSecurityCoverageJobExecution() {
-    return JobBuilder.newJob(SecurityCoverageJob.class)
-        .storeDurably()
-        .withIdentity(jobKey("SecurityCoverageJob"))
-        .build();
-  }
-
-  @Bean
-  public JobDetail getConnectorPingJob() {
-    return JobBuilder.newJob(OpenCTIConnectorRegisterPingJob.class)
-        .storeDurably()
-        .withIdentity(jobKey("ConnectorPingJob"))
-        .build();
-  }
-
-  @Bean
   public JobDetail userEventRetentionJobDetail() {
     return JobBuilder.newJob(UserEventRetentionJob.class)
         .withIdentity(USER_EVENT_RETENTION_JOB)

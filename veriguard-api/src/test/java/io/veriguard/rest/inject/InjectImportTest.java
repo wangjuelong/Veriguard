@@ -7,8 +7,6 @@ import static io.veriguard.rest.scenario.ScenarioApi.SCENARIO_URI;
 import static io.veriguard.utils.fixtures.PayloadFixture.createDetectionRemediation;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,7 +18,6 @@ import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.ExerciseRepository;
 import io.veriguard.database.repository.InjectRepository;
 import io.veriguard.database.repository.ScenarioRepository;
-import io.veriguard.ee.Ee;
 import io.veriguard.integration.Manager;
 import io.veriguard.integration.impl.injectors.challenge.ChallengeInjectorIntegrationFactory;
 import io.veriguard.integration.impl.injectors.channel.ChannelInjectorIntegrationFactory;
@@ -39,7 +36,6 @@ import java.util.*;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -84,7 +80,6 @@ class InjectImportTest extends IntegrationTest {
   @Autowired private InjectRepository injectRepository;
   @Autowired private ArticleService articleService;
   @Autowired private InjectorFixture injectorFixture;
-  @MockBean private Ee eeService;
   @Autowired private ChannelInjectorIntegrationFactory channelInjectorIntegrationFactory;
   @Autowired private ChallengeInjectorIntegrationFactory challengeInjectorIntegrationFactory;
 
@@ -637,9 +632,6 @@ class InjectImportTest extends IntegrationTest {
       @DisplayName("All payloads have been recreated")
       public void allPayloadsHaveBeenRecreated() throws Exception {
 
-        // If We want to include detection remediations we need to have a licence
-        when(eeService.isEnterpriseLicenseInactive(any())).thenReturn(false);
-
         byte[] exportData =
             getExportDataThenDelete(getInjectFromExerciseWrappers(), true, true, true);
         ExerciseComposer.Composer destinationExerciseWrapper = getPersistedExerciseWrapper();
@@ -1007,9 +999,6 @@ class InjectImportTest extends IntegrationTest {
       @DisplayName("All payloads have been recreated")
       public void allPayloadsHaveBeenRecreated() throws Exception {
 
-        // If We want to include detection remediations we need to have a licence
-        when(eeService.isEnterpriseLicenseInactive(any())).thenReturn(false);
-
         byte[] exportData =
             getExportDataThenDelete(getInjectFromScenarioWrappers(), true, true, true);
         ScenarioComposer.Composer destinationScenarioWrapper = getPersistedScenarioWrapper();
@@ -1268,9 +1257,6 @@ class InjectImportTest extends IntegrationTest {
       @Test
       @DisplayName("All payloads have been recreated")
       public void allPayloadsHaveBeenRecreated() throws Exception {
-
-        // If We want to include detection remediations we need to have a licence
-        when(eeService.isEnterpriseLicenseInactive(any())).thenReturn(false);
 
         byte[] exportData =
             getExportDataThenDelete(getInjectFromScenarioWrappers(), true, true, true);

@@ -1,7 +1,6 @@
 import { type PlatformSettings } from '../../../utils/api-types';
 import { isDemoInstance } from '../../../utils/Environment';
 import { isNotEmptyField, recordEntries, recordKeys } from '../../../utils/utils';
-import { LICENSE_OPTION_TRIAL } from '../trialbanners/LicenseBanner';
 
 const SYSTEM_BANNER_HEIGHT_PER_MESSAGE = 18;
 export type BannerMessage = Record<'debug' | 'info' | 'warn' | 'error' | 'fatal', string[]>;
@@ -10,7 +9,6 @@ export const computeBannerSettings = (settings: PlatformSettings) => {
   const bannerByLevel = settings.platform_banner_by_level;
   const isBannerActivated = (bannerByLevel !== undefined
     && isNotEmptyField(recordKeys(bannerByLevel)))
-  || settings.platform_license?.license_type === LICENSE_OPTION_TRIAL
   || isDemoInstance(settings);
   let numberOfElements = 0;
   if (settings.platform_banner_by_level !== undefined) {

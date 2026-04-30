@@ -1,7 +1,7 @@
 import { buttonClasses, type ThemeOptions } from '@mui/material';
 
-import LogoCollapsed from '../static/images/logo_dark.png';
-import LogoText from '../static/images/logo_text_dark.png';
+import LogoCollapsed from '../static/images/logo_dark.svg';
+import LogoText from '../static/images/logo_text_dark.svg';
 import { hexToRGB } from '../utils/Colors';
 import { fileUri } from '../utils/Environment';
 import { FONT_FAMILY_CODE, type LabelColor, LabelColorDict } from './Theme';
@@ -88,7 +88,6 @@ const ThemeDark = (
       background: hexToRGB(EE_COLOR, 0.2),
       lightBackground: hexToRGB(EE_COLOR, 0.08),
     },
-    xtmhub: { main: '#00f1bd' },
     background: {
       default: background || THEME_DARK_DEFAULT_BACKGROUND,
       paper: paper || THEME_DARK_DEFAULT_PAPER,

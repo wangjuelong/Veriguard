@@ -3,11 +3,9 @@ package io.veriguard.integration.impl.executors.paloaltocortex;
 import static io.veriguard.integration.impl.executors.paloaltocortex.PaloAltoCortexExecutorIntegration.PALOALTOCORTEX_EXECUTOR_TYPE;
 
 import io.veriguard.authorisation.HttpClientFactory;
-import io.veriguard.config.cache.LicenseCacheManager;
 import io.veriguard.database.model.CatalogConnector;
 import io.veriguard.database.model.ConnectorInstance;
 import io.veriguard.database.model.ConnectorType;
-import io.veriguard.ee.Ee;
 import io.veriguard.executors.ExecutorService;
 import io.veriguard.executors.paloaltocortex.config.PaloAltoCortexExecutorConfig;
 import io.veriguard.integration.ComponentRequestEngine;
@@ -36,8 +34,6 @@ public class PaloAltoCortexExecutorIntegrationFactory extends IntegrationFactory
   private final AgentService agentService;
   private final EndpointService endpointService;
   private final AssetGroupService assetGroupService;
-  private final Ee enterpriseEditionService;
-  private final LicenseCacheManager licenseCacheManager;
   private final ThreadPoolTaskScheduler taskScheduler;
   private final FileService fileService;
   private final ConnectorInstanceService connectorInstanceService;
@@ -52,8 +48,6 @@ public class PaloAltoCortexExecutorIntegrationFactory extends IntegrationFactory
       AgentService agentService,
       EndpointService endpointService,
       AssetGroupService assetGroupService,
-      Ee enterpriseEditionService,
-      LicenseCacheManager licenseCacheManager,
       ThreadPoolTaskScheduler taskScheduler,
       FileService fileService,
       BaseIntegrationConfigurationBuilder baseIntegrationConfigurationBuilder,
@@ -66,8 +60,6 @@ public class PaloAltoCortexExecutorIntegrationFactory extends IntegrationFactory
     this.agentService = agentService;
     this.endpointService = endpointService;
     this.assetGroupService = assetGroupService;
-    this.enterpriseEditionService = enterpriseEditionService;
-    this.licenseCacheManager = licenseCacheManager;
     this.taskScheduler = taskScheduler;
     this.fileService = fileService;
     this.baseIntegrationConfigurationBuilder = baseIntegrationConfigurationBuilder;
@@ -116,8 +108,6 @@ public class PaloAltoCortexExecutorIntegrationFactory extends IntegrationFactory
         endpointService,
         agentService,
         assetGroupService,
-        enterpriseEditionService,
-        licenseCacheManager,
         componentRequestEngine,
         executorService,
         taskScheduler,

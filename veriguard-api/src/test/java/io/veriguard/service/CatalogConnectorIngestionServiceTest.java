@@ -38,7 +38,7 @@ public class CatalogConnectorIngestionServiceTest {
     String mockJson =
         """
                         {
-                          "id": "filigran-catalog-id",
+                          "id": "veriguard-catalog-id",
                           "name": "Veriguard catalog",
                           "version": "rolling",
                           "contracts": [

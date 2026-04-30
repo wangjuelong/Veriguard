@@ -36,7 +36,6 @@ import io.veriguard.service.FileService;
 import io.veriguard.service.ImportEntry;
 import io.veriguard.service.InjectorService;
 import io.veriguard.service.scenario.ScenarioService;
-import io.veriguard.telemetry.metric_collectors.ActionMetricCollector;
 import jakarta.activation.MimetypesFileTypeMap;
 import jakarta.annotation.Resource;
 import java.time.Instant;
@@ -60,7 +59,6 @@ public class V1_DataImporter implements Importer {
   // region variables
   @Resource protected ObjectMapper mapper;
   private final FileService documentService;
-  private final ActionMetricCollector actionMetricCollector;
   private final DocumentRepository documentRepository;
   private final TagRepository tagRepository;
   private final AttackPatternRepository attackPatternRepository;
@@ -383,7 +381,6 @@ public class V1_DataImporter implements Importer {
             .map(baseIds::get)
             .map(Tag.class::cast)
             .collect(Collectors.toSet()));
-    actionMetricCollector.addSimulationCreatedCount();
     return exerciseRepository.save(exercise);
   }
 

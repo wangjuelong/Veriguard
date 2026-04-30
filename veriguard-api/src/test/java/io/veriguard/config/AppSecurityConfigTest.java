@@ -27,7 +27,7 @@ public class AppSecurityConfigTest extends IntegrationTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @Value("${openbas.admin.token:${veriguard.admin.token:#{null}}}")
+  @Value("${veriguard.admin.token:#{null}}")
   private String adminToken;
 
   private static final String SCENARIO_SEARCH_URI = SCENARIO_URI + "/search";

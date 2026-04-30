@@ -1,7 +1,5 @@
 import { InputLabel } from '@mui/material';
 
-// eslint-disable-next-line import/no-cycle
-import TextFieldAskAI from '../../admin/components/common/form/TextFieldAskAI';
 import CKEditor from '../CKEditor';
 
 const SimpleRichTextField = (props) => {
@@ -11,9 +9,6 @@ const SimpleRichTextField = (props) => {
     onChange = () => {},
     style,
     disabled,
-    askAi,
-    inInject,
-    context,
     onBlur = () => {},
   } = props;
   return (
@@ -38,19 +33,6 @@ const SimpleRichTextField = (props) => {
         disabled={disabled}
         toolbarDropdownSize="386px" // set a size for the ckeditor items toolbar to avoid it to be cut off when overflowing
       />
-      {askAi && (
-        <TextFieldAskAI
-          currentValue={value ?? ''}
-          setFieldValue={(val) => {
-            onChange(val);
-          }}
-          format="html"
-          variant="html"
-          disabled={disabled}
-          inInject={inInject}
-          context={context}
-        />
-      )}
     </div>
   );
 };

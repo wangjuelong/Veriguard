@@ -23,7 +23,7 @@ const GradientButton = ({
     case 'default':
     default:
       startColor = theme.palette.primary.main;
-      endColor = theme.palette.xtmhub.main;
+      endColor = theme.palette.secondary.main;
       break;
   }
 
