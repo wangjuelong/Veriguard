@@ -19,7 +19,7 @@ public class VeriguardExecutorIntegration extends Integration {
   public static final String VERIGUARD_EXECUTOR_NAME = "Veriguard Agent";
   public static final String VERIGUARD_EXECUTOR_DOCUMENTATION_LINK =
       "https://docs.veriguard.io/latest/usage/veriguard-agent/";
-  public static final String VERIGUARD_EXECUTOR_BACKGROUND_COLOR = "#001BDB";
+  public static final String VERIGUARD_EXECUTOR_BACKGROUND_COLOR = "#1F1F23";
 
   @QualifiedComponent(identifier = VERIGUARD_EXECUTOR_NAME)
   private VeriguardExecutorContextService veriguardExecutorContextService;
