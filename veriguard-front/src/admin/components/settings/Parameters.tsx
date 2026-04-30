@@ -140,14 +140,14 @@ const Parameters = () => {
                     : `${settings.platform_ai_type} - ${t('Missing token')}`
                 }
                 status={(settings.platform_ai_enabled) && (settings.platform_ai_has_token)}
-                tooltip={settings.platform_ai_has_token ? `${settings.platform_ai_type} - ${settings.platform_ai_model}` : t('The token is missing in your platform configuration, please ask your Filigran representative to provide you with it or with on-premise deployment instructions. Your can open a support ticket to do so.')}
+                tooltip={settings.platform_ai_has_token ? `${settings.platform_ai_type} - ${settings.platform_ai_model}` : t('The token is missing in your platform configuration, please ask your Veriguard administrator to provide you with it or with on-premise deployment instructions. You can open a support ticket to do so.')}
               />
             </ListItem>
             <ListItem divider>
-              <TextField fullWidth label={t('Filigran support key')} variant="standard" disabled />
+              <TextField fullWidth label={t('Support key')} variant="standard" disabled />
             </ListItem>
             <ListItem divider>
-              <ListItemText primary={t('Remove Filigran logos')} />
+              <ListItemText primary={t('Remove platform logos')} />
               <Switch
                 disabled={ability.cannot(ACTIONS.MANAGE, SUBJECTS.PLATFORM_SETTINGS)}
                 checked={settings.platform_whitemark === 'true'}

@@ -11,7 +11,7 @@ public enum SettingKeys {
   PLATFORM_ENTERPRISE_LICENSE("platform_enterprise_license", ""),
   PLATFORM_LOGIN_MESSAGE(
       "platform_login_message",
-      "This platform is dedicated to Filigran team testing. **Sandbox running the latest rolling release.**"),
+      "This platform is dedicated to Veriguard team testing. **Sandbox running the latest rolling release.**"),
   PLATFORM_WHITEMARK("platform_whitemark", "false"),
   PLATFORM_NAME("platform_name", "Veriguard - Open Adversarial Exposure Validation Platform"),
   PLATFORM_BANNER("platform_banner", ""),

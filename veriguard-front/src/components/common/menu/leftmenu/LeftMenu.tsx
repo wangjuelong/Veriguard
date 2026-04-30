@@ -6,7 +6,6 @@ import { computeBannerSettings } from '../../../../public/components/systembanne
 import useAuth from '../../../../utils/hooks/useAuth';
 import { hasHref, type LeftMenuEntries } from './leftmenu-model';
 import MenuItemGroup from './MenuItemGroup';
-import MenuItemLogo from './MenuItemLogo';
 import MenuItemSingle from './MenuItemSingle';
 import MenuItemToggle from './MenuItemToggle';
 import useLeftMenu from './useLeftMenu';
@@ -19,7 +18,6 @@ const LeftMenu: FunctionComponent<{
   const theme = useTheme();
   const { settings } = useAuth();
   const { bannerHeightNumber } = computeBannerSettings(settings);
-  const isWhitemarkEnable = settings.platform_whitemark === 'true';
   const { state, helpers } = useLeftMenu(entries);
 
   const getWidth = () => {
@@ -79,12 +77,6 @@ const LeftMenu: FunctionComponent<{
             })
           );
         })}
-        {!isWhitemarkEnable && (
-          <MenuItemLogo
-            navOpen={state.navOpen}
-            onClick={() => window.open('https://filigran.io/', '_blank')}
-          />
-        )}
         <MenuItemToggle
           navOpen={state.navOpen}
           onClick={helpers.handleToggleDrawer}

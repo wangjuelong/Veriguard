@@ -26,13 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class InitAdminCommandLineRunner implements CommandLineRunner {
 
-  @Value("${openbas.admin.email:${veriguard.admin.email:#{null}}}")
+  @Value("${veriguard.admin.email:#{null}}")
   private String adminEmail;
 
-  @Value("${openbas.admin.password:${veriguard.admin.password:#{null}}}")
+  @Value("${veriguard.admin.password:#{null}}")
   private String adminPassword;
 
-  @Value("${openbas.admin.token:${veriguard.admin.token:#{null}}}")
+  @Value("${veriguard.admin.token:#{null}}")
   private String adminToken;
 
   private final UserRepository userRepository;

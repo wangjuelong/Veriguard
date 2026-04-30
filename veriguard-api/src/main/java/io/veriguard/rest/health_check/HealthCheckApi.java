@@ -34,8 +34,7 @@ public class HealthCheckApi extends RestBehavior {
 
   @Autowired
   public void setHealthCheckKey(
-      @Value("${openbas.healthcheck.key:${veriguard.healthcheck.key:#{null}}}")
-          String healthCheckKey) {
+      @Value("${veriguard.healthcheck.key:#{null}}") String healthCheckKey) {
     this.healthCheckKey = healthCheckKey;
   }
 

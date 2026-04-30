@@ -33,11 +33,11 @@ new_version = args.new_version
 branch_platform = args.branch_platform
 github_token = args.github_token
 
-os.environ["DRONE_COMMIT_AUTHOR"] = "Filigran-Automation"
-os.environ["GIT_AUTHOR_NAME"] = "Filigran Automation"
-os.environ["GIT_AUTHOR_EMAIL"] = "automation@filigran.io"
-os.environ["GIT_COMMITTER_NAME"] = "Filigran Automation"
-os.environ["GIT_COMMITTER_EMAIL"] = "automation@filigran.io"
+os.environ["DRONE_COMMIT_AUTHOR"] = "Veriguard-Automation"
+os.environ["GIT_AUTHOR_NAME"] = "Veriguard Automation"
+os.environ["GIT_AUTHOR_EMAIL"] = "automation@veriguard.local"
+os.environ["GIT_COMMITTER_NAME"] = "Veriguard Automation"
+os.environ["GIT_COMMITTER_EMAIL"] = "automation@veriguard.local"
 
 # Platform
 logging.info("[platform] Starting the release")
@@ -206,14 +206,16 @@ logging.info("[platform] Uploading release artifacts...")
 logging.info("[platform] Downloading latest builds")
 today = date.today()
 timestamp = str(today.year) + "{:02d}".format(today.month) + "{:02d}".format(today.day)
+artifactory_base_url = os.environ.get(
+    "VERIGUARD_ARTIFACTORY_BASE_URL",
+    "https://artifactory.veriguard.local/artifactory",
+)
 download_url(
-    "https://filigran.jfrog.io/artifactory/veriguard/veriguard-" + timestamp + ".tar.gz",
+    artifactory_base_url + "/veriguard/veriguard-" + timestamp + ".tar.gz",
     save_path="veriguard-release-" + new_version + ".tar.gz",
 )
 download_url(
-    "https://filigran.jfrog.io/artifactory/veriguard/veriguard-"
-    + timestamp
-    + "_musl.tar.gz",
+    artifactory_base_url + "/veriguard/veriguard-" + timestamp + "_musl.tar.gz",
     save_path="veriguard-release-" + new_version + "_musl.tar.gz",
 )
 

@@ -121,7 +121,7 @@ public class NotificationRuleService {
               .orElse("");
       data.put("custom_logo_b64", b64CustomLogo);
       data.put(
-          "hide_filigran_logo", Boolean.toString(platformSettingsService.isPlatformWhiteMarked()));
+          "hide_branding_logo", Boolean.toString(platformSettingsService.isPlatformWhiteMarked()));
     }
 
     for (NotificationRule rule : rules) {

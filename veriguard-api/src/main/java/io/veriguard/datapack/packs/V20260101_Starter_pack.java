@@ -73,7 +73,7 @@ public class V20260101_Starter_pack extends DataPack {
     static final Filters.FilterOperator OPERATOR = Filters.FilterOperator.not_empty;
   }
 
-  @Value("${openbas.starterpack.enabled:${veriguard.starterpack.enabled:#{true}}}")
+  @Value("${veriguard.starterpack.enabled:#{true}}")
   private boolean isStarterPackEnabled;
 
   private final SettingRepository settingRepository;

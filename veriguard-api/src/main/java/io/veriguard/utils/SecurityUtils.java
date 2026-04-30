@@ -11,6 +11,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class SecurityUtils {
 
+  /** Base URL for the artifactory hosting Veriguard agent and executor binaries. */
+  private static final String ARTIFACTORY_BASE_URL =
+      Optional.ofNullable(System.getProperty("veriguard.artifactory.base-url"))
+          .orElse(
+              Optional.ofNullable(System.getenv("VERIGUARD_ARTIFACTORY_BASE_URL"))
+                  .orElse("https://artifactory.veriguard.local/artifactory"));
+
   private SecurityUtils() {
     // Utility class
   }
@@ -69,7 +76,7 @@ public class SecurityUtils {
       throw new SecurityException("Invalid URL format");
     }
 
-    String stringUri = "https://filigran.jfrog.io/artifactory" + ressourcePath + filename;
+    String stringUri = ARTIFACTORY_BASE_URL + ressourcePath + filename;
     // Verify path traversals
     if (stringUri.contains("..")) {
       throw new SecurityException("Path traversal detected in URL");

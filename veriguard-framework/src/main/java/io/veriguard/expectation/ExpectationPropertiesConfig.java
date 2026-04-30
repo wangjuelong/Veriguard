@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
  *   <li><b>Human expectations</b> (challenge, article, manual, document, text): Default 24 hours
  * </ul>
  *
- * <p>Configuration can be provided via properties with either {@code openbas.expectation.*} or
- * {@code veriguard.expectation.*} prefixes for backward compatibility.
+ * <p>Configuration is provided via properties with the {@code veriguard.expectation.*} prefix.
  */
 @Component
 @Setter
@@ -44,40 +43,31 @@ public class ExpectationPropertiesConfig {
   /** Maximum valid score value. */
   private static final int MAX_SCORE = 100;
 
-  @Value(
-      "${openbas.expectation.technical.expiration-time:${veriguard.expectation.technical.expiration-time:#{null}}}")
+  @Value("${veriguard.expectation.technical.expiration-time:#{null}}")
   private Long technicalExpirationTime;
 
-  @Value(
-      "${openbas.expectation.detection.expiration-time:${veriguard.expectation.detection.expiration-time:#{null}}}")
+  @Value("${veriguard.expectation.detection.expiration-time:#{null}}")
   private Long detectionExpirationTime;
 
-  @Value(
-      "${openbas.expectation.prevention.expiration-time:${veriguard.expectation.prevention.expiration-time:#{null}}}")
+  @Value("${veriguard.expectation.prevention.expiration-time:#{null}}")
   private Long preventionExpirationTime;
 
-  @Value(
-      "${openbas.expectation.vulnerability.expiration-time:${veriguard.expectation.vulnerability.expiration-time:#{null}}}")
+  @Value("${veriguard.expectation.vulnerability.expiration-time:#{null}}")
   private Long vulnerabilityExpirationTime;
 
-  @Value(
-      "${openbas.expectation.human.expiration-time:${veriguard.expectation.human.expiration-time:#{null}}}")
+  @Value("${veriguard.expectation.human.expiration-time:#{null}}")
   private Long humanExpirationTime;
 
-  @Value(
-      "${openbas.expectation.challenge.expiration-time:${veriguard.expectation.challenge.expiration-time:#{null}}}")
+  @Value("${veriguard.expectation.challenge.expiration-time:#{null}}")
   private Long challengeExpirationTime;
 
-  @Value(
-      "${openbas.expectation.article.expiration-time:${veriguard.expectation.article.expiration-time:#{null}}}")
+  @Value("${veriguard.expectation.article.expiration-time:#{null}}")
   private Long articleExpirationTime;
 
-  @Value(
-      "${openbas.expectation.manual.expiration-time:${veriguard.expectation.manual.expiration-time:#{null}}}")
+  @Value("${veriguard.expectation.manual.expiration-time:#{null}}")
   private Long manualExpirationTime;
 
-  @Value(
-      "${openbas.expectation.manual.default-score-value:${veriguard.expectation.manual.default-score-value:#{null}}}")
+  @Value("${veriguard.expectation.manual.default-score-value:#{null}}")
   private Integer defaultManualExpectationScore;
 
   /**

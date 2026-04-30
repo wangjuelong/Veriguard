@@ -358,7 +358,7 @@ public class PayloadService {
     PayloadArgument argument = new PayloadArgument();
     argument.setType("text");
     argument.setKey(DYNAMIC_DNS_RESOLUTION_HOSTNAME_KEY);
-    argument.setDefaultValue("filigran.io");
+    argument.setDefaultValue("example.com");
     dynamicDnsResolutionPayload.setArguments(new ArrayList<>(List.of(argument)));
 
     dynamicDnsResolutionPayload.setExpectations(

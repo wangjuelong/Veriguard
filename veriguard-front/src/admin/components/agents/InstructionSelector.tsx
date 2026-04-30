@@ -69,9 +69,9 @@ const InstructionSelector: React.FC<InstructionSelectorProps> = ({ userToken, pl
         return {
           icon: <Powershell />,
           label: 'powershell',
-          defaultAgentFolder: 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera',
-          exclusions: `${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}
-${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe
+          defaultAgentFolder: 'C:\\Program Files\\Veriguard\\Caldera',
+          exclusions: `${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}
+${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe
 MD5: 68c1795fb45cb9b522d6cf48443fdc37
 SHA1: 5f87d06f818ff8cba9e11e8cd1c6f9d990eca0f8
 SHA256: 6b180913acb8cdac3fb8d3154a2f6a0bed13c056a477f4f94c4679414ec13b9f
@@ -80,18 +80,18 @@ SHA512: 6185b7253eedfa6253f26cd85c4bcfaf05195219b6ab06b43d9b07279d7d0cdd3c957bd5
 $url="${settings.platform_base_url}/api/implant/caldera/windows/${arch}";
 $wc=New-Object System.Net.WebClient;
 $data=$wc.DownloadData($url);
-get-process | ? {$_.modules.filename -like '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe'} | stop-process -f;
-rm -force '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe' -ea ignore;
-New-Item -ItemType Directory -Force -Path '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}' | Out-Null;
-[io.file]::WriteAllBytes('${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe',$data) | Out-Null;
+get-process | ? {$_.modules.filename -like '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe'} | stop-process -f;
+rm -force '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe' -ea ignore;
+New-Item -ItemType Directory -Force -Path '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}' | Out-Null;
+[io.file]::WriteAllBytes('${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe',$data) | Out-Null;
 $data=$wc.DownloadData($url + "/ps1");
-rm -force 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera\\oaev-agent-caldera.ps1' -ea ignore;
-[io.file]::WriteAllBytes('C:\\Program Files (x86)\\Filigran\\OAEV Caldera\\oaev-agent-caldera.ps1',$data) | Out-Null;
-New-NetFirewallRule -DisplayName "Allow Veriguard" -Direction Inbound -Program '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe' -Action Allow | Out-Null;
-New-NetFirewallRule -DisplayName "Allow Veriguard" -Direction Outbound -Program '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe' -Action Allow | Out-Null;
-Start-Process -FilePath '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe' -ArgumentList "-server $server -group red" -WindowStyle hidden;
-schtasks /create /tn VeriguardCaldera /sc onlogon /rl highest /tr "Powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle hidden -File 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera\\oaev-agent-caldera.ps1' $server";`,
-          code: `$server="${executorCalderaPublicUrl}";$url="${settings.platform_base_url}/api/implant/caldera/windows/${arch}";$wc=New-Object System.Net.WebClient;$data=$wc.DownloadData($url);get-process | ? {$_.modules.filename -like '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe'} | stop-process -f;rm -force '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe' -ea ignore;New-Item -ItemType Directory -Force -Path '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}' | Out-Null;[io.file]::WriteAllBytes('${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe',$data) | Out-Null;$data=$wc.DownloadData($url + "/ps1");rm -force 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera\\oaev-agent-caldera.ps1' -ea ignore;[io.file]::WriteAllBytes('C:\\Program Files (x86)\\Filigran\\OAEV Caldera\\oaev-agent-caldera.ps1',$data) | Out-Null;New-NetFirewallRule -DisplayName "Allow Veriguard" -Direction Inbound -Program '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe' -Action Allow | Out-Null;New-NetFirewallRule -DisplayName "Allow Veriguard" -Direction Outbound -Program '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe' -Action Allow | Out-Null;Start-Process -FilePath '${agentFolder ?? 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera'}\\oaev-agent-caldera.exe' -ArgumentList "-server $server -group red" -WindowStyle hidden;schtasks /create /tn VeriguardCaldera /sc onlogon /rl highest /tr "Powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle hidden -File 'C:\\Program Files (x86)\\Filigran\\OAEV Caldera\\oaev-agent-caldera.ps1' $server";`,
+rm -force 'C:\\Program Files\\Veriguard\\Caldera\\oaev-agent-caldera.ps1' -ea ignore;
+[io.file]::WriteAllBytes('C:\\Program Files\\Veriguard\\Caldera\\oaev-agent-caldera.ps1',$data) | Out-Null;
+New-NetFirewallRule -DisplayName "Allow Veriguard" -Direction Inbound -Program '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe' -Action Allow | Out-Null;
+New-NetFirewallRule -DisplayName "Allow Veriguard" -Direction Outbound -Program '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe' -Action Allow | Out-Null;
+Start-Process -FilePath '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe' -ArgumentList "-server $server -group red" -WindowStyle hidden;
+schtasks /create /tn VeriguardCaldera /sc onlogon /rl highest /tr "Powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle hidden -File 'C:\\Program Files\\Veriguard\\Caldera\\oaev-agent-caldera.ps1' $server";`,
+          code: `$server="${executorCalderaPublicUrl}";$url="${settings.platform_base_url}/api/implant/caldera/windows/${arch}";$wc=New-Object System.Net.WebClient;$data=$wc.DownloadData($url);get-process | ? {$_.modules.filename -like '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe'} | stop-process -f;rm -force '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe' -ea ignore;New-Item -ItemType Directory -Force -Path '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}' | Out-Null;[io.file]::WriteAllBytes('${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe',$data) | Out-Null;$data=$wc.DownloadData($url + "/ps1");rm -force 'C:\\Program Files\\Veriguard\\Caldera\\oaev-agent-caldera.ps1' -ea ignore;[io.file]::WriteAllBytes('C:\\Program Files\\Veriguard\\Caldera\\oaev-agent-caldera.ps1',$data) | Out-Null;New-NetFirewallRule -DisplayName "Allow Veriguard" -Direction Inbound -Program '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe' -Action Allow | Out-Null;New-NetFirewallRule -DisplayName "Allow Veriguard" -Direction Outbound -Program '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe' -Action Allow | Out-Null;Start-Process -FilePath '${agentFolder ?? 'C:\\Program Files\\Veriguard\\Caldera'}\\oaev-agent-caldera.exe' -ArgumentList "-server $server -group red" -WindowStyle hidden;schtasks /create /tn VeriguardCaldera /sc onlogon /rl highest /tr "Powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle hidden -File 'C:\\Program Files\\Veriguard\\Caldera\\oaev-agent-caldera.ps1' $server";`,
         };
       case LINUX:
         return {

@@ -226,7 +226,7 @@ const TopBar: FunctionComponent = () => {
                 textAlign: 'center',
               }}
               >
-                <div className={classes.subtitle}>{t('Filigran eXtended Threat Management')}</div>
+                <div className={classes.subtitle}>{t('Veriguard Platform')}</div>
                 <Grid container spacing={3}>
                   <Grid size={6}>
                     <Tooltip title={t('Current platform')}>

@@ -49,7 +49,7 @@ public class AppConfig {
                 .description(
                     "Software under open source licence designed to plan and conduct exercises")
                 .version(this.veriguardConfig.getVersion())
-                .license(new License().name("Apache 2.0").url("https://filigran.io/")))
+                .license(new License().name("Apache 2.0")))
         .addSecurityItem(new SecurityRequirement().addList(securitySchemaName))
         .components(
             new Components()
