@@ -5,63 +5,7 @@ import {
   simplePutCall,
 } from '../../utils/Action';
 
-const CAPABILITIES_URI = '/api/capabilities';
-const ATTACK_USE_CASES_URI = '/api/attack-use-cases';
-const ATTACK_ORCHESTRATION_URI = '/api/attack-orchestration';
 const SANDBOXES_URI = '/api/sandboxes';
-
-export type CapabilityModuleOutput = {
-  module_key: string;
-  module_name: string;
-  implementation_state: string;
-  acceptance_ready: boolean;
-  controls: string[];
-  external_integrations_required: string[];
-};
-
-export type CapabilityMatrixOutput = {
-  modules: CapabilityModuleOutput[];
-  summary: {
-    prd_module_count: number;
-    acceptance_ready_count: number;
-    external_integration_count: number;
-    total_use_case_templates: number;
-  };
-};
-
-export type AttackTypeOutput = {
-  surface: string;
-  attack_type: string;
-  template_count: number;
-  prd_required: boolean;
-};
-
-export type UseCaseTemplateOutput = {
-  template_id: string;
-  surface: string;
-  attack_type: string;
-  executor_kind: string;
-  supports_multiple_tuples: boolean;
-  mapped_custom_case_type: string;
-};
-
-export type AttackCatalogOutput = {
-  traffic_attack_types: AttackTypeOutput[];
-  host_attack_types: AttackTypeOutput[];
-  custom_case_types: string[];
-  total_use_case_templates: number;
-  minimum_attack_type_requirement_met: boolean;
-  multiple_tuple_per_case_supported: boolean;
-  generated_templates: UseCaseTemplateOutput[];
-};
-
-export type OrchestrationSchemaOutput = {
-  node_policy_fields: string[];
-  execution_modes: string[];
-  dependency_logic: string[];
-  soc_rule_match_fields: string[];
-  chain_result_states: string[];
-};
 
 export type SandboxNetworkPolicy = 'DENY_ALL' | 'ALLOWLIST' | 'ISOLATED_LAB' | 'CUSTOM';
 export type SandboxSampleType
@@ -99,21 +43,6 @@ export type SandboxOutput = SandboxInput & {
   sandbox_id: string;
   sandbox_created_at: string;
   sandbox_updated_at: string;
-};
-
-export const fetchVeriguardCapabilityMatrix = async () => {
-  const response = await simpleCall(`${CAPABILITIES_URI}/matrix`);
-  return response.data as CapabilityMatrixOutput;
-};
-
-export const fetchVeriguardAttackCatalog = async () => {
-  const response = await simpleCall(`${ATTACK_USE_CASES_URI}/catalog`);
-  return response.data as AttackCatalogOutput;
-};
-
-export const fetchVeriguardOrchestrationSchema = async () => {
-  const response = await simpleCall(`${ATTACK_ORCHESTRATION_URI}/schema`);
-  return response.data as OrchestrationSchemaOutput;
 };
 
 export const fetchVeriguardSandboxes = async () => {

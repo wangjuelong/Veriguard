@@ -142,7 +142,7 @@ const LeftBar = () => {
         {
           path: `/admin/veriguard`,
           icon: () => (<VerifiedUserOutlined />),
-          label: 'Veriguard',
+          label: '沙箱',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
         },
       ],
