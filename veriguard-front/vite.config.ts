@@ -49,8 +49,8 @@ export default ({ mode }: { mode: string }) => {
         apply: 'serve',
         transformIndexHtml(html) {
           return html.replace(/%BASE_PATH%/g, basePath)
-            .replace(/%APP_TITLE%/g, 'Veriguard Dev')
-            .replace(/%APP_DESCRIPTION%/g, 'Veriguard Development platform')
+            .replace(/%APP_TITLE%/g, 'Veriguard')
+            .replace(/%APP_DESCRIPTION%/g, 'Veriguard')
             .replace(/%APP_FAVICON%/g, `${basePath}/static/favicon.png`)
             .replace(/%APP_MANIFEST%/g, `${basePath}/static/manifest.json`);
         },

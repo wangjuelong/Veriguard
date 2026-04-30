@@ -125,8 +125,8 @@ esbuild
       const data = readFileSync(`${__dirname}/index.html`, 'utf8');
       const withOptionValued = data
         .replace(/%BASE_PATH%/g, basePath)
-        .replace(/%APP_TITLE%/g, 'Veriguard Dev')
-        .replace(/%APP_DESCRIPTION%/g, 'Veriguard Development platform')
+        .replace(/%APP_TITLE%/g, 'Veriguard')
+        .replace(/%APP_DESCRIPTION%/g, 'Veriguard')
         .replace(/%APP_FAVICON%/g, `${basePath}/static/ext/favicon.png`)
         .replace(/%APP_MANIFEST%/g, `${basePath}/static/ext/manifest.json`);
       res.header(

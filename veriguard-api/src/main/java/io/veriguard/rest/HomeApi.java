@@ -47,10 +47,8 @@ public class HomeApi {
             : this.contextPath;
     String newIndex =
         index
-            .replaceAll("%APP_TITLE%", "Veriguard - Open Adversarial Exposure Validation Platform")
-            .replaceAll(
-                "%APP_DESCRIPTION%",
-                "Veriguard is an open source platform allowing organizations to plan, schedule and conduct adversary simulation campaigns and cyber crisis exercises.")
+            .replaceAll("%APP_TITLE%", "Veriguard")
+            .replaceAll("%APP_DESCRIPTION%", "Veriguard")
             .replaceAll("%APP_FAVICON%", basePath + "/static/favicon.png")
             .replaceAll("%APP_MANIFEST%", basePath + "/static/manifest.json")
             .replaceAll("%BASE_PATH%", basePath);

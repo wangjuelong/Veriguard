@@ -1,5 +1,5 @@
 import { AccountCircleOutlined, ImportantDevicesOutlined } from '@mui/icons-material';
-import { AppBar, IconButton, Menu, MenuItem, Toolbar, Tooltip } from '@mui/material';
+import { AppBar, Button, IconButton, Menu, MenuItem, Toolbar, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, type MouseEvent as ReactMouseEvent, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
@@ -144,15 +144,31 @@ const TopBar: FunctionComponent = () => {
         <div className={classes.barRight}>
           <div className={classes.barRightContainer}>
             <Tooltip title={t('Install simulation agents')}>
-              <IconButton
-                size="medium"
+              <Button
                 aria-haspopup="true"
                 component={Link}
                 to="/admin/agents"
-                color={location.pathname === '/admin/agents' ? 'primary' : 'inherit'}
+                size="small"
+                variant="outlined"
+                startIcon={<ImportantDevicesOutlined fontSize="small" />}
+                sx={{
+                  textTransform: 'none',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  borderRadius: '8px',
+                  borderColor: 'divider',
+                  color: location.pathname === '/admin/agents' ? 'primary.main' : 'text.secondary',
+                  height: 32,
+                  paddingX: 1.5,
+                  marginRight: 1,
+                  '&:hover': {
+                    borderColor: 'text.secondary',
+                    backgroundColor: 'action.hover',
+                  },
+                }}
               >
-                <ImportantDevicesOutlined fontSize="medium" />
-              </IconButton>
+                {t('Install agent')}
+              </Button>
             </Tooltip>
             <IconButton
               aria-label="account-menu"
