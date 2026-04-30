@@ -35,31 +35,6 @@ public interface InjectExpectationRepository
       @Param("exerciseId") @NotBlank final String exerciseId,
       @Param("injectId") @NotBlank final String injectId);
 
-  @Query(
-      value =
-          "select i from InjectExpectation i where i.exercise.id = :exerciseId "
-              + "and i.type = 'CHALLENGE' and i.user.id = :userId ")
-  List<InjectExpectation> findChallengeExpectationsByExerciseAndUser(
-      @Param("exerciseId") String exerciseId, @Param("userId") String userId);
-
-  @Query(
-      value =
-          "select i from InjectExpectation i where i.user.id = :userId and i.exercise.id = :exerciseId "
-              + "and i.challenge.id = :challengeId and i.type = 'CHALLENGE' ")
-  List<InjectExpectation> findByUserAndExerciseAndChallenge(
-      @Param("userId") String userId,
-      @Param("exerciseId") String exerciseId,
-      @Param("challengeId") String challengeId);
-
-  @Query(
-      value =
-          "select i from InjectExpectation i where i.inject.id in (:injectIds) "
-              + "and i.article.id in (:articlesIds) and i.team.id in (:teamIds) and i.type = 'ARTICLE'")
-  List<InjectExpectation> findChannelExpectations(
-      @Param("injectIds") List<String> injectIds,
-      @Param("teamIds") List<String> teamIds,
-      @Param("articlesIds") List<String> articlesIds);
-
   // -- BY TARGET TYPE
 
   @Query(
