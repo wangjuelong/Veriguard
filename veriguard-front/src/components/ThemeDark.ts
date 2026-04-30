@@ -311,12 +311,41 @@ const ThemeDark = (
         },
       },
     },
+    // VeriGuard table style — uppercase muted header, .5px lines, 13px body.
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: hexToRGB('#ffffff', 0.04),
+          borderBottom: `0.5px solid ${hexToRGB('#ffffff', 0.10)}`,
+        },
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
-        head: { borderBottom: '1px solid rgba(255, 255, 255, 0.15)' },
+        head: {
+          fontSize: 11,
+          fontWeight: 500,
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          color: 'rgba(255, 255, 255, 0.65)',
+          padding: '10px 16px',
+          borderBottom: 'none',
+        },
         body: {
-          borderTop: '1px solid rgba(255, 255, 255, 0.15)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
+          fontSize: 13,
+          padding: '12px 16px',
+          borderTop: 'none',
+          borderBottom: `0.5px solid ${hexToRGB('#ffffff', 0.08)}`,
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          '&:last-child td': { borderBottom: 'none' },
+          '&.MuiTableRow-hover:hover': {
+            backgroundColor: hexToRGB('#ffffff', 0.04),
+          },
         },
       },
     },
@@ -336,7 +365,21 @@ const ThemeDark = (
     },
     MuiTypography: { styleOverrides: { root: { color: text_color } } },
     MuiInputBase: { styleOverrides: { root: { color: text_color } } },
-    MuiChip: { styleOverrides: { root: { color: text_color } } },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          color: text_color,
+          fontSize: 11.5,
+          fontWeight: 500,
+          borderRadius: 999,
+          height: 22,
+        },
+        outlined: {
+          borderColor: hexToRGB('#ffffff', 0.10),
+          backgroundColor: hexToRGB('#ffffff', 0.04),
+        },
+      },
+    },
   },
 });
 
