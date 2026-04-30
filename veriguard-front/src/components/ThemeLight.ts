@@ -8,12 +8,13 @@ import { FONT_FAMILY_CODE, type LabelColor, LabelColorDict } from './Theme';
 
 const EE_COLOR = '#0c7e69';
 
-export const THEME_LIGHT_DEFAULT_BACKGROUND = '#f8f8f8';
-const THEME_LIGHT_DEFAULT_PRIMARY = '#001bda';
-const THEME_LIGHT_DEFAULT_SECONDARY = '#0c7e69';
-const THEME_LIGHT_DEFAULT_ACCENT = '#dfdfdf';
-const THEME_LIGHT_DEFAULT_PAPER = '#ffffff';
-const THEME_LIGHT_DEFAULT_NAV = '#ffffff';
+// VeriGuard design tokens — calm enterprise / warm white / accent red+violet
+export const THEME_LIGHT_DEFAULT_BACKGROUND = '#FBFAF7';
+const THEME_LIGHT_DEFAULT_PRIMARY = '#E8553F'; // oklch(0.7 0.2 25) — warm red
+const THEME_LIGHT_DEFAULT_SECONDARY = '#9D7BD8'; // oklch(0.7 0.16 290) — violet
+const THEME_LIGHT_DEFAULT_ACCENT = '#EDEAE3';
+const THEME_LIGHT_DEFAULT_PAPER = '#FFFFFF';
+const THEME_LIGHT_DEFAULT_NAV = '#FBFAF7';
 
 const ThemeLight = (
   logo: string | null = null,
@@ -28,7 +29,7 @@ const ThemeLight = (
 ): ThemeOptions => ({
   logo: logo || fileUri(LogoText),
   logo_collapsed: logo_collapsed || fileUri(LogoCollapsed),
-  borderRadius: 4,
+  borderRadius: 8,
   palette: {
     mode: 'light',
     common: {
@@ -112,7 +113,7 @@ const ThemeLight = (
     },
   },
   typography: {
-    fontFamily: '"IBM Plex Sans", sans-serif',
+    fontFamily: '"Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     body2: {
       fontSize: '0.8rem',
       lineHeight: '1.2rem',
@@ -131,7 +132,7 @@ const ThemeLight = (
       padding: 0,
       fontWeight: 400,
       fontSize: 22,
-      fontFamily: '"Geologica", sans-serif',
+      fontFamily: '"Inter Tight", "Inter", sans-serif',
       color: text_color,
     },
     h2: {
@@ -140,7 +141,7 @@ const ThemeLight = (
       fontWeight: 500,
       fontSize: 16,
       textTransform: 'uppercase',
-      fontFamily: '"Geologica", sans-serif',
+      fontFamily: '"Inter Tight", "Inter", sans-serif',
       color: text_color,
     },
     h3: {
@@ -149,7 +150,7 @@ const ThemeLight = (
       color: text_color,
       fontWeight: 400,
       fontSize: 13,
-      fontFamily: '"Geologica", sans-serif',
+      fontFamily: '"Inter Tight", "Inter", sans-serif',
     },
     h4: {
       height: 15,
@@ -171,7 +172,7 @@ const ThemeLight = (
       fontWeight: 400,
       fontSize: 18,
       color: text_color,
-      fontFamily: '"Geologica", sans-serif',
+      fontFamily: '"Inter Tight", "Inter", sans-serif',
     },
     subtitle2: {
       fontWeight: 400,
@@ -284,14 +285,14 @@ const ThemeLight = (
           },
           '.w-md-editor-toolbar li button': { color: `${text_color} !important` },
           '.w-md-editor-text textarea': {
-            fontFamily: '"IBM Plex Sans", sans-serif',
+            fontFamily: '"Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
             fontSize: 13,
             color: text_color,
           },
           '.w-md-editor-preview': { boxShadow: 'inset 1px 0 0 0 rgba(0, 0, 0, 0.2)' },
           '.wmde-markdown': {
             background: 'transparent',
-            fontFamily: '"IBM Plex Sans", sans-serif',
+            fontFamily: '"Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
             fontSize: 13,
             color: text_color,
           },

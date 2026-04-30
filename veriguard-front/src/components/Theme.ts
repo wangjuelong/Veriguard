@@ -141,4 +141,4 @@ export const LabelColorDict = {
   Orange: 'ORANGE',
 } as const;
 
-export const FONT_FAMILY_CODE = 'Consolas, monaco, monospace';
+export const FONT_FAMILY_CODE = '"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace';

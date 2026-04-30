@@ -6,14 +6,15 @@ import { hexToRGB } from '../utils/Colors';
 import { fileUri } from '../utils/Environment';
 import { FONT_FAMILY_CODE, type LabelColor, LabelColorDict } from './Theme';
 
-const EE_COLOR = '#00f1bd';
+const EE_COLOR = '#9D7BD8';
 
-export const THEME_DARK_DEFAULT_BACKGROUND = '#070d19';
-const THEME_DARK_DEFAULT_PRIMARY = '#0fbcff';
-const THEME_DARK_DEFAULT_SECONDARY = '#00f1bd';
-const THEME_DARK_DEFAULT_ACCENT = '#0f1e38';
-const THEME_DARK_DEFAULT_PAPER = '#09101e';
-const THEME_DARK_DEFAULT_NAV = '#070d19';
+// VeriGuard design tokens — calm enterprise dark / slight cool / accent red+violet
+export const THEME_DARK_DEFAULT_BACKGROUND = '#1F1F23';
+const THEME_DARK_DEFAULT_PRIMARY = '#E8553F'; // oklch(0.7 0.2 25) — warm red
+const THEME_DARK_DEFAULT_SECONDARY = '#9D7BD8'; // oklch(0.7 0.16 290) — violet
+const THEME_DARK_DEFAULT_ACCENT = '#2D2D33';
+const THEME_DARK_DEFAULT_PAPER = '#26262B';
+const THEME_DARK_DEFAULT_NAV = '#1A1A1E';
 
 const ThemeDark = (
   logo: string | null = null,
@@ -28,7 +29,7 @@ const ThemeDark = (
 ): ThemeOptions => ({
   logo: logo || fileUri(LogoText),
   logo_collapsed: logo_collapsed || fileUri(LogoCollapsed),
-  borderRadius: 4,
+  borderRadius: 8,
   palette: {
     mode: 'dark',
     common: {
@@ -111,7 +112,7 @@ const ThemeDark = (
     },
   },
   typography: {
-    fontFamily: '"IBM Plex Sans", sans-serif',
+    fontFamily: '"Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     body2: {
       fontSize: '0.8rem',
       lineHeight: '1.2rem',
@@ -130,7 +131,7 @@ const ThemeDark = (
       padding: 0,
       fontWeight: 400,
       fontSize: 22,
-      fontFamily: '"Geologica", sans-serif',
+      fontFamily: '"Inter Tight", "Inter", sans-serif',
       color: text_color,
     },
     h2: {
@@ -139,7 +140,7 @@ const ThemeDark = (
       fontWeight: 500,
       fontSize: 16,
       textTransform: 'uppercase',
-      fontFamily: '"Geologica", sans-serif',
+      fontFamily: '"Inter Tight", "Inter", sans-serif',
       color: text_color,
     },
     h3: {
@@ -147,7 +148,7 @@ const ThemeDark = (
       padding: 0,
       fontWeight: 400,
       fontSize: 13,
-      fontFamily: '"Geologica", sans-serif',
+      fontFamily: '"Inter Tight", "Inter", sans-serif',
       color: text_color,
     },
     h4: {
@@ -170,7 +171,7 @@ const ThemeDark = (
       fontWeight: 400,
       fontSize: 18,
       color: text_color,
-      fontFamily: '"Geologica", sans-serif',
+      fontFamily: '"Inter Tight", "Inter", sans-serif',
     },
     subtitle2: {
       fontWeight: 400,
@@ -283,14 +284,14 @@ const ThemeDark = (
           },
           '.w-md-editor-toolbar li button': { color: `${text_color} !important` },
           '.w-md-editor-text textarea': {
-            fontFamily: '"IBM Plex Sans", sans-serif',
+            fontFamily: '"Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
             fontSize: 13,
             color: text_color,
           },
           '.w-md-editor-preview': { boxShadow: 'inset 1px 0 0 0 rgba(255, 255, 255, 0.5)' },
           '.wmde-markdown': {
             background: 'transparent',
-            fontFamily: '"IBM Plex Sans", sans-serif',
+            fontFamily: '"Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
             fontSize: 13,
             color: text_color,
           },
