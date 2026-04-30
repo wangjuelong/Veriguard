@@ -1,13 +1,9 @@
 package io.veriguard.utils.mapper;
 
-import static io.veriguard.utils.mapper.ChallengeMapper.toRelatedEntityOutputs;
-import static io.veriguard.utils.mapper.ChannelMapper.toRelatedEntityOutputs;
 import static io.veriguard.utils.mapper.ExerciseMapper.toRelatedEntityOutputs;
-import static io.veriguard.utils.mapper.ExerciseMapper.toSimulationArticles;
 import static io.veriguard.utils.mapper.ExerciseMapper.toSimulationInjects;
 import static io.veriguard.utils.mapper.InjectMapper.toRelatedEntityOutputs;
 import static io.veriguard.utils.mapper.PayloadMapper.toRelatedEntityOutputs;
-import static io.veriguard.utils.mapper.ScenarioMapper.toScenarioArticles;
 import static io.veriguard.utils.mapper.ScenarioMapper.toScenarioInjects;
 import static io.veriguard.utils.mapper.SecurityPlatformMapper.toRelatedEntityOutputs;
 
@@ -24,20 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 public class DocumentMapper {
 
   public static DocumentRelationsOutput toDocumentRelationsOutput(Document document) {
-    Set<Article> articles = document.getArticles();
     Set<Inject> injects =
         document.getInjectDocuments().stream()
             .map(InjectDocument::getInject)
-            .collect(Collectors.toSet());
-
-    Set<Article> scenarioArticles =
-        articles.stream()
-            .filter(article -> article.getScenario() != null)
-            .collect(Collectors.toSet());
-
-    Set<Article> simulationArticles =
-        articles.stream()
-            .filter(article -> article.getExercise() != null)
             .collect(Collectors.toSet());
 
     Set<Inject> atomics =
@@ -63,12 +48,6 @@ public class DocumentMapper {
                 document.getSecurityPlatformsByLogoLight().stream())
             .collect(Collectors.toSet());
 
-    Set<Channel> channels =
-        Stream.concat(
-                document.getChannelsByLogoDark().stream(),
-                document.getChannelsByLogoLight().stream())
-            .collect(Collectors.toSet());
-
     Set<Payload> payloads =
         Stream.concat(
                 document.getPayloadsByFileDrop().stream(),
@@ -78,14 +57,10 @@ public class DocumentMapper {
     return DocumentRelationsOutput.builder()
         .simulations(toRelatedEntityOutputs(simulations))
         .securityPlatforms(toRelatedEntityOutputs(securityPlatforms))
-        .channels(toRelatedEntityOutputs(channels))
         .payloads(toRelatedEntityOutputs(payloads))
-        .scenarioArticles(toScenarioArticles(scenarioArticles))
-        .simulationArticles(toSimulationArticles(simulationArticles))
         .atomicTestings(toRelatedEntityOutputs(atomics))
         .scenarioInjects(toScenarioInjects(scenarioInjects))
         .simulationInjects(toSimulationInjects(simulationInjects))
-        .challenges(toRelatedEntityOutputs(document.getChallenges()))
         .build();
   }
 }

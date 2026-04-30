@@ -1,13 +1,20 @@
 package io.veriguard.rest.scenario.response;
 
 import io.veriguard.database.model.Scenario;
-import io.veriguard.rest.challenge.output.PublicEntity;
+import lombok.Getter;
+import lombok.Setter;
 
-public class PublicScenario extends PublicEntity {
+@Getter
+@Setter
+public class PublicScenario {
+
+  private String id;
+  private String name;
+  private String description;
 
   public PublicScenario(Scenario scenario) {
-    setId(scenario.getId());
-    setName(scenario.getName());
-    setDescription(scenario.getDescription());
+    this.id = scenario.getId();
+    this.name = scenario.getName();
+    this.description = scenario.getDescription();
   }
 }

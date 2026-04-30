@@ -22,8 +22,6 @@ public class LoadService {
     Hibernate.initialize(exercise.getTags());
     Hibernate.initialize(exercise.getObjectives());
     Hibernate.initialize(exercise.getDocuments());
-    Hibernate.initialize(exercise.getArticles());
-    exercise.getArticles().forEach(article -> Hibernate.initialize(article.getDocuments()));
     Hibernate.initialize(exercise.getLessonsCategories());
     exercise
         .getLessonsCategories()

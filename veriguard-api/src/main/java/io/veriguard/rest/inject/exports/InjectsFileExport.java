@@ -9,14 +9,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.*;
 import io.veriguard.export.FileExportBase;
 import io.veriguard.rest.exercise.exports.ExportOptions;
-import io.veriguard.service.ArticleService;
-import io.veriguard.service.ChallengeService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import lombok.Getter;
 import org.hibernate.Hibernate;
 
@@ -34,14 +31,6 @@ public class InjectsFileExport extends FileExportBase {
         injects.stream()
             .flatMap(inject -> inject.getDocuments().stream().map(InjectDocument::getDocument))
             .toList());
-    documents.addAll(
-        this.getChallenges().stream()
-            .flatMap(challenge -> challenge.getDocuments().stream())
-            .toList());
-    documents.addAll(
-        this.getArticles().stream().flatMap(article -> article.getDocuments().stream()).toList());
-    documents.addAll(
-        this.getChannels().stream().flatMap(channel -> channel.getLogos().stream()).toList());
     documents.addAll(
         injects.stream()
             .flatMap(
@@ -69,8 +58,6 @@ public class InjectsFileExport extends FileExportBase {
             .flatMap(organization -> organization.getTags().stream())
             .toList());
     allTags.addAll(this.getDocuments().stream().flatMap(doc -> doc.getTags().stream()).toList());
-    allTags.addAll(
-        this.getChallenges().stream().flatMap(challenge -> challenge.getTags().stream()).toList());
     this.injects.forEach(
         inject -> {
           allTags.addAll(inject.getTags());
@@ -93,16 +80,6 @@ public class InjectsFileExport extends FileExportBase {
         });
 
     return allTags;
-  }
-
-  @JsonProperty("inject_articles")
-  private List<Article> getArticles() throws IOException {
-    return articleService.getInjectsArticles(injects);
-  }
-
-  @JsonProperty("inject_channels")
-  private List<Channel> getChannels() throws IOException {
-    return this.getArticles().stream().map(Article::getChannel).distinct().toList();
   }
 
   @JsonProperty("inject_teams")
@@ -135,33 +112,18 @@ public class InjectsFileExport extends FileExportBase {
     return orgs;
   }
 
-  @JsonProperty("inject_challenges")
-  private List<Challenge> getChallenges() {
-    return StreamSupport.stream(
-            this.challengeService.getInjectsChallenges(injects).spliterator(), false)
-        .toList();
-  }
-
   @JsonIgnore
   public List<String> getAllDocumentIds() throws IOException {
     return new ArrayList<>(this.getDocuments().stream().map(Document::getId).toList());
   }
 
-  private InjectsFileExport(
-      List<Inject> injects,
-      ObjectMapper objectMapper,
-      ChallengeService challengeService,
-      ArticleService articleService) {
-    super(objectMapper, challengeService, articleService);
+  private InjectsFileExport(List<Inject> injects, ObjectMapper objectMapper) {
+    super(objectMapper);
     this.injects = injects;
   }
 
-  public static InjectsFileExport fromInjects(
-      List<Inject> injects,
-      ObjectMapper objectMapper,
-      ChallengeService challengeService,
-      ArticleService articleService) {
-    return new InjectsFileExport(injects, objectMapper, challengeService, articleService);
+  public static InjectsFileExport fromInjects(List<Inject> injects, ObjectMapper objectMapper) {
+    return new InjectsFileExport(injects, objectMapper);
   }
 
   @Override

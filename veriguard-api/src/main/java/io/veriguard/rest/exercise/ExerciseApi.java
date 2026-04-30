@@ -96,7 +96,6 @@ public class ExerciseApi extends RestBehavior {
   private final ExerciseService exerciseService;
   private final TeamService teamService;
   private final ExportService exportService;
-  private final ChannelService channelService;
   private final DocumentService documentService;
   private final ScenarioService scenarioService;
   private final UserService userService;
@@ -816,18 +815,6 @@ public class ExerciseApi extends RestBehavior {
       @PathVariable String exerciseId,
       @RequestBody @Valid @NotNull final List<String> assetGroupIds) {
     return this.assetGroupService.assetGroupsByIdsForSimulation(exerciseId, assetGroupIds);
-  }
-
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/channels")
-  @RBAC(
-      resourceId = "#exerciseId",
-      actionPerformed = Action.READ,
-      resourceType = ResourceType.SIMULATION)
-  @Operation(
-      summary = "Get channels. Can only be called if the user has access to the given simulation.",
-      description = "Get all channels used by articles for a given simulation")
-  public Iterable<Channel> channels(@PathVariable String exerciseId) {
-    return this.channelService.channelsForSimulation(exerciseId);
   }
 
   @GetMapping(EXERCISE_URI + "/{exerciseId}/endpoints")

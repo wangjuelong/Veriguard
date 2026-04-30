@@ -2,27 +2,20 @@ package io.veriguard.scheduler.jobs;
 
 import static io.veriguard.database.model.Comcheck.COMCHECK_STATUS.EXPIRED;
 import static io.veriguard.database.specification.ComcheckStatusSpecification.thatNeedExecution;
-import static io.veriguard.injector_contract.variables.VariableHelper.COMCHECK;
 import static java.time.Instant.now;
 import static java.util.stream.Collectors.groupingBy;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.config.VeriguardConfig;
-import io.veriguard.database.model.*;
+import io.veriguard.database.model.Comcheck;
+import io.veriguard.database.model.ComcheckStatus;
 import io.veriguard.database.repository.ComcheckRepository;
 import io.veriguard.database.repository.ComcheckStatusRepository;
-import io.veriguard.database.repository.InjectorContractRepository;
-import io.veriguard.execution.ExecutableInject;
-import io.veriguard.execution.ExecutionContext;
-import io.veriguard.execution.ExecutionContextService;
-import io.veriguard.injectors.email.EmailContract;
-import io.veriguard.integration.ManagerFactory;
+import io.veriguard.service.MailingService;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -31,44 +24,31 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+/**
+ * 二开 simplified comcheck dispatcher. The full Email injector pipeline (with attachments,
+ * encryption, IMAP storage, multi-recipient context) is removed in Phase 11.5; this job now sends
+ * a single comcheck-link email per recipient using {@link MailingService}.
+ */
 @Component
 @DisallowConcurrentExecution
 @Slf4j
 @RequiredArgsConstructor
 public class ComchecksExecutionJob implements Job {
   @Resource private VeriguardConfig veriguardConfig;
-  private final ApplicationContext context;
   private final ComcheckRepository comcheckRepository;
   private final ComcheckStatusRepository comcheckStatusRepository;
+  private final MailingService mailingService;
 
-  private final InjectorContractRepository injectorContractRepository;
-  private final ExecutionContextService executionContextService;
-
-  private final ManagerFactory managerFactory;
-
-  @Resource private ObjectMapper mapper;
-
-  private Inject buildComcheckEmail(Comcheck comCheck) {
-    Inject emailInject = new Inject();
-    emailInject.setInjectorContract(
-        injectorContractRepository.findById(EmailContract.EMAIL_DEFAULT).orElseThrow());
-    emailInject.setExercise(comCheck.getExercise());
-    ObjectNode content = mapper.createObjectNode();
-    content.set("subject", mapper.convertValue(comCheck.getSubject(), JsonNode.class));
-    content.set("body", mapper.convertValue(comCheck.getMessage(), JsonNode.class));
-    content.set("expectationType", mapper.convertValue("none", JsonNode.class));
-    emailInject.setContent(content);
-    return emailInject;
-  }
-
-  private ComcheckContext buildComcheckLink(ComcheckStatus status) {
-    ComcheckContext comcheckContext = new ComcheckContext();
+  private String renderBody(String template, ComcheckStatus status) {
     String comCheckLink = veriguardConfig.getBaseUrl() + "/comcheck/" + status.getId();
-    comcheckContext.setUrl("<a href='" + comCheckLink + "'>" + comCheckLink + "</a>");
-    return comcheckContext;
+    String anchor = "<a href='" + comCheckLink + "'>" + comCheckLink + "</a>";
+    if (template == null) {
+      return anchor;
+    }
+    // Replace common placeholder patterns with the comcheck link.
+    return template.replace("${comcheck.url}", anchor).replace("{{ comcheck.url }}", anchor);
   }
 
   @Override
@@ -81,59 +61,39 @@ public class ComchecksExecutionJob implements Job {
       List<Comcheck> toExpired = comcheckRepository.thatMustBeExpired(now);
       comcheckRepository.saveAll(
           toExpired.stream().peek(comcheck -> comcheck.setState(EXPIRED)).toList());
-      // 02. Send all required statuses
+      // 02. Send required statuses
       List<ComcheckStatus> allStatuses = comcheckStatusRepository.findAll(thatNeedExecution());
       Map<Comcheck, List<ComcheckStatus>> byComchecks =
           allStatuses.stream().collect(groupingBy(ComcheckStatus::getComcheck));
-      byComchecks.entrySet().stream()
-          .parallel()
+      byComchecks
+          .entrySet()
           .forEach(
               entry -> {
                 Comcheck comCheck = entry.getKey();
-                // Send the email to users
-                Exercise exercise = comCheck.getExercise();
                 List<ComcheckStatus> comcheckStatuses = entry.getValue();
-                List<ExecutionContext> userInjectContexts =
-                    comcheckStatuses.stream()
-                        .map(
-                            comcheckStatus -> {
-                              ExecutionContext injectContext =
-                                  this.executionContextService.executionContext(
-                                      comcheckStatus.getUser(), exercise, "Comcheck");
-                              injectContext.put(
-                                  COMCHECK,
-                                  buildComcheckLink(
-                                      comcheckStatus)); // Add specific inject variable for comcheck
-                              // link
-                              return injectContext;
-                            })
-                        .toList();
-                Inject emailInject = buildComcheckEmail(comCheck);
-                ExecutableInject injection =
-                    new ExecutableInject(false, true, emailInject, userInjectContexts);
-                io.veriguard.executors.Injector emailExecutor =
-                    this.managerFactory.getManager().requestEmailInjector();
-                Execution execution = emailExecutor.executeInjection(injection);
-                // Save the status sent date
-                List<String> usersSuccessfullyNotified =
-                    execution.getTraces().stream()
-                        .filter(
-                            executionTrace ->
-                                ExecutionTraceStatus.SUCCESS.equals(executionTrace.getStatus()))
-                        .flatMap(t -> t.getIdentifiers().stream())
-                        .toList();
-                List<ComcheckStatus> statusToUpdate =
-                    comcheckStatuses.stream()
-                        .filter(
-                            comcheckStatus ->
-                                usersSuccessfullyNotified.contains(
-                                    comcheckStatus.getUser().getId()))
-                        .toList();
-                if (!statusToUpdate.isEmpty()) {
+                List<ComcheckStatus> notified = new ArrayList<>();
+                for (ComcheckStatus status : comcheckStatuses) {
+                  if (status.getUser() == null
+                      || status.getUser().getEmail() == null
+                      || status.getUser().getEmail().isBlank()) {
+                    continue;
+                  }
+                  try {
+                    String body = renderBody(comCheck.getMessage(), status);
+                    mailingService.sendEmail(
+                        comCheck.getSubject(), body, List.of(status.getUser()));
+                    notified.add(status);
+                  } catch (Exception e) {
+                    log.warn(
+                        "Failed to dispatch comcheck {} to {}: {}",
+                        comCheck.getId(),
+                        status.getUser().getEmail(),
+                        e.getMessage());
+                  }
+                }
+                if (!notified.isEmpty()) {
                   comcheckStatusRepository.saveAll(
-                      statusToUpdate.stream()
-                          .peek(comcheckStatus -> comcheckStatus.setLastSent(now))
-                          .toList());
+                      notified.stream().peek(s -> s.setLastSent(now)).toList());
                 }
               });
     } catch (Exception e) {

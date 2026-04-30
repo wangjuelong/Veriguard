@@ -191,51 +191,6 @@ public class Mixins {
 
   @JsonIncludeProperties(
       value = {
-        "channel_id",
-        "channel_type",
-        "channel_name",
-        "channel_description",
-        "channel_mode",
-        "channel_primary_color_dark",
-        "channel_primary_color_light",
-        "channel_secondary_color_dark",
-        "channel_secondary_color_light",
-        "channel_logo_dark",
-        "channel_logo_light",
-      })
-  public static class Channel {}
-
-  @JsonIncludeProperties(
-      value = {
-        "article_id",
-        "article_name",
-        "article_content",
-        "article_author",
-        "article_shares",
-        "article_likes",
-        "article_comments",
-        "article_channel",
-        "article_documents",
-        "article_exercise",
-      })
-  public static class Article {}
-
-  @JsonIncludeProperties(
-      value = {
-        "challenge_id",
-        "challenge_name",
-        "challenge_category",
-        "challenge_content",
-        "challenge_score",
-        "challenge_max_attempts",
-        "challenge_flags",
-        "challenge_tags",
-        "challenge_documents",
-      })
-  public static class Challenge {}
-
-  @JsonIncludeProperties(
-      value = {
         "lessonscategory_id",
         "lessons_category_name",
         "lessons_category_description",

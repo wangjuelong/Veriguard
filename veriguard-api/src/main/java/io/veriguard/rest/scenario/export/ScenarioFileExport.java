@@ -41,15 +41,6 @@ public class ScenarioFileExport {
   @JsonProperty("scenario_documents")
   private List<Document> documents = new ArrayList<>();
 
-  @JsonProperty("scenario_channels")
-  private List<Channel> channels = new ArrayList<>();
-
-  @JsonProperty("scenario_articles")
-  private List<Article> articles = new ArrayList<>();
-
-  @JsonProperty("scenario_challenges")
-  private List<Challenge> challenges = new ArrayList<>();
-
   @JsonProperty("scenario_lessons_categories")
   private List<LessonsCategory> lessonsCategories = new ArrayList<>();
 

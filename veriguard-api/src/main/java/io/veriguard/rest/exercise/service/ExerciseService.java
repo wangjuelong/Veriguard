@@ -8,15 +8,12 @@ import static io.veriguard.database.specification.TeamSpecification.fromIds;
 import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.utils.JpaUtils.arrayAggOnId;
 import static io.veriguard.utils.StringUtils.duplicateString;
-import static io.veriguard.utils.constants.Constants.ARTICLES;
 import static io.veriguard.utils.pagination.SortUtilsCriteriaBuilder.toSortCriteriaBuilderWithNullHandling;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.veriguard.config.VeriguardConfig;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawExerciseSimple;
@@ -99,7 +96,6 @@ public class ExerciseService {
   private final AssetRepository assetRepository;
   private final AssetGroupRepository assetGroupRepository;
   private final InjectExpectationRepository injectExpectationRepository;
-  private final ArticleRepository articleRepository;
   private final ExerciseRepository exerciseRepository;
   private final TeamRepository teamRepository;
   private final UserRepository userRepository;
@@ -186,7 +182,6 @@ public class ExerciseService {
     getListOfDuplicatedInjects(exerciseDuplicate, exerciseOrigin);
     Map<String, Team> contextualTeams = getListOfExerciseTeams(exerciseDuplicate, exerciseOrigin);
     duplicateTeamUsers(exerciseDuplicate, exerciseOrigin, contextualTeams);
-    getListOfArticles(exerciseDuplicate, exerciseOrigin);
     getListOfVariables(exerciseDuplicate, exerciseOrigin);
     getObjectives(exerciseDuplicate, exerciseOrigin);
     getLessonsCategories(exerciseDuplicate, exerciseOrigin);
@@ -216,9 +211,10 @@ public class ExerciseService {
   }
 
   public List<Document> getExercisePlayerDocuments(Exercise exercise) {
-    List<Article> articles = exercise.getArticles();
-    List<Inject> injects = exercise.getInjects();
-    return documentService.getPlayerDocuments(articles, injects);
+    return exercise.getInjects().stream()
+        .flatMap(inject -> inject.getDocuments().stream().map(InjectDocument::getDocument))
+        .distinct()
+        .toList();
   }
 
   public Optional<Exercise> getFollowingSimulation(Exercise exercise) {
@@ -286,45 +282,7 @@ public class ExerciseService {
     exercise.setInjects(new ArrayList<>(injectListForExercise));
   }
 
-  private void getListOfArticles(Exercise exercise, Exercise exerciseOrigin) {
-    List<Article> articleList = new ArrayList<>();
-    Map<String, String> mapIdArticleOriginNew = new HashMap<>();
-    exerciseOrigin
-        .getArticles()
-        .forEach(
-            article -> {
-              Article exerciceArticle = new Article();
-              exerciceArticle.setName(article.getName());
-              exerciceArticle.setContent(article.getContent());
-              exerciceArticle.setAuthor(article.getAuthor());
-              exerciceArticle.setShares(article.getShares());
-              exerciceArticle.setLikes(article.getLikes());
-              exerciceArticle.setComments(article.getComments());
-              exerciceArticle.setChannel(article.getChannel());
-              exerciceArticle.setDocuments(new ArrayList<>(article.getDocuments()));
-              exerciceArticle.setExercise(exercise);
-              Article save = articleRepository.save(exerciceArticle);
-              articleList.add(save);
-              mapIdArticleOriginNew.put(article.getId(), save.getId());
-            });
-    exercise.setArticles(articleList);
-    for (Inject inject : exercise.getInjects()) {
-      if (ofNullable(inject.getContent()).map(c -> c.has(ARTICLES)).orElse(Boolean.FALSE)) {
-        List<String> articleNode = new ArrayList<>();
-        JsonNode articles = inject.getContent().findValue(ARTICLES);
-        if (articles.isArray()) {
-          for (final JsonNode node : articles) {
-            if (mapIdArticleOriginNew.containsKey(node.textValue())) {
-              articleNode.add(mapIdArticleOriginNew.get(node.textValue()));
-            }
-          }
-        }
-        inject.getContent().remove(ARTICLES);
-        ArrayNode arrayNode = inject.getContent().putArray(ARTICLES);
-        articleNode.forEach(arrayNode::add);
-      }
-    }
-  }
+  // 二开移除 Articles/Channels — exercise duplication 不再处理 article 字段。
 
   private void getListOfVariables(Exercise exercise, Exercise exerciseOrigin) {
     List<Variable> variables = variableService.variablesFromExercise(exerciseOrigin.getId());

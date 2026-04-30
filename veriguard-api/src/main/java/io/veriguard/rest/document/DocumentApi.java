@@ -20,7 +20,6 @@ import io.veriguard.rest.document.form.DocumentUpdateInput;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.inject.service.InjectService;
-import io.veriguard.service.ChannelService;
 import io.veriguard.service.FileService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import io.swagger.v3.oas.annotations.Operation;
@@ -68,7 +67,6 @@ public class DocumentApi extends RestBehavior {
   private final DocumentService documentService;
   private final FileService fileService;
   private final InjectService injectService;
-  private final ChannelService channelService;
 
   @PostMapping(DOCUMENT_API)
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.DOCUMENT)
@@ -456,31 +454,6 @@ public class DocumentApi extends RestBehavior {
     }
   }
 
-  @GetMapping(value = "/api/images/channels/id/{channelId}/{theme}")
-  @RBAC(
-      resourceId = "#channelId",
-      actionPerformed = Action.READ,
-      resourceType = ResourceType.CHANNEL)
-  @Operation(summary = "Get the channel image")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Channel image"),
-        @ApiResponse(responseCode = "404", description = "Channel not found")
-      })
-  public void getChannelImageFromId(
-      @PathVariable String channelId, @PathVariable String theme, HttpServletResponse response)
-      throws IOException {
-    Channel channel = channelService.channel(channelId);
-
-    if (theme.equals("dark") && channel.getLogoDark() != null) {
-      downloadDocument(channel.getLogoDark().getId(), response);
-    } else if (channel.getLogoLight() != null) {
-      downloadDocument(channel.getLogoLight().getId(), response);
-    } else {
-      downloadCollectorImage("veriguard_fake_detector", response);
-    }
-  }
-
   @GetMapping(
       value = "/api/images/executors/icons/{executorId}",
       produces = MediaType.IMAGE_PNG_VALUE)
@@ -512,15 +485,17 @@ public class DocumentApi extends RestBehavior {
   }
 
   private List<Document> getExercisePlayerDocuments(Exercise exercise) {
-    List<Article> articles = exercise.getArticles();
-    List<Inject> injects = exercise.getInjects();
-    return documentService.getPlayerDocuments(articles, injects);
+    return exercise.getInjects().stream()
+        .flatMap(inject -> inject.getDocuments().stream().map(d -> d.getDocument()))
+        .distinct()
+        .toList();
   }
 
   private List<Document> getScenarioPlayerDocuments(Scenario scenario) {
-    List<Article> articles = scenario.getArticles();
-    List<Inject> injects = scenario.getInjects();
-    return documentService.getPlayerDocuments(articles, injects);
+    return scenario.getInjects().stream()
+        .flatMap(inject -> inject.getDocuments().stream().map(d -> d.getDocument()))
+        .distinct()
+        .toList();
   }
 
   @LogExecutionTime

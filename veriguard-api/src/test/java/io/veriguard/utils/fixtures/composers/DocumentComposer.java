@@ -1,6 +1,5 @@
 package io.veriguard.utils.fixtures.composers;
 
-import io.veriguard.database.model.Challenge;
 import io.veriguard.database.model.Document;
 import io.veriguard.database.model.Executable;
 import io.veriguard.database.model.Tag;
@@ -28,7 +27,6 @@ public class DocumentComposer extends ComposerBase<Document> {
     private final Document document;
     private BaseFile<?> companionFile = null;
     private final List<TagComposer.Composer> tagComposers = new ArrayList<>();
-    private final List<ChallengeComposer.Composer> challengeComposers = new ArrayList<>();
     private final List<PayloadComposer.Composer> payloadExecutableComposers = new ArrayList<>();
 
     public Composer(Document document) {
@@ -40,14 +38,6 @@ public class DocumentComposer extends ComposerBase<Document> {
       Set<Tag> tempTags = this.document.getTags();
       tempTags.add(tagComposer.get());
       this.document.setTags(tempTags);
-      return this;
-    }
-
-    public Composer withChallenge(ChallengeComposer.Composer challengeComposer) {
-      challengeComposers.add(challengeComposer);
-      Set<Challenge> tempChallenges = this.document.getChallenges();
-      tempChallenges.add(challengeComposer.get());
-      this.document.setChallenges(tempChallenges);
       return this;
     }
 
@@ -74,7 +64,6 @@ public class DocumentComposer extends ComposerBase<Document> {
     @Override
     public Composer persist() {
       this.tagComposers.forEach(TagComposer.Composer::persist);
-      this.challengeComposers.forEach(ChallengeComposer.Composer::persist);
       this.payloadExecutableComposers.forEach(PayloadComposer.Composer::persist);
       if (companionFile != null) {
         try (ByteArrayInputStream bais =
@@ -92,7 +81,6 @@ public class DocumentComposer extends ComposerBase<Document> {
     public Composer delete() {
       documentRepository.delete(document);
       this.tagComposers.forEach(TagComposer.Composer::delete);
-      this.challengeComposers.forEach(ChallengeComposer.Composer::delete);
       this.payloadExecutableComposers.forEach(PayloadComposer.Composer::delete);
       return this;
     }

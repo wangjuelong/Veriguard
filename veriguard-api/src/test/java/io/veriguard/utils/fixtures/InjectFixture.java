@@ -1,14 +1,12 @@
 package io.veriguard.utils.fixtures;
 
 import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS;
-import static io.veriguard.injectors.email.EmailContract.EMAIL_DEFAULT;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.database.model.*;
-import io.veriguard.injectors.challenge.model.ChallengeContent;
 import io.veriguard.rest.atomic_testing.form.AtomicTestingInput;
 import io.veriguard.rest.inject.form.InjectDocumentInput;
 import java.util.List;
@@ -22,7 +20,7 @@ public class InjectFixture {
 
   public static AtomicTestingInput createAtomicTesting(String title, String documentId) {
     AtomicTestingInput input = new AtomicTestingInput();
-    input.setInjectorContract(EMAIL_DEFAULT);
+    // 二开移除 Email injector — atomic testing 默认不再绑定 EMAIL_DEFAULT contract.
     input.setContent(injectContent());
     input.setTitle(title);
     input.setAllTeams(false);
@@ -132,16 +130,6 @@ public class InjectFixture {
 
   public static Inject getInjectForEmailContract(InjectorContract injectorContract) {
     return createInject(injectorContract, INJECT_EMAIL_NAME);
-  }
-
-  public static Inject createDefaultInjectChallenge(
-      InjectorContract injectorContract, ObjectMapper objectMapper, List<String> challengeIds) {
-    Inject inject = createInject(injectorContract, INJECT_CHALLENGE_NAME);
-
-    ChallengeContent content = new ChallengeContent();
-    content.setChallenges(challengeIds);
-    inject.setContent(objectMapper.valueToTree(content));
-    return inject;
   }
 
   public static Inject createInjectWithPayloadArg(Map<String, Object> payloadArguments) {

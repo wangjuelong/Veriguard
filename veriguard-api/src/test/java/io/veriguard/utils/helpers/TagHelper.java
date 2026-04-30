@@ -1,15 +1,13 @@
 package io.veriguard.utils.helpers;
 
 import io.veriguard.database.model.*;
-import io.veriguard.service.ChallengeService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 public class TagHelper {
-  public static List<Tag> crawlAllExerciseTags(
-      Exercise exercise, ChallengeService challengeService) {
+  public static List<Tag> crawlAllExerciseTags(Exercise exercise) {
     List<Tag> tags = new ArrayList<>(exercise.getTags());
     tags.addAll(exercise.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
     tags.addAll(
@@ -32,11 +30,6 @@ public class TagHelper {
         exercise.getDocuments().stream().flatMap(document -> document.getTags().stream()).toList());
     tags.addAll(
         exercise.getInjects().stream().flatMap(inject -> inject.getTags().stream()).toList());
-    List<Challenge> challenges = new ArrayList<>();
-    for (Challenge challenge : challengeService.getExerciseChallenges(exercise.getId())) {
-      challenges.add(challenge);
-    }
-    tags.addAll(challenges.stream().flatMap(challenge -> challenge.getTags().stream()).toList());
     tags.addAll(
         exercise.getInjects().stream()
             .flatMap(
@@ -50,8 +43,7 @@ public class TagHelper {
     return tags;
   }
 
-  public static List<Tag> crawlAllScenarioTags(
-      Scenario scenario, ChallengeService challengeService) {
+  public static List<Tag> crawlAllScenarioTags(Scenario scenario) {
     List<Tag> tags = new ArrayList<>(scenario.getTags());
     tags.addAll(scenario.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
     tags.addAll(
@@ -74,11 +66,6 @@ public class TagHelper {
         scenario.getDocuments().stream().flatMap(document -> document.getTags().stream()).toList());
     tags.addAll(
         scenario.getInjects().stream().flatMap(inject -> inject.getTags().stream()).toList());
-    List<Challenge> challenges = new ArrayList<>();
-    for (Challenge challenge : challengeService.getScenarioChallenges(scenario)) {
-      challenges.add(challenge);
-    }
-    tags.addAll(challenges.stream().flatMap(challenge -> challenge.getTags().stream()).toList());
     tags.addAll(
         scenario.getInjects().stream()
             .flatMap(
@@ -92,8 +79,7 @@ public class TagHelper {
     return tags;
   }
 
-  public static List<Tag> crawlAllInjectsTags(
-      List<Inject> injects, ChallengeService challengeService) {
+  public static List<Tag> crawlAllInjectsTags(List<Inject> injects) {
     List<Tag> tags =
         new ArrayList<>(injects.stream().flatMap(inject -> inject.getTags().stream()).toList());
     tags.addAll(
@@ -126,11 +112,6 @@ public class TagHelper {
             .flatMap(document -> document.getTags().stream())
             .toList());
     tags.addAll(injects.stream().flatMap(inject -> inject.getTags().stream()).toList());
-    List<Challenge> challenges = new ArrayList<>();
-    for (Challenge challenge : challengeService.getInjectsChallenges(injects)) {
-      challenges.add(challenge);
-    }
-    tags.addAll(challenges.stream().flatMap(challenge -> challenge.getTags().stream()).toList());
     tags.addAll(
         injects.stream()
             .flatMap(

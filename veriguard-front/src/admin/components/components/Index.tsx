@@ -9,10 +9,7 @@ import { AbilityContext } from '../../../utils/permissions/permissionsContext';
 import ProtectedRoute from '../../../utils/permissions/ProtectedRoute';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
 
-const IndexChannel = lazy(() => import('./channels/Index'));
-const Channels = lazy(() => import('./channels/Channels'));
 const Documents = lazy(() => import('./documents/Documents'));
-const Challenges = lazy(() => import('./challenges/Challenges'));
 const Lessons = lazy(() => import('./lessons/LessonsTemplates'));
 const LessonIndex = lazy(() => import('./lessons/Index'));
 
@@ -22,12 +19,10 @@ const Index = () => {
   const { classes } = useStyles();
   const ability = useContext(AbilityContext);
 
-  const order = ['DOCUMENTS', 'CHANNELS', 'CHALLENGES', 'LESSONS_LEARNED'] as const;
+  const order = ['DOCUMENTS', 'LESSONS_LEARNED'] as const;
 
   const subjectToRoute: Record<typeof order[number], string> = {
     DOCUMENTS: 'documents',
-    CHANNELS: 'channels',
-    CHALLENGES: 'challenges',
     LESSONS_LEARNED: 'lessons',
   };
 
@@ -49,42 +44,6 @@ const Index = () => {
                   subject: SUBJECTS.DOCUMENTS,
                 }]}
                 Component={errorWrapper(Documents)()}
-              />
-            )}
-          />
-          <Route
-            path="channels"
-            element={(
-              <ProtectedRoute
-                checks={[{
-                  action: ACTIONS.ACCESS,
-                  subject: SUBJECTS.CHANNELS,
-                }]}
-                Component={errorWrapper(Channels)()}
-              />
-            )}
-          />
-          <Route
-            path="channels/:channelId/*"
-            element={(
-              <ProtectedRoute
-                checks={[{
-                  action: ACTIONS.ACCESS,
-                  subject: SUBJECTS.CHANNELS,
-                }]}
-                Component={errorWrapper(IndexChannel)()}
-              />
-            )}
-          />
-          <Route
-            path="challenges"
-            element={(
-              <ProtectedRoute
-                checks={[{
-                  action: ACTIONS.ACCESS,
-                  subject: SUBJECTS.CHALLENGES,
-                }]}
-                Component={errorWrapper(Challenges)()}
               />
             )}
           />

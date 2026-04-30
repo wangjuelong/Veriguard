@@ -3,8 +3,6 @@ package io.veriguard.importer;
 import static io.veriguard.database.specification.InjectorContractSpecification.byPayloadExternalId;
 import static io.veriguard.database.specification.InjectorContractSpecification.byPayloadId;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
-import static io.veriguard.injectors.challenge.ChallengeContract.CHALLENGE_PUBLISH;
-import static io.veriguard.injectors.channel.ChannelContract.CHANNEL_PUBLISH;
 import static io.veriguard.rest.exercise.exports.ExerciseFileExport.EXERCISE_VARIABLES;
 import static io.veriguard.rest.payload.PayloadUtils.buildPayload;
 import static io.veriguard.rest.scenario.export.ScenarioFileExport.SCENARIO_VARIABLES;
@@ -20,8 +18,6 @@ import com.google.common.annotations.VisibleForTesting;
 import io.veriguard.database.model.*;
 import io.veriguard.database.model.Scenario.SEVERITY;
 import io.veriguard.database.repository.*;
-import io.veriguard.injectors.challenge.model.ChallengeContent;
-import io.veriguard.injectors.channel.model.ChannelContent;
 import io.veriguard.rest.domain.DomainService;
 import io.veriguard.rest.domain.enums.PresetDomain;
 import io.veriguard.rest.exercise.exports.VariableWithValueMixin;
@@ -72,9 +68,6 @@ public class V1_DataImporter implements Importer {
   private final OrganizationRepository organizationRepository;
   private final UserRepository userRepository;
   private final InjectDocumentRepository injectDocumentRepository;
-  private final ChallengeRepository challengeRepository;
-  private final ChannelRepository channelRepository;
-  private final ArticleRepository articleRepository;
   private final LessonsCategoryRepository lessonsCategoryRepository;
   private final LessonsQuestionRepository lessonsQuestionRepository;
   private final VariableRepository variableRepository;
@@ -96,46 +89,7 @@ public class V1_DataImporter implements Importer {
       return null;
     }
     String content = injectNode.get("inject_content").toString();
-    switch (contract) {
-      // Challenges exists in exercise only through inject content definition
-      // So we need to rewrite content for challenges to remap the challenge ids
-      case CHALLENGE_PUBLISH -> {
-        try {
-          JsonNode jsonNode = mapper.readTree(content);
-          ChallengeContent challengeContent = mapper.treeToValue(jsonNode, ChallengeContent.class);
-          List<String> remappedIds =
-              challengeContent.getChallenges().stream()
-                  .map(baseIds::get)
-                  .filter(Objects::nonNull)
-                  .map(Base::getId)
-                  .toList();
-          challengeContent.setChallenges(remappedIds);
-          content = mapper.writeValueAsString(challengeContent);
-        } catch (Exception e) {
-          // Error rewriting content, inject can't be created
-          return null;
-        }
-      }
-      // Channel articles exists in exercise only through inject content definition
-      // So we need to rewrite content for channels to remap the channel ids
-      case CHANNEL_PUBLISH -> {
-        try {
-          JsonNode jsonNode = mapper.readTree(content);
-          ChannelContent channelContent = mapper.treeToValue(jsonNode, ChannelContent.class);
-          List<String> remappedIds =
-              channelContent.getArticles().stream()
-                  .map(baseIds::get)
-                  .filter(Objects::nonNull)
-                  .map(Base::getId)
-                  .toList();
-          channelContent.setArticles(remappedIds);
-          content = mapper.writeValueAsString(channelContent);
-        } catch (Exception e) {
-          // Error rewriting content, inject can't be created
-          return null;
-        }
-      }
-    }
+    // 二开 移除 Channel/Challenge 注入器 — 不再需要 contract-specific 内容重写。
     return content;
   }
 
@@ -184,9 +138,6 @@ public class V1_DataImporter implements Importer {
     importOrganizations(importNode, prefix, baseIds);
     importUsers(importNode, prefix, baseIds);
     importTeams(importNode, prefix, savedExercise, savedScenario, baseIds);
-    importChallenges(importNode, prefix, baseIds);
-    importChannels(importNode, prefix, baseIds);
-    importArticles(importNode, prefix, savedExercise, savedScenario, baseIds);
     importObjectives(importNode, prefix, savedExercise, savedScenario, baseIds);
     importLessons(importNode, prefix, savedExercise, savedScenario, baseIds);
     importInjects(importNode, prefix, savedExercise, savedScenario, asset, assetGroup, baseIds);
@@ -745,150 +696,7 @@ public class V1_DataImporter implements Importer {
     return team;
   }
 
-  // -- CHALLENGES --
-
-  private void importChallenges(JsonNode importNode, String prefix, Map<String, Base> baseIds) {
-    resolveJsonElements(importNode, prefix + "challenges")
-        .forEach(
-            nodeChallenge -> {
-              String id = nodeChallenge.get("challenge_id").textValue();
-              if (baseIds.get(id) != null) {
-                // Already import
-                return;
-              }
-              String name = nodeChallenge.get("challenge_name").textValue();
-
-              List<Challenge> existingChallenges =
-                  this.challengeRepository.findByNameIgnoreCase(name);
-              if (!existingChallenges.isEmpty()) {
-                baseIds.put(id, existingChallenges.getFirst());
-              } else {
-                baseIds.put(
-                    id, this.challengeRepository.save(createChallenge(nodeChallenge, baseIds)));
-              }
-            });
-  }
-
-  private Challenge createChallenge(JsonNode nodeChallenge, Map<String, Base> baseIds) {
-    Challenge challenge = new Challenge();
-    challenge.setName(nodeChallenge.get("challenge_name").textValue());
-    challenge.setCategory(nodeChallenge.get("challenge_category").textValue());
-    challenge.setContent(nodeChallenge.get("challenge_content").textValue());
-    challenge.setScore(nodeChallenge.get("challenge_score").asDouble(0.0));
-    challenge.setMaxAttempts(nodeChallenge.get("challenge_max_attempts").asInt(0));
-    challenge.setDocuments(
-        resolveJsonIds(nodeChallenge, "challenge_documents").stream()
-            .map(docId -> (Document) baseIds.get(docId))
-            .filter(Objects::nonNull)
-            .toList());
-    challenge.setFlags(
-        resolveJsonElements(nodeChallenge, "challenge_flags")
-            .map(node -> this.createChallengeFlag(node, challenge))
-            .toList());
-    challenge.setTags(
-        resolveJsonIds(nodeChallenge, "challenge_tags").stream()
-            .map(baseIds::get)
-            .map(Tag.class::cast)
-            .collect(Collectors.toSet()));
-
-    return challenge;
-  }
-
-  private ChallengeFlag createChallengeFlag(JsonNode flagNode, Challenge challenge) {
-    ChallengeFlag flag = new ChallengeFlag();
-    flag.setValue(flagNode.get("flag_value").textValue());
-    flag.setType(ChallengeFlag.FLAG_TYPE.valueOf(flagNode.get("flag_type").textValue()));
-    flag.setChallenge(challenge);
-    return flag;
-  }
-
-  // -- CHANNELS --
-
-  private void importChannels(JsonNode importNode, String prefix, Map<String, Base> baseIds) {
-    resolveJsonElements(importNode, prefix + "channels")
-        .forEach(
-            nodeChannel -> {
-              String id = nodeChannel.get("channel_id").textValue();
-              if (baseIds.get(id) != null) {
-                // Already import
-                return;
-              }
-              String channelName = nodeChannel.get("channel_name").textValue();
-
-              List<Channel> existingChannels =
-                  this.channelRepository.findByNameIgnoreCase(channelName);
-              if (!existingChannels.isEmpty()) {
-                baseIds.put(id, existingChannels.getFirst());
-              } else {
-                baseIds.put(id, this.channelRepository.save(createChannel(nodeChannel, baseIds)));
-              }
-            });
-  }
-
-  private Channel createChannel(JsonNode nodeChannel, Map<String, Base> baseIds) {
-    Channel channel = new Channel();
-    channel.setName(nodeChannel.get("channel_name").textValue());
-    channel.setType(nodeChannel.get("channel_type").textValue());
-    channel.setDescription(nodeChannel.get("channel_description").textValue());
-    channel.setMode(nodeChannel.get("channel_mode").textValue());
-    channel.setPrimaryColorDark(nodeChannel.get("channel_primary_color_dark").textValue());
-    channel.setPrimaryColorLight(nodeChannel.get("channel_primary_color_light").textValue());
-    channel.setSecondaryColorDark(nodeChannel.get("channel_secondary_color_dark").textValue());
-    channel.setSecondaryColorLight(nodeChannel.get("channel_secondary_color_light").textValue());
-
-    String channelLogoDark = nodeChannel.get("channel_logo_dark").textValue();
-    if (channelLogoDark != null) {
-      channel.setLogoDark((Document) baseIds.get(channelLogoDark));
-    }
-    String channelLogoLight = nodeChannel.get("channel_logo_light").textValue();
-    if (channelLogoLight != null) {
-      channel.setLogoLight((Document) baseIds.get(channelLogoLight));
-    }
-
-    return channel;
-  }
-
-  private void importArticles(
-      JsonNode importNode,
-      String prefix,
-      Exercise savedExercise,
-      Scenario savedScenario,
-      Map<String, Base> baseIds) {
-    resolveJsonElements(importNode, prefix + "articles")
-        .forEach(
-            nodeArticle -> {
-              String id = nodeArticle.get("article_id").textValue();
-              Article article = createArticle(nodeArticle, savedExercise, savedScenario, baseIds);
-              baseIds.put(id, this.articleRepository.save(article));
-            });
-  }
-
-  private Article createArticle(
-      JsonNode nodeArticle,
-      Exercise savedExercise,
-      Scenario savedScenario,
-      Map<String, Base> baseIds) {
-    Article article = new Article();
-    article.setName(nodeArticle.get("article_name").textValue());
-    article.setContent(nodeArticle.get("article_content").textValue());
-    article.setAuthor(nodeArticle.get("article_author").textValue());
-    article.setShares(nodeArticle.get("article_shares").intValue());
-    article.setLikes(nodeArticle.get("article_likes").intValue());
-    article.setComments(nodeArticle.get("article_comments").intValue());
-    if (savedExercise != null) {
-      article.setExercise(savedExercise);
-    } else if (savedScenario != null) {
-      article.setScenario(savedScenario);
-    }
-    article.setDocuments(
-        resolveJsonIds(nodeArticle, "article_documents").stream()
-            .map(docId -> (Document) baseIds.get(docId))
-            .filter(Objects::nonNull)
-            .toList());
-    article.setChannel((Channel) baseIds.get(nodeArticle.get("article_channel").textValue()));
-
-    return article;
-  }
+  // -- CHALLENGES / CHANNELS / ARTICLES 二开移除 --
 
   private void importObjectives(
       JsonNode importNode,

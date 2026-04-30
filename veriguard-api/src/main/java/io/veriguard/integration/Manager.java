@@ -2,7 +2,6 @@ package io.veriguard.integration;
 
 import io.veriguard.database.model.ConnectorInstance;
 import io.veriguard.database.model.ConnectorInstance.CURRENT_STATUS_TYPE;
-import io.veriguard.injectors.email.EmailContract;
 import java.util.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -65,11 +64,6 @@ public class Manager {
     }
 
     return candidates.getFirst();
-  }
-
-  public io.veriguard.executors.Injector requestEmailInjector() {
-    return this.request(
-        new ComponentRequest(EmailContract.TYPE), io.veriguard.executors.Injector.class);
   }
 
   public io.veriguard.executors.Injector requestInjectorExecutorByType(String injectorType) {

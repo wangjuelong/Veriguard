@@ -1,26 +1,15 @@
 package io.veriguard.rest.document;
 
-import static io.veriguard.helper.StreamHelper.fromIterable;
-import static io.veriguard.injectors.challenge.ChallengeContract.CHALLENGE_PUBLISH;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.veriguard.database.model.Article;
 import io.veriguard.database.model.Document;
-import io.veriguard.database.model.Inject;
 import io.veriguard.database.raw.RawDocument;
-import io.veriguard.database.repository.ChallengeRepository;
 import io.veriguard.database.repository.DocumentRepository;
-import io.veriguard.injectors.challenge.model.ChallengeContent;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.service.FileService;
-import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,10 +19,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DocumentService {
 
-  @Resource private ObjectMapper mapper;
-
   private final DocumentRepository documentRepository;
-  private final ChallengeRepository challengeRepository;
   private final FileService fileService;
 
   // -- CRUD --
@@ -42,40 +28,6 @@ public class DocumentService {
     return documentRepository
         .findById(documentId)
         .orElseThrow(() -> new ElementNotFoundException("Document not found"));
-  }
-
-  public List<Document> getPlayerDocuments(List<Article> articles, List<Inject> injects) {
-    Stream<Document> channelsDocs =
-        articles.stream().map(Article::getChannel).flatMap(channel -> channel.getLogos().stream());
-    Stream<Document> articlesDocs =
-        articles.stream().flatMap(article -> article.getDocuments().stream());
-    List<String> challenges =
-        injects.stream()
-            .filter(
-                inject ->
-                    inject
-                        .getInjectorContract()
-                        .map(contract -> contract.getId().equals(CHALLENGE_PUBLISH))
-                        .orElse(false))
-            .filter(inject -> inject.getContent() != null)
-            .flatMap(
-                inject -> {
-                  try {
-                    ChallengeContent content =
-                        mapper.treeToValue(inject.getContent(), ChallengeContent.class);
-                    return content.getChallenges().stream();
-                  } catch (JsonProcessingException e) {
-                    return Stream.empty();
-                  }
-                })
-            .toList();
-    Stream<Document> challengesDocs =
-        fromIterable(challengeRepository.findAllById(challenges)).stream()
-            .flatMap(challenge -> challenge.getDocuments().stream());
-    return Stream.of(channelsDocs, articlesDocs, challengesDocs)
-        .flatMap(documentStream -> documentStream)
-        .distinct()
-        .toList();
   }
 
   public void deleteDocument(String documentId) {
@@ -118,16 +70,8 @@ public class DocumentService {
     return this.documentRepository.findAllDistinctBySimulationId(simulationId);
   }
 
-  public List<RawDocument> documentsForChannel(@NotBlank String channelId) {
-    return this.documentRepository.rawAllDocumentsByChannelId(channelId);
-  }
-
   public List<RawDocument> documentsForSecurityPlatform(@NotBlank String securityPlatformId) {
     return this.documentRepository.rawAllDocumentsBySecurityPlatformId(securityPlatformId);
-  }
-
-  public List<RawDocument> documentsForChallenge(@NotBlank String challengeId) {
-    return this.documentRepository.rawAllDocumentsByChallengeId(challengeId);
   }
 
   public List<RawDocument> documentsForPayload(@NotBlank String payloadId) {

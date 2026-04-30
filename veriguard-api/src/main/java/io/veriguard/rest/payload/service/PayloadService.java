@@ -222,10 +222,9 @@ public class PayloadService {
           case TEXT -> expectations.add(this.expectationBuilderService.buildTextExpectation());
           case DOCUMENT ->
               expectations.add(this.expectationBuilderService.buildDocumentExpectation());
-          case ARTICLE ->
-              expectations.add(this.expectationBuilderService.buildArticleExpectation());
-          case CHALLENGE ->
-              expectations.add(this.expectationBuilderService.buildChallengeExpectation());
+          case ARTICLE, CHALLENGE -> {
+            // 二开移除 Channel/Challenge — 跳过历史枚举
+          }
           case MANUAL -> expectations.add(this.expectationBuilderService.buildManualExpectation());
           case PREVENTION ->
               expectations.add(this.expectationBuilderService.buildPreventionExpectation());

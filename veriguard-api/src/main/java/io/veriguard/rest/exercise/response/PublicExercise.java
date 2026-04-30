@@ -1,15 +1,20 @@
 package io.veriguard.rest.exercise.response;
 
 import io.veriguard.database.model.Exercise;
-import io.veriguard.rest.challenge.output.PublicEntity;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class PublicExercise extends PublicEntity {
+@Setter
+public class PublicExercise {
+
+  private String id;
+  private String name;
+  private String description;
 
   public PublicExercise(Exercise exercise) {
-    setId(exercise.getId());
-    setName(exercise.getName());
-    setDescription(exercise.getDescription());
+    this.id = exercise.getId();
+    this.name = exercise.getName();
+    this.description = exercise.getDescription();
   }
 }

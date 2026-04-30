@@ -14,7 +14,7 @@ import { craftedDocumentFilter } from '../../../../components/common/queryable/f
 import Transition from '../../../../components/common/Transition';
 import ContextLink from '../../../../components/ContextLink';
 import { useFormatter } from '../../../../components/i18n';
-import { ATOMIC_BASE_URL, CHALLENGE_BASE_URL, CHANNEL_BASE_URL, PAYLOAD_BASE_URL, SCENARIO_BASE_URL, SECURITY_PLATFORM_BASE_URL, SIMULATION_BASE_URL } from '../../../../constants/BaseUrls';
+import { ATOMIC_BASE_URL, PAYLOAD_BASE_URL, SCENARIO_BASE_URL, SECURITY_PLATFORM_BASE_URL, SIMULATION_BASE_URL } from '../../../../constants/BaseUrls';
 import { useHelper } from '../../../../store';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
@@ -26,18 +26,14 @@ import DocumentForm from './DocumentForm';
 const entityPaths = {
   atomicTestings: item => `${ATOMIC_BASE_URL}/${item.id}`,
   simulations: item => `${SIMULATION_BASE_URL}/${item.id}`,
-  channels: item => `${CHANNEL_BASE_URL}/${item.id}`,
-  scenarioArticles: item => `${SCENARIO_BASE_URL}/${item.context}/definition`,
-  simulationArticles: item => `${SIMULATION_BASE_URL}/${item.context}/definition`,
   payloads: item => `${PAYLOAD_BASE_URL}?query=${craftedDocumentFilter(item, 'payload_name', 'payloads')}`,
   scenarioInjects: item => `${SCENARIO_BASE_URL}/${item.context}/injects?query=${craftedDocumentFilter(item, 'inject_title', `${item.context}-injects`)}`,
   simulationInjects: item => `${SIMULATION_BASE_URL}/${item.context}/injects?query=${craftedDocumentFilter(item, 'inject_title', `${item.context}-injects`)}`,
-  challenges: item => `${CHALLENGE_BASE_URL}?search=${item.name}`,
   securityPlatforms: item => `${SECURITY_PLATFORM_BASE_URL}?search=${item.name}`,
 };
 
 // Ordered entity types
-const renderOrder = ['atomicTestings', 'scenarioInjects', 'simulationInjects', 'simulations', 'payloads', 'channels', 'scenarioArticles', 'simulationArticles', 'challenges', 'securityPlatforms'];
+const renderOrder = ['atomicTestings', 'scenarioInjects', 'simulationInjects', 'simulations', 'payloads', 'securityPlatforms'];
 
 const DocumentPopover = (props) => {
   // Standard hooks

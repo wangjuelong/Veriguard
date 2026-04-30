@@ -16,9 +16,7 @@ export const SECURITY_PLATFORM_BASE_URL = '/admin/assets/security_platforms';
 export const PLAYER_BASE_URL = '/admin/teams/players';
 export const TEAM_BASE_URL = '/admin/teams/teams';
 
-// Components
-export const CHANNEL_BASE_URL = '/admin/components/channels';
-export const CHALLENGE_BASE_URL = '/admin/components/challenges';
+// Components — 二开移除 channel/challenge
 
 export const PAYLOAD_BASE_URL = '/admin/payloads';
 export const FINDING_BASE_URL = '/admin/findings';

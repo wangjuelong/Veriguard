@@ -20,7 +20,6 @@ import io.veriguard.database.repository.InjectorContractRepository;
 import io.veriguard.database.repository.InjectorRepository;
 import io.veriguard.database.specification.InjectorContractSpecification;
 import io.veriguard.injector_contract.Contract;
-import io.veriguard.injectors.email.EmailContract;
 import io.veriguard.rest.attack_pattern.service.AttackPatternService;
 import io.veriguard.rest.domain.DomainService;
 import io.veriguard.rest.exception.ElementNotFoundException;
@@ -322,10 +321,7 @@ public class InjectorContractService {
   }
 
   private void setupImportAvailable(InjectorContract injectorContract) {
-    if (Arrays.asList(EmailContract.EMAIL_GLOBAL, EmailContract.EMAIL_DEFAULT)
-        .contains(injectorContract.getId())) {
-      injectorContract.setImportAvailable(mailImportEnabled);
-    }
+    // 二开 移除 Email injector — no contracts opt into mail import.
   }
 
   /**

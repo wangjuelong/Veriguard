@@ -8,8 +8,6 @@ import static io.veriguard.injector_contract.ContractDef.contractBuilder;
 import static io.veriguard.injector_contract.fields.ContractAsset.assetField;
 import static io.veriguard.injector_contract.fields.ContractAssetGroup.assetGroupField;
 import static io.veriguard.injector_contract.fields.ContractSelect.selectFieldWithDefault;
-import static io.veriguard.injectors.email.EmailContract.EMAIL_DEFAULT;
-import static io.veriguard.injectors.email.EmailContract.EMAIL_GLOBAL;
 import static io.veriguard.injectors.manual.ManualContract.MANUAL_DEFAULT;
 import static io.veriguard.utils.fixtures.InjectorFixture.createDefaultPayloadInjector;
 
@@ -32,7 +30,6 @@ import io.veriguard.injector_contract.fields.ContractElement;
 import io.veriguard.injector_contract.fields.ContractSelect;
 import io.veriguard.injector_contract.fields.ContractTargetedAsset;
 import io.veriguard.integration.Manager;
-import io.veriguard.integration.impl.injectors.email.EmailInjectorIntegrationFactory;
 import io.veriguard.integration.impl.injectors.manual.ManualInjectorIntegrationFactory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -47,37 +44,7 @@ import org.springframework.util.CollectionUtils;
 public class InjectorContractFixture {
 
   @Autowired private InjectorContractRepository injectorContractRepository;
-  @Autowired private EmailInjectorIntegrationFactory emailInjectorIntegrationFactory;
   @Autowired private ManualInjectorIntegrationFactory manualInjectorIntegrationFactory;
-
-  public InjectorContract getWellKnownSingleEmailContract() {
-    Optional<InjectorContract> injectorContract =
-        injectorContractRepository.findById(EMAIL_DEFAULT);
-    if (injectorContract.isPresent()) {
-      return injectorContract.get();
-    }
-    try {
-      Manager manager = new Manager(List.of(emailInjectorIntegrationFactory));
-      manager.monitorIntegrations();
-      return injectorContractRepository.findById(EMAIL_DEFAULT).orElseThrow();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public InjectorContract getWellKnownGlobalEmailContract() {
-    Optional<InjectorContract> injectorContract = injectorContractRepository.findById(EMAIL_GLOBAL);
-    if (injectorContract.isPresent()) {
-      return injectorContract.get();
-    }
-    try {
-      Manager manager = new Manager(List.of(emailInjectorIntegrationFactory));
-      manager.monitorIntegrations();
-      return injectorContractRepository.findById(EMAIL_GLOBAL).orElseThrow();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   private static ObjectNode createDefaultContent(ObjectMapper objectMapper) {
     ObjectNode node = objectMapper.createObjectNode();

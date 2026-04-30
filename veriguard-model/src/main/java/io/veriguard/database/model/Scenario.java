@@ -327,12 +327,6 @@ public class Scenario implements GrantableBase {
   private List<Document> documents = new ArrayList<>();
 
   @ArraySchema(schema = @Schema(type = "string"))
-  @OneToMany(mappedBy = "scenario", fetch = FetchType.LAZY)
-  @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("scenario_articles")
-  private List<Article> articles = new ArrayList<>();
-
-  @ArraySchema(schema = @Schema(type = "string"))
   @OneToMany(mappedBy = "scenario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("scenario_lessons_categories")
@@ -428,12 +422,6 @@ public class Scenario implements GrantableBase {
   @JsonProperty("scenario_communications_number")
   public long getCommunicationsNumber() {
     return getInjects().stream().mapToLong(Inject::getCommunicationsNumber).sum();
-  }
-
-  // -- CHANNELS --
-
-  public List<Article> getArticlesForChannel(Channel channel) {
-    return this.articles.stream().filter(article -> article.getChannel().equals(channel)).toList();
   }
 
   // -- PLATFORMS --

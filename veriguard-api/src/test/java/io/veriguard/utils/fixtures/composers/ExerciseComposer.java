@@ -1,7 +1,6 @@
 package io.veriguard.utils.fixtures.composers;
 
 import io.veriguard.database.model.*;
-import io.veriguard.database.model.Article;
 import io.veriguard.database.repository.*;
 import io.veriguard.rest.exercise.service.ExerciseService;
 import jakarta.persistence.EntityManager;
@@ -24,7 +23,6 @@ public class ExerciseComposer extends ComposerBase<Exercise> {
     private final List<InjectComposer.Composer> injectComposers = new ArrayList<>();
     private final List<LessonsCategoryComposer.Composer> categoryComposers = new ArrayList<>();
     private final List<TeamComposer.Composer> teamComposers = new ArrayList<>();
-    private final List<ArticleComposer.Composer> articleComposers = new ArrayList<>();
     private final List<ObjectiveComposer.Composer> objectiveComposers = new ArrayList<>();
     private final List<TagComposer.Composer> tagComposers = new ArrayList<>();
     private final List<DocumentComposer.Composer> documentComposers = new ArrayList<>();
@@ -112,14 +110,6 @@ public class ExerciseComposer extends ComposerBase<Exercise> {
       return this;
     }
 
-    public Composer withArticle(ArticleComposer.Composer articleComposer) {
-      this.articleComposers.add(articleComposer);
-      List<Article> tempArticles = this.exercise.getArticles();
-      tempArticles.add(articleComposer.get());
-      this.exercise.setArticles(tempArticles);
-      return this;
-    }
-
     public Composer withObjective(ObjectiveComposer.Composer objectiveComposer) {
       this.objectiveComposers.add(objectiveComposer);
       List<Objective> tempObjectives = this.exercise.getObjectives();
@@ -160,7 +150,6 @@ public class ExerciseComposer extends ComposerBase<Exercise> {
     @Override
     public Composer persist() {
       exerciseRepository.save(exercise);
-      this.articleComposers.forEach(ArticleComposer.Composer::persist);
       this.categoryComposers.forEach(LessonsCategoryComposer.Composer::persist);
       this.teamComposers.forEach(TeamComposer.Composer::persist);
       this.injectComposers.forEach(InjectComposer.Composer::persist);
@@ -189,7 +178,6 @@ public class ExerciseComposer extends ComposerBase<Exercise> {
       this.injectComposers.forEach(InjectComposer.Composer::delete);
       this.teamComposers.forEach(TeamComposer.Composer::delete);
       this.categoryComposers.forEach(LessonsCategoryComposer.Composer::delete);
-      this.articleComposers.forEach(ArticleComposer.Composer::delete);
       this.pauseComposers.forEach(PauseComposer.Composer::delete);
       return this;
     }
