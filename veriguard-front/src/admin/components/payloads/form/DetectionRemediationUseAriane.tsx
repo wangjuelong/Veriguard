@@ -1,5 +1,5 @@
-import { Button, SvgIcon, Tooltip, Typography } from '@mui/material';
-import { LogoXtmOneIcon } from 'filigran-icon';
+import { AutoFixHigh as AutoFixHighIcon } from '@mui/icons-material';
+import { Button, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { useFormatter } from '../../../../components/i18n';
@@ -84,7 +84,7 @@ const DetectionRemediationUseAriane = ({
             }}
             size="small"
             onClick={handleClick}
-            startIcon={<SvgIcon component={LogoXtmOneIcon} fontSize="small" inheritViewBox />}
+            startIcon={<AutoFixHighIcon fontSize="small" />}
             disabled={disabled || loading}
           >
             {t('Use Ariane ')}

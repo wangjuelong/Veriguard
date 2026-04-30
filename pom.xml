@@ -27,7 +27,6 @@
         <commons-validator.version>1.10.0</commons-validator.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <jacoco-plugin.version>0.8.14</jacoco-plugin.version>
-        <pyroscope.version>2.5.2</pyroscope.version>
         <lombok.version>1.18.46</lombok.version>
         <spring-security-crypto.version>6.5.9</spring-security-crypto.version>
     </properties>
@@ -114,11 +113,6 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.13.0</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.pyroscope</groupId>
-            <artifactId>agent</artifactId>
-            <version>${pyroscope.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>

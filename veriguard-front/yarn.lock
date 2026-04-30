@@ -6315,13 +6315,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"filigran-icon@npm:0.21.0":
-  version: 0.21.0
-  resolution: "filigran-icon@npm:0.21.0"
-  checksum: 10c0/d5aceb36bf769e675035ae6b6e1626615dcb45157c7fe1d2f4cfc8c350382e74f1150cbbc0264bb88e38f4097dfe1accf182c9ee3060eb0e7f2241ded97c3011
-  languageName: node
-  linkType: hard
-
 "fill-range@npm:^7.1.1":
   version: 7.1.1
   resolution: "fill-range@npm:7.1.1"
@@ -12697,7 +12690,6 @@ __metadata:
     eslint-plugin-react-refresh: "npm:0.5.2"
     eslint-plugin-simple-import-sort: "npm:12.1.1"
     express: "npm:5.2.1"
-    filigran-icon: "npm:0.21.0"
     final-form: "npm:4.20.10"
     final-form-arrays: "npm:4.0.0"
     fs-extra: "npm:11.3.4"
