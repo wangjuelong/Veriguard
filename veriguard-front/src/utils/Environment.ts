@@ -45,11 +45,7 @@ export const useQueryParameter = (parameters: string[]): (string | null)[] => {
   return parameters.map(p => query.get(p));
 };
 
-const DEMO_PLATFORM_URL = 'https://demo.veriguard.io';
-export const isDemoInstance = (settings: PlatformSettings) => {
-  // TODO: Replace this hardcoded URL check with checking a platform setting (e.g. DEMO_MODE=true)
-  return settings.platform_base_url === DEMO_PLATFORM_URL;
-};
+export const isDemoInstance = (_settings: PlatformSettings) => false;
 
 // Network
 const isEmptyPath = R.isNil(window.BASE_PATH) || R.isEmpty(window.BASE_PATH);

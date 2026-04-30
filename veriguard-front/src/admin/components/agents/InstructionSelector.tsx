@@ -377,10 +377,7 @@ nohup ${agentFolder ?? '/opt/veriguard-caldera-agent'}/veriguard-caldera-agent -
               severity="info"
               style={{ marginTop: theme.spacing(1) }}
             >
-              {`${t('You should add "Log on as a service" policy if you are installing as a user.')} ${t('For further details, refer to the')} `}
-              <a target="_blank" href="https://learn.microsoft.com/en-us/system-center/scsm/enable-service-log-on-sm?view=sc-sm-2025" rel="noreferrer">
-                {t('Windows documentation.')}
-              </a>
+              {t('You should add "Log on as a service" policy if you are installing as a user.')}
             </Alert>
           )
         }

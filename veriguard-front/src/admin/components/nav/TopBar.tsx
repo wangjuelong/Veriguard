@@ -1,5 +1,5 @@
-import { AccountCircleOutlined, AppsOutlined, ImportantDevicesOutlined } from '@mui/icons-material';
-import { AppBar, Badge, Box, Grid, IconButton, Menu, MenuItem, Popover, Toolbar, Tooltip } from '@mui/material';
+import { AccountCircleOutlined, ImportantDevicesOutlined } from '@mui/icons-material';
+import { AppBar, IconButton, Menu, MenuItem, Toolbar, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, type MouseEvent as ReactMouseEvent, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
@@ -9,8 +9,6 @@ import { logout } from '../../../actions/Application';
 import { useFormatter } from '../../../components/i18n';
 import SearchInput from '../../../components/SearchFilter';
 import { computeBannerSettings } from '../../../public/components/systembanners/utils';
-import oaevDark from '../../../static/images/xtm/oaev_dark.png';
-import oaevLight from '../../../static/images/xtm/oaev_light.png';
 import { MESSAGING$ } from '../../../utils/Environment';
 import { useAppDispatch } from '../../../utils/hooks';
 import useAuth from '../../../utils/hooks/useAuth';
@@ -53,25 +51,6 @@ const useStyles = makeStyles()(theme => ({
     height: '100%',
     paddingTop: 12,
   },
-  subtitle: {
-    color: theme.palette.text?.secondary,
-    fontSize: '15px',
-    marginBottom: 20,
-  },
-  xtmItemCurrent: {
-    display: 'block',
-    color: theme.palette.text?.primary,
-    textAlign: 'center',
-    cursor: 'default',
-    padding: '15px 0 10px 0',
-    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-    borderRadius: 4,
-  },
-  product: {
-    margin: '5px auto 0 auto',
-    textAlign: 'center',
-    fontSize: 15,
-  },
 }));
 
 const TopBar: FunctionComponent = () => {
@@ -84,13 +63,6 @@ const TopBar: FunctionComponent = () => {
   const { settings } = useAuth();
   const { bannerHeightNumber } = computeBannerSettings(settings);
 
-  const [xtmOpen, setXtmOpen] = useState<{
-    open: boolean;
-    anchorEl: HTMLButtonElement | null;
-  }>({
-    open: false,
-    anchorEl: null,
-  });
   const [menuOpen, setMenuOpen] = useState<{
     open: boolean;
     anchorEl: HTMLButtonElement | null;
@@ -109,21 +81,6 @@ const TopBar: FunctionComponent = () => {
   };
   const handleCloseMenu = () => {
     setMenuOpen({
-      open: false,
-      anchorEl: null,
-    });
-  };
-  const handleOpenXtm = (
-    event: ReactMouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    event.preventDefault();
-    setXtmOpen({
-      open: true,
-      anchorEl: event.currentTarget,
-    });
-  };
-  const handleCloseXtm = () => {
-    setXtmOpen({
       open: false,
       anchorEl: null,
     });
@@ -197,50 +154,6 @@ const TopBar: FunctionComponent = () => {
                 <ImportantDevicesOutlined fontSize="medium" />
               </IconButton>
             </Tooltip>
-            <IconButton
-              color="inherit"
-              size="medium"
-              aria-owns={xtmOpen.open ? 'menu-appbar' : undefined}
-              aria-haspopup="true"
-              id="xtm-menu-button"
-              onClick={handleOpenXtm}
-            >
-              <AppsOutlined fontSize="medium" />
-            </IconButton>
-            <Popover
-              anchorEl={xtmOpen.anchorEl}
-              open={xtmOpen.open}
-              onClose={handleCloseXtm}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-            >
-              <Box sx={{
-                width: '300px',
-                padding: '15px',
-                textAlign: 'center',
-              }}
-              >
-                <div className={classes.subtitle}>{t('Veriguard Platform')}</div>
-                <Grid container spacing={3}>
-                  <Grid size={6}>
-                    <Tooltip title={t('Current platform')}>
-                      <a className={classes.xtmItemCurrent}>
-                        <Badge variant="dot" color="success">
-                          <img style={{ width: 40 }} src={theme.palette.mode === 'dark' ? oaevDark : oaevLight} alt="OAEV" />
-                        </Badge>
-                        <div className={classes.product}>{t('Veriguard')}</div>
-                      </a>
-                    </Tooltip>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Popover>
             <IconButton
               aria-label="account-menu"
               onClick={handleOpenMenu}

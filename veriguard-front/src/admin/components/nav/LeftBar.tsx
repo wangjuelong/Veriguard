@@ -1,4 +1,4 @@
-import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, OnlinePredictionOutlined, PersonOutlined, RowingOutlined, SchoolOutlined, SettingsOutlined, SmartButtonOutlined, SubscriptionsOutlined, TerminalOutlined, VerifiedUserOutlined, Widgets } from '@mui/icons-material';
+import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, RowingOutlined, SchoolOutlined, SettingsOutlined, SubscriptionsOutlined, VerifiedUserOutlined } from '@mui/icons-material';
 import { Binoculars, NewspaperVariantMultipleOutline, PostOutline, SecurityNetwork, SelectGroup, Target } from 'mdi-material-ui';
 import { useContext } from 'react';
 
@@ -144,39 +144,6 @@ const LeftBar = () => {
           icon: () => (<VerifiedUserOutlined />),
           label: 'Veriguard',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
-        },
-        {
-          path: `/admin/integrations`,
-          icon: () => (<DnsOutlined />),
-          label: 'Integrations',
-          href: 'integrations',
-          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
-          subItems: [
-            {
-              link: '/admin/integrations/catalog',
-              label: 'Catalog',
-              icon: () => (<Widgets fontSize="small" />),
-              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
-            },
-            {
-              link: '/admin/integrations/injectors',
-              label: 'Injectors',
-              icon: () => (<SmartButtonOutlined fontSize="small" />),
-              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
-            },
-            {
-              link: '/admin/integrations/collectors',
-              label: 'Collectors',
-              icon: () => (<OnlinePredictionOutlined fontSize="small" />),
-              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
-            },
-            {
-              link: '/admin/integrations/executors',
-              label: 'Executors',
-              icon: () => (<TerminalOutlined fontSize="small" />),
-              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
-            },
-          ],
         },
       ],
     },

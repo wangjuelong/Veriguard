@@ -30,14 +30,6 @@ const OutputFormTab = () => {
     <>
       <Typography>
         {t('Define structured outputs by parsing the raw output of your payload.')}
-&nbsp;
-        <a
-          href="https://docs.veriguard.io/latest/usage/payloads/payloads/#output-parser"
-          target="_blank"
-          rel="noreferrer"
-        >
-          {t('Learn more about parser.')}
-        </a>
       </Typography>
       <Typography variant="h5" marginTop={theme.spacing(3)}>{t('Parsing rules')}</Typography>
       <div style={{

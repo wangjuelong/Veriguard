@@ -12,7 +12,6 @@ interface Props {
 }
 
 const Healthchecks = ({ healthchecks, scenarioId }: Props) => {
-  const documentationRootUrl = 'https://docs.veriguard.io';
   const theme = useTheme();
   const navigate = useNavigate();
   const { t } = useFormatter();
@@ -28,20 +27,8 @@ const Healthchecks = ({ healthchecks, scenarioId }: Props) => {
 
   const goToHealthcheckAction = (healthcheckType: string) => {
     switch (healthcheckType) {
-      case 'SMTP': {
-        window.open(`${documentationRootUrl}/latest/deployment/configuration/?h=smtp#mail-services`);
-        break;
-      }
-      case 'IMAP': {
-        window.open(`${documentationRootUrl}/latest/deployment/configuration/?h=smtp#imap`);
-        break;
-      }
       case 'AGENT_OR_EXECUTOR': {
         navigate('/admin/agents');
-        break;
-      }
-      case 'SECURITY_SYSTEM_COLLECTOR': {
-        window.open(`${documentationRootUrl}/latest/usage/collectors/?h=collector`);
         break;
       }
       case 'INJECT': {
@@ -50,11 +37,6 @@ const Healthchecks = ({ healthchecks, scenarioId }: Props) => {
       }
       case 'TEAMS': {
         navigate(`/admin/scenarios/${scenarioId}/definition`);
-        break;
-      }
-      case 'NMAP':
-      case 'NUCLEI': {
-        window.open(`${documentationRootUrl}/latest/usage/injectors`);
         break;
       }
       default:

@@ -82,15 +82,7 @@ const CatalogLayout = () => {
             severity="warning"
             style={{ marginBottom: theme.spacing(2) }}
           >
-            {t('Some deployment requires the installation of our')}
-            &nbsp;
-            <a
-              href="https://docs.veriguard.io/latest/deployment/ecosystem/integration-manager/overview/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('Integration Manager')}
-            </a>
+            {t('Some deployment requires the installation of our Integration Manager.')}
           </Alert>
         )}
       {!isXtmComposerUp && catalogConnectorId && catalogConnector?.catalog_connector_manager_supported
