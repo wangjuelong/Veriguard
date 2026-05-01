@@ -77,8 +77,26 @@ const FilterAutocomplete: FunctionComponent<Props> = ({
             {...params}
             variant="outlined"
             size="small"
-            label={domains ? t('Please choose a scenario or simulation, or leave this field blank to include all scenarios and atomic tests') : t('Add filter')}
+            placeholder={domains
+              ? t('Please choose a scenario or simulation, or leave this field blank to include all scenarios and atomic tests')
+              : t('Add filter')}
             style={style}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                height: 32,
+                fontSize: 13,
+                borderRadius: 8,
+                paddingTop: 0,
+                paddingBottom: 0,
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderWidth: '0.5px',
+              },
+              '& .MuiAutocomplete-input': {
+                padding: '4px 6px !important',
+                fontSize: 13,
+              },
+            }}
           />
         )}
         renderOption={(props, option) => <li {...props} key={props.key}>{option.label}</li>}

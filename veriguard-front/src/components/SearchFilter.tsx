@@ -6,11 +6,17 @@ import { makeStyles } from 'tss-react/mui';
 import { debounce } from '../utils/utils';
 import { useFormatter } from './i18n';
 
+// VeriGuard search input — 32px height, 8px radius, .5px line, 13px font.
 const useStyles = makeStyles()(theme => ({
   searchRoot: {
-    'borderRadius': 5,
+    'borderRadius': 8,
     'padding': '0 10px',
+    'height': 32,
+    'fontSize': 13,
     'backgroundColor': theme.palette.background.paper,
+    'border': `0.5px solid ${theme.palette.divider}`,
+    '&:hover': { borderColor: theme.palette.text.secondary },
+    '&.Mui-focused': { borderColor: theme.palette.text.primary },
     '&.inDrawer': { height: 30 },
     '&.topBar': {
       marginRight: 5,
@@ -21,11 +27,13 @@ const useStyles = makeStyles()(theme => ({
   },
   searchInput: {
     'transition': theme.transitions.create('width'),
-    'width': 200,
-    '&:focus': { width: 350 },
+    'width': 220,
+    'fontSize': 13,
+    'padding': '6px 0',
+    '&:focus': { width: 320 },
     '&.small, &.thin': {
-      'width': 150,
-      '&:focus': { width: 250 },
+      'width': 180,
+      '&:focus': { width: 260 },
     },
   },
 }));
@@ -87,13 +95,16 @@ const SearchInput: FunctionComponent<Props> = ({
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <Search fontSize="small" />
+            <Search sx={{ fontSize: 16 }} />
           </InputAdornment>
         ),
         classes: {
           root: classRoot,
           input: inputClass,
         },
+      }}
+      sx={{
+        '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
       }}
       autoComplete="off"
     />
