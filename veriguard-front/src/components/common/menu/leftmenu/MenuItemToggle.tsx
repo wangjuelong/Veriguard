@@ -1,9 +1,8 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import { ListItemIcon, ListItemText, MenuItem } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { type FunctionComponent } from 'react';
 
 import { useFormatter } from '../../../i18n';
-import useLeftMenuStyle from './useLeftMenuStyle';
 
 interface Props {
   navOpen: boolean;
@@ -11,26 +10,36 @@ interface Props {
 }
 
 const MenuItemToggle: FunctionComponent<Props> = ({ navOpen, onClick }) => {
-  // Standard hooks
   const { t } = useFormatter();
-  const leftMenuStyle = useLeftMenuStyle();
 
   return (
-    <MenuItem
-      aria-label={navOpen ? 'Collapse menu' : 'Expand menu'}
-      dense
-      onClick={onClick}
+    <Tooltip
+      title={navOpen ? t('Collapse menu') : t('Expand menu')}
+      placement="right"
     >
-      <ListItemIcon style={{ ...leftMenuStyle.listItemIcon }}>
-        {navOpen ? <ChevronLeft /> : <ChevronRight />}
-      </ListItemIcon>
-      {navOpen && (
-        <ListItemText
-          primary={t('Collapse')}
-          slotProps={{ primary: { sx: { ...leftMenuStyle.listItemText } } }}
-        />
-      )}
-    </MenuItem>
+      <IconButton
+        aria-label={navOpen ? 'Collapse menu' : 'Expand menu'}
+        onClick={onClick}
+        size="small"
+        sx={{
+          'alignSelf': navOpen ? 'flex-end' : 'center',
+          'width': 28,
+          'height': 28,
+          'margin': '6px',
+          'borderRadius': '7px',
+          'color': 'text.secondary',
+          'transition': 'background-color 220ms cubic-bezier(.2,.7,.2,1), transform 220ms cubic-bezier(.2,.7,.2,1)',
+          '&:hover': {
+            backgroundColor: 'action.hover',
+            color: 'text.primary',
+          },
+        }}
+      >
+        {navOpen
+          ? <ChevronLeft sx={{ fontSize: 18 }} />
+          : <ChevronRight sx={{ fontSize: 18 }} />}
+      </IconButton>
+    </Tooltip>
   );
 };
 

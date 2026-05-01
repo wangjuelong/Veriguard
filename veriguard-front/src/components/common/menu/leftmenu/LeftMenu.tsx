@@ -83,11 +83,11 @@ const LeftMenu: FunctionComponent<{
             })
           );
         })}
-        <MenuItemToggle
-          navOpen={state.navOpen}
-          onClick={helpers.handleToggleDrawer}
-        />
       </MenuList>
+      <MenuItemToggle
+        navOpen={state.navOpen}
+        onClick={helpers.handleToggleDrawer}
+      />
     </Drawer>
   );
 };
