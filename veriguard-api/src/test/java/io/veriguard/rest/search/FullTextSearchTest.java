@@ -99,7 +99,7 @@ public class FullTextSearchTest extends IntegrationTest {
   }
 
   @ParameterizedTest(name = "{2}")
-  @MethodSource("countScenarioTestCases")
+  @MethodSource("countAttackChainTestCases")
   @WithMockUser(isAdmin = true)
   void given_user_is_admin_search_input_should_return_count_for_all_attackChains(
       String searchTerm, int expectedCount, String testDisplayName) throws Exception {
@@ -137,7 +137,7 @@ public class FullTextSearchTest extends IntegrationTest {
   }
 
   @ParameterizedTest(name = "{3}")
-  @MethodSource("searchScenarioTestCases")
+  @MethodSource("searchAttackChainTestCases")
   @WithMockUser(isAdmin = true)
   void given_user_is_admin_search_input_should_return_all_attackChains(
       String searchTerm, int expectedCount, List<String> expectedIds, String testDisplayName)
@@ -204,7 +204,7 @@ public class FullTextSearchTest extends IntegrationTest {
   }
 
   @ParameterizedTest(name = "{4}")
-  @MethodSource("searchScenarioGrantsTestCases")
+  @MethodSource("searchAttackChainGrantsTestCases")
   @WithMockUser
   void given_user_with_grants_search_input_should_match_grants(
       String searchTerm,

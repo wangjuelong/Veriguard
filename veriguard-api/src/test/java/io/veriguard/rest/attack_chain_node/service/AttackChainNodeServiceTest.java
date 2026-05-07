@@ -113,11 +113,11 @@ class AttackChainNodeServiceTest {
         attackChainNodeService, "healthCheckUtils", new HealthCheckUtils(new ExecutorUtils()));
     ReflectionTestUtils.setField(
         attackChainNodeService,
-        "injectMapper",
+        "attackChainNodeMapper",
         new AttackChainNodeMapper(
             attackChainNodeStatusMapper, attackChainNodeExpectationMapper, attackChainNodeUtils));
     ReflectionTestUtils.setField(
-        attackChainNodeService, "injectorContractContentUtils", nodeContractContentUtils);
+        attackChainNodeService, "nodeContractContentUtils", nodeContractContentUtils);
   }
 
   @Test

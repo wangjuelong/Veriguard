@@ -212,7 +212,7 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
   @DisplayName(
       "When auto closing of NON stix-created simulation, DOES NOT trigger stix coverage job")
   public void shouldRaiseExceptionIfExpectationMalicious() {
-    ReflectionTestUtils.setField(job, "injectDependenciesRepository", attackChainEdgesRepository);
+    ReflectionTestUtils.setField(job, "attackChainEdgesRepository", attackChainEdgesRepository);
     AttackChainNode attackChainNode =
         attackChainNodeComposer
             .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())

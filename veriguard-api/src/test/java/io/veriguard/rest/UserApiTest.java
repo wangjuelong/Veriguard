@@ -268,7 +268,7 @@ class UserApiTest extends IntegrationTest {
                 "user_teams":[],
                 "user_tags":[%s],
                 "user_communications":[],
-                "team_attackChainRuns_users":[],
+                "team_exercises_users":[],
                 "user_gravatar":"https://www.gravatar.com/avatar/48446ca219d9501c60a2fa161f24cc75?d=mm",
                 "user_is_planner":true,
                 "user_is_observer":true,
