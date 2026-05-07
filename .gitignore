@@ -1,6 +1,7 @@
 HELP.md
 *.bat
 **/application-dev.properties
+.superpowers/
 target/
 !veriguard-front/src/utils/target/
 !**/src/main/**/target/
