@@ -9,7 +9,7 @@ import { createRunningExerciseFromScenario, updateScenarioRecurrence } from '../
 import { type ScenariosHelper } from '../../../../actions/scenarios/scenario-helper';
 import Transition from '../../../../components/common/Transition';
 import { useFormatter } from '../../../../components/i18n';
-import { SIMULATION_BASE_URL } from '../../../../constants/BaseUrls';
+import { ATTACK_CHAIN_RUN_BASE_URL } from '../../../../constants/BaseUrls';
 import { useHelper } from '../../../../store';
 import {
   type Exercise,
@@ -181,7 +181,7 @@ const ScenarioHeader = ({
         <ScenarioPopover
           scenario={scenario}
           actions={['Duplicate', 'Update', 'Delete', 'Export']}
-          onDelete={() => navigate('/admin/scenarios')}
+          onDelete={() => navigate('/admin/attack_chains')}
         />
       </div>
       <ScenarioRecurringFormDialog
@@ -214,7 +214,7 @@ const ScenarioHeader = ({
             onClick={async () => {
               setOpenInstantiateSimulationAndStart(false);
               const exercise: Exercise = (await createRunningExerciseFromScenario(scenarioId)).data;
-              navigate(`${SIMULATION_BASE_URL}/${exercise.exercise_id}`);
+              navigate(`${ATTACK_CHAIN_RUN_BASE_URL}/${exercise.exercise_id}`);
               MESSAGING$.notifySuccess(t('New simulation successfully created and started'));
             }}
           >

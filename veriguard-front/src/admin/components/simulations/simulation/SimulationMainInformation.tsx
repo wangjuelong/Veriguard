@@ -12,7 +12,7 @@ import ItemSeverity from '../../../../components/ItemSeverity';
 import ItemTags from '../../../../components/ItemTags';
 import PlatformIcon from '../../../../components/PlatformIcon';
 import TypeAffinityChip from '../../../../components/TypeAffinityChip';
-import { SCENARIO_BASE_URL } from '../../../../constants/BaseUrls';
+import { ATTACK_CHAIN_BASE_URL } from '../../../../constants/BaseUrls';
 import { useHelper } from '../../../../store';
 import { type Exercise, type KillChainPhase } from '../../../../utils/api-types';
 import { AbilityContext } from '../../../../utils/permissions/permissionsContext';
@@ -36,7 +36,7 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
       return (
         <ContextLink
           title={scenario.scenario_name}
-          url={`${SCENARIO_BASE_URL}/${scenario.scenario_id}`}
+          url={`${ATTACK_CHAIN_BASE_URL}/${scenario.scenario_id}`}
         />
       );
     }

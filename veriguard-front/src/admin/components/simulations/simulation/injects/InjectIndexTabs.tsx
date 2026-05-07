@@ -40,23 +40,23 @@ const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }:
     <Tabs value={tabValue}>
       <Tab
         component={Link}
-        to={computePath(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}`)}
-        value={`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}`}
+        to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}`)}
+        value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}`}
         label={t('Overview')}
         className={classes.item}
       />
       <Tab
         component={Link}
-        to={computePath(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/detail`)}
-        value={`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/detail`}
+        to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/detail`)}
+        value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/detail`}
         label={t('Inject Execution details')}
         className={classes.item}
       />
       {injectResultOverview.inject_injector_contract?.injector_contract_payload && (
         <Tab
           component={Link}
-          to={computePath(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/payload_info`)}
-          value={`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/payload_info`}
+          to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/payload_info`)}
+          value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/payload_info`}
           label={t('Payload info')}
           className={classes.item}
         />
@@ -65,8 +65,8 @@ const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }:
         || externalContractTypesWithFindings.includes(injectResultOverview.inject_type ?? '')) && (
         <Tab
           component={Link}
-          to={computePath(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/findings`)}
-          value={`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/findings`}
+          to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/findings`)}
+          value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/findings`}
           label={t('Findings')}
           className={classes.item}
         />
@@ -74,8 +74,8 @@ const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }:
       {injectResultOverview.inject_injector_contract?.injector_contract_payload && (
         <Tab
           component={Link}
-          to={computePath(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`)}
-          value={computePath(`/admin/simulations/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`)}
+          to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`)}
+          value={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`)}
           label={t('Remediations')}
           className={classes.item}
         />

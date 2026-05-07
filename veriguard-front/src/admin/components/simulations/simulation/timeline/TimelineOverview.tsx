@@ -225,7 +225,7 @@ const TimelineOverview = () => {
                     classes={{ root: classes.item }}
                     divider
                     component={Link}
-                    to={`/admin/simulations/${exerciseId}/injects/${inject.inject_id}?${BACK_LABEL}=Animation&${BACK_URI}=/admin/simulations/${exerciseId}/animation/timeline`}
+                    to={`/admin/attack_chain_runs/${exerciseId}/injects/${inject.inject_id}?${BACK_LABEL}=Animation&${BACK_URI}=/admin/simulations/${exerciseId}/animation/timeline`}
                   >
                     <ListItemIcon>
                       <InjectIcon
@@ -313,7 +313,7 @@ const TimelineOverview = () => {
                   isAtomic={false}
                   injects={injects}
                   articlesFromExerciseOrScenario={articles}
-                  uriVariable={`/admin/simulations/${exerciseId}/definition`}
+                  uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
                   variablesFromExerciseOrScenario={variables}
                 />
               </ChallengeContext.Provider>

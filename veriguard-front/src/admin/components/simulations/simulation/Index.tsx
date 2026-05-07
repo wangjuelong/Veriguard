@@ -68,14 +68,14 @@ const IndexComponent: FunctionComponent<{ exercise: ExerciseType }> = ({ exercis
   };
 
   let tabValue = location.pathname;
-  if (location.pathname.includes(`/admin/simulations/${exercise.exercise_id}/definition`)) {
-    tabValue = `/admin/simulations/${exercise.exercise_id}/definition`;
-  } else if (location.pathname.includes(`/admin/simulations/${exercise.exercise_id}/animation`)) {
-    tabValue = `/admin/simulations/${exercise.exercise_id}/animation`;
-  } else if (location.pathname.includes(`/admin/simulations/${exercise.exercise_id}/results`)) {
-    tabValue = `/admin/simulations/${exercise.exercise_id}/results`;
-  } else if (location.pathname.includes(`/admin/simulations/${exercise.exercise_id}/tests`)) {
-    tabValue = `/admin/simulations/${exercise.exercise_id}/tests`;
+  if (location.pathname.includes(`/admin/attack_chain_runs/${exercise.exercise_id}/definition`)) {
+    tabValue = `/admin/attack_chain_runs/${exercise.exercise_id}/definition`;
+  } else if (location.pathname.includes(`/admin/attack_chain_runs/${exercise.exercise_id}/animation`)) {
+    tabValue = `/admin/attack_chain_runs/${exercise.exercise_id}/animation`;
+  } else if (location.pathname.includes(`/admin/attack_chain_runs/${exercise.exercise_id}/results`)) {
+    tabValue = `/admin/attack_chain_runs/${exercise.exercise_id}/results`;
+  } else if (location.pathname.includes(`/admin/attack_chain_runs/${exercise.exercise_id}/tests`)) {
+    tabValue = `/admin/attack_chain_runs/${exercise.exercise_id}/tests`;
   }
 
   return (
@@ -88,7 +88,7 @@ const IndexComponent: FunctionComponent<{ exercise: ExerciseType }> = ({ exercis
             elements={[
               {
                 label: t('Simulations'),
-                link: '/admin/simulations',
+                link: '/admin/attack_chain_runs',
               },
               {
                 label: exercise.exercise_name,
@@ -111,50 +111,50 @@ const IndexComponent: FunctionComponent<{ exercise: ExerciseType }> = ({ exercis
                     <Tabs value={tabValue}>
                       <Tab
                         component={Link}
-                        to={`/admin/simulations/${exercise.exercise_id}`}
-                        value={`/admin/simulations/${exercise.exercise_id}`}
+                        to={`/admin/attack_chain_runs/${exercise.exercise_id}`}
+                        value={`/admin/attack_chain_runs/${exercise.exercise_id}`}
                         label={t('Overview')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/simulations/${exercise.exercise_id}/definition`}
-                        value={`/admin/simulations/${exercise.exercise_id}/definition`}
+                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/definition`}
+                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/definition`}
                         label={t('Definition')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/simulations/${exercise.exercise_id}/injects`}
-                        value={`/admin/simulations/${exercise.exercise_id}/injects`}
+                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/injects`}
+                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects`}
                         label={t('Injects')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/simulations/${exercise.exercise_id}/tests`}
-                        value={`/admin/simulations/${exercise.exercise_id}/tests`}
+                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/tests`}
+                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/tests`}
                         label={t('Tests')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/simulations/${exercise.exercise_id}/animation`}
-                        value={`/admin/simulations/${exercise.exercise_id}/animation`}
+                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/animation`}
+                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/animation`}
                         label={t('Animation')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/simulations/${exercise.exercise_id}/lessons`}
-                        value={`/admin/simulations/${exercise.exercise_id}/lessons`}
+                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/lessons`}
+                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/lessons`}
                         label={t('Lessons learned')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/simulations/${exercise.exercise_id}/findings`}
-                        value={`/admin/simulations/${exercise.exercise_id}/findings`}
+                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/findings`}
+                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/findings`}
                         label={t('Findings')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/simulations/${exercise.exercise_id}/analysis`}
-                        value={`/admin/simulations/${exercise.exercise_id}/analysis`}
+                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/analysis`}
+                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/analysis`}
                         label={t('Analysis')}
                       />
                     </Tabs>

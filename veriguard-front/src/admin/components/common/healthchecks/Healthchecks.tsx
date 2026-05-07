@@ -32,11 +32,11 @@ const Healthchecks = ({ healthchecks, scenarioId }: Props) => {
         break;
       }
       case 'INJECT': {
-        navigate(`/admin/scenarios/${scenarioId}/injects`);
+        navigate(`/admin/attack_chains/${scenarioId}/injects`);
         break;
       }
       case 'TEAMS': {
-        navigate(`/admin/scenarios/${scenarioId}/definition`);
+        navigate(`/admin/attack_chains/${scenarioId}/definition`);
         break;
       }
       default:

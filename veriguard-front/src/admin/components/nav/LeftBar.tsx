@@ -36,13 +36,13 @@ const LeftBar = () => {
       userRight: true,
       items: [
         {
-          path: `/admin/scenarios`,
+          path: `/admin/attack_chains`,
           icon: () => (<MovieFilterOutlined />),
           label: 'Scenarios',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
         },
         {
-          path: `/admin/simulations`,
+          path: `/admin/attack_chain_runs`,
           icon: () => (<HubOutlined />),
           label: 'Simulations',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),

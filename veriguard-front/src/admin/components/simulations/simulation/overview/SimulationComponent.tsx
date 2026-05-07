@@ -52,7 +52,7 @@ const SimulationComponent = () => {
     fetchExerciseInjectExpectationResults(exerciseId).then((result: { data: InjectExpectationResultsByAttackPattern[] }) => setInjectResults(result.data));
   }, [exerciseId]);
 
-  const goToLink = `/admin/simulations/${exerciseId}/injects`;
+  const goToLink = `/admin/attack_chain_runs/${exerciseId}/injects`;
   let resultAttackPatternIds = [];
   if (injectResults) {
     resultAttackPatternIds = R.uniq(
@@ -107,7 +107,7 @@ const SimulationComponent = () => {
         >
           {!results
             ? <Loader variant="inElement" />
-            : <ResponsePie expectationResultsByTypes={results} humanValidationLink={`/admin/simulations/${exerciseId}/animation/validations`} />}
+            : <ResponsePie expectationResultsByTypes={results} humanValidationLink={`/admin/attack_chain_runs/${exerciseId}/animation/validations`} />}
         </Paper>
       </div>
       {injectResults && resultAttackPatternIds.length > 0 && (
@@ -142,7 +142,7 @@ const SimulationComponent = () => {
           <Paper classes={{ root: classes.paper }} variant="outlined">
             <InjectResultList
               fetchInjects={input => searchExerciseInjects(exerciseId, input)}
-              goTo={injectId => `/admin/simulations/${exerciseId}/injects/${injectId}`}
+              goTo={injectId => `/admin/attack_chain_runs/${exerciseId}/injects/${injectId}`}
               queryableHelpers={queryableHelpers}
               searchPaginationInput={searchPaginationInput}
               contextId={exercise.exercise_id}

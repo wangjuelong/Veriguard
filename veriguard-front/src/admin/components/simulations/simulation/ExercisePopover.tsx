@@ -90,7 +90,7 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
       entities: { exercises: Exercise };
     }) => {
       handleCloseDuplicate();
-      navigate(`/admin/simulations/${result.result}`);
+      navigate(`/admin/attack_chain_runs/${result.result}`);
     });
   };
 

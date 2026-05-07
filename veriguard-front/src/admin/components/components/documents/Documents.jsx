@@ -291,7 +291,7 @@ const Documents = () => {
                                       onClick={(event) => {
                                         event.stopPropagation();
                                         event.preventDefault();
-                                        navigate(`/admin/simulations/${exercise.exercise_id}`);
+                                        navigate(`/admin/attack_chain_runs/${exercise.exercise_id}`);
                                       }}
                                     />
                                   </Tooltip>
@@ -326,7 +326,7 @@ const Documents = () => {
                                       onClick={(event) => {
                                         event.stopPropagation();
                                         event.preventDefault();
-                                        navigate(`/admin/scenarios/${scenario.scenario_id}`);
+                                        navigate(`/admin/attack_chains/${scenario.scenario_id}`);
                                       }}
                                     />
                                   </Tooltip>

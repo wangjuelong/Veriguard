@@ -50,10 +50,10 @@ const AnimationMenu: FunctionComponent<Props> = ({ exerciseId }) => {
       <MenuList component="nav">
         <MenuItem
           component={Link}
-          to={`/admin/simulations/${exerciseId}/animation/timeline`}
+          to={`/admin/attack_chain_runs/${exerciseId}/animation/timeline`}
           selected={
             location.pathname
-            === `/admin/simulations/${exerciseId}/animation/timeline`
+            === `/admin/attack_chain_runs/${exerciseId}/animation/timeline`
           }
           classes={{ root: classes.item }}
         >
@@ -64,9 +64,9 @@ const AnimationMenu: FunctionComponent<Props> = ({ exerciseId }) => {
         </MenuItem>
         <MenuItem
           component={Link}
-          to={`/admin/simulations/${exerciseId}/animation/mails`}
+          to={`/admin/attack_chain_runs/${exerciseId}/animation/mails`}
           selected={location.pathname.includes(
-            `/admin/simulations/${exerciseId}/animation/mails`,
+            `/admin/attack_chain_runs/${exerciseId}/animation/mails`,
           )}
           classes={{ root: classes.item }}
         >
@@ -77,10 +77,10 @@ const AnimationMenu: FunctionComponent<Props> = ({ exerciseId }) => {
         </MenuItem>
         <MenuItem
           component={Link}
-          to={`/admin/simulations/${exerciseId}/animation/validations`}
+          to={`/admin/attack_chain_runs/${exerciseId}/animation/validations`}
           selected={
             location.pathname
-            === `/admin/simulations/${exerciseId}/animation/validations`
+            === `/admin/attack_chain_runs/${exerciseId}/animation/validations`
           }
           classes={{ root: classes.item }}
         >
@@ -91,10 +91,10 @@ const AnimationMenu: FunctionComponent<Props> = ({ exerciseId }) => {
         </MenuItem>
         <MenuItem
           component={Link}
-          to={`/admin/simulations/${exerciseId}/animation/logs`}
+          to={`/admin/attack_chain_runs/${exerciseId}/animation/logs`}
           selected={
             location.pathname
-            === `/admin/simulations/${exerciseId}/animation/logs`
+            === `/admin/attack_chain_runs/${exerciseId}/animation/logs`
           }
           classes={{ root: classes.item }}
         >

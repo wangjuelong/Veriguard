@@ -23,7 +23,7 @@ const ExerciseCreation = () => {
       entities: { scenarios: Record<string, Exercise> };
     }) => {
       setOpen(false);
-      navigate(`/admin/simulations/${result.result}`);
+      navigate(`/admin/attack_chain_runs/${result.result}`);
     });
   };
 

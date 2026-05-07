@@ -1,7 +1,7 @@
 import { type FunctionComponent, useContext } from 'react';
 
 import ContextLink from '../../../components/ContextLink';
-import { ATOMIC_BASE_URL, SCENARIO_BASE_URL, SIMULATION_BASE_URL } from '../../../constants/BaseUrls';
+import { ATOMIC_BASE_URL, ATTACK_CHAIN_BASE_URL, ATTACK_CHAIN_RUN_BASE_URL } from '../../../constants/BaseUrls';
 import { INJECT, SCENARIO, SIMULATION } from '../../../constants/Entities';
 import { type RelatedFindingOutput } from '../../../utils/api-types';
 import { AbilityContext } from '../../../utils/permissions/permissionsContext';
@@ -26,7 +26,7 @@ const FindingContextLink: FunctionComponent<Props> = ({ finding, type }) => {
       const isAtomic = !simulationId;
       const url = isAtomic
         ? `${ATOMIC_BASE_URL}/${injectId}`
-        : `${SIMULATION_BASE_URL}/${simulationId}/injects/${injectId}`;
+        : `${ATTACK_CHAIN_RUN_BASE_URL}/${simulationId}/injects/${injectId}`;
 
       const userRight = isAtomic
         ? (ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT) || ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, injectId))
@@ -41,7 +41,7 @@ const FindingContextLink: FunctionComponent<Props> = ({ finding, type }) => {
 
       if (!title || !id) return '-';
 
-      return ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_simulation?.exercise_id) ? <ContextLink title={title} url={`${SIMULATION_BASE_URL}/${id}`} /> : title;
+      return ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_simulation?.exercise_id) ? <ContextLink title={title} url={`${ATTACK_CHAIN_RUN_BASE_URL}/${id}`} /> : title;
     }
 
     case SCENARIO: {
@@ -50,7 +50,7 @@ const FindingContextLink: FunctionComponent<Props> = ({ finding, type }) => {
 
       if (!title || !id) return '-';
 
-      return ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_scenario?.scenario_id) ? <ContextLink title={title} url={`${SCENARIO_BASE_URL}/${id}`} /> : title;
+      return ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_scenario?.scenario_id) ? <ContextLink title={title} url={`${ATTACK_CHAIN_BASE_URL}/${id}`} /> : title;
     }
 
     default:

@@ -89,7 +89,7 @@ const ExerciseInjects: FunctionComponent = () => {
 
   const injectTestContext: InjectTestContextType = {
     contextId: exerciseId,
-    url: `/admin/simulations/${exerciseId}/tests/`,
+    url: `/admin/attack_chain_runs/${exerciseId}/tests/`,
     testInject: testInject,
   };
 
@@ -107,7 +107,7 @@ const ExerciseInjects: FunctionComponent = () => {
                     teams={teams}
                     articles={articles}
                     variables={variables}
-                    uriVariable={`/admin/simulations/${exerciseId}/definition`}
+                    uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
                   />
                 </InjectTestContext.Provider>
               </ChallengeContext.Provider>

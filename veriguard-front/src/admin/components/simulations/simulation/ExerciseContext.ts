@@ -108,7 +108,7 @@ const injectContextForExercise = (exercise: Exercise) => {
       data: InjectTestStatusOutput[];
     }> {
       return bulkTestInjects(exercise.exercise_id, param).then(result => ({
-        uri: `/admin/simulations/${exercise.exercise_id}/tests`,
+        uri: `/admin/attack_chain_runs/${exercise.exercise_id}/tests`,
         data: result.data,
       }));
     },

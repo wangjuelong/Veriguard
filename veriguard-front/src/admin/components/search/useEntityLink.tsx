@@ -11,9 +11,9 @@ const useEntityLink = (entity: string, id: string, searchTerm: string) => {
     case 'Organization':
       return `/admin/teams/organizations?search=${searchTerm}&id=${id}`;
     case 'Scenario':
-      return `/admin/scenarios/${id}}`;
+      return `/admin/attack_chains/${id}}`;
     case 'Exercise':
-      return `/admin/simulations/${id}`;
+      return `/admin/attack_chain_runs/${id}`;
     default:
       return ('');
   }

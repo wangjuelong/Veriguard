@@ -14,7 +14,7 @@ import { craftedDocumentFilter } from '../../../../components/common/queryable/f
 import Transition from '../../../../components/common/Transition';
 import ContextLink from '../../../../components/ContextLink';
 import { useFormatter } from '../../../../components/i18n';
-import { ATOMIC_BASE_URL, PAYLOAD_BASE_URL, SCENARIO_BASE_URL, SECURITY_PLATFORM_BASE_URL, SIMULATION_BASE_URL } from '../../../../constants/BaseUrls';
+import { ATOMIC_BASE_URL, PAYLOAD_BASE_URL, ATTACK_CHAIN_BASE_URL, SECURITY_PLATFORM_BASE_URL, ATTACK_CHAIN_RUN_BASE_URL } from '../../../../constants/BaseUrls';
 import { useHelper } from '../../../../store';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
@@ -25,10 +25,10 @@ import DocumentForm from './DocumentForm';
 
 const entityPaths = {
   atomicTestings: item => `${ATOMIC_BASE_URL}/${item.id}`,
-  simulations: item => `${SIMULATION_BASE_URL}/${item.id}`,
+  simulations: item => `${ATTACK_CHAIN_RUN_BASE_URL}/${item.id}`,
   payloads: item => `${PAYLOAD_BASE_URL}?query=${craftedDocumentFilter(item, 'payload_name', 'payloads')}`,
-  scenarioInjects: item => `${SCENARIO_BASE_URL}/${item.context}/injects?query=${craftedDocumentFilter(item, 'inject_title', `${item.context}-injects`)}`,
-  simulationInjects: item => `${SIMULATION_BASE_URL}/${item.context}/injects?query=${craftedDocumentFilter(item, 'inject_title', `${item.context}-injects`)}`,
+  scenarioInjects: item => `${ATTACK_CHAIN_BASE_URL}/${item.context}/injects?query=${craftedDocumentFilter(item, 'inject_title', `${item.context}-injects`)}`,
+  simulationInjects: item => `${ATTACK_CHAIN_RUN_BASE_URL}/${item.context}/injects?query=${craftedDocumentFilter(item, 'inject_title', `${item.context}-injects`)}`,
   securityPlatforms: item => `${SECURITY_PLATFORM_BASE_URL}?search=${item.name}`,
 };
 

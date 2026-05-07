@@ -386,7 +386,7 @@ const Mails = () => {
                 <ListItemButton
                   key={inject.inject_id}
                   component={Link}
-                  to={`/admin/simulations/${exerciseId}/animation/mails/${inject.inject_id}`}
+                  to={`/admin/attack_chain_runs/${exerciseId}/animation/mails/${inject.inject_id}`}
                   classes={{ root: classes.item }}
                   divider={true}
                 >

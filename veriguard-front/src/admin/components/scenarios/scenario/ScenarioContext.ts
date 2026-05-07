@@ -77,7 +77,7 @@ const injectContextForScenario = (scenario: Scenario) => {
       data: InjectTestStatusOutput[];
     }> {
       return bulkTestInjects(scenario.scenario_id, param).then(result => ({
-        uri: `/admin/scenarios/${scenario.scenario_id}/tests`,
+        uri: `/admin/attack_chains/${scenario.scenario_id}/tests`,
         data: result.data,
       }));
     },

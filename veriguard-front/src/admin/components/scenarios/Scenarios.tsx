@@ -229,7 +229,7 @@ const Scenarios = () => {
                   >
                     <ListItemButton
                       component={Link}
-                      to={`/admin/scenarios/${scenario.scenario_id}`}
+                      to={`/admin/attack_chains/${scenario.scenario_id}`}
                       classes={{ root: classes.item }}
                     >
                       <ListItemIcon>

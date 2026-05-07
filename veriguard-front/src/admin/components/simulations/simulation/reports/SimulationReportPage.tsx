@@ -89,7 +89,7 @@ const SimulationReportPage: FunctionComponent = () => {
           color="primary"
           variant="outlined"
           component={Link}
-          to={`/admin/simulations/${exerciseId}`}
+          to={`/admin/attack_chain_runs/${exerciseId}`}
         >
           {t('Back to administration')}
         </Button>

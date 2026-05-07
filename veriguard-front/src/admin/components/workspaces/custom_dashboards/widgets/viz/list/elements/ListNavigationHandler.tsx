@@ -5,8 +5,8 @@ import { buildSearchPagination } from '../../../../../../../../components/common
 import {
   ATOMIC_BASE_URL,
   ENDPOINT_BASE_URL,
-  SCENARIO_BASE_URL,
-  SIMULATION_BASE_URL,
+  ATTACK_CHAIN_BASE_URL,
+  ATTACK_CHAIN_RUN_BASE_URL,
 } from '../../../../../../../../constants/BaseUrls';
 import {
   type EsBase,
@@ -21,19 +21,19 @@ type NavigationHandler = (element: EsBase, navigate: NavigateFunction) => void;
 const getInjectDetailUrl = (injectElement: EsInject): string => {
   let injectUrl = `${ATOMIC_BASE_URL}/${injectElement.base_id}`;
   if (injectElement.base_simulation_side != null && injectElement.execution_date != null) {
-    injectUrl = `${SIMULATION_BASE_URL}/${injectElement.base_simulation_side}/injects/${injectElement.base_id}`;
+    injectUrl = `${ATTACK_CHAIN_RUN_BASE_URL}/${injectElement.base_simulation_side}/injects/${injectElement.base_id}`;
   } else if (injectElement.base_simulation_side != null) {
     const craftedFilter = btoa(qs.stringify({
       ...buildSearchPagination({ textSearch: injectElement.inject_title }),
       key: `${injectElement.base_simulation_side}-injects`,
     }));
-    injectUrl = `${SIMULATION_BASE_URL}/${injectElement.base_simulation_side}/injects?query=${craftedFilter}`;
+    injectUrl = `${ATTACK_CHAIN_RUN_BASE_URL}/${injectElement.base_simulation_side}/injects?query=${craftedFilter}`;
   } else if (injectElement.base_scenario_side != null) {
     const craftedFilter = btoa(qs.stringify({
       ...buildSearchPagination({ textSearch: injectElement.inject_title }),
       key: `${injectElement.base_scenario_side}-injects`,
     }));
-    injectUrl = `${SCENARIO_BASE_URL}/${injectElement.base_scenario_side}/injects?query=${craftedFilter}`;
+    injectUrl = `${ATTACK_CHAIN_BASE_URL}/${injectElement.base_scenario_side}/injects?query=${craftedFilter}`;
   }
   return injectUrl;
 };
@@ -64,11 +64,11 @@ const navigationHandlers: Record<string, NavigationHandler> = {
   },
 
   'scenario': (element, navigate) => {
-    navigate(`${SCENARIO_BASE_URL}/${element.base_id}`);
+    navigate(`${ATTACK_CHAIN_BASE_URL}/${element.base_id}`);
   },
 
   'simulation': (element, navigate) => {
-    navigate(`${SIMULATION_BASE_URL}/${element.base_id}`);
+    navigate(`${ATTACK_CHAIN_RUN_BASE_URL}/${element.base_id}`);
   },
 
   'inject': (element, navigate) => {
@@ -78,7 +78,7 @@ const navigationHandlers: Record<string, NavigationHandler> = {
   'expectation-inject': (element, navigate) => {
     const expectation = element as EsInjectExpectation;
     const injectUrl = expectation.base_simulation_side != null
-      ? `${SIMULATION_BASE_URL}/${expectation.base_simulation_side}/injects/${expectation.base_inject_side}`
+      ? `${ATTACK_CHAIN_RUN_BASE_URL}/${expectation.base_simulation_side}/injects/${expectation.base_inject_side}`
       : `${ATOMIC_BASE_URL}/${expectation.base_inject_side}`;
     const target = getTargetTypeFromInjectExpectation(expectation);
     navigate(`${injectUrl}?expectation_id=${expectation.base_id}&target=${target.type}`);
@@ -105,7 +105,7 @@ const navigationHandlers: Record<string, NavigationHandler> = {
     }, { allowEmptyArrays: true }));
 
     const baseUrl = (findingElement.base_simulation_side != null && findingElement.base_simulation_side != '')
-      ? `${SIMULATION_BASE_URL}/${findingElement.base_simulation_side}/injects/${findingElement.base_inject_side}/findings`
+      ? `${ATTACK_CHAIN_RUN_BASE_URL}/${findingElement.base_simulation_side}/injects/${findingElement.base_inject_side}/findings`
       : `${ATOMIC_BASE_URL}/${findingElement.base_inject_side}/findings`;
 
     navigate(`${baseUrl}?query=${craftedFilter}&open=${findingElement.base_id}`);

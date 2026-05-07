@@ -24,11 +24,11 @@ const InjectIndexHeader = ({ injectResultOverview, exercise }: Props) => {
   const breadcrumbs: BreadcrumbsElement[] = [
     {
       label: t('Simulations'),
-      link: '/admin/simulations',
+      link: '/admin/attack_chain_runs',
     },
     {
       label: t(exercise.exercise_name),
-      link: `/admin/simulations/${exercise.exercise_id}`,
+      link: `/admin/attack_chain_runs/${exercise.exercise_id}`,
     },
   ];
 

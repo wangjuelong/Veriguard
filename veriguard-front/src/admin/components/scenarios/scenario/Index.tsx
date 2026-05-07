@@ -56,10 +56,10 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
     }),
   };
   let tabValue = location.pathname;
-  if (location.pathname.includes(`/admin/scenarios/${scenario.scenario_id}/definition`)) {
-    tabValue = `/admin/scenarios/${scenario.scenario_id}/definition`;
-  } else if (location.pathname.includes(`/admin/scenarios/${scenario.scenario_id}/tests`)) {
-    tabValue = `/admin/scenarios/${scenario.scenario_id}/tests`;
+  if (location.pathname.includes(`/admin/attack_chains/${scenario.scenario_id}/definition`)) {
+    tabValue = `/admin/attack_chains/${scenario.scenario_id}/definition`;
+  } else if (location.pathname.includes(`/admin/attack_chains/${scenario.scenario_id}/tests`)) {
+    tabValue = `/admin/attack_chains/${scenario.scenario_id}/tests`;
   }
   const [openScenarioRecurringFormDialog, setOpenScenarioRecurringFormDialog] = useState<boolean>(false);
   const [openInstantiateSimulationAndStart, setOpenInstantiateSimulationAndStart] = useState<boolean>(false);
@@ -128,7 +128,7 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
             elements={[
               {
                 label: t('Scenarios'),
-                link: '/admin/scenarios',
+                link: '/admin/attack_chains',
               },
               {
                 label: scenario.scenario_name,
@@ -165,44 +165,44 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
             >
               <Tab
                 component={Link}
-                to={`/admin/scenarios/${scenario.scenario_id}`}
-                value={`/admin/scenarios/${scenario.scenario_id}`}
+                to={`/admin/attack_chains/${scenario.scenario_id}`}
+                value={`/admin/attack_chains/${scenario.scenario_id}`}
                 label={t('Overview')}
               />
               <Tab
                 component={Link}
-                to={`/admin/scenarios/${scenario.scenario_id}/definition`}
-                value={`/admin/scenarios/${scenario.scenario_id}/definition`}
+                to={`/admin/attack_chains/${scenario.scenario_id}/definition`}
+                value={`/admin/attack_chains/${scenario.scenario_id}/definition`}
                 label={t('Definition')}
               />
               <Tab
                 component={Link}
-                to={`/admin/scenarios/${scenario.scenario_id}/injects`}
-                value={`/admin/scenarios/${scenario.scenario_id}/injects`}
+                to={`/admin/attack_chains/${scenario.scenario_id}/injects`}
+                value={`/admin/attack_chains/${scenario.scenario_id}/injects`}
                 label={t('Injects')}
               />
               <Tab
                 component={Link}
-                to={`/admin/scenarios/${scenario.scenario_id}/tests`}
-                value={`/admin/scenarios/${scenario.scenario_id}/tests`}
+                to={`/admin/attack_chains/${scenario.scenario_id}/tests`}
+                value={`/admin/attack_chains/${scenario.scenario_id}/tests`}
                 label={t('Tests')}
               />
               <Tab
                 component={Link}
-                to={`/admin/scenarios/${scenario.scenario_id}/lessons`}
-                value={`/admin/scenarios/${scenario.scenario_id}/lessons`}
+                to={`/admin/attack_chains/${scenario.scenario_id}/lessons`}
+                value={`/admin/attack_chains/${scenario.scenario_id}/lessons`}
                 label={t('Lessons learned')}
               />
               <Tab
                 component={Link}
-                to={`/admin/scenarios/${scenario.scenario_id}/findings`}
-                value={`/admin/scenarios/${scenario.scenario_id}/findings`}
+                to={`/admin/attack_chains/${scenario.scenario_id}/findings`}
+                value={`/admin/attack_chains/${scenario.scenario_id}/findings`}
                 label={t('Findings')}
               />
               <Tab
                 component={Link}
-                to={`/admin/scenarios/${scenario.scenario_id}/analysis`}
-                value={`/admin/scenarios/${scenario.scenario_id}/analysis`}
+                to={`/admin/attack_chains/${scenario.scenario_id}/analysis`}
+                value={`/admin/attack_chains/${scenario.scenario_id}/analysis`}
                 label={t('Analysis')}
               />
             </Tabs>

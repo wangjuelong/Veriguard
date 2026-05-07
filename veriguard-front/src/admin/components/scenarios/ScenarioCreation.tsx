@@ -6,7 +6,7 @@ import { addScenario } from '../../../actions/scenarios/scenario-actions';
 import ButtonCreate from '../../../components/common/ButtonCreate';
 import Drawer from '../../../components/common/Drawer';
 import { useFormatter } from '../../../components/i18n';
-import { SCENARIO_BASE_URL } from '../../../constants/BaseUrls';
+import { ATTACK_CHAIN_BASE_URL } from '../../../constants/BaseUrls';
 import { useHelper } from '../../../store';
 import { type PlatformSettings, type Scenario, type ScenarioInput } from '../../../utils/api-types';
 import { useAppDispatch } from '../../../utils/hooks';
@@ -27,7 +27,7 @@ const ScenarioCreation: FunctionComponent = () => {
         entities: { scenarios: Record<string, Scenario> };
       }) => {
         if (result.entities) {
-          navigate(`${SCENARIO_BASE_URL}/${result.result}?openScenarioAssistant=${isScenarioAssistantChecked}`);
+          navigate(`${ATTACK_CHAIN_BASE_URL}/${result.result}?openScenarioAssistant=${isScenarioAssistantChecked}`);
           setOpen(false);
         }
       },

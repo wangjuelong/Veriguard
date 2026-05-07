@@ -192,7 +192,7 @@ const SimulationList: FunctionComponent<Props> = ({
                 <ListItemButton
                   classes={{ root: classes.item }}
                   component={Link}
-                  to={`/admin/simulations/${exercise.exercise_id}`}
+                  to={`/admin/attack_chain_runs/${exercise.exercise_id}`}
                 >
                   <ListItemIcon>
                     <HubOutlined color="primary" />

@@ -113,9 +113,9 @@ const Index = () => {
                 />
               )}
             />
-            <Route path="simulations" element={errorWrapper(Exercises)()} />
+            <Route path="attack_chain_runs" element={errorWrapper(Exercises)()} />
             <Route
-              path="simulations/:exerciseId/*"
+              path="attack_chain_runs/:exerciseId/*"
               element={(
                 <ProtectedRoute
                   checks={[{
@@ -131,7 +131,7 @@ const Index = () => {
               )}
             />
             <Route
-              path="simulations/:exerciseId/injects/:injectId/*"
+              path="attack_chain_runs/:exerciseId/injects/:injectId/*"
               element={(
                 <ProtectedRoute
                   checks={[{
@@ -163,9 +163,9 @@ const Index = () => {
                 />
               )}
             />
-            <Route path="scenarios" element={errorWrapper(Scenarios)()} />
+            <Route path="attack_chains" element={errorWrapper(Scenarios)()} />
             <Route
-              path="scenarios/:scenarioId/*"
+              path="attack_chains/:scenarioId/*"
               element={(
                 <ProtectedRoute
                   checks={[{

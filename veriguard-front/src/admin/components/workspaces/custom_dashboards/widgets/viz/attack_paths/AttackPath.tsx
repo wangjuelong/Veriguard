@@ -267,7 +267,7 @@ const AttackPath = ({ data, widgetId, simulationId, simulationStartDate = null, 
         key: 'simulation-injects-results',
       }, { allowEmptyArrays: true });
       const encodedParams = btoa(params);
-      navigate('/admin/simulations/' + simulationId + '?query=' + encodedParams);
+      navigate('/admin/attack_chain_runs/' + simulationId + '?query=' + encodedParams);
     }
   };
 

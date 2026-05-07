@@ -72,7 +72,7 @@ const ScenarioInjects: FunctionComponent = () => {
   const injectTestContext: InjectTestContextType
     = {
       contextId: scenarioId,
-      url: `/admin/scenarios/${scenarioId}/tests/`,
+      url: `/admin/attack_chains/${scenarioId}/tests/`,
       testInject: testInject,
     };
 
@@ -87,7 +87,7 @@ const ScenarioInjects: FunctionComponent = () => {
                   teams={teams}
                   articles={articles}
                   variables={variables}
-                  uriVariable={`/admin/scenarios/${scenarioId}/definition`}
+                  uriVariable={`/admin/attack_chains/${scenarioId}/definition`}
                   setViewMode={handleViewMode}
                   availableButtons={availableButtons}
                 />

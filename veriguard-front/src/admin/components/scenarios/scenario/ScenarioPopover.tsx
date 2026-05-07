@@ -46,7 +46,7 @@ const ScenarioPopover: FunctionComponent<Props> = ({
       entities: { scenarios: Record<string, Scenario> };
     }) => {
       handleCloseDuplicate();
-      navigate(`/admin/scenarios/${result.result}`);
+      navigate(`/admin/attack_chains/${result.result}`);
     });
   };
 
