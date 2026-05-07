@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 
-import { importingExercise } from '../../../actions/Exercise';
+import { importingExercise } from '../../../actions/AttackChainRun';
 import ImportUploader from '../../../components/common/ImportUploader';
 import { useAppDispatch } from '../../../utils/hooks';
 

@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { makeStyles } from 'tss-react/mui';
 import { z } from 'zod';
 
-import { updateInjectExpectation } from '../../../../../../actions/Exercise';
+import { updateInjectExpectation } from '../../../../../../actions/AttackChainRun';
 import { type UserHelper } from '../../../../../../actions/helper';
 import { fetchTeams } from '../../../../../../actions/teams/team-actions';
 import { type TeamsHelper } from '../../../../../../actions/teams/team-helper';

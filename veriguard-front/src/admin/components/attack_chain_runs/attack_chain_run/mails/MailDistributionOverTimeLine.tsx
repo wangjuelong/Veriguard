@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { fetchExerciseTeams } from '../../../../../actions/Exercise';
+import { fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';

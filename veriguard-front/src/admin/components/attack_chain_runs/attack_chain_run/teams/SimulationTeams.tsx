@@ -4,7 +4,7 @@ import { type FunctionComponent, useContext } from 'react';
 import { useParams } from 'react-router';
 
 import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExerciseTeams } from '../../../../../actions/Exercise';
+import { fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
 import { type Exercise, type Team } from '../../../../../utils/api-types';

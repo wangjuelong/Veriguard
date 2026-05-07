@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import { useContext, useState } from 'react';
 
 import { type ExercisesHelper } from '../../../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise } from '../../../../../../../actions/Exercise';
+import { fetchExercise } from '../../../../../../../actions/AttackChainRun';
 import { useFormatter } from '../../../../../../../components/i18n';
 import Loader from '../../../../../../../components/Loader';
 import { useHelper } from '../../../../../../../store';

@@ -4,8 +4,8 @@ import { makeStyles } from 'tss-react/mui';
 
 import { type AttackPatternHelper } from '../../../../actions/attack_patterns/attackpattern-helper';
 import { type InjectorContractHelper } from '../../../../actions/injector_contracts/injector-contract-helper';
-import { fetchInjectorsContracts } from '../../../../actions/InjectorContracts';
 import { type KillChainPhaseHelper } from '../../../../actions/kill_chain_phases/killchainphase-helper';
+import { fetchInjectorsContracts } from '../../../../actions/NodeContracts';
 import { type FilterHelpers } from '../../../../components/common/queryable/filter/FilterHelpers';
 import { buildEmptyFilter } from '../../../../components/common/queryable/filter/FilterUtils';
 import { useFormatter } from '../../../../components/i18n';

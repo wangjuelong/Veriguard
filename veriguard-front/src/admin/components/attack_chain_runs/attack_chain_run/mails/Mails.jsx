@@ -19,7 +19,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExerciseInjects } from '../../../../../actions/Inject';
+import { fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
 import { useFormatter } from '../../../../../components/i18n';
 import ItemTags from '../../../../../components/ItemTags';
 import SearchFilter from '../../../../../components/SearchFilter';

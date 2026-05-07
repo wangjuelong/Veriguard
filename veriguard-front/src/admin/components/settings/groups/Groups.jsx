@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchScenarios } from '../../../../actions/attack_chains/scenario-actions';
-import { fetchExercises } from '../../../../actions/Exercise';
+import { fetchExercises } from '../../../../actions/AttackChainRun';
 import { searchGroups } from '../../../../actions/Group';
 import { fetchOrganizations } from '../../../../actions/Organization';
 import { fetchRoles } from '../../../../actions/roles/roles-actions';

@@ -10,7 +10,7 @@ import {
   fetchPlayersByExercise,
 } from '../../../../../actions/attack_chain_runs/exercise-action';
 import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise, fetchExerciseTeams } from '../../../../../actions/Exercise';
+import { fetchExercise, fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
 import { type UserHelper } from '../../../../../actions/helper';
 import { fetchReportFromSimulation } from '../../../../../actions/reports/report-actions';
 import { type ReportsHelper } from '../../../../../actions/reports/report-helper';

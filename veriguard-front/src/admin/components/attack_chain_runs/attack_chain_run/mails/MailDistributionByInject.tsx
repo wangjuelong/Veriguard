@@ -4,7 +4,7 @@ import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
 import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { fetchExerciseInjects } from '../../../../../actions/Inject';
+import { fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';

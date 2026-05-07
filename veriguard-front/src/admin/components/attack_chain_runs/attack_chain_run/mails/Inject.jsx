@@ -6,8 +6,8 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
+import { executeInject, fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
 import { fetchInjectCommunications } from '../../../../../actions/Communication';
-import { executeInject, fetchExerciseInjects } from '../../../../../actions/Inject';
 import { fetchPlayers } from '../../../../../actions/users/User';
 import Transition from '../../../../../components/common/Transition';
 import { useFormatter } from '../../../../../components/i18n';

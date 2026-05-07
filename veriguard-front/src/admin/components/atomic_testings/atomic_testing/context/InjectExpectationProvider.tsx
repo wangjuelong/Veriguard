@@ -1,7 +1,7 @@
 import { type ReactNode, useContext, useMemo, useState } from 'react';
 
 import { fetchInjectResultOverviewOutput } from '../../../../../actions/atomic_testings/atomic-testing-actions';
-import { deleteInjectExpectationResult } from '../../../../../actions/Exercise';
+import { deleteInjectExpectationResult } from '../../../../../actions/AttackChainRun';
 import DialogDelete from '../../../../../components/common/DialogDelete';
 import { useFormatter } from '../../../../../components/i18n';
 import { type InjectExpectationResult, type InjectResultOverviewOutput } from '../../../../../utils/api-types';

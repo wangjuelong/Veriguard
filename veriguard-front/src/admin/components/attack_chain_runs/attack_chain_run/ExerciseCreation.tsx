@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { addExercise } from '../../../../actions/Exercise';
+import { addExercise } from '../../../../actions/AttackChainRun';
 import { type LoggedHelper } from '../../../../actions/helper';
 import ButtonCreate from '../../../../components/common/ButtonCreate';
 import Drawer from '../../../../components/common/Drawer';

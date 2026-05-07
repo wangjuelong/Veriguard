@@ -5,7 +5,7 @@ import Chart from 'react-apexcharts';
 
 import { type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
 import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject-helper';
-import { fetchExerciseInjects } from '../../../../actions/Inject';
+import { fetchExerciseInjects } from '../../../../actions/AttackChainNode';
 import { type InjectorContractHelper } from '../../../../actions/injector_contracts/injector-contract-helper';
 import Empty from '../../../../components/Empty';
 import { useFormatter } from '../../../../components/i18n';

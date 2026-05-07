@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchScenariosById } from '../../../../actions/attack_chains/scenario-actions';
+import { fetchExercisesById } from '../../../../actions/AttackChainRun';
 import { searchDocuments } from '../../../../actions/Document';
-import { fetchExercisesById } from '../../../../actions/Exercise';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
 import PaginationComponent from '../../../../components/common/pagination/PaginationComponent';
 import SortHeadersComponent from '../../../../components/common/pagination/SortHeadersComponent';

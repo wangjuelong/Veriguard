@@ -1,7 +1,7 @@
 import { ToggleButtonGroup } from '@mui/material';
 import { useState } from 'react';
 
-import { searchExercises } from '../../../actions/Exercise';
+import { searchExercises } from '../../../actions/AttackChainRun';
 import Breadcrumbs from '../../../components/Breadcrumbs';
 import ExportButton from '../../../components/common/ExportButton';
 import { initSorting } from '../../../components/common/queryable/Page';

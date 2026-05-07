@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { searchExercises } from '../../../../../../actions/Exercise';
+import { searchExercises } from '../../../../../../actions/AttackChainRun';
 import { initSorting } from '../../../../../../components/common/queryable/Page';
 import PaginationComponentV2 from '../../../../../../components/common/queryable/pagination/PaginationComponentV2';
 import { buildSearchPagination } from '../../../../../../components/common/queryable/QueryableUtils';

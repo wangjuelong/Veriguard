@@ -5,7 +5,7 @@ import { type FunctionComponent, useContext, useEffect, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { type InjectorContractHelper } from '../../../../../actions/injector_contracts/injector-contract-helper';
-import { fetchInjectorContract } from '../../../../../actions/InjectorContracts';
+import { fetchInjectorContract } from '../../../../../actions/NodeContracts';
 import { useHelper } from '../../../../../store';
 import { type Exercise, type InjectorContract } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';

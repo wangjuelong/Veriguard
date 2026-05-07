@@ -2,7 +2,7 @@ import { type FunctionComponent, useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { checkExerciseTagRules } from '../../../../actions/attack_chain_runs/exercise-action';
-import { deleteExercise, duplicateExercise, updateExercise } from '../../../../actions/Exercise';
+import { deleteExercise, duplicateExercise, updateExercise } from '../../../../actions/AttackChainRun';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogApplyTagRule from '../../../../components/common/DialogApplyTagRule';
 import DialogDelete from '../../../../components/common/DialogDelete';

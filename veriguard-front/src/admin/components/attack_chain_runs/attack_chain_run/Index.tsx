@@ -5,7 +5,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { fetchScenarioFromSimulation } from '../../../../actions/attack_chain_runs/exercise-action';
 import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise } from '../../../../actions/Exercise';
+import { fetchExercise } from '../../../../actions/AttackChainRun';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
 import { errorWrapper } from '../../../../components/Error';
 import { useFormatter } from '../../../../components/i18n';

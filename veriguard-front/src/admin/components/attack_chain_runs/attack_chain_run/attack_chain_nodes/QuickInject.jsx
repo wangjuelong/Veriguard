@@ -33,8 +33,8 @@ import { FieldArray } from 'react-final-form-arrays';
 import { connect } from 'react-redux';
 import { withStyles } from 'tss-react/mui';
 
+import { addInjectForExercise } from '../../../../../actions/AttackChainNode';
 import { fetchDocuments } from '../../../../../actions/Document';
-import { addInjectForExercise } from '../../../../../actions/Inject';
 import { storeHelper } from '../../../../../actions/Schema';
 import { fetchVariablesForExercise } from '../../../../../actions/variables/variable-actions';
 import MultipleFileLoader from '../../../../../components/fields/MultipleFileLoader';

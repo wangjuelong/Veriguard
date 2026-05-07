@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExercises } from '../actions/Exercise';
+import { fetchExercises } from '../actions/AttackChainRun';
 import { useHelper } from '../store';
 import useDataLoader from '../utils/hooks/useDataLoader';
 import Autocomplete from './Autocomplete';

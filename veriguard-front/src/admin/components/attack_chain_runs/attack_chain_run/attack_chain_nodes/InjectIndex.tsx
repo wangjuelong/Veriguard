@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 
 import { fetchInjectResultOverviewOutput } from '../../../../../actions/atomic_testings/atomic-testing-actions';
 import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise } from '../../../../../actions/Exercise';
+import { fetchExercise } from '../../../../../actions/AttackChainRun';
 import Loader from '../../../../../components/Loader';
 import { useHelper } from '../../../../../store';
 import { type Exercise as ExerciseType, type InjectResultOverviewOutput } from '../../../../../utils/api-types';

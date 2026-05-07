@@ -7,12 +7,12 @@ import { fetchSimulationAssetGroups } from '../../../../../../actions/asset_grou
 import { type AssetGroupsHelper } from '../../../../../../actions/asset_groups/assetgroup-helper';
 import { type EndpointHelper } from '../../../../../../actions/assets/asset-helper';
 import { fetchSimulationEndpoints } from '../../../../../../actions/assets/endpoint-actions';
+import { fetchExerciseTeams } from '../../../../../../actions/AttackChainRun';
 import { fetchExerciseChallenges } from '../../../../../../actions/challenge-action';
 import { fetchExerciseArticles } from '../../../../../../actions/channels/article-action';
 import { type ArticlesHelper } from '../../../../../../actions/channels/article-helper';
 import { type ChannelsHelper } from '../../../../../../actions/channels/channel-helper';
 import { type Contract } from '../../../../../../actions/contract/contract';
-import { fetchExerciseTeams } from '../../../../../../actions/Exercise';
 import { type ChallengeHelper } from '../../../../../../actions/helper';
 import { type TeamsHelper } from '../../../../../../actions/teams/team-helper';
 import { useHelper } from '../../../../../../store';

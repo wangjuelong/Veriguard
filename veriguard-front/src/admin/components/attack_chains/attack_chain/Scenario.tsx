@@ -18,9 +18,9 @@ import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject
 import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
 import { searchScenarioExercises, searchScenarioHealthcheks } from '../../../../actions/attack_chains/scenario-actions';
 import { type ScenariosHelper } from '../../../../actions/attack_chains/scenario-helper';
+import { fetchScenarioInjects } from '../../../../actions/AttackChainNode';
 import type { CollectorHelper } from '../../../../actions/collectors/collector-helper';
 import type { LoggedHelper } from '../../../../actions/helper';
-import { fetchScenarioInjects } from '../../../../actions/Inject';
 import { initSorting } from '../../../../components/common/queryable/Page';
 import PaginationComponentV2 from '../../../../components/common/queryable/pagination/PaginationComponentV2';
 import { buildSearchPagination } from '../../../../components/common/queryable/QueryableUtils';

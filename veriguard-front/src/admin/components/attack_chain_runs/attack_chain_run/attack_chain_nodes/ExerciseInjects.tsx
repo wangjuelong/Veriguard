@@ -5,10 +5,10 @@ import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
+import { fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
 import { fetchExerciseChallenges } from '../../../../../actions/challenge-action';
 import { type ArticlesHelper } from '../../../../../actions/channels/article-helper';
 import { fetchExerciseDocuments } from '../../../../../actions/documents/documents-actions';
-import { fetchExerciseTeams } from '../../../../../actions/Exercise';
 import { type ChallengeHelper } from '../../../../../actions/helper';
 import { testInject } from '../../../../../actions/inject_test/simulation-inject-test-actions';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';

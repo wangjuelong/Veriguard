@@ -5,8 +5,8 @@ import * as R from 'ramda';
 import { useContext, useEffect, useState } from 'react';
 
 import { fetchScenarios } from '../../../../actions/attack_chains/scenario-actions';
+import { fetchExercises } from '../../../../actions/AttackChainRun';
 import { deleteDocument, updateDocument } from '../../../../actions/Document';
-import { fetchExercises } from '../../../../actions/Exercise';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogDelete from '../../../../components/common/DialogDelete';
 import Drawer from '../../../../components/common/Drawer';

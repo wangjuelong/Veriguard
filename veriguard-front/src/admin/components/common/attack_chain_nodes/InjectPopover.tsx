@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 
 import { type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
 import { exportInject } from '../../../../actions/attack_chain_nodes/inject-action';
-import { duplicateInjectForExercise, duplicateInjectForScenario } from '../../../../actions/Inject';
+import { duplicateInjectForExercise, duplicateInjectForScenario } from '../../../../actions/AttackChainNode';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogDelete from '../../../../components/common/DialogDelete';
 import DialogDuplicate from '../../../../components/common/DialogDuplicate';

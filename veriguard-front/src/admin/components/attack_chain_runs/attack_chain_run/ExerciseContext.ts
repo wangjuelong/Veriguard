@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
 import { dryImportXlsForExercise, importXlsForExercise } from '../../../../actions/attack_chain_runs/exercise-action';
 import { createInjectsForSimulation, importInjectsForSimulation, searchExerciseInjectsSimple } from '../../../../actions/attack_chain_runs/simulation-inject-actions';
-import { fetchExercise, fetchExerciseTeams } from '../../../../actions/Exercise';
 import {
   addInjectForExercise,
   bulkDeleteInjectsSimple,
@@ -14,7 +13,8 @@ import {
   updateInjectActivationForExercise,
   updateInjectForExercise,
   updateInjectTriggerForExercise,
-} from '../../../../actions/Inject';
+} from '../../../../actions/AttackChainNode';
+import { fetchExercise, fetchExerciseTeams } from '../../../../actions/AttackChainRun';
 import { bulkTestInjects } from '../../../../actions/inject_test/simulation-inject-test-actions';
 import { type Page } from '../../../../components/common/queryable/Page';
 import {
