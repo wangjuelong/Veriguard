@@ -344,9 +344,7 @@ const ThemeLight = (
       styleOverrides: {
         root: {
           '&:last-child td': { borderBottom: 'none' },
-          '&.MuiTableRow-hover:hover': {
-            backgroundColor: hexToRGB('#000000', 0.025),
-          },
+          '&.MuiTableRow-hover:hover': { backgroundColor: hexToRGB('#000000', 0.025) },
         },
       },
     },

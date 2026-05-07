@@ -1,6 +1,6 @@
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 
-import { fetchExercise, fetchExerciseTeams } from '../../../../../actions/Exercise';
+import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
 import {
   exerciseInjectsResultOutput,
   fetchExerciseExpectationResult,
@@ -10,8 +10,8 @@ import {
   fetchPlayersByExercise,
 } from '../../../../../actions/attack_chain_runs/exercise-action';
 import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
+import { fetchExercise, fetchExerciseTeams } from '../../../../../actions/Exercise';
 import { type UserHelper } from '../../../../../actions/helper';
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
 import { fetchReportFromSimulation } from '../../../../../actions/reports/report-actions';
 import { type ReportsHelper } from '../../../../../actions/reports/report-helper';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';

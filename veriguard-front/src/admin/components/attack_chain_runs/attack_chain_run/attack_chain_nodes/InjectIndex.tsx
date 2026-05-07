@@ -2,8 +2,8 @@ import { type FunctionComponent, Suspense, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
 import { fetchInjectResultOverviewOutput } from '../../../../../actions/atomic_testings/atomic-testing-actions';
-import { fetchExercise } from '../../../../../actions/Exercise';
 import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
+import { fetchExercise } from '../../../../../actions/Exercise';
 import Loader from '../../../../../components/Loader';
 import { useHelper } from '../../../../../store';
 import { type Exercise as ExerciseType, type InjectResultOverviewOutput } from '../../../../../utils/api-types';

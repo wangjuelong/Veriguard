@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 import { useContext } from 'react';
 
-import { type LoggedHelper, type UserHelper } from '../../actions/helper';
 import { type ScenariosHelper } from '../../actions/attack_chains/scenario-helper';
+import { type LoggedHelper, type UserHelper } from '../../actions/helper';
 import { useHelper } from '../../store';
 import { AbilityContext } from './permissionsContext';
 import { ACTIONS, SUBJECTS } from './types';

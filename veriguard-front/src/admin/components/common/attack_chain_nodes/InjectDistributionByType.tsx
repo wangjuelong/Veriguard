@@ -3,10 +3,10 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { fetchExerciseInjects } from '../../../../actions/Inject';
-import { type InjectorContractHelper } from '../../../../actions/injector_contracts/injector-contract-helper';
 import { type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
 import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject-helper';
+import { fetchExerciseInjects } from '../../../../actions/Inject';
+import { type InjectorContractHelper } from '../../../../actions/injector_contracts/injector-contract-helper';
 import Empty from '../../../../components/Empty';
 import { useFormatter } from '../../../../components/i18n';
 import { useHelper } from '../../../../store';

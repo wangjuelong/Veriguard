@@ -7,10 +7,10 @@ import { useLocation, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchCollectorsForAtomicTesting } from '../../../../actions/atomic_testings/atomic-testing-actions';
+import { fetchPayloadDetectionRemediationsByInject } from '../../../../actions/attack_chain_nodes/inject-action';
 import { fetchCollectors } from '../../../../actions/Collector';
 import type { CollectorHelper } from '../../../../actions/collectors/collector-helper';
 import { postDetectionRemediationAIRulesByInject } from '../../../../actions/detection-remediation/detectionremediation-action';
-import { fetchPayloadDetectionRemediationsByInject } from '../../../../actions/attack_chain_nodes/inject-action';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
 import { COLLECTOR_LIST } from '../../../../constants/Entities';

@@ -1,8 +1,8 @@
 import { type FunctionComponent, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { type LoggedHelper } from '../../../actions/helper';
 import { addScenario } from '../../../actions/attack_chains/scenario-actions';
+import { type LoggedHelper } from '../../../actions/helper';
 import ButtonCreate from '../../../components/common/ButtonCreate';
 import Drawer from '../../../components/common/Drawer';
 import { useFormatter } from '../../../components/i18n';

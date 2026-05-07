@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
 import { fetchMe } from '../../../actions/Application';
-import { type UserHelper } from '../../../actions/helper';
 import { fetchLessonsCategories, fetchLessonsQuestions, fetchScenario } from '../../../actions/attack_chains/scenario-actions';
 import { type ScenariosHelper } from '../../../actions/attack_chains/scenario-helper';
+import { type UserHelper } from '../../../actions/helper';
 import { ViewLessonContext, type ViewLessonContextType } from '../../../admin/components/common/Context';
 import { useHelper } from '../../../store';
 import { type Scenario } from '../../../utils/api-types';

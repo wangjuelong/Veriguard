@@ -4,9 +4,9 @@ import { useTheme } from '@mui/material/styles';
 import * as R from 'ramda';
 import { useContext, useEffect, useState } from 'react';
 
+import { fetchScenarios } from '../../../../actions/attack_chains/scenario-actions';
 import { deleteDocument, updateDocument } from '../../../../actions/Document';
 import { fetchExercises } from '../../../../actions/Exercise';
-import { fetchScenarios } from '../../../../actions/attack_chains/scenario-actions';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogDelete from '../../../../components/common/DialogDelete';
 import Drawer from '../../../../components/common/Drawer';
@@ -14,7 +14,7 @@ import { craftedDocumentFilter } from '../../../../components/common/queryable/f
 import Transition from '../../../../components/common/Transition';
 import ContextLink from '../../../../components/ContextLink';
 import { useFormatter } from '../../../../components/i18n';
-import { ATOMIC_BASE_URL, PAYLOAD_BASE_URL, ATTACK_CHAIN_BASE_URL, SECURITY_PLATFORM_BASE_URL, ATTACK_CHAIN_RUN_BASE_URL } from '../../../../constants/BaseUrls';
+import { ATOMIC_BASE_URL, ATTACK_CHAIN_BASE_URL, ATTACK_CHAIN_RUN_BASE_URL, PAYLOAD_BASE_URL, SECURITY_PLATFORM_BASE_URL } from '../../../../constants/BaseUrls';
 import { useHelper } from '../../../../store';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';

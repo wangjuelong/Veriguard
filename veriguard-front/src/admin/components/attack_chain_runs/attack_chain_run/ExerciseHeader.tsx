@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { updateExerciseStatus } from '../../../../actions/Exercise';
 import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
+import { updateExerciseStatus } from '../../../../actions/Exercise';
 import Transition from '../../../../components/common/Transition';
 import { useFormatter } from '../../../../components/i18n';
 import { useHelper } from '../../../../store';

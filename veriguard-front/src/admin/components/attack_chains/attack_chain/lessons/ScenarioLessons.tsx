@@ -1,12 +1,8 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router';
 
-import { addScenarioEvaluation, fetchScenarioEvaluations, updateScenarioEvaluation } from '../../../../../actions/Evaluation';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { type UserHelper } from '../../../../../actions/helper';
 import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { type LessonsTemplatesHelper } from '../../../../../actions/lessons/lesson-helper';
-import { addScenarioObjective, deleteScenarioObjective, fetchScenarioObjectives, updateScenarioObjective } from '../../../../../actions/Objective';
+import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
 import {
   addLessonsCategory,
   addLessonsQuestion,
@@ -23,6 +19,10 @@ import {
   updateScenarioLessons,
 } from '../../../../../actions/attack_chains/scenario-actions';
 import { type ScenariosHelper } from '../../../../../actions/attack_chains/scenario-helper';
+import { addScenarioEvaluation, fetchScenarioEvaluations, updateScenarioEvaluation } from '../../../../../actions/Evaluation';
+import { type UserHelper } from '../../../../../actions/helper';
+import { type LessonsTemplatesHelper } from '../../../../../actions/lessons/lesson-helper';
+import { addScenarioObjective, deleteScenarioObjective, fetchScenarioObjectives, updateScenarioObjective } from '../../../../../actions/Objective';
 import { fetchTeams } from '../../../../../actions/teams/team-actions';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
 import { useHelper } from '../../../../../store';

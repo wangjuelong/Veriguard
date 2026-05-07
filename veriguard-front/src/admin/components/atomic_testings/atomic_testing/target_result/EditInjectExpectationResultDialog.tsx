@@ -1,11 +1,11 @@
 import Dialog from '../../../../../components/common/dialog/Dialog';
 import type { InjectExpectationResult } from '../../../../../utils/api-types';
-import { type InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
-import { isManualExpectation } from '../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 import DetectionPreventionExpectationsValidationForm
   from '../../../attack_chain_runs/attack_chain_run/validation/expectations/DetectionPreventionExpectationsValidationForm';
 import ManualExpectationsValidationForm
   from '../../../attack_chain_runs/attack_chain_run/validation/expectations/ManualExpectationsValidationForm';
+import { type InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import { isManualExpectation } from '../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 
 interface Props {
   open: boolean;

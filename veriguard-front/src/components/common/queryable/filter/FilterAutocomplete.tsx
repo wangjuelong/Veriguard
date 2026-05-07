@@ -89,9 +89,7 @@ const FilterAutocomplete: FunctionComponent<Props> = ({
                 paddingTop: 0,
                 paddingBottom: 0,
               },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderWidth: '0.5px',
-              },
+              '& .MuiOutlinedInput-notchedOutline': { borderWidth: '0.5px' },
               '& .MuiAutocomplete-input': {
                 padding: '4px 6px !important',
                 fontSize: 13,

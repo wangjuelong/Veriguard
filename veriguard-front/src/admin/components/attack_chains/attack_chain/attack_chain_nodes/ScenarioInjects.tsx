@@ -1,15 +1,15 @@
 import { type FunctionComponent, useState } from 'react';
 import { useParams } from 'react-router';
 
+import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
+import { fetchScenarioTeams } from '../../../../../actions/attack_chains/scenario-actions';
+import { type ScenariosHelper } from '../../../../../actions/attack_chains/scenario-helper';
+import { fetchScenarioInjectsSimple } from '../../../../../actions/attack_chains/scenario-inject-actions';
 import { fetchScenarioChallenges } from '../../../../../actions/challenge-action';
 import { type ArticlesHelper } from '../../../../../actions/channels/article-helper';
 import { fetchScenarioDocuments } from '../../../../../actions/documents/documents-actions';
 import { type ChallengeHelper } from '../../../../../actions/helper';
 import { testInject } from '../../../../../actions/inject_test/scenario-inject-test-actions';
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { fetchScenarioTeams } from '../../../../../actions/attack_chains/scenario-actions';
-import { type ScenariosHelper } from '../../../../../actions/attack_chains/scenario-helper';
-import { fetchScenarioInjectsSimple } from '../../../../../actions/attack_chains/scenario-inject-actions';
 import type { TeamsHelper } from '../../../../../actions/teams/team-helper';
 import { fetchVariablesForScenario } from '../../../../../actions/variables/variable-actions';
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
@@ -19,6 +19,7 @@ import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointC
 import endpointContextForScenario from '../../../../../utils/context/endpoint/EndpointContextForScenario';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
+import Injects from '../../../common/attack_chain_nodes/Injects';
 import {
   ArticleContext,
   ChallengeContext,
@@ -27,7 +28,6 @@ import {
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
-import Injects from '../../../common/attack_chain_nodes/Injects';
 import articleContextForScenario from '../articles/articleContextForScenario';
 import teamContextForScenario from '../teams/teamContextForScenario';
 

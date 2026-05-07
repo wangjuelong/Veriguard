@@ -17,9 +17,9 @@ import { useAppDispatch } from '../../../../../../utils/hooks';
 import useDataLoader from '../../../../../../utils/hooks/useDataLoader';
 import { computeStatusStyle } from '../../../../../../utils/statusUtils';
 import { computeLabel, resolveUserName, truncate } from '../../../../../../utils/String';
-import { PermissionsContext } from '../../../../common/Context';
 import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import { FAILED } from '../../../../common/attack_chain_nodes/expectations/ExpectationUtils';
+import { PermissionsContext } from '../../../../common/Context';
 import ManualExpectationsValidationForm from './ManualExpectationsValidationForm';
 
 const useStyles = makeStyles()(theme => ({

@@ -14,13 +14,13 @@ import { Link, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { type AgentHelper } from '../../../../actions/agents/agent-helper';
-import type { CollectorHelper } from '../../../../actions/collectors/collector-helper';
-import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
-import type { LoggedHelper } from '../../../../actions/helper';
-import { fetchScenarioInjects } from '../../../../actions/Inject';
 import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject-helper';
+import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
 import { searchScenarioExercises, searchScenarioHealthcheks } from '../../../../actions/attack_chains/scenario-actions';
 import { type ScenariosHelper } from '../../../../actions/attack_chains/scenario-helper';
+import type { CollectorHelper } from '../../../../actions/collectors/collector-helper';
+import type { LoggedHelper } from '../../../../actions/helper';
+import { fetchScenarioInjects } from '../../../../actions/Inject';
 import { initSorting } from '../../../../components/common/queryable/Page';
 import PaginationComponentV2 from '../../../../components/common/queryable/pagination/PaginationComponentV2';
 import { buildSearchPagination } from '../../../../components/common/queryable/QueryableUtils';
@@ -48,9 +48,9 @@ import useDataLoader from '../../../../utils/hooks/useDataLoader';
 import { AbilityContext } from '../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
 import { isEmptyField } from '../../../../utils/utils';
-import Healthchecks from '../../common/healthchecks/Healthchecks';
 import ExercisePopover from '../../attack_chain_runs/attack_chain_run/ExercisePopover';
 import SimulationList from '../../attack_chain_runs/SimulationList';
+import Healthchecks from '../../common/healthchecks/Healthchecks';
 import ScenarioDistributionByExercise from './ScenarioDistributionByExercise';
 
 // Deprecated - https://mui.com/system/styles/basics/

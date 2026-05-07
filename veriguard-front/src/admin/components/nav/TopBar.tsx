@@ -152,15 +152,15 @@ const TopBar: FunctionComponent = () => {
                 variant="outlined"
                 startIcon={<ImportantDevicesOutlined fontSize="small" />}
                 sx={{
-                  textTransform: 'none',
-                  fontSize: 13,
-                  fontWeight: 500,
-                  borderRadius: '8px',
-                  borderColor: 'divider',
-                  color: location.pathname === '/admin/agents' ? 'primary.main' : 'text.secondary',
-                  height: 32,
-                  paddingX: 1.5,
-                  marginRight: 1,
+                  'textTransform': 'none',
+                  'fontSize': 13,
+                  'fontWeight': 500,
+                  'borderRadius': '8px',
+                  'borderColor': 'divider',
+                  'color': location.pathname === '/admin/agents' ? 'primary.main' : 'text.secondary',
+                  'height': 32,
+                  'paddingX': 1.5,
+                  'marginRight': 1,
                   '&:hover': {
                     borderColor: 'text.secondary',
                     backgroundColor: 'action.hover',

@@ -59,7 +59,11 @@ const MenuItemSub: FunctionComponent<Props> = ({
         onClick={handleSelectedMenuClose}
       >
         {icon && (
-          <ListItemIcon style={{ ...leftMenuStyle.listItemIcon, minWidth: 24 }}>
+          <ListItemIcon style={{
+            ...leftMenuStyle.listItemIcon,
+            minWidth: 24,
+          }}
+          >
             {icon()}
           </ListItemIcon>
         )}

@@ -4,9 +4,9 @@ import { type NavigateFunction } from 'react-router';
 import { buildSearchPagination } from '../../../../../../../../components/common/queryable/QueryableUtils';
 import {
   ATOMIC_BASE_URL,
-  ENDPOINT_BASE_URL,
   ATTACK_CHAIN_BASE_URL,
   ATTACK_CHAIN_RUN_BASE_URL,
+  ENDPOINT_BASE_URL,
 } from '../../../../../../../../constants/BaseUrls';
 import {
   type EsBase,

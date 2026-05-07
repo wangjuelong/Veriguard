@@ -3,10 +3,10 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExerciseInjectExpectations, fetchExerciseTeams } from '../../../../../actions/Exercise';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExerciseInjects } from '../../../../../actions/Inject';
 import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
+import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
+import { fetchExerciseInjectExpectations, fetchExerciseTeams } from '../../../../../actions/Exercise';
+import { fetchExerciseInjects } from '../../../../../actions/Inject';
 import { useFormatter } from '../../../../../components/i18n';
 import Loader from '../../../../../components/Loader';
 import arrowDark from '../../../../../static/images/misc/arrow_dark.png';

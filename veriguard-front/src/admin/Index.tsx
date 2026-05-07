@@ -19,9 +19,9 @@ import { useAppDispatch } from '../utils/hooks';
 import useDataLoader from '../utils/hooks/useDataLoader';
 import ProtectedRoute from '../utils/permissions/ProtectedRoute';
 import { ACTIONS, SUBJECTS } from '../utils/permissions/types';
+import InjectIndex from './components/attack_chain_runs/attack_chain_run/attack_chain_nodes/InjectIndex';
 import LeftBar from './components/nav/LeftBar';
 import TopBar from './components/nav/TopBar';
-import InjectIndex from './components/attack_chain_runs/attack_chain_run/attack_chain_nodes/InjectIndex';
 
 const Home = lazy(() => import('./components/Home'));
 const IndexProfile = lazy(() => import('./components/profile/Index'));

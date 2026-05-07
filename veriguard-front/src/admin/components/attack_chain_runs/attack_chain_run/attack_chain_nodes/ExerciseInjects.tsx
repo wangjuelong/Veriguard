@@ -4,11 +4,11 @@ import { type FunctionComponent, useState } from 'react';
 import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
+import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
 import { fetchExerciseChallenges } from '../../../../../actions/challenge-action';
 import { type ArticlesHelper } from '../../../../../actions/channels/article-helper';
 import { fetchExerciseDocuments } from '../../../../../actions/documents/documents-actions';
 import { fetchExerciseTeams } from '../../../../../actions/Exercise';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
 import { type ChallengeHelper } from '../../../../../actions/helper';
 import { testInject } from '../../../../../actions/inject_test/simulation-inject-test-actions';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
@@ -21,6 +21,9 @@ import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointC
 import endpointContextForExercise from '../../../../../utils/context/endpoint/EndpointContextForExercise';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
+import InjectDistributionByTeam from '../../../common/attack_chain_nodes/InjectDistributionByTeam';
+import InjectDistributionByType from '../../../common/attack_chain_nodes/InjectDistributionByType';
+import Injects from '../../../common/attack_chain_nodes/Injects';
 import {
   ArticleContext,
   ChallengeContext,
@@ -29,9 +32,6 @@ import {
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
-import InjectDistributionByTeam from '../../../common/attack_chain_nodes/InjectDistributionByTeam';
-import InjectDistributionByType from '../../../common/attack_chain_nodes/InjectDistributionByType';
-import Injects from '../../../common/attack_chain_nodes/Injects';
 import articleContextForExercise from '../articles/articleContextForExercise';
 import ExerciseDistributionScoreByTeamInPercentage from '../overview/ExerciseDistributionScoreByTeamInPercentage';
 import ExerciseDistributionScoreOverTimeByInjectorContract from '../overview/ExerciseDistributionScoreOverTimeByInjectorContract';

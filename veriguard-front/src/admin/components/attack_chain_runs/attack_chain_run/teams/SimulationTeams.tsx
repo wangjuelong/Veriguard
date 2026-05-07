@@ -3,8 +3,8 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useContext } from 'react';
 import { useParams } from 'react-router';
 
-import { fetchExerciseTeams } from '../../../../../actions/Exercise';
 import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
+import { fetchExerciseTeams } from '../../../../../actions/Exercise';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
 import { type Exercise, type Team } from '../../../../../utils/api-types';

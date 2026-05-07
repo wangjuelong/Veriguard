@@ -13,11 +13,11 @@ import {
 } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
+import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
 import { type AttackPatternHelper } from '../../../../actions/attack_patterns/attackpattern-helper';
 import type { DomainHelper } from '../../../../actions/helper';
 import { fetchDomainCounts, searchInjectorContracts } from '../../../../actions/InjectorContracts';
 import { type InjectorHelper } from '../../../../actions/injectors/injector-helper';
-import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
 import { type KillChainPhaseHelper } from '../../../../actions/kill_chain_phases/killchainphase-helper';
 import Drawer from '../../../../components/common/Drawer';
 import { initSorting } from '../../../../components/common/queryable/Page';

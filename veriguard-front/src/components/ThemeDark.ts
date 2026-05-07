@@ -343,9 +343,7 @@ const ThemeDark = (
       styleOverrides: {
         root: {
           '&:last-child td': { borderBottom: 'none' },
-          '&.MuiTableRow-hover:hover': {
-            backgroundColor: hexToRGB('#ffffff', 0.04),
-          },
+          '&.MuiTableRow-hover:hover': { backgroundColor: hexToRGB('#ffffff', 0.04) },
         },
       },
     },

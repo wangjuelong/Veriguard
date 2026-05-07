@@ -12,8 +12,8 @@ import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
 import { zodImplement } from '../../../../utils/Zod';
 import AssetGroupPopover from '../../assets/asset_groups/AssetGroupPopover';
 import AssetGroupsList from '../../assets/asset_groups/AssetGroupsList';
-import { PermissionsContext } from '../../common/Context';
 import InjectAddAssetGroups from '../../attack_chain_runs/attack_chain_run/attack_chain_nodes/asset_groups/InjectAddAssetGroups';
+import { PermissionsContext } from '../../common/Context';
 
 interface Props {
   onSubmit: SubmitHandler<TagRuleInput>;

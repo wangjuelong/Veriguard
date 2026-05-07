@@ -3,8 +3,8 @@ import { useParams } from 'react-router';
 
 import { bulkTestInjects, deleteInjectTest, fetchInjectTestStatus, searchInjectTests, testInject } from '../../../../../actions/inject_test/scenario-inject-test-actions';
 import { type InjectTestStatusOutput, type Scenario } from '../../../../../utils/api-types';
-import { InjectTestContext, type InjectTestContextType } from '../../../common/Context';
 import InjectTestList from '../../../attack_chain_nodes/InjectTestList';
+import { InjectTestContext, type InjectTestContextType } from '../../../common/Context';
 
 const ScenarioTests: FunctionComponent = () => {
   const { scenarioId, statusId } = useParams() as {

@@ -13,10 +13,10 @@ import { ACTIONS, INHERITED_CONTEXT, SUBJECTS } from '../../../../../utils/permi
 import { computeInjectExpectationLabel } from '../../../../../utils/statusUtils';
 import { emptyFilled } from '../../../../../utils/String';
 import { isAssets } from '../../../../../utils/target/TargetUtils';
-import { PermissionsContext } from '../../../common/Context';
+import { isAgentExpectation, isAssetExpectation, isAssetGroupExpectation, isPlayerExpectation, useIsManuallyUpdatable } from '../../../attack_chain_runs/attack_chain_run/validation/expectations/ExpectationUtils';
 import type { InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import { isManualExpectation, isTechnicalExpectation } from '../../../common/attack_chain_nodes/expectations/ExpectationUtils';
-import { isAgentExpectation, isAssetExpectation, isAssetGroupExpectation, isPlayerExpectation, useIsManuallyUpdatable } from '../../../attack_chain_runs/attack_chain_run/validation/expectations/ExpectationUtils';
+import { PermissionsContext } from '../../../common/Context';
 import InjectExpectationContext from '../context/InjectExpectationContext';
 import ExpirationChip from '../ExpirationChip';
 import InjectExpectationAggregatedAgentsView from './InjectExpectationAggregatedAgentsView';

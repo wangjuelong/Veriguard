@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
 import { fetchMe } from '../../../actions/Application';
-import { fetchExercise, fetchPlayerExercise } from '../../../actions/Exercise';
 import { addLessonsAnswers, fetchLessonsAnswers, fetchLessonsCategories, fetchLessonsQuestions, fetchPlayerLessonsAnswers, fetchPlayerLessonsCategories, fetchPlayerLessonsQuestions } from '../../../actions/attack_chain_runs/exercise-action';
 import { type ExercisesHelper } from '../../../actions/attack_chain_runs/exercise-helper';
+import { fetchExercise, fetchPlayerExercise } from '../../../actions/Exercise';
 import { type UserHelper } from '../../../actions/helper';
 import { ViewLessonContext, type ViewLessonContextType } from '../../../admin/components/common/Context';
 import { useHelper } from '../../../store';

@@ -103,9 +103,7 @@ const SearchInput: FunctionComponent<Props> = ({
           input: inputClass,
         },
       }}
-      sx={{
-        '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-      }}
+      sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' } }}
       autoComplete="off"
     />
   );

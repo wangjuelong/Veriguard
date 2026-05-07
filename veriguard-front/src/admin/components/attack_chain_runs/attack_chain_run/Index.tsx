@@ -3,9 +3,9 @@ import { type FunctionComponent, lazy, Suspense, useEffect, useState } from 'rea
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExercise } from '../../../../actions/Exercise';
 import { fetchScenarioFromSimulation } from '../../../../actions/attack_chain_runs/exercise-action';
 import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
+import { fetchExercise } from '../../../../actions/Exercise';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
 import { errorWrapper } from '../../../../components/Error';
 import { useFormatter } from '../../../../components/i18n';

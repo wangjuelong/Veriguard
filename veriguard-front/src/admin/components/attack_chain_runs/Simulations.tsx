@@ -12,9 +12,9 @@ import { useFormatter } from '../../../components/i18n';
 import { type ExerciseSimple, type SearchPaginationInput } from '../../../utils/api-types';
 import { Can } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
-import ImportUploaderExercise from './ImportUploaderExercise';
 import ExerciseCreation from './attack_chain_run/ExerciseCreation';
 import ExercisePopover from './attack_chain_run/ExercisePopover';
+import ImportUploaderExercise from './ImportUploaderExercise';
 import SimulationList from './SimulationList';
 
 const Simulations = () => {

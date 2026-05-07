@@ -14,8 +14,8 @@ import { EndpointContext } from '../../../utils/context/endpoint/EndpointContext
 import endpointContextForAtomicTesting from '../../../utils/context/endpoint/EndpointContextForAtomicTesting';
 import { Can } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
-import { TeamContext } from '../common/Context';
 import CreateInject from '../common/attack_chain_nodes/CreateInject';
+import { TeamContext } from '../common/Context';
 import teamContextForAtomicTesting from './atomic_testing/context/TeamContextForAtomicTesting';
 import InjectResultList from './InjectResultList';
 

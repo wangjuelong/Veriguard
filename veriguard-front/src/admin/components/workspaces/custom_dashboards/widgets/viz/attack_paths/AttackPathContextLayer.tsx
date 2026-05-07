@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import { useContext, useState } from 'react';
 
-import { fetchExercise } from '../../../../../../../actions/Exercise';
 import { type ExercisesHelper } from '../../../../../../../actions/attack_chain_runs/exercise-helper';
+import { fetchExercise } from '../../../../../../../actions/Exercise';
 import { useFormatter } from '../../../../../../../components/i18n';
 import Loader from '../../../../../../../components/Loader';
 import { useHelper } from '../../../../../../../store';

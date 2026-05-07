@@ -3,8 +3,14 @@ import { type ArticleContextType } from '../../../common/Context';
 
 const articleContextForExercise = (_exerciseId: string): ArticleContextType => ({
   previewArticleUrl: () => '',
-  fetchArticles: () => Promise.resolve({ result: [], entities: { articles: {} } }),
-  fetchChannels: () => Promise.resolve({ result: [], entities: { channels: {} } }),
+  fetchArticles: () => Promise.resolve({
+    result: [],
+    entities: { articles: {} },
+  }),
+  fetchChannels: () => Promise.resolve({
+    result: [],
+    entities: { channels: {} },
+  }),
   fetchDocuments: () => Promise.resolve([]),
   onAddArticle: () => Promise.resolve({ result: '' }),
   onUpdateArticle: () => '',

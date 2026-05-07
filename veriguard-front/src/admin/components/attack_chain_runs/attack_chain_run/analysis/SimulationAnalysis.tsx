@@ -1,13 +1,13 @@
 import { useContext } from 'react';
 import { useParams } from 'react-router';
 
-import { updateExercise } from '../../../../../actions/Exercise';
 import {
   attackPathsBySimulation, averageBySimulation,
   countBySimulation,
   entitiesBySimulation, fetchCustomDashboardFromSimulation, seriesBySimulation, widgetToEntitiesBySimulation,
 } from '../../../../../actions/attack_chain_runs/exercise-action';
 import type { ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
+import { updateExercise } from '../../../../../actions/Exercise';
 import { useHelper } from '../../../../../store';
 import {
   type CustomDashboard,

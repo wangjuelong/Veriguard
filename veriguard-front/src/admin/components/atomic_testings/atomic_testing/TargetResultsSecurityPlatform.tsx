@@ -8,8 +8,8 @@ import { fetchExpectationTraces } from '../../../../actions/atomic_testings/atom
 import Drawer from '../../../../components/common/Drawer';
 import { useFormatter } from '../../../../components/i18n';
 import type { InjectExpectationResult, InjectExpectationTrace } from '../../../../utils/api-types';
-import { type InjectExpectationsStore } from '../../common/attack_chain_nodes/expectations/Expectation';
 import { getSourceLabel } from '../../attack_chain_runs/attack_chain_run/validation/expectations/ExpectationUtils';
+import { type InjectExpectationsStore } from '../../common/attack_chain_nodes/expectations/Expectation';
 
 const useStyles = makeStyles()(() => ({ flexContainer: { display: 'flex' } }));
 

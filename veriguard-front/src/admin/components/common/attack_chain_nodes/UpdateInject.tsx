@@ -5,10 +5,10 @@ import { useTheme } from '@mui/material/styles';
 import { type SyntheticEvent, useContext, useEffect, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchInject } from '../../../../actions/Inject';
 import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
 import { fetchDocumentsPayloadByInject } from '../../../../actions/attack_chain_nodes/inject-action';
 import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject-helper';
+import { fetchInject } from '../../../../actions/Inject';
 import Drawer from '../../../../components/common/Drawer';
 import { useFormatter } from '../../../../components/i18n';
 import PlatformIcon from '../../../../components/PlatformIcon';

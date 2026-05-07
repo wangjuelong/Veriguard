@@ -23,9 +23,9 @@ import PlatformIcon from '../../../components/PlatformIcon';
 import { type Scenario, type SearchPaginationInput } from '../../../utils/api-types';
 import { Can } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
-import ImportUploaderScenario from './ImportUploaderScenario';
 import ScenarioPopover from './attack_chain/ScenarioPopover';
 import ScenarioStatus from './attack_chain/ScenarioStatus';
+import ImportUploaderScenario from './ImportUploaderScenario';
 import ScenarioCreation from './ScenarioCreation';
 
 const useStyles = makeStyles()(() => ({
