@@ -31,7 +31,7 @@ public interface UserRepository
   @Query(
       "select count(distinct u) from User u "
           + "join u.teams as team "
-          + "join team.exercises as e "
+          + "join team.attackChainRuns as e "
           + "join e.grants as grant "
           + "join grant.group.users as user "
           + "where user.id = :userId and u.createdAt > :creationDate")
@@ -122,7 +122,7 @@ public interface UserRepository
               + "JOIN objectives ob ON ob.objective_id = ev.evaluation_objective "
               + "WHERE ob.objective_exercise = :exerciseId;",
       nativeQuery = true)
-  List<RawPlayer> rawPlayersByExerciseId(@Param("exerciseId") String exerciseId);
+  List<RawPlayer> rawPlayersByAttackChainRunId(@Param("exerciseId") String attackChainRunId);
 
   @Query(
       value =
@@ -141,7 +141,7 @@ public interface UserRepository
               + "JOIN objectives ob ON ob.objective_id = ev.evaluation_objective "
               + "WHERE ob.objective_scenario = :scenarioId;",
       nativeQuery = true)
-  List<RawPlayer> rawPlayersByScenarioId(@Param("scenarioId") String scenarioId);
+  List<RawPlayer> rawPlayersByAttackChainId(@Param("scenarioId") String attackChainId);
 
   @Query(
       value =

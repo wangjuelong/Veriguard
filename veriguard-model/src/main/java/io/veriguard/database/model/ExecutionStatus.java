@@ -1,7 +1,7 @@
 package io.veriguard.database.model;
 
 public enum ExecutionStatus {
-  // Inject Status
+  // AttackChainNode Status
   SUCCESS,
   PARTIAL,
   ERROR,
@@ -12,7 +12,7 @@ public enum ExecutionStatus {
   @Deprecated
   MAYBE_PARTIAL_PREVENTED,
 
-  // Inject Execution Progress
+  // AttackChainNode Execution Progress
   DRAFT,
   QUEUING,
   EXECUTING,

@@ -4,11 +4,11 @@ import static java.time.Instant.now;
 
 import io.veriguard.database.model.*;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.report.form.ReportInjectCommentInput;
+import io.veriguard.rest.report.form.ReportAttackChainNodeCommentInput;
 import io.veriguard.rest.report.form.ReportInput;
 import io.veriguard.rest.report.model.Report;
 import io.veriguard.rest.report.model.ReportInformation;
-import io.veriguard.rest.report.model.ReportInjectComment;
+import io.veriguard.rest.report.model.ReportAttackChainNodeComment;
 import io.veriguard.rest.report.repository.ReportRepository;
 import io.veriguard.rest.report.specification.ReportSpecification;
 import jakarta.validation.constraints.NotBlank;
@@ -43,8 +43,8 @@ public class ReportService {
         .orElseThrow(ElementNotFoundException::new);
   }
 
-  public List<Report> reportsFromExercise(@NotNull final String exerciseId) {
-    return this.reportRepository.findAll(ReportSpecification.fromExercise(exerciseId));
+  public List<Report> reportsFromAttackChainRun(@NotNull final String attackChainRunId) {
+    return this.reportRepository.findAll(ReportSpecification.fromAttackChainRun(attackChainRunId));
   }
 
   public Report updateReport(@NotNull final Report report, @NotNull final ReportInput input) {
@@ -73,23 +73,23 @@ public class ReportService {
     return this.reportRepository.save(report);
   }
 
-  public Report updateReportInjectComment(
+  public Report updateReportAttackChainNodeComment(
       @NotNull final Report report,
-      @NotNull final Inject inject,
-      @NotNull final ReportInjectCommentInput input) {
-    Optional<ReportInjectComment> reportInjectComment =
-        this.reportRepository.findReportInjectComment(
-            UUID.fromString(report.getId()), inject.getId());
-    ReportInjectComment injectComment;
-    if (reportInjectComment.isPresent()) {
-      injectComment = reportInjectComment.get();
-      injectComment.setComment(input.getComment());
+      @NotNull final AttackChainNode attackChainNode,
+      @NotNull final ReportAttackChainNodeCommentInput input) {
+    Optional<ReportAttackChainNodeComment> reportAttackChainNodeComment =
+        this.reportRepository.findReportAttackChainNodeComment(
+            UUID.fromString(report.getId()), attackChainNode.getId());
+    ReportAttackChainNodeComment attackChainNodeComment;
+    if (reportAttackChainNodeComment.isPresent()) {
+      attackChainNodeComment = reportAttackChainNodeComment.get();
+      attackChainNodeComment.setComment(input.getComment());
     } else {
-      injectComment = new ReportInjectComment();
-      injectComment.setInject(inject);
-      injectComment.setReport(report);
-      injectComment.setComment(input.getComment());
-      report.getReportInjectsComments().add(injectComment);
+      attackChainNodeComment = new ReportAttackChainNodeComment();
+      attackChainNodeComment.setAttackChainNode(attackChainNode);
+      attackChainNodeComment.setReport(report);
+      attackChainNodeComment.setComment(input.getComment());
+      report.getReportAttackChainNodesComments().add(attackChainNodeComment);
     }
     return this.reportRepository.save(report);
   }

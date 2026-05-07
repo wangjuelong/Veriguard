@@ -21,13 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 public interface FindingRepository
     extends CrudRepository<Finding, String>, JpaSpecificationExecutor<Finding> {
 
-  List<Finding> findAllByInjectId(@NotNull final String injectId);
+  List<Finding> findAllByAttackChainNodeId(@NotNull final String attackChainNodeId);
 
   @Query(
       value =
-          "SELECT f FROM Finding f WHERE f.inject.id = :injectId AND f.value = :value AND f.type = :type AND f.field = :key")
-  Optional<Finding> findByInjectIdAndValueAndTypeAndKey(
-      @NotBlank @Param("injectId") String injectId,
+          "SELECT f FROM Finding f WHERE f.attackChainNode.id = :attackChainNodeId AND f.value = :value AND f.type = :type AND f.field = :key")
+  Optional<Finding> findByAttackChainNodeIdAndValueAndTypeAndKey(
+      @NotBlank @Param("injectId") String attackChainNodeId,
       @NotBlank @Param("value") String value,
       @NotNull @Param("type") ContractOutputType type,
       @NotBlank @Param("key") String key);
@@ -84,7 +84,7 @@ public interface FindingRepository
       @Param("findingType") String findingType,
       @Param("findingValue") String findingValue,
       @Param("findingLabels") String[] findingLabels,
-      @Param("findingInjectId") String injectId,
+      @Param("findingInjectId") String attackChainNodeId,
       @Param("findingName") String name,
       @Param("assetId") String assetId,
       @Param("tagIds") String[] tagIds);

@@ -31,11 +31,11 @@ public interface CollectorRepository
   @Query(
       """
               SELECT DISTINCT dr.collector
-              FROM Inject i
-              JOIN i.injectorContract ic
+              FROM AttackChainNode i
+              JOIN i.nodeContract ic
               JOIN ic.payload p
               JOIN p.detectionRemediations dr
-              WHERE i.id = :injectId
+              WHERE i.id = :attackChainNodeId
           """)
-  List<Collector> findByInjectId(@Param("injectId") String injectId);
+  List<Collector> findByAttackChainNodeId(@Param("injectId") String attackChainNodeId);
 }

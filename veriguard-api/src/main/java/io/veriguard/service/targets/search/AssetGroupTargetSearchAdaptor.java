@@ -1,8 +1,8 @@
 package io.veriguard.service.targets.search;
 
 import io.veriguard.database.model.AssetGroupTarget;
-import io.veriguard.database.model.Inject;
-import io.veriguard.database.model.InjectTarget;
+import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.AttackChainNodeTarget;
 import io.veriguard.rest.asset_group.AssetGroupCriteriaBuilderService;
 import io.veriguard.rest.asset_group.form.AssetGroupOutput;
 import io.veriguard.service.AssetGroupService;
@@ -35,20 +35,20 @@ public class AssetGroupTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public Page<InjectTarget> search(SearchPaginationInput input, Inject scopedInject) {
+  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
     Page<AssetGroupOutput> filteredAssetGroups =
-        assetGroupCriteriaBuilderService.assetGroupPagination(this.translate(input, scopedInject));
+        assetGroupCriteriaBuilderService.assetGroupPagination(this.translate(input, scopedAttackChainNode));
     return new PageImpl<>(
         filteredAssetGroups.getContent().stream()
-            .map(assetGroupOutput -> convertFromAssetGroupOutput(assetGroupOutput, scopedInject))
+            .map(assetGroupOutput -> convertFromAssetGroupOutput(assetGroupOutput, scopedAttackChainNode))
             .toList(),
         filteredAssetGroups.getPageable(),
         filteredAssetGroups.getTotalElements());
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForInject(Inject scopedInject, String textSearch) {
-    return scopedInject.getAssetGroups().stream()
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
+    return scopedAttackChainNode.getAssetGroups().stream()
         .filter(ag -> ag.getName().toLowerCase().contains(textSearch.toLowerCase()))
         .map(ag -> new FilterUtilsJpa.Option(ag.getId(), ag.getName()))
         .toList();
@@ -61,10 +61,10 @@ public class AssetGroupTargetSearchAdaptor extends SearchAdaptorBase {
         .toList();
   }
 
-  private InjectTarget convertFromAssetGroupOutput(
-      AssetGroupOutput assetGroupOutput, Inject inject) {
+  private AttackChainNodeTarget convertFromAssetGroupOutput(
+      AssetGroupOutput assetGroupOutput, AttackChainNode attackChainNode) {
     return helperTargetSearchAdaptor.buildTargetWithExpectations(
-        inject,
+        attackChainNode,
         () ->
             new AssetGroupTarget(
                 assetGroupOutput.getId(), assetGroupOutput.getName(), assetGroupOutput.getTags()),

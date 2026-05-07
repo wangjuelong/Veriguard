@@ -4,10 +4,10 @@ import io.veriguard.helper.UserHelper;
 import java.util.List;
 
 /**
- * Spring Data projection interface for player (exercise participant) data.
+ * Spring Data projection interface for player (attackChainRun participant) data.
  *
  * <p>This interface defines a lightweight projection for retrieving player information during
- * exercise execution. Players are users who participate in exercises as targets or respondents.
+ * attackChainRun execution. Players are users who participate in attackChainRuns as targets or respondents.
  *
  * @see io.veriguard.database.model.User
  * @see RawUser

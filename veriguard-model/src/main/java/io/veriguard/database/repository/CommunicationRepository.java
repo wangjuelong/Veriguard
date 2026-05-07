@@ -18,7 +18,7 @@ public interface CommunicationRepository
   @NotNull
   Optional<Communication> findById(@NotNull String id);
 
-  List<Communication> findByInjectId(@NotNull String injectId);
+  List<Communication> findByAttackChainNodeId(@NotNull String attackChainNodeId);
 
   @Query(
       "select c from Communication c join c.users as user where user.id = :userId order by c.receivedAt desc")

@@ -24,7 +24,7 @@ public class ExpectationFixture {
   static Double SCORE = 100.0;
 
   public static Expectation createExpectation(
-      InjectExpectation.EXPECTATION_TYPE expectationType, String expectationName) {
+      AttackChainNodeExpectation.EXPECTATION_TYPE expectationType, String expectationName) {
     Expectation expectation = new Expectation();
     expectation.setExpectationGroup(false);
     expectation.setName(expectationName);
@@ -35,7 +35,7 @@ public class ExpectationFixture {
     return expectation;
   }
 
-  public static Expectation createExpectation(InjectExpectation.EXPECTATION_TYPE expectationType) {
+  public static Expectation createExpectation(AttackChainNodeExpectation.EXPECTATION_TYPE expectationType) {
     return createExpectation(expectationType, "Expectation 1");
   }
 
@@ -65,7 +65,7 @@ public class ExpectationFixture {
       Asset asset,
       AssetGroup assetGroup,
       Long expirationTime,
-      List<InjectExpectationSignature> signatures) {
+      List<NodeExpectationSignature> signatures) {
     return detectionExpectationForAgent(
         SCORE,
         DETECTION_NAME,
@@ -121,7 +121,7 @@ public class ExpectationFixture {
       Asset asset,
       AssetGroup assetGroup,
       Long expirationTime,
-      List<InjectExpectationSignature> signatures) {
+      List<NodeExpectationSignature> signatures) {
     return preventionExpectationForAgent(
         SCORE,
         PREVENTION_NAME,
@@ -176,7 +176,7 @@ public class ExpectationFixture {
       Asset asset,
       AssetGroup assetGroup,
       Long expirationTime,
-      List<InjectExpectationSignature> signatures) {
+      List<NodeExpectationSignature> signatures) {
     return vulnerabilityExpectationForAgent(
         SCORE,
         VULNERABILITY_NAME,

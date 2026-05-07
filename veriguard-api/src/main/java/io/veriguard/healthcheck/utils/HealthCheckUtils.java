@@ -6,7 +6,7 @@ import io.veriguard.database.model.*;
 import io.veriguard.executors.utils.ExecutorUtils;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.healthcheck.enums.ExternalServiceDependency;
-import io.veriguard.helper.InjectModelHelper;
+import io.veriguard.helper.NodeModelHelper;
 import io.veriguard.rest.inject.output.AgentsAndAssetsAgentless;
 import jakarta.validation.constraints.NotNull;
 import java.util.*;
@@ -21,9 +21,9 @@ public class HealthCheckUtils {
   private final ExecutorUtils executorUtils;
 
   /**
-   * Run all mail service checks for one inject
+   * Run all mail service checks for one attackChainNode
    *
-   * @param inject to test
+   * @param attackChainNode to test
    * @param service to verify
    * @param isServiceAvailable status
    * @param type of healthcheck
@@ -31,17 +31,17 @@ public class HealthCheckUtils {
    * @return found healthchecks
    */
   public List<HealthCheck> runMailServiceChecks(
-      Inject inject,
+      AttackChainNode attackChainNode,
       ExternalServiceDependency service,
       boolean isServiceAvailable,
       HealthCheck.Type type,
       HealthCheck.Status status) {
     List<HealthCheck> result = new ArrayList<>();
-    InjectorContract injectorContract = inject.getInjectorContract().orElse(null);
-    Injector injector = injectorContract != null ? injectorContract.getInjector() : null;
+    NodeContract nodeContract = attackChainNode.getNodeContract().orElse(null);
+    NodeExecutor nodeExecutor = nodeContract != null ? nodeContract.getNodeExecutor() : null;
 
-    if (injector != null
-        && ArrayUtils.contains(injector.getDependencies(), service)
+    if (nodeExecutor != null
+        && ArrayUtils.contains(nodeExecutor.getDependencies(), service)
         && !isServiceAvailable) {
       result.add(new HealthCheck(type, HealthCheck.Detail.SERVICE_UNAVAILABLE, status, now()));
     }
@@ -50,21 +50,21 @@ public class HealthCheckUtils {
   }
 
   /**
-   * Run all Executors checks for one inject
+   * Run all Executors checks for one attackChainNode
    *
-   * @param inject to test
+   * @param attackChainNode to test
    * @param agentsAndAssetsAgentless data to verify if there is at least one agent up
    * @return all found executors healthchecks issues
    */
   public List<HealthCheck> runExecutorChecks(
-      Inject inject, AgentsAndAssetsAgentless agentsAndAssetsAgentless) {
+      AttackChainNode attackChainNode, AgentsAndAssetsAgentless agentsAndAssetsAgentless) {
     List<HealthCheck> result = new ArrayList<>();
-    InjectorContract injectorContract = inject.getInjectorContract().orElse(null);
+    NodeContract nodeContract = attackChainNode.getNodeContract().orElse(null);
     Set<Agent> agents = agentsAndAssetsAgentless.agents();
     agents = executorUtils.removeInactiveAgentsFromAgents(agents);
     agents = executorUtils.removeAgentsWithoutExecutorFromAgents(agents);
 
-    if (injectorContract != null && injectorContract.getNeedsExecutor() && agents.isEmpty()) {
+    if (nodeContract != null && nodeContract.getNeedsExecutor() && agents.isEmpty()) {
       result.add(
           new HealthCheck(
               HealthCheck.Type.AGENT_OR_EXECUTOR,
@@ -77,16 +77,16 @@ public class HealthCheckUtils {
   }
 
   /**
-   * Run all Collectors checks for one inject
+   * Run all Collectors checks for one attackChainNode
    *
-   * @param inject to test
+   * @param attackChainNode to test
    * @param collectors all available collectors
    * @return all found collectors healthchecks issues
    */
-  public List<HealthCheck> runCollectorChecks(Inject inject, List<Collector> collectors) {
+  public List<HealthCheck> runCollectorChecks(AttackChainNode attackChainNode, List<Collector> collectors) {
     List<HealthCheck> result = new ArrayList<>();
     boolean isDetectionOrPrenvention =
-        InjectModelHelper.isDetectionOrPrevention(inject.getContent());
+        NodeModelHelper.isDetectionOrPrevention(attackChainNode.getContent());
 
     if (isDetectionOrPrenvention && collectors.isEmpty()) {
       result.add(
@@ -101,54 +101,54 @@ public class HealthCheckUtils {
   }
 
   /**
-   * Launch all the injector checks on one inject
+   * Launch all the nodeExecutor checks on one attackChainNode
    *
-   * @param inject to test
-   * @param injectors all available injectors
+   * @param attackChainNode to test
+   * @param nodeExecutors all available nodeExecutors
    * @return list of the healthcheck result
    */
-  public List<HealthCheck> runAllInjectorChecks(
-      @NotNull final Inject inject, @NotNull final List<Injector> injectors) {
+  public List<HealthCheck> runAllNodeExecutorChecks(
+      @NotNull final AttackChainNode attackChainNode, @NotNull final List<NodeExecutor> nodeExecutors) {
 
     List<HealthCheck> results = new ArrayList<>();
     results.addAll(
-        runInjectorCheck(inject, injectors, ExternalServiceDependency.NMAP, HealthCheck.Type.NMAP));
+        runNodeExecutorCheck(attackChainNode, nodeExecutors, ExternalServiceDependency.NMAP, HealthCheck.Type.NMAP));
     results.addAll(
-        runInjectorCheck(
-            inject, injectors, ExternalServiceDependency.NUCLEI, HealthCheck.Type.NUCLEI));
+        runNodeExecutorCheck(
+            attackChainNode, nodeExecutors, ExternalServiceDependency.NUCLEI, HealthCheck.Type.NUCLEI));
     return results;
   }
 
   /**
-   * Verify whether an injector contract depends on an injector and whether that injector is
+   * Verify whether an nodeExecutor contract depends on an nodeExecutor and whether that nodeExecutor is
    * registered; if not, add an error to the health check.
    *
-   * @param inject
-   * @param injectors
+   * @param attackChainNode
+   * @param nodeExecutors
    * @param externalServiceDependency
    * @param type
    * @return
    */
-  public List<HealthCheck> runInjectorCheck(
-      @NotNull final Inject inject,
-      @NotNull final List<Injector> injectors,
+  public List<HealthCheck> runNodeExecutorCheck(
+      @NotNull final AttackChainNode attackChainNode,
+      @NotNull final List<NodeExecutor> nodeExecutors,
       @NotNull final ExternalServiceDependency externalServiceDependency,
       @NotNull final HealthCheck.Type type) {
     List<HealthCheck> result = new ArrayList<>();
-    InjectorContract contract = inject.getInjectorContract().orElse(null);
+    NodeContract contract = attackChainNode.getNodeContract().orElse(null);
     if (contract != null
-        && contract.getInjector() != null
-        && contract.getInjector().getDependencies() != null
-        && Arrays.asList(contract.getInjector().getDependencies())
+        && contract.getNodeExecutor() != null
+        && contract.getNodeExecutor().getDependencies() != null
+        && Arrays.asList(contract.getNodeExecutor().getDependencies())
             .contains(externalServiceDependency)) {
-      boolean isInjectorRegistered =
-          injectors.stream()
+      boolean isNodeExecutorRegistered =
+          nodeExecutors.stream()
               .anyMatch(
-                  injector ->
-                      Objects.equals(injector.getType(), externalServiceDependency.getValue()));
+                  nodeExecutor ->
+                      Objects.equals(nodeExecutor.getType(), externalServiceDependency.getValue()));
 
-      // if the injector is not registered we add an error in the health check
-      if (!isInjectorRegistered) {
+      // if the nodeExecutor is not registered we add an error in the health check
+      if (!isNodeExecutorRegistered) {
         result.add(
             new HealthCheck(
                 type, HealthCheck.Detail.SERVICE_UNAVAILABLE, HealthCheck.Status.ERROR, now()));
@@ -158,17 +158,17 @@ public class HealthCheckUtils {
   }
 
   /**
-   * Run all missing content checks for one scenario
+   * Run all missing content checks for one attackChain
    *
-   * @param scenario to test
+   * @param attackChain to test
    * @return all found missing content issues
    */
-  public List<HealthCheck> runMissingContentChecks(@NotNull final Scenario scenario) {
+  public List<HealthCheck> runMissingContentChecks(@NotNull final AttackChain attackChain) {
     List<HealthCheck> result = new ArrayList<>();
-    boolean atLeastOneInjectIsNotReady =
-        scenario.getInjects().stream().anyMatch(inject -> !inject.isReady());
+    boolean atLeastOneAttackChainNodeIsNotReady =
+        attackChain.getAttackChainNodes().stream().anyMatch(attackChainNode -> !attackChainNode.isReady());
 
-    if (atLeastOneInjectIsNotReady) {
+    if (atLeastOneAttackChainNodeIsNotReady) {
       result.add(
           new HealthCheck(
               HealthCheck.Type.INJECT,
@@ -181,26 +181,26 @@ public class HealthCheckUtils {
   }
 
   /**
-   * Run all teams checks for one scenario
+   * Run all teams checks for one attackChain
    *
-   * @param scenario to test
+   * @param attackChain to test
    * @return all found teams issues
    */
-  public List<HealthCheck> runTeamsChecks(@NotNull final Scenario scenario) {
+  public List<HealthCheck> runTeamsChecks(@NotNull final AttackChain attackChain) {
     List<HealthCheck> result = new ArrayList<>();
     boolean isMailSender =
-        scenario.getInjects().stream()
+        attackChain.getAttackChainNodes().stream()
             .filter(
-                inject ->
-                    inject.getInjectorContract() != null
-                        && inject.getInjectorContract().isPresent()
-                        && inject.getInjectorContract().get().getInjector() != null
-                        && inject.getInjectorContract().get().getInjector().getDependencies()
+                attackChainNode ->
+                    attackChainNode.getNodeContract() != null
+                        && attackChainNode.getNodeContract().isPresent()
+                        && attackChainNode.getNodeContract().get().getNodeExecutor() != null
+                        && attackChainNode.getNodeContract().get().getNodeExecutor().getDependencies()
                             != null)
             .flatMap(
-                inject ->
+                attackChainNode ->
                     Arrays.stream(
-                        inject.getInjectorContract().get().getInjector().getDependencies()))
+                        attackChainNode.getNodeContract().get().getNodeExecutor().getDependencies()))
             .anyMatch(
                 dependency ->
                     ExternalServiceDependency.SMTP.equals(dependency)
@@ -208,9 +208,9 @@ public class HealthCheckUtils {
 
     if (isMailSender) {
       boolean isMissingTeamsOrEnabledPlayers =
-          scenario.getTeams().isEmpty()
-              || scenario.getTeams().stream().allMatch(team -> team.getUsers().isEmpty())
-              || scenario.getTeamUsers().isEmpty();
+          attackChain.getTeams().isEmpty()
+              || attackChain.getTeams().stream().allMatch(team -> team.getUsers().isEmpty())
+              || attackChain.getTeamUsers().isEmpty();
 
       if (isMissingTeamsOrEnabledPlayers) {
         result.add(

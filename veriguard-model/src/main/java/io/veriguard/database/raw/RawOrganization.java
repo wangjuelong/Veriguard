@@ -7,7 +7,7 @@ import java.util.List;
  * Spring Data projection interface for organization data.
  *
  * <p>This interface defines a projection for retrieving organization information including
- * metadata, associated tags, and inject statistics. Organizations represent logical groupings of
+ * metadata, associated tags, and attackChainNode statistics. Organizations represent logical groupings of
  * users and teams within the platform.
  *
  * @see io.veriguard.database.model.Organization
@@ -58,16 +58,16 @@ public interface RawOrganization {
   List<String> getOrganization_tags();
 
   /**
-   * Returns the list of inject IDs associated with this organization.
+   * Returns the list of attackChainNode IDs associated with this organization.
    *
-   * @return list of inject IDs
+   * @return list of attackChainNode IDs
    */
-  List<String> getOrganization_injects();
+  List<String> getOrganization_attackChainNodes();
 
   /**
-   * Returns the count of injects associated with this organization.
+   * Returns the count of attackChainNodes associated with this organization.
    *
-   * @return the inject count
+   * @return the attackChainNode count
    */
   long getOrganization_injects_number();
 }

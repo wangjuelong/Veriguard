@@ -21,7 +21,7 @@ import io.veriguard.integration.IntegrationFactory;
 import io.veriguard.integration.impl.executors.veriguard.VeriguardExecutorIntegration;
 import io.veriguard.integration.impl.executors.veriguard.VeriguardExecutorIntegrationFactory;
 import io.veriguard.service.*;
-import io.veriguard.service.InjectorService;
+import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.catalog_connectors.CatalogConnectorService;
 import io.veriguard.service.connector_instances.ConnectorInstanceService;
 import io.veriguard.utilstest.RabbitMQTestListener;
@@ -54,7 +54,7 @@ public class VeriguardExecutorIntegrationTest {
   @Autowired private HttpClientFactory httpClientFactory;
 
   @Autowired private FileService fileService;
-  @Autowired private InjectorService injectorService;
+  @Autowired private NodeExecutorService nodeExecutorService;
   @Autowired private PlatformSettingsService platformSettingsService;
 
   private VeriguardExecutorIntegrationFactory getFactory() {

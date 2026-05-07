@@ -209,9 +209,9 @@ public class CustomDashboardService {
   }
 
   /**
-   * Return the dashboard associated to a resource (scenario or simulation)
+   * Return the dashboard associated to a resource (attackChain or simulation)
    *
-   * @param resourceId simulation id or scenario id
+   * @param resourceId simulation id or attackChain id
    * @return
    */
   public CustomDashboard findCustomDashboardByResourceId(@NotBlank final String resourceId) {
@@ -230,7 +230,7 @@ public class CustomDashboardService {
   /**
    * Verify if a widget is part of a dashboard associated to a resource
    *
-   * @param resourceId simulation id or scenario id that is associated to a dashboard
+   * @param resourceId simulation id or attackChain id that is associated to a dashboard
    * @param widgetId
    * @return
    */

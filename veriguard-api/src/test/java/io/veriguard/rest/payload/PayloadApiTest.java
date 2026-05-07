@@ -1,8 +1,8 @@
 package io.veriguard.rest.payload;
 
-import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_TARGETED_ASSET_SEPARATOR;
-import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_TARGETED_PROPERTY;
-import static io.veriguard.database.specification.InjectorContractSpecification.byPayloadId;
+import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_TARGETED_ASSET_SEPARATOR;
+import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_TARGETED_PROPERTY;
+import static io.veriguard.database.specification.NodeContractSpecification.byPayloadId;
 import static io.veriguard.utils.JsonTestUtils.asJsonString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -19,10 +19,10 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.CollectorRepository;
 import io.veriguard.database.repository.DocumentRepository;
-import io.veriguard.database.repository.InjectorContractRepository;
+import io.veriguard.database.repository.NodeContractRepository;
 import io.veriguard.database.repository.PayloadRepository;
 import io.veriguard.integration.Manager;
-import io.veriguard.integration.impl.injectors.veriguard.VeriguardInjectorIntegrationFactory;
+import io.veriguard.integration.impl.injectors.veriguard.VeriguardNodeExecutorIntegrationFactory;
 import io.veriguard.rest.collector.form.CollectorCreateInput;
 import io.veriguard.rest.payload.form.*;
 import io.veriguard.utils.fixtures.CollectorFixture;
@@ -51,10 +51,10 @@ class PayloadApiTest extends IntegrationTest {
 
   @Autowired private MockMvc mvc;
   @Autowired private DocumentRepository documentRepository;
-  @Autowired private InjectorContractRepository injectorContractRepository;
+  @Autowired private NodeContractRepository nodeContractRepository;
   @Autowired private PayloadRepository payloadRepository;
   @Autowired private CollectorRepository collectorRepository;
-  @Autowired private VeriguardInjectorIntegrationFactory veriguardInjectorIntegrationFactory;
+  @Autowired private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
 
   @Autowired private CollectorComposer collectorComposer;
   @Autowired private DomainComposer domainComposer;
@@ -250,7 +250,7 @@ class PayloadApiTest extends IntegrationTest {
     @Test
     @DisplayName("Create Payload with targeted asset")
     void given_targetedAssetArgument_should_create_payload_with_targeted_asset() throws Exception {
-      new Manager(List.of(veriguardInjectorIntegrationFactory)).monitorIntegrations();
+      new Manager(List.of(veriguardNodeExecutorIntegrationFactory)).monitorIntegrations();
 
       Domain domain = domainComposer.forDomain(DomainFixture.getRandomDomain()).persist().get();
       PayloadCreateInput input =
@@ -279,14 +279,14 @@ class PayloadApiTest extends IntegrationTest {
 
       assertEquals("1", JsonPath.read(response, "$.payload_arguments.length()").toString());
       assertEquals("targeted-asset", JsonPath.read(response, "$.payload_arguments[0].type"));
-      InjectorContract injectorContract =
-          injectorContractRepository
+      NodeContract nodeContract =
+          nodeContractRepository
               .findOne(byPayloadId(JsonPath.read(response, "$.payload_id")))
               .orElse(null);
 
-      assertNotNull(injectorContract);
+      assertNotNull(nodeContract);
 
-      ArrayNode fields = (ArrayNode) injectorContract.getConvertedContent().get("fields");
+      ArrayNode fields = (ArrayNode) nodeContract.getConvertedContent().get("fields");
       List<JsonNode> fieldsForTargetedAsset = new ArrayList<>();
       fields.forEach(
           f -> {

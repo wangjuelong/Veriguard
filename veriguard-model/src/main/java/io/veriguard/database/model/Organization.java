@@ -77,15 +77,15 @@ public class Organization implements Base {
   private Set<Tag> tags = new HashSet<>();
 
   // region transient
-  private transient List<Inject> injects = new ArrayList<>();
+  private transient List<AttackChainNode> attackChainNodes = new ArrayList<>();
 
-  public void resolveInjects(Iterable<Inject> injects) {
-    this.injects =
-        stream(injects.spliterator(), false)
+  public void resolveAttackChainNodes(Iterable<AttackChainNode> attackChainNodes) {
+    this.attackChainNodes =
+        stream(attackChainNodes.spliterator(), false)
             .filter(
-                inject ->
-                    inject.isAllTeams()
-                        || inject.getTeams().stream()
+                attackChainNode ->
+                    attackChainNode.isAllTeams()
+                        || attackChainNode.getTeams().stream()
                             .anyMatch(
                                 team ->
                                     getUsers().stream()
@@ -98,13 +98,13 @@ public class Organization implements Base {
   @ArraySchema(schema = @Schema(type = "string"))
   @JsonProperty("organization_injects")
   @JsonSerialize(using = MultiIdListSerializer.class)
-  public List<Inject> getOrganizationInject() {
-    return injects;
+  public List<AttackChainNode> getOrganizationAttackChainNode() {
+    return attackChainNodes;
   }
 
   @JsonProperty("organization_injects_number")
-  public long getOrganizationInjectsNumber() {
-    return injects.size();
+  public long getOrganizationAttackChainNodesNumber() {
+    return attackChainNodes.size();
   }
 
   // endregion

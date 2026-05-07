@@ -53,11 +53,11 @@ class DashboardApiTest extends IntegrationTest {
   @Autowired private CustomDashboardComposer customDashboardComposer;
   @Autowired private MockMvc mvc;
   @Autowired private EntityManager entityManager;
-  @Autowired private ExerciseComposer exerciseComposer;
+  @Autowired private AttackChainRunComposer attackChainRunComposer;
   @Autowired private AttackPatternComposer attackPatternComposer;
-  @Autowired private InjectComposer injectComposer;
-  @Autowired private InjectorContractComposer injectorContractComposer;
-  @Autowired private InjectExpectationComposer injectExpectationComposer;
+  @Autowired private AttackChainNodeComposer attackChainNodeComposer;
+  @Autowired private NodeContractComposer nodeContractComposer;
+  @Autowired private AttackChainNodeExpectationComposer attackChainNodeExpectationComposer;
   @Autowired private FindingComposer findingComposer;
   @Autowired private CustomDashboardParameterComposer customDashboardParameterComposer;
   @Autowired private AttackPatternRepository attackPatternRepository;
@@ -67,8 +67,8 @@ class DashboardApiTest extends IntegrationTest {
   void setup() throws IOException {
     endpointComposer.reset();
     widgetComposer.reset();
-    exerciseComposer.reset();
-    injectComposer.reset();
+    attackChainRunComposer.reset();
+    attackChainNodeComposer.reset();
 
     // force reset elastic
     for (EsModel<?> model : engineContext.getModels()) {
@@ -184,12 +184,12 @@ class DashboardApiTest extends IntegrationTest {
 
       // single simulation with two findings
       // each referencing the same two endpoints
-      ExerciseComposer.Composer exerciseWrapper1 =
-          exerciseComposer
-              .forExercise(ExerciseFixture.createDefaultExercise())
-              .withInject(
-                  injectComposer
-                      .forInject(InjectFixture.getDefaultInject())
+      AttackChainRunComposer.Composer attackChainRunWrapper1 =
+          attackChainRunComposer
+              .forAttackChainRun(AttackChainRunFixture.createDefaultAttackChainRun())
+              .withAttackChainNode(
+                  attackChainNodeComposer
+                      .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
                       .withFinding(
                           findingComposer
                               .forFinding(FindingFixture.createDefaultCveFindingWithRandomTitle())
@@ -203,11 +203,11 @@ class DashboardApiTest extends IntegrationTest {
               .persist();
 
       // other simulation with single finding referencing another endpoint
-      exerciseComposer
-          .forExercise(ExerciseFixture.createDefaultExercise())
-          .withInject(
-              injectComposer
-                  .forInject(InjectFixture.getDefaultInject())
+      attackChainRunComposer
+          .forAttackChainRun(AttackChainRunFixture.createDefaultAttackChainRun())
+          .withAttackChainNode(
+              attackChainNodeComposer
+                  .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
                   .withFinding(
                       findingComposer
                           .forFinding(FindingFixture.createDefaultCveFindingWithRandomTitle())
@@ -263,7 +263,7 @@ class DashboardApiTest extends IntegrationTest {
                       .content(
                           "{\"%s\":\"%s\"}"
                               .formatted(
-                                  paramWrapper.get().getId(), exerciseWrapper1.get().getId()))
+                                  paramWrapper.get().getId(), attackChainRunWrapper1.get().getId()))
                       .with(csrf()))
               .andExpect(status().isOk())
               .andReturn()
@@ -759,50 +759,50 @@ class DashboardApiTest extends IntegrationTest {
       assertThatJson(response).node("es_entities").isArray().size().isEqualTo(2);
     }
 
-    private Inject createInjectWithDetectionExpectation(AttackPattern attackPattern) {
+    private AttackChainNode createAttackChainNodeWithDetectionExpectation(AttackPattern attackPattern) {
       EndpointComposer.Composer endpointWrapper =
           endpointComposer.forEndpoint(EndpointFixture.createEndpoint()).persist();
-      InjectExpectation detection1 =
-          InjectExpectationFixture.createExpectationWithTypeAndStatus(
-              InjectExpectation.EXPECTATION_TYPE.DETECTION,
-              InjectExpectation.EXPECTATION_STATUS.SUCCESS);
-      InjectExpectation detection2 =
-          InjectExpectationFixture.createExpectationWithTypeAndStatus(
-              InjectExpectation.EXPECTATION_TYPE.DETECTION,
-              InjectExpectation.EXPECTATION_STATUS.SUCCESS);
-      return injectComposer
-          .forInject(InjectFixture.getDefaultInject())
+      AttackChainNodeExpectation detection1 =
+          AttackChainNodeExpectationFixture.createExpectationWithTypeAndStatus(
+              AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION,
+              AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+      AttackChainNodeExpectation detection2 =
+          AttackChainNodeExpectationFixture.createExpectationWithTypeAndStatus(
+              AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION,
+              AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+      return attackChainNodeComposer
+          .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
           .withEndpoint(endpointWrapper)
-          .withInjectorContract(
-              injectorContractComposer
-                  .forInjectorContract(InjectorContractFixture.createDefaultInjectorContract())
+          .withNodeContract(
+              nodeContractComposer
+                  .forNodeContract(NodeContractFixture.createDefaultNodeContract())
                   .withAttackPattern(attackPatternComposer.forAttackPattern(attackPattern)))
           .withExpectation(
-              injectExpectationComposer.forExpectation(detection1).withEndpoint(endpointWrapper))
+              attackChainNodeExpectationComposer.forExpectation(detection1).withEndpoint(endpointWrapper))
           .withExpectation(
-              injectExpectationComposer.forExpectation(detection2).withEndpoint(endpointWrapper))
+              attackChainNodeExpectationComposer.forExpectation(detection2).withEndpoint(endpointWrapper))
           .persist()
           .get();
     }
 
     @Test
     @DisplayName("Given security coverage widget should return list of inject expectations")
-    void given_securityCoverageWidget_should_returnListOfInjectExpectations() throws Exception {
+    void given_securityCoverageWidget_should_returnListOfAttackChainNodeExpectations() throws Exception {
       AttackPattern attackPattern1 =
           attackPatternRepository.save(AttackPatternFixture.createDefaultAttackPattern());
       AttackPattern attackPattern2 =
           attackPatternRepository.save(AttackPatternFixture.createDefaultAttackPattern());
       AttackPattern attackPattern3 =
           attackPatternRepository.save(AttackPatternFixture.createDefaultAttackPattern());
-      Inject inject1 = createInjectWithDetectionExpectation(attackPattern1);
-      Inject inject2 = createInjectWithDetectionExpectation(attackPattern1);
-      Inject inject3 = createInjectWithDetectionExpectation(attackPattern2);
-      createInjectWithDetectionExpectation(attackPattern3);
+      AttackChainNode attackChainNode1 = createAttackChainNodeWithDetectionExpectation(attackPattern1);
+      AttackChainNode attackChainNode2 = createAttackChainNodeWithDetectionExpectation(attackPattern1);
+      AttackChainNode attackChainNode3 = createAttackChainNodeWithDetectionExpectation(attackPattern2);
+      createAttackChainNodeWithDetectionExpectation(attackPattern3);
       Widget widget =
           widgetComposer
               .forWidget(
                   WidgetFixture.createSecurityConverageWidget(
-                      ALL_TIME, "base_created_at", InjectExpectation.EXPECTATION_TYPE.DETECTION))
+                      ALL_TIME, "base_created_at", AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION))
               .withCustomDashboard(
                   customDashboardComposer.forCustomDashboard(
                       CustomDashboardFixture.createCustomDashboardWithDefaultParams()))
@@ -848,7 +848,7 @@ class DashboardApiTest extends IntegrationTest {
           .isArray()
           .hasSize(6)
           .extracting("base_inject_side")
-          .containsOnly(inject1.getId(), inject2.getId(), inject3.getId());
+          .containsOnly(attackChainNode1.getId(), attackChainNode2.getId(), attackChainNode3.getId());
     }
   }
 }

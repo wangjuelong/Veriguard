@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * <pre>{@code
  * @Entity
  * @Indexable(index = "scenarios", label = "Scenario", ref = "scenario")
- * public class Scenario implements Base {
+ * public class AttackChain implements Base {
  *     // ...
  * }
  * }</pre>

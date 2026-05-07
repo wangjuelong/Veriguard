@@ -181,7 +181,7 @@ public class Endpoint extends Asset {
       joinColumns = @JoinColumn(name = "asset_id"),
       inverseJoinColumns = @JoinColumn(name = "inject_id"))
   @JsonIgnore
-  private List<Inject> injects = new ArrayList<>();
+  private List<AttackChainNode> attackChainNodes = new ArrayList<>();
 
   public void setHostname(String hostname) {
     this.hostname = hostname.toLowerCase();

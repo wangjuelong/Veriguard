@@ -10,7 +10,7 @@ import org.hibernate.Hibernate;
  * Utility class for agent-related operations and validations.
  *
  * <p>Provides helper methods for filtering, validating, and retrieving agents associated with
- * assets and injects. Agents are software components deployed on endpoints that execute inject
+ * assets and attackChainNodes. Agents are software components deployed on endpoints that execute attackChainNode
  * commands during simulations.
  *
  * <p>This is a utility class and cannot be instantiated.
@@ -58,55 +58,55 @@ public class AgentUtils {
   }
 
   /**
-   * Retrieves all active and valid agents from an asset for a specific inject.
+   * Retrieves all active and valid agents from an asset for a specific attackChainNode.
    *
    * <p>This method unproxies the asset to access the underlying endpoint and filters its agents
-   * based on validity criteria for the given inject.
+   * based on validity criteria for the given attackChainNode.
    *
    * @param asset the asset (endpoint) containing the agents
-   * @param inject the inject context used for validation
+   * @param attackChainNode the attackChainNode context used for validation
    * @return a list of active agents that pass all validation checks
-   * @see #isValidAgent(Inject, Agent)
+   * @see #isValidAgent(AttackChainNode, Agent)
    */
-  public static List<Agent> getActiveAgents(Asset asset, Inject inject) {
+  public static List<Agent> getActiveAgents(Asset asset, AttackChainNode attackChainNode) {
     return ((Endpoint) Hibernate.unproxy(asset))
-        .getAgents().stream().filter(agent -> isValidAgent(inject, agent)).toList();
+        .getAgents().stream().filter(agent -> isValidAgent(attackChainNode, agent)).toList();
   }
 
   /**
-   * Validates whether an agent is suitable for executing an inject.
+   * Validates whether an agent is suitable for executing an attackChainNode.
    *
    * <p>An agent is considered valid if it meets all of the following criteria:
    *
    * <ul>
-   *   <li>It is a primary agent (not a child or inject-specific agent)
-   *   <li>It has no error or inactive traces for the given inject
+   *   <li>It is a primary agent (not a child or attackChainNode-specific agent)
+   *   <li>It has no error or inactive traces for the given attackChainNode
    *   <li>It is currently active
    * </ul>
    *
-   * @param inject the inject to validate against
+   * @param attackChainNode the attackChainNode to validate against
    * @param agent the agent to validate
-   * @return {@code true} if the agent is valid for the inject, {@code false} otherwise
+   * @return {@code true} if the agent is valid for the attackChainNode, {@code false} otherwise
    */
-  public static boolean isValidAgent(Inject inject, Agent agent) {
-    return isPrimaryAgent(agent) && hasOnlyValidTraces(inject, agent) && agent.isActive();
+  public static boolean isValidAgent(AttackChainNode attackChainNode, Agent agent) {
+    return isPrimaryAgent(agent) && hasOnlyValidTraces(attackChainNode, agent) && agent.isActive();
   }
 
   /**
-   * Checks if an agent has only valid execution traces for a specific inject.
+   * Checks if an agent has only valid execution traces for a specific attackChainNode.
    *
-   * <p>An agent has valid traces if none of its traces for the inject have an ERROR or
+   * <p>An agent has valid traces if none of its traces for the attackChainNode have an ERROR or
    * AGENT_INACTIVE status. If no traces exist, the agent is considered valid by default.
    *
-   * @param inject the inject to check traces for
+   * @param attackChainNode the attackChainNode to check traces for
    * @param agent the agent whose traces are being validated
    * @return {@code true} if no invalid traces exist, {@code false} if error or inactive traces are
    *     found
    */
-  public static boolean hasOnlyValidTraces(Inject inject, Agent agent) {
-    return inject
+  public static boolean hasOnlyValidTraces(AttackChainNode attackChainNode, Agent agent) {
+    return attackChainNode
         .getStatus()
-        .map(InjectStatus::getTraces)
+        .map(AttackChainNodeStatus::getTraces)
         .map(
             traces ->
                 Boolean.valueOf(
@@ -126,13 +126,13 @@ public class AgentUtils {
    * Determines if an agent is a primary agent.
    *
    * <p>A primary agent is a standalone agent that is not a child of another agent and is not
-   * created specifically for an inject execution.
+   * created specifically for an attackChainNode execution.
    *
    * @param agent the agent to check
-   * @return {@code true} if the agent has no parent and no associated inject
+   * @return {@code true} if the agent has no parent and no associated attackChainNode
    */
   public static boolean isPrimaryAgent(Agent agent) {
-    return agent.getParent() == null && agent.getInject() == null;
+    return agent.getParent() == null && agent.getAttackChainNode() == null;
   }
 
   /**

@@ -32,8 +32,8 @@ public class LockAspect {
     this.lockStripes = new ConcurrentHashMap<>();
     // Creates 4096 locks that are distributed across IDs
     // 1024 is the default number of locks, but we increase it to reduce contention for highly
-    // concurrent scenarios
-    // (example: user with 10000+ implants triggered by the same inject)
+    // concurrent attackChains
+    // (example: user with 10000+ implants triggered by the same attackChainNode)
     for (LockResourceType type : LockResourceType.values()) {
       this.lockStripes.put(type, Striped.lock(type.stripes()));
     }

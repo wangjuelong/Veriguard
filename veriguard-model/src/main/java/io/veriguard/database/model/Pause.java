@@ -41,7 +41,7 @@ public class Pause implements Base {
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("pause_exercise")
   @Schema(type = "string")
-  private Exercise exercise;
+  private AttackChainRun attackChainRun;
 
   public Optional<Long> getDuration() {
     return Optional.ofNullable(duration);
@@ -49,10 +49,10 @@ public class Pause implements Base {
 
   @Override
   public boolean isUserHasAccess(User user) {
-    if (exercise == null) {
+    if (attackChainRun == null) {
       return user.isAdmin();
     }
-    return exercise.isUserHasAccess(user);
+    return attackChainRun.isUserHasAccess(user);
   }
 
   @Override

@@ -1,6 +1,6 @@
 package io.veriguard.rest.security;
 
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +14,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 public class MethodSecurityConfig {
 
   private final UserRepository userRepository;
-  private final ExerciseRepository exerciseRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
 
   @Bean
   MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
-    return new SecurityExpressionHandler(this.userRepository, this.exerciseRepository);
+    return new SecurityExpressionHandler(this.userRepository, this.attackChainRunRepository);
   }
 }

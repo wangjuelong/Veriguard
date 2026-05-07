@@ -9,9 +9,9 @@ import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawAttackPattern;
 import io.veriguard.database.repository.AttackPatternRepository;
-import io.veriguard.database.repository.InjectorContractRepository;
+import io.veriguard.database.repository.NodeContractRepository;
 import io.veriguard.database.repository.KillChainPhaseRepository;
-import io.veriguard.database.specification.InjectorContractSpecification;
+import io.veriguard.database.specification.NodeContractSpecification;
 import io.veriguard.rest.attack_pattern.form.AttackPatternCreateInput;
 import io.veriguard.rest.attack_pattern.form.AttackPatternUpdateInput;
 import io.veriguard.rest.attack_pattern.form.AttackPatternUpsertInput;
@@ -46,7 +46,7 @@ public class AttackPatternApi extends RestBehavior {
   private final AttackPatternService attackPatternService;
 
   private final AttackPatternRepository attackPatternRepository;
-  private final InjectorContractRepository injectorContractRepository;
+  private final NodeContractRepository nodeContractRepository;
   private final KillChainPhaseRepository killChainPhaseRepository;
 
   @GetMapping("/api/attack_patterns")
@@ -107,10 +107,10 @@ public class AttackPatternApi extends RestBehavior {
       resourceId = "#attackPatternId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.ATTACK_PATTERN)
-  public Iterable<InjectorContract> injectorContracts(@PathVariable String attackPatternId) {
+  public Iterable<NodeContract> nodeContracts(@PathVariable String attackPatternId) {
     attackPatternRepository.findById(attackPatternId).orElseThrow(ElementNotFoundException::new);
-    return injectorContractRepository.findAll(
-        InjectorContractSpecification.fromAttackPattern(attackPatternId));
+    return nodeContractRepository.findAll(
+        NodeContractSpecification.fromAttackPattern(attackPatternId));
   }
 
   @PutMapping("/api/attack_patterns/{attackPatternId}")

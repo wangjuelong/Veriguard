@@ -1,12 +1,12 @@
 package io.veriguard.model.expectation;
 
-import static io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE.PREVENTION;
+import static io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION;
 
 import io.veriguard.database.model.Agent;
 import io.veriguard.database.model.Asset;
 import io.veriguard.database.model.AssetGroup;
-import io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
-import io.veriguard.database.model.InjectExpectationSignature;
+import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.NodeExpectationSignature;
 import io.veriguard.model.Expectation;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -32,7 +32,7 @@ import lombok.Setter;
  * </ul>
  *
  * @see Expectation
- * @see InjectExpectationSignature
+ * @see NodeExpectationSignature
  */
 @Getter
 @Setter
@@ -63,7 +63,7 @@ public class PreventionExpectation implements Expectation {
   private Long expirationTime;
 
   /** Signatures that can satisfy this prevention expectation. */
-  private List<InjectExpectationSignature> injectExpectationSignatures;
+  private List<NodeExpectationSignature> nodeExpectationSignatures;
 
   private PreventionExpectation() {}
 
@@ -82,7 +82,7 @@ public class PreventionExpectation implements Expectation {
    * @param asset the asset where the agent resides
    * @param assetGroup optional asset group for grouping
    * @param expirationTime time in seconds until expiration
-   * @param injectExpectationSignatures signatures that satisfy this expectation
+   * @param nodeExpectationSignatures signatures that satisfy this expectation
    * @return a configured PreventionExpectation
    */
   public static PreventionExpectation preventionExpectationForAgent(
@@ -93,7 +93,7 @@ public class PreventionExpectation implements Expectation {
       @NotNull final Asset asset,
       final AssetGroup assetGroup,
       final Long expirationTime,
-      final List<InjectExpectationSignature> injectExpectationSignatures) {
+      final List<NodeExpectationSignature> nodeExpectationSignatures) {
     PreventionExpectation preventionExpectation = new PreventionExpectation();
     preventionExpectation.setScore(Objects.requireNonNullElse(score, 100.0));
     preventionExpectation.setName(name);
@@ -102,7 +102,7 @@ public class PreventionExpectation implements Expectation {
     preventionExpectation.setAsset(asset);
     preventionExpectation.setAssetGroup(assetGroup);
     preventionExpectation.setExpirationTime(expirationTime);
-    preventionExpectation.setInjectExpectationSignatures(injectExpectationSignatures);
+    preventionExpectation.setNodeExpectationSignatures(nodeExpectationSignatures);
     return preventionExpectation;
   }
 

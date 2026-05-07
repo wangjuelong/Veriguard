@@ -19,7 +19,7 @@ public class FindingComposer extends ComposerBase<Finding> {
   public class Composer extends InnerComposerBase<Finding> {
 
     private final Finding finding;
-    private Optional<InjectComposer.Composer> injectComposer = Optional.empty();
+    private Optional<AttackChainNodeComposer.Composer> attackChainNodeComposer = Optional.empty();
     private final List<EndpointComposer.Composer> endpointComposers = new ArrayList<>();
     private final List<TagComposer.Composer> tagComposers = new ArrayList<>();
 
@@ -27,9 +27,9 @@ public class FindingComposer extends ComposerBase<Finding> {
       this.finding = finding;
     }
 
-    public Composer withInject(InjectComposer.Composer injectComposer) {
-      this.injectComposer = Optional.of(injectComposer);
-      this.finding.setInject(injectComposer.get());
+    public Composer withAttackChainNode(AttackChainNodeComposer.Composer attackChainNodeComposer) {
+      this.attackChainNodeComposer = Optional.of(attackChainNodeComposer);
+      this.finding.setAttackChainNode(attackChainNodeComposer.get());
       return this;
     }
 
@@ -51,7 +51,7 @@ public class FindingComposer extends ComposerBase<Finding> {
 
     @Override
     public FindingComposer.Composer persist() {
-      injectComposer.ifPresent(InjectComposer.Composer::persist);
+      attackChainNodeComposer.ifPresent(AttackChainNodeComposer.Composer::persist);
       endpointComposers.forEach(EndpointComposer.Composer::persist);
       tagComposers.forEach(TagComposer.Composer::persist);
       findingRepository.save(this.finding);
@@ -60,7 +60,7 @@ public class FindingComposer extends ComposerBase<Finding> {
 
     @Override
     public FindingComposer.Composer delete() {
-      injectComposer.ifPresent(InjectComposer.Composer::delete);
+      attackChainNodeComposer.ifPresent(AttackChainNodeComposer.Composer::delete);
       endpointComposers.forEach(EndpointComposer.Composer::delete);
       tagComposers.forEach(TagComposer.Composer::delete);
       findingRepository.delete(this.finding);

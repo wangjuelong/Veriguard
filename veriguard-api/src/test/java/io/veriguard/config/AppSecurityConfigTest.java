@@ -1,6 +1,6 @@
 package io.veriguard.config;
 
-import static io.veriguard.rest.scenario.ScenarioApi.SCENARIO_URI;
+import static io.veriguard.rest.scenario.AttackChainApi.SCENARIO_URI;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

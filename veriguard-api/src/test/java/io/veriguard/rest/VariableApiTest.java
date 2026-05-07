@@ -1,6 +1,6 @@
 package io.veriguard.rest;
 
-import static io.veriguard.rest.scenario.ScenarioApi.SCENARIO_URI;
+import static io.veriguard.rest.scenario.AttackChainApi.SCENARIO_URI;
 import static io.veriguard.utils.JsonTestUtils.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,11 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.Scenario;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.Variable;
-import io.veriguard.database.repository.ScenarioRepository;
+import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.database.repository.VariableRepository;
-import io.veriguard.service.scenario.ScenarioService;
+import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.mockUser.WithMockUser;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import org.junit.jupiter.api.*;
@@ -38,8 +38,8 @@ public class VariableApiTest extends IntegrationTest {
 
   @Autowired private MockMvc mvc;
 
-  @Autowired private ScenarioService scenarioService;
-  @Autowired private ScenarioRepository scenarioRepository;
+  @Autowired private AttackChainService attackChainService;
+  @Autowired private AttackChainRepository attackChainRepository;
   @Autowired private VariableRepository variableRepository;
 
   static String VARIABLE_ID;
@@ -47,7 +47,7 @@ public class VariableApiTest extends IntegrationTest {
 
   @AfterAll
   void afterAll() {
-    this.scenarioRepository.deleteById(SCENARIO_ID);
+    this.attackChainRepository.deleteById(SCENARIO_ID);
     this.variableRepository.deleteById(VARIABLE_ID);
   }
 
@@ -57,12 +57,12 @@ public class VariableApiTest extends IntegrationTest {
   @Test
   @Order(1)
   @WithMockUser(isAdmin = true)
-  void createVariableForScenarioTest() throws Exception {
+  void createVariableForAttackChainTest() throws Exception {
     // -- PREPARE --
-    Scenario scenario = new Scenario();
-    scenario.setName("Scenario name");
-    Scenario scenarioCreated = this.scenarioService.createScenario(scenario);
-    SCENARIO_ID = scenarioCreated.getId();
+    AttackChain attackChain = new AttackChain();
+    attackChain.setName("Scenario name");
+    AttackChain attackChainCreated = this.attackChainService.createAttackChain(attackChain);
+    SCENARIO_ID = attackChainCreated.getId();
     Variable variable = new Variable();
 
     // -- EXECUTE & ASSERT --
@@ -78,7 +78,7 @@ public class VariableApiTest extends IntegrationTest {
     // -- PREPARE --
     String variableKey = "key";
     variable.setKey(variableKey);
-    variable.setScenario(scenario);
+    variable.setAttackChain(attackChain);
 
     // -- EXECUTE --
     String response =
@@ -104,7 +104,7 @@ public class VariableApiTest extends IntegrationTest {
   @Test
   @Order(2)
   @WithMockUser(isAdmin = true)
-  void retrieveVariableForScenarioTest() throws Exception {
+  void retrieveVariableForAttackChainTest() throws Exception {
     // -- EXECUTE --
     String response =
         this.mvc
@@ -125,7 +125,7 @@ public class VariableApiTest extends IntegrationTest {
   @Test
   @Order(3)
   @WithMockUser(isAdmin = true)
-  void updateVariableForScenarioTest() throws Exception {
+  void updateVariableForAttackChainTest() throws Exception {
     // -- PREPARE --
     String response =
         this.mvc
@@ -166,7 +166,7 @@ public class VariableApiTest extends IntegrationTest {
   @Test
   @Order(4)
   @WithMockUser(isAdmin = true)
-  void deleteVariableForScenarioTest() throws Exception {
+  void deleteVariableForAttackChainTest() throws Exception {
     // -- EXECUTE 1 ASSERT --
     this.mvc
         .perform(

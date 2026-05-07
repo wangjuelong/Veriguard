@@ -6,7 +6,7 @@ import static io.veriguard.utils.fixtures.AgentFixture.createAgent;
 import static io.veriguard.utils.fixtures.AssetGroupFixture.createAssetGroupWithAssets;
 import static io.veriguard.utils.fixtures.AssetGroupFixture.createDefaultAssetGroup;
 import static io.veriguard.utils.fixtures.EndpointFixture.*;
-import static io.veriguard.utils.fixtures.InjectFixture.getDefaultInject;
+import static io.veriguard.utils.fixtures.AttackChainNodeFixture.getDefaultAttackChainNode;
 import static io.veriguard.utils.fixtures.TagFixture.getTag;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,15 +22,15 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.AssetGroupRepository;
 import io.veriguard.database.repository.EndpointRepository;
-import io.veriguard.database.repository.InjectRepository;
+import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.TagRepository;
 import io.veriguard.rest.asset.endpoint.form.EndpointInput;
 import io.veriguard.rest.asset.endpoint.form.EndpointRegisterInput;
-import io.veriguard.rest.exercise.service.ExerciseService;
+import io.veriguard.rest.exercise.service.AttackChainRunService;
 import io.veriguard.service.EndpointService;
 import io.veriguard.utils.fixtures.EndpointFixture;
 import io.veriguard.utils.fixtures.ExecutorFixture;
-import io.veriguard.utils.fixtures.ExerciseFixture;
+import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.PaginationFixture;
 import io.veriguard.utils.fixtures.composers.ExecutorComposer;
 import io.veriguard.utils.mapper.EndpointMapper;
@@ -58,8 +58,8 @@ class EndpointApiTest extends IntegrationTest {
   @Autowired private MockMvc mvc;
   @Autowired private TagRepository tagRepository;
   @Autowired private EndpointRepository endpointRepository;
-  @Autowired private InjectRepository injectRepository;
-  @Autowired private ExerciseService exerciseService;
+  @Autowired private AttackChainNodeRepository attackChainNodeRepository;
+  @Autowired private AttackChainRunService attackChainRunService;
   @Autowired private ExecutorComposer executorComposer;
   @Autowired private ExecutorFixture executorFixture;
 
@@ -427,7 +427,7 @@ class EndpointApiTest extends IntegrationTest {
     }
   }
 
-  private Inject prepareOptionsEndpointTestData() {
+  private AttackChainNode prepareOptionsEndpointTestData() {
     // Teams
     Endpoint e1input = createEndpoint();
     e1input.setName(WINDOWS_ASSET_NAME_INPUT + "1");
@@ -441,12 +441,12 @@ class EndpointApiTest extends IntegrationTest {
     Endpoint e4input = createEndpoint();
     e4input.setName(WINDOWS_ASSET_NAME_INPUT + "4");
     Endpoint endpoint4 = this.endpointRepository.save(e4input);
-    Exercise exInput = ExerciseFixture.getExercise();
-    Exercise exercise = this.exerciseService.createExercise(exInput);
-    // Inject
-    Inject inject = getDefaultInject();
-    inject.setExercise(exercise);
-    inject.setAssets(
+    AttackChainRun exInput = AttackChainRunFixture.getAttackChainRun();
+    AttackChainRun attackChainRun = this.attackChainRunService.createAttackChainRun(exInput);
+    // AttackChainNode
+    AttackChainNode attackChainNode = getDefaultAttackChainNode();
+    attackChainNode.setAttackChainRun(attackChainRun);
+    attackChainNode.setAssets(
         new ArrayList<>() {
           {
             add(endpoint1);
@@ -455,31 +455,31 @@ class EndpointApiTest extends IntegrationTest {
             add(endpoint4);
           }
         });
-    return this.injectRepository.save(inject);
+    return this.attackChainNodeRepository.save(attackChainNode);
   }
 
   Stream<Arguments> optionsByNameTestParameters() {
     return Stream.of(
         Arguments.of(
-            null, false, 0), // Case 1: searchText is null and simulationOrScenarioId is null
+            null, false, 0), // Case 1: searchText is null and simulationOrAttackChainId is null
         Arguments.of(
             WINDOWS_ASSET_NAME_INPUT,
             false,
-            0), // Case 2: searchText is valid and simulationOrScenarioId is null
+            0), // Case 2: searchText is valid and simulationOrAttackChainId is null
         Arguments.of(
             WINDOWS_ASSET_NAME_INPUT + "2",
             false,
-            0), // Case 2: searchText is valid and simulationOrScenarioId is null
+            0), // Case 2: searchText is valid and simulationOrAttackChainId is null
         Arguments.of(
-            null, true, 4), // Case 3: searchText is null and simulationOrScenarioId is valid
+            null, true, 4), // Case 3: searchText is null and simulationOrAttackChainId is valid
         Arguments.of(
             WINDOWS_ASSET_NAME_INPUT,
             true,
-            4), // Case 4: searchText is valid and simulationOrScenarioId is valid
+            4), // Case 4: searchText is valid and simulationOrAttackChainId is valid
         Arguments.of(
             WINDOWS_ASSET_NAME_INPUT + "2",
             true,
-            1) // Case 5: searchText is valid and simulationOrScenarioId is valid
+            1) // Case 5: searchText is valid and simulationOrAttackChainId is valid
         );
   }
 
@@ -488,18 +488,18 @@ class EndpointApiTest extends IntegrationTest {
   @MethodSource("optionsByNameTestParameters")
   @WithMockUser(isAdmin = true)
   void optionsByNameTest(
-      String searchText, Boolean simulationOrScenarioId, Integer expectedNumberOfResults)
+      String searchText, Boolean simulationOrAttackChainId, Integer expectedNumberOfResults)
       throws Exception {
     // --PREPARE--
-    Inject i = prepareOptionsEndpointTestData();
-    Exercise exercise = i.getExercise();
+    AttackChainNode i = prepareOptionsEndpointTestData();
+    AttackChainRun attackChainRun = i.getAttackChainRun();
 
     // --EXECUTE--;
     String response =
         mvc.perform(
                 get(ENDPOINT_URI + "/options")
                     .queryParam("searchText", searchText)
-                    .queryParam("sourceId", simulationOrScenarioId ? exercise.getId() : null)
+                    .queryParam("sourceId", simulationOrAttackChainId ? attackChainRun.getId() : null)
                     .accept(MediaType.APPLICATION_JSON)
                     .with(csrf()))
             .andReturn()
@@ -527,8 +527,8 @@ class EndpointApiTest extends IntegrationTest {
   void optionsByIdTest(Integer numberOfAssetToProvide, Integer expectedNumberOfResults)
       throws Exception {
     // --PREPARE--
-    Inject inject = prepareOptionsEndpointTestData();
-    List<Asset> assets = inject.getAssets();
+    AttackChainNode attackChainNode = prepareOptionsEndpointTestData();
+    List<Asset> assets = attackChainNode.getAssets();
 
     List<String> idsToSearch = new ArrayList<>();
     for (int i = 0; i < numberOfAssetToProvide; i++) {

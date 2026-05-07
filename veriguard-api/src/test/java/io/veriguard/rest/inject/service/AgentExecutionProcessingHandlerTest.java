@@ -9,10 +9,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.database.model.*;
 import io.veriguard.output_processor.OutputProcessor;
 import io.veriguard.output_processor.OutputProcessorFactory;
-import io.veriguard.rest.inject.form.InjectExecutionAction;
-import io.veriguard.rest.inject.form.InjectExecutionInput;
+import io.veriguard.rest.inject.form.AttackChainNodeExecutionAction;
+import io.veriguard.rest.inject.form.AttackChainNodeExecutionInput;
 import io.veriguard.utils.fixtures.AgentFixture;
-import io.veriguard.utils.fixtures.InjectFixture;
+import io.veriguard.utils.fixtures.AttackChainNodeFixture;
 import io.veriguard.utils.fixtures.OutputParserFixture;
 import java.util.Map;
 import java.util.Optional;
@@ -35,30 +35,30 @@ class AgentExecutionProcessingHandlerTest {
   @InjectMocks private AgentExecutionProcessingHandler handler;
 
   private final ObjectMapper mapper = new ObjectMapper();
-  private Inject inject;
+  private AttackChainNode attackChainNode;
   private Agent agent;
 
   @BeforeEach
   void setUp() {
-    this.inject = InjectFixture.getDefaultInject();
+    this.attackChainNode = AttackChainNodeFixture.getDefaultAttackChainNode();
     this.agent = AgentFixture.createDefaultAgentService();
   }
 
   @Test
   @DisplayName("Should return empty when status is not SUCCESS or action is not command execution")
   void shouldReturnEmptyWhenStatusNotSuccessOrActionNotExecution() throws Exception {
-    InjectExecutionInput inputError =
-        buildInput(ExecutionTraceStatus.ERROR, InjectExecutionAction.command_execution);
+    AttackChainNodeExecutionInput inputError =
+        buildInput(ExecutionTraceStatus.ERROR, AttackChainNodeExecutionAction.command_execution);
     assertTrue(
         handler
-            .processContext(new ExecutionProcessingContext(inject, agent, inputError, Map.of()))
+            .processContext(new ExecutionProcessingContext(attackChainNode, agent, inputError, Map.of()))
             .isEmpty());
 
-    InjectExecutionInput inputComplete =
-        buildInput(ExecutionTraceStatus.SUCCESS, InjectExecutionAction.complete);
+    AttackChainNodeExecutionInput inputComplete =
+        buildInput(ExecutionTraceStatus.SUCCESS, AttackChainNodeExecutionAction.complete);
     assertTrue(
         handler
-            .processContext(new ExecutionProcessingContext(inject, agent, inputComplete, Map.of()))
+            .processContext(new ExecutionProcessingContext(attackChainNode, agent, inputComplete, Map.of()))
             .isEmpty());
 
     verifyNoInteractions(structuredOutputUtils);
@@ -195,15 +195,15 @@ class AgentExecutionProcessingHandlerTest {
 
   private ExecutionProcessingContext createValidCtx() {
     return new ExecutionProcessingContext(
-        inject,
+        attackChainNode,
         agent,
-        buildInput(ExecutionTraceStatus.SUCCESS, InjectExecutionAction.command_execution),
+        buildInput(ExecutionTraceStatus.SUCCESS, AttackChainNodeExecutionAction.command_execution),
         Map.of());
   }
 
-  private InjectExecutionInput buildInput(
-      ExecutionTraceStatus status, InjectExecutionAction action) {
-    InjectExecutionInput input = new InjectExecutionInput();
+  private AttackChainNodeExecutionInput buildInput(
+      ExecutionTraceStatus status, AttackChainNodeExecutionAction action) {
+    AttackChainNodeExecutionInput input = new AttackChainNodeExecutionInput();
     input.setStatus(status.toString());
     input.setAction(action);
     input.setMessage("raw-output");

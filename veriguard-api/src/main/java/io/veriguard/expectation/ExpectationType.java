@@ -1,6 +1,6 @@
 package io.veriguard.expectation;
 
-import io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import jakarta.validation.constraints.NotNull;
 
 public enum ExpectationType {

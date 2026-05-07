@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 public class PlatformJobDefinitions {
 
   @Bean
-  public JobDetail getInjectsExecution() {
-    return JobBuilder.newJob(InjectsExecutionJob.class)
+  public JobDetail getAttackChainNodesExecution() {
+    return JobBuilder.newJob(AttackChainNodesExecutionJob.class)
         .storeDurably()
         .withIdentity(jobKey("InjectsExecutionJob"))
         .build();
@@ -30,8 +30,8 @@ public class PlatformJobDefinitions {
   }
 
   @Bean
-  public JobDetail getScenarioExecution() {
-    return JobBuilder.newJob(ScenarioExecutionJob.class)
+  public JobDetail getAttackChainExecution() {
+    return JobBuilder.newJob(AttackChainExecutionJob.class)
         .storeDurably()
         .withIdentity(jobKey("ScenarioExecutionJob"))
         .build();

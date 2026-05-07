@@ -18,7 +18,7 @@ import java.io.IOException;
  * @ManyToOne(fetch = FetchType.LAZY)
  * @JsonSerialize(using = MonoIdSerializer.class)
  * @JsonProperty("inject_exercise")
- * private Exercise exercise;
+ * private AttackChainRun attackChainRun;
  * }</pre>
  *
  * @see MultiIdListSerializer

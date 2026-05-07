@@ -245,7 +245,7 @@ public class User implements Base {
       orphanRemoval = true)
   @JsonProperty("team_exercises_users")
   @JsonSerialize(using = MultiModelSerializer.class)
-  private List<ExerciseTeamUser> exerciseTeamUsers = new ArrayList<>();
+  private List<AttackChainRunTeamUser> attackChainRunTeamUsers = new ArrayList<>();
 
   @Setter
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

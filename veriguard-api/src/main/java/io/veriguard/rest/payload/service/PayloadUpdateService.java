@@ -68,7 +68,7 @@ public class PayloadUpdateService {
     }
 
     Payload saved = payloadRepository.save(payload);
-    payloadService.updateInjectorContractsForPayload(saved);
+    payloadService.updateNodeContractsForPayload(saved);
     return saved;
   }
 }

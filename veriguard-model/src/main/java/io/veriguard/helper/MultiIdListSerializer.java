@@ -17,7 +17,7 @@ import java.util.List;
  * <p>Example usage:
  *
  * <pre>{@code
- * @OneToMany(mappedBy = "exercise")
+ * @OneToMany(mappedBy = "attackChainRun")
  * @JsonSerialize(using = MultiIdListSerializer.class)
  * @JsonProperty("exercise_teams")
  * private List<Team> teams;

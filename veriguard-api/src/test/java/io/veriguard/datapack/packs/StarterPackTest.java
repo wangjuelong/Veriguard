@@ -17,11 +17,11 @@ import io.veriguard.injector_contract.fields.ContractAssetGroup;
 import io.veriguard.rest.tag.TagService;
 import io.veriguard.service.*;
 import io.veriguard.utils.fixtures.DomainFixture;
-import io.veriguard.utils.fixtures.InjectorContractFixture;
-import io.veriguard.utils.fixtures.InjectorFixture;
+import io.veriguard.utils.fixtures.NodeContractFixture;
+import io.veriguard.utils.fixtures.NodeExecutorFixture;
 import io.veriguard.utils.fixtures.PayloadFixture;
 import io.veriguard.utils.fixtures.composers.DomainComposer;
-import io.veriguard.utils.fixtures.composers.InjectorContractComposer;
+import io.veriguard.utils.fixtures.composers.NodeContractComposer;
 import io.veriguard.utils.fixtures.composers.PayloadComposer;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class StarterPackTest extends IntegrationTest {
   @Autowired private AssetRepository assetRepository;
   @Autowired private EndpointRepository endpointRepository;
   @Autowired private AssetGroupRepository assetGroupRepository;
-  @Autowired private ScenarioRepository scenarioRepository;
+  @Autowired private AttackChainRepository attackChainRepository;
   @Autowired private CustomDashboardRepository customDashboardRepository;
   @Autowired private SettingRepository settingRepository;
   @Autowired private TagRuleRepository tagRuleRepository;
@@ -67,11 +67,11 @@ public class StarterPackTest extends IntegrationTest {
   @Mock private ZipJsonService<CustomDashboard> mockZipJsonService;
   @Mock private ResourcePatternResolver mockResolver;
 
-  @Autowired private InjectorContractComposer injectorContractComposer;
+  @Autowired private NodeContractComposer nodeContractComposer;
   @Autowired private DomainComposer domainComposer;
   @Autowired private PayloadComposer payloadComposer;
-  @Autowired private InjectRepository injectRepository;
-  @Autowired private InjectorContractRepository injectorContractRepository;
+  @Autowired private AttackChainNodeRepository attackChainNodeRepository;
+  @Autowired private NodeContractRepository nodeContractRepository;
 
   @Autowired private DataPackService dataPackService;
 
@@ -102,8 +102,8 @@ public class StarterPackTest extends IntegrationTest {
     long assetGroupCount = assetGroupRepository.count();
     assertEquals(0, assetGroupCount);
 
-    long scenarioCount = scenarioRepository.count();
-    assertEquals(0, scenarioCount);
+    long attackChainCount = attackChainRepository.count();
+    assertEquals(0, attackChainCount);
 
     long dashboardCount = customDashboardRepository.count();
     assertEquals(0, dashboardCount);
@@ -146,8 +146,8 @@ public class StarterPackTest extends IntegrationTest {
     long assetGroupCount = assetGroupRepository.count();
     assertEquals(0, assetGroupCount);
 
-    long scenarioCount = scenarioRepository.count();
-    assertEquals(0, scenarioCount);
+    long attackChainCount = attackChainRepository.count();
+    assertEquals(0, attackChainCount);
 
     long dashboardCount = customDashboardRepository.count();
     assertEquals(0, dashboardCount);
@@ -158,7 +158,7 @@ public class StarterPackTest extends IntegrationTest {
 
   @Test
   @DisplayName("Should not init StarterPack Scenarios for import failure")
-  public void shouldNotInitStarterPackScenariosForImportFailure() throws Exception {
+  public void shouldNotInitStarterPackAttackChainsForImportFailure() throws Exception {
     // PREPARE
     V20260101_Starter_pack datapack =
         new V20260101_Starter_pack(
@@ -181,11 +181,11 @@ public class StarterPackTest extends IntegrationTest {
     this.verifyTagsExist();
     this.verifyEndpointExist();
     this.verifyAssetGroupExist();
-    assertThat(scenarioRepository.findAll()).isEmpty();
+    assertThat(attackChainRepository.findAll()).isEmpty();
     this.verifyDashboardExist();
     this.verifyParameterExist();
     this.verifyDefaultHomeDashboardParameterExist();
-    this.verifyDefaultScenarioDashboardParameterExist();
+    this.verifyDefaultAttackChainDashboardParameterExist();
     this.verifyDefaultSimulationDashboardParameterExist();
     this.verifyTagRuleExist();
   }
@@ -217,7 +217,7 @@ public class StarterPackTest extends IntegrationTest {
     this.verifyTagsExist();
     this.verifyEndpointExist();
     this.verifyAssetGroupExist();
-    this.verifyScenarioExist();
+    this.verifyAttackChainExist();
     long dashboardCount = customDashboardRepository.count();
     assertEquals(0, dashboardCount);
     this.verifyParameterExist();
@@ -225,7 +225,7 @@ public class StarterPackTest extends IntegrationTest {
 
   @Test
   @DisplayName("Should not init StarterPack Scenarios and Dashboards for import failure")
-  public void shouldNotInitStarterPackScenariosAndDashboardsForImportFailure() throws Exception {
+  public void shouldNotInitStarterPackAttackChainsAndDashboardsForImportFailure() throws Exception {
     // PREPARE
     V20260101_Starter_pack datapack =
         new V20260101_Starter_pack(
@@ -253,8 +253,8 @@ public class StarterPackTest extends IntegrationTest {
     this.verifyTagsExist();
     this.verifyEndpointExist();
     this.verifyAssetGroupExist();
-    long scenarioCount = scenarioRepository.count();
-    assertEquals(0, scenarioCount);
+    long attackChainCount = attackChainRepository.count();
+    assertEquals(0, attackChainCount);
     long dashboardCount = customDashboardRepository.count();
     assertEquals(0, dashboardCount);
     this.verifyParameterExist();
@@ -284,11 +284,11 @@ public class StarterPackTest extends IntegrationTest {
     this.verifyTagsExist();
     this.verifyEndpointExist();
     this.verifyAssetGroupExist();
-    this.verifyScenarioExist();
+    this.verifyAttackChainExist();
     this.verifyDashboardExist();
     this.verifyParameterExist();
     this.verifyDefaultHomeDashboardParameterExist();
-    this.verifyDefaultScenarioDashboardParameterExist();
+    this.verifyDefaultAttackChainDashboardParameterExist();
     this.verifyDefaultSimulationDashboardParameterExist();
     this.verifyTagRuleExist();
   }
@@ -320,11 +320,11 @@ public class StarterPackTest extends IntegrationTest {
     this.verifyTagsExist();
     this.verifyEndpointExist();
     this.verifyAssetGroupExist();
-    this.verifyScenarioExist();
+    this.verifyAttackChainExist();
     this.verifyDashboardExist();
     this.verifyParameterExist();
     this.verifyDefaultHomeDashboardParameterExist();
-    this.verifyDefaultScenarioDashboardParameterExist();
+    this.verifyDefaultAttackChainDashboardParameterExist();
     this.verifyDefaultSimulationDashboardParameterExist();
     this.verifyTagRuleExist();
   }
@@ -337,17 +337,17 @@ public class StarterPackTest extends IntegrationTest {
         domainComposer.forDomain(DomainFixture.getRandomDomain()).persist().getSet();
 
     ContractAsset contractAsset = new ContractAsset(ContractCardinality.Multiple);
-    contractAsset.setLinkedFields(InjectorContractFixture.buildMandatoryOnConditionValue("assets"));
-    Injector injector = InjectorFixture.createDefaultPayloadInjector();
+    contractAsset.setLinkedFields(NodeContractFixture.buildMandatoryOnConditionValue("assets"));
+    NodeExecutor nodeExecutor = NodeExecutorFixture.createDefaultPayloadNodeExecutor();
     Payload payload = PayloadFixture.createDefaultCommand(domains);
-    InjectorContract injectorContract =
-        InjectorContractFixture.createPayloadInjectorContractWithFieldsContent(
-            injector, payload, List.of(contractAsset));
-    // Be careful should match inject into the zip scenario
-    injectorContract.setId("2e7fc079-4444-4531-4444-928fe4a1fc0b");
-    injectorContractComposer
-        .forInjectorContract(injectorContract)
-        .withInjector(injector)
+    NodeContract nodeContract =
+        NodeContractFixture.createPayloadNodeContractWithFieldsContent(
+            nodeExecutor, payload, List.of(contractAsset));
+    // Be careful should match attackChainNode into the zip attackChain
+    nodeContract.setId("2e7fc079-4444-4531-4444-928fe4a1fc0b");
+    nodeContractComposer
+        .forNodeContract(nodeContract)
+        .withNodeExecutor(nodeExecutor)
         .withPayload(payloadComposer.forPayload(payload))
         .persist();
 
@@ -371,23 +371,23 @@ public class StarterPackTest extends IntegrationTest {
     this.verifyTagsExist();
     this.verifyEndpointExist();
     this.verifyAssetGroupExist();
-    this.verifyScenarioExist();
+    this.verifyAttackChainExist();
     this.verifyDashboardExist();
     this.verifyParameterExist();
     this.verifyDefaultHomeDashboardParameterExist();
-    this.verifyDefaultScenarioDashboardParameterExist();
+    this.verifyDefaultAttackChainDashboardParameterExist();
     this.verifyDefaultSimulationDashboardParameterExist();
     this.verifyTagRuleExist();
-    this.verifyInjectorContracts();
+    this.verifyNodeContracts();
 
-    List<Inject> injects = this.injectRepository.findAll();
-    assertFalse(injects.isEmpty());
+    List<AttackChainNode> attackChainNodes = this.attackChainNodeRepository.findAll();
+    assertFalse(attackChainNodes.isEmpty());
     assertTrue(
-        injects.stream()
+        attackChainNodes.stream()
             .anyMatch(
-                inject ->
-                    inject.getAssets() != null
-                        && "honey.scanme.sh".equals(inject.getAssets().getFirst().getName())));
+                attackChainNode ->
+                    attackChainNode.getAssets() != null
+                        && "honey.scanme.sh".equals(attackChainNode.getAssets().getFirst().getName())));
   }
 
   @Test
@@ -399,17 +399,17 @@ public class StarterPackTest extends IntegrationTest {
 
     ContractAssetGroup contractAssetGroup = new ContractAssetGroup(ContractCardinality.Multiple);
     contractAssetGroup.setLinkedFields(
-        InjectorContractFixture.buildMandatoryOnConditionValue("asset_groups"));
-    Injector injector = InjectorFixture.createDefaultPayloadInjector();
+        NodeContractFixture.buildMandatoryOnConditionValue("asset_groups"));
+    NodeExecutor nodeExecutor = NodeExecutorFixture.createDefaultPayloadNodeExecutor();
     Payload payload = PayloadFixture.createDefaultCommand(domains);
-    InjectorContract injectorContract =
-        InjectorContractFixture.createPayloadInjectorContractWithFieldsContent(
-            injector, payload, List.of(contractAssetGroup));
-    // Be careful should match inject into the zip scenario
-    injectorContract.setId("df0d6fe6-ffb1-4e4c-a5f8-11a45b30dd69");
-    injectorContractComposer
-        .forInjectorContract(injectorContract)
-        .withInjector(injector)
+    NodeContract nodeContract =
+        NodeContractFixture.createPayloadNodeContractWithFieldsContent(
+            nodeExecutor, payload, List.of(contractAssetGroup));
+    // Be careful should match attackChainNode into the zip attackChain
+    nodeContract.setId("df0d6fe6-ffb1-4e4c-a5f8-11a45b30dd69");
+    nodeContractComposer
+        .forNodeContract(nodeContract)
+        .withNodeExecutor(nodeExecutor)
         .withPayload(payloadComposer.forPayload(payload))
         .persist();
 
@@ -433,44 +433,44 @@ public class StarterPackTest extends IntegrationTest {
     this.verifyTagsExist();
     this.verifyEndpointExist();
     this.verifyAssetGroupExist();
-    this.verifyScenarioExist();
+    this.verifyAttackChainExist();
     this.verifyDashboardExist();
     this.verifyParameterExist();
     this.verifyDefaultHomeDashboardParameterExist();
-    this.verifyDefaultScenarioDashboardParameterExist();
+    this.verifyDefaultAttackChainDashboardParameterExist();
     this.verifyDefaultSimulationDashboardParameterExist();
     this.verifyTagRuleExist();
-    this.verifyInjectorContracts();
+    this.verifyNodeContracts();
 
-    List<Inject> injects = this.injectRepository.findAll();
-    assertFalse(injects.isEmpty());
+    List<AttackChainNode> attackChainNodes = this.attackChainNodeRepository.findAll();
+    assertFalse(attackChainNodes.isEmpty());
     assertTrue(
-        injects.stream()
+        attackChainNodes.stream()
             .anyMatch(
-                inject ->
-                    inject.getAssetGroups() != null
-                        && !inject.getAssetGroups().isEmpty()
-                        && "All endpoints".equals(inject.getAssetGroups().getFirst().getName())));
+                attackChainNode ->
+                    attackChainNode.getAssetGroups() != null
+                        && !attackChainNode.getAssetGroups().isEmpty()
+                        && "All endpoints".equals(attackChainNode.getAssetGroups().getFirst().getName())));
   }
 
-  private void verifyInjectorContracts() {
-    Iterable<InjectorContract> injectorContractsIterable =
-        this.injectorContractRepository.findAll();
-    List<InjectorContract> injectorContracts = Lists.newArrayList(injectorContractsIterable);
-    assertEquals(15, injectorContracts.size());
+  private void verifyNodeContracts() {
+    Iterable<NodeContract> nodeContractsIterable =
+        this.nodeContractRepository.findAll();
+    List<NodeContract> nodeContracts = Lists.newArrayList(nodeContractsIterable);
+    assertEquals(15, nodeContracts.size());
 
-    InjectorContract injectorContractsDummyNuclei =
-        injectorContracts.stream()
+    NodeContract nodeContractsDummyNuclei =
+        nodeContracts.stream()
             .filter(c -> "2e7fc079-4531-4444-4444-928fe4a2fc0b".equals(c.getId()))
             .findFirst()
             .orElse(null);
-    assertNotNull(injectorContractsDummyNuclei);
-    assertEquals("Dummy Nuclei", injectorContractsDummyNuclei.getInjector().getName());
-    assertTrue(injectorContractsDummyNuclei.isAtomicTesting());
-    assertFalse(injectorContractsDummyNuclei.getNeedsExecutor());
+    assertNotNull(nodeContractsDummyNuclei);
+    assertEquals("Dummy Nuclei", nodeContractsDummyNuclei.getNodeExecutor().getName());
+    assertTrue(nodeContractsDummyNuclei.isAtomicTesting());
+    assertFalse(nodeContractsDummyNuclei.getNeedsExecutor());
 
-    InjectorContract injectorContractsBeaconPayload =
-        injectorContracts.stream()
+    NodeContract nodeContractsBeaconPayload =
+        nodeContracts.stream()
             .filter(
                 c ->
                     c.getPayload() != null
@@ -478,10 +478,10 @@ public class StarterPackTest extends IntegrationTest {
                             .equals(c.getPayload().getName()))
             .findFirst()
             .orElse(null);
-    assertNotNull(injectorContractsBeaconPayload);
-    assertNotNull(injectorContractsBeaconPayload.getPayload());
-    assertTrue(injectorContractsBeaconPayload.isAtomicTesting());
-    assertTrue(injectorContractsBeaconPayload.getNeedsExecutor());
+    assertNotNull(nodeContractsBeaconPayload);
+    assertNotNull(nodeContractsBeaconPayload.getPayload());
+    assertTrue(nodeContractsBeaconPayload.isAtomicTesting());
+    assertTrue(nodeContractsBeaconPayload.getNeedsExecutor());
   }
 
   private void verifyTagsExist() {
@@ -531,12 +531,12 @@ public class StarterPackTest extends IntegrationTest {
     assertEquals(Filters.FilterMode.or, filter.getMode());
   }
 
-  private void verifyScenarioExist() {
-    List<Scenario> scenarios = scenarioRepository.findAll();
-    assertEquals(3, scenarios.size());
+  private void verifyAttackChainExist() {
+    List<AttackChain> attackChains = attackChainRepository.findAll();
+    assertEquals(3, attackChains.size());
 
-    Scenario scenario = scenarios.getFirst();
-    assertEquals("starterpack", scenario.getName());
+    AttackChain attackChain = attackChains.getFirst();
+    assertEquals("starterpack", attackChain.getName());
   }
 
   private void verifyDashboardExist() {
@@ -567,7 +567,7 @@ public class StarterPackTest extends IntegrationTest {
     assertEquals(dashboardTest.get().getId(), staticsParameters.get().getValue());
   }
 
-  private void verifyDefaultScenarioDashboardParameterExist() {
+  private void verifyDefaultAttackChainDashboardParameterExist() {
     Optional<CustomDashboard> dashboardTest = customDashboardRepository.findByName("Test 2");
     assertTrue(dashboardTest.isPresent());
 

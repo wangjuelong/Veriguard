@@ -55,9 +55,9 @@ public interface EndpointRepository
 
   @Override
   @Query(
-      "select COUNT(DISTINCT a) from Inject i "
+      "select COUNT(DISTINCT a) from AttackChainNode i "
           + "join i.assets as a "
-          + "join i.exercise as e "
+          + "join i.attackChainRun as e "
           + "join e.grants as grant "
           + "join grant.group.users as user "
           + "where user.id = :userId and i.createdAt > :creationDate")
@@ -68,14 +68,14 @@ public interface EndpointRepository
   long globalCount(@Param("creationDate") Instant creationDate);
 
   @Query(
-      "SELECT a FROM Inject i"
+      "SELECT a FROM AttackChainNode i"
           + " JOIN i.assets a"
           + " WHERE ("
-          + "   :simulationOrScenarioId is NULL AND i.exercise.id is NULL AND i.scenario.id IS NULL"
-          + "   OR (i.exercise.id = :simulationOrScenarioId"
-          + "   OR i.scenario.id = :simulationOrScenarioId)"
+          + "   :simulationOrAttackChainId is NULL AND i.attackChainRun.id is NULL AND i.attackChain.id IS NULL"
+          + "   OR (i.attackChainRun.id = :simulationOrAttackChainId"
+          + "   OR i.attackChain.id = :simulationOrAttackChainId)"
           + " ) AND (:name IS NULL OR lower(a.name) LIKE lower(concat('%', cast(coalesce(:name, '') as string), '%')))")
-  List<Endpoint> findAllBySimulationOrScenarioIdAndName(String simulationOrScenarioId, String name);
+  List<Endpoint> findAllBySimulationOrAttackChainIdAndName(String simulationOrAttackChainId, String name);
 
   @Query(
       value =
@@ -83,7 +83,7 @@ public interface EndpointRepository
               + "FROM assets e "
               + "INNER JOIN injects_assets ia ON e.asset_id = ia.asset_id",
       nativeQuery = true)
-  List<Endpoint> findAllEndpointsForAtomicTestingsSimulationsAndScenarios();
+  List<Endpoint> findAllEndpointsForAtomicTestingsSimulationsAndAttackChains();
 
   @Query(
       value =
@@ -178,11 +178,11 @@ public interface EndpointRepository
   @Query(value = "DELETE FROM assets WHERE asset_id = :assetId", nativeQuery = true)
   void deleteById(@Param("assetId") @NotBlank String assetId);
 
-  List<Endpoint> findDistinctByInjectsScenarioId(String scenarioId);
+  List<Endpoint> findDistinctByAttackChainNodesAttackChainId(String attackChainId);
 
-  List<Endpoint> findDistinctByInjectsScenarioIdAndIdIn(String scenarioId, List<String> ids);
+  List<Endpoint> findDistinctByAttackChainNodesAttackChainIdAndIdIn(String attackChainId, List<String> ids);
 
-  List<Endpoint> findDistinctByInjectsExerciseId(String exerciseId);
+  List<Endpoint> findDistinctByAttackChainNodesAttackChainRunId(String attackChainRunId);
 
-  List<Endpoint> findDistinctByInjectsExerciseIdAndIdIn(String exerciseId, List<String> ids);
+  List<Endpoint> findDistinctByAttackChainNodesAttackChainRunIdAndIdIn(String attackChainRunId, List<String> ids);
 }

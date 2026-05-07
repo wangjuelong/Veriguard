@@ -5,7 +5,7 @@ import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationJPA;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.NotificationRuleRepository;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.service.scenario.ScenarioService;
+import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.ImageUtils;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import jakarta.transaction.Transactional;
@@ -26,7 +26,7 @@ public class NotificationRuleService {
   private final NotificationRuleRepository notificationRuleRepository;
 
   private final UserService userService;
-  private final ScenarioService scenarioService;
+  private final AttackChainService attackChainService;
   private final EmailNotificationService emailNotificationService;
   private final PlatformSettingsService platformSettingsService;
 
@@ -53,13 +53,13 @@ public class NotificationRuleService {
     User currentUser = userService.currentUser();
     if (NotificationRuleResourceType.SCENARIO.equals(
         notificationRule.getNotificationResourceType())) {
-      // verify if the scenario exists
-      if (scenarioService.scenario(notificationRule.getResourceId()) == null) {
+      // verify if the attackChain exists
+      if (attackChainService.attackChain(notificationRule.getResourceId()) == null) {
         throw new ElementNotFoundException(
             "Scenario not found with id: " + notificationRule.getResourceId());
       }
     } else {
-      // currently only scenario is supported
+      // currently only attackChain is supported
       throw new UnsupportedOperationException(
           "Unsupported resource type: " + notificationRule.getNotificationResourceType().name());
     }

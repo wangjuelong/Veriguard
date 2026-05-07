@@ -5,7 +5,7 @@ import static org.mockito.Mockito.verify;
 
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.NotificationRuleResourceType;
-import io.veriguard.notification.handler.ScenarioNotificationEventHandler;
+import io.veriguard.notification.handler.AttackChainNotificationEventHandler;
 import io.veriguard.notification.model.NotificationEvent;
 import io.veriguard.notification.model.NotificationEventType;
 import io.veriguard.utilstest.RabbitMQTestListener;
@@ -25,7 +25,7 @@ import org.springframework.test.context.TestExecutionListeners;
 public class NotificationEvenServiceTest extends IntegrationTest {
 
   @Mock private ApplicationEventPublisher appPublisher;
-  @Mock private ScenarioNotificationEventHandler scenarioNotificationEventHandler;
+  @Mock private AttackChainNotificationEventHandler attackChainNotificationEventHandler;
   @Mock private ThreadPoolTaskScheduler taskScheduler;
 
   private NotificationEventService notificationEventService;
@@ -33,7 +33,7 @@ public class NotificationEvenServiceTest extends IntegrationTest {
   @BeforeEach
   public void setUp() {
     notificationEventService =
-        new NotificationEventService(appPublisher, scenarioNotificationEventHandler, taskScheduler);
+        new NotificationEventService(appPublisher, attackChainNotificationEventHandler, taskScheduler);
   }
 
   @Test
@@ -46,7 +46,7 @@ public class NotificationEvenServiceTest extends IntegrationTest {
             .resourceId("id")
             .build();
     notificationEventService.handleNotificationEvent(notificationEvent);
-    verify(scenarioNotificationEventHandler).handle(notificationEvent);
+    verify(attackChainNotificationEventHandler).handle(notificationEvent);
   }
 
   @Test

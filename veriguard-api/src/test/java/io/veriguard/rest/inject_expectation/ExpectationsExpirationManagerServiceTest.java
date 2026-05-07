@@ -1,7 +1,7 @@
 package io.veriguard.rest.inject_expectation;
 
-import static io.veriguard.integration.impl.injectors.veriguard.VeriguardInjectorIntegration.VERIGUARD_INJECTOR_ID;
-import static io.veriguard.integration.impl.injectors.veriguard.VeriguardInjectorIntegration.VERIGUARD_INJECTOR_NAME;
+import static io.veriguard.integration.impl.injectors.veriguard.VeriguardNodeExecutorIntegration.VERIGUARD_INJECTOR_ID;
+import static io.veriguard.integration.impl.injectors.veriguard.VeriguardNodeExecutorIntegration.VERIGUARD_INJECTOR_NAME;
 import static io.veriguard.utils.fixtures.ExpectationFixture.*;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,9 +11,9 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.collectors.expectations_expiration_manager.service.ExpectationsExpirationManagerService;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.execution.ExecutableInject;
+import io.veriguard.execution.ExecutableNode;
 import io.veriguard.model.Expectation;
-import io.veriguard.service.InjectExpectationService;
+import io.veriguard.service.AttackChainNodeExpectationService;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.mockUser.WithMockUser;
 import java.util.List;
@@ -35,32 +35,32 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
   @Autowired private AssetGroupRepository assetGroupRepository;
   @Autowired private EndpointRepository endpointRepository;
   @Autowired private AgentRepository agentRepository;
-  @Autowired private InjectRepository injectRepository;
-  @Autowired private InjectorRepository injectorRepository;
-  @Autowired private InjectorContractRepository injectorContractRepository;
-  @Autowired private InjectExpectationRepository injectExpectationRepository;
-  @Autowired private InjectExpectationService injectExpectationService;
+  @Autowired private AttackChainNodeRepository attackChainNodeRepository;
+  @Autowired private NodeExecutorRepository nodeExecutorRepository;
+  @Autowired private NodeContractRepository nodeContractRepository;
+  @Autowired private AttackChainNodeExpectationRepository attackChainNodeExpectationRepository;
+  @Autowired private AttackChainNodeExpectationService attackChainNodeExpectationService;
   @Autowired private ExpectationsExpirationManagerService expectationsExpirationManagerService;
 
   // Saved entities for test setup
-  private static Injector savedInjector;
-  private static InjectorContract savedInjectorContract;
+  private static NodeExecutor savedNodeExecutor;
+  private static NodeContract savedNodeContract;
   private static AssetGroup savedAssetGroup;
   private static Endpoint savedEndpoint;
   private static Agent savedAgent1;
   private static Agent savedAgent2;
-  private static Inject savedInject;
+  private static AttackChainNode savedAttackChainNode;
 
   @BeforeAll
   void beforeAll() throws JsonProcessingException {
-    InjectorContract injectorContract =
-        InjectorContractFixture.createInjectorContract(Map.of("en", INJECTION_NAME));
-    savedInjector =
-        injectorRepository.save(
-            InjectorFixture.createInjector(
+    NodeContract nodeContract =
+        NodeContractFixture.createNodeContract(Map.of("en", INJECTION_NAME));
+    savedNodeExecutor =
+        nodeExecutorRepository.save(
+            NodeExecutorFixture.createNodeExecutor(
                 VERIGUARD_INJECTOR_ID, VERIGUARD_INJECTOR_NAME, INJECTOR_TYPE));
-    injectorContract.setInjector(savedInjector);
-    savedInjectorContract = injectorContractRepository.save(injectorContract);
+    nodeContract.setNodeExecutor(savedNodeExecutor);
+    savedNodeContract = nodeContractRepository.save(nodeContract);
 
     // -- Targets --
     savedEndpoint = endpointRepository.save(EndpointFixture.createEndpoint());
@@ -71,23 +71,23 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
             AssetGroupFixture.createAssetGroupWithAssets(
                 "asset group name", List.of(savedEndpoint)));
 
-    // -- Inject --
-    savedInject =
-        injectRepository.save(
-            InjectFixture.createTechnicalInjectWithAssetGroup(
-                savedInjectorContract, INJECTION_NAME, savedAssetGroup));
+    // -- AttackChainNode --
+    savedAttackChainNode =
+        attackChainNodeRepository.save(
+            AttackChainNodeFixture.createTechnicalAttackChainNodeWithAssetGroup(
+                savedNodeContract, INJECTION_NAME, savedAssetGroup));
   }
 
   @AfterAll
   void afterAll() {
     agentRepository.deleteAll();
-    injectRepository.deleteAll();
+    attackChainNodeRepository.deleteAll();
     endpointRepository.deleteAll();
   }
 
   @AfterEach
   void afterEach() {
-    injectExpectationRepository.deleteAll();
+    attackChainNodeExpectationRepository.deleteAll();
   }
 
   @Nested
@@ -101,7 +101,7 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
     void allExpectationAreExpired() {
       // -- PREPARE --
       // Build and save expectations for asset group with one asset and two agents
-      ExecutableInject executableInject = newExecutableInjectWithTargets();
+      ExecutableNode executableAttackChainNode = newExecutableNodeWithTargets();
       List<Expectation> detectionExpectations =
           createDetectionExpectations(
               List.of(savedAgent1, savedAgent2),
@@ -110,53 +110,53 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
               EXPIRATION_TIME_1_s);
       detectionExpectations.add(
           createTechnicalDetectionExpectationForAsset(savedEndpoint, null, EXPIRATION_TIME_1_s));
-      injectExpectationService.buildAndSaveInjectExpectations(
-          executableInject, detectionExpectations);
+      attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+          executableAttackChainNode, detectionExpectations);
 
       // -- VERIFY --
       // Agent Expectation
-      List<InjectExpectation> injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent2.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      List<AttackChainNodeExpectation> attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent2.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
       // Asset
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAsset(
-              savedInject.getId(), savedEndpoint.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+              savedAttackChainNode.getId(), savedEndpoint.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
       // Asset Group
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAssetGroup(
-              savedInject.getId(), savedAssetGroup.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+              savedAttackChainNode.getId(), savedAssetGroup.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
 
       // -- EXECUTE --
       expectationsExpirationManagerService.computeExpectations();
 
       // -- ASSERT --
       // Agent Expectation
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent2.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent2.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
       // Asset
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAsset(
-              savedInject.getId(), savedEndpoint.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+              savedAttackChainNode.getId(), savedEndpoint.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
       // Asset Group
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAssetGroup(
-              savedInject.getId(), savedAssetGroup.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+              savedAttackChainNode.getId(), savedAssetGroup.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
     }
 
     @Test
@@ -165,25 +165,25 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
     void OneExpectationIsAlreadyFilled() {
       // -- PREPARE --
       // Build and save expectations for asset group with one asset and two agents
-      ExecutableInject executableInject = newExecutableInjectWithTargets();
+      ExecutableNode executableAttackChainNode = newExecutableNodeWithTargets();
       List<Expectation> detectionExpectations =
           createDetectionExpectations(
               List.of(savedAgent1, savedAgent2),
               savedEndpoint,
               savedAssetGroup,
               EXPIRATION_TIME_1_s);
-      injectExpectationService.buildAndSaveInjectExpectations(
-          executableInject, detectionExpectations);
+      attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+          executableAttackChainNode, detectionExpectations);
 
       // Update one expectation from one agent with source collector-id
-      List<InjectExpectation> injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
+      List<AttackChainNodeExpectation> attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
 
-      InjectExpectation ie = injectExpectations.getFirst();
+      AttackChainNodeExpectation ie = attackChainNodeExpectations.getFirst();
       ie.setResults(
           List.of(
-              InjectExpectationResult.builder()
+              NodeExpectationResult.builder()
                   .sourceId("collector-id")
                   .sourceName("collector-name")
                   .sourceType("collector-type")
@@ -194,52 +194,52 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
                   .build()));
       ie.setScore(50.0);
 
-      injectExpectationRepository.save(ie);
+      attackChainNodeExpectationRepository.save(ie);
 
       // -- VERIFY --
       // Agent Expectation
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
-      assertEquals(50.0, injectExpectations.getFirst().getScore());
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent2.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
+      assertEquals(50.0, attackChainNodeExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent2.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
       // Asset
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAsset(
-              savedInject.getId(), savedEndpoint.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+              savedAttackChainNode.getId(), savedEndpoint.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
       // Asset Group
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAssetGroup(
-              savedInject.getId(), savedAssetGroup.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+              savedAttackChainNode.getId(), savedAssetGroup.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
 
       // -- EXECUTE --
       expectationsExpirationManagerService.computeExpectations();
 
       // -- ASSERT --
       // Agent Expectation
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
-      assertEquals(50.0, injectExpectations.getFirst().getScore());
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent2.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
+      assertEquals(50.0, attackChainNodeExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent2.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
       // Asset
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAsset(
-              savedInject.getId(), savedEndpoint.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+              savedAttackChainNode.getId(), savedEndpoint.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
       // Asset Group
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAssetGroup(
-              savedInject.getId(), savedAssetGroup.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+              savedAttackChainNode.getId(), savedAssetGroup.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
     }
 
     @Test
@@ -249,31 +249,31 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
       // -- PREPARE --
       // Build and save expectations for asset group with one asset and two agents
 
-      ExecutableInject executableInject = newExecutableInjectWithTargets();
+      ExecutableNode executableAttackChainNode = newExecutableNodeWithTargets();
       List<Expectation> detectionExpectations =
           createDetectionExpectations(
               List.of(savedAgent1, savedAgent2),
               savedEndpoint,
               savedAssetGroup,
               EXPIRATION_TIME_1_s);
-      injectExpectationService.buildAndSaveInjectExpectations(
-          executableInject, detectionExpectations);
+      attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+          executableAttackChainNode, detectionExpectations);
 
       // Update agent expectations with source collector-id
-      List<InjectExpectation> injectExpectations =
+      List<AttackChainNodeExpectation> attackChainNodeExpectations =
           List.of(
-              injectExpectationRepository
-                  .findAllByInjectAndAgent(savedInject.getId(), savedAgent1.getId())
+              attackChainNodeExpectationRepository
+                  .findAllByAttackChainNodeAndAgent(savedAttackChainNode.getId(), savedAgent1.getId())
                   .getFirst(),
-              injectExpectationRepository
-                  .findAllByInjectAndAgent(savedInject.getId(), savedAgent2.getId())
+              attackChainNodeExpectationRepository
+                  .findAllByAttackChainNodeAndAgent(savedAttackChainNode.getId(), savedAgent2.getId())
                   .getFirst());
 
-      injectExpectations.forEach(
-          injectExpectation -> {
-            injectExpectation.setResults(
+      attackChainNodeExpectations.forEach(
+          attackChainNodeExpectation -> {
+            attackChainNodeExpectation.setResults(
                 List.of(
-                    InjectExpectationResult.builder()
+                    NodeExpectationResult.builder()
                         .sourceId("collector-id")
                         .sourceName("collector-name")
                         .sourceType("collector-type")
@@ -282,55 +282,55 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
                         .sourceAssetId(UUID.randomUUID().toString())
                         .score(100.0)
                         .build()));
-            injectExpectation.setScore(100.0);
+            attackChainNodeExpectation.setScore(100.0);
           });
 
-      injectExpectationRepository.saveAll(injectExpectations);
+      attackChainNodeExpectationRepository.saveAll(attackChainNodeExpectations);
 
       // -- VERIFY --
       // Agent Expectation
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
-      assertEquals(100.0, injectExpectations.getFirst().getScore());
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent2.getId());
-      assertEquals(100.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
+      assertEquals(100.0, attackChainNodeExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent2.getId());
+      assertEquals(100.0, attackChainNodeExpectations.getFirst().getScore());
       // Asset
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAsset(
-              savedInject.getId(), savedEndpoint.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+              savedAttackChainNode.getId(), savedEndpoint.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
       // Asset Group
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAssetGroup(
-              savedInject.getId(), savedAssetGroup.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+              savedAttackChainNode.getId(), savedAssetGroup.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
 
       // -- EXECUTE --
       expectationsExpirationManagerService.computeExpectations();
 
       // -- ASSERT --
       // Agent Expectation
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
-      assertEquals(100.0, injectExpectations.getFirst().getScore());
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent2.getId());
-      assertEquals(100.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
+      assertEquals(100.0, attackChainNodeExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent2.getId());
+      assertEquals(100.0, attackChainNodeExpectations.getFirst().getScore());
       // Asset
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAsset(
-              savedInject.getId(), savedEndpoint.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+              savedAttackChainNode.getId(), savedEndpoint.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
       // Asset Group
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAssetGroup(
-              savedInject.getId(), savedAssetGroup.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+              savedAttackChainNode.getId(), savedAssetGroup.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
     }
 
     @Test
@@ -339,56 +339,56 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
     void assetExpectationWithoutAgentExpectationsLinked() {
       // -- PREPARE --
       // Build and save expectations for asset group with one asset and two agents
-      ExecutableInject executableInject = newExecutableInjectWithTargets();
+      ExecutableNode executableAttackChainNode = newExecutableNodeWithTargets();
       List<Expectation> detectionExpectations =
           createDetectionExpectations(
               List.of(savedAgent1, savedAgent2),
               savedEndpoint,
               savedAssetGroup,
               EXPIRATION_TIME_1_s);
-      injectExpectationService.buildAndSaveInjectExpectations(
-          executableInject, detectionExpectations);
+      attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+          executableAttackChainNode, detectionExpectations);
 
-      // Delete agent inject expectations to test behavior of assets without agents
-      List<InjectExpectation> injectExpectations =
+      // Delete agent attackChainNode expectations to test behavior of assets without agents
+      List<AttackChainNodeExpectation> attackChainNodeExpectations =
           List.of(
-              injectExpectationRepository
-                  .findAllByInjectAndAgent(savedInject.getId(), savedAgent1.getId())
+              attackChainNodeExpectationRepository
+                  .findAllByAttackChainNodeAndAgent(savedAttackChainNode.getId(), savedAgent1.getId())
                   .getFirst(),
-              injectExpectationRepository
-                  .findAllByInjectAndAgent(savedInject.getId(), savedAgent2.getId())
+              attackChainNodeExpectationRepository
+                  .findAllByAttackChainNodeAndAgent(savedAttackChainNode.getId(), savedAgent2.getId())
                   .getFirst());
 
-      List<String> ids = injectExpectations.stream().map(InjectExpectation::getId).toList();
+      List<String> ids = attackChainNodeExpectations.stream().map(AttackChainNodeExpectation::getId).toList();
 
-      injectExpectationRepository.deleteAllById(ids);
+      attackChainNodeExpectationRepository.deleteAllById(ids);
 
       // -- VERIFY --
       // Asset
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAsset(
-              savedInject.getId(), savedEndpoint.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+              savedAttackChainNode.getId(), savedEndpoint.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
       // Asset Group
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAssetGroup(
-              savedInject.getId(), savedAssetGroup.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+              savedAttackChainNode.getId(), savedAssetGroup.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
 
       // -- EXECUTE --
       expectationsExpirationManagerService.computeExpectations();
 
       // -- ASSERT --
       // Asset
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAsset(
-              savedInject.getId(), savedEndpoint.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+              savedAttackChainNode.getId(), savedEndpoint.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
       // Asset Group
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAssetGroup(
-              savedInject.getId(), savedAssetGroup.getId());
-      assertEquals(0.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+              savedAttackChainNode.getId(), savedAssetGroup.getId());
+      assertEquals(0.0, attackChainNodeExpectations.getFirst().getScore());
     }
 
     @Test
@@ -397,41 +397,41 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
     void vulnerableExpectationIsExpired() {
       // -- PREPARE --
       // Build and save an expectation for an asset and one agent
-      ExecutableInject executableInject = newExecutableInjectWithTargets();
+      ExecutableNode executableAttackChainNode = newExecutableNodeWithTargets();
       Expectation expectation =
           createTechnicalVulnerabilityExpectationForAgent(
               savedAgent1, savedEndpoint, null, EXPIRATION_TIME_1_s, null);
 
-      injectExpectationService.buildAndSaveInjectExpectations(
-          executableInject, List.of(expectation));
+      attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+          executableAttackChainNode, List.of(expectation));
 
       // -- VERIFY --
-      List<InjectExpectation> injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
-      assertEquals(null, injectExpectations.getFirst().getScore());
+      List<AttackChainNodeExpectation> attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
+      assertEquals(null, attackChainNodeExpectations.getFirst().getScore());
 
       // -- EXECUTE --
       expectationsExpirationManagerService.computeExpectations();
 
       // -- ASSERT --
-      injectExpectations =
-          injectExpectationRepository.findAllByInjectAndAgent(
-              savedInject.getId(), savedAgent1.getId());
-      assertEquals(100.0, injectExpectations.getFirst().getScore());
+      attackChainNodeExpectations =
+          attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+              savedAttackChainNode.getId(), savedAgent1.getId());
+      assertEquals(100.0, attackChainNodeExpectations.getFirst().getScore());
       assertEquals(
-          InjectExpectation.EXPECTATION_STATUS.SUCCESS,
-          injectExpectations.getFirst().getResponse());
+          AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS,
+          attackChainNodeExpectations.getFirst().getResponse());
     }
   }
 
   // -- PRIVATE HELPERS --
 
-  private ExecutableInject newExecutableInjectWithTargets() {
-    return new ExecutableInject(
+  private ExecutableNode newExecutableNodeWithTargets() {
+    return new ExecutableNode(
         false,
         true,
-        savedInject,
+        savedAttackChainNode,
         emptyList(),
         List.of(savedEndpoint),
         List.of(savedAssetGroup),

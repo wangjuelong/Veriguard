@@ -20,7 +20,7 @@ public class DocumentRelationsOutput {
 
   private Set<RelatedEntityOutput> atomicTestings;
 
-  private Set<RelatedEntityOutput> scenarioInjects;
+  private Set<RelatedEntityOutput> attackChainAttackChainNodes;
 
-  private Set<RelatedEntityOutput> simulationInjects;
+  private Set<RelatedEntityOutput> simulationAttackChainNodes;
 }

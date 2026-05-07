@@ -106,22 +106,22 @@ public class ConnectorInstanceService {
   }
 
   /**
-   * Checks whether a started connector instance exists for the given injector.
+   * Checks whether a started connector instance exists for the given nodeExecutor.
    *
    * <p>Only applies to connectors persisted in the database. If no record is found, meaning the
-   * injector was either deployed manually with no attached instance, or it is an injector that
+   * nodeExecutor was either deployed manually with no attached instance, or it is an nodeExecutor that
    * starts automatically and cannot be stopped. {@code true} is returned to avoid blocking
    * executions. The same applies if any exception occurs.
    *
-   * @param injectorId the injector ID to look up
+   * @param nodeExecutorId the nodeExecutor ID to look up
    * @return {@code false} only if a connector instance is explicitly found with a non-started
    *     status; {@code true} otherwise
    */
   @Transactional(readOnly = true)
-  public boolean hasStartedConnectorInstanceForInjector(final String injectorId) {
+  public boolean hasStartedConnectorInstanceForNodeExecutor(final String nodeExecutorId) {
     try {
       return this.connectorInstanceConfigurationRepository
-          .findStatusByKeyValue(ConnectorType.INJECTOR.getIdKeyName(), injectorId)
+          .findStatusByKeyValue(ConnectorType.INJECTOR.getIdKeyName(), nodeExecutorId)
           // If we found a status, check if it's 'started'
           // If no record exists, return true
           .map(
@@ -130,7 +130,7 @@ public class ConnectorInstanceService {
           .orElse(true);
     } catch (Exception e) {
       log.error(
-          "Failed to check started connector instance for injector with id {}", injectorId, e);
+          "Failed to check started connector instance for injector with id {}", nodeExecutorId, e);
       // In case of any exception, return true to avoid blocking executions
       return true;
     }

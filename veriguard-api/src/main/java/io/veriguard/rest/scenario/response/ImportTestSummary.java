@@ -3,7 +3,7 @@ package io.veriguard.rest.scenario.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.inject.output.InjectOutput;
+import io.veriguard.rest.inject.output.AttackChainNodeOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,39 +17,39 @@ public class ImportTestSummary {
   private List<ImportMessage> importMessage = new ArrayList<>();
 
   @JsonProperty("total_injects")
-  public int totalNumberOfInjects;
+  public int totalNumberOfAttackChainNodes;
 
   @JsonProperty("total_rows_analysed")
   public int totalRowsAnalysed;
 
-  @JsonIgnore private List<Inject> injects = new ArrayList<>();
+  @JsonIgnore private List<AttackChainNode> attackChainNodes = new ArrayList<>();
 
   @JsonProperty("injects")
   @Deprecated
-  public List<InjectOutput> getInjectResults() {
-    return injects.stream()
+  public List<AttackChainNodeOutput> getAttackChainNodeResults() {
+    return attackChainNodes.stream()
         .map(
-            inject ->
-                new InjectOutput(
-                    inject.getId(),
-                    inject.getTitle(),
-                    inject.isEnabled(),
-                    inject.getContent(),
-                    inject.isAllTeams(),
-                    Optional.ofNullable(inject.getExercise()).map(Exercise::getId).orElse(null),
-                    Optional.ofNullable(inject.getScenario()).map(Scenario::getId).orElse(null),
-                    inject.getDependsDuration(),
-                    inject.getInjectorContract().orElse(null),
-                    inject.getTags().stream().map(Tag::getId).toArray(String[]::new),
-                    inject.getTeams().stream().map(Team::getId).toArray(String[]::new),
-                    inject.getAssets().stream().map(Asset::getId).toArray(String[]::new),
-                    inject.getAssetGroups().stream().map(AssetGroup::getId).toArray(String[]::new),
-                    inject
-                        .getInjectorContract()
-                        .map(InjectorContract::getInjector)
-                        .map(Injector::getType)
+            attackChainNode ->
+                new AttackChainNodeOutput(
+                    attackChainNode.getId(),
+                    attackChainNode.getTitle(),
+                    attackChainNode.isEnabled(),
+                    attackChainNode.getContent(),
+                    attackChainNode.isAllTeams(),
+                    Optional.ofNullable(attackChainNode.getAttackChainRun()).map(AttackChainRun::getId).orElse(null),
+                    Optional.ofNullable(attackChainNode.getAttackChain()).map(AttackChain::getId).orElse(null),
+                    attackChainNode.getDependsDuration(),
+                    attackChainNode.getNodeContract().orElse(null),
+                    attackChainNode.getTags().stream().map(Tag::getId).toArray(String[]::new),
+                    attackChainNode.getTeams().stream().map(Team::getId).toArray(String[]::new),
+                    attackChainNode.getAssets().stream().map(Asset::getId).toArray(String[]::new),
+                    attackChainNode.getAssetGroups().stream().map(AssetGroup::getId).toArray(String[]::new),
+                    attackChainNode
+                        .getNodeContract()
+                        .map(NodeContract::getNodeExecutor)
+                        .map(NodeExecutor::getType)
                         .orElse(null),
-                    Optional.ofNullable(inject.getDependsOn())
+                    Optional.ofNullable(attackChainNode.getDependsOn())
                         .map(List::stream)
                         .flatMap(Stream::findAny)
                         .orElse(null)))

@@ -15,7 +15,7 @@ import io.veriguard.executors.caldera.config.CalderaExecutorConfig;
 import io.veriguard.executors.caldera.model.Agent;
 import io.veriguard.service.AgentService;
 import io.veriguard.service.EndpointService;
-import io.veriguard.service.InjectorService;
+import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.PlatformSettingsService;
 import io.veriguard.utils.mapper.EndpointMapper;
 import java.time.Instant;
@@ -55,7 +55,7 @@ public class CalderaExecutorServiceTest {
 
   @Mock private AgentService agentService;
 
-  @Mock private InjectorService injectorService;
+  @Mock private NodeExecutorService nodeExecutorService;
 
   @Mock private PlatformSettingsService platformSettingsService;
 

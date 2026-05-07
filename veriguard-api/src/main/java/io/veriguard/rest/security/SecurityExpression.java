@@ -3,9 +3,9 @@ package io.veriguard.rest.security;
 import static io.veriguard.database.model.User.ROLE_ADMIN;
 
 import io.veriguard.config.VeriguardPrincipal;
-import io.veriguard.database.model.Exercise;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.User;
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public class SecurityExpression extends SecurityExpressionRoot
     implements MethodSecurityExpressionOperations {
 
   private final UserRepository userRepository;
-  private final ExerciseRepository exerciseRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
 
   private Object filterObject;
   private Object returnObject;
@@ -28,9 +28,9 @@ public class SecurityExpression extends SecurityExpressionRoot
   public SecurityExpression(
       Authentication authentication,
       final UserRepository userRepository,
-      final ExerciseRepository exerciseRepository) {
+      final AttackChainRunRepository attackChainRunRepository) {
     super(authentication);
-    this.exerciseRepository = exerciseRepository;
+    this.attackChainRunRepository = attackChainRunRepository;
     this.userRepository = userRepository;
   }
 
@@ -52,18 +52,18 @@ public class SecurityExpression extends SecurityExpressionRoot
 
   // endregion
 
-  // region exercise annotations
+  // region attackChainRun annotations
 
   /**
-   * Check that a user is a planner for a given exercise
+   * Check that a user is a planner for a given attackChainRun
    *
    * @deprecated use isSimulationPlanner instead
-   * @param exerciseId the exercice to search
-   * @return true if the user is a planner for given exercise
+   * @param attackChainRunId the exercice to search
+   * @return true if the user is a planner for given attackChainRun
    */
   @Deprecated(since = "1.11.0", forRemoval = true)
-  public boolean isExercisePlanner(String exerciseId) {
-    return isSimulationPlanner(exerciseId);
+  public boolean isAttackChainRunPlanner(String attackChainRunId) {
+    return isSimulationPlanner(attackChainRunId);
   }
 
   /**
@@ -76,16 +76,16 @@ public class SecurityExpression extends SecurityExpressionRoot
     if (isUserHasBypass()) {
       return true;
     }
-    Exercise exercise = exerciseRepository.findById(simulationId).orElseThrow();
-    List<User> planners = exercise.getPlanners();
+    AttackChainRun attackChainRun = attackChainRunRepository.findById(simulationId).orElseThrow();
+    List<User> planners = attackChainRun.getPlanners();
     Optional<User> planner =
         planners.stream().filter(user -> user.getId().equals(getUser().getId())).findAny();
     return planner.isPresent();
   }
 
   @Deprecated(since = "1.12.0", forRemoval = true)
-  public boolean isExerciseObserver(String exerciseId) {
-    return isSimulationObserver(exerciseId);
+  public boolean isAttackChainRunObserver(String attackChainRunId) {
+    return isSimulationObserver(attackChainRunId);
   }
 
   /**
@@ -98,19 +98,19 @@ public class SecurityExpression extends SecurityExpressionRoot
     if (isUserHasBypass()) {
       return true;
     }
-    Exercise exercise = exerciseRepository.findById(simulationId).orElseThrow();
-    List<User> observers = exercise.getObservers();
+    AttackChainRun attackChainRun = attackChainRunRepository.findById(simulationId).orElseThrow();
+    List<User> observers = attackChainRun.getObservers();
     Optional<User> observer =
         observers.stream().filter(user -> user.getId().equals(getUser().getId())).findAny();
     return observer.isPresent();
   }
 
-  public boolean isExercisePlayer(String exerciseId) {
+  public boolean isAttackChainRunPlayer(String attackChainRunId) {
     if (isUserHasBypass()) {
       return true;
     }
-    Exercise exercise = exerciseRepository.findById(exerciseId).orElseThrow();
-    List<User> players = exercise.getUsers();
+    AttackChainRun attackChainRun = attackChainRunRepository.findById(attackChainRunId).orElseThrow();
+    List<User> players = attackChainRun.getUsers();
     Optional<User> player =
         players.stream().filter(user -> user.getId().equals(getUser().getId())).findAny();
     return player.isPresent();

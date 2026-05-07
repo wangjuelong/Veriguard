@@ -16,7 +16,7 @@ import io.veriguard.rest.asset.endpoint.form.*;
 import io.veriguard.rest.asset.endpoint.output.EndpointTargetOutput;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.service.InjectStatusService;
+import io.veriguard.rest.inject.service.AttackChainNodeStatusService;
 import io.veriguard.service.EndpointService;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.HttpReqRespUtils;
@@ -45,7 +45,7 @@ public class EndpointApi extends RestBehavior {
   public static final String ENDPOINT_URI = "/api/endpoints";
 
   private final EndpointService endpointService;
-  private final InjectStatusService injectStatusService;
+  private final AttackChainNodeStatusService attackChainNodeStatusService;
   private final EndpointRepository endpointRepository;
   private final AssetAgentJobRepository assetAgentJobRepository;
 
@@ -80,7 +80,7 @@ public class EndpointApi extends RestBehavior {
   @Transactional(rollbackFor = Exception.class)
   public List<AssetAgentJob> getEndpointJobs(@RequestBody final EndpointRegisterInput input) {
     List<AssetAgentJob> jobs = this.endpointService.getEndpointJobs(input);
-    this.injectStatusService.addJobRetrievalTraces(jobs);
+    this.attackChainNodeStatusService.addJobRetrievalTraces(jobs);
     return jobs;
   }
 
@@ -194,16 +194,16 @@ public class EndpointApi extends RestBehavior {
       @RequestParam(required = false) final String sourceId,
       @RequestParam(required = false) final String inputFilterOption) {
     List<FilterUtilsJpa.Option> options = List.of();
-    InputFilterOptions injectFilterOptionEnum;
+    InputFilterOptions attackChainNodeFilterOptionEnum;
     try {
-      injectFilterOptionEnum = InputFilterOptions.valueOf(inputFilterOption);
+      attackChainNodeFilterOptionEnum = InputFilterOptions.valueOf(inputFilterOption);
     } catch (Exception e) {
       if (StringUtils.isEmpty(inputFilterOption)) {
         log.warn("InputFilterOption is null, fall back to backwards compatible case");
         if (StringUtils.isNotEmpty(sourceId)) {
-          injectFilterOptionEnum = InputFilterOptions.SIMULATION_OR_SCENARIO;
+          attackChainNodeFilterOptionEnum = InputFilterOptions.SIMULATION_OR_SCENARIO;
         } else {
-          injectFilterOptionEnum = InputFilterOptions.ATOMIC_TESTING;
+          attackChainNodeFilterOptionEnum = InputFilterOptions.ATOMIC_TESTING;
         }
       } else {
         throw new BadRequestException(
@@ -211,11 +211,11 @@ public class EndpointApi extends RestBehavior {
       }
     }
 
-    switch (injectFilterOptionEnum) {
+    switch (attackChainNodeFilterOptionEnum) {
       case ALL_INJECTS:
         {
           options =
-              endpointRepository.findAllEndpointsForAtomicTestingsSimulationsAndScenarios().stream()
+              endpointRepository.findAllEndpointsForAtomicTestingsSimulationsAndAttackChains().stream()
                   .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
                   .toList();
           break;
@@ -231,7 +231,7 @@ public class EndpointApi extends RestBehavior {
         {
           options =
               endpointRepository
-                  .findAllBySimulationOrScenarioIdAndName(
+                  .findAllBySimulationOrAttackChainIdAndName(
                       StringUtils.trimToNull(sourceId), StringUtils.trimToNull(searchText))
                   .stream()
                   .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))

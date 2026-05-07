@@ -29,8 +29,8 @@ public interface LessonsCategoryRepository
               + "AND EXISTS (SELECT 1 FROM lessons_categories lc WHERE lct.lessons_category_id = lc.lessons_category_id AND lc.lessons_category_exercise = :exerciseId)",
       nativeQuery = true)
   @Transactional
-  void removeTeamsForExercise(
-      @Param("exerciseId") final String exerciseId, @Param("teamIds") final List<String> teamIds);
+  void removeTeamsForAttackChainRun(
+      @Param("exerciseId") final String attackChainRunId, @Param("teamIds") final List<String> teamIds);
 
   @Modifying
   @Query(
@@ -40,6 +40,6 @@ public interface LessonsCategoryRepository
               + "AND EXISTS (SELECT 1 FROM lessons_categories lc WHERE lct.lessons_category_id = lc.lessons_category_id AND lc.lessons_category_scenario = :scenarioId)",
       nativeQuery = true)
   @Transactional
-  void removeTeamsForScenario(
-      @Param("scenarioId") final String scenarioId, @Param("teamIds") final List<String> teamIds);
+  void removeTeamsForAttackChain(
+      @Param("scenarioId") final String attackChainId, @Param("teamIds") final List<String> teamIds);
 }

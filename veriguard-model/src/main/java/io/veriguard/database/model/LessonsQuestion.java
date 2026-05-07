@@ -75,19 +75,19 @@ public class LessonsQuestion implements Base {
 
   // region transient
   @JsonProperty("lessons_question_exercise")
-  public String getExercise() {
+  public String getAttackChainRun() {
     if (getCategory() == null) {
       return null;
     }
-    return Optional.ofNullable(getCategory().getExercise()).map(Exercise::getId).orElse(null);
+    return Optional.ofNullable(getCategory().getAttackChainRun()).map(AttackChainRun::getId).orElse(null);
   }
 
   @JsonProperty("lessons_question_scenario")
-  public String getScenario() {
+  public String getAttackChain() {
     if (getCategory() == null) {
       return null;
     }
-    return Optional.ofNullable(getCategory().getScenario()).map(Scenario::getId).orElse(null);
+    return Optional.ofNullable(getCategory().getAttackChain()).map(AttackChain::getId).orElse(null);
   }
 
   // endregion

@@ -3,7 +3,7 @@ package io.veriguard.rest.inject.service;
 import io.veriguard.database.model.ContractOutputElement;
 import io.veriguard.database.model.ContractOutputType;
 import io.veriguard.database.model.Tag;
-import io.veriguard.injector_contract.outputs.InjectorContractContentOutputElement;
+import io.veriguard.injector_contract.outputs.NodeContractContentOutputElement;
 
 public record ContractOutputContext(
     String key, // maps to contractOutputElement.getKey() / contentOutputElement.getField()
@@ -25,7 +25,7 @@ public record ContractOutputContext(
         new String[0]);
   }
 
-  public static ContractOutputContext from(InjectorContractContentOutputElement element) {
+  public static ContractOutputContext from(NodeContractContentOutputElement element) {
     return new ContractOutputContext(
         element.getField(),
         element.getField(), // or derive name differently

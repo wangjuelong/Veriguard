@@ -133,7 +133,7 @@ public class SecurityCoverage implements Base {
   @OneToOne
   @JoinColumn(name = "security_coverage_scenario")
   @JsonIgnore
-  private Scenario scenario;
+  private AttackChain attackChain;
 
   @CreationTimestamp
   @Column(name = "security_coverage_created_at", updatable = false)

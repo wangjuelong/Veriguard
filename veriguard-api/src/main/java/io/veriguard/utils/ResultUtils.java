@@ -3,11 +3,11 @@ package io.veriguard.utils;
 import static java.util.Collections.emptyList;
 
 import io.veriguard.database.model.*;
-import io.veriguard.database.raw.RawInjectExpectation;
-import io.veriguard.database.repository.InjectExpectationRepository;
-import io.veriguard.rest.inject.form.InjectExpectationResultsByAttackPattern;
-import io.veriguard.utils.InjectExpectationResultUtils.ExpectationResultsByType;
-import io.veriguard.utils.mapper.InjectExpectationMapper;
+import io.veriguard.database.raw.RawAttackChainNodeExpectation;
+import io.veriguard.database.repository.AttackChainNodeExpectationRepository;
+import io.veriguard.rest.inject.form.NodeExpectationResultsByAttackPattern;
+import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
+import io.veriguard.utils.mapper.AttackChainNodeExpectationMapper;
 import jakarta.validation.constraints.NotNull;
 import java.util.Comparator;
 import java.util.List;
@@ -19,41 +19,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * Component for computing and aggregating expectation results across exercises and scenarios.
+ * Component for computing and aggregating expectation results across attackChainRuns and attackChains.
  *
  * <p>Provides methods to calculate global expectation results, filter by security platform, and
  * group results by attack patterns. This component is essential for generating reports and
  * dashboards that show the overall effectiveness of security controls.
  *
  * @see ExpectationResultsByType
- * @see InjectExpectationMapper
+ * @see AttackChainNodeExpectationMapper
  */
 @RequiredArgsConstructor
 @Component
 public class ResultUtils {
 
-  private final InjectExpectationRepository injectExpectationRepository;
-  private final InjectExpectationMapper injectExpectationMapper;
+  private final AttackChainNodeExpectationRepository attackChainNodeExpectationRepository;
+  private final AttackChainNodeExpectationMapper attackChainNodeExpectationMapper;
 
   /**
-   * Computes global expectation results across all specified injects.
+   * Computes global expectation results across all specified attackChainNodes.
    *
    * <p>Aggregates expectation results by type (Prevention, Detection, Vulnerability, Human
-   * Response) for the given set of inject IDs using optimized raw database queries.
+   * Response) for the given set of attackChainNode IDs using optimized raw database queries.
    *
-   * @param injectIds the set of inject IDs to compute results for
-   * @return a list of aggregated results by expectation type, or empty list if no injects provided
+   * @param attackChainNodeIds the set of attackChainNode IDs to compute results for
+   * @return a list of aggregated results by expectation type, or empty list if no attackChainNodes provided
    */
-  public List<ExpectationResultsByType> computeGlobalExpectationResults(Set<String> injectIds) {
+  public List<ExpectationResultsByType> computeGlobalExpectationResults(Set<String> attackChainNodeIds) {
 
-    if (injectIds == null || injectIds.isEmpty()) {
+    if (attackChainNodeIds == null || attackChainNodeIds.isEmpty()) {
       return emptyList();
     }
 
-    List<RawInjectExpectation> expectations =
-        injectExpectationRepository.rawForComputeGlobalByInjectIds(injectIds);
+    List<RawAttackChainNodeExpectation> expectations =
+        attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainNodeIds(attackChainNodeIds);
 
-    return injectExpectationMapper.extractExpectationResultByTypesFromRaw(injectIds, expectations);
+    return attackChainNodeExpectationMapper.extractExpectationResultByTypesFromRaw(attackChainNodeIds, expectations);
   }
 
   /**
@@ -63,20 +63,20 @@ public class ResultUtils {
    * only include those from the specified security platform. Results are cloned to avoid modifying
    * the original expectations, and scores are recalculated based on platform-specific results.
    *
-   * @param injectIds the set of inject IDs to compute results for
+   * @param attackChainNodeIds the set of attackChainNode IDs to compute results for
    * @param securityPlatform the security platform to filter results by
    * @return a list of aggregated results filtered to the specified platform
    */
   public List<ExpectationResultsByType> computeGlobalExpectationResultsForPlatform(
-      Set<String> injectIds, SecurityPlatform securityPlatform) {
+      Set<String> attackChainNodeIds, SecurityPlatform securityPlatform) {
 
-    if (injectIds == null || injectIds.isEmpty()) {
+    if (attackChainNodeIds == null || attackChainNodeIds.isEmpty()) {
       return emptyList();
     }
 
-    List<InjectExpectation> expectations =
-        injectExpectationRepository.findAllForGlobalScoreByInjects(injectIds).stream()
-            .map(InjectExpectation::clone)
+    List<AttackChainNodeExpectation> expectations =
+        attackChainNodeExpectationRepository.findAllForGlobalScoreByAttackChainNodes(attackChainNodeIds).stream()
+            .map(AttackChainNodeExpectation::clone)
             .toList();
     expectations.forEach(
         exp -> {
@@ -87,37 +87,37 @@ public class ResultUtils {
 
           exp.setScore(
               exp.getResults().stream()
-                  .max(Comparator.comparing(InjectExpectationResult::getScore))
-                  .map(InjectExpectationResult::getScore)
+                  .max(Comparator.comparing(NodeExpectationResult::getScore))
+                  .map(NodeExpectationResult::getScore)
                   .orElse(null));
         });
 
-    return injectExpectationMapper.extractExpectationResultByTypes(injectIds, expectations);
+    return attackChainNodeExpectationMapper.extractExpectationResultByTypes(attackChainNodeIds, expectations);
   }
 
   /**
-   * Computes inject expectation results grouped by attack pattern.
+   * Computes attackChainNode expectation results grouped by attack pattern.
    *
-   * <p>Organizes the expectations from the provided injects by their associated attack patterns.
-   * Each inject may be linked to multiple attack patterns through its injector contract, resulting
+   * <p>Organizes the expectations from the provided attackChainNodes by their associated attack patterns.
+   * Each attackChainNode may be linked to multiple attack patterns through its nodeExecutor contract, resulting
    * in grouped results suitable for MITRE ATT&CK matrix visualization.
    *
-   * @param injects the list of injects to process (must not be null)
+   * @param attackChainNodes the list of attackChainNodes to process (must not be null)
    * @return a list of expectation results grouped by attack pattern
    */
-  public List<InjectExpectationResultsByAttackPattern> computeInjectExpectationResults(
-      @NotNull final List<Inject> injects) {
+  public List<NodeExpectationResultsByAttackPattern> computeNodeExpectationResults(
+      @NotNull final List<AttackChainNode> attackChainNodes) {
 
-    Map<AttackPattern, List<Inject>> groupedByAttackPattern =
-        injects.stream()
+    Map<AttackPattern, List<AttackChainNode>> groupedByAttackPattern =
+        attackChainNodes.stream()
             .flatMap(
-                inject ->
-                    inject
-                        .getInjectorContract()
+                attackChainNode ->
+                    attackChainNode
+                        .getNodeContract()
                         .map(
                             contract ->
                                 contract.getAttackPatterns().stream()
-                                    .map(attackPattern -> Map.entry(attackPattern, inject)))
+                                    .map(attackPattern -> Map.entry(attackPattern, attackChainNode)))
                         .orElseGet(Stream::empty))
             .collect(
                 Collectors.groupingBy(
@@ -127,7 +127,7 @@ public class ResultUtils {
     return groupedByAttackPattern.entrySet().stream()
         .map(
             entry ->
-                injectExpectationMapper.toInjectExpectationResultsByAttackPattern(
+                attackChainNodeExpectationMapper.toNodeExpectationResultsByAttackPattern(
                     entry.getKey(), entry.getValue()))
         .toList();
   }

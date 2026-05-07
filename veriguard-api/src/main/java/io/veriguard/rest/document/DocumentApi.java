@@ -19,7 +19,7 @@ import io.veriguard.rest.document.form.DocumentTagUpdateInput;
 import io.veriguard.rest.document.form.DocumentUpdateInput;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import io.veriguard.service.FileService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,16 +57,16 @@ public class DocumentApi extends RestBehavior {
   public static final String DOCUMENT_API = "/api/documents";
   private final TagRepository tagRepository;
   private final DocumentRepository documentRepository;
-  private final ExerciseRepository exerciseRepository;
-  private final ScenarioRepository scenarioRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
+  private final AttackChainRepository attackChainRepository;
   private final UserRepository userRepository;
-  private final InjectorRepository injectorRepository;
+  private final NodeExecutorRepository nodeExecutorRepository;
   private final CollectorRepository collectorRepository;
   private final SecurityPlatformRepository securityPlatformRepository;
 
   private final DocumentService documentService;
   private final FileService fileService;
-  private final InjectService injectService;
+  private final AttackChainNodeService attackChainNodeService;
 
   @PostMapping(DOCUMENT_API)
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.DOCUMENT)
@@ -80,21 +80,21 @@ public class DocumentApi extends RestBehavior {
     Optional<Document> targetDocument = documentRepository.findByTarget(fileTarget);
     if (targetDocument.isPresent()) {
       Document document = targetDocument.get();
-      // Compute exercises
-      if (!document.getExercises().isEmpty()) {
-        Set<Exercise> exercises = new HashSet<>(document.getExercises());
-        List<Exercise> inputExercises =
-            fromIterable(exerciseRepository.findAllById(input.getExerciseIds()));
-        exercises.addAll(inputExercises);
-        document.setExercises(exercises);
+      // Compute attackChainRuns
+      if (!document.getAttackChainRuns().isEmpty()) {
+        Set<AttackChainRun> attackChainRuns = new HashSet<>(document.getAttackChainRuns());
+        List<AttackChainRun> inputAttackChainRuns =
+            fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds()));
+        attackChainRuns.addAll(inputAttackChainRuns);
+        document.setAttackChainRuns(attackChainRuns);
       }
-      // Compute scenarios
-      if (!document.getScenarios().isEmpty()) {
-        Set<Scenario> scenarios = new HashSet<>(document.getScenarios());
-        List<Scenario> inputScenarios =
-            fromIterable(scenarioRepository.findAllById(input.getScenarioIds()));
-        scenarios.addAll(inputScenarios);
-        document.setScenarios(scenarios);
+      // Compute attackChains
+      if (!document.getAttackChains().isEmpty()) {
+        Set<AttackChain> attackChains = new HashSet<>(document.getAttackChains());
+        List<AttackChain> inputAttackChains =
+            fromIterable(attackChainRepository.findAllById(input.getAttackChainIds()));
+        attackChains.addAll(inputAttackChains);
+        document.setAttackChains(attackChains);
       }
       // Compute tags
       Set<Tag> tags = new HashSet<>(document.getTags());
@@ -108,13 +108,13 @@ public class DocumentApi extends RestBehavior {
       document.setTarget(fileTarget);
       document.setName(file.getOriginalFilename());
       document.setDescription(input.getDescription());
-      if (!input.getExerciseIds().isEmpty()) {
-        document.setExercises(
-            iterableToSet(exerciseRepository.findAllById(input.getExerciseIds())));
+      if (!input.getAttackChainRunIds().isEmpty()) {
+        document.setAttackChainRuns(
+            iterableToSet(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
       }
-      if (!input.getScenarioIds().isEmpty()) {
-        document.setScenarios(
-            iterableToSet(scenarioRepository.findAllById(input.getScenarioIds())));
+      if (!input.getAttackChainIds().isEmpty()) {
+        document.setAttackChains(
+            iterableToSet(attackChainRepository.findAllById(input.getAttackChainIds())));
       }
       document.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
       document.setType(file.getContentType());
@@ -135,21 +135,21 @@ public class DocumentApi extends RestBehavior {
     // Document already exists by hash
     if (targetDocument.isPresent()) {
       Document document = targetDocument.get();
-      // Compute exercises
-      if (!document.getExercises().isEmpty()) {
-        Set<Exercise> exercises = new HashSet<>(document.getExercises());
-        List<Exercise> inputExercises =
-            fromIterable(exerciseRepository.findAllById(input.getExerciseIds()));
-        exercises.addAll(inputExercises);
-        document.setExercises(exercises);
+      // Compute attackChainRuns
+      if (!document.getAttackChainRuns().isEmpty()) {
+        Set<AttackChainRun> attackChainRuns = new HashSet<>(document.getAttackChainRuns());
+        List<AttackChainRun> inputAttackChainRuns =
+            fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds()));
+        attackChainRuns.addAll(inputAttackChainRuns);
+        document.setAttackChainRuns(attackChainRuns);
       }
-      // Compute scenarios
-      if (!document.getScenarios().isEmpty()) {
-        Set<Scenario> scenarios = new HashSet<>(document.getScenarios());
-        List<Scenario> inputScenarios =
-            fromIterable(scenarioRepository.findAllById(input.getScenarioIds()));
-        scenarios.addAll(inputScenarios);
-        document.setScenarios(scenarios);
+      // Compute attackChains
+      if (!document.getAttackChains().isEmpty()) {
+        Set<AttackChain> attackChains = new HashSet<>(document.getAttackChains());
+        List<AttackChain> inputAttackChains =
+            fromIterable(attackChainRepository.findAllById(input.getAttackChainIds()));
+        attackChains.addAll(inputAttackChains);
+        document.setAttackChains(attackChains);
       }
       // Compute tags
       Set<Tag> tags = new HashSet<>(document.getTags());
@@ -166,21 +166,21 @@ public class DocumentApi extends RestBehavior {
         fileService.uploadFile(fileTarget, file);
         document.setDescription(input.getDescription());
 
-        // Compute exercises
-        if (!document.getExercises().isEmpty()) {
-          Set<Exercise> exercises = new HashSet<>(document.getExercises());
-          List<Exercise> inputExercises =
-              fromIterable(exerciseRepository.findAllById(input.getExerciseIds()));
-          exercises.addAll(inputExercises);
-          document.setExercises(exercises);
+        // Compute attackChainRuns
+        if (!document.getAttackChainRuns().isEmpty()) {
+          Set<AttackChainRun> attackChainRuns = new HashSet<>(document.getAttackChainRuns());
+          List<AttackChainRun> inputAttackChainRuns =
+              fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds()));
+          attackChainRuns.addAll(inputAttackChainRuns);
+          document.setAttackChainRuns(attackChainRuns);
         }
-        // Compute scenarios
-        if (!document.getScenarios().isEmpty()) {
-          Set<Scenario> scenarios = new HashSet<>(document.getScenarios());
-          List<Scenario> inputScenarios =
-              fromIterable(scenarioRepository.findAllById(input.getScenarioIds()));
-          scenarios.addAll(inputScenarios);
-          document.setScenarios(scenarios);
+        // Compute attackChains
+        if (!document.getAttackChains().isEmpty()) {
+          Set<AttackChain> attackChains = new HashSet<>(document.getAttackChains());
+          List<AttackChain> inputAttackChains =
+              fromIterable(attackChainRepository.findAllById(input.getAttackChainIds()));
+          attackChains.addAll(inputAttackChains);
+          document.setAttackChains(attackChains);
         }
         // Compute tags
         Set<Tag> tags = new HashSet<>(document.getTags());
@@ -194,13 +194,13 @@ public class DocumentApi extends RestBehavior {
         document.setTarget(fileTarget);
         document.setName(file.getOriginalFilename());
         document.setDescription(input.getDescription());
-        if (!input.getExerciseIds().isEmpty()) {
-          document.setExercises(
-              iterableToSet(exerciseRepository.findAllById(input.getExerciseIds())));
+        if (!input.getAttackChainRunIds().isEmpty()) {
+          document.setAttackChainRuns(
+              iterableToSet(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
         }
-        if (!input.getScenarioIds().isEmpty()) {
-          document.setScenarios(
-              iterableToSet(scenarioRepository.findAllById(input.getScenarioIds())));
+        if (!input.getAttackChainIds().isEmpty()) {
+          document.setAttackChains(
+              iterableToSet(attackChainRepository.findAllById(input.getAttackChainIds())));
         }
         document.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
         document.setType(file.getContentType());
@@ -288,49 +288,49 @@ public class DocumentApi extends RestBehavior {
     document.setUpdateAttributes(input);
     document.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
 
-    // Get removed exercises
-    Stream<String> askExerciseIdsStream =
-        document.getExercises().stream()
+    // Get removed attackChainRuns
+    Stream<String> askAttackChainRunIdsStream =
+        document.getAttackChainRuns().stream()
             .filter(
-                exercise ->
-                    !exercise.isUserHasAccess(
+                attackChainRun ->
+                    !attackChainRun.isUserHasAccess(
                         userRepository
                             .findById(currentUser().getId())
                             .orElseThrow(
                                 () -> new ElementNotFoundException("Current user not found"))))
-            .map(Exercise::getId);
-    List<String> askExerciseIds =
-        Stream.concat(askExerciseIdsStream, input.getExerciseIds().stream()).distinct().toList();
-    List<Exercise> removedExercises =
-        document.getExercises().stream()
-            .filter(exercise -> !askExerciseIds.contains(exercise.getId()))
+            .map(AttackChainRun::getId);
+    List<String> askAttackChainRunIds =
+        Stream.concat(askAttackChainRunIdsStream, input.getAttackChainRunIds().stream()).distinct().toList();
+    List<AttackChainRun> removedAttackChainRuns =
+        document.getAttackChainRuns().stream()
+            .filter(attackChainRun -> !askAttackChainRunIds.contains(attackChainRun.getId()))
             .toList();
-    document.setExercises(iterableToSet(exerciseRepository.findAllById(askExerciseIds)));
-    // In case of exercise removal, all inject doc attachment for exercise
-    removedExercises.forEach(
-        exercise -> injectService.cleanInjectsDocExercise(exercise.getId(), documentId));
+    document.setAttackChainRuns(iterableToSet(attackChainRunRepository.findAllById(askAttackChainRunIds)));
+    // In case of attackChainRun removal, all attackChainNode doc attachment for attackChainRun
+    removedAttackChainRuns.forEach(
+        attackChainRun -> attackChainNodeService.cleanAttackChainNodesDocAttackChainRun(attackChainRun.getId(), documentId));
 
-    // Get removed scenarios
-    Stream<String> askScenarioIdsStream =
-        document.getScenarios().stream()
+    // Get removed attackChains
+    Stream<String> askAttackChainIdsStream =
+        document.getAttackChains().stream()
             .filter(
-                scenario ->
-                    !scenario.isUserHasAccess(
+                attackChain ->
+                    !attackChain.isUserHasAccess(
                         userRepository
                             .findById(currentUser().getId())
                             .orElseThrow(
                                 () -> new ElementNotFoundException("Current user not found"))))
-            .map(Scenario::getId);
-    List<String> askScenarioIds =
-        Stream.concat(askScenarioIdsStream, input.getScenarioIds().stream()).distinct().toList();
-    List<Scenario> removedScenarios =
-        document.getScenarios().stream()
-            .filter(scenario -> !askScenarioIds.contains(scenario.getId()))
+            .map(AttackChain::getId);
+    List<String> askAttackChainIds =
+        Stream.concat(askAttackChainIdsStream, input.getAttackChainIds().stream()).distinct().toList();
+    List<AttackChain> removedAttackChains =
+        document.getAttackChains().stream()
+            .filter(attackChain -> !askAttackChainIds.contains(attackChain.getId()))
             .toList();
-    document.setScenarios(iterableToSet(scenarioRepository.findAllById(askScenarioIds)));
-    // In case of scenario removal, all inject doc attachment for scenario
-    removedScenarios.forEach(
-        scenario -> injectService.cleanInjectsDocScenario(scenario.getId(), documentId));
+    document.setAttackChains(iterableToSet(attackChainRepository.findAllById(askAttackChainIds)));
+    // In case of attackChain removal, all attackChainNode doc attachment for attackChain
+    removedAttackChains.forEach(
+        attackChain -> attackChainNodeService.cleanAttackChainNodesDocAttackChain(attackChain.getId(), documentId));
 
     // Save and return
     return documentRepository.save(document);
@@ -360,9 +360,9 @@ public class DocumentApi extends RestBehavior {
 
   @GetMapping(value = "/api/images/injectors/{injectorType}", produces = MediaType.IMAGE_PNG_VALUE)
   @RBAC(skipRBAC = true)
-  public @ResponseBody ResponseEntity<byte[]> getInjectorImage(@PathVariable String injectorType)
+  public @ResponseBody ResponseEntity<byte[]> getNodeExecutorImage(@PathVariable String nodeExecutorType)
       throws IOException {
-    Optional<InputStream> fileStream = fileService.getInjectorImage(injectorType);
+    Optional<InputStream> fileStream = fileService.getNodeExecutorImage(nodeExecutorType);
     if (fileStream.isPresent()) {
       return ResponseEntity.ok()
           .cacheControl(CacheControl.maxAge(5, TimeUnit.MINUTES))
@@ -373,13 +373,13 @@ public class DocumentApi extends RestBehavior {
 
   @GetMapping(value = "/api/images/injectors/id/{injectorId}", produces = MediaType.IMAGE_PNG_VALUE)
   @RBAC(skipRBAC = true)
-  public @ResponseBody ResponseEntity<byte[]> getInjectorImageFromId(
-      @PathVariable String injectorId) throws IOException {
-    Injector injector =
-        this.injectorRepository
-            .findById(injectorId)
+  public @ResponseBody ResponseEntity<byte[]> getNodeExecutorImageFromId(
+      @PathVariable String nodeExecutorId) throws IOException {
+    NodeExecutor nodeExecutor =
+        this.nodeExecutorRepository
+            .findById(nodeExecutorId)
             .orElseThrow(() -> new ElementNotFoundException("Injector not found"));
-    Optional<InputStream> fileStream = fileService.getInjectorImage(injector.getType());
+    Optional<InputStream> fileStream = fileService.getNodeExecutorImage(nodeExecutor.getType());
     if (fileStream.isPresent()) {
       return ResponseEntity.ok()
           .cacheControl(CacheControl.maxAge(5, TimeUnit.MINUTES))
@@ -484,16 +484,16 @@ public class DocumentApi extends RestBehavior {
     return null;
   }
 
-  private List<Document> getExercisePlayerDocuments(Exercise exercise) {
-    return exercise.getInjects().stream()
-        .flatMap(inject -> inject.getDocuments().stream().map(d -> d.getDocument()))
+  private List<Document> getAttackChainRunPlayerDocuments(AttackChainRun attackChainRun) {
+    return attackChainRun.getAttackChainNodes().stream()
+        .flatMap(attackChainNode -> attackChainNode.getDocuments().stream().map(d -> d.getDocument()))
         .distinct()
         .toList();
   }
 
-  private List<Document> getScenarioPlayerDocuments(Scenario scenario) {
-    return scenario.getInjects().stream()
-        .flatMap(inject -> inject.getDocuments().stream().map(d -> d.getDocument()))
+  private List<Document> getAttackChainPlayerDocuments(AttackChain attackChain) {
+    return attackChain.getAttackChainNodes().stream()
+        .flatMap(attackChainNode -> attackChainNode.getDocuments().stream().map(d -> d.getDocument()))
         .distinct()
         .toList();
   }
@@ -523,27 +523,27 @@ public class DocumentApi extends RestBehavior {
   @GetMapping("/api/player/{exerciseOrScenarioId}/documents")
   @RBAC(skipRBAC = true)
   public List<Document> playerDocuments(
-      @PathVariable String exerciseOrScenarioId, @RequestParam Optional<String> userId) {
-    Optional<Exercise> exerciseOpt = this.exerciseRepository.findById(exerciseOrScenarioId);
-    Optional<Scenario> scenarioOpt = this.scenarioRepository.findById(exerciseOrScenarioId);
+      @PathVariable String attackChainRunOrAttackChainId, @RequestParam Optional<String> userId) {
+    Optional<AttackChainRun> attackChainRunOpt = this.attackChainRunRepository.findById(attackChainRunOrAttackChainId);
+    Optional<AttackChain> attackChainOpt = this.attackChainRepository.findById(attackChainRunOrAttackChainId);
 
     final User user = impersonateUser(userRepository, userId);
     if (user.getId().equals(ANONYMOUS)) {
       throw new UnsupportedOperationException("User must be logged or dynamic player is required");
     }
 
-    if (exerciseOpt.isPresent()) {
-      if (!exerciseOpt.get().isUserHasAccess(user)
-          && !exerciseOpt.get().getUsers().contains(user)) {
+    if (attackChainRunOpt.isPresent()) {
+      if (!attackChainRunOpt.get().isUserHasAccess(user)
+          && !attackChainRunOpt.get().getUsers().contains(user)) {
         throw new UnsupportedOperationException("The given player is not in this exercise");
       }
-      return getExercisePlayerDocuments(exerciseOpt.get());
-    } else if (scenarioOpt.isPresent()) {
-      if (!scenarioOpt.get().isUserHasAccess(user)
-          && !scenarioOpt.get().getUsers().contains(user)) {
+      return getAttackChainRunPlayerDocuments(attackChainRunOpt.get());
+    } else if (attackChainOpt.isPresent()) {
+      if (!attackChainOpt.get().isUserHasAccess(user)
+          && !attackChainOpt.get().getUsers().contains(user)) {
         throw new UnsupportedOperationException("The given player is not in this exercise");
       }
-      return getScenarioPlayerDocuments(scenarioOpt.get());
+      return getAttackChainPlayerDocuments(attackChainOpt.get());
     } else {
       throw new IllegalArgumentException("Exercise or scenario ID not found");
     }
@@ -552,13 +552,13 @@ public class DocumentApi extends RestBehavior {
   @GetMapping("/api/player/{exerciseOrScenarioId}/documents/{documentId}/file")
   @RBAC(skipRBAC = true)
   public void downloadPlayerDocument(
-      @PathVariable String exerciseOrScenarioId,
+      @PathVariable String attackChainRunOrAttackChainId,
       @PathVariable String documentId,
       @RequestParam Optional<String> userId,
       HttpServletResponse response)
       throws IOException {
-    Optional<Exercise> exerciseOpt = this.exerciseRepository.findById(exerciseOrScenarioId);
-    Optional<Scenario> scenarioOpt = this.scenarioRepository.findById(exerciseOrScenarioId);
+    Optional<AttackChainRun> attackChainRunOpt = this.attackChainRunRepository.findById(attackChainRunOrAttackChainId);
+    Optional<AttackChain> attackChainOpt = this.attackChainRepository.findById(attackChainRunOrAttackChainId);
 
     final User user = impersonateUser(userRepository, userId);
     if (user.getId().equals(ANONYMOUS)) {
@@ -566,23 +566,23 @@ public class DocumentApi extends RestBehavior {
     }
 
     Document document = null;
-    if (exerciseOpt.isPresent()) {
-      if (!exerciseOpt.get().isUserHasAccess(user)
-          && !exerciseOpt.get().getUsers().contains(user)) {
+    if (attackChainRunOpt.isPresent()) {
+      if (!attackChainRunOpt.get().isUserHasAccess(user)
+          && !attackChainRunOpt.get().getUsers().contains(user)) {
         throw new UnsupportedOperationException("The given player is not in this exercise");
       }
       document =
-          getExercisePlayerDocuments(exerciseOpt.get()).stream()
+          getAttackChainRunPlayerDocuments(attackChainRunOpt.get()).stream()
               .filter(doc -> doc.getId().equals(documentId))
               .findFirst()
               .orElseThrow(() -> new ElementNotFoundException("Document not found"));
-    } else if (scenarioOpt.isPresent()) {
-      if (!scenarioOpt.get().isUserHasAccess(user)
-          && !scenarioOpt.get().getUsers().contains(user)) {
+    } else if (attackChainOpt.isPresent()) {
+      if (!attackChainOpt.get().isUserHasAccess(user)
+          && !attackChainOpt.get().getUsers().contains(user)) {
         throw new UnsupportedOperationException("The given player is not in this exercise");
       }
       document =
-          getScenarioPlayerDocuments(scenarioOpt.get()).stream()
+          getAttackChainPlayerDocuments(attackChainOpt.get()).stream()
               .filter(doc -> doc.getId().equals(documentId))
               .findFirst()
               .orElseThrow(() -> new ElementNotFoundException("Document not found"));

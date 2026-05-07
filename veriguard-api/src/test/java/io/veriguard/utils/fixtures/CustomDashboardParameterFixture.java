@@ -1,6 +1,6 @@
 package io.veriguard.utils.fixtures;
 
-import static io.veriguard.database.model.CustomDashboardParameters.CustomDashboardParameterType.scenario;
+import static io.veriguard.database.model.CustomDashboardParameters.CustomDashboardParameterType.attackChain;
 import static io.veriguard.database.model.CustomDashboardParameters.CustomDashboardParameterType.simulation;
 
 import io.veriguard.database.model.CustomDashboardParameters;
@@ -14,10 +14,10 @@ public class CustomDashboardParameterFixture {
     return customDashboardParameters;
   }
 
-  public static CustomDashboardParameters createScenarioCustomDashboardParameter() {
+  public static CustomDashboardParameters createAttackChainCustomDashboardParameter() {
     CustomDashboardParameters customDashboardParameters = new CustomDashboardParameters();
     customDashboardParameters.setName("scenario_param");
-    customDashboardParameters.setType(scenario);
+    customDashboardParameters.setType(attackChain);
     return customDashboardParameters;
   }
 }

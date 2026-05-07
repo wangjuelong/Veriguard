@@ -13,7 +13,7 @@ import io.veriguard.annotation.ControlledUuidGeneration;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.database.model.Endpoint.PLATFORM_TYPE;
-import io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.helper.MultiIdListSerializer;
 import io.veriguard.helper.MultiIdSetSerializer;

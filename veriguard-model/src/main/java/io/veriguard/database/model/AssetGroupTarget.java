@@ -6,7 +6,7 @@ import java.util.Set;
 import lombok.Data;
 
 @Data
-public class AssetGroupTarget extends InjectTarget {
+public class AssetGroupTarget extends AttackChainNodeTarget {
   public AssetGroupTarget(String id, String name, Set<String> tags) {
     this.setId(id);
     this.setName(name);

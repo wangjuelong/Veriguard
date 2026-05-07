@@ -1,6 +1,6 @@
 package io.veriguard.rest.security;
 
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.UserRepository;
 import java.util.function.Supplier;
 import org.aopalliance.intercept.MethodInvocation;
@@ -19,7 +19,7 @@ public class SecurityExpressionHandler extends DefaultMethodSecurityExpressionHa
 
   private final AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
   private final UserRepository userRepository;
-  private final ExerciseRepository exerciseRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
 
   private SecurityExpression securityExpression;
 
@@ -31,7 +31,7 @@ public class SecurityExpressionHandler extends DefaultMethodSecurityExpressionHa
           createSecurityExpression(
               SecurityContextHolder.getContext().getAuthentication(),
               userRepository,
-              exerciseRepository,
+              attackChainRunRepository,
               getPermissionEvaluator(),
               this.trustResolver,
               getRoleHierarchy());
@@ -40,20 +40,20 @@ public class SecurityExpressionHandler extends DefaultMethodSecurityExpressionHa
   }
 
   public SecurityExpressionHandler(
-      final UserRepository userRepository, final ExerciseRepository exerciseRepository) {
+      final UserRepository userRepository, final AttackChainRunRepository attackChainRunRepository) {
     this.userRepository = userRepository;
-    this.exerciseRepository = exerciseRepository;
+    this.attackChainRunRepository = attackChainRunRepository;
   }
 
   private SecurityExpression createSecurityExpression(
       Authentication authentication,
       UserRepository userRepository,
-      ExerciseRepository exerciseRepository,
+      AttackChainRunRepository attackChainRunRepository,
       PermissionEvaluator permissionEvaluator,
       AuthenticationTrustResolver trustResolver,
       RoleHierarchy roleHierarchy) {
     SecurityExpression se =
-        new SecurityExpression(authentication, userRepository, exerciseRepository);
+        new SecurityExpression(authentication, userRepository, attackChainRunRepository);
     se.setPermissionEvaluator(permissionEvaluator);
     se.setTrustResolver(trustResolver);
     se.setRoleHierarchy(roleHierarchy);
@@ -72,7 +72,7 @@ public class SecurityExpressionHandler extends DefaultMethodSecurityExpressionHa
         createSecurityExpression(
             delegate.getAuthentication(),
             userRepository,
-            exerciseRepository,
+            attackChainRunRepository,
             getPermissionEvaluator(),
             this.trustResolver,
             getRoleHierarchy());

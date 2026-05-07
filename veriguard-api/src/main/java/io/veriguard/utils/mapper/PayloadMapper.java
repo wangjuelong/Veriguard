@@ -39,43 +39,43 @@ public class PayloadMapper {
   private final ApplicationContext context;
 
   /**
-   * Extracts payload output information from an inject.
+   * Extracts payload output information from an attackChainNode.
    *
-   * <p>Determines the appropriate payload representation based on whether the inject has been
-   * executed. For executed injects, returns the saved status payload. For pending injects,
-   * constructs the payload output from the injector contract configuration.
+   * <p>Determines the appropriate payload representation based on whether the attackChainNode has been
+   * executed. For executed attackChainNodes, returns the saved status payload. For pending attackChainNodes,
+   * constructs the payload output from the nodeExecutor contract configuration.
    *
-   * @param inject the optional inject to extract payload from
+   * @param attackChainNode the optional attackChainNode to extract payload from
    * @return the status payload output DTO, or null if no payload available
    */
-  public StatusPayloadOutput getStatusPayloadOutputFromInject(Optional<Inject> inject) {
+  public StatusPayloadOutput getStatusPayloadOutputFromAttackChainNode(Optional<AttackChainNode> attackChainNode) {
 
-    if (inject.isEmpty()) {
+    if (attackChainNode.isEmpty()) {
       return null;
     }
 
-    Inject injectObj = inject.get();
-    Optional<InjectorContract> injectorContractOpt = injectObj.getInjectorContract();
-    if (injectorContractOpt.isEmpty() || injectorContractOpt.get().getPayload() == null) {
+    AttackChainNode attackChainNodeObj = attackChainNode.get();
+    Optional<NodeContract> nodeContractOpt = attackChainNodeObj.getNodeContract();
+    if (nodeContractOpt.isEmpty() || nodeContractOpt.get().getPayload() == null) {
       return null;
     }
 
-    InjectorContract injectorContract = injectorContractOpt.get();
+    NodeContract nodeContract = nodeContractOpt.get();
     StatusPayloadOutput.StatusPayloadOutputBuilder statusPayloadOutputBuilder =
         StatusPayloadOutput.builder();
 
-    if (ofNullable(inject.get().getContent()).map(c -> c.has("obfuscator")).orElse(Boolean.FALSE)) {
-      String obfuscator = inject.get().getContent().findValue("obfuscator").asText();
+    if (ofNullable(attackChainNode.get().getContent()).map(c -> c.has("obfuscator")).orElse(Boolean.FALSE)) {
+      String obfuscator = attackChainNode.get().getContent().findValue("obfuscator").asText();
       statusPayloadOutputBuilder.obfuscator(obfuscator);
     }
 
-    Optional<InjectStatus> injectStatusOpt = injectObj.getStatus();
-    Payload payload = injectorContract.getPayload();
+    Optional<AttackChainNodeStatus> attackChainNodeStatusOpt = attackChainNodeObj.getStatus();
+    Payload payload = nodeContract.getPayload();
 
-    // Handle the case when inject has not been executed yet or no payload output exists
-    if (injectStatusOpt.isEmpty() || injectStatusOpt.get().getPayloadOutput() == null) {
+    // Handle the case when attackChainNode has not been executed yet or no payload output exists
+    if (attackChainNodeStatusOpt.isEmpty() || attackChainNodeStatusOpt.get().getPayloadOutput() == null) {
       if (payload != null) {
-        populatePayloadDetails(statusPayloadOutputBuilder, payload, injectorContract);
+        populatePayloadDetails(statusPayloadOutputBuilder, payload, nodeContract);
 
         // Handle different payload types
         processPayloadType(statusPayloadOutputBuilder, payload);
@@ -85,13 +85,13 @@ public class PayloadMapper {
       }
     }
 
-    // If inject has been executed, reuse the previous status
-    return injectStatusOpt
-        .map(InjectStatus::getPayloadOutput)
+    // If attackChainNode has been executed, reuse the previous status
+    return attackChainNodeStatusOpt
+        .map(AttackChainNodeStatus::getPayloadOutput)
         .map(
             statusPayload ->
                 populateExecutedPayload(
-                    statusPayloadOutputBuilder, statusPayload, injectorContract))
+                    statusPayloadOutputBuilder, statusPayload, nodeContract))
         .orElse(null);
   }
 
@@ -141,7 +141,7 @@ public class PayloadMapper {
   private void populatePayloadDetails(
       StatusPayloadOutput.StatusPayloadOutputBuilder builder,
       Payload payload,
-      InjectorContract injectorContract) {
+      NodeContract nodeContract) {
     builder
         .arguments(payload.getArguments())
         .prerequisites(payload.getPrerequisites())
@@ -154,8 +154,8 @@ public class PayloadMapper {
         .tags(payload.getTags().stream().map(Tag::getId).collect(Collectors.toSet()))
         .platforms(payload.getPlatforms())
         .payloadOutputParsers(toOutputParsersSimple(payload.getOutputParsers()))
-        .attackPatterns(toAttackPatternSimples(injectorContract.getAttackPatterns()))
-        .executableArch(injectorContract.getArch());
+        .attackPatterns(toAttackPatternSimples(nodeContract.getAttackPatterns()))
+        .executableArch(nodeContract.getArch());
   }
 
   private void processPayloadType(
@@ -209,7 +209,7 @@ public class PayloadMapper {
   private StatusPayloadOutput populateExecutedPayload(
       StatusPayloadOutput.StatusPayloadOutputBuilder builder,
       StatusPayload statusPayload,
-      InjectorContract injectorContract) {
+      NodeContract nodeContract) {
     builder
         .cleanupExecutor(statusPayload.getCleanupExecutor())
         .payloadCommandBlocks(statusPayload.getPayloadCommandBlocks())
@@ -219,14 +219,14 @@ public class PayloadMapper {
         .executableFile(statusPayload.getExecutableFile())
         .fileDropFile(statusPayload.getFileDropFile())
         .hostname(statusPayload.getHostname())
-        .attackPatterns(toAttackPatternSimples(injectorContract.getAttackPatterns()))
-        .executableArch(injectorContract.getArch())
+        .attackPatterns(toAttackPatternSimples(nodeContract.getAttackPatterns()))
+        .executableArch(nodeContract.getArch())
         .name(statusPayload.getName())
         .type(statusPayload.getType())
         .description(statusPayload.getDescription())
-        .platforms(injectorContract.getPlatforms());
+        .platforms(nodeContract.getPlatforms());
 
-    Payload payload = injectorContract.getPayload();
+    Payload payload = nodeContract.getPayload();
     if (payload != null) {
       builder
           .collectorType(payload.getCollectorType())

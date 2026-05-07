@@ -1,14 +1,14 @@
 package io.veriguard.rest.exercise.form;
 
-import static io.veriguard.database.model.ExerciseStatus.valueOf;
+import static io.veriguard.database.model.AttackChainRunStatus.valueOf;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.database.model.ExerciseStatus;
-import io.veriguard.database.model.ExerciseTeamUser;
+import io.veriguard.database.model.AttackChainRunStatus;
+import io.veriguard.database.model.AttackChainRunTeamUser;
 import io.veriguard.database.model.KillChainPhase;
 import io.veriguard.database.model.Objective;
-import io.veriguard.database.model.Scenario.SEVERITY;
+import io.veriguard.database.model.AttackChain.SEVERITY;
 import io.veriguard.database.raw.RawSimulation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -38,7 +38,7 @@ public class SimulationDetails {
 
   @JsonProperty("exercise_status")
   @NotNull
-  private ExerciseStatus status;
+  private AttackChainRunStatus status;
 
   @JsonProperty("exercise_subtitle")
   private String subtitle;
@@ -77,7 +77,7 @@ public class SimulationDetails {
   // -- SCENARIO --
 
   @JsonProperty("exercise_scenario")
-  private String scenario;
+  private String attackChain;
 
   // -- AUDIT --
 
@@ -90,7 +90,7 @@ public class SimulationDetails {
   // -- RELATION --
 
   @JsonProperty("exercise_teams_users")
-  private Set<ExerciseTeamUser> exerciseTeamUsers;
+  private Set<AttackChainRunTeamUser> attackChainRunTeamUsers;
 
   @JsonProperty("exercise_tags")
   private Set<String> tags = new HashSet<>();
@@ -142,56 +142,56 @@ public class SimulationDetails {
   @JsonIgnore private List<Objective> objectives;
 
   /**
-   * Create an Exercise Details object different from the one used in the lists from a Raw one
+   * Create an AttackChainRun Details object different from the one used in the lists from a Raw one
    *
-   * @param exercise the raw exercise
-   * @return an Exercise Simple object
+   * @param attackChainRun the raw attackChainRun
+   * @return an AttackChainRun Simple object
    */
-  public static SimulationDetails fromRawExercise(
-      RawSimulation exercise,
-      List<ExerciseTeamUser> exerciseTeamsUsers,
+  public static SimulationDetails fromRawAttackChainRun(
+      RawSimulation attackChainRun,
+      List<AttackChainRunTeamUser> attackChainRunTeamsUsers,
       List<Objective> objectives) {
     SimulationDetailsBuilder details =
         SimulationDetails.builder()
-            .id(exercise.getExercise_id())
-            .name(exercise.getExercise_name())
-            .description(exercise.getExercise_description())
-            .status(valueOf(exercise.getExercise_status()))
-            .subtitle(exercise.getExercise_subtitle())
-            .category(exercise.getExercise_category())
-            .mainFocus(exercise.getExercise_main_focus())
-            .customDashboard(exercise.getExercise_custom_dashboard());
+            .id(attackChainRun.getExercise_id())
+            .name(attackChainRun.getExercise_name())
+            .description(attackChainRun.getExercise_description())
+            .status(valueOf(attackChainRun.getExercise_status()))
+            .subtitle(attackChainRun.getExercise_subtitle())
+            .category(attackChainRun.getExercise_category())
+            .mainFocus(attackChainRun.getExercise_main_focus())
+            .customDashboard(attackChainRun.getExercise_custom_dashboard());
 
-    if (exercise.getExercise_severity() != null) {
-      details.severity(SEVERITY.valueOf(exercise.getExercise_severity()));
+    if (attackChainRun.getExercise_severity() != null) {
+      details.severity(SEVERITY.valueOf(attackChainRun.getExercise_severity()));
     }
     details
-        .start(exercise.getExercise_start_date())
-        .end(exercise.getExercise_end_date())
-        .header(exercise.getExercise_message_header())
-        .footer(exercise.getExercise_message_footer())
-        .from(exercise.getExercise_mail_from());
-    if (exercise.getExercise_reply_to() != null) {
-      details.replyTo(exercise.getExercise_reply_to().stream().toList());
+        .start(attackChainRun.getExercise_start_date())
+        .end(attackChainRun.getExercise_end_date())
+        .header(attackChainRun.getExercise_message_header())
+        .footer(attackChainRun.getExercise_message_footer())
+        .from(attackChainRun.getExercise_mail_from());
+    if (attackChainRun.getExercise_reply_to() != null) {
+      details.replyTo(attackChainRun.getExercise_reply_to().stream().toList());
     }
     details
-        .lessonsAnonymized(exercise.getExercise_lessons_anonymized())
-        .scenario(exercise.getScenario_id())
-        .createAt(exercise.getExercise_created_at())
-        .updatedAt(exercise.getExercise_updated_at());
-    if (exerciseTeamsUsers != null) {
+        .lessonsAnonymized(attackChainRun.getExercise_lessons_anonymized())
+        .attackChain(attackChainRun.getScenario_id())
+        .createAt(attackChainRun.getExercise_created_at())
+        .updatedAt(attackChainRun.getExercise_updated_at());
+    if (attackChainRunTeamsUsers != null) {
       details
-          .exerciseTeamUsers(new HashSet<>(exerciseTeamsUsers))
+          .attackChainRunTeamUsers(new HashSet<>(attackChainRunTeamsUsers))
           .usersNumber(
-              exerciseTeamsUsers.stream().map(ExerciseTeamUser::getUser).distinct().count());
+              attackChainRunTeamsUsers.stream().map(AttackChainRunTeamUser::getUser).distinct().count());
     }
     details
-        .tags(new HashSet<>(exercise.getExercise_tags()))
-        .users(exercise.getExercise_users())
+        .tags(new HashSet<>(attackChainRun.getExercise_tags()))
+        .users(attackChainRun.getExercise_users())
         .objectives(objectives)
-        .lessonsAnswersNumber(exercise.getLessons_answers().stream().distinct().toList().size())
-        .allUsersNumber(exercise.getExercise_users().stream().distinct().toList().size())
-        .logsNumber(exercise.getLogs().stream().distinct().toList().size());
+        .lessonsAnswersNumber(attackChainRun.getLessons_answers().stream().distinct().toList().size())
+        .allUsersNumber(attackChainRun.getExercise_users().stream().distinct().toList().size())
+        .logsNumber(attackChainRun.getLogs().stream().distinct().toList().size());
 
     return details.build();
   }

@@ -1,6 +1,6 @@
 package io.veriguard.database.repository;
 
-import io.veriguard.database.model.Exercise;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.SecurityCoverageSendJob;
 import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
@@ -17,7 +17,7 @@ public interface SecurityCoverageSendJobRepository
         JpaSpecificationExecutor<SecurityCoverageSendJob> {
 
   @Query("select scsj from SecurityCoverageSendJob scsj where scsj.simulation = ?1")
-  Optional<SecurityCoverageSendJob> findBySimulation(@NotBlank Exercise simulation);
+  Optional<SecurityCoverageSendJob> findBySimulation(@NotBlank AttackChainRun simulation);
 
   @Query(
       value =

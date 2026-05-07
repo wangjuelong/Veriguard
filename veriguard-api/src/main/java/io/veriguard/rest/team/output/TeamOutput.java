@@ -30,12 +30,12 @@ public class TeamOutput {
   @Schema(description = "Simulation ids linked to this team")
   @JsonProperty("team_exercises")
   @NotBlank
-  private Set<String> exercises;
+  private Set<String> attackChainRuns;
 
   @Schema(description = "Scenario ids linked to this team")
   @JsonProperty("team_scenarios")
   @NotBlank
-  private Set<String> scenarios;
+  private Set<String> attackChains;
 
   @JsonProperty("team_contextual")
   @Schema(

@@ -24,7 +24,7 @@ import org.hibernate.annotations.UuidGenerator;
 /**
  * Entity representing a tag for categorizing and organizing entities.
  *
- * <p>Tags provide a flexible labeling system that can be applied to scenarios, exercises, injects,
+ * <p>Tags provide a flexible labeling system that can be applied to attackChains, attackChainRuns, attackChainNodes,
  * and other entities. They support:
  *
  * <ul>

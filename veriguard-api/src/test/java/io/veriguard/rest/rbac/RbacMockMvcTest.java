@@ -89,22 +89,22 @@ public class RbacMockMvcTest extends IntegrationTest {
     grantComposer.reset();
   }
 
-  static Stream<Arguments> endpointTestScenarios() {
+  static Stream<Arguments> endpointTestAttackChains() {
     return endpoints.stream()
         .flatMap(
             endpoint ->
-                validScenariosFor(endpoint).stream()
-                    .map(scenario -> Arguments.of(endpoint, scenario)));
+                validAttackChainsFor(endpoint).stream()
+                    .map(attackChain -> Arguments.of(endpoint, attackChain)));
   }
 
   @ParameterizedTest(name = "[{index}] {0} - {1}")
   @MethodSource("endpointTestScenarios")
-  void endpointTestScenarios(EndpointInfo endpoint, EndpointTestScenarios endpointTestScenario)
+  void endpointTestAttackChains(EndpointInfo endpoint, EndpointTestAttackChains endpointTestAttackChain)
       throws Exception {
     // Arrange
     MockHttpServletRequestBuilder request = createRequestBuilder(endpoint);
     Authentication auth =
-        createAuthenticationForScenario(endpoint.getRbac(), endpointTestScenario, endpoint);
+        createAuthenticationForAttackChain(endpoint.getRbac(), endpointTestAttackChain, endpoint);
     SecurityContextHolder.getContext().setAuthentication(auth);
 
     // Act
@@ -112,7 +112,7 @@ public class RbacMockMvcTest extends IntegrationTest {
       var result = mockMvc.perform(request).andReturn().getResponse();
 
       // Assert
-      if (endpointTestScenario.shouldBeAllowed(endpoint.getRbac())) {
+      if (endpointTestAttackChain.shouldBeAllowed(endpoint.getRbac())) {
         assertNotEquals(401, result.getStatus());
         assertNotEquals(403, result.getStatus());
       } else {
@@ -157,15 +157,15 @@ public class RbacMockMvcTest extends IntegrationTest {
   }
 
   // -- Auth creation --
-  private Authentication createAuthenticationForScenario(
-      RBAC rbac, EndpointTestScenarios scenario, EndpointInfo endpointInfo) {
+  private Authentication createAuthenticationForAttackChain(
+      RBAC rbac, EndpointTestAttackChains attackChain, EndpointInfo endpointInfo) {
     // For unprotected endpoints and open resources, always return admin (we don't really care about
     // the user permissions in this case)
     if (rbac.skipRBAC()
         || PermissionService.isOpenResource(rbac.resourceType(), rbac.actionPerformed())) {
       return buildAuthenticationForAdmin();
     }
-    return switch (scenario) {
+    return switch (attackChain) {
       case ADMIN -> buildAuthenticationForAdmin();
       case GROUP_WITH_BYPASS -> buildAuthForRoleWithCapability(Capability.BYPASS, false, rbac);
       case GROUP_NO_ROLE, GROUP_ROLE_NO_CAPABILITY ->
@@ -272,28 +272,28 @@ public class RbacMockMvcTest extends IntegrationTest {
     return raw;
   }
 
-  private static List<EndpointTestScenarios> validScenariosFor(EndpointInfo endpoint) {
+  private static List<EndpointTestAttackChains> validAttackChainsFor(EndpointInfo endpoint) {
     RBAC rbac = endpoint.getRbac();
 
     boolean hasResourceId = rbac.resourceId() != null && !rbac.resourceId().isBlank();
 
-    List<EndpointTestScenarios> scenarios =
+    List<EndpointTestAttackChains> attackChains =
         new ArrayList<>(
             List.of(
-                EndpointTestScenarios.ADMIN,
-                EndpointTestScenarios.GROUP_WITH_BYPASS,
-                EndpointTestScenarios.GROUP_NO_ROLE,
-                EndpointTestScenarios.GROUP_ROLE_NO_CAPABILITY));
+                EndpointTestAttackChains.ADMIN,
+                EndpointTestAttackChains.GROUP_WITH_BYPASS,
+                EndpointTestAttackChains.GROUP_NO_ROLE,
+                EndpointTestAttackChains.GROUP_ROLE_NO_CAPABILITY));
 
     if (hasResourceId) {
-      scenarios.addAll(
+      attackChains.addAll(
           List.of(
-              EndpointTestScenarios.RESOURCE_GRANT_ONLY,
-              EndpointTestScenarios.RESOURCE_ROLE_MATCH));
+              EndpointTestAttackChains.RESOURCE_GRANT_ONLY,
+              EndpointTestAttackChains.RESOURCE_ROLE_MATCH));
     } else {
-      scenarios.addAll(List.of(EndpointTestScenarios.NO_RESOURCE_ROLE_MATCH));
+      attackChains.addAll(List.of(EndpointTestAttackChains.NO_RESOURCE_ROLE_MATCH));
     }
 
-    return scenarios;
+    return attackChains;
   }
 }

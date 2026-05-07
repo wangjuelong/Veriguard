@@ -6,15 +6,15 @@ import static io.veriguard.utils.InjectionUtils.isInInjectableRange;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.asset.QueueService;
 import io.veriguard.database.model.*;
-import io.veriguard.database.model.Injector;
-import io.veriguard.database.repository.InjectStatusRepository;
-import io.veriguard.database.repository.InjectorRepository;
-import io.veriguard.execution.ExecutableInject;
-import io.veriguard.execution.ExecutableInjectDTOMapper;
+import io.veriguard.database.model.NodeExecutor;
+import io.veriguard.database.repository.AttackChainNodeStatusRepository;
+import io.veriguard.database.repository.NodeExecutorRepository;
+import io.veriguard.execution.ExecutableNode;
+import io.veriguard.execution.ExecutableNodeDTOMapper;
 import io.veriguard.execution.ExecutionExecutorService;
 import io.veriguard.integration.ManagerFactory;
-import io.veriguard.rest.inject.service.InjectStatusService;
-import io.veriguard.service.InjectorService;
+import io.veriguard.rest.inject.service.AttackChainNodeStatusService;
+import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.connector_instances.ConnectorInstanceService;
 import jakarta.annotation.Resource;
 import java.io.IOException;
@@ -35,111 +35,111 @@ public class Executor {
 
   private final ApplicationContext context;
 
-  private final InjectStatusRepository injectStatusRepository;
-  private final InjectorRepository injectorRepository;
+  private final AttackChainNodeStatusRepository attackChainNodeStatusRepository;
+  private final NodeExecutorRepository nodeExecutorRepository;
 
   private final QueueService queueService;
   private final ManagerFactory managerFactory;
 
   private final ExecutionExecutorService executionExecutorService;
-  private final InjectStatusService injectStatusService;
-  private final ExecutableInjectDTOMapper executableInjectDTOMapper;
+  private final AttackChainNodeStatusService attackChainNodeStatusService;
+  private final ExecutableNodeDTOMapper executableAttackChainNodeDTOMapper;
   private final ConnectorInstanceService connectorInstanceService;
 
   public static final String CMD = "cmd";
   public static final String PSH = "psh";
 
   @Qualifier("coreInjectorService")
-  private final InjectorService injectorService;
+  private final NodeExecutorService nodeExecutorService;
 
-  private InjectStatus executeExternal(ExecutableInject executableInject, Injector injector)
+  private AttackChainNodeStatus executeExternal(ExecutableNode executableAttackChainNode, NodeExecutor nodeExecutor)
       throws IOException, TimeoutException {
-    Inject inject = executableInject.getInjection().getInject();
-    String jsonInject =
+    AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();
+    String jsonAttackChainNode =
         mapper.writeValueAsString(
-            executableInjectDTOMapper.toExecutableInjectDTO(executableInject));
-    InjectStatus injectStatus =
-        this.injectStatusRepository.findByInjectId(inject.getId()).orElseThrow();
+            executableAttackChainNodeDTOMapper.toExecutableNodeDTO(executableAttackChainNode));
+    AttackChainNodeStatus attackChainNodeStatus =
+        this.attackChainNodeStatusRepository.findByAttackChainNodeId(attackChainNode.getId()).orElseThrow();
 
-    queueService.publish(injectorService.getOriginInjectorType(injector.getType()), jsonInject);
-    injectStatus.addInfoTrace(
+    queueService.publish(nodeExecutorService.getOriginNodeExecutorType(nodeExecutor.getType()), jsonAttackChainNode);
+    attackChainNodeStatus.addInfoTrace(
         "The inject has been published and is now waiting to be consumed.",
         ExecutionTraceAction.EXECUTION);
-    return this.injectStatusRepository.save(injectStatus);
+    return this.attackChainNodeStatusRepository.save(attackChainNodeStatus);
   }
 
-  private InjectStatus executeInternal(ExecutableInject executableInject, Injector injector) {
-    Inject inject = executableInject.getInjection().getInject();
-    io.veriguard.executors.Injector executor =
-        managerFactory.getManager().requestInjectorExecutorByType(injector.getType());
+  private AttackChainNodeStatus executeInternal(ExecutableNode executableAttackChainNode, NodeExecutor nodeExecutor) {
+    AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();
+    io.veriguard.executors.NodeExecutor executor =
+        managerFactory.getManager().requestNodeExecutorExecutorByType(nodeExecutor.getType());
 
-    Execution execution = executor.executeInjection(executableInject);
+    Execution execution = executor.executeInjection(executableAttackChainNode);
     // After execution, expectations are already created
     // Injection status is filled after complete execution
-    // Report inject execution
-    InjectStatus injectStatus =
-        this.injectStatusRepository.findByInjectId(inject.getId()).orElseThrow();
-    InjectStatus completeStatus = injectStatusService.fromExecution(execution, injectStatus);
-    return injectStatusRepository.save(completeStatus);
+    // Report attackChainNode execution
+    AttackChainNodeStatus attackChainNodeStatus =
+        this.attackChainNodeStatusRepository.findByAttackChainNodeId(attackChainNode.getId()).orElseThrow();
+    AttackChainNodeStatus completeStatus = attackChainNodeStatusService.fromExecution(execution, attackChainNodeStatus);
+    return attackChainNodeStatusRepository.save(completeStatus);
   }
 
-  public InjectStatus execute(ExecutableInject executableInject) throws Exception {
-    Inject inject = executableInject.getInjection().getInject();
-    InjectorContract injectorContract =
-        inject
-            .getInjectorContract()
+  public AttackChainNodeStatus execute(ExecutableNode executableAttackChainNode) throws Exception {
+    AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();
+    NodeContract nodeContract =
+        attackChainNode
+            .getNodeContract()
             .orElseThrow(
                 () -> new UnsupportedOperationException("Inject does not have a contract"));
 
-    // Depending on injector type (internal or external) execution must be done differently
-    Injector injector =
-        injectorRepository
-            .findByType(injectorContract.getInjector().getType())
+    // Depending on nodeExecutor type (internal or external) execution must be done differently
+    NodeExecutor nodeExecutor =
+        nodeExecutorRepository
+            .findByType(nodeContract.getNodeExecutor().getType())
             .orElseThrow(
                 () ->
                     new IllegalStateException(
                         "Injector not found for type: "
-                            + injectorContract.getInjector().getType()));
+                            + nodeContract.getNodeExecutor().getType()));
 
-    boolean hasStartedConnectorInstanceForInjector =
-        this.connectorInstanceService.hasStartedConnectorInstanceForInjector(injector.getId());
-    if (!hasStartedConnectorInstanceForInjector) {
+    boolean hasStartedConnectorInstanceForNodeExecutor =
+        this.connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutor.getId());
+    if (!hasStartedConnectorInstanceForNodeExecutor) {
       throw new IllegalStateException(
-          "No started connector instance found for injector type: " + injector.getType());
+          "No started connector instance found for injector type: " + nodeExecutor.getType());
     }
 
     // Status
-    InjectStatus updatedStatus =
-        this.injectStatusService.initializeInjectStatus(inject.getId(), EXECUTING);
-    inject.setStatus(updatedStatus);
-    if (Boolean.TRUE.equals(injectorContract.getNeedsExecutor())) {
-      this.executionExecutorService.launchExecutorContext(inject);
+    AttackChainNodeStatus updatedStatus =
+        this.attackChainNodeStatusService.initializeAttackChainNodeStatus(attackChainNode.getId(), EXECUTING);
+    attackChainNode.setStatus(updatedStatus);
+    if (Boolean.TRUE.equals(nodeContract.getNeedsExecutor())) {
+      this.executionExecutorService.launchExecutorContext(attackChainNode);
     }
-    if (injector.isExternal()) {
-      return executeExternal(executableInject, injector);
+    if (nodeExecutor.isExternal()) {
+      return executeExternal(executableAttackChainNode, nodeExecutor);
     } else {
-      return executeInternal(executableInject, injector);
+      return executeInternal(executableAttackChainNode, nodeExecutor);
     }
   }
 
-  public InjectStatus directExecute(ExecutableInject executableInject) throws Exception {
-    boolean isScheduledInject = !executableInject.isDirect();
-    // If empty content, inject must be rejected
-    Inject inject = executableInject.getInjection().getInject();
-    if (inject.getContent() == null) {
+  public AttackChainNodeStatus directExecute(ExecutableNode executableAttackChainNode) throws Exception {
+    boolean isScheduledAttackChainNode = !executableAttackChainNode.isDirect();
+    // If empty content, attackChainNode must be rejected
+    AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();
+    if (attackChainNode.getContent() == null) {
       throw new UnsupportedOperationException("Inject is empty");
     }
-    // If inject is too old, reject the execution
-    if (isScheduledInject && !isInInjectableRange(inject)) {
+    // If attackChainNode is too old, reject the execution
+    if (isScheduledAttackChainNode && !isInInjectableRange(attackChainNode)) {
       throw new UnsupportedOperationException(
           "Inject is now too old for execution: id "
-              + inject.getId()
+              + attackChainNode.getId()
               + ", launch date "
-              + inject.getDate()
+              + attackChainNode.getDate()
               + ", now date "
               + Instant.now());
     }
 
-    return this.execute(executableInject);
+    return this.execute(executableAttackChainNode);
   }
 }

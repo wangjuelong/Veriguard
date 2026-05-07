@@ -1,7 +1,7 @@
 package io.veriguard.utils;
 
-import static io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE.*;
-import static io.veriguard.database.model.InjectExpectationSignature.EXPECTATION_SIGNATURE_TYPE_PARENT_PROCESS_NAME;
+import static io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE.*;
+import static io.veriguard.database.model.NodeExpectationSignature.EXPECTATION_SIGNATURE_TYPE_PARENT_PROCESS_NAME;
 import static io.veriguard.expectation.ExpectationType.VULNERABILITY;
 import static io.veriguard.model.expectation.DetectionExpectation.detectionExpectationForAgent;
 import static io.veriguard.model.expectation.DetectionExpectation.detectionExpectationForAsset;
@@ -14,7 +14,7 @@ import static io.veriguard.utils.VulnerabilityExpectationUtils.vulnerabilityExpe
 import static io.veriguard.utils.inject_expectation_result.ExpectationResultBuilder.buildForMediaPressure;
 
 import io.veriguard.database.model.*;
-import io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import io.veriguard.model.expectation.DetectionExpectation;
 import io.veriguard.model.expectation.ManualExpectation;
 import io.veriguard.model.expectation.PreventionExpectation;
@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
- * Utility class for creating and managing inject expectations.
+ * Utility class for creating and managing attackChainNode expectations.
  *
  * <p>Provides factory methods for creating different types of expectations (Prevention, Detection,
  * Manual, Vulnerability) for various target types (Assets, Agents, Asset Groups). Also includes
@@ -41,7 +41,7 @@ import java.util.stream.Stream;
  *
  * <p>This is a utility class and cannot be instantiated.
  *
- * @see io.veriguard.database.model.InjectExpectation
+ * @see io.veriguard.database.model.AttackChainNodeExpectation
  * @see io.veriguard.model.expectation.PreventionExpectation
  * @see io.veriguard.model.expectation.DetectionExpectation
  */
@@ -76,12 +76,12 @@ public class ExpectationUtils {
    * @param playerByTeam map of teams to their player expectations
    * @return list of updated parent expectations
    */
-  public static List<InjectExpectation> processByValidationType(
+  public static List<AttackChainNodeExpectation> processByValidationType(
       boolean isaNewExpectationResult,
-      List<InjectExpectation> childrenExpectations,
-      List<InjectExpectation> parentExpectations,
-      Map<Team, List<InjectExpectation>> playerByTeam) {
-    List<InjectExpectation> updatedExpectations = new ArrayList<>();
+      List<AttackChainNodeExpectation> childrenExpectations,
+      List<AttackChainNodeExpectation> parentExpectations,
+      Map<Team, List<AttackChainNodeExpectation>> playerByTeam) {
+    List<AttackChainNodeExpectation> updatedExpectations = new ArrayList<>();
 
     childrenExpectations.stream()
         .findAny()
@@ -91,7 +91,7 @@ public class ExpectationUtils {
 
               parentExpectations.forEach(
                   parentExpectation -> {
-                    List<InjectExpectation> toProcess =
+                    List<AttackChainNodeExpectation> toProcess =
                         playerByTeam.get(parentExpectation.getTeam());
                     int playersSize = toProcess.size(); // Without Parent expectation
                     long zeroPlayerResponses =
@@ -107,7 +107,7 @@ public class ExpectationUtils {
                           toProcess.stream()
                               .filter(exp -> exp.getScore() != null)
                               .filter(exp -> exp.getScore() > 0.0)
-                              .mapToDouble(InjectExpectation::getScore)
+                              .mapToDouble(AttackChainNodeExpectation::getScore)
                               .average();
                       if (avgAtLeastOnePlayer.isPresent()) { // Any response is positive
                         parentExpectation.setScore(avgAtLeastOnePlayer.getAsDouble());
@@ -121,7 +121,7 @@ public class ExpectationUtils {
                     } else { // type all
                       if (nullPlayerResponses == 0) {
                         OptionalDouble avgAllPlayer =
-                            toProcess.stream().mapToDouble(InjectExpectation::getScore).average();
+                            toProcess.stream().mapToDouble(AttackChainNodeExpectation::getScore).average();
                         parentExpectation.setScore(avgAllPlayer.getAsDouble());
                       } else {
                         if (zeroPlayerResponses == 0) {
@@ -130,7 +130,7 @@ public class ExpectationUtils {
                           double sumAllPlayer =
                               toProcess.stream()
                                   .filter(exp -> exp.getScore() != null)
-                                  .mapToDouble(InjectExpectation::getScore)
+                                  .mapToDouble(AttackChainNodeExpectation::getScore)
                                   .sum();
                           parentExpectation.setScore(sumAllPlayer / playersSize);
                         }
@@ -138,7 +138,7 @@ public class ExpectationUtils {
                     }
 
                     if (isaNewExpectationResult) {
-                      InjectExpectationResult result = buildForMediaPressure(process);
+                      NodeExpectationResult result = buildForMediaPressure(process);
                       parentExpectation.getResults().add(result);
                     }
 
@@ -179,7 +179,7 @@ public class ExpectationUtils {
       final BiFunction<Agent, AssetGroup, T> createExpectationForAgent) {
     List<T> returnList = new ArrayList<>();
 
-    if (assetToExecute.isDirectlyLinkedToInject()) {
+    if (assetToExecute.isDirectlyLinkedToAttackChainNode()) {
       returnList.addAll(
           getExpectationForAsset(
               null, executedAgents, createExpectationForAsset, createExpectationForAgent));
@@ -207,7 +207,7 @@ public class ExpectationUtils {
    * @param executedAgents the list of executed agents
    * @param expectation the expectation details
    * @param valueTargetedAssetsMap a map of value targeted assets
-   * @param injectId the ID of the inject
+   * @param attackChainNodeId the ID of the attackChainNode
    * @return a list of prevention expectations
    */
   public static List<PreventionExpectation> getPreventionExpectationsByAsset(
@@ -216,7 +216,7 @@ public class ExpectationUtils {
       List<io.veriguard.database.model.Agent> executedAgents,
       io.veriguard.model.inject.form.Expectation expectation,
       Map<String, Endpoint> valueTargetedAssetsMap,
-      String injectId) {
+      String attackChainNodeId) {
     return getExpectations(
         assetToExecute,
         executedAgents,
@@ -239,7 +239,7 @@ public class ExpectationUtils {
                 expectation.getExpirationTime(),
                 computeSignatures(
                     implantType,
-                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getInject().getId() : injectId,
+                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getAttackChainNode().getId() : attackChainNodeId,
                     assetToExecute.asset(),
                     OAEV_IMPLANT_CALDERA.equals(implantType)
                         ? agent.getParent().getId()
@@ -255,7 +255,7 @@ public class ExpectationUtils {
    * @param executedAgents the list of executed agents
    * @param expectation the expectation details
    * @param valueTargetedAssetsMap a map of value targeted assets
-   * @param injectId the ID of the inject
+   * @param attackChainNodeId the ID of the attackChainNode
    * @return a list of detection expectations
    */
   public static List<DetectionExpectation> getDetectionExpectationsByAsset(
@@ -264,7 +264,7 @@ public class ExpectationUtils {
       List<io.veriguard.database.model.Agent> executedAgents,
       io.veriguard.model.inject.form.Expectation expectation,
       Map<String, Endpoint> valueTargetedAssetsMap,
-      String injectId) {
+      String attackChainNodeId) {
     return getExpectations(
         assetToExecute,
         executedAgents,
@@ -287,7 +287,7 @@ public class ExpectationUtils {
                 expectation.getExpirationTime(),
                 computeSignatures(
                     implantType,
-                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getInject().getId() : injectId,
+                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getAttackChainNode().getId() : attackChainNodeId,
                     assetToExecute.asset(),
                     OAEV_IMPLANT_CALDERA.equals(implantType)
                         ? agent.getParent().getId()
@@ -347,7 +347,7 @@ public class ExpectationUtils {
       List<io.veriguard.database.model.Agent> executedAgents,
       io.veriguard.model.inject.form.Expectation expectation,
       Map<String, Endpoint> valueTargetedAssetsMap,
-      @Nullable String injectId) {
+      @Nullable String attackChainNodeId) {
     return getExpectations(
         assetToExecute,
         executedAgents,
@@ -370,7 +370,7 @@ public class ExpectationUtils {
                 expectation.getExpirationTime(),
                 computeSignatures(
                     implantType,
-                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getInject().getId() : injectId,
+                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getAttackChainNode().getId() : attackChainNodeId,
                     assetToExecute.asset(),
                     OAEV_IMPLANT_CALDERA.equals(implantType)
                         ? agent.getParent().getId()
@@ -399,11 +399,11 @@ public class ExpectationUtils {
    * @param vulnerabilityResult the vulnerability assessment result string
    */
   public static void setResultExpectationVulnerable(
-      List<InjectExpectation> expectations,
-      InjectExpectationResult result,
+      List<AttackChainNodeExpectation> expectations,
+      NodeExpectationResult result,
       String vulnerabilityResult) {
 
-    for (InjectExpectation expectation : expectations) {
+    for (AttackChainNodeExpectation expectation : expectations) {
       double score =
           VULNERABILITY.successLabel.equals(vulnerabilityResult)
               ? expectation.getExpectedScore()
@@ -418,28 +418,28 @@ public class ExpectationUtils {
 
   // COMPUTE SIGNATURES
 
-  private static List<InjectExpectationSignature> computeSignatures(
+  private static List<NodeExpectationSignature> computeSignatures(
       String prefixSignature,
-      String injectId,
+      String attackChainNodeId,
       Asset sourceAsset,
       String agentId,
       Map<String, Endpoint> valueTargetedAssetsMap) {
-    List<InjectExpectationSignature> signatures = new ArrayList<>();
+    List<NodeExpectationSignature> signatures = new ArrayList<>();
 
     signatures.add(
-        new InjectExpectationSignature(
+        new NodeExpectationSignature(
             EXPECTATION_SIGNATURE_TYPE_PARENT_PROCESS_NAME,
-            prefixSignature + injectId + "-agent-" + agentId));
+            prefixSignature + attackChainNodeId + "-agent-" + agentId));
 
     getIpsFromAsset(sourceAsset)
-        .forEach(ip -> signatures.add(InjectExpectationSignature.createIpSignature(ip, false)));
+        .forEach(ip -> signatures.add(NodeExpectationSignature.createIpSignature(ip, false)));
 
     valueTargetedAssetsMap.forEach(
         (value, endpoint) -> {
           if (value.equals(endpoint.getHostname())) {
-            signatures.add(InjectExpectationSignature.createHostnameSignature(value));
+            signatures.add(NodeExpectationSignature.createHostnameSignature(value));
           } else {
-            signatures.add(InjectExpectationSignature.createIpSignature(value, true));
+            signatures.add(NodeExpectationSignature.createIpSignature(value, true));
           }
         });
 
@@ -454,20 +454,20 @@ public class ExpectationUtils {
    * <p>Filters expectations to find those belonging to individual players within the same team and
    * of the same expectation type.
    *
-   * @param injectExpectation the reference expectation to match against
+   * @param attackChainNodeExpectation the reference expectation to match against
    * @return list of matching player expectations for the team
    */
-  public static List<InjectExpectation> getExpectationsPlayersForTeam(
-      @NotNull final InjectExpectation injectExpectation) {
-    return injectExpectation.getInject().getExpectations().stream()
+  public static List<AttackChainNodeExpectation> getExpectationsPlayersForTeam(
+      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation) {
+    return attackChainNodeExpectation.getAttackChainNode().getExpectations().stream()
         .filter(ExpectationUtils::isPlayerExpectation)
-        .filter(e -> e.getTeam().getId().equals(injectExpectation.getTeam().getId()))
-        .filter(e -> e.getType().equals(injectExpectation.getType()))
-        .filter(e -> Objects.equals(e.getName(), injectExpectation.getName()))
+        .filter(e -> e.getTeam().getId().equals(attackChainNodeExpectation.getTeam().getId()))
+        .filter(e -> e.getType().equals(attackChainNodeExpectation.getType()))
+        .filter(e -> Objects.equals(e.getName(), attackChainNodeExpectation.getName()))
         .toList();
   }
 
-  private static boolean isPlayerExpectation(InjectExpectation e) {
+  private static boolean isPlayerExpectation(AttackChainNodeExpectation e) {
     return e.getUser() != null;
   }
 
@@ -479,19 +479,19 @@ public class ExpectationUtils {
    * <p>Filters to find team expectations (those with a team but no individual user) that match the
    * reference expectation's team and type.
    *
-   * @param injectExpectation the reference expectation to match against
+   * @param attackChainNodeExpectation the reference expectation to match against
    * @return list of matching team-level expectations
    */
-  public static List<InjectExpectation> getExpectationTeams(
-      @NotNull final InjectExpectation injectExpectation) {
-    return injectExpectation.getInject().getExpectations().stream()
+  public static List<AttackChainNodeExpectation> getExpectationTeams(
+      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation) {
+    return attackChainNodeExpectation.getAttackChainNode().getExpectations().stream()
         .filter(ExpectationUtils::isTeamExpectation)
-        .filter(e -> e.getTeam().getId().equals(injectExpectation.getTeam().getId()))
-        .filter(e -> e.getType().equals(injectExpectation.getType()))
+        .filter(e -> e.getTeam().getId().equals(attackChainNodeExpectation.getTeam().getId()))
+        .filter(e -> e.getType().equals(attackChainNodeExpectation.getType()))
         .toList();
   }
 
-  private static boolean isTeamExpectation(InjectExpectation e) {
+  private static boolean isTeamExpectation(AttackChainNodeExpectation e) {
     return e.getTeam() != null && e.getUser() == null;
   }
 
@@ -503,19 +503,19 @@ public class ExpectationUtils {
    * <p>Filters to find agent-level expectations (those with an agent association) that match the
    * reference expectation's asset and type.
    *
-   * @param injectExpectation the reference expectation to match against
+   * @param attackChainNodeExpectation the reference expectation to match against
    * @return list of matching agent expectations for the asset
    */
-  public static List<InjectExpectation> getExpectationsAgentsForAsset(
-      @NotNull final InjectExpectation injectExpectation) {
-    return injectExpectation.getInject().getExpectations().stream()
+  public static List<AttackChainNodeExpectation> getExpectationsAgentsForAsset(
+      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation) {
+    return attackChainNodeExpectation.getAttackChainNode().getExpectations().stream()
         .filter(ExpectationUtils::isAgentExpectation)
         .filter(
             e ->
                 e.getAsset() != null
-                    && injectExpectation.getAsset() != null
-                    && e.getAsset().getId().equals(injectExpectation.getAsset().getId()))
-        .filter(e -> e.getType().equals(injectExpectation.getType()))
+                    && attackChainNodeExpectation.getAsset() != null
+                    && e.getAsset().getId().equals(attackChainNodeExpectation.getAsset().getId()))
+        .filter(e -> e.getType().equals(attackChainNodeExpectation.getType()))
         .toList();
   }
 
@@ -525,7 +525,7 @@ public class ExpectationUtils {
    * @param e the expectation to check
    * @return {@code true} if the expectation has an agent association
    */
-  public static boolean isAgentExpectation(InjectExpectation e) {
+  public static boolean isAgentExpectation(AttackChainNodeExpectation e) {
     return e.getAgent() != null;
   }
 
@@ -537,15 +537,15 @@ public class ExpectationUtils {
    * <p>Filters to find asset expectations (those with an asset but no agent) that match the
    * reference expectation's asset and type.
    *
-   * @param injectExpectation the reference expectation to match against
+   * @param attackChainNodeExpectation the reference expectation to match against
    * @return list of matching asset-level expectations
    */
-  public static List<InjectExpectation> getExpectationsAssets(
-      @NotNull final InjectExpectation injectExpectation) {
-    return injectExpectation.getInject().getExpectations().stream()
+  public static List<AttackChainNodeExpectation> getExpectationsAssets(
+      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation) {
+    return attackChainNodeExpectation.getAttackChainNode().getExpectations().stream()
         .filter(ExpectationUtils::isAssetExpectation)
-        .filter(e -> e.getAsset().getId().equals(injectExpectation.getAsset().getId()))
-        .filter(e -> e.getType().equals(injectExpectation.getType()))
+        .filter(e -> e.getAsset().getId().equals(attackChainNodeExpectation.getAsset().getId()))
+        .filter(e -> e.getType().equals(attackChainNodeExpectation.getType()))
         .toList();
   }
 
@@ -555,22 +555,22 @@ public class ExpectationUtils {
    * <p>Filters to find asset expectations that are part of the same asset group and have the same
    * expectation type as the reference expectation.
    *
-   * @param injectExpectation the reference expectation to match against
+   * @param attackChainNodeExpectation the reference expectation to match against
    * @return list of matching asset expectations within the asset group
    */
-  public static List<InjectExpectation> getExpectationsAssetsForAssetGroup(
-      @NotNull final InjectExpectation injectExpectation) {
-    return injectExpectation.getInject().getExpectations().stream()
+  public static List<AttackChainNodeExpectation> getExpectationsAssetsForAssetGroup(
+      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation) {
+    return attackChainNodeExpectation.getAttackChainNode().getExpectations().stream()
         .filter(ExpectationUtils::isAssetExpectation)
         .filter(
             e -> {
               AssetGroup assetGroup = e.getAssetGroup();
-              AssetGroup injectGroup = injectExpectation.getAssetGroup();
+              AssetGroup attackChainNodeGroup = attackChainNodeExpectation.getAssetGroup();
               return assetGroup != null
-                  && injectGroup != null
-                  && assetGroup.getId().equals(injectGroup.getId());
+                  && attackChainNodeGroup != null
+                  && assetGroup.getId().equals(attackChainNodeGroup.getId());
             })
-        .filter(e -> e.getType().equals(injectExpectation.getType()))
+        .filter(e -> e.getType().equals(attackChainNodeExpectation.getType()))
         .toList();
   }
 
@@ -583,7 +583,7 @@ public class ExpectationUtils {
    * @param e the expectation to check
    * @return {@code true} if the expectation is asset-level (has asset, no agent)
    */
-  public static boolean isAssetExpectation(InjectExpectation e) {
+  public static boolean isAssetExpectation(AttackChainNodeExpectation e) {
     return e.getAsset() != null && e.getAgent() == null;
   }
 
@@ -595,15 +595,15 @@ public class ExpectationUtils {
    * <p>Filters to find asset group expectations (those with only an asset group, no individual
    * asset or agent) that match the reference expectation's group and type.
    *
-   * @param injectExpectation the reference expectation to match against
+   * @param attackChainNodeExpectation the reference expectation to match against
    * @return list of matching asset group-level expectations
    */
-  public static List<InjectExpectation> getExpectationAssetGroups(
-      @NotNull final InjectExpectation injectExpectation) {
-    return injectExpectation.getInject().getExpectations().stream()
+  public static List<AttackChainNodeExpectation> getExpectationAssetGroups(
+      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation) {
+    return attackChainNodeExpectation.getAttackChainNode().getExpectations().stream()
         .filter(ExpectationUtils::isAssetGroupExpectation)
-        .filter(e -> e.getAssetGroup().getId().equals(injectExpectation.getAssetGroup().getId()))
-        .filter(e -> e.getType().equals(injectExpectation.getType()))
+        .filter(e -> e.getAssetGroup().getId().equals(attackChainNodeExpectation.getAssetGroup().getId()))
+        .filter(e -> e.getType().equals(attackChainNodeExpectation.getType()))
         .toList();
   }
 
@@ -615,7 +615,7 @@ public class ExpectationUtils {
    * @param e the expectation to check
    * @return {@code true} if the expectation is asset group-level
    */
-  public static boolean isAssetGroupExpectation(InjectExpectation e) {
+  public static boolean isAssetGroupExpectation(AttackChainNodeExpectation e) {
     return e.getAssetGroup() != null && e.getAsset() == null && e.getAgent() == null;
   }
 }

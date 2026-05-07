@@ -11,7 +11,7 @@ import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.NotificationRuleRepository;
-import io.veriguard.database.repository.ScenarioRepository;
+import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.rest.notification_rule.form.CreateNotificationRuleInput;
 import io.veriguard.rest.notification_rule.form.UpdateNotificationRuleInput;
@@ -41,12 +41,12 @@ public class NotificationRuleApiTest extends IntegrationTest {
 
   @Autowired private NotificationRuleRepository notificationRuleRepository;
   @Autowired private UserRepository userRepository;
-  @Autowired private ScenarioRepository scenarioRepository;
+  @Autowired private AttackChainRepository attackChainRepository;
 
   @AfterEach
   void afterEach() {
     notificationRuleRepository.deleteAll();
-    scenarioRepository.deleteAll();
+    attackChainRepository.deleteAll();
   }
 
   @Test
@@ -55,18 +55,18 @@ public class NotificationRuleApiTest extends IntegrationTest {
   void createNotificationRule() throws Exception {
     User testUser = testUserHolder.get();
 
-    Scenario scenario = new Scenario();
-    scenario.setDescription("Test scenario");
-    scenario.setName("Test scenario");
-    scenario.setFrom("test@veriguard.io");
-    scenario = scenarioRepository.save(scenario);
+    AttackChain attackChain = new AttackChain();
+    attackChain.setDescription("Test scenario");
+    attackChain.setName("Test scenario");
+    attackChain.setFrom("test@veriguard.io");
+    attackChain = attackChainRepository.save(attackChain);
 
     CreateNotificationRuleInput input =
         CreateNotificationRuleInput.builder()
             .trigger("DIFFERENCE")
             .type("EMAIL")
             .resourceType("SCENARIO")
-            .resourceId(scenario.getId())
+            .resourceId(attackChain.getId())
             .subject("testsubject")
             .build();
     String response =

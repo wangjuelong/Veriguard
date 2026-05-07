@@ -192,7 +192,7 @@ public class CollectorService extends AbstractConnectorService<Collector, Collec
     return collectorRepository.findByPayloadId(payloadId);
   }
 
-  public List<Collector> collectorsForAtomicTesting(String injectId) {
-    return collectorRepository.findByInjectId(injectId);
+  public List<Collector> collectorsForAtomicTesting(String attackChainNodeId) {
+    return collectorRepository.findByAttackChainNodeId(attackChainNodeId);
   }
 }

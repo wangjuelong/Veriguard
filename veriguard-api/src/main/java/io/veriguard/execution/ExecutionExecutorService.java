@@ -18,7 +18,7 @@ import io.veriguard.integration.ComponentRequest;
 import io.veriguard.integration.ManagerFactory;
 import io.veriguard.rest.exception.AgentException;
 import io.veriguard.rest.inject.output.AgentsAndAssetsAgentless;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,19 +34,19 @@ public class ExecutionExecutorService {
 
   private final ManagerFactory managerFactory;
   private final ExecutionTraceRepository executionTraceRepository;
-  private final InjectService injectService;
+  private final AttackChainNodeService attackChainNodeService;
   private final ExecutorUtils executorUtils;
 
-  public void launchExecutorContext(Inject inject) {
-    InjectStatus injectStatus =
-        inject.getStatus().orElseThrow(() -> new IllegalArgumentException("Status should exist"));
-    // First, get the agents and the assets agentless of this inject
+  public void launchExecutorContext(AttackChainNode attackChainNode) {
+    AttackChainNodeStatus attackChainNodeStatus =
+        attackChainNode.getStatus().orElseThrow(() -> new IllegalArgumentException("Status should exist"));
+    // First, get the agents and the assets agentless of this attackChainNode
     AgentsAndAssetsAgentless agentsAndAssetsAgentless =
-        this.injectService.getAgentsAndAgentlessAssetsByInject(inject);
+        this.attackChainNodeService.getAgentsAndAgentlessAssetsByAttackChainNode(attackChainNode);
     Set<Agent> agents = agentsAndAssetsAgentless.agents();
     Set<Asset> assetsAgentless = agentsAndAssetsAgentless.assetsAgentless();
     // Manage agentless assets
-    saveAgentlessAssetsTraces(assetsAgentless, injectStatus);
+    saveAgentlessAssetsTraces(assetsAgentless, attackChainNodeStatus);
     // Filter each list to do something for each specific case and then remove the specific agents
     // from the main "agents" list to execute payloads at the end for the remaining "normal" agents
     Set<Agent> inactiveAgents = executorUtils.findInactiveAgents(agents);
@@ -67,30 +67,30 @@ public class ExecutionExecutorService {
 
     AtomicBoolean atLeastOneExecution = new AtomicBoolean(false);
     // Manage inactive agents
-    saveInactiveAgentsTraces(inactiveAgents, injectStatus);
+    saveInactiveAgentsTraces(inactiveAgents, attackChainNodeStatus);
     // Manage without executor agents
-    saveWithoutExecutorAgentsTraces(agentsWithoutExecutor, injectStatus);
+    saveWithoutExecutorAgentsTraces(agentsWithoutExecutor, attackChainNodeStatus);
     // Manage Crowdstrike agents for batch execution
     launchBatchExecutorContextForAgent(
-        crowdstrikeAgents, CROWDSTRIKE_EXECUTOR_NAME, inject, injectStatus, atLeastOneExecution);
+        crowdstrikeAgents, CROWDSTRIKE_EXECUTOR_NAME, attackChainNode, attackChainNodeStatus, atLeastOneExecution);
     // Manage Sentinelone agents for batch execution
     launchBatchExecutorContextForAgent(
-        sentineloneAgents, SENTINELONE_EXECUTOR_NAME, inject, injectStatus, atLeastOneExecution);
+        sentineloneAgents, SENTINELONE_EXECUTOR_NAME, attackChainNode, attackChainNodeStatus, atLeastOneExecution);
     // Manage Tanium agents for batch execution
     launchBatchExecutorContextForAgent(
-        taniumAgents, TANIUM_EXECUTOR_NAME, inject, injectStatus, atLeastOneExecution);
+        taniumAgents, TANIUM_EXECUTOR_NAME, attackChainNode, attackChainNodeStatus, atLeastOneExecution);
     // Manage Palo Alto Cortex agents for batch execution
     launchBatchExecutorContextForAgent(
-        cortexAgents, PALOALTOCORTEX_EXECUTOR_NAME, inject, injectStatus, atLeastOneExecution);
+        cortexAgents, PALOALTOCORTEX_EXECUTOR_NAME, attackChainNode, attackChainNodeStatus, atLeastOneExecution);
     // Manage remaining agents
     agents.forEach(
         agent -> {
           try {
-            launchExecutorContextForAgent(inject, agent);
+            launchExecutorContextForAgent(attackChainNode, agent);
             atLeastOneExecution.set(true);
           } catch (AgentException e) {
             log.error("launchExecutorContextForAgent error: {}", e.getMessage());
-            saveAgentErrorTrace(e, injectStatus);
+            saveAgentErrorTrace(e, attackChainNodeStatus);
           }
         });
     if (!atLeastOneExecution.get()) {
@@ -101,8 +101,8 @@ public class ExecutionExecutorService {
   private void launchBatchExecutorContextForAgent(
       Set<Agent> agents,
       String executorName,
-      Inject inject,
-      InjectStatus injectStatus,
+      AttackChainNode attackChainNode,
+      AttackChainNodeStatus attackChainNodeStatus,
       AtomicBoolean atLeastOneExecution) {
     if (!agents.isEmpty()) {
       try {
@@ -110,20 +110,20 @@ public class ExecutionExecutorService {
             managerFactory
                 .getManager()
                 .request(new ComponentRequest(executorName), ExecutorContextService.class);
-        executorContextService.launchBatchExecutorSubprocess(inject, agents, injectStatus);
+        executorContextService.launchBatchExecutorSubprocess(attackChainNode, agents, attackChainNodeStatus);
         atLeastOneExecution.set(true);
       } catch (Exception e) {
         log.error("{} launchBatchExecutorSubprocess error: {}", executorName, e.getMessage());
-        saveAgentsErrorTraces(e, agents, injectStatus);
+        saveAgentsErrorTraces(e, agents, attackChainNodeStatus);
       }
     }
   }
 
   @VisibleForTesting
-  public void saveAgentErrorTrace(AgentException e, InjectStatus injectStatus) {
+  public void saveAgentErrorTrace(AgentException e, AttackChainNodeStatus attackChainNodeStatus) {
     executionTraceRepository.save(
         new ExecutionTrace(
-            injectStatus,
+            attackChainNodeStatus,
             ExecutionTraceStatus.ERROR,
             List.of(),
             e.getMessage(),
@@ -133,13 +133,13 @@ public class ExecutionExecutorService {
   }
 
   @VisibleForTesting
-  public void saveAgentsErrorTraces(Exception e, Set<Agent> agents, InjectStatus injectStatus) {
+  public void saveAgentsErrorTraces(Exception e, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
     executionTraceRepository.saveAll(
         agents.stream()
             .map(
                 agent ->
                     new ExecutionTrace(
-                        injectStatus,
+                        attackChainNodeStatus,
                         ExecutionTraceStatus.ERROR,
                         List.of(),
                         e.getMessage(),
@@ -151,14 +151,14 @@ public class ExecutionExecutorService {
 
   @VisibleForTesting
   public void saveWithoutExecutorAgentsTraces(
-      Set<Agent> agentsWithoutExecutor, InjectStatus injectStatus) {
+      Set<Agent> agentsWithoutExecutor, AttackChainNodeStatus attackChainNodeStatus) {
     if (!agentsWithoutExecutor.isEmpty()) {
       executionTraceRepository.saveAll(
           agentsWithoutExecutor.stream()
               .map(
                   agent ->
                       new ExecutionTrace(
-                          injectStatus,
+                          attackChainNodeStatus,
                           ExecutionTraceStatus.ERROR,
                           List.of(),
                           "Cannot find the executor for the agent "
@@ -173,14 +173,14 @@ public class ExecutionExecutorService {
   }
 
   @VisibleForTesting
-  public void saveInactiveAgentsTraces(Set<Agent> inactiveAgents, InjectStatus injectStatus) {
+  public void saveInactiveAgentsTraces(Set<Agent> inactiveAgents, AttackChainNodeStatus attackChainNodeStatus) {
     if (!inactiveAgents.isEmpty()) {
       executionTraceRepository.saveAll(
           inactiveAgents.stream()
               .map(
                   agent ->
                       new ExecutionTrace(
-                          injectStatus,
+                          attackChainNodeStatus,
                           ExecutionTraceStatus.AGENT_INACTIVE,
                           List.of(),
                           "Agent "
@@ -195,14 +195,14 @@ public class ExecutionExecutorService {
   }
 
   @VisibleForTesting
-  public void saveAgentlessAssetsTraces(Set<Asset> assetsAgentless, InjectStatus injectStatus) {
+  public void saveAgentlessAssetsTraces(Set<Asset> assetsAgentless, AttackChainNodeStatus attackChainNodeStatus) {
     if (!assetsAgentless.isEmpty()) {
       executionTraceRepository.saveAll(
           assetsAgentless.stream()
               .map(
                   asset ->
                       new ExecutionTrace(
-                          injectStatus,
+                          attackChainNodeStatus,
                           ExecutionTraceStatus.ASSET_AGENTLESS,
                           List.of(asset.getId()),
                           "Asset " + asset.getName() + " has no agent, unable to launch the inject",
@@ -213,7 +213,7 @@ public class ExecutionExecutorService {
     }
   }
 
-  private void launchExecutorContextForAgent(Inject inject, Agent agent) throws AgentException {
+  private void launchExecutorContextForAgent(AttackChainNode attackChainNode, Agent agent) throws AgentException {
     try {
       Endpoint assetEndpoint = (Endpoint) Hibernate.unproxy(agent.getAsset());
       ExecutorContextService executorContextService =
@@ -222,7 +222,7 @@ public class ExecutionExecutorService {
               .request(
                   new ComponentRequest(agent.getExecutor().getName()),
                   ExecutorContextService.class);
-      executorContextService.launchExecutorSubprocess(inject, assetEndpoint, agent);
+      executorContextService.launchExecutorSubprocess(attackChainNode, assetEndpoint, agent);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       throw new AgentException("Fatal error: " + e.getMessage(), agent);

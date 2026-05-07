@@ -1,6 +1,6 @@
 package io.veriguard.model;
 
-import io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 
 /**
  * Interface representing an expectation that must be fulfilled during an injection.

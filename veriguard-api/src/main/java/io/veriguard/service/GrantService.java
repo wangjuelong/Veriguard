@@ -19,9 +19,9 @@ import org.springframework.stereotype.Service;
 public class GrantService {
 
   private final GrantRepository grantRepository;
-  private final ExerciseRepository exerciseRepository;
-  private final ScenarioRepository scenarioRepository;
-  private final InjectRepository injectRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
+  private final AttackChainRepository attackChainRepository;
+  private final AttackChainNodeRepository attackChainNodeRepository;
   private final PayloadRepository payloadRepository;
 
   public boolean hasReadGrant(@NotBlank final String resourceId, @NotNull final User user) {
@@ -57,10 +57,10 @@ public class GrantService {
     }
 
     boolean exists =
-        exerciseRepository.existsById(resourceId)
-            || scenarioRepository.existsById(resourceId)
+        attackChainRunRepository.existsById(resourceId)
+            || attackChainRepository.existsById(resourceId)
             // Atomic testings:
-            || injectRepository.existsByIdAndScenarioIsNullAndExerciseIsNull(resourceId)
+            || attackChainNodeRepository.existsByIdAndAttackChainIsNullAndAttackChainRunIsNull(resourceId)
             || payloadRepository.existsById(resourceId);
 
     if (!exists) {

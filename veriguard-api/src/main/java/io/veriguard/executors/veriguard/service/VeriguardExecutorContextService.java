@@ -19,29 +19,29 @@ public class VeriguardExecutorContextService extends ExecutorContextService {
   private final AssetAgentJobRepository assetAgentJobRepository;
 
   private String computeCommand(
-      @NotNull final Inject inject,
+      @NotNull final AttackChainNode attackChainNode,
       String agentId,
       Endpoint.PLATFORM_TYPE platform,
       Endpoint.PLATFORM_ARCH arch) {
-    Injector injector =
-        inject
-            .getInjectorContract()
-            .map(InjectorContract::getInjector)
+    NodeExecutor nodeExecutor =
+        attackChainNode
+            .getNodeContract()
+            .map(NodeContract::getNodeExecutor)
             .orElseThrow(
                 () -> new UnsupportedOperationException("Inject does not have a contract"));
 
     return switch (platform) {
       case Windows, Linux, MacOS -> {
         String executorCommandKey = platform.name() + "." + arch.name();
-        String cmd = injector.getExecutorCommands().get(executorCommandKey);
-        yield replaceArgs(platform, cmd, inject.getId(), agentId);
+        String cmd = nodeExecutor.getExecutorCommands().get(executorCommandKey);
+        yield replaceArgs(platform, cmd, attackChainNode.getId(), agentId);
       }
       default -> throw new RuntimeException("Unsupported platform: " + platform);
     };
   }
 
   public void launchExecutorSubprocess(
-      @NotNull final Inject inject,
+      @NotNull final AttackChainNode attackChainNode,
       @NotNull final Endpoint assetEndpoint,
       @NotNull final Agent agent) {
     Endpoint.PLATFORM_TYPE platform = assetEndpoint.getPlatform();
@@ -50,14 +50,14 @@ public class VeriguardExecutorContextService extends ExecutorContextService {
       throw new RuntimeException("Unsupported null platform");
     }
     AssetAgentJob assetAgentJob = new AssetAgentJob();
-    assetAgentJob.setCommand(computeCommand(inject, agent.getId(), platform, arch));
+    assetAgentJob.setCommand(computeCommand(attackChainNode, agent.getId(), platform, arch));
     assetAgentJob.setAgent(agent);
-    assetAgentJob.setInject(inject);
+    assetAgentJob.setAttackChainNode(attackChainNode);
     assetAgentJobRepository.save(assetAgentJob);
   }
 
   public List<Agent> launchBatchExecutorSubprocess(
-      Inject inject, Set<Agent> agents, InjectStatus injectStatus) {
+      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
     return new ArrayList<>();
   }
 }

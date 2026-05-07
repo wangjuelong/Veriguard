@@ -1,8 +1,8 @@
 package io.veriguard.service;
 
 import static io.veriguard.config.SessionHelper.currentUser;
-import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS;
-import static io.veriguard.database.model.InjectorContract.PREDEFINED_EXPECTATIONS;
+import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS;
+import static io.veriguard.database.model.NodeContract.PREDEFINED_EXPECTATIONS;
 import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
 import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationCriteriaBuilder;
@@ -14,13 +14,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.database.specification.InjectSpecification;
+import io.veriguard.database.specification.AttackChainNodeSpecification;
 import io.veriguard.database.specification.SpecificationUtils;
 import io.veriguard.injector_contract.fields.ContractFieldType;
 import io.veriguard.rest.atomic_testing.form.*;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.inject.service.InjectService;
-import io.veriguard.utils.mapper.InjectMapper;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.utils.mapper.AttackChainNodeMapper;
 import io.veriguard.utils.mapper.PayloadMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import jakarta.annotation.Resource;
@@ -42,120 +42,120 @@ import org.springframework.stereotype.Service;
 public class AtomicTestingService {
 
   @Resource protected ObjectMapper mapper;
-  private final InjectMapper injectMapper;
+  private final AttackChainNodeMapper attackChainNodeMapper;
 
   private final AssetGroupRepository assetGroupRepository;
   private final AssetRepository assetRepository;
   private final PayloadMapper payloadMapper;
-  private final InjectRepository injectRepository;
-  private final InjectorContractRepository injectorContractRepository;
+  private final AttackChainNodeRepository attackChainNodeRepository;
+  private final NodeContractRepository nodeContractRepository;
   private final UserRepository userRepository;
   private final TeamRepository teamRepository;
   private final TagRepository tagRepository;
   private final DocumentRepository documentRepository;
   private final AssetGroupService assetGroupService;
   private final UserService userService;
-  private final InjectSearchService injectSearchService;
-  private final InjectService injectService;
+  private final AttackChainNodeSearchService attackChainNodeSearchService;
+  private final AttackChainNodeService attackChainNodeService;
   private final GrantService grantService;
-  private final InjectDocumentRepository injectDocumentRepository;
+  private final AttackChainNodeDocumentRepository attackChainNodeDocumentRepository;
 
   // -- CRUD --
 
-  public InjectResultOverviewOutput findById(String injectId) {
-    Optional<Inject> inject = injectRepository.findWithStatusById(injectId);
+  public AttackChainNodeResultOverviewOutput findById(String attackChainNodeId) {
+    Optional<AttackChainNode> attackChainNode = attackChainNodeRepository.findWithStatusById(attackChainNodeId);
 
-    if (inject.isPresent()) {
+    if (attackChainNode.isPresent()) {
       List<AssetGroup> computedAssetGroup =
-          inject.get().getAssetGroups().stream()
+          attackChainNode.get().getAssetGroups().stream()
               .map(assetGroupService::computeDynamicAssets)
               .toList();
-      inject.get().getAssetGroups().clear();
-      inject.get().getAssetGroups().addAll(computedAssetGroup);
+      attackChainNode.get().getAssetGroups().clear();
+      attackChainNode.get().getAssetGroups().addAll(computedAssetGroup);
     }
-    return inject
-        .map(injectMapper::toInjectResultOverviewOutput)
+    return attackChainNode
+        .map(attackChainNodeMapper::toAttackChainNodeResultOverviewOutput)
         .orElseThrow(ElementNotFoundException::new);
   }
 
-  public StatusPayloadOutput findPayloadOutputByInjectId(String injectId) {
-    Optional<Inject> inject = injectRepository.findById(injectId);
-    return payloadMapper.getStatusPayloadOutputFromInject(inject);
+  public StatusPayloadOutput findPayloadOutputByAttackChainNodeId(String attackChainNodeId) {
+    Optional<AttackChainNode> attackChainNode = attackChainNodeRepository.findById(attackChainNodeId);
+    return payloadMapper.getStatusPayloadOutputFromAttackChainNode(attackChainNode);
   }
 
   @Transactional
-  public InjectResultOverviewOutput createOrUpdate(AtomicTestingInput input, String injectId) {
-    Inject injectToSave = new Inject();
-    if (injectId != null) {
-      injectToSave = injectRepository.findById(injectId).orElseThrow();
+  public AttackChainNodeResultOverviewOutput createOrUpdate(AtomicTestingInput input, String attackChainNodeId) {
+    AttackChainNode attackChainNodeToSave = new AttackChainNode();
+    if (attackChainNodeId != null) {
+      attackChainNodeToSave = attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
     }
 
-    InjectorContract injectorContract =
-        injectorContractRepository
-            .findById(input.getInjectorContract())
+    NodeContract nodeContract =
+        nodeContractRepository
+            .findById(input.getNodeContract())
             .orElseThrow(ElementNotFoundException::new);
     ObjectNode finalContent = input.getContent();
     // Set expectations
-    if (injectId == null) {
-      finalContent = setExpectations(input, injectorContract, finalContent);
+    if (attackChainNodeId == null) {
+      finalContent = setExpectations(input, nodeContract, finalContent);
     }
-    injectToSave.setTitle(input.getTitle());
-    injectToSave.setContent(finalContent);
-    injectToSave.setInjectorContract(injectorContract);
-    injectToSave.setAllTeams(input.isAllTeams());
-    injectToSave.setDescription(input.getDescription());
-    injectToSave.setDependsDuration(0L);
-    injectToSave.setUser(
+    attackChainNodeToSave.setTitle(input.getTitle());
+    attackChainNodeToSave.setContent(finalContent);
+    attackChainNodeToSave.setNodeContract(nodeContract);
+    attackChainNodeToSave.setAllTeams(input.isAllTeams());
+    attackChainNodeToSave.setDescription(input.getDescription());
+    attackChainNodeToSave.setDependsDuration(0L);
+    attackChainNodeToSave.setUser(
         userRepository
             .findById(currentUser().getId())
             .orElseThrow(() -> new ElementNotFoundException("Current user not found")));
-    injectToSave.setExercise(null);
+    attackChainNodeToSave.setAttackChainRun(null);
 
     // Set dependencies
-    injectToSave.setTeams(fromIterable(teamRepository.findAllById(input.getTeams())));
-    injectToSave.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
-    injectToSave.setAssets(fromIterable(this.assetRepository.findAllById(input.getAssets())));
-    injectToSave.setAssetGroups(
+    attackChainNodeToSave.setTeams(fromIterable(teamRepository.findAllById(input.getTeams())));
+    attackChainNodeToSave.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+    attackChainNodeToSave.setAssets(fromIterable(this.assetRepository.findAllById(input.getAssets())));
+    attackChainNodeToSave.setAssetGroups(
         fromIterable(this.assetGroupRepository.findAllById(input.getAssetGroups())));
 
-    injectToSave.getDocuments().clear();
+    attackChainNodeToSave.getDocuments().clear();
 
-    Inject finalInjectToSave = injectToSave;
+    AttackChainNode finalAttackChainNodeToSave = attackChainNodeToSave;
     input
         .getDocuments()
         .forEach(
             i -> {
-              InjectDocumentId injectDocumentId = new InjectDocumentId();
-              injectDocumentId.setInjectId(finalInjectToSave.getId());
-              injectDocumentId.setDocumentId(i.getDocumentId());
-              InjectDocument injectDocument =
-                  injectDocumentRepository.findById(injectDocumentId).orElse(new InjectDocument());
-              if (injectDocument.getInject() == null) {
-                injectDocument.setCompositeId(injectDocumentId);
-                injectDocument.setInject(finalInjectToSave);
-                injectDocument.setDocument(
+              AttackChainNodeDocumentId attackChainNodeDocumentId = new AttackChainNodeDocumentId();
+              attackChainNodeDocumentId.setAttackChainNodeId(finalAttackChainNodeToSave.getId());
+              attackChainNodeDocumentId.setDocumentId(i.getDocumentId());
+              AttackChainNodeDocument attackChainNodeDocument =
+                  attackChainNodeDocumentRepository.findById(attackChainNodeDocumentId).orElse(new AttackChainNodeDocument());
+              if (attackChainNodeDocument.getAttackChainNode() == null) {
+                attackChainNodeDocument.setCompositeId(attackChainNodeDocumentId);
+                attackChainNodeDocument.setAttackChainNode(finalAttackChainNodeToSave);
+                attackChainNodeDocument.setDocument(
                     documentRepository.findById(i.getDocumentId()).orElseThrow());
               }
-              injectDocument.setAttached(i.isAttached());
-              finalInjectToSave
+              attackChainNodeDocument.setAttached(i.isAttached());
+              finalAttackChainNodeToSave
                   .getDocuments()
                   .add(
-                      injectId == null
-                          ? injectDocument
-                          : injectDocumentRepository.save(injectDocument));
+                      attackChainNodeId == null
+                          ? attackChainNodeDocument
+                          : attackChainNodeDocumentRepository.save(attackChainNodeDocument));
             });
 
-    injectToSave = injectRepository.save(injectToSave);
-    return injectMapper.toInjectResultOverviewOutput(injectToSave);
+    attackChainNodeToSave = attackChainNodeRepository.save(attackChainNodeToSave);
+    return attackChainNodeMapper.toAttackChainNodeResultOverviewOutput(attackChainNodeToSave);
   }
 
   private ObjectNode setExpectations(
-      AtomicTestingInput input, InjectorContract injectorContract, ObjectNode finalContent) {
+      AtomicTestingInput input, NodeContract nodeContract, ObjectNode finalContent) {
     if (input.getContent() == null
         || input.getContent().get(CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS) == null
         || input.getContent().get(CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS).isEmpty()) {
       try {
-        JsonNode jsonNode = mapper.readTree(injectorContract.getContent());
+        JsonNode jsonNode = mapper.readTree(nodeContract.getContent());
         List<JsonNode> contractElements =
             StreamSupport.stream(jsonNode.get("fields").spliterator(), false)
                 .filter(
@@ -196,36 +196,36 @@ public class AtomicTestingService {
   }
 
   @Transactional
-  public InjectResultOverviewOutput updateAtomicTestingTags(
-      String injectId, AtomicTestingUpdateTagsInput input) {
+  public AttackChainNodeResultOverviewOutput updateAtomicTestingTags(
+      String attackChainNodeId, AtomicTestingUpdateTagsInput input) {
 
-    Inject inject = injectRepository.findById(injectId).orElseThrow();
-    inject.setTags(iterableToSet(this.tagRepository.findAllById(input.getTagIds())));
+    AttackChainNode attackChainNode = attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
+    attackChainNode.setTags(iterableToSet(this.tagRepository.findAllById(input.getTagIds())));
 
-    Inject saved = injectRepository.save(inject);
-    return injectMapper.toInjectResultOverviewOutput(saved);
+    AttackChainNode saved = attackChainNodeRepository.save(attackChainNode);
+    return attackChainNodeMapper.toAttackChainNodeResultOverviewOutput(saved);
   }
 
-  public void deleteAtomicTesting(String injectId) {
-    injectService.delete(injectId);
+  public void deleteAtomicTesting(String attackChainNodeId) {
+    attackChainNodeService.delete(attackChainNodeId);
   }
 
   // -- ACTIONS --
 
-  public InjectResultOverviewOutput duplicate(String id) {
-    return injectService.duplicate(id);
+  public AttackChainNodeResultOverviewOutput duplicate(String id) {
+    return attackChainNodeService.duplicate(id);
   }
 
-  public InjectResultOverviewOutput launch(String id) {
-    return injectService.launch(id);
+  public AttackChainNodeResultOverviewOutput launch(String id) {
+    return attackChainNodeService.launch(id);
   }
 
   @Transactional
-  public InjectResultOverviewOutput relaunch(String id) {
+  public AttackChainNodeResultOverviewOutput relaunch(String id) {
     // Relaunching an atomic testing is considered as creating a new one.
     // Therefore, any grants created on the current atomic testing will have to be updated with the
     // new ID
-    InjectResultOverviewOutput relaunched = injectService.relaunch(id);
+    AttackChainNodeResultOverviewOutput relaunched = attackChainNodeService.relaunch(id);
     grantService.updateGrantsForNewResource(
         id, relaunched.getId(), Grant.GRANT_RESOURCE_TYPE.ATOMIC_TESTING);
     return relaunched;
@@ -234,23 +234,23 @@ public class AtomicTestingService {
   // -- PAGINATION --
 
   /**
-   * Search atomic testings with pagination and filtering. Atomic testings are injects that are not
-   * part of any scenario or exercise (both fields are null). The search only fetches data according
+   * Search atomic testings with pagination and filtering. Atomic testings are attackChainNodes that are not
+   * part of any attackChain or attackChainRun (both fields are null). The search only fetches data according
    * to user permissions via the grant system.
    *
    * @param searchPaginationInput Pagination and filtering parameters
    * @return A paginated list of atomic testing results
    */
-  public Page<InjectResultOutput> searchAtomicTestingsForCurrentUser(
+  public Page<AttackChainNodeResultOutput> searchAtomicTestingsForCurrentUser(
       @NotNull final SearchPaginationInput searchPaginationInput) {
     Map<String, Join<Base, Base>> joinMap = new HashMap<>();
 
-    // Atomic testings are injects where scenario and exercise are null. They are also subject to
+    // Atomic testings are attackChainNodes where attackChain and attackChainRun are null. They are also subject to
     // the grant system.
     User currentUser = userService.currentUser();
 
-    Specification<Inject> customSpec =
-        Specification.where(InjectSpecification.isAtomicTesting())
+    Specification<AttackChainNode> customSpec =
+        Specification.where(AttackChainNodeSpecification.isAtomicTesting())
             .and(
                 SpecificationUtils.hasGrantAccess(
                     currentUser.getId(),
@@ -259,16 +259,16 @@ public class AtomicTestingService {
                     Grant.GRANT_TYPE.OBSERVER));
 
     return buildPaginationCriteriaBuilder(
-        (Specification<Inject> specification,
-            Specification<Inject> specificationCount,
+        (Specification<AttackChainNode> specification,
+            Specification<AttackChainNode> specificationCount,
             Pageable pageable) ->
-            injectSearchService.injectResults(
+            attackChainNodeSearchService.attackChainNodeResults(
                 customSpec.and(specification),
                 customSpec.and(specificationCount),
                 pageable,
                 joinMap),
         searchPaginationInput,
-        Inject.class,
+        AttackChainNode.class,
         joinMap);
   }
 }

@@ -74,7 +74,7 @@ public class Communication implements Base {
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("communication_inject")
   @Schema(type = "string")
-  private Inject inject;
+  private AttackChainNode attackChainNode;
 
   @ArraySchema(schema = @Schema(type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
@@ -129,8 +129,8 @@ public class Communication implements Base {
     return contentHtml;
   }
 
-  public Inject getInject() {
-    return inject;
+  public AttackChainNode getAttackChainNode() {
+    return attackChainNode;
   }
 
   public List<User> getUsers() {
@@ -162,20 +162,20 @@ public class Communication implements Base {
   }
 
   @JsonProperty("communication_exercise")
-  public String getExercise() {
-    if (this.inject == null || this.inject.getExercise() == null) {
+  public String getAttackChainRun() {
+    if (this.attackChainNode == null || this.attackChainNode.getAttackChainRun() == null) {
       return StringUtils.EMPTY;
     }
-    return this.inject.getExercise().getId();
+    return this.attackChainNode.getAttackChainRun().getId();
   }
 
   @JsonIgnore
   @Override
   public boolean isUserHasAccess(User user) {
-    Inject inject = getInject();
+    AttackChainNode attackChainNode = getAttackChainNode();
     return user.isAdmin()
         || getUsers().contains(user)
-        || (inject != null && inject.isUserHasAccess(user));
+        || (attackChainNode != null && attackChainNode.isUserHasAccess(user));
   }
 
   @Override

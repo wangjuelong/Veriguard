@@ -1,8 +1,8 @@
 package io.veriguard.utils.mockMapper;
 
 import io.veriguard.database.model.ImportMapper;
-import io.veriguard.database.model.InjectImporter;
-import io.veriguard.database.model.InjectorContract;
+import io.veriguard.database.model.AttackChainNodeImporter;
+import io.veriguard.database.model.NodeContract;
 import io.veriguard.database.model.RuleAttribute;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -17,25 +17,25 @@ public class MockMapperUtils {
     importMapper.setName("Test");
     importMapper.setUpdateDate(Instant.now());
     importMapper.setCreationDate(Instant.now());
-    importMapper.setInjectTypeColumn("A");
-    importMapper.setInjectImporters(new ArrayList<>());
+    importMapper.setAttackChainNodeTypeColumn("A");
+    importMapper.setAttackChainNodeImporters(new ArrayList<>());
 
-    importMapper.getInjectImporters().add(createInjectImporter());
+    importMapper.getAttackChainNodeImporters().add(createAttackChainNodeImporter());
 
     return importMapper;
   }
 
-  public static InjectImporter createInjectImporter() {
-    InjectImporter injectImporter = new InjectImporter();
-    injectImporter.setId(UUID.randomUUID().toString());
-    injectImporter.setImportTypeValue("Test");
-    InjectorContract injectorContract = new InjectorContract();
-    injectorContract.setId(UUID.randomUUID().toString());
-    injectImporter.setInjectorContract(injectorContract);
-    injectImporter.setRuleAttributes(new ArrayList<>());
+  public static AttackChainNodeImporter createAttackChainNodeImporter() {
+    AttackChainNodeImporter attackChainNodeImporter = new AttackChainNodeImporter();
+    attackChainNodeImporter.setId(UUID.randomUUID().toString());
+    attackChainNodeImporter.setImportTypeValue("Test");
+    NodeContract nodeContract = new NodeContract();
+    nodeContract.setId(UUID.randomUUID().toString());
+    attackChainNodeImporter.setNodeContract(nodeContract);
+    attackChainNodeImporter.setRuleAttributes(new ArrayList<>());
 
-    injectImporter.getRuleAttributes().add(createRuleAttribute());
-    return injectImporter;
+    attackChainNodeImporter.getRuleAttributes().add(createRuleAttribute());
+    return attackChainNodeImporter;
   }
 
   public static RuleAttribute createRuleAttribute() {

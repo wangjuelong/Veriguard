@@ -8,7 +8,7 @@ import lombok.Getter;
  * <p>This exception indicates a fatal condition that prevents the application from starting
  * correctly. When thrown during initialization, it typically causes the application to terminate.
  *
- * <p>Common scenarios:
+ * <p>Common attackChains:
  *
  * <ul>
  *   <li>Required external services are unavailable (database, message queue, search engine)

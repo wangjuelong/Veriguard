@@ -4,7 +4,7 @@ import static io.veriguard.config.AppConfig.MANDATORY_MESSAGE;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.injector_contract.form.InjectorContractDomainDTO;
+import io.veriguard.rest.injector_contract.form.NodeContractDomainDTO;
 import io.veriguard.rest.payload.output_parser.OutputParserInput;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -49,9 +49,9 @@ public class PayloadUpsertInput {
 
   @JsonProperty("payload_expectations")
   @NotNull
-  private InjectExpectation.EXPECTATION_TYPE[] expectations =
-      new InjectExpectation.EXPECTATION_TYPE[] {
-        InjectExpectation.EXPECTATION_TYPE.PREVENTION, InjectExpectation.EXPECTATION_TYPE.DETECTION
+  private AttackChainNodeExpectation.EXPECTATION_TYPE[] expectations =
+      new AttackChainNodeExpectation.EXPECTATION_TYPE[] {
+        AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION, AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION
       };
 
   @JsonProperty("payload_description")
@@ -108,5 +108,5 @@ public class PayloadUpsertInput {
   @NotNull(message = MANDATORY_MESSAGE)
   @JsonProperty("payload_domains")
   @Schema(description = "Update list of domains")
-  private Set<InjectorContractDomainDTO> domains = new HashSet<>();
+  private Set<NodeContractDomainDTO> domains = new HashSet<>();
 }

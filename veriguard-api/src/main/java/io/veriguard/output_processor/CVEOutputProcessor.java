@@ -6,7 +6,7 @@ import io.veriguard.database.model.ContractOutputTechnicalType;
 import io.veriguard.database.model.ContractOutputType;
 import io.veriguard.rest.finding.FindingService;
 import io.veriguard.rest.inject.service.ExecutionProcessingContext;
-import io.veriguard.service.InjectExpectationService;
+import io.veriguard.service.AttackChainNodeExpectationService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,10 +20,10 @@ public class CVEOutputProcessor extends FindingCapableOutputProcessor {
   private static final String HOST = "host";
   private static final String SEVERITY = "severity";
 
-  private final InjectExpectationService injectExpectationService;
+  private final AttackChainNodeExpectationService attackChainNodeExpectationService;
 
   public CVEOutputProcessor(
-      FindingService findingService, InjectExpectationService injectExpectationService) {
+      FindingService findingService, AttackChainNodeExpectationService attackChainNodeExpectationService) {
     super(
         ContractOutputType.CVE,
         ContractOutputTechnicalType.Object,
@@ -33,7 +33,7 @@ public class CVEOutputProcessor extends FindingCapableOutputProcessor {
             new ContractOutputField(HOST, ContractOutputTechnicalType.Text, true),
             new ContractOutputField(SEVERITY, ContractOutputTechnicalType.Text, true)),
         findingService);
-    this.injectExpectationService = injectExpectationService;
+    this.attackChainNodeExpectationService = attackChainNodeExpectationService;
   }
 
   @Override
@@ -45,7 +45,7 @@ public class CVEOutputProcessor extends FindingCapableOutputProcessor {
   @Override
   protected void afterFindings(
       ExecutionProcessingContext executionContext, JsonNode structuredOutputNode) {
-    injectExpectationService.matchesVulnerabilityExpectations(
+    attackChainNodeExpectationService.matchesVulnerabilityExpectations(
         executionContext, structuredOutputNode);
   }
 

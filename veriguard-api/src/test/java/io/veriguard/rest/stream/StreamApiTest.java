@@ -15,7 +15,7 @@ import io.veriguard.database.model.*;
 import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.PermissionService;
 import io.veriguard.service.UserService;
-import io.veriguard.utils.fixtures.ScenarioFixture;
+import io.veriguard.utils.fixtures.AttackChainFixture;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
@@ -65,7 +65,7 @@ public class StreamApiTest {
     mapperField.setAccessible(true);
     mapperField.set(streamApi, mapper);
 
-    // inject into consumers using reflection
+    // attackChainNode into consumers using reflection
     Field consumersField = StreamApi.class.getDeclaredField("consumers");
     consumersField.setAccessible(true);
     Map<String, Tuple2<VeriguardPrincipal, FluxSink<Object>>> consumers =
@@ -81,9 +81,9 @@ public class StreamApiTest {
             mockUser, Optional.empty(), RESOURCE_ID, ResourceType.SCENARIO, Action.READ))
         .thenReturn(true);
 
-    Scenario scenario = ScenarioFixture.getScenario();
-    scenario.setId(RESOURCE_ID);
-    BaseEvent event = new BaseEvent(DATA_UPDATE, scenario, mock(ObjectMapper.class));
+    AttackChain attackChain = AttackChainFixture.getAttackChain();
+    attackChain.setId(RESOURCE_ID);
+    BaseEvent event = new BaseEvent(DATA_UPDATE, attackChain, mock(ObjectMapper.class));
 
     // call the method
     streamApi.listenDatabaseUpdate(event);
@@ -95,8 +95,8 @@ public class StreamApiTest {
     ServerSentEvent<?> serverSentEvent = captor.getValue();
     BaseEvent baseEventCaptured = (BaseEvent) serverSentEvent.data();
     assertEquals(event.getType(), baseEventCaptured.getType());
-    assertTrue(baseEventCaptured.getInstance() instanceof Scenario);
-    assertEquals(scenario.getId(), ((Scenario) baseEventCaptured.getInstance()).getId());
+    assertTrue(baseEventCaptured.getInstance() instanceof AttackChain);
+    assertEquals(attackChain.getId(), ((AttackChain) baseEventCaptured.getInstance()).getId());
   }
 
   @Test
@@ -109,9 +109,9 @@ public class StreamApiTest {
             mockUser, Optional.empty(), RESOURCE_ID, ResourceType.SCENARIO, Action.READ))
         .thenReturn(false);
 
-    Scenario scenario = ScenarioFixture.getScenario();
-    scenario.setId(RESOURCE_ID);
-    BaseEvent event = new BaseEvent(DATA_UPDATE, scenario, mock(ObjectMapper.class));
+    AttackChain attackChain = AttackChainFixture.getAttackChain();
+    attackChain.setId(RESOURCE_ID);
+    BaseEvent event = new BaseEvent(DATA_UPDATE, attackChain, mock(ObjectMapper.class));
 
     // call the method
     streamApi.listenDatabaseUpdate(event);
@@ -123,8 +123,8 @@ public class StreamApiTest {
     ServerSentEvent<?> serverSentEvent = captor.getValue();
     BaseEvent baseEventCaptured = (BaseEvent) serverSentEvent.data();
     assertEquals(DATA_DELETE, baseEventCaptured.getType());
-    assertTrue(baseEventCaptured.getInstance() instanceof Scenario);
-    assertEquals(scenario.getId(), ((Scenario) baseEventCaptured.getInstance()).getId());
+    assertTrue(baseEventCaptured.getInstance() instanceof AttackChain);
+    assertEquals(attackChain.getId(), ((AttackChain) baseEventCaptured.getInstance()).getId());
   }
 
   @Test

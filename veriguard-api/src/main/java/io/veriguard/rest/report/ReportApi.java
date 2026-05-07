@@ -2,10 +2,10 @@ package io.veriguard.rest.report;
 
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.exercise.service.ExerciseService;
+import io.veriguard.rest.exercise.service.AttackChainRunService;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.service.InjectService;
-import io.veriguard.rest.report.form.ReportInjectCommentInput;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.report.form.ReportAttackChainNodeCommentInput;
 import io.veriguard.rest.report.form.ReportInput;
 import io.veriguard.rest.report.model.Report;
 import io.veriguard.rest.report.service.ReportService;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ReportApi extends RestBehavior {
 
-  private final ExerciseService exerciseService;
+  private final AttackChainRunService attackChainRunService;
   private final ReportService reportService;
-  private final InjectService injectService;
+  private final AttackChainNodeService attackChainNodeService;
 
   @GetMapping("/api/reports/{reportId}")
   @RBAC(
@@ -48,7 +48,7 @@ public class ReportApi extends RestBehavior {
             responseCode = "404",
             description = "Report doesn't exist or not linked to the simulation")
       })
-  public Report reportFromSimulationExercise(
+  public Report reportFromSimulationAttackChainRun(
       @PathVariable String simulationId, @PathVariable String reportId) {
     return this.reportService.reportFromSimulation(simulationId, UUID.fromString(reportId));
   }
@@ -58,8 +58,8 @@ public class ReportApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
-  public Iterable<Report> exerciseReports(@PathVariable String exerciseId) {
-    return this.reportService.reportsFromExercise(exerciseId);
+  public Iterable<Report> attackChainRunReports(@PathVariable String attackChainRunId) {
+    return this.reportService.reportsFromAttackChainRun(attackChainRunId);
   }
 
   @PostMapping("/api/exercises/{exerciseId}/reports")
@@ -68,11 +68,11 @@ public class ReportApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public Report createExerciseReport(
-      @PathVariable String exerciseId, @Valid @RequestBody ReportInput input) {
-    Exercise exercise = this.exerciseService.exercise(exerciseId);
+  public Report createAttackChainRunReport(
+      @PathVariable String attackChainRunId, @Valid @RequestBody ReportInput input) {
+    AttackChainRun attackChainRun = this.attackChainRunService.attackChainRun(attackChainRunId);
     Report report = new Report();
-    report.setExercise(exercise);
+    report.setAttackChainRun(attackChainRun);
     return this.reportService.updateReport(report, input);
   }
 
@@ -82,15 +82,15 @@ public class ReportApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public Report updateReportInjectComment(
-      @PathVariable String exerciseId,
+  public Report updateReportAttackChainNodeComment(
+      @PathVariable String attackChainRunId,
       @PathVariable String reportId,
-      @Valid @RequestBody ReportInjectCommentInput input) {
+      @Valid @RequestBody ReportAttackChainNodeCommentInput input) {
     Report report = this.reportService.report(UUID.fromString(reportId));
-    assert exerciseId.equals(report.getExercise().getId());
-    Inject inject = this.injectService.inject(input.getInjectId());
-    assert exerciseId.equals(inject.getExercise().getId());
-    return this.reportService.updateReportInjectComment(report, inject, input);
+    assert attackChainRunId.equals(report.getAttackChainRun().getId());
+    AttackChainNode attackChainNode = this.attackChainNodeService.attackChainNode(input.getAttackChainNodeId());
+    assert attackChainRunId.equals(attackChainNode.getAttackChainRun().getId());
+    return this.reportService.updateReportAttackChainNodeComment(report, attackChainNode, input);
   }
 
   @PutMapping("/api/exercises/{exerciseId}/reports/{reportId}")
@@ -99,12 +99,12 @@ public class ReportApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public Report updateExerciseReport(
-      @PathVariable String exerciseId,
+  public Report updateAttackChainRunReport(
+      @PathVariable String attackChainRunId,
       @PathVariable String reportId,
       @Valid @RequestBody ReportInput input) {
     Report report = this.reportService.report(UUID.fromString(reportId));
-    assert exerciseId.equals(report.getExercise().getId());
+    assert attackChainRunId.equals(report.getAttackChainRun().getId());
     return this.reportService.updateReport(report, input);
   }
 
@@ -114,9 +114,9 @@ public class ReportApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public void deleteExerciseReport(@PathVariable String exerciseId, @PathVariable String reportId) {
+  public void deleteAttackChainRunReport(@PathVariable String attackChainRunId, @PathVariable String reportId) {
     Report report = this.reportService.report(UUID.fromString(reportId));
-    assert exerciseId.equals(report.getExercise().getId());
+    assert attackChainRunId.equals(report.getAttackChainRun().getId());
     this.reportService.deleteReport(UUID.fromString(reportId));
   }
 }

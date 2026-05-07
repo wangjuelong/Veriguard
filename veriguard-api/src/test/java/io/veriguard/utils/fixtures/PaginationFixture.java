@@ -1,7 +1,7 @@
 package io.veriguard.utils.fixtures;
 
 import io.veriguard.database.model.Filters;
-import io.veriguard.rest.injector_contract.input.InjectorContractSearchPaginationInput;
+import io.veriguard.rest.injector_contract.input.NodeContractSearchPaginationInput;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ public class PaginationFixture {
     return SearchPaginationInput.builder().page(0).size(10);
   }
 
-  public static InjectorContractSearchPaginationInput getOptioned() {
-    InjectorContractSearchPaginationInput si = new InjectorContractSearchPaginationInput();
+  public static NodeContractSearchPaginationInput getOptioned() {
+    NodeContractSearchPaginationInput si = new NodeContractSearchPaginationInput();
     si.setPage(0);
     si.setSize(10);
     return si;
@@ -45,7 +45,7 @@ public class PaginationFixture {
     return getDefault().filterGroup(filterGroup).build();
   }
 
-  public static InjectorContractSearchPaginationInput optionedSearchWithAndOperator(
+  public static NodeContractSearchPaginationInput optionedSearchWithAndOperator(
       String key, String value, Filters.FilterOperator operator) {
     Filters.Filter filter = new Filters.Filter();
     filter.setKey(key);
@@ -54,12 +54,12 @@ public class PaginationFixture {
     Filters.FilterGroup filterGroup = new Filters.FilterGroup();
     filterGroup.setMode(Filters.FilterMode.and);
     filterGroup.setFilters(new ArrayList<>(List.of(filter)));
-    InjectorContractSearchPaginationInput si = getOptioned();
+    NodeContractSearchPaginationInput si = getOptioned();
     si.setFilterGroup(filterGroup);
     return si;
   }
 
-  public static InjectorContractSearchPaginationInput optionedSearchWithOrOperator(
+  public static NodeContractSearchPaginationInput optionedSearchWithOrOperator(
       String key, String value, Filters.FilterOperator operator) {
     Filters.Filter filter = new Filters.Filter();
     filter.setKey(key);
@@ -68,7 +68,7 @@ public class PaginationFixture {
     Filters.FilterGroup filterGroup = new Filters.FilterGroup();
     filterGroup.setMode(Filters.FilterMode.or);
     filterGroup.setFilters(new ArrayList<>(List.of(filter)));
-    InjectorContractSearchPaginationInput si = getOptioned();
+    NodeContractSearchPaginationInput si = getOptioned();
     si.setFilterGroup(filterGroup);
     return si;
   }

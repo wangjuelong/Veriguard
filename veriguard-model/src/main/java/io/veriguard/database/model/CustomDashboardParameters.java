@@ -23,7 +23,7 @@ public class CustomDashboardParameters implements Base {
     timeRange("timeRange", false, true),
     startDate("startDate", false, true),
     endDate("endDate", false, true),
-    scenario("scenario", true, false);
+    attackChain("scenario", true, false);
 
     public final String name;
     public final boolean isInstance;

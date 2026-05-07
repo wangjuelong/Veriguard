@@ -81,7 +81,7 @@ public class Document implements Base {
       inverseJoinColumns = @JoinColumn(name = "exercise_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
   @JsonProperty("document_exercises")
-  private Set<Exercise> exercises = new HashSet<>();
+  private Set<AttackChainRun> attackChainRuns = new HashSet<>();
 
   @ArraySchema(schema = @Schema(type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
@@ -91,11 +91,11 @@ public class Document implements Base {
       inverseJoinColumns = @JoinColumn(name = "scenario_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
   @JsonProperty("document_scenarios")
-  private Set<Scenario> scenarios = new HashSet<>();
+  private Set<AttackChain> attackChains = new HashSet<>();
 
   @OneToMany(mappedBy = "document", fetch = FetchType.LAZY)
   @JsonIgnore
-  private Set<InjectDocument> injectDocuments = new HashSet<>();
+  private Set<AttackChainNodeDocument> attackChainNodeDocuments = new HashSet<>();
 
   @OneToMany(mappedBy = "fileDropFile", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JsonIgnore
@@ -115,11 +115,11 @@ public class Document implements Base {
 
   @OneToMany(mappedBy = "logoDark", fetch = FetchType.LAZY)
   @JsonIgnore
-  private Set<Exercise> simulationsByLogoDark = new HashSet<>();
+  private Set<AttackChainRun> simulationsByLogoDark = new HashSet<>();
 
   @OneToMany(mappedBy = "logoLight", fetch = FetchType.LAZY)
   @JsonIgnore
-  private Set<Exercise> simulationsByLogoLight = new HashSet<>();
+  private Set<AttackChainRun> simulationsByLogoLight = new HashSet<>();
 
   @Getter(onMethod_ = @JsonIgnore)
   @Transient
@@ -130,8 +130,8 @@ public class Document implements Base {
     if (user.isAdmin()) {
       return true;
     }
-    return exercises.stream().anyMatch(exercise -> exercise.isUserHasAccess(user))
-        || scenarios.stream().anyMatch(scenario -> scenario.isUserHasAccess(user));
+    return attackChainRuns.stream().anyMatch(attackChainRun -> attackChainRun.isUserHasAccess(user))
+        || attackChains.stream().anyMatch(attackChain -> attackChain.isUserHasAccess(user));
   }
 
   @Override

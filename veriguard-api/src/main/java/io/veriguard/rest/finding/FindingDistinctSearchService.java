@@ -46,20 +46,20 @@ public class FindingDistinctSearchService {
     return searchDistinctBySpecification(FindingSpecification.forLatestSimulations(), page);
   }
 
-  public Page<AggregatedFindingOutput> searchDistinctFindingsByInject(
-      String injectId, SearchPaginationInput searchPaginationInput) {
+  public Page<AggregatedFindingOutput> searchDistinctFindingsByAttackChainNode(
+      String attackChainNodeId, SearchPaginationInput searchPaginationInput) {
     Page<Finding> page =
         buildPaginationJPA(
             (Specification<Finding> specification, Pageable pageable) ->
                 this.findingRepository.findAll(
                     FindingSpecification.distinctTypeValueWithFilter(
-                        FindingSpecification.findFindingsForInject(injectId).and(specification)),
+                        FindingSpecification.findFindingsForAttackChainNode(attackChainNodeId).and(specification)),
                     pageable),
             searchPaginationInput,
             Finding.class);
 
     return searchDistinctBySpecification(
-        FindingSpecification.findFindingsForInject(injectId), page);
+        FindingSpecification.findFindingsForAttackChainNode(attackChainNodeId), page);
   }
 
   public Page<AggregatedFindingOutput> searchDistinctFindingsBySimulation(
@@ -79,14 +79,14 @@ public class FindingDistinctSearchService {
         FindingSpecification.findFindingsForSimulation(simulationId), page);
   }
 
-  public Page<AggregatedFindingOutput> searchDistinctFindingsByScenario(
-      String scenarioId, SearchPaginationInput searchPaginationInput) {
+  public Page<AggregatedFindingOutput> searchDistinctFindingsByAttackChain(
+      String attackChainId, SearchPaginationInput searchPaginationInput) {
     Page<Finding> page =
         buildPaginationJPA(
             (Specification<Finding> specification, Pageable pageable) ->
                 this.findingRepository.findAll(
                     FindingSpecification.distinctTypeValueWithFilter(
-                        FindingSpecification.findFindingsForScenario(scenarioId)
+                        FindingSpecification.findFindingsForAttackChain(attackChainId)
                             .and(FindingSpecification.forLatestSimulations())
                             .and(specification)),
                     pageable),
@@ -94,7 +94,7 @@ public class FindingDistinctSearchService {
             Finding.class);
 
     return searchDistinctBySpecification(
-        FindingSpecification.findFindingsForScenario(scenarioId)
+        FindingSpecification.findFindingsForAttackChain(attackChainId)
             .and(FindingSpecification.forLatestSimulations()),
         page);
   }

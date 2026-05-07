@@ -19,5 +19,5 @@ public interface ObjectiveRepository
   Optional<Objective> findById(@NotNull String id);
 
   @Query(value = "SELECT * FROM objectives WHERE objective_exercise IN :ids ;", nativeQuery = true)
-  List<RawObjective> rawByExerciseIds(@Param("ids") List<String> ids);
+  List<RawObjective> rawByAttackChainRunIds(@Param("ids") List<String> ids);
 }

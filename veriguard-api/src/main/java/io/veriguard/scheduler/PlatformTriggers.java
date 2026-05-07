@@ -23,9 +23,9 @@ public class PlatformTriggers {
   }
 
   @Bean
-  public Trigger injectsExecutionTrigger() {
+  public Trigger attackChainNodesExecutionTrigger() {
     return newTrigger()
-        .forJob(platformJobs.getInjectsExecution())
+        .forJob(platformJobs.getAttackChainNodesExecution())
         .withIdentity("InjectsExecutionTrigger")
         .withSchedule(cronSchedule("0 0/1 * * * ?")) // Every minute align on clock
         .build();
@@ -41,9 +41,9 @@ public class PlatformTriggers {
   }
 
   @Bean
-  public Trigger scenarioExecutionTrigger() {
+  public Trigger attackChainExecutionTrigger() {
     return newTrigger()
-        .forJob(this.platformJobs.getScenarioExecution())
+        .forJob(this.platformJobs.getAttackChainExecution())
         .withIdentity("ScenarioExecutionTrigger")
         .withSchedule(repeatMinutelyForever())
         .build();

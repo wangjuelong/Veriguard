@@ -10,12 +10,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.IntegrationTest;
 import io.veriguard.collectors.utils.CollectorsUtils;
 import io.veriguard.database.model.*;
-import io.veriguard.database.repository.InjectExpectationRepository;
-import io.veriguard.execution.ExecutableInject;
+import io.veriguard.database.repository.AttackChainNodeExpectationRepository;
+import io.veriguard.execution.ExecutableNode;
 import io.veriguard.injectors.veriguard.VeriguardImplantContract;
-import io.veriguard.injectors.veriguard.model.VeriguardImplantInjectContent;
+import io.veriguard.injectors.veriguard.model.VeriguardImplantAttackChainNodeContent;
 import io.veriguard.integration.Manager;
-import io.veriguard.integration.impl.injectors.veriguard.VeriguardInjectorIntegrationFactory;
+import io.veriguard.integration.impl.injectors.veriguard.VeriguardNodeExecutorIntegrationFactory;
 import io.veriguard.model.inject.form.Expectation;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.fixtures.composers.*;
@@ -38,36 +38,36 @@ import org.springframework.test.context.TestExecutionListeners;
     value = {RabbitMQTestListener.class},
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class VeriguardImplantExecutorTest extends IntegrationTest {
-  @Autowired private VeriguardInjectorIntegrationFactory veriguardInjectorIntegrationFactory;
-  @Autowired private InjectExpectationRepository injectExpectationRepository;
+  @Autowired private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
+  @Autowired private AttackChainNodeExpectationRepository attackChainNodeExpectationRepository;
 
-  @Autowired private InjectComposer injectComposer;
+  @Autowired private AttackChainNodeComposer attackChainNodeComposer;
   @Autowired private AssetGroupComposer assetGroupComposer;
   @Autowired private EndpointComposer endpointComposer;
   @Autowired private AgentComposer agentComposer;
-  @Autowired private InjectorContractComposer injectorContractComposer;
+  @Autowired private NodeContractComposer nodeContractComposer;
   @Autowired private CollectorComposer collectorComposer;
   @Autowired private SecurityPlatformComposer securityPlatformComposer;
 
   @Resource protected ObjectMapper mapper;
-  @Autowired private InjectorFixture injectorFixture;
+  @Autowired private NodeExecutorFixture nodeExecutorFixture;
 
   @BeforeEach
   public void beforeEach() {
     assetGroupComposer.reset();
     endpointComposer.reset();
     agentComposer.reset();
-    injectComposer.reset();
-    injectorContractComposer.reset();
+    attackChainNodeComposer.reset();
+    nodeContractComposer.reset();
     collectorComposer.reset();
   }
 
-  private Inject createTechnicalInjectHelper(List<Expectation> expectationList) {
-    Inject inject = InjectFixture.getDefaultInject();
-    VeriguardImplantInjectContent content = new VeriguardImplantInjectContent();
+  private AttackChainNode createTechnicalAttackChainNodeHelper(List<Expectation> expectationList) {
+    AttackChainNode attackChainNode = AttackChainNodeFixture.getDefaultAttackChainNode();
+    VeriguardImplantAttackChainNodeContent content = new VeriguardImplantAttackChainNodeContent();
     content.setExpectations(expectationList);
     content.setObfuscator("plain-text");
-    inject.setContent(this.mapper.valueToTree(content));
+    attackChainNode.setContent(this.mapper.valueToTree(content));
 
     collectorComposer
         .forCollector(CollectorFixture.createDefaultCollector(CollectorsUtils.CROWDSTRIKE))
@@ -77,8 +77,8 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
                     "EDR name", SecurityPlatform.SECURITY_PLATFORM_TYPE.EDR.name())))
         .persist();
 
-    return injectComposer
-        .forInject(inject)
+    return attackChainNodeComposer
+        .forAttackChainNode(attackChainNode)
         .withAssetGroup(
             assetGroupComposer
                 .forAssetGroup(AssetGroupFixture.createDefaultAssetGroup("windows asset group"))
@@ -88,12 +88,12 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
                         .withAgent(agentComposer.forAgent(AgentFixture.createDefaultAgentService()))
                         .withAgent(
                             agentComposer.forAgent(AgentFixture.createDefaultAgentService()))))
-        .withInjectorContract(
-            injectorContractComposer
-                .forInjectorContract(
-                    InjectorContractFixture.createDefaultInjectorContractWithExternalId(
+        .withNodeContract(
+            nodeContractComposer
+                .forNodeContract(
+                    NodeContractFixture.createDefaultNodeContractWithExternalId(
                         "external-id"))
-                .withInjector(injectorFixture.getWellKnownOaevImplantInjector()))
+                .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor()))
         .persist()
         .get();
   }
@@ -101,10 +101,10 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
   private static Stream<Arguments> expectationTypeProvider() {
     return Stream.of(
         Arguments.of(
-            "detection", InjectExpectation.EXPECTATION_TYPE.DETECTION, CollectorsUtils.CROWDSTRIKE),
+            "detection", AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION, CollectorsUtils.CROWDSTRIKE),
         Arguments.of(
             "vulnerability",
-            InjectExpectation.EXPECTATION_TYPE.VULNERABILITY,
+            AttackChainNodeExpectation.EXPECTATION_TYPE.VULNERABILITY,
             EXPECTATIONS_VULNERABILITY_COLLECTOR_ID));
   }
 
@@ -112,8 +112,8 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
       name =
           "givenTechnicalInjectWith{0}Expectation_shouldComputeInjectExpectationAndInjectExpectationResult")
   @MethodSource("expectationTypeProvider")
-  void givenExpectation_shouldComputeInjectExpectationAndInjectExpectationResult(
-      String name, InjectExpectation.EXPECTATION_TYPE type, String expectedSourceId)
+  void givenExpectation_shouldComputeAttackChainNodeExpectationAndNodeExpectationResult(
+      String name, AttackChainNodeExpectation.EXPECTATION_TYPE type, String expectedSourceId)
       throws Exception {
 
     // -- PREPARE --
@@ -123,56 +123,56 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
     expectation.setScore(100.0);
     expectation.setExpectationGroup(false);
 
-    Inject inject = createTechnicalInjectHelper(List.of(expectation));
+    AttackChainNode attackChainNode = createTechnicalAttackChainNodeHelper(List.of(expectation));
     Injection injection = mock(Injection.class);
-    when(injection.getInject()).thenReturn(inject);
-    ExecutableInject executableInject =
-        new ExecutableInject(
+    when(injection.getAttackChainNode()).thenReturn(attackChainNode);
+    ExecutableNode executableAttackChainNode =
+        new ExecutableNode(
             false,
             false,
             injection,
             List.of(),
-            inject.getAssets(),
-            inject.getAssetGroups(),
+            attackChainNode.getAssets(),
+            attackChainNode.getAssetGroups(),
             List.of());
-    Execution execution = new Execution(executableInject.isRuntime());
+    Execution execution = new Execution(executableAttackChainNode.isRuntime());
 
     // -- EXECUTE --
-    Manager manager = new Manager(List.of(veriguardInjectorIntegrationFactory));
+    Manager manager = new Manager(List.of(veriguardNodeExecutorIntegrationFactory));
     manager.monitorIntegrations();
-    io.veriguard.executors.Injector veriguardImplantExecutor =
-        manager.requestInjectorExecutorByType(VeriguardImplantContract.TYPE);
-    veriguardImplantExecutor.process(execution, executableInject);
+    io.veriguard.executors.NodeExecutor veriguardImplantExecutor =
+        manager.requestNodeExecutorExecutorByType(VeriguardImplantContract.TYPE);
+    veriguardImplantExecutor.process(execution, executableAttackChainNode);
 
     // -- ASSERT --
-    // Should have 4 inject expectations - 1 for asset group - 1 for the endpoint - 1 per agent
-    List<InjectExpectation> injectExpectationList =
-        injectExpectationRepository.findAllByInjectId(inject.getId());
-    assertEquals(4, injectExpectationList.size());
-    List<InjectExpectation> assetGroupExpectations =
-        injectExpectationList.stream()
+    // Should have 4 attackChainNode expectations - 1 for asset group - 1 for the endpoint - 1 per agent
+    List<AttackChainNodeExpectation> attackChainNodeExpectationList =
+        attackChainNodeExpectationRepository.findAllByAttackChainNodeId(attackChainNode.getId());
+    assertEquals(4, attackChainNodeExpectationList.size());
+    List<AttackChainNodeExpectation> assetGroupExpectations =
+        attackChainNodeExpectationList.stream()
             .filter(
                 ie -> ie.getAgent() == null && ie.getAsset() == null && ie.getAssetGroup() != null)
             .toList();
     assertEquals(1, assetGroupExpectations.size());
-    List<InjectExpectation> endpointExpectations =
-        injectExpectationList.stream()
+    List<AttackChainNodeExpectation> endpointExpectations =
+        attackChainNodeExpectationList.stream()
             .filter(
                 ie -> ie.getAgent() == null && ie.getAsset() != null && ie.getAssetGroup() != null)
             .toList();
     assertEquals(1, endpointExpectations.size());
-    List<InjectExpectation> agentExpectations =
-        injectExpectationList.stream()
+    List<AttackChainNodeExpectation> agentExpectations =
+        attackChainNodeExpectationList.stream()
             .filter(
                 ie -> ie.getAgent() != null && ie.getAsset() != null && ie.getAssetGroup() != null)
             .toList();
     assertEquals(2, agentExpectations.size());
 
-    // InjectExpectation.results.result should be set to null for all existing security platforms at
+    // AttackChainNodeExpectation.results.result should be set to null for all existing security platforms at
     // the agent level only.
     assertTrue(assetGroupExpectations.getFirst().getResults().isEmpty());
     assertTrue(endpointExpectations.getFirst().getResults().isEmpty());
-    List<InjectExpectationResult> results =
+    List<NodeExpectationResult> results =
         agentExpectations.stream().flatMap(ie -> ie.getResults().stream()).toList();
     assertTrue(results.stream().allMatch(r -> r.getResult() == null));
     assertTrue(results.stream().allMatch(r -> expectedSourceId.equals(r.getSourceId())));

@@ -182,9 +182,9 @@ class CustomDashboardApiTest extends IntegrationTest {
       mockMvc.perform(delete(CUSTOM_DASHBOARDS_URI + "/" + wrapper.get().getId()).with(csrf()));
 
       assertThat(repository.existsById(wrapper.get().getId())).isFalse();
-      Setting defaultScenarioDashboardSetting =
+      Setting defaultAttackChainDashboardSetting =
           settingRepository.findByKey(DEFAULT_SCENARIO_DASHBOARD.key()).orElseThrow();
-      assertThat(defaultScenarioDashboardSetting.getValue()).isEmpty();
+      assertThat(defaultAttackChainDashboardSetting.getValue()).isEmpty();
     }
 
     @Test
@@ -207,9 +207,9 @@ class CustomDashboardApiTest extends IntegrationTest {
       mockMvc.perform(delete(CUSTOM_DASHBOARDS_URI + "/" + wrapper.get().getId()).with(csrf()));
 
       assertThat(repository.existsById(wrapper.get().getId())).isFalse();
-      Setting defaultScenarioDashboardSetting =
+      Setting defaultAttackChainDashboardSetting =
           settingRepository.findByKey(DEFAULT_SIMULATION_DASHBOARD.key()).orElseThrow();
-      assertThat(defaultScenarioDashboardSetting.getValue()).isEmpty();
+      assertThat(defaultAttackChainDashboardSetting.getValue()).isEmpty();
     }
   }
 }

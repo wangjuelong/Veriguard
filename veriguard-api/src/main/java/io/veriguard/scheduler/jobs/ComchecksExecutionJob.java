@@ -27,7 +27,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.stereotype.Component;
 
 /**
- * 二开 simplified comcheck dispatcher. The full Email injector pipeline (with attachments,
+ * 二开 simplified comcheck dispatcher. The full Email nodeExecutor pipeline (with attachments,
  * encryption, IMAP storage, multi-recipient context) is removed in Phase 11.5; this job now sends
  * a single comcheck-link email per recipient using {@link MailingService}.
  */

@@ -5,11 +5,11 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class LessonsCategorySpecification {
 
-  public static Specification<LessonsCategory> fromExercise(String exerciseId) {
-    return (root, query, cb) -> cb.equal(root.get("exercise").get("id"), exerciseId);
+  public static Specification<LessonsCategory> fromAttackChainRun(String attackChainRunId) {
+    return (root, query, cb) -> cb.equal(root.get("exercise").get("id"), attackChainRunId);
   }
 
-  public static Specification<LessonsCategory> fromScenario(String scenarioId) {
-    return (root, query, cb) -> cb.equal(root.get("scenario").get("id"), scenarioId);
+  public static Specification<LessonsCategory> fromAttackChain(String attackChainId) {
+    return (root, query, cb) -> cb.equal(root.get("scenario").get("id"), attackChainId);
   }
 }

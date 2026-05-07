@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.NotImplementedException;
 
-public class AgentTarget extends InjectTarget {
+public class AgentTarget extends AttackChainNodeTarget {
 
   public AgentTarget(String id, String name, Set<String> tags, String endpoint, String subType) {
     this.setId(id);

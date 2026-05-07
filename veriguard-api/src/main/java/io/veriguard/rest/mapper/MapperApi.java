@@ -8,7 +8,7 @@ import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.model.ResourceType;
-import io.veriguard.database.model.Scenario;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.raw.RawPaginationImportMapper;
 import io.veriguard.database.repository.ImportMapperRepository;
 import io.veriguard.rest.exception.ElementNotFoundException;
@@ -18,10 +18,10 @@ import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.mapper.form.ExportMapperInput;
 import io.veriguard.rest.mapper.form.ImportMapperAddInput;
 import io.veriguard.rest.mapper.form.ImportMapperUpdateInput;
-import io.veriguard.rest.scenario.form.InjectsImportTestInput;
+import io.veriguard.rest.scenario.form.AttackChainNodesImportTestInput;
 import io.veriguard.rest.scenario.response.ImportPostSummary;
 import io.veriguard.rest.scenario.response.ImportTestSummary;
-import io.veriguard.service.InjectImportService;
+import io.veriguard.service.AttackChainNodeImportService;
 import io.veriguard.service.MapperService;
 import io.veriguard.utils.TargetType;
 import io.veriguard.utils.constants.Constants;
@@ -56,7 +56,7 @@ public class MapperApi extends RestBehavior {
 
   private final ImportMapperRepository importMapperRepository;
   private final MapperService mapperService;
-  private final InjectImportService injectImportService;
+  private final AttackChainNodeImportService attackChainNodeImportService;
 
   // 25mb in byte
   private static final int MAXIMUM_FILE_SIZE_ALLOWED = 25 * 1000 * 1000;
@@ -174,7 +174,7 @@ public class MapperApi extends RestBehavior {
   @Operation(summary = "Import injects into an xls file")
   public ImportPostSummary importXLSFile(@RequestPart("file") @NotNull MultipartFile file) {
     validateUploadedFile(file);
-    return injectImportService.storeXlsFileForImport(file);
+    return attackChainNodeImportService.storeXlsFileForImport(file);
   }
 
   @PostMapping("/api/mappers/store/{importId}")
@@ -186,21 +186,21 @@ public class MapperApi extends RestBehavior {
   @Operation(summary = "Test the import of injects from an xls file")
   public ImportTestSummary testImportXLSFile(
       @PathVariable @NotBlank final String importId,
-      @Valid @RequestBody final InjectsImportTestInput input) {
+      @Valid @RequestBody final AttackChainNodesImportTestInput input) {
     ImportMapper importMapper = mapperService.createImportMapper(input.getImportMapper());
     importMapper
-        .getInjectImporters()
+        .getAttackChainNodeImporters()
         .forEach(
-            injectImporter -> {
-              injectImporter.setId(UUID.randomUUID().toString());
-              injectImporter
+            attackChainNodeImporter -> {
+              attackChainNodeImporter.setId(UUID.randomUUID().toString());
+              attackChainNodeImporter
                   .getRuleAttributes()
                   .forEach(ruleAttribute -> ruleAttribute.setId(UUID.randomUUID().toString()));
             });
-    Scenario scenario = new Scenario();
-    scenario.setRecurrenceStart(Instant.now());
-    return injectImportService.importInjectIntoScenarioFromXLS(
-        scenario, importMapper, importId, input.getName(), input.getTimezoneOffset(), false);
+    AttackChain attackChain = new AttackChain();
+    attackChain.setRecurrenceStart(Instant.now());
+    return attackChainNodeImportService.importAttackChainNodeIntoAttackChainFromXLS(
+        attackChain, importMapper, importId, input.getName(), input.getTimezoneOffset(), false);
   }
 
   // -- IMPORT --

@@ -15,6 +15,6 @@ public class LessonsService {
    * @param simulationId the simulation ID
    */
   public void resetLessonsAnswer(String simulationId) {
-    lessonsAnswerRepository.deleteAllLessonsAnswersQuestionsCategoriesByExerciseId(simulationId);
+    lessonsAnswerRepository.deleteAllLessonsAnswersQuestionsCategoriesByAttackChainRunId(simulationId);
   }
 }

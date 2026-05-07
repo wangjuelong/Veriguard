@@ -4,15 +4,15 @@ import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.Collector;
-import io.veriguard.database.model.InjectExpectation;
+import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.ResourceType;
 import io.veriguard.rest.atomic_testing.form.*;
 import io.veriguard.rest.collector.service.CollectorService;
 import io.veriguard.rest.exception.UnprocessableContentException;
 import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.AtomicTestingService;
-import io.veriguard.service.InjectExpectationService;
-import io.veriguard.service.InjectImportService;
+import io.veriguard.service.AttackChainNodeExpectationService;
+import io.veriguard.service.AttackChainNodeImportService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,39 +37,39 @@ public class AtomicTestingApi extends RestBehavior {
   public static final String ATOMIC_TESTING_URI = "/api/atomic-testings";
 
   private final AtomicTestingService atomicTestingService;
-  private final InjectExpectationService injectExpectationService;
+  private final AttackChainNodeExpectationService attackChainNodeExpectationService;
   private final CollectorService collectorsService;
-  private final InjectImportService injectImportService;
+  private final AttackChainNodeImportService attackChainNodeImportService;
 
   @LogExecutionTime
   @PostMapping("/search")
   @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.ATOMIC_TESTING)
   @Transactional(readOnly = true)
-  public Page<InjectResultOutput> findAllAtomicTestings(
+  public Page<AttackChainNodeResultOutput> findAllAtomicTestings(
       @RequestBody @Valid final SearchPaginationInput searchPaginationInput) {
     return atomicTestingService.searchAtomicTestingsForCurrentUser(searchPaginationInput);
   }
 
-  // some api use inject as resource type because they are actually used to retrieve inject data for
+  // some api use attackChainNode as resource type because they are actually used to retrieve attackChainNode data for
   // simulation and AT
   @LogExecutionTime
   @GetMapping("/{injectId}")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
-  public InjectResultOverviewOutput findAtomicTesting(@PathVariable String injectId) {
-    return atomicTestingService.findById(injectId);
+  public AttackChainNodeResultOverviewOutput findAtomicTesting(@PathVariable String attackChainNodeId) {
+    return atomicTestingService.findById(attackChainNodeId);
   }
 
   @LogExecutionTime
   @GetMapping("/{injectId}/payload")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
-  public StatusPayloadOutput findAtomicTestingPayload(@PathVariable String injectId) {
-    return atomicTestingService.findPayloadOutputByInjectId(injectId);
+  public StatusPayloadOutput findAtomicTestingPayload(@PathVariable String attackChainNodeId) {
+    return atomicTestingService.findPayloadOutputByAttackChainNodeId(attackChainNodeId);
   }
 
   @PostMapping()
   @RBAC(actionPerformed = Action.CREATE, resourceType = ResourceType.ATOMIC_TESTING)
   @Transactional(rollbackFor = Exception.class)
-  public InjectResultOverviewOutput createAtomicTesting(
+  public AttackChainNodeResultOverviewOutput createAtomicTesting(
       @Valid @RequestBody AtomicTestingInput input) {
     return this.atomicTestingService.createOrUpdate(input, null);
   }
@@ -80,10 +80,10 @@ public class AtomicTestingApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
   @Transactional(rollbackFor = Exception.class)
-  public InjectResultOverviewOutput updateAtomicTesting(
-      @PathVariable @NotBlank final String injectId,
+  public AttackChainNodeResultOverviewOutput updateAtomicTesting(
+      @PathVariable @NotBlank final String attackChainNodeId,
       @Valid @RequestBody final AtomicTestingInput input) {
-    return atomicTestingService.createOrUpdate(input, injectId);
+    return atomicTestingService.createOrUpdate(input, attackChainNodeId);
   }
 
   @DeleteMapping("/{injectId}")
@@ -91,8 +91,8 @@ public class AtomicTestingApi extends RestBehavior {
       resourceId = "#injectId",
       actionPerformed = Action.DELETE,
       resourceType = ResourceType.INJECT)
-  public void deleteAtomicTesting(@PathVariable @NotBlank final String injectId) {
-    atomicTestingService.deleteAtomicTesting(injectId);
+  public void deleteAtomicTesting(@PathVariable @NotBlank final String attackChainNodeId) {
+    atomicTestingService.deleteAtomicTesting(attackChainNodeId);
   }
 
   @PostMapping("/{atomicTestingId}/duplicate")
@@ -100,7 +100,7 @@ public class AtomicTestingApi extends RestBehavior {
       resourceId = "#atomicTestingId",
       actionPerformed = Action.DUPLICATE,
       resourceType = ResourceType.ATOMIC_TESTING)
-  public InjectResultOverviewOutput duplicateAtomicTesting(
+  public AttackChainNodeResultOverviewOutput duplicateAtomicTesting(
       @PathVariable @NotBlank final String atomicTestingId) {
     return atomicTestingService.duplicate(atomicTestingId);
   }
@@ -110,7 +110,7 @@ public class AtomicTestingApi extends RestBehavior {
       resourceId = "#atomicTestingId",
       actionPerformed = Action.LAUNCH,
       resourceType = ResourceType.INJECT)
-  public InjectResultOverviewOutput launchAtomicTesting(
+  public AttackChainNodeResultOverviewOutput launchAtomicTesting(
       @PathVariable @NotBlank final String atomicTestingId) {
     return atomicTestingService.launch(atomicTestingId);
   }
@@ -120,20 +120,20 @@ public class AtomicTestingApi extends RestBehavior {
       resourceId = "#atomicTestingId",
       actionPerformed = Action.LAUNCH,
       resourceType = ResourceType.INJECT)
-  public InjectResultOverviewOutput relaunchAtomicTesting(
+  public AttackChainNodeResultOverviewOutput relaunchAtomicTesting(
       @PathVariable @NotBlank final String atomicTestingId) {
     return atomicTestingService.relaunch(atomicTestingId);
   }
 
   @GetMapping("/{injectId}/target_results/{targetId}/types/{targetType}")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
-  public List<InjectExpectation> findTargetResult(
-      @PathVariable String injectId,
+  public List<AttackChainNodeExpectation> findTargetResult(
+      @PathVariable String attackChainNodeId,
       @PathVariable String targetId,
       @PathVariable String targetType,
       @RequestParam(required = false) String parentTargetId) {
-    return injectExpectationService.findMergedExpectationsByInjectAndTargetAndTargetType(
-        injectId, targetId, parentTargetId, targetType);
+    return attackChainNodeExpectationService.findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
+        attackChainNodeId, targetId, parentTargetId, targetType);
   }
 
   @GetMapping("/{injectId}/target_results/{targetId}/asset_with_agents")
@@ -146,19 +146,19 @@ public class AtomicTestingApi extends RestBehavior {
             responseCode = "200",
             description = "The list of the agents injects expectations")
       })
-  public List<InjectExpectationAgentOutput> findTargetResultAssetWithAgents(
-      @PathVariable String injectId,
+  public List<AttackChainNodeExpectationAgentOutput> findTargetResultAssetWithAgents(
+      @PathVariable String attackChainNodeId,
       @PathVariable String targetId,
       @RequestParam @NotBlank String expectationType) {
-    return injectExpectationService.findMergedExpectationsWithAgentsByInjectAndAsset(
-        injectId, targetId, expectationType);
+    return attackChainNodeExpectationService.findMergedExpectationsWithAgentsByAttackChainNodeAndAsset(
+        attackChainNodeId, targetId, expectationType);
   }
 
   /**
-   * Returns expectations for inject target with results merged across all expectations of the same
+   * Returns expectations for attackChainNode target with results merged across all expectations of the same
    * type
    *
-   * @param injectId ID of the inject owning the targets
+   * @param attackChainNodeId ID of the attackChainNode owning the targets
    * @param targetId ID of the specific target
    * @param targetType Type of the specified target
    */
@@ -174,14 +174,14 @@ public class AtomicTestingApi extends RestBehavior {
       })
   @GetMapping("/{injectId}/target_results/{targetId}/types/{targetType}/merged")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
-  public List<InjectExpectation> findTargetResultMerged(
-      @PathVariable String injectId,
+  public List<AttackChainNodeExpectation> findTargetResultMerged(
+      @PathVariable String attackChainNodeId,
       @PathVariable String targetId,
       @PathVariable String targetType) {
-    return injectExpectationService
-        .findMergedExpectationsByInjectAndTargetAndTargetType(injectId, targetId, targetType)
+    return attackChainNodeExpectationService
+        .findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(attackChainNodeId, targetId, targetType)
         .stream()
-        .sorted(Comparator.comparing(InjectExpectation::getType))
+        .sorted(Comparator.comparing(AttackChainNodeExpectation::getType))
         .toList();
   }
 
@@ -191,10 +191,10 @@ public class AtomicTestingApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
   @Transactional(rollbackFor = Exception.class)
-  public InjectResultOverviewOutput updateAtomicTestingTags(
-      @PathVariable @NotBlank final String injectId,
+  public AttackChainNodeResultOverviewOutput updateAtomicTestingTags(
+      @PathVariable @NotBlank final String attackChainNodeId,
       @Valid @RequestBody final AtomicTestingUpdateTagsInput input) {
-    return atomicTestingService.updateAtomicTestingTags(injectId, input);
+    return atomicTestingService.updateAtomicTestingTags(attackChainNodeId, input);
   }
 
   @GetMapping("/{injectId}/collectors")
@@ -206,8 +206,8 @@ public class AtomicTestingApi extends RestBehavior {
             responseCode = "200",
             description = "The list of Collectors used in an atomic testing remediation")
       })
-  public List<Collector> collectorsFromAtomicTesting(@PathVariable String injectId) {
-    return collectorsService.collectorsForAtomicTesting(injectId);
+  public List<Collector> collectorsFromAtomicTesting(@PathVariable String attackChainNodeId) {
+    return collectorsService.collectorsForAtomicTesting(attackChainNodeId);
   }
 
   @PostMapping(
@@ -220,6 +220,6 @@ public class AtomicTestingApi extends RestBehavior {
       throw new UnprocessableContentException("Insufficient input: file is required");
     }
 
-    this.injectImportService.importInjectsForAtomicTestings(file);
+    this.attackChainNodeImportService.importAttackChainNodesForAtomicTestings(file);
   }
 }

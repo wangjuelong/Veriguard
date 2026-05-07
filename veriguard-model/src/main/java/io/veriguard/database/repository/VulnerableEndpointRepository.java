@@ -33,8 +33,8 @@ public interface VulnerableEndpointRepository extends JpaRepository<Endpoint, St
               + "MAX(se.scenario_id) as vulnerable_endpoint_scenario, " // MAX here is used to get 1
               // element and not a list
               // because we know that 1
-              // exercise is linked to
-              // only 1 scenario
+              // attackChainRun is linked to
+              // only 1 attackChain
               + "a.endpoint_hostname as vulnerable_endpoint_hostname, "
               + "a.endpoint_platform as vulnerable_endpoint_platform, "
               + "a.endpoint_is_eol as vulnerable_endpoint_eol, "

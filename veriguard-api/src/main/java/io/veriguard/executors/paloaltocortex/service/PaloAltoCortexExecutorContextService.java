@@ -39,7 +39,7 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
 
   @Override
   public void launchExecutorSubprocess(
-      @NotNull final Inject inject,
+      @NotNull final AttackChainNode attackChainNode,
       @NotNull final Endpoint assetEndpoint,
       @NotNull final Agent agent) {
     // launchBatchExecutorSubprocess is used here for better performances
@@ -47,7 +47,7 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
 
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
-      Inject inject, Set<Agent> agents, InjectStatus injectStatus) {
+      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
 
     List<Agent> paloAltoCortexAgents = new ArrayList<>(agents);
 
@@ -55,34 +55,34 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
     paloAltoCortexAgents.forEach(
         agent -> agent.setAsset((Asset) Hibernate.unproxy(agent.getAsset())));
 
-    Injector injector =
-        inject
-            .getInjectorContract()
-            .map(InjectorContract::getInjector)
+    NodeExecutor nodeExecutor =
+        attackChainNode
+            .getNodeContract()
+            .map(NodeContract::getNodeExecutor)
             .orElseThrow(
                 () -> new UnsupportedOperationException("Inject does not have a contract"));
 
     paloAltoCortexAgents =
-        executorService.manageWithoutPlatformAgents(paloAltoCortexAgents, injectStatus);
+        executorService.manageWithoutPlatformAgents(paloAltoCortexAgents, attackChainNodeStatus);
 
     List<PaloAltoCortexAction> actions = new ArrayList<>();
     // Set implant script for each agent
     actions.addAll(
         getWindowsActions(
             getAgentsFromOS(paloAltoCortexAgents, Endpoint.PLATFORM_TYPE.Windows),
-            injector,
-            inject.getId()));
+            nodeExecutor,
+            attackChainNode.getId()));
     actions.addAll(
         getUnixActions(
             getAgentsFromOS(paloAltoCortexAgents, Endpoint.PLATFORM_TYPE.Linux),
-            injector,
-            inject.getId(),
+            nodeExecutor,
+            attackChainNode.getId(),
             Endpoint.PLATFORM_TYPE.Linux));
     actions.addAll(
         getUnixActions(
             getAgentsFromOS(paloAltoCortexAgents, Endpoint.PLATFORM_TYPE.MacOS),
-            injector,
-            inject.getId(),
+            nodeExecutor,
+            attackChainNode.getId(),
             Endpoint.PLATFORM_TYPE.MacOS));
     // Launch payloads with Palo Alto Cortex API
     executeActions(actions);
@@ -116,7 +116,7 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
   }
 
   private List<PaloAltoCortexAction> getWindowsActions(
-      List<Agent> agents, Injector injector, String injectId) {
+      List<Agent> agents, NodeExecutor nodeExecutor, String attackChainNodeId) {
     List<PaloAltoCortexAction> actions = new ArrayList<>();
     for (Agent agent : agents) {
       PaloAltoCortexAction actionWindows = new PaloAltoCortexAction();
@@ -135,7 +135,7 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
               + Endpoint.PLATFORM_TYPE.Windows.name()
               + "."
               + Endpoint.PLATFORM_ARCH.x86_64.name();
-      String command = injector.getExecutorCommands().get(executorCommandKey);
+      String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
       // The default command to download the veriguard implant and execute the attack is modified for
       // Cortex
       // - WINDOWS_ARCH: Cortex doesn't know the endpoint architecture so we include it to get the
@@ -146,7 +146,7 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
                   Endpoint.PLATFORM_ARCH.x86_64.name(),
                   ARCH_VARIABLE
                       + "`"); // Specific for Windows to escape the ? right after in the URL
-      command = replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, injectId, agent.getId());
+      command = replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, attackChainNodeId, agent.getId());
       command =
           command.replaceFirst(
               "\\$?x=.+location=.+;\\[Environment]::CurrentDirectory",
@@ -165,7 +165,7 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
   }
 
   private List<PaloAltoCortexAction> getUnixActions(
-      List<Agent> agents, Injector injector, String injectId, Endpoint.PLATFORM_TYPE platform) {
+      List<Agent> agents, NodeExecutor nodeExecutor, String attackChainNodeId, Endpoint.PLATFORM_TYPE platform) {
     List<PaloAltoCortexAction> actions = new ArrayList<>();
     for (Agent agent : agents) {
       PaloAltoCortexAction actionUnix = new PaloAltoCortexAction();
@@ -179,13 +179,13 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
       // x86_64 by default in the register because CS API doesn't provide the platform architecture
       // (we update this when the download implant script is launched on the endpoint)
       String executorCommandKey = platform.name() + "." + Endpoint.PLATFORM_ARCH.x86_64.name();
-      String command = injector.getExecutorCommands().get(executorCommandKey);
+      String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
       // The default command to download the veriguard implant and execute the attack is modified for
       // Cortex
       // - UNIX_ARCH: Cortex doesn't know the endpoint architecture so we include it to get the
       // architecture before downloading the implant and we replace the default x86_64 put before
       command = UNIX_ARCH + command.replace(Endpoint.PLATFORM_ARCH.x86_64.name(), ARCH_VARIABLE);
-      command = replaceArgs(platform, command, injectId, agent.getId());
+      command = replaceArgs(platform, command, attackChainNodeId, agent.getId());
       command =
           command.replaceFirst(
               "\\$?x=.+location=.+;filename=", Matcher.quoteReplacement(implantLocation));

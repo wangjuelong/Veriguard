@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
  *   <li>Any associated document files referenced by the entity
  * </ul>
  *
- * <p>This is used for scenario/exercise import/export functionality.
+ * <p>This is used for attackChain/attackChainRun import/export functionality.
  *
  * @param <T> the entity type being exported/imported
  * @see GenericJsonApiExporter

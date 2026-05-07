@@ -1,12 +1,12 @@
 package io.veriguard.service.targets.search;
 
-import io.veriguard.database.model.Inject;
-import io.veriguard.database.model.InjectExpectation;
-import io.veriguard.database.model.InjectTarget;
-import io.veriguard.service.InjectExpectationService;
-import io.veriguard.utils.InjectExpectationResultUtils;
-import io.veriguard.utils.InjectExpectationResultUtils.ExpectationResultsByType;
-import io.veriguard.utils.mapper.InjectExpectationMapper;
+import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.AttackChainNodeExpectation;
+import io.veriguard.database.model.AttackChainNodeTarget;
+import io.veriguard.service.AttackChainNodeExpectationService;
+import io.veriguard.utils.NodeExpectationResultUtils;
+import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
+import io.veriguard.utils.mapper.AttackChainNodeExpectationMapper;
 import java.util.List;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
@@ -16,22 +16,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class HelperTargetSearchAdaptor {
 
-  private final InjectExpectationService injectExpectationService;
-  private final InjectExpectationMapper injectExpectationMapper;
+  private final AttackChainNodeExpectationService attackChainNodeExpectationService;
+  private final AttackChainNodeExpectationMapper attackChainNodeExpectationMapper;
 
-  public InjectTarget buildTargetWithExpectations(
-      Inject inject, Supplier<InjectTarget> targetSupplier, boolean allowVulnerability) {
-    InjectTarget target = targetSupplier.get();
+  public AttackChainNodeTarget buildTargetWithExpectations(
+      AttackChainNode attackChainNode, Supplier<AttackChainNodeTarget> targetSupplier, boolean allowVulnerability) {
+    AttackChainNodeTarget target = targetSupplier.get();
 
-    List<InjectExpectation> mergedExpectationsByInjectAndTargetAndTargetType =
-        injectExpectationService.findMergedExpectationsByInjectAndTargetAndTargetType(
-            inject.getId(), target.getId(), target.getTargetType());
+    List<AttackChainNodeExpectation> mergedExpectationsByAttackChainNodeAndTargetAndTargetType =
+        attackChainNodeExpectationService.findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
+            attackChainNode.getId(), target.getId(), target.getTargetType());
 
     List<ExpectationResultsByType> results =
-        injectExpectationMapper.extractExpectationResults(
-            inject.getContent(),
-            mergedExpectationsByInjectAndTargetAndTargetType,
-            InjectExpectationResultUtils::getScores);
+        attackChainNodeExpectationMapper.extractExpectationResults(
+            attackChainNode.getContent(),
+            mergedExpectationsByAttackChainNodeAndTargetAndTargetType,
+            NodeExpectationResultUtils::getScores);
 
     for (ExpectationResultsByType result : results) {
       switch (result.type()) {

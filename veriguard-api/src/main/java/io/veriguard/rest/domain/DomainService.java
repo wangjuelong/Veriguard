@@ -13,7 +13,7 @@ import io.veriguard.database.repository.DomainRepository;
 import io.veriguard.rest.domain.enums.PresetDomain;
 import io.veriguard.rest.domain.form.DomainBaseInput;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.injector_contract.form.InjectorContractDomainDTO;
+import io.veriguard.rest.injector_contract.form.NodeContractDomainDTO;
 import io.veriguard.utils.FilterUtilsJpa;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
@@ -90,7 +90,7 @@ public class DomainService {
         Optional.ofNullable(domains)
             .map(
                 collection ->
-                    collection.stream().map(InjectorContractDomainDTO::fromDomain).collect(toSet()))
+                    collection.stream().map(NodeContractDomainDTO::fromDomain).collect(toSet()))
             .orElse(null));
   }
 
@@ -103,14 +103,14 @@ public class DomainService {
    * @return set of saved or retrieved domains
    */
   @Transactional
-  public Set<Domain> upserts(Set<InjectorContractDomainDTO> domains) {
+  public Set<Domain> upserts(Set<NodeContractDomainDTO> domains) {
     if (domains == null || domains.isEmpty()) {
       return new HashSet<>();
     }
 
     Map<String, Domain> existing =
         domainRepository
-            .findByNameIn(domains.stream().map(InjectorContractDomainDTO::getName).collect(toSet()))
+            .findByNameIn(domains.stream().map(NodeContractDomainDTO::getName).collect(toSet()))
             .stream()
             .collect(toMap(Domain::getName, Function.identity()));
 

@@ -23,7 +23,7 @@ public interface RawVulnerableEndpoint {
 
   String getVulnerable_endpoint_simulation();
 
-  String getVulnerable_endpoint_scenario();
+  String getVulnerable_endpoint_attackChain();
 
   Set<String> getVulnerable_endpoint_agents();
 

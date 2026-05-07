@@ -89,10 +89,10 @@ public class SpecificationUtils {
       List<Grant.GRANT_TYPE> allowedGrantTypes = grantType.andHigher();
       Grant.GRANT_RESOURCE_TYPE resourceType = GrantableBase.getGrantResourceType(entityClass);
 
-      // If this entity is an Inject (atomic testing), grants can target:
-      //  - the inject itself (atomic testing id)
-      //  - OR the linked scenario id
-      //  - OR the linked exercise/simulation id
+      // If this entity is an AttackChainNode (atomic testing), grants can target:
+      //  - the attackChainNode itself (atomic testing id)
+      //  - OR the linked attackChain id
+      //  - OR the linked attackChainRun/simulation id
       //
       // So expand the set of resource types we accept in the grant subquery.
       List<Grant.GRANT_RESOURCE_TYPE> resourceTypes = new ArrayList<>();
@@ -125,12 +125,12 @@ public class SpecificationUtils {
               grantTable.get("grantResourceType").in(resourceTypes),
               grantTable.get("name").in(allowedGrantTypes)));
 
-      // Special handling for Inject: check its own id OR its scenario.id OR its exercise.id
-      if (Inject.class.isAssignableFrom(entityClass)) {
-        Predicate byInjectId = root.get("id").in(accessibleResources);
-        Predicate byScenarioId = root.get("scenario").get("id").in(accessibleResources);
-        Predicate byExerciseId = root.get("exercise").get("id").in(accessibleResources);
-        return cb.or(byInjectId, byScenarioId, byExerciseId);
+      // Special handling for AttackChainNode: check its own id OR its attackChain.id OR its attackChainRun.id
+      if (AttackChainNode.class.isAssignableFrom(entityClass)) {
+        Predicate byAttackChainNodeId = root.get("id").in(accessibleResources);
+        Predicate byAttackChainId = root.get("scenario").get("id").in(accessibleResources);
+        Predicate byAttackChainRunId = root.get("exercise").get("id").in(accessibleResources);
+        return cb.or(byAttackChainNodeId, byAttackChainId, byAttackChainRunId);
       }
 
       // Default: entity id must be in accessible resources
@@ -140,7 +140,7 @@ public class SpecificationUtils {
 
   /**
    * Creates a subquery that returns all resource IDs of a specific type that the user has access to
-   * through grants. Can be used to get injects belonging to a scenario or simulation where the user
+   * through grants. Can be used to get attackChainNodes belonging to a attackChain or simulation where the user
    * is granted, for example.
    *
    * @param query The parent criteria query used to create the subquery

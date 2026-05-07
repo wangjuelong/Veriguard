@@ -9,7 +9,7 @@ import io.veriguard.database.model.NotificationRuleResourceType;
 import io.veriguard.database.model.NotificationRuleTrigger;
 import io.veriguard.database.model.NotificationRuleType;
 import io.veriguard.database.repository.NotificationRuleRepository;
-import io.veriguard.service.scenario.ScenarioService;
+import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +32,7 @@ public class NotificationRuleServiceTest extends IntegrationTest {
 
   @Mock private UserService userService;
 
-  @Mock private ScenarioService scenarioService;
+  @Mock private AttackChainService attackChainService;
 
   @Mock private PlatformSettingsService platformSettingsService;
 

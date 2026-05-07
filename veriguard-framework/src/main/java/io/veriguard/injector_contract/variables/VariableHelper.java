@@ -12,7 +12,7 @@ import java.util.List;
  * Helper class providing predefined contract variables for injection templates.
  *
  * <p>This utility class defines standard variables that can be used in injection contracts,
- * including user information, exercise metadata, team data, and platform URIs.
+ * including user information, attackChainRun metadata, team data, and platform URIs.
  *
  * <p>Variables defined here are automatically available in all injection contracts and can be
  * referenced in templates using the FreeMarker variable syntax (e.g., {@code ${user.email}}).
@@ -21,7 +21,7 @@ import java.util.List;
  *
  * <ul>
  *   <li>{@link #userVariable} - Target user information (id, email, name, language)
- *   <li>{@link #exerciseVariable} - Current exercise/scenario details
+ *   <li>{@link #attackChainRunVariable} - Current attackChainRun/attackChain details
  *   <li>{@link #teamVariable} - List of participating team names
  *   <li>{@link #uriVariables} - Platform interface URLs
  * </ul>
@@ -39,7 +39,7 @@ public final class VariableHelper {
   /** Variable key for user information */
   public static final String USER = "user";
 
-  /** Variable key for exercise/scenario information */
+  /** Variable key for attackChainRun/attackChain information */
   public static final String EXERCISE = "exercise";
 
   /** Variable key for team names list */
@@ -89,17 +89,17 @@ public final class VariableHelper {
               variable(USER + ".lang", "Language of the user", VariableType.String, One)));
 
   /**
-   * Exercise variable containing information about the current exercise or scenario.
+   * AttackChainRun variable containing information about the current attackChainRun or attackChain.
    *
    * <p>Child variables:
    *
    * <ul>
-   *   <li>{@code exercise.id} - Platform identifier of the exercise
-   *   <li>{@code exercise.name} - Display name of the exercise
-   *   <li>{@code exercise.description} - Description text of the exercise
+   *   <li>{@code attackChainRun.id} - Platform identifier of the attackChainRun
+   *   <li>{@code attackChainRun.name} - Display name of the attackChainRun
+   *   <li>{@code attackChainRun.description} - Description text of the attackChainRun
    * </ul>
    */
-  public static final ContractVariable exerciseVariable =
+  public static final ContractVariable attackChainRunVariable =
       variable(
           EXERCISE,
           "Exercise of the current injection",

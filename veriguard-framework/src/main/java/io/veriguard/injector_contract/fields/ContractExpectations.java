@@ -1,6 +1,6 @@
 package io.veriguard.injector_contract.fields;
 
-import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS;
+import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS;
 import static io.veriguard.injector_contract.ContractCardinality.Multiple;
 
 import io.veriguard.model.inject.form.Expectation;

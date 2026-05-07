@@ -3,7 +3,7 @@ package io.veriguard.rest.asset_group;
 import static io.veriguard.rest.asset_group.AssetGroupApi.ASSET_GROUP_URI;
 import static io.veriguard.utils.JsonTestUtils.asJsonString;
 import static io.veriguard.utils.fixtures.AssetGroupFixture.*;
-import static io.veriguard.utils.fixtures.InjectFixture.getDefaultInject;
+import static io.veriguard.utils.fixtures.AttackChainNodeFixture.getDefaultAttackChainNode;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -15,11 +15,11 @@ import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AssetGroupRepository;
-import io.veriguard.database.repository.InjectRepository;
+import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.TagRepository;
 import io.veriguard.rest.asset_group.form.AssetGroupInput;
-import io.veriguard.rest.exercise.service.ExerciseService;
-import io.veriguard.utils.fixtures.ExerciseFixture;
+import io.veriguard.rest.exercise.service.AttackChainRunService;
+import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.TagFixture;
 import io.veriguard.utils.mockUser.WithMockUser;
 import jakarta.persistence.EntityManager;
@@ -48,8 +48,8 @@ class AssetGroupApiTest extends IntegrationTest {
   @Autowired private MockMvc mvc;
   @Autowired private AssetGroupRepository assetGroupRepository;
   @Autowired private TagRepository tagRepository;
-  @Autowired private InjectRepository injectRepository;
-  @Autowired private ExerciseService exerciseService;
+  @Autowired private AttackChainNodeRepository attackChainNodeRepository;
+  @Autowired private AttackChainRunService attackChainRunService;
   @Autowired private EntityManager entityManager;
 
   @DisplayName(
@@ -293,7 +293,7 @@ class AssetGroupApiTest extends IntegrationTest {
 
   // Options endpoint tests
 
-  private Inject prepareOptionsEndpointTestData() {
+  private AttackChainNode prepareOptionsEndpointTestData() {
     // Teams
     AssetGroup ag1input = createDefaultAssetGroup(ASSET_GROUP_NAME + "1");
     AssetGroup ag1 = this.assetGroupRepository.save(ag1input);
@@ -303,12 +303,12 @@ class AssetGroupApiTest extends IntegrationTest {
     AssetGroup ag3 = this.assetGroupRepository.save(ag3input);
     AssetGroup ag4input = createDefaultAssetGroup(ASSET_GROUP_NAME + "4");
     AssetGroup ag4 = this.assetGroupRepository.save(ag4input);
-    Exercise exInput = ExerciseFixture.getExercise();
-    Exercise exercise = this.exerciseService.createExercise(exInput);
-    // Inject
-    Inject inject = getDefaultInject();
-    inject.setExercise(exercise);
-    inject.setAssetGroups(
+    AttackChainRun exInput = AttackChainRunFixture.getAttackChainRun();
+    AttackChainRun attackChainRun = this.attackChainRunService.createAttackChainRun(exInput);
+    // AttackChainNode
+    AttackChainNode attackChainNode = getDefaultAttackChainNode();
+    attackChainNode.setAttackChainRun(attackChainRun);
+    attackChainNode.setAssetGroups(
         new ArrayList<>() {
           {
             add(ag1);
@@ -317,31 +317,31 @@ class AssetGroupApiTest extends IntegrationTest {
             add(ag4);
           }
         });
-    return this.injectRepository.save(inject);
+    return this.attackChainNodeRepository.save(attackChainNode);
   }
 
   Stream<Arguments> optionsByNameTestParameters() {
     return Stream.of(
         Arguments.of(
-            null, false, 0), // Case 1: searchText is null and simulationOrScenarioId is null
+            null, false, 0), // Case 1: searchText is null and simulationOrAttackChainId is null
         Arguments.of(
             ASSET_GROUP_NAME,
             false,
-            0), // Case 2: searchText is valid and simulationOrScenarioId is null
+            0), // Case 2: searchText is valid and simulationOrAttackChainId is null
         Arguments.of(
             ASSET_GROUP_NAME + "2",
             false,
-            0), // Case 2: searchText is valid and simulationOrScenarioId is null
+            0), // Case 2: searchText is valid and simulationOrAttackChainId is null
         Arguments.of(
-            null, true, 4), // Case 3: searchText is null and simulationOrScenarioId is valid
+            null, true, 4), // Case 3: searchText is null and simulationOrAttackChainId is valid
         Arguments.of(
             ASSET_GROUP_NAME,
             true,
-            4), // Case 4: searchText is valid and simulationOrScenarioId is valid
+            4), // Case 4: searchText is valid and simulationOrAttackChainId is valid
         Arguments.of(
             ASSET_GROUP_NAME + "2",
             true,
-            1) // Case 5: searchText is valid and simulationOrScenarioId is valid
+            1) // Case 5: searchText is valid and simulationOrAttackChainId is valid
         );
   }
 
@@ -350,18 +350,18 @@ class AssetGroupApiTest extends IntegrationTest {
   @MethodSource("optionsByNameTestParameters")
   @WithMockUser(isAdmin = true)
   void optionsByNameTest(
-      String searchText, Boolean simulationOrScenarioId, Integer expectedNumberOfResults)
+      String searchText, Boolean simulationOrAttackChainId, Integer expectedNumberOfResults)
       throws Exception {
     // --PREPARE--
-    Inject i = prepareOptionsEndpointTestData();
-    Exercise exercise = i.getExercise();
+    AttackChainNode i = prepareOptionsEndpointTestData();
+    AttackChainRun attackChainRun = i.getAttackChainRun();
 
     // --EXECUTE--;
     String response =
         mvc.perform(
                 get(ASSET_GROUP_URI + "/options")
                     .queryParam("searchText", searchText)
-                    .queryParam("sourceId", simulationOrScenarioId ? exercise.getId() : null)
+                    .queryParam("sourceId", simulationOrAttackChainId ? attackChainRun.getId() : null)
                     .accept(MediaType.APPLICATION_JSON)
                     .with(csrf()))
             .andReturn()
@@ -389,8 +389,8 @@ class AssetGroupApiTest extends IntegrationTest {
   void optionsByIdTest(Integer numberOfAssetGroupsToProvide, Integer expectedNumberOfResults)
       throws Exception {
     // --PREPARE--
-    Inject inject = prepareOptionsEndpointTestData();
-    List<AssetGroup> assetGroups = inject.getAssetGroups();
+    AttackChainNode attackChainNode = prepareOptionsEndpointTestData();
+    List<AssetGroup> assetGroups = attackChainNode.getAssetGroups();
 
     List<String> idsToSearch = new ArrayList<>();
     for (int i = 0; i < numberOfAssetGroupsToProvide; i++) {

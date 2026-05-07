@@ -1,6 +1,6 @@
 package io.veriguard.utilstest;
 
-import io.veriguard.rest.inject.InjectApi;
+import io.veriguard.rest.inject.AttackChainNodeApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestContext;
@@ -21,7 +21,7 @@ public class RabbitMQTestListener implements TestExecutionListener {
 
     // Closing RabbitMQ consumers
     ApplicationContext context = testContext.getApplicationContext();
-    context.getBean(InjectApi.class).getInjectTraceQueueService().stop();
+    context.getBean(AttackChainNodeApi.class).getAttackChainNodeTraceQueueService().stop();
 
     log.info("RabbitMQ consumers closed for class : {}", testClass.getSimpleName());
   }

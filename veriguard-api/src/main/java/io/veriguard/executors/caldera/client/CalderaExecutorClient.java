@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.authorisation.HttpClientFactory;
 import io.veriguard.database.model.Endpoint;
-import io.veriguard.database.model.Injector;
+import io.veriguard.database.model.NodeExecutor;
 import io.veriguard.executors.caldera.client.model.Ability;
 import io.veriguard.executors.caldera.config.CalderaExecutorConfig;
 import io.veriguard.executors.caldera.model.Agent;
@@ -73,75 +73,75 @@ public class CalderaExecutorClient {
     }
   }
 
-  public Ability createSubprocessorAbility(Injector injector) {
+  public Ability createSubprocessorAbility(NodeExecutor nodeExecutor) {
     try {
       List<Map<String, String>> executors = new ArrayList<>();
-      Map<String, String> injectorExecutorCommands = injector.getExecutorCommands();
-      if (injectorExecutorCommands.containsKey(
+      Map<String, String> nodeExecutorExecutorCommands = nodeExecutor.getExecutorCommands();
+      if (nodeExecutorExecutorCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64)) {
         Map<String, String> executorWindows = new HashMap<>();
         executorWindows.put("platform", "windows");
         executorWindows.put("name", "psh");
         executorWindows.put(
             "command",
-            injectorExecutorCommands.get(
+            nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorWindows);
-      } else if (injectorExecutorCommands.containsKey(
+      } else if (nodeExecutorExecutorCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.arm64)) {
         Map<String, String> executorWindows = new HashMap<>();
         executorWindows.put("platform", "windows");
         executorWindows.put("name", "psh");
         executorWindows.put(
             "command",
-            injectorExecutorCommands.get(
+            nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorWindows);
       }
-      if (injectorExecutorCommands.containsKey(
+      if (nodeExecutorExecutorCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.x86_64)) {
         Map<String, String> executorLinux = new HashMap<>();
         executorLinux.put("platform", "linux");
         executorLinux.put("name", "sh");
         executorLinux.put(
             "command",
-            injectorExecutorCommands.get(
+            nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorLinux);
-      } else if (injectorExecutorCommands.containsKey(
+      } else if (nodeExecutorExecutorCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.arm64)) {
         Map<String, String> executorLinux = new HashMap<>();
         executorLinux.put("platform", "linux");
         executorLinux.put("name", "sh");
         executorLinux.put(
             "command",
-            injectorExecutorCommands.get(
+            nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorLinux);
       }
-      if (injectorExecutorCommands.containsKey(
+      if (nodeExecutorExecutorCommands.containsKey(
           Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.x86_64)) {
         Map<String, String> executorMac = new HashMap<>();
         executorMac.put("platform", "darwin");
         executorMac.put("name", "sh");
         executorMac.put(
             "command",
-            injectorExecutorCommands.get(
+            nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorMac);
-      } else if (injectorExecutorCommands.containsKey(
+      } else if (nodeExecutorExecutorCommands.containsKey(
           Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.arm64)) {
         Map<String, String> executorMac = new HashMap<>();
         executorMac.put("platform", "darwin");
         executorMac.put("name", "sh");
         executorMac.put(
             "command",
-            injectorExecutorCommands.get(
+            nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorMac);
       }
       Map<String, Object> body = new HashMap<>();
-      body.put("name", "caldera-subprocessor-" + injector.getName());
+      body.put("name", "caldera-subprocessor-" + nodeExecutor.getName());
       body.put("tactic", "veriguard");
       body.put("technique_id", "veriguard");
       body.put("technique_name", "veriguard");
@@ -153,75 +153,75 @@ public class CalderaExecutorClient {
     }
   }
 
-  public Ability createClearAbility(Injector injector) {
+  public Ability createClearAbility(NodeExecutor nodeExecutor) {
     try {
       List<Map<String, String>> executors = new ArrayList<>();
-      Map<String, String> injectorExecutorClearCommands = injector.getExecutorClearCommands();
-      if (injectorExecutorClearCommands.containsKey(
+      Map<String, String> nodeExecutorExecutorClearCommands = nodeExecutor.getExecutorClearCommands();
+      if (nodeExecutorExecutorClearCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64)) {
         Map<String, String> executorWindows = new HashMap<>();
         executorWindows.put("platform", "windows");
         executorWindows.put("name", "psh");
         executorWindows.put(
             "command",
-            injectorExecutorClearCommands.get(
+            nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorWindows);
-      } else if (injectorExecutorClearCommands.containsKey(
+      } else if (nodeExecutorExecutorClearCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.arm64)) {
         Map<String, String> executorWindows = new HashMap<>();
         executorWindows.put("platform", "windows");
         executorWindows.put("name", "psh");
         executorWindows.put(
             "command",
-            injectorExecutorClearCommands.get(
+            nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorWindows);
       }
-      if (injectorExecutorClearCommands.containsKey(
+      if (nodeExecutorExecutorClearCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.x86_64)) {
         Map<String, String> executorLinux = new HashMap<>();
         executorLinux.put("platform", "linux");
         executorLinux.put("name", "sh");
         executorLinux.put(
             "command",
-            injectorExecutorClearCommands.get(
+            nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorLinux);
-      } else if (injectorExecutorClearCommands.containsKey(
+      } else if (nodeExecutorExecutorClearCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.arm64)) {
         Map<String, String> executorLinux = new HashMap<>();
         executorLinux.put("platform", "linux");
         executorLinux.put("name", "sh");
         executorLinux.put(
             "command",
-            injectorExecutorClearCommands.get(
+            nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorLinux);
       }
-      if (injectorExecutorClearCommands.containsKey(
+      if (nodeExecutorExecutorClearCommands.containsKey(
           Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.x86_64)) {
         Map<String, String> executorMac = new HashMap<>();
         executorMac.put("platform", "darwin");
         executorMac.put("name", "sh");
         executorMac.put(
             "command",
-            injectorExecutorClearCommands.get(
+            nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorMac);
-      } else if (injectorExecutorClearCommands.containsKey(
+      } else if (nodeExecutorExecutorClearCommands.containsKey(
           Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.arm64)) {
         Map<String, String> executorMac = new HashMap<>();
         executorMac.put("platform", "darwin");
         executorMac.put("name", "sh");
         executorMac.put(
             "command",
-            injectorExecutorClearCommands.get(
+            nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorMac);
       }
       Map<String, Object> body = new HashMap<>();
-      body.put("name", "caldera-clear-" + injector.getName());
+      body.put("name", "caldera-clear-" + nodeExecutor.getName());
       body.put("tactic", "veriguard");
       body.put("technique_id", "veriguard");
       body.put("technique_name", "veriguard");

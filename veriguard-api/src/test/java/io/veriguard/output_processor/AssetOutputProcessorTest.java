@@ -8,7 +8,7 @@ import static org.mockito.Mockito.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.Endpoint;
-import io.veriguard.database.model.Inject;
+import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.rest.asset.endpoint.form.EndpointInput;
 import io.veriguard.rest.inject.service.ContractOutputContext;
 import io.veriguard.rest.inject.service.ExecutionProcessingContext;
@@ -36,8 +36,8 @@ class AssetOutputProcessorTest {
     executionContext = mock(ExecutionProcessingContext.class);
     contractOutputContext = mock(ContractOutputContext.class);
 
-    Inject inject = mock(Inject.class);
-    when(executionContext.inject()).thenReturn(inject);
+    AttackChainNode attackChainNode = mock(AttackChainNode.class);
+    when(executionContext.attackChainNode()).thenReturn(attackChainNode);
     when(tagService.findOrCreateTagsFromNames(any())).thenReturn(Set.of());
   }
 

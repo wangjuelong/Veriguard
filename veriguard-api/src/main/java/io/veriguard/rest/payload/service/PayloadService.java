@@ -1,7 +1,7 @@
 package io.veriguard.rest.payload.service;
 
-import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_TARGETED_ASSET_SEPARATOR;
-import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_TARGETED_PROPERTY;
+import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_TARGETED_ASSET_SEPARATOR;
+import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_TARGETED_PROPERTY;
 import static io.veriguard.database.model.Tag.OPENCTI_TAG_NAME;
 import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.helper.SupportedLanguage.en;
@@ -24,8 +24,8 @@ import io.veriguard.aop.lock.Lock;
 import io.veriguard.aop.lock.LockResourceType;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AttackPatternRepository;
-import io.veriguard.database.repository.InjectorContractRepository;
-import io.veriguard.database.repository.InjectorRepository;
+import io.veriguard.database.repository.NodeContractRepository;
+import io.veriguard.database.repository.NodeExecutorRepository;
 import io.veriguard.database.repository.PayloadRepository;
 import io.veriguard.database.specification.SpecificationUtils;
 import io.veriguard.expectation.ExpectationBuilderService;
@@ -71,8 +71,8 @@ public class PayloadService {
   @Resource protected ObjectMapper mapper;
 
   private final PayloadRepository payloadRepository;
-  private final InjectorRepository injectorRepository;
-  private final InjectorContractRepository injectorContractRepository;
+  private final NodeExecutorRepository nodeExecutorRepository;
+  private final NodeContractRepository nodeContractRepository;
   private final AttackPatternRepository attackPatternRepository;
   private final ExpectationBuilderService expectationBuilderService;
   private final UserService userService;
@@ -80,53 +80,53 @@ public class PayloadService {
   private final TagService tagService;
   private final PayloadUtils payloadUtils;
 
-  public void updateInjectorContractsForPayload(Payload payload) {
-    List<Injector> injectors = this.injectorRepository.findAllByPayloads(true);
-    injectors.forEach(injector -> updateInjectorContract(injector, payload));
+  public void updateNodeContractsForPayload(Payload payload) {
+    List<NodeExecutor> nodeExecutors = this.nodeExecutorRepository.findAllByPayloads(true);
+    nodeExecutors.forEach(nodeExecutor -> updateNodeContract(nodeExecutor, payload));
   }
 
-  private void setInjectorContractPropertyBasedOnPayload(
-      InjectorContract injectorContract, Payload payload, Injector injector) {
+  private void setNodeContractPropertyBasedOnPayload(
+      NodeContract nodeContract, Payload payload, NodeExecutor nodeExecutor) {
     Map<String, String> labels = Map.of("en", payload.getName(), "fr", payload.getName());
-    injectorContract.setLabels(labels);
-    injectorContract.setNeedsExecutor(true);
-    injectorContract.setManual(false);
-    injectorContract.setInjector(injector);
-    injectorContract.setPayload(payload);
-    injectorContract.setPlatforms(payload.getPlatforms());
-    injectorContract.setDomains(
+    nodeContract.setLabels(labels);
+    nodeContract.setNeedsExecutor(true);
+    nodeContract.setManual(false);
+    nodeContract.setNodeExecutor(nodeExecutor);
+    nodeContract.setPayload(payload);
+    nodeContract.setPlatforms(payload.getPlatforms());
+    nodeContract.setDomains(
         domainService.upsertDomainEntities(new HashSet<>(Set.of(PresetDomain.TOCLASSIFY))));
-    injectorContract.setAttackPatterns(
+    nodeContract.setAttackPatterns(
         fromIterable(
             attackPatternRepository.findAllById(
                 payload.getAttackPatterns().stream().map(AttackPattern::getId).toList())));
-    injectorContract.setAtomicTesting(true);
+    nodeContract.setAtomicTesting(true);
 
     try {
-      Contract contract = buildContract(injectorContract.getId(), injector, payload);
+      Contract contract = buildContract(nodeContract.getId(), nodeExecutor, payload);
       String content = mapper.writeValueAsString(contract);
-      injectorContract.setContent(content);
-      injectorContract.setConvertedContent(mapper.readValue(content, ObjectNode.class));
+      nodeContract.setContent(content);
+      nodeContract.setConvertedContent(mapper.readValue(content, ObjectNode.class));
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void updateInjectorContract(Injector injector, Payload payload) {
-    Optional<InjectorContract> injectorContract =
-        injectorContractRepository.findInjectorContractByInjectorAndPayload(injector, payload);
+  private void updateNodeContract(NodeExecutor nodeExecutor, Payload payload) {
+    Optional<NodeContract> nodeContract =
+        nodeContractRepository.findNodeContractByNodeExecutorAndPayload(nodeExecutor, payload);
 
-    InjectorContract injectorContractToUpdate;
-    if (injectorContract.isPresent()) {
-      injectorContractToUpdate = injectorContract.get();
+    NodeContract nodeContractToUpdate;
+    if (nodeContract.isPresent()) {
+      nodeContractToUpdate = nodeContract.get();
     } else {
       String contractId = String.valueOf(UUID.randomUUID());
-      injectorContractToUpdate = new InjectorContract();
-      injectorContractToUpdate.setId(contractId);
+      nodeContractToUpdate = new NodeContract();
+      nodeContractToUpdate.setId(contractId);
     }
 
-    setInjectorContractPropertyBasedOnPayload(injectorContractToUpdate, payload, injector);
-    injectorContractRepository.save(injectorContractToUpdate);
+    setNodeContractPropertyBasedOnPayload(nodeContractToUpdate, payload, nodeExecutor);
+    nodeContractRepository.save(nodeContractToUpdate);
   }
 
   private ContractChoiceInformation obfuscatorField(String executor) {
@@ -163,16 +163,16 @@ public class PayloadService {
 
   private Contract buildContract(
       @NotNull final String contractId,
-      @NotNull final Injector injector,
+      @NotNull final NodeExecutor nodeExecutor,
       @NotNull final Payload payload) {
-    Map<SupportedLanguage, String> labels = Map.of(en, injector.getName(), fr, injector.getName());
+    Map<SupportedLanguage, String> labels = Map.of(en, nodeExecutor.getName(), fr, nodeExecutor.getName());
     ContractConfig contractConfig =
         new ContractConfig(
-            injector.getType(),
+            nodeExecutor.getType(),
             labels,
             "#000000",
             "#000000",
-            "/img/icon-" + injector.getType() + ".png");
+            "/img/icon-" + nodeExecutor.getType() + ".png");
     ContractAsset assetField = assetField(Multiple);
     ContractAssetGroup assetGroupField = assetGroupField(Multiple);
     ContractExpectations expectationsField = expectations(payload.getExpectations());
@@ -214,10 +214,10 @@ public class PayloadService {
         payload.getDomains());
   }
 
-  private ContractExpectations expectations(InjectExpectation.EXPECTATION_TYPE[] expectationTypes) {
+  private ContractExpectations expectations(AttackChainNodeExpectation.EXPECTATION_TYPE[] expectationTypes) {
     List<Expectation> expectations = new ArrayList<>();
     if (expectationTypes != null) {
-      for (InjectExpectation.EXPECTATION_TYPE type : expectationTypes) {
+      for (AttackChainNodeExpectation.EXPECTATION_TYPE type : expectationTypes) {
         switch (type) {
           case TEXT -> expectations.add(this.expectationBuilderService.buildTextExpectation());
           case DOCUMENT ->
@@ -242,7 +242,7 @@ public class PayloadService {
   public Payload duplicate(@NotBlank final String payloadId) {
     Payload origin = this.payloadRepository.findById(payloadId).orElseThrow();
     Payload duplicated = payloadRepository.save(generateDuplicatedPayload(origin));
-    this.updateInjectorContractsForPayload(duplicated);
+    this.updateNodeContractsForPayload(duplicated);
     return duplicated;
   }
 
@@ -361,9 +361,9 @@ public class PayloadService {
     dynamicDnsResolutionPayload.setArguments(new ArrayList<>(List.of(argument)));
 
     dynamicDnsResolutionPayload.setExpectations(
-        new InjectExpectation.EXPECTATION_TYPE[] {
-          InjectExpectation.EXPECTATION_TYPE.PREVENTION,
-          InjectExpectation.EXPECTATION_TYPE.DETECTION
+        new AttackChainNodeExpectation.EXPECTATION_TYPE[] {
+          AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION,
+          AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION
         });
 
     dynamicDnsResolutionPayload.setDomains(
@@ -374,7 +374,7 @@ public class PayloadService {
         tagService.findOrCreateTagsFromNames(new HashSet<>(Set.of(OPENCTI_TAG_NAME))));
 
     DnsResolution saved = payloadRepository.save(dynamicDnsResolutionPayload);
-    updateInjectorContractsForPayload(saved);
+    updateNodeContractsForPayload(saved);
     return saved;
   }
 }

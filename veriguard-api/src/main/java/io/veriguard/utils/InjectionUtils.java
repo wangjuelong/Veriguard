@@ -32,7 +32,7 @@ public class InjectionUtils {
   public static boolean isInInjectableRange(Injection injection) {
     Instant now = Instant.now();
     Instant start = now.minus(Duration.parse("PT4M"));
-    Instant injectWhen = injection.getDate().orElseThrow();
-    return injectWhen.isAfter(start) && injectWhen.isBefore(now);
+    Instant attackChainNodeWhen = injection.getDate().orElseThrow();
+    return attackChainNodeWhen.isAfter(start) && attackChainNodeWhen.isBefore(now);
   }
 }

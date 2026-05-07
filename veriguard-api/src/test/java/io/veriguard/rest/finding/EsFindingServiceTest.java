@@ -1,15 +1,15 @@
 package io.veriguard.rest.finding;
 
 import static io.veriguard.utils.fixtures.FindingFixture.*;
-import static io.veriguard.utils.fixtures.InjectFixture.getDefaultInject;
+import static io.veriguard.utils.fixtures.AttackChainNodeFixture.getDefaultAttackChainNode;
 import static org.junit.jupiter.api.Assertions.*;
 
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.Finding;
-import io.veriguard.database.model.Inject;
-import io.veriguard.database.repository.InjectRepository;
+import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.utils.fixtures.composers.FindingComposer;
-import io.veriguard.utils.fixtures.composers.InjectComposer;
+import io.veriguard.utils.fixtures.composers.AttackChainNodeComposer;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -25,14 +25,14 @@ import org.springframework.transaction.annotation.Transactional;
 class EsFindingServiceTest extends IntegrationTest {
 
   @Autowired private FindingComposer findingComposer;
-  @Autowired private InjectComposer injectComposer;
+  @Autowired private AttackChainNodeComposer attackChainNodeComposer;
   @Autowired private FindingService findingService;
-  @Autowired private InjectRepository injectRepository;
+  @Autowired private AttackChainNodeRepository attackChainNodeRepository;
 
   FindingComposer.Composer createFindingComposer() {
     return this.findingComposer
         .forFinding(createDefaultTextFinding())
-        .withInject(injectComposer.forInject(getDefaultInject()))
+        .withAttackChainNode(attackChainNodeComposer.forAttackChainNode(getDefaultAttackChainNode()))
         .persist();
   }
 
@@ -75,10 +75,10 @@ class EsFindingServiceTest extends IntegrationTest {
     void given_new_text_finding_should_create_finding() {
       // -- PREPARE --
       Finding finding = createDefaultTextFinding();
-      Inject inject = injectRepository.save(getDefaultInject());
+      AttackChainNode attackChainNode = attackChainNodeRepository.save(getDefaultAttackChainNode());
 
       // -- EXECUTE --
-      Finding result = findingService.createFinding(finding, inject.getId());
+      Finding result = findingService.createFinding(finding, attackChainNode.getId());
 
       // -- ASSERT --
       assertNotNull(result);
@@ -89,10 +89,10 @@ class EsFindingServiceTest extends IntegrationTest {
     void given_new_ipv6_finding_should_create_finding() {
       // -- PREPARE --
       Finding finding = createDefaultIPV6Finding();
-      Inject inject = injectRepository.save(getDefaultInject());
+      AttackChainNode attackChainNode = attackChainNodeRepository.save(getDefaultAttackChainNode());
 
       // -- EXECUTE --
-      Finding result = findingService.createFinding(finding, inject.getId());
+      Finding result = findingService.createFinding(finding, attackChainNode.getId());
 
       // -- ASSERT --
       InetAddressValidator validator = InetAddressValidator.getInstance();
@@ -105,10 +105,10 @@ class EsFindingServiceTest extends IntegrationTest {
     void given_new_credentials_finding_should_create_finding() {
       // -- PREPARE --
       Finding finding = createDefaultFindingCredentials();
-      Inject inject = injectRepository.save(getDefaultInject());
+      AttackChainNode attackChainNode = attackChainNodeRepository.save(getDefaultAttackChainNode());
 
       // -- EXECUTE --
-      Finding result = findingService.createFinding(finding, inject.getId());
+      Finding result = findingService.createFinding(finding, attackChainNode.getId());
 
       // -- ASSERT --
       assertNotNull(result);
@@ -126,7 +126,7 @@ class EsFindingServiceTest extends IntegrationTest {
     finding.setField(newKey);
 
     // -- EXECUTE --
-    Finding result = findingService.updateFinding(finding, finding.getInject().getId());
+    Finding result = findingService.updateFinding(finding, finding.getAttackChainNode().getId());
 
     // -- ASSERT --
     assertNotNull(result);

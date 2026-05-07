@@ -129,7 +129,7 @@ public class V20260101_Starter_pack extends DataPack {
           openCTITagRule.getTag().getName(),
           new ArrayList<>(List.of(allEndpointAssetGroup.getId())));
 
-      this.importScenariosFromResources(honeyScanMeEndpoint, allEndpointAssetGroup);
+      this.importAttackChainsFromResources(honeyScanMeEndpoint, allEndpointAssetGroup);
       this.importDashboardsFromResources();
     } catch (Exception e) {
       recordError("Unexpected error during StarterPack initialization.", e);
@@ -168,7 +168,7 @@ public class V20260101_Starter_pack extends DataPack {
     return this.assetGroupService.createAssetGroup(allEndpointsAssetGroup);
   }
 
-  private void importScenariosFromResources(Asset asset, AssetGroup assetGroup) {
+  private void importAttackChainsFromResources(Asset asset, AssetGroup assetGroup) {
     listFilesInResourceFolder(Config.SCENARIOS_FOLDER_NAME)
         .forEach(
             resourceToAdd -> {

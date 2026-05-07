@@ -3,10 +3,10 @@ package io.veriguard.database.raw;
 import java.time.Instant;
 
 /**
- * Spring Data projection interface for exercise pause data.
+ * Spring Data projection interface for attackChainRun pause data.
  *
- * <p>This interface defines a projection for retrieving pause events during exercise execution.
- * Pauses represent interruptions in exercise flow, typically initiated by facilitators.
+ * <p>This interface defines a projection for retrieving pause events during attackChainRun execution.
+ * Pauses represent interruptions in attackChainRun flow, typically initiated by facilitators.
  *
  * @see io.veriguard.database.model.Pause
  */
@@ -20,11 +20,11 @@ public interface RawPause {
   String getPause_id();
 
   /**
-   * Returns the ID of the exercise that was paused.
+   * Returns the ID of the attackChainRun that was paused.
    *
-   * @return the exercise ID
+   * @return the attackChainRun ID
    */
-  String getPause_exercise();
+  String getPause_attackChainRun();
 
   /**
    * Returns the timestamp when the pause was initiated.

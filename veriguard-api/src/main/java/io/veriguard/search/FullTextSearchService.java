@@ -35,8 +35,8 @@ public class FullTextSearchService<T extends Base> {
   private final UserRepository userRepository;
   private final TeamRepository teamRepository;
   private final OrganizationRepository organizationRepository;
-  private final ScenarioRepository scenarioRepository;
-  private final ExerciseRepository exerciseRepository;
+  private final AttackChainRepository attackChainRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
   private final UserService userService;
 
   private Map<Class<T>, JpaSpecificationExecutor<T>> repositoryMap;
@@ -55,8 +55,8 @@ public class FullTextSearchService<T extends Base> {
             (Class<T>) Team.class, (JpaSpecificationExecutor<T>) this.teamRepository,
             (Class<T>) Organization.class,
                 (JpaSpecificationExecutor<T>) this.organizationRepository,
-            (Class<T>) Scenario.class, (JpaSpecificationExecutor<T>) this.scenarioRepository,
-            (Class<T>) Exercise.class, (JpaSpecificationExecutor<T>) this.exerciseRepository);
+            (Class<T>) AttackChain.class, (JpaSpecificationExecutor<T>) this.attackChainRepository,
+            (Class<T>) AttackChainRun.class, (JpaSpecificationExecutor<T>) this.attackChainRunRepository);
 
     this.searchListByClassMap =
         Map.of(
@@ -70,9 +70,9 @@ public class FullTextSearchService<T extends Base> {
             List.of("name", "id"),
             (Class<T>) Organization.class,
             List.of("name", "id"),
-            (Class<T>) Scenario.class,
+            (Class<T>) AttackChain.class,
             List.of("name", "id"),
-            (Class<T>) Exercise.class,
+            (Class<T>) AttackChainRun.class,
             List.of("name", "id"));
 
     this.capaByClassMap =
@@ -87,9 +87,9 @@ public class FullTextSearchService<T extends Base> {
             Capability.of(ResourceType.TEAM, Action.SEARCH),
             (Class<T>) Organization.class,
             Capability.of(ResourceType.ORGANIZATION, Action.SEARCH),
-            (Class<T>) Scenario.class,
+            (Class<T>) AttackChain.class,
             Capability.of(ResourceType.SCENARIO, Action.SEARCH),
-            (Class<T>) Exercise.class,
+            (Class<T>) AttackChainRun.class,
             Capability.of(ResourceType.SIMULATION, Action.SEARCH));
 
     validateMapKeys();
@@ -207,22 +207,22 @@ public class FullTextSearchService<T extends Base> {
         result.setClazz(Organization.class.getSimpleName());
         return result;
       }
-      case Scenario scenario -> {
+      case AttackChain attackChain -> {
         FullTextSearchResult result = new FullTextSearchResult();
-        result.setId(scenario.getId());
-        result.setName(scenario.getName());
-        result.setDescription(scenario.getDescription());
-        result.setTags(scenario.getTags());
-        result.setClazz(Scenario.class.getSimpleName());
+        result.setId(attackChain.getId());
+        result.setName(attackChain.getName());
+        result.setDescription(attackChain.getDescription());
+        result.setTags(attackChain.getTags());
+        result.setClazz(AttackChain.class.getSimpleName());
         return result;
       }
-      case Exercise exercise -> {
+      case AttackChainRun attackChainRun -> {
         FullTextSearchResult result = new FullTextSearchResult();
-        result.setId(exercise.getId());
-        result.setName(exercise.getName());
-        result.setDescription(exercise.getDescription());
-        result.setTags(exercise.getTags());
-        result.setClazz(Exercise.class.getSimpleName());
+        result.setId(attackChainRun.getId());
+        result.setName(attackChainRun.getName());
+        result.setDescription(attackChainRun.getDescription());
+        result.setTags(attackChainRun.getTags());
+        result.setClazz(AttackChainRun.class.getSimpleName());
         return result;
       }
       default -> {}
@@ -249,10 +249,10 @@ public class FullTextSearchService<T extends Base> {
           (Class<T>) Team.class, new FullTextSearchCountResult(Team.class.getSimpleName(), 0L),
           (Class<T>) Organization.class,
               new FullTextSearchCountResult(Organization.class.getSimpleName(), 0L),
-          (Class<T>) Scenario.class,
-              new FullTextSearchCountResult(Scenario.class.getSimpleName(), 0L),
-          (Class<T>) Exercise.class,
-              new FullTextSearchCountResult(Exercise.class.getSimpleName(), 0L));
+          (Class<T>) AttackChain.class,
+              new FullTextSearchCountResult(AttackChain.class.getSimpleName(), 0L),
+          (Class<T>) AttackChainRun.class,
+              new FullTextSearchCountResult(AttackChainRun.class.getSimpleName(), 0L));
     }
 
     Map<Class<T>, FullTextSearchCountResult> results = new HashMap<>();

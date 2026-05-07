@@ -20,7 +20,7 @@ public class MapperExportMixins {
         "inject_importer_injector_contract",
         "inject_importer_rule_attributes",
       })
-  public static class InjectImporter {}
+  public static class AttackChainNodeImporter {}
 
   @JsonIncludeProperties(
       value = {

@@ -11,11 +11,11 @@ public class TeamCreateInput extends TeamBaseInput {
 
   @JsonProperty("team_exercises")
   @Schema(description = "Id of the simulations linked to the team")
-  private List<String> exerciseIds = new ArrayList<>();
+  private List<String> attackChainRunIds = new ArrayList<>();
 
   @JsonProperty("team_scenarios")
   @Schema(description = "Id of the scenarios linked to the team")
-  private List<String> scenarioIds = new ArrayList<>();
+  private List<String> attackChainIds = new ArrayList<>();
 
   @JsonProperty("team_contextual")
   @Schema(

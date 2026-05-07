@@ -2,7 +2,7 @@ package io.veriguard.expectation;
 
 import static java.util.Optional.ofNullable;
 
-import io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

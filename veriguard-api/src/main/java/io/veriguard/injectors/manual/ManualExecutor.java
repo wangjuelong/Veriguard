@@ -3,31 +3,31 @@ package io.veriguard.injectors.manual;
 import io.veriguard.database.model.Execution;
 import io.veriguard.database.model.ExecutionTrace;
 import io.veriguard.database.model.ExecutionTraceAction;
-import io.veriguard.execution.ExecutableInject;
-import io.veriguard.executors.Injector;
-import io.veriguard.executors.InjectorContext;
+import io.veriguard.execution.ExecutableNode;
+import io.veriguard.executors.NodeExecutor;
+import io.veriguard.executors.NodeExecutorContext;
 import io.veriguard.injectors.manual.model.ManualContent;
 import io.veriguard.model.ExecutionProcess;
 import io.veriguard.model.Expectation;
 import io.veriguard.model.expectation.ManualExpectation;
-import io.veriguard.service.InjectExpectationService;
+import io.veriguard.service.AttackChainNodeExpectationService;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ManualExecutor extends Injector {
+public class ManualExecutor extends NodeExecutor {
 
-  private final InjectExpectationService injectExpectationService;
+  private final AttackChainNodeExpectationService attackChainNodeExpectationService;
 
   public ManualExecutor(
-      InjectorContext context, final InjectExpectationService injectExpectationService) {
+      NodeExecutorContext context, final AttackChainNodeExpectationService attackChainNodeExpectationService) {
     super(context);
-    this.injectExpectationService = injectExpectationService;
+    this.attackChainNodeExpectationService = attackChainNodeExpectationService;
   }
 
   @Override
   public ExecutionProcess process(
-      @NotNull final Execution execution, @NotNull final ExecutableInject injection)
+      @NotNull final Execution execution, @NotNull final ExecutableNode injection)
       throws Exception {
 
     ManualContent content = contentConvert(injection, ManualContent.class);
@@ -42,7 +42,7 @@ public class ManualExecutor extends Injector {
                     })
             .toList();
 
-    injectExpectationService.buildAndSaveInjectExpectations(injection, expectations);
+    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(injection, expectations);
     execution.addTrace(
         ExecutionTrace.getNewSuccessTrace(
             "Manual inject execution", ExecutionTraceAction.COMPLETE));

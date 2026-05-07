@@ -16,7 +16,7 @@ import io.veriguard.integration.migration.CalderaExecutorConfigurationMigration;
 import io.veriguard.service.AgentService;
 import io.veriguard.service.EndpointService;
 import io.veriguard.service.FileService;
-import io.veriguard.service.InjectorService;
+import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.PlatformSettingsService;
 import io.veriguard.service.catalog_connectors.CatalogConnectorService;
 import io.veriguard.service.connector_instances.ConnectorInstanceService;
@@ -38,7 +38,7 @@ public class CalderaExecutorIntegrationFactory extends IntegrationFactory {
 
   private final AgentService agentService;
   private final EndpointService endpointService;
-  private final InjectorService injectorService;
+  private final NodeExecutorService nodeExecutorService;
   private final PlatformSettingsService platformSettingsService;
   private final ThreadPoolTaskScheduler taskScheduler;
   private final FileService fileService;
@@ -52,7 +52,7 @@ public class CalderaExecutorIntegrationFactory extends IntegrationFactory {
       CalderaExecutorConfigurationMigration calderaExecutorConfigurationMigration,
       AgentService agentService,
       EndpointService endpointService,
-      InjectorService injectorService,
+      NodeExecutorService nodeExecutorService,
       PlatformSettingsService platformSettingsService,
       ThreadPoolTaskScheduler taskScheduler,
       FileService fileService,
@@ -66,7 +66,7 @@ public class CalderaExecutorIntegrationFactory extends IntegrationFactory {
     this.calderaExecutorConfigurationMigration = calderaExecutorConfigurationMigration;
     this.agentService = agentService;
     this.endpointService = endpointService;
-    this.injectorService = injectorService;
+    this.nodeExecutorService = nodeExecutorService;
     this.platformSettingsService = platformSettingsService;
     this.taskScheduler = taskScheduler;
     this.fileService = fileService;
@@ -116,7 +116,7 @@ public class CalderaExecutorIntegrationFactory extends IntegrationFactory {
         executorService,
         componentRequestEngine,
         platformSettingsService,
-        injectorService,
+        nodeExecutorService,
         taskScheduler,
         baseIntegrationConfigurationBuilder,
         httpClientFactory);

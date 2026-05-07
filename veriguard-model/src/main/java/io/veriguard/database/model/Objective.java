@@ -41,14 +41,14 @@ public class Objective implements Base {
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("objective_exercise")
   @Schema(type = "string")
-  private Exercise exercise;
+  private AttackChainRun attackChainRun;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "objective_scenario")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("objective_scenario")
   @Schema(type = "string")
-  private Scenario scenario;
+  private AttackChain attackChain;
 
   @Column(name = "objective_title")
   @JsonProperty("objective_title")
@@ -92,11 +92,11 @@ public class Objective implements Base {
 
   @Override
   public boolean isUserHasAccess(User user) {
-    if (getExercise() != null) {
-      return getExercise().isUserHasAccess(user);
+    if (getAttackChainRun() != null) {
+      return getAttackChainRun().isUserHasAccess(user);
     }
-    if (getScenario() != null) {
-      return getScenario().isUserHasAccess(user);
+    if (getAttackChain() != null) {
+      return getAttackChain().isUserHasAccess(user);
     }
     return user.isAdmin();
   }
@@ -116,15 +116,15 @@ public class Objective implements Base {
 
   @JsonIgnore
   public String getParentResourceId() {
-    return this.getScenario() != null
-        ? this.getScenario().getId()
-        : this.getExercise() != null ? this.getExercise().getId() : this.getId();
+    return this.getAttackChain() != null
+        ? this.getAttackChain().getId()
+        : this.getAttackChainRun() != null ? this.getAttackChainRun().getId() : this.getId();
   }
 
   @JsonIgnore
   public ResourceType getParentResourceType() {
-    return this.getScenario() != null
+    return this.getAttackChain() != null
         ? ResourceType.SCENARIO
-        : this.getExercise() != null ? ResourceType.SIMULATION : ResourceType.OBJECTIVE;
+        : this.getAttackChainRun() != null ? ResourceType.SIMULATION : ResourceType.OBJECTIVE;
   }
 }

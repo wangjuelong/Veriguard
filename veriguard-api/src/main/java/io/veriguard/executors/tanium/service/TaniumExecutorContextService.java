@@ -36,7 +36,7 @@ public class TaniumExecutorContextService extends ExecutorContextService {
 
   @Override
   public void launchExecutorSubprocess(
-      @NotNull final Inject inject,
+      @NotNull final AttackChainNode attackChainNode,
       @NotNull final Endpoint assetEndpoint,
       @NotNull final Agent agent) {
     // launchBatchExecutorSubprocess is used here for better performances
@@ -44,21 +44,21 @@ public class TaniumExecutorContextService extends ExecutorContextService {
 
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
-      Inject inject, Set<Agent> agents, InjectStatus injectStatus) {
+      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
 
     List<Agent> taniumAgents = new ArrayList<>(agents);
 
     // Sometimes, assets from agents aren't fetched even with the EAGER property from Hibernate
     taniumAgents.forEach(agent -> agent.setAsset((Asset) Hibernate.unproxy(agent.getAsset())));
 
-    Injector injector =
-        inject
-            .getInjectorContract()
-            .map(InjectorContract::getInjector)
+    NodeExecutor nodeExecutor =
+        attackChainNode
+            .getNodeContract()
+            .map(NodeContract::getNodeExecutor)
             .orElseThrow(
                 () -> new UnsupportedOperationException("Inject does not have a contract"));
 
-    taniumAgents = executorService.manageWithoutPlatformAgents(taniumAgents, injectStatus);
+    taniumAgents = executorService.manageWithoutPlatformAgents(taniumAgents, attackChainNodeStatus);
 
     List<TaniumAction> actions = new ArrayList<>();
     // Set implant script for each agent
@@ -69,15 +69,15 @@ public class TaniumExecutorContextService extends ExecutorContextService {
               actions.addAll(
                   getWindowsActions(
                       getAgentsFromOSAndArch(taniumAgents, platform, arch),
-                      injector,
-                      inject.getId(),
+                      nodeExecutor,
+                      attackChainNode.getId(),
                       arch));
           case Linux, MacOS ->
               actions.addAll(
                   getUnixActions(
                       getAgentsFromOSAndArch(taniumAgents, platform, arch),
-                      injector,
-                      inject.getId(),
+                      nodeExecutor,
+                      attackChainNode.getId(),
                       platform,
                       arch));
           default -> { // No need, only Mac, Windows and Linux for now
@@ -115,7 +115,7 @@ public class TaniumExecutorContextService extends ExecutorContextService {
   }
 
   private List<TaniumAction> getWindowsActions(
-      List<Agent> agents, Injector injector, String injectId, Endpoint.PLATFORM_ARCH arch) {
+      List<Agent> agents, NodeExecutor nodeExecutor, String attackChainNodeId, Endpoint.PLATFORM_ARCH arch) {
     List<TaniumAction> actions = new ArrayList<>();
     for (Agent agent : agents) {
       TaniumAction actionWindows = new TaniumAction();
@@ -127,8 +127,8 @@ public class TaniumExecutorContextService extends ExecutorContextService {
               + UUID.randomUUID()
               + "\";md $location -ea 0;[Environment]::CurrentDirectory";
       String executorCommandKey = Endpoint.PLATFORM_TYPE.Windows.name() + "." + arch.name();
-      String command = injector.getExecutorCommands().get(executorCommandKey);
-      command = replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, injectId, agent.getId());
+      String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
+      command = replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, attackChainNodeId, agent.getId());
       command =
           command.replaceFirst(
               "\\$?x=.+location=.+;\\[Environment]::CurrentDirectory",
@@ -142,8 +142,8 @@ public class TaniumExecutorContextService extends ExecutorContextService {
 
   private List<TaniumAction> getUnixActions(
       List<Agent> agents,
-      Injector injector,
-      String injectId,
+      NodeExecutor nodeExecutor,
+      String attackChainNodeId,
       Endpoint.PLATFORM_TYPE platform,
       Endpoint.PLATFORM_ARCH arch) {
     List<TaniumAction> actions = new ArrayList<>();
@@ -157,8 +157,8 @@ public class TaniumExecutorContextService extends ExecutorContextService {
               + UUID.randomUUID()
               + ";mkdir -p $location;filename=";
       String executorCommandKey = platform.name() + "." + arch.name();
-      String command = injector.getExecutorCommands().get(executorCommandKey);
-      command = replaceArgs(platform, command, injectId, agent.getId());
+      String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
+      command = replaceArgs(platform, command, attackChainNodeId, agent.getId());
       command =
           command.replaceFirst(
               "\\$?x=.+location=.+;filename=", Matcher.quoteReplacement(implantLocation));

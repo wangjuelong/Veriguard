@@ -1,6 +1,6 @@
 package io.veriguard.scheduler.jobs;
 
-import io.veriguard.rest.inject.service.BatchingInjectStatusService;
+import io.veriguard.rest.inject.service.BatchingAttackChainNodeStatusService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ExecutionTracesBatchRequeueJob implements Job {
 
-  private final BatchingInjectStatusService batchingInjectStatusService;
+  private final BatchingAttackChainNodeStatusService batchingAttackChainNodeStatusService;
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     try {
-      batchingInjectStatusService.requeueCallbacks();
+      batchingAttackChainNodeStatusService.requeueCallbacks();
     } catch (IOException e) {
       log.error("Error while requeuing execution traces", e);
       throw new JobExecutionException("IO error in requeueCallbacks", e, false);

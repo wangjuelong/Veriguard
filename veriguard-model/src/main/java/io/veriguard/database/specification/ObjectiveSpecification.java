@@ -5,11 +5,11 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class ObjectiveSpecification {
 
-  public static Specification<Objective> fromExercise(String exerciseId) {
-    return (root, query, cb) -> cb.equal(root.get("exercise").get("id"), exerciseId);
+  public static Specification<Objective> fromAttackChainRun(String attackChainRunId) {
+    return (root, query, cb) -> cb.equal(root.get("exercise").get("id"), attackChainRunId);
   }
 
-  public static Specification<Objective> fromScenario(String scenarioId) {
-    return (root, query, cb) -> cb.equal(root.get("scenario").get("id"), scenarioId);
+  public static Specification<Objective> fromAttackChain(String attackChainId) {
+    return (root, query, cb) -> cb.equal(root.get("scenario").get("id"), attackChainId);
   }
 }

@@ -7,7 +7,7 @@ import java.util.Set;
  * Spring Data projection interface for team data with relationships.
  *
  * <p>This interface defines a projection for retrieving team information including metadata,
- * organizational context, and associations with users, exercises, scenarios, and injects.
+ * organizational context, and associations with users, attackChainRuns, attackChains, and attackChainNodes.
  *
  * @see io.veriguard.database.model.Team
  */
@@ -58,7 +58,7 @@ public interface RawTeam {
   /**
    * Returns whether this is a contextual team.
    *
-   * <p>Contextual teams are created specifically for a particular exercise or scenario and are not
+   * <p>Contextual teams are created specifically for a particular attackChainRun or attackChain and are not
    * reusable across different simulations.
    *
    * @return {@code true} if the team is contextual, {@code false} if it's reusable
@@ -80,18 +80,18 @@ public interface RawTeam {
   Set<String> getTeam_users();
 
   /**
-   * Returns the set of exercise IDs this team participates in.
+   * Returns the set of attackChainRun IDs this team participates in.
    *
-   * @return set of exercise IDs
+   * @return set of attackChainRun IDs
    */
-  Set<String> getTeam_exercises();
+  Set<String> getTeam_attackChainRuns();
 
   /**
-   * Returns the set of scenario IDs this team is configured for.
+   * Returns the set of attackChain IDs this team is configured for.
    *
-   * @return set of scenario IDs
+   * @return set of attackChain IDs
    */
-  Set<String> getTeam_scenarios();
+  Set<String> getTeam_attackChains();
 
   /**
    * Returns the set of expectation IDs assigned to this team.
@@ -101,11 +101,11 @@ public interface RawTeam {
   Set<String> getTeam_expectations();
 
   /**
-   * Returns the set of inject IDs targeting this team in exercises.
+   * Returns the set of attackChainNode IDs targeting this team in attackChainRuns.
    *
-   * @return set of inject IDs
+   * @return set of attackChainNode IDs
    */
-  Set<String> getTeam_exercise_injects();
+  Set<String> getTeam_exercise_attackChainNodes();
 
   /**
    * Returns the set of communication IDs sent to this team.

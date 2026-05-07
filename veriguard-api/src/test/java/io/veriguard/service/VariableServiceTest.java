@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.Exercise;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.Variable;
 import io.veriguard.database.model.Variable.VariableType;
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import java.util.List;
@@ -26,23 +26,23 @@ public class VariableServiceTest extends IntegrationTest {
 
   @Autowired private VariableService variableService;
 
-  @Autowired private ExerciseRepository exerciseRepository;
+  @Autowired private AttackChainRunRepository attackChainRunRepository;
 
-  static Exercise EXERCISE;
+  static AttackChainRun EXERCISE;
   static String VARIABLE_ID;
 
   @BeforeAll
   void beforeAll() {
-    Exercise exercise = new Exercise();
-    exercise.setName("Exercise name");
-    exercise.setFrom("test@test.com");
-    exercise.setReplyTos(List.of("test@test.com"));
-    EXERCISE = this.exerciseRepository.save(exercise);
+    AttackChainRun attackChainRun = new AttackChainRun();
+    attackChainRun.setName("Exercise name");
+    attackChainRun.setFrom("test@test.com");
+    attackChainRun.setReplyTos(List.of("test@test.com"));
+    EXERCISE = this.attackChainRunRepository.save(attackChainRun);
   }
 
   @AfterAll
   void afterAll() {
-    this.exerciseRepository.deleteById(EXERCISE.getId());
+    this.attackChainRunRepository.deleteById(EXERCISE.getId());
   }
 
   @DisplayName("Create variable")
@@ -53,7 +53,7 @@ public class VariableServiceTest extends IntegrationTest {
     Variable variable = new Variable();
     String variableKey = "key";
     variable.setKey(variableKey);
-    variable.setExercise(EXERCISE);
+    variable.setAttackChainRun(EXERCISE);
 
     // -- EXECUTE --
     Variable variableCreated = this.variableService.createVariable(variable);
@@ -73,7 +73,7 @@ public class VariableServiceTest extends IntegrationTest {
     Variable variable = this.variableService.variable(VARIABLE_ID);
     assertNotNull(variable);
 
-    List<Variable> variables = this.variableService.variablesFromExercise(EXERCISE.getId());
+    List<Variable> variables = this.variableService.variablesFromAttackChainRun(EXERCISE.getId());
     assertNotNull(variable);
     assertEquals(VARIABLE_ID, variables.get(0).getId());
   }

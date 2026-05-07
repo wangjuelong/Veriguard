@@ -32,8 +32,8 @@ public interface DocumentRepository
 
   @Query(
       "select d from Document d "
-          + "join d.exercises as exercise "
-          + "join exercise.grants as grant "
+          + "join d.attackChainRuns as attackChainRun "
+          + "join attackChainRun.grants as grant "
           + "join grant.group as g "
           + "join g.users as user "
           + "where d.id = :id and user.id = :userId")
@@ -133,7 +133,7 @@ public interface DocumentRepository
   Page<Document> findAll(@NotNull Specification<Document> spec, @NotNull Pageable pageable);
 
   // Phase 11.5 删除 Channel/Challenge/Article 后，文档与场景/模拟的关联仅
-  // 通过 inject 暴露：取该场景/模拟下所有 inject 关联的 documents 即可。
+  // 通过 attackChainNode 暴露：取该场景/模拟下所有 attackChainNode 关联的 documents 即可。
   @Query(
       value =
           "SELECT DISTINCT d.* FROM documents d "
@@ -143,7 +143,7 @@ public interface DocumentRepository
               + "  WHERE i.inject_scenario = :scenarioId "
               + ")",
       nativeQuery = true)
-  List<Document> findAllDistinctByScenarioId(@Param("scenarioId") String scenarioId);
+  List<Document> findAllDistinctByAttackChainId(@Param("scenarioId") String attackChainId);
 
   @Query(
       value =

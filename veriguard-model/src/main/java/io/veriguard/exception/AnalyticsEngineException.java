@@ -9,7 +9,7 @@ import lombok.Getter;
  * index operations, search queries, and aggregations. It extends {@link RuntimeException} to allow
  * for unchecked exception handling.
  *
- * <p>Common scenarios:
+ * <p>Common attackChains:
  *
  * <ul>
  *   <li>Connection failures to the search engine

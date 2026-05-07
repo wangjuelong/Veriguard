@@ -27,9 +27,9 @@ public interface SecurityPlatformRepository
 
   @Override
   @Query(
-      "select COUNT(DISTINCT a) from Inject i "
+      "select COUNT(DISTINCT a) from AttackChainNode i "
           + "join i.assets as a "
-          + "join i.exercise as e "
+          + "join i.attackChainRun as e "
           + "join e.grants as grant "
           + "join grant.group.users as user "
           + "where user.id = :userId and i.createdAt > :creationDate")

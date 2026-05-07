@@ -83,7 +83,7 @@ public class PayloadUpsertService {
     }
 
     Payload saved = payloadRepository.save(payload);
-    payloadService.updateInjectorContractsForPayload(saved);
+    payloadService.updateNodeContractsForPayload(saved);
     return saved;
   }
 
@@ -116,7 +116,7 @@ public class PayloadUpsertService {
     }
 
     Payload saved = payloadRepository.save(payload);
-    payloadService.updateInjectorContractsForPayload(saved);
+    payloadService.updateNodeContractsForPayload(saved);
     return saved;
   }
 }

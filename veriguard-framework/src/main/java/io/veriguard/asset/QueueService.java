@@ -20,11 +20,11 @@ import org.springframework.stereotype.Service;
  * <p>This service handles the connection management and message publishing to RabbitMQ exchanges.
  * It supports both SSL and non-SSL connections based on configuration.
  *
- * <p>Messages are published to a topic exchange with routing keys based on the inject type,
+ * <p>Messages are published to a topic exchange with routing keys based on the attackChainNode type,
  * allowing subscribers to selectively consume messages for specific injection types.
  *
  * <p><b>Thread Safety:</b> This service creates new connections for each publish operation, making
- * it safe for concurrent use. For high-throughput scenarios, consider implementing connection
+ * it safe for concurrent use. For high-throughput attackChains, consider implementing connection
  * pooling.
  *
  * @see RabbitmqConfig for connection configuration
@@ -44,17 +44,17 @@ public class QueueService {
   private final RabbitmqConfig rabbitmqConfig;
 
   /**
-   * Publishes a JSON message to RabbitMQ for a specific inject type.
+   * Publishes a JSON message to RabbitMQ for a specific attackChainNode type.
    *
-   * @param injectType the type of inject, used to construct the routing key
+   * @param attackChainNodeType the type of attackChainNode, used to construct the routing key
    * @param publishedJson the JSON payload to publish
    * @throws IOException if an I/O error occurs during publishing
    * @throws TimeoutException if the connection or publishing times out
-   * @throws IllegalArgumentException if injectType or publishedJson is null or empty
+   * @throws IllegalArgumentException if attackChainNodeType or publishedJson is null or empty
    */
-  public void publish(String injectType, String publishedJson)
+  public void publish(String attackChainNodeType, String publishedJson)
       throws IOException, TimeoutException {
-    if (injectType == null || injectType.isBlank()) {
+    if (attackChainNodeType == null || attackChainNodeType.isBlank()) {
       throw new IllegalArgumentException("injectType cannot be null or empty");
     }
     if (publishedJson == null || publishedJson.isBlank()) {
@@ -65,7 +65,7 @@ public class QueueService {
 
     try (Connection connection = factory.newConnection();
         Channel channel = connection.createChannel()) {
-      String routingKey = rabbitmqConfig.getPrefix() + ROUTING_KEY + injectType;
+      String routingKey = rabbitmqConfig.getPrefix() + ROUTING_KEY + attackChainNodeType;
       String exchangeKey = rabbitmqConfig.getPrefix() + EXCHANGE_KEY;
       channel.basicPublish(
           exchangeKey, routingKey, null, publishedJson.getBytes(StandardCharsets.UTF_8));
@@ -77,11 +77,11 @@ public class QueueService {
       log.error(
           "I/O error publishing to RabbitMQ exchange '{}' with routing key '{}'",
           rabbitmqConfig.getPrefix() + EXCHANGE_KEY,
-          rabbitmqConfig.getPrefix() + ROUTING_KEY + injectType,
+          rabbitmqConfig.getPrefix() + ROUTING_KEY + attackChainNodeType,
           ex);
       throw ex;
     } catch (TimeoutException ex) {
-      log.error("Timeout while publishing to RabbitMQ for inject type '{}'", injectType, ex);
+      log.error("Timeout while publishing to RabbitMQ for inject type '{}'", attackChainNodeType, ex);
       throw ex;
     }
   }

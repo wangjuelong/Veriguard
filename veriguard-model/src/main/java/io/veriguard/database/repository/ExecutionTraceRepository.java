@@ -20,8 +20,8 @@ public interface ExecutionTraceRepository
               + "INNER JOIN Agents a ON t.execution_agent_id = a.agent_id "
               + "WHERE i.inject_id = :injectId AND t.execution_agent_id = :targetId",
       nativeQuery = true)
-  List<ExecutionTrace> findByInjectIdAndAgentId(
-      @Param("injectId") String injectId, @Param("targetId") String targetId);
+  List<ExecutionTrace> findByAttackChainNodeIdAndAgentId(
+      @Param("injectId") String attackChainNodeId, @Param("targetId") String targetId);
 
   @Query(
       value =
@@ -31,8 +31,8 @@ public interface ExecutionTraceRepository
               + "LEFT JOIN Agents a ON t.execution_agent_id = a.agent_id "
               + "WHERE i.inject_id = :injectId AND (a.agent_asset = :targetId OR :targetId = ANY(t.execution_context_identifiers))",
       nativeQuery = true)
-  List<ExecutionTrace> findByInjectIdAndAssetId(
-      @Param("injectId") String injectId, @Param("targetId") String targetId);
+  List<ExecutionTrace> findByAttackChainNodeIdAndAssetId(
+      @Param("injectId") String attackChainNodeId, @Param("targetId") String targetId);
 
   @Query(
       value =
@@ -42,8 +42,8 @@ public interface ExecutionTraceRepository
               + "INNER JOIN users_teams ut ON ut.user_id = ANY(t.execution_context_identifiers) "
               + "WHERE i.inject_id = :injectId AND ut.team_id = :targetId",
       nativeQuery = true)
-  List<ExecutionTrace> findByInjectIdAndTeamId(
-      @Param("injectId") String injectId, @Param("targetId") String targetId);
+  List<ExecutionTrace> findByAttackChainNodeIdAndTeamId(
+      @Param("injectId") String attackChainNodeId, @Param("targetId") String targetId);
 
   @Query(
       value =
@@ -52,6 +52,6 @@ public interface ExecutionTraceRepository
               + "INNER JOIN injects i ON ins.status_inject = i.inject_id "
               + "WHERE i.inject_id = :injectId AND :targetId = ANY(t.execution_context_identifiers)",
       nativeQuery = true)
-  List<ExecutionTrace> findByInjectIdAndPlayerId(
-      @Param("injectId") String injectId, @Param("targetId") String targetId);
+  List<ExecutionTrace> findByAttackChainNodeIdAndPlayerId(
+      @Param("injectId") String attackChainNodeId, @Param("targetId") String targetId);
 }

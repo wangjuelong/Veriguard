@@ -56,7 +56,7 @@ public class AssetGroupService {
 
   public List<AssetGroup> assetGroupsForSimulation(@NotBlank final String simulationId) {
     List<AssetGroup> assetGroups =
-        fromIterable(this.assetGroupRepository.findDistinctByInjectsSimulationId(simulationId));
+        fromIterable(this.assetGroupRepository.findDistinctByAttackChainNodesSimulationId(simulationId));
     return computeDynamicAssets(assetGroups);
   }
 
@@ -64,25 +64,25 @@ public class AssetGroupService {
       @NotBlank final String simulationId, List<String> assetGroupIds) {
     List<AssetGroup> assetGroups =
         fromIterable(
-            this.assetGroupRepository.findDistinctByInjectsSimulationIdAndIdIn(
+            this.assetGroupRepository.findDistinctByAttackChainNodesSimulationIdAndIdIn(
                 simulationId, assetGroupIds));
     return computeDynamicAssets(assetGroups).stream()
         .map(assetGroupMapper::toAssetGroupOutput)
         .toList();
   }
 
-  public List<AssetGroup> assetGroupsForScenario(@NotBlank final String scenarioId) {
+  public List<AssetGroup> assetGroupsForAttackChain(@NotBlank final String attackChainId) {
     List<AssetGroup> assetGroups =
-        fromIterable(this.assetGroupRepository.findDistinctByInjectsScenarioId(scenarioId));
+        fromIterable(this.assetGroupRepository.findDistinctByAttackChainNodesAttackChainId(attackChainId));
     return computeDynamicAssets(assetGroups);
   }
 
-  public List<AssetGroupOutput> assetGroupsByIdsForScenario(
-      @NotBlank final String scenarioId, List<String> assetGroupIds) {
+  public List<AssetGroupOutput> assetGroupsByIdsForAttackChain(
+      @NotBlank final String attackChainId, List<String> assetGroupIds) {
     List<AssetGroup> assetGroups =
         fromIterable(
-            this.assetGroupRepository.findDistinctByInjectsScenarioIdAndIdIn(
-                scenarioId, assetGroupIds));
+            this.assetGroupRepository.findDistinctByAttackChainNodesAttackChainIdAndIdIn(
+                attackChainId, assetGroupIds));
     return computeDynamicAssets(assetGroups).stream()
         .map(assetGroupMapper::toAssetGroupOutput)
         .toList();
@@ -254,14 +254,14 @@ public class AssetGroupService {
   }
 
   /**
-   * Retrieves asset groups for a scenario based on tag rules using the {@code tagRuleService}.
+   * Retrieves asset groups for a attackChain based on tag rules using the {@code tagRuleService}.
    *
-   * @param scenario the scenario containing tag references
-   * @return set of asset groups associated with the scenario tags
+   * @param attackChain the attackChain containing tag references
+   * @return set of asset groups associated with the attackChain tags
    */
-  public Set<AssetGroup> fetchAssetGroupsFromScenarioTagRules(Scenario scenario) {
+  public Set<AssetGroup> fetchAssetGroupsFromAttackChainTagRules(AttackChain attackChain) {
     return new HashSet<>(
         tagRuleService.getAssetGroupsFromTagIds(
-            scenario.getTags().stream().map(Tag::getId).toList()));
+            attackChain.getTags().stream().map(Tag::getId).toList()));
   }
 }

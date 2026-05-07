@@ -40,11 +40,11 @@ public interface PayloadRepository
   @Query(
       """
     SELECT dr
-    FROM Inject inj
-    JOIN inj.injectorContract ic
+    FROM AttackChainNode inj
+    JOIN inj.nodeContract ic
     JOIN ic.payload p
     JOIN DetectionRemediation dr ON dr.payload = p
-    WHERE inj.id = :injectId
+    WHERE inj.id = :attackChainNodeId
 """)
-  List<DetectionRemediation> fetchDetectionRemediationsByInjectId(String injectId);
+  List<DetectionRemediation> fetchDetectionRemediationsByAttackChainNodeId(String attackChainNodeId);
 }

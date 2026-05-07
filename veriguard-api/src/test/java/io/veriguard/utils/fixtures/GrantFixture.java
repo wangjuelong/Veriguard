@@ -4,11 +4,11 @@ import io.veriguard.database.model.*;
 
 public class GrantFixture {
 
-  public static Grant getGrantForSimulation(Exercise simulation) {
+  public static Grant getGrantForSimulation(AttackChainRun simulation) {
     return getGrantForSimulation(simulation, Grant.GRANT_TYPE.PLANNER);
   }
 
-  public static Grant getGrantForSimulation(Exercise simulation, Grant.GRANT_TYPE grantType) {
+  public static Grant getGrantForSimulation(AttackChainRun simulation, Grant.GRANT_TYPE grantType) {
     Grant grant = new Grant();
     grant.setName(grantType);
     grant.setResourceId(simulation.getId());
@@ -16,7 +16,7 @@ public class GrantFixture {
     return grant;
   }
 
-  public static Grant getGrantForSimulation(Exercise simulation, Group group) {
+  public static Grant getGrantForSimulation(AttackChainRun simulation, Group group) {
     Grant grant = new Grant();
     grant.setName(Grant.GRANT_TYPE.PLANNER);
     grant.setResourceId(simulation.getId());
@@ -25,23 +25,23 @@ public class GrantFixture {
     return grant;
   }
 
-  public static Grant getGrantForScenario(Scenario scenario) {
-    return getGrantForScenario(scenario, Grant.GRANT_TYPE.PLANNER);
+  public static Grant getGrantForAttackChain(AttackChain attackChain) {
+    return getGrantForAttackChain(attackChain, Grant.GRANT_TYPE.PLANNER);
   }
 
-  public static Grant getGrantForScenario(Scenario scenario, Group group) {
+  public static Grant getGrantForAttackChain(AttackChain attackChain, Group group) {
     Grant grant = new Grant();
     grant.setName(Grant.GRANT_TYPE.PLANNER);
-    grant.setResourceId(scenario.getId());
+    grant.setResourceId(attackChain.getId());
     grant.setGrantResourceType(Grant.GRANT_RESOURCE_TYPE.SCENARIO);
     grant.setGroup(group);
     return grant;
   }
 
-  public static Grant getGrantForScenario(Scenario scenario, Grant.GRANT_TYPE grantType) {
+  public static Grant getGrantForAttackChain(AttackChain attackChain, Grant.GRANT_TYPE grantType) {
     Grant grant = new Grant();
     grant.setName(grantType);
-    grant.setResourceId(scenario.getId());
+    grant.setResourceId(attackChain.getId());
     grant.setGrantResourceType(Grant.GRANT_RESOURCE_TYPE.SCENARIO);
     return grant;
   }

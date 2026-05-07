@@ -69,35 +69,35 @@ public enum ExternalServiceDependency {
   }
 
   /**
-   * Parses a injectorType to its corresponding {@link ExternalServiceDependency} enum constant.
+   * Parses a nodeExecutorType to its corresponding {@link ExternalServiceDependency} enum constant.
    *
-   * @param injectorType the injector type to parse (case-insensitive)
+   * @param nodeExecutorType the nodeExecutor type to parse (case-insensitive)
    * @return the matching {@link ExternalServiceDependency}
    * @throws IllegalArgumentException if the value is null, blank, or does not match any known
    *     dependency
    */
-  public static ExternalServiceDependency[] fromInjectorType(String injectorType) {
-    if (injectorType == null || injectorType.isBlank()) {
+  public static ExternalServiceDependency[] fromNodeExecutorType(String nodeExecutorType) {
+    if (nodeExecutorType == null || nodeExecutorType.isBlank()) {
       throw new IllegalArgumentException("Injector type cannot be null or blank");
     }
 
-    // Why: legacy data packs (zip scenarios) reference the old "openaev_*" identifiers.
+    // Why: legacy data packs (zip attackChains) reference the old "openaev_*" identifiers.
     // Map them to the renamed "veriguard_*" equivalents so historical content keeps importing.
-    if (injectorType.regionMatches(true, 0, "openaev_", 0, 8)) {
-      injectorType = "veriguard_" + injectorType.substring(8);
+    if (nodeExecutorType.regionMatches(true, 0, "openaev_", 0, 8)) {
+      nodeExecutorType = "veriguard_" + nodeExecutorType.substring(8);
     }
 
     // Special cases
-    if ("veriguard_email".equalsIgnoreCase(injectorType)) {
+    if ("veriguard_email".equalsIgnoreCase(nodeExecutorType)) {
       return new ExternalServiceDependency[] {SMTP, IMAP};
     }
-    if ("veriguard_implant".equalsIgnoreCase(injectorType)) {
+    if ("veriguard_implant".equalsIgnoreCase(nodeExecutorType)) {
       return new ExternalServiceDependency[] {};
     }
 
     // Default: find matching enum
     for (ExternalServiceDependency type : ExternalServiceDependency.values()) {
-      if (type.value.equalsIgnoreCase(injectorType)) {
+      if (type.value.equalsIgnoreCase(nodeExecutorType)) {
         return new ExternalServiceDependency[] {type};
       }
     }
@@ -105,7 +105,7 @@ public enum ExternalServiceDependency {
     throw new IllegalArgumentException(
         String.format(
             "Unknown ExternalServiceDependency value: '%s'. Valid values are: %s",
-            injectorType,
+            nodeExecutorType,
             java.util.Arrays.stream(ExternalServiceDependency.values())
                 .map(ExternalServiceDependency::getValue)
                 .collect(java.util.stream.Collectors.joining(", "))));

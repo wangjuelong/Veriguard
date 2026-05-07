@@ -1,11 +1,11 @@
 package io.veriguard.importer;
 
-import static io.veriguard.database.specification.InjectorContractSpecification.byPayloadExternalId;
-import static io.veriguard.database.specification.InjectorContractSpecification.byPayloadId;
+import static io.veriguard.database.specification.NodeContractSpecification.byPayloadExternalId;
+import static io.veriguard.database.specification.NodeContractSpecification.byPayloadId;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
-import static io.veriguard.rest.exercise.exports.ExerciseFileExport.EXERCISE_VARIABLES;
+import static io.veriguard.rest.exercise.exports.AttackChainRunFileExport.EXERCISE_VARIABLES;
 import static io.veriguard.rest.payload.PayloadUtils.buildPayload;
-import static io.veriguard.rest.scenario.export.ScenarioFileExport.SCENARIO_VARIABLES;
+import static io.veriguard.rest.scenario.export.AttackChainFileExport.SCENARIO_VARIABLES;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -16,13 +16,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.annotations.VisibleForTesting;
 import io.veriguard.database.model.*;
-import io.veriguard.database.model.Scenario.SEVERITY;
+import io.veriguard.database.model.AttackChain.SEVERITY;
 import io.veriguard.database.repository.*;
 import io.veriguard.rest.domain.DomainService;
 import io.veriguard.rest.domain.enums.PresetDomain;
 import io.veriguard.rest.exercise.exports.VariableWithValueMixin;
-import io.veriguard.rest.inject.form.InjectDependencyInput;
-import io.veriguard.rest.injector_contract.InjectorContractContentUtils;
+import io.veriguard.rest.inject.form.AttackChainEdgeInput;
+import io.veriguard.rest.injector_contract.NodeContractContentUtils;
 import io.veriguard.rest.payload.contract_output_element.ContractOutputElementInput;
 import io.veriguard.rest.payload.form.*;
 import io.veriguard.rest.payload.output_parser.OutputParserInput;
@@ -30,8 +30,8 @@ import io.veriguard.rest.payload.regex_group.RegexGroupInput;
 import io.veriguard.rest.payload.service.PayloadCreationService;
 import io.veriguard.service.FileService;
 import io.veriguard.service.ImportEntry;
-import io.veriguard.service.InjectorService;
-import io.veriguard.service.scenario.ScenarioService;
+import io.veriguard.service.NodeExecutorService;
+import io.veriguard.service.scenario.AttackChainService;
 import jakarta.activation.MimetypesFileTypeMap;
 import jakarta.annotation.Resource;
 import java.time.Instant;
@@ -59,36 +59,36 @@ public class V1_DataImporter implements Importer {
   private final TagRepository tagRepository;
   private final AttackPatternRepository attackPatternRepository;
   private final KillChainPhaseRepository killChainPhaseRepository;
-  private final ExerciseRepository exerciseRepository;
-  private final ScenarioService scenarioService;
+  private final AttackChainRunRepository attackChainRunRepository;
+  private final AttackChainService attackChainService;
   private final TeamRepository teamRepository;
   private final ObjectiveRepository objectiveRepository;
-  private final InjectRepository injectRepository;
-  private final InjectorContractRepository injectorContractRepository;
+  private final AttackChainNodeRepository attackChainNodeRepository;
+  private final NodeContractRepository nodeContractRepository;
   private final OrganizationRepository organizationRepository;
   private final UserRepository userRepository;
-  private final InjectDocumentRepository injectDocumentRepository;
+  private final AttackChainNodeDocumentRepository attackChainNodeDocumentRepository;
   private final LessonsCategoryRepository lessonsCategoryRepository;
   private final LessonsQuestionRepository lessonsQuestionRepository;
   private final VariableRepository variableRepository;
-  private final InjectDependenciesRepository injectDependenciesRepository;
+  private final AttackChainEdgesRepository attackChainEdgesRepository;
   private final PayloadCreationService payloadCreationService;
   private final CollectorRepository collectorRepository;
   private final DomainService domainService;
 
-  private final InjectorContractContentUtils injectorContractContentUtils;
+  private final NodeContractContentUtils nodeContractContentUtils;
 
   @Qualifier("coreInjectorService")
-  private final InjectorService injectorService;
+  private final NodeExecutorService nodeExecutorService;
 
   // endregion
 
-  private String handleInjectContent(
-      Map<String, Base> baseIds, String contract, JsonNode injectNode) {
+  private String handleAttackChainNodeContent(
+      Map<String, Base> baseIds, String contract, JsonNode attackChainNodeNode) {
     if (contract == null) {
       return null;
     }
-    String content = injectNode.get("inject_content").toString();
+    String content = attackChainNodeNode.get("inject_content").toString();
     // 二开 移除 Channel/Challenge 注入器 — 不再需要 contract-specific 内容重写。
     return content;
   }
@@ -107,8 +107,8 @@ public class V1_DataImporter implements Importer {
   public void importData(
       JsonNode importNode,
       Map<String, ImportEntry> docReferences,
-      Exercise exercise,
-      Scenario scenario,
+      AttackChainRun attackChainRun,
+      AttackChain attackChain,
       Asset asset,
       AssetGroup assetGroup,
       String suffix) {
@@ -123,12 +123,12 @@ public class V1_DataImporter implements Importer {
       prefix = "payload_";
     }
     importTags(importNode, prefix, baseIds);
-    Exercise savedExercise =
-        Optional.ofNullable(importExercise(importNode, baseIds, suffix)).orElse(exercise);
-    Scenario savedScenario =
-        Optional.ofNullable(importScenario(importNode, baseIds, suffix)).orElse(scenario);
-    importDocuments(importNode, prefix, docReferences, savedExercise, savedScenario, baseIds);
-    importDocument(importNode, prefix, docReferences, savedExercise, savedScenario, baseIds);
+    AttackChainRun savedAttackChainRun =
+        Optional.ofNullable(importAttackChainRun(importNode, baseIds, suffix)).orElse(attackChainRun);
+    AttackChain savedAttackChain =
+        Optional.ofNullable(importAttackChain(importNode, baseIds, suffix)).orElse(attackChain);
+    importDocuments(importNode, prefix, docReferences, savedAttackChainRun, savedAttackChain, baseIds);
+    importDocument(importNode, prefix, docReferences, savedAttackChainRun, savedAttackChain, baseIds);
 
     // Should be done after tags & documents
     if (prefix.equals("payload_")) {
@@ -137,11 +137,11 @@ public class V1_DataImporter implements Importer {
 
     importOrganizations(importNode, prefix, baseIds);
     importUsers(importNode, prefix, baseIds);
-    importTeams(importNode, prefix, savedExercise, savedScenario, baseIds);
-    importObjectives(importNode, prefix, savedExercise, savedScenario, baseIds);
-    importLessons(importNode, prefix, savedExercise, savedScenario, baseIds);
-    importInjects(importNode, prefix, savedExercise, savedScenario, asset, assetGroup, baseIds);
-    importVariables(importNode, savedExercise, savedScenario, baseIds);
+    importTeams(importNode, prefix, savedAttackChainRun, savedAttackChain, baseIds);
+    importObjectives(importNode, prefix, savedAttackChainRun, savedAttackChain, baseIds);
+    importLessons(importNode, prefix, savedAttackChainRun, savedAttackChain, baseIds);
+    importAttackChainNodes(importNode, prefix, savedAttackChainRun, savedAttackChain, asset, assetGroup, baseIds);
+    importVariables(importNode, savedAttackChainRun, savedAttackChain, baseIds);
   }
 
   // -- TAGS --
@@ -314,80 +314,80 @@ public class V1_DataImporter implements Importer {
 
   // -- EXERCISE --
 
-  private Exercise importExercise(JsonNode importNode, Map<String, Base> baseIds, String suffix) {
-    JsonNode exerciseNode = importNode.get("exercise_information");
-    if (exerciseNode == null) {
+  private AttackChainRun importAttackChainRun(JsonNode importNode, Map<String, Base> baseIds, String suffix) {
+    JsonNode attackChainRunNode = importNode.get("exercise_information");
+    if (attackChainRunNode == null) {
       return null;
     }
 
-    Exercise exercise = new Exercise();
-    exercise.setName(exerciseNode.get("exercise_name").textValue() + suffix);
-    exercise.setDescription(exerciseNode.get("exercise_description").textValue());
-    exercise.setSubtitle(exerciseNode.get("exercise_subtitle").textValue());
-    exercise.setHeader(exerciseNode.get("exercise_message_header").textValue());
-    exercise.setFooter(exerciseNode.get("exercise_message_footer").textValue());
-    exercise.setFrom(exerciseNode.get("exercise_mail_from").textValue());
-    exercise.setTags(
-        resolveJsonIds(exerciseNode, "exercise_tags").stream()
+    AttackChainRun attackChainRun = new AttackChainRun();
+    attackChainRun.setName(attackChainRunNode.get("exercise_name").textValue() + suffix);
+    attackChainRun.setDescription(attackChainRunNode.get("exercise_description").textValue());
+    attackChainRun.setSubtitle(attackChainRunNode.get("exercise_subtitle").textValue());
+    attackChainRun.setHeader(attackChainRunNode.get("exercise_message_header").textValue());
+    attackChainRun.setFooter(attackChainRunNode.get("exercise_message_footer").textValue());
+    attackChainRun.setFrom(attackChainRunNode.get("exercise_mail_from").textValue());
+    attackChainRun.setTags(
+        resolveJsonIds(attackChainRunNode, "exercise_tags").stream()
             .map(baseIds::get)
             .map(Tag.class::cast)
             .collect(Collectors.toSet()));
-    return exerciseRepository.save(exercise);
+    return attackChainRunRepository.save(attackChainRun);
   }
 
   // -- SCENARIO --
 
-  private Scenario importScenario(JsonNode importNode, Map<String, Base> baseIds, String suffix) {
-    JsonNode scenarioNode = importNode.get("scenario_information");
-    if (scenarioNode == null) {
+  private AttackChain importAttackChain(JsonNode importNode, Map<String, Base> baseIds, String suffix) {
+    JsonNode attackChainNode = importNode.get("scenario_information");
+    if (attackChainNode == null) {
       return null;
     }
 
-    Scenario scenario = new Scenario();
-    scenario.setName(scenarioNode.get("scenario_name").textValue() + suffix);
-    scenario.setDescription(scenarioNode.get("scenario_description").textValue());
-    scenario.setSubtitle(scenarioNode.get("scenario_subtitle").textValue());
-    scenario.setCategory(scenarioNode.get("scenario_category").textValue());
-    scenario.setMainFocus(scenarioNode.get("scenario_main_focus").textValue());
-    ofNullable(scenarioNode.get("scenario_severity"))
+    AttackChain attackChain = new AttackChain();
+    attackChain.setName(attackChainNode.get("scenario_name").textValue() + suffix);
+    attackChain.setDescription(attackChainNode.get("scenario_description").textValue());
+    attackChain.setSubtitle(attackChainNode.get("scenario_subtitle").textValue());
+    attackChain.setCategory(attackChainNode.get("scenario_category").textValue());
+    attackChain.setMainFocus(attackChainNode.get("scenario_main_focus").textValue());
+    ofNullable(attackChainNode.get("scenario_severity"))
         .map(JsonNode::textValue)
-        .ifPresent(severity -> scenario.setSeverity(SEVERITY.valueOf(severity)));
-    ofNullable(scenarioNode.get("scenario_recurrence"))
+        .ifPresent(severity -> attackChain.setSeverity(SEVERITY.valueOf(severity)));
+    ofNullable(attackChainNode.get("scenario_recurrence"))
         .map(JsonNode::textValue)
-        .ifPresent(scenario::setRecurrence);
-    ofNullable(scenarioNode.get("scenario_recurrence_start"))
+        .ifPresent(attackChain::setRecurrence);
+    ofNullable(attackChainNode.get("scenario_recurrence_start"))
         .map(JsonNode::textValue)
-        .ifPresent(recurrenceStart -> scenario.setRecurrenceStart(Instant.parse(recurrenceStart)));
-    ofNullable(scenarioNode.get("scenario_recurrence_end"))
+        .ifPresent(recurrenceStart -> attackChain.setRecurrenceStart(Instant.parse(recurrenceStart)));
+    ofNullable(attackChainNode.get("scenario_recurrence_end"))
         .map(JsonNode::textValue)
-        .ifPresent(recurrenceEnd -> scenario.setRecurrenceEnd(Instant.parse(recurrenceEnd)));
-    scenario.setHeader(scenarioNode.get("scenario_message_header").textValue());
-    scenario.setFooter(scenarioNode.get("scenario_message_footer").textValue());
-    scenario.setFrom(scenarioNode.get("scenario_mail_from").textValue());
-    scenario.setTags(
-        resolveJsonIds(scenarioNode, "scenario_tags").stream()
+        .ifPresent(recurrenceEnd -> attackChain.setRecurrenceEnd(Instant.parse(recurrenceEnd)));
+    attackChain.setHeader(attackChainNode.get("scenario_message_header").textValue());
+    attackChain.setFooter(attackChainNode.get("scenario_message_footer").textValue());
+    attackChain.setFrom(attackChainNode.get("scenario_mail_from").textValue());
+    attackChain.setTags(
+        resolveJsonIds(attackChainNode, "scenario_tags").stream()
             .map(baseIds::get)
             .map(Tag.class::cast)
             .collect(Collectors.toSet()));
-    scenario.setDependencies(
-        ofNullable(scenarioNode.get("scenario_dependencies"))
+    attackChain.setDependencies(
+        ofNullable(attackChainNode.get("scenario_dependencies"))
             .filter(JsonNode::isArray)
             .map(
                 dependencies ->
                     StreamSupport.stream(dependencies.spliterator(), false)
-                        .map(node -> Scenario.Dependency.valueOf(node.textValue()))
-                        .toArray(Scenario.Dependency[]::new))
-            .orElse(new Scenario.Dependency[0]));
+                        .map(node -> AttackChain.Dependency.valueOf(node.textValue()))
+                        .toArray(AttackChain.Dependency[]::new))
+            .orElse(new AttackChain.Dependency[0]));
 
-    return scenarioService.createScenario(scenario);
+    return attackChainService.createAttackChain(attackChain);
   }
 
   private void importDocuments(
       JsonNode importNode,
       String prefix,
       Map<String, ImportEntry> docReferences,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
     Stream<JsonNode> documentsStream = resolveJsonElements(importNode, prefix + "documents");
     documentsStream.forEach(
@@ -396,7 +396,7 @@ public class V1_DataImporter implements Importer {
           ImportEntry entry = docReferences.get(target);
 
           if (entry != null) {
-            handleDocumentWithEntry(nodeDoc, entry, target, savedExercise, savedScenario, baseIds);
+            handleDocumentWithEntry(nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
           }
         });
     // Handle argument documents
@@ -408,7 +408,7 @@ public class V1_DataImporter implements Importer {
           ImportEntry entry = docReferences.get(target);
 
           if (entry != null) {
-            handleDocumentWithEntry(nodeDoc, entry, target, savedExercise, savedScenario, baseIds);
+            handleDocumentWithEntry(nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
           }
         });
   }
@@ -417,8 +417,8 @@ public class V1_DataImporter implements Importer {
       JsonNode importNode,
       String prefix,
       Map<String, ImportEntry> docReferences,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
 
     if (importNode == null) {
@@ -431,7 +431,7 @@ public class V1_DataImporter implements Importer {
     if (target != null) {
       ImportEntry entry = docReferences.get(target);
       if (entry != null) {
-        handleDocumentWithEntry(nodeDoc, entry, target, savedExercise, savedScenario, baseIds);
+        handleDocumentWithEntry(nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
       }
     }
   }
@@ -440,33 +440,33 @@ public class V1_DataImporter implements Importer {
       JsonNode nodeDoc,
       ImportEntry entry,
       String target,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
     String contentType = new MimetypesFileTypeMap().getContentType(entry.getEntry().getName());
     Optional<Document> targetDocument = this.documentRepository.findByTarget(target);
 
     if (targetDocument.isPresent()) {
-      updateExistingDocument(nodeDoc, targetDocument.get(), savedExercise, savedScenario, baseIds);
+      updateExistingDocument(nodeDoc, targetDocument.get(), savedAttackChainRun, savedAttackChain, baseIds);
     } else {
-      uploadNewDocument(nodeDoc, entry, target, savedExercise, savedScenario, contentType, baseIds);
+      uploadNewDocument(nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, contentType, baseIds);
     }
   }
 
   private void updateExistingDocument(
       JsonNode nodeDoc,
       Document document,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
-    if (savedExercise != null) {
-      Set<Exercise> exercises = new HashSet<>(document.getExercises());
-      exercises.add(savedExercise);
-      document.setExercises(exercises);
-    } else if (savedScenario != null) {
-      Set<Scenario> scenarios = new HashSet<>(document.getScenarios());
-      scenarios.add(savedScenario);
-      document.setScenarios(scenarios);
+    if (savedAttackChainRun != null) {
+      Set<AttackChainRun> attackChainRuns = new HashSet<>(document.getAttackChainRuns());
+      attackChainRuns.add(savedAttackChainRun);
+      document.setAttackChainRuns(attackChainRuns);
+    } else if (savedAttackChain != null) {
+      Set<AttackChain> attackChains = new HashSet<>(document.getAttackChains());
+      attackChains.add(savedAttackChain);
+      document.setAttackChains(attackChains);
     }
     document.setTags(
         computeTagsCompletion(
@@ -479,8 +479,8 @@ public class V1_DataImporter implements Importer {
       JsonNode nodeDoc,
       ImportEntry entry,
       String target,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       String contentType,
       Map<String, Base> baseIds) {
     try {
@@ -494,10 +494,10 @@ public class V1_DataImporter implements Importer {
     document.setTarget(target);
     document.setName(nodeDoc.get("document_name").textValue());
     document.setDescription(nodeDoc.get("document_description").textValue());
-    if (savedExercise != null) {
-      document.setExercises(new HashSet<>(Set.of(savedExercise)));
-    } else if (savedScenario != null) {
-      document.setScenarios(new HashSet<>(Set.of(savedScenario)));
+    if (savedAttackChainRun != null) {
+      document.setAttackChainRuns(new HashSet<>(Set.of(savedAttackChainRun)));
+    } else if (savedAttackChain != null) {
+      document.setAttackChains(new HashSet<>(Set.of(savedAttackChain)));
     }
     // need to get real database-bound ids for tags
     List<String> tagIds =
@@ -599,23 +599,23 @@ public class V1_DataImporter implements Importer {
   private void importTeams(
       JsonNode importNode,
       String prefix,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
     Map<String, Team> baseTeams =
-        handlingTeams(importNode, prefix, baseIds, savedExercise, savedScenario);
+        handlingTeams(importNode, prefix, baseIds, savedAttackChainRun, savedAttackChain);
     baseTeams
         .values()
         .forEach(
             (team) -> {
-              if (savedExercise != null) {
-                Set<Exercise> exercises = new HashSet<>(team.getExercises());
-                exercises.add(savedExercise);
-                team.setExercises(exercises.stream().toList());
-              } else if (savedScenario != null) {
-                Set<Scenario> scenarios = new HashSet<>(team.getScenarios());
-                scenarios.add(savedScenario);
-                team.setScenarios(scenarios.stream().toList());
+              if (savedAttackChainRun != null) {
+                Set<AttackChainRun> attackChainRuns = new HashSet<>(team.getAttackChainRuns());
+                attackChainRuns.add(savedAttackChainRun);
+                team.setAttackChainRuns(attackChainRuns.stream().toList());
+              } else if (savedAttackChain != null) {
+                Set<AttackChain> attackChains = new HashSet<>(team.getAttackChains());
+                attackChains.add(savedAttackChain);
+                team.setAttackChains(attackChains.stream().toList());
               }
             });
     baseIds.putAll(baseTeams);
@@ -625,8 +625,8 @@ public class V1_DataImporter implements Importer {
       JsonNode importNode,
       String prefix,
       Map<String, Base> baseIds,
-      Exercise savedExercise,
-      Scenario savedScenario) {
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain) {
     Map<String, Team> baseTeams = new HashMap<>();
 
     resolveJsonElements(importNode, prefix + "teams")
@@ -649,7 +649,7 @@ public class V1_DataImporter implements Importer {
                 // skip creating contextual team if atomic testing
                 if (nodeTeam.has("team_contextual")) {
                   boolean isContextual = nodeTeam.get("team_contextual").booleanValue();
-                  if (isContextual && savedExercise == null && savedScenario == null) {
+                  if (isContextual && savedAttackChainRun == null && savedAttackChain == null) {
                     return;
                   }
                 }
@@ -701,28 +701,28 @@ public class V1_DataImporter implements Importer {
   private void importObjectives(
       JsonNode importNode,
       String prefix,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
     resolveJsonElements(importNode, prefix + "objectives")
         .forEach(
             nodeObjective -> {
               String id = nodeObjective.get("objective_id").textValue();
-              Objective objective = createObjective(nodeObjective, savedExercise, savedScenario);
+              Objective objective = createObjective(nodeObjective, savedAttackChainRun, savedAttackChain);
               baseIds.put(id, this.objectiveRepository.save(objective));
             });
   }
 
   private Objective createObjective(
-      JsonNode nodeObjective, Exercise savedExercise, Scenario savedScenario) {
+      JsonNode nodeObjective, AttackChainRun savedAttackChainRun, AttackChain savedAttackChain) {
     Objective objective = new Objective();
     objective.setTitle(nodeObjective.get("objective_title").textValue());
     objective.setDescription(nodeObjective.get("objective_description").textValue());
     objective.setPriority((short) nodeObjective.get("objective_priority").asInt(0));
-    if (savedExercise != null) {
-      objective.setExercise(savedExercise);
-    } else if (savedScenario != null) {
-      objective.setScenario(savedScenario);
+    if (savedAttackChainRun != null) {
+      objective.setAttackChainRun(savedAttackChainRun);
+    } else if (savedAttackChain != null) {
+      objective.setAttackChain(savedAttackChain);
     }
 
     return objective;
@@ -731,15 +731,15 @@ public class V1_DataImporter implements Importer {
   private void importLessons(
       JsonNode importNode,
       String prefix,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
     resolveJsonElements(importNode, prefix + "lessons_categories")
         .forEach(
             nodeLessonCategory -> {
               String id = nodeLessonCategory.get("lessonscategory_id").textValue();
               LessonsCategory lessonsCategory =
-                  createLessonsCategory(nodeLessonCategory, savedExercise, savedScenario, baseIds);
+                  createLessonsCategory(nodeLessonCategory, savedAttackChainRun, savedAttackChain, baseIds);
               baseIds.put(id, this.lessonsCategoryRepository.save(lessonsCategory));
             });
     resolveJsonElements(importNode, prefix + "lessons_questions")
@@ -753,18 +753,18 @@ public class V1_DataImporter implements Importer {
 
   private LessonsCategory createLessonsCategory(
       JsonNode nodeLessonCategory,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
     LessonsCategory lessonsCategory = new LessonsCategory();
     lessonsCategory.setName(nodeLessonCategory.get("lessons_category_name").textValue());
     lessonsCategory.setDescription(
         nodeLessonCategory.get("lessons_category_description").textValue());
     lessonsCategory.setOrder(nodeLessonCategory.get("lessons_category_order").intValue());
-    if (savedExercise != null) {
-      lessonsCategory.setExercise(savedExercise);
-    } else if (savedScenario != null) {
-      lessonsCategory.setScenario(savedScenario);
+    if (savedAttackChainRun != null) {
+      lessonsCategory.setAttackChainRun(savedAttackChainRun);
+    } else if (savedAttackChain != null) {
+      lessonsCategory.setAttackChain(savedAttackChain);
     }
     lessonsCategory.setTeams(
         resolveJsonIds(nodeLessonCategory, "lessons_category_teams").stream()
@@ -792,15 +792,15 @@ public class V1_DataImporter implements Importer {
     return lessonsQuestion;
   }
 
-  private void importInjects(
+  private void importAttackChainNodes(
       JsonNode importNode,
       String prefix,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Asset asset,
       AssetGroup assetGroup,
       Map<String, Base> baseIds) {
-    Supplier<Stream<JsonNode>> injectsStream =
+    Supplier<Stream<JsonNode>> attackChainNodesStream =
         () ->
             importNode.has(prefix + "injects")
                 ? resolveJsonElements(importNode, prefix + "injects")
@@ -810,17 +810,17 @@ public class V1_DataImporter implements Importer {
 
     // Getting a list of all the children of the dependency
     List<String> children =
-        injectsStream
+        attackChainNodesStream
             .get()
             .flatMap(
                 jsonNode -> {
-                  // List of dependencies of the inject
+                  // List of dependencies of the attackChainNode
                   List<JsonNode> dependsOn =
                       StreamSupport.stream(jsonNode.get("inject_depends_on").spliterator(), false)
                           .toList();
 
                   // We return a stream containing all the children of the dependencies of the
-                  // inject
+                  // attackChainNode
                   return dependsOn.stream()
                       .map(
                           dependency ->
@@ -831,236 +831,236 @@ public class V1_DataImporter implements Importer {
                 })
             .toList();
 
-    // Getting a list of all the injects that have no parents
-    Stream<JsonNode> injectsNoParent =
-        injectsStream
+    // Getting a list of all the attackChainNodes that have no parents
+    Stream<JsonNode> attackChainNodesNoParent =
+        attackChainNodesStream
             .get()
             .filter(jsonNode -> !children.contains(jsonNode.get("inject_id").asText()));
 
-    importInjects(
+    importAttackChainNodes(
         baseIds,
-        savedExercise,
-        savedScenario,
+        savedAttackChainRun,
+        savedAttackChain,
         asset,
         assetGroup,
-        injectsNoParent.toList(),
-        injectsStream.get().toList());
+        attackChainNodesNoParent.toList(),
+        attackChainNodesStream.get().toList());
   }
 
-  private void importInjects(
+  private void importAttackChainNodes(
       Map<String, Base> baseIds,
-      Exercise exercise,
-      Scenario scenario,
+      AttackChainRun attackChainRun,
+      AttackChain attackChain,
       Asset asset,
       AssetGroup assetGroup,
-      List<JsonNode> injectsToAdd,
-      List<JsonNode> allInjects) {
+      List<JsonNode> attackChainNodesToAdd,
+      List<JsonNode> allAttackChainNodes) {
     List<String> originalIds = new ArrayList<>();
-    injectsToAdd.forEach(
-        injectNode -> {
-          String injectId = UUID.randomUUID().toString();
-          String id = injectNode.get("inject_id").textValue();
-          String title = injectNode.get("inject_title").textValue();
-          String description = injectNode.get("inject_description").textValue();
-          String country = injectNode.get("inject_country").textValue();
-          String city = injectNode.get("inject_city").textValue();
+    attackChainNodesToAdd.forEach(
+        attackChainNodeNode -> {
+          String attackChainNodeId = UUID.randomUUID().toString();
+          String id = attackChainNodeNode.get("inject_id").textValue();
+          String title = attackChainNodeNode.get("inject_title").textValue();
+          String description = attackChainNodeNode.get("inject_description").textValue();
+          String country = attackChainNodeNode.get("inject_country").textValue();
+          String city = attackChainNodeNode.get("inject_city").textValue();
           boolean enabled =
-              ofNullable(injectNode.get("inject_enabled")).map(JsonNode::booleanValue).orElse(true);
-          String injectorContractIdFromNode = null;
-          JsonNode injectContractNode = injectNode.get("inject_injector_contract");
-          if (injectContractNode != null && !injectContractNode.isNull()) {
-            injectorContractIdFromNode = injectContractNode.get("injector_contract_id").textValue();
+              ofNullable(attackChainNodeNode.get("inject_enabled")).map(JsonNode::booleanValue).orElse(true);
+          String nodeContractIdFromNode = null;
+          JsonNode attackChainNodeContractNode = attackChainNodeNode.get("inject_injector_contract");
+          if (attackChainNodeContractNode != null && !attackChainNodeContractNode.isNull()) {
+            nodeContractIdFromNode = attackChainNodeContractNode.get("injector_contract_id").textValue();
           }
 
-          // Check If inject contract exists
-          if (injectorContractIdFromNode == null) {
-            log.warn("Import Inject Failed: Missing injector contract ID on inject: {}", injectId);
+          // Check If attackChainNode contract exists
+          if (nodeContractIdFromNode == null) {
+            log.warn("Import Inject Failed: Missing injector contract ID on inject: {}", attackChainNodeId);
             return;
           }
-          Optional<InjectorContract> injectorContract =
-              this.injectorContractRepository.findById(injectorContractIdFromNode);
+          Optional<NodeContract> nodeContract =
+              this.nodeContractRepository.findById(nodeContractIdFromNode);
 
-          String injectorContractId = null;
+          String nodeContractId = null;
 
           // If not, rely on payload
-          if (injectorContract.isEmpty()) {
-            JsonNode payloadNode = injectContractNode.get("injector_contract_payload");
+          if (nodeContract.isEmpty()) {
+            JsonNode payloadNode = attackChainNodeContractNode.get("injector_contract_payload");
             if (!payloadNode.isNull() && !payloadNode.isEmpty()) {
               String externalId = payloadNode.get("payload_external_id").textValue();
               // Rely on external collector
               if (hasText(externalId)) {
-                Optional<InjectorContract> injectorContractFromPayload =
-                    this.injectorContractRepository.findOne(byPayloadExternalId(externalId));
-                if (injectorContractFromPayload.isPresent()) {
-                  injectorContractId = injectorContractFromPayload.get().getId();
+                Optional<NodeContract> nodeContractFromPayload =
+                    this.nodeContractRepository.findOne(byPayloadExternalId(externalId));
+                if (nodeContractFromPayload.isPresent()) {
+                  nodeContractId = nodeContractFromPayload.get().getId();
                   // Create new payload
                 } else {
                   log.info(
                       "Inject comes from a collector not set up in your environment, a new payload has been created.");
-                  injectorContract = importPayload(payloadNode, baseIds);
-                  injectorContractId = injectorContract.map(InjectorContract::getId).orElse(null);
+                  nodeContract = importPayload(payloadNode, baseIds);
+                  nodeContractId = nodeContract.map(NodeContract::getId).orElse(null);
                 }
                 // Create new payload
               } else {
-                injectorContract = importPayload(payloadNode, baseIds);
-                injectorContractId = injectorContract.map(InjectorContract::getId).orElse(null);
+                nodeContract = importPayload(payloadNode, baseIds);
+                nodeContractId = nodeContract.map(NodeContract::getId).orElse(null);
               }
             }
           } else {
-            injectorContractId = injectorContract.get().getId();
+            nodeContractId = nodeContract.get().getId();
           }
 
-          if (injectorContractId == null) {
-            if (scenario != null
-                && scenario.getDependencies() != null
-                && Arrays.asList(scenario.getDependencies())
-                    .contains(Scenario.Dependency.STARTERPACK)) {
-              // if we are importing the starter pack, we will create the injector contract so the
-              // injects are created before the injector registered
-              // once the injector register the contract will be overriden and will be the one
-              // provided by the injector
-              Payload createdPayload = injectorContract.map(ic -> ic.getPayload()).orElse(null);
-              injectorContractId =
-                  importInjectorContractFromStarterPack(injectContractNode, createdPayload).getId();
+          if (nodeContractId == null) {
+            if (attackChain != null
+                && attackChain.getDependencies() != null
+                && Arrays.asList(attackChain.getDependencies())
+                    .contains(AttackChain.Dependency.STARTERPACK)) {
+              // if we are importing the starter pack, we will create the nodeExecutor contract so the
+              // attackChainNodes are created before the nodeExecutor registered
+              // once the nodeExecutor register the contract will be overriden and will be the one
+              // provided by the nodeExecutor
+              Payload createdPayload = nodeContract.map(ic -> ic.getPayload()).orElse(null);
+              nodeContractId =
+                  importNodeContractFromStarterPack(attackChainNodeContractNode, createdPayload).getId();
             } else {
               log.warn(
-                  "Import Inject Failed: Unresolved injector contract ID on inject: {}", injectId);
+                  "Import Inject Failed: Unresolved injector contract ID on inject: {}", attackChainNodeId);
             }
           }
 
-          // If contract is not know, inject can't be imported
-          String content = handleInjectContent(baseIds, injectorContractId, injectNode);
-          Long dependsDuration = injectNode.get("inject_depends_duration").asLong();
-          boolean allTeams = injectNode.get("inject_all_teams").booleanValue();
-          if (exercise != null) {
-            injectRepository.importSaveForExercise(
-                injectId,
+          // If contract is not know, attackChainNode can't be imported
+          String content = handleAttackChainNodeContent(baseIds, nodeContractId, attackChainNodeNode);
+          Long dependsDuration = attackChainNodeNode.get("inject_depends_duration").asLong();
+          boolean allTeams = attackChainNodeNode.get("inject_all_teams").booleanValue();
+          if (attackChainRun != null) {
+            attackChainNodeRepository.importSaveForAttackChainRun(
+                attackChainNodeId,
                 title,
                 description,
                 country,
                 city,
-                injectorContractId,
+                nodeContractId,
                 allTeams,
                 enabled,
-                exercise.getId(),
+                attackChainRun.getId(),
                 dependsDuration,
                 content);
-          } else if (scenario != null) {
-            injectRepository.importSaveForScenario(
-                injectId,
+          } else if (attackChain != null) {
+            attackChainNodeRepository.importSaveForAttackChain(
+                attackChainNodeId,
                 title,
                 description,
                 country,
                 city,
-                injectorContractId,
+                nodeContractId,
                 allTeams,
                 enabled,
-                scenario.getId(),
+                attackChain.getId(),
                 dependsDuration,
                 content);
           } else {
-            injectRepository.importSaveStandAlone(
-                injectId,
+            attackChainNodeRepository.importSaveStandAlone(
+                attackChainNodeId,
                 title,
                 description,
                 country,
                 city,
-                injectorContractId,
+                nodeContractId,
                 allTeams,
                 enabled,
                 dependsDuration,
                 content);
           }
-          baseIds.put(id, new BaseHolder(injectId));
+          baseIds.put(id, new BaseHolder(attackChainNodeId));
           originalIds.add(id);
 
-          // Once the inject has been saved, we deal with the dependencies
-          ArrayNode injectDependsOn = (ArrayNode) injectNode.get("inject_depends_on");
-          for (JsonNode dependsOnNode : injectDependsOn) {
-            // If there are dependencies where the added inject is the children, we add it to the
+          // Once the attackChainNode has been saved, we deal with the dependencies
+          ArrayNode attackChainNodeDependsOn = (ArrayNode) attackChainNodeNode.get("inject_depends_on");
+          for (JsonNode dependsOnNode : attackChainNodeDependsOn) {
+            // If there are dependencies where the added attackChainNode is the children, we add it to the
             // database
             if (id.equals(
                 dependsOnNode.get("dependency_relationship").get("inject_children_id").asText())) {
-              InjectDependencyInput dependency =
-                  mapper.convertValue(dependsOnNode, InjectDependencyInput.class);
+              AttackChainEdgeInput dependency =
+                  mapper.convertValue(dependsOnNode, AttackChainEdgeInput.class);
 
-              Optional<Inject> injectParent =
-                  injectRepository.findById(
-                      baseIds.get(dependency.getRelationship().getInjectParentId()).getId());
-              Optional<Inject> injectChildren =
-                  injectRepository.findById(
-                      baseIds.get(dependency.getRelationship().getInjectChildrenId()).getId());
+              Optional<AttackChainNode> attackChainNodeParent =
+                  attackChainNodeRepository.findById(
+                      baseIds.get(dependency.getRelationship().getAttackChainNodeParentId()).getId());
+              Optional<AttackChainNode> attackChainNodeChildren =
+                  attackChainNodeRepository.findById(
+                      baseIds.get(dependency.getRelationship().getAttackChainNodeChildrenId()).getId());
 
-              if (injectParent.isPresent() && injectChildren.isPresent()) {
-                InjectDependency injectDependency = new InjectDependency();
-                injectDependency.getCompositeId().setInjectParent(injectParent.get());
-                injectDependency.getCompositeId().setInjectChildren(injectChildren.get());
-                injectDependency.setInjectDependencyCondition(dependency.getConditions());
-                injectDependenciesRepository.save(injectDependency);
+              if (attackChainNodeParent.isPresent() && attackChainNodeChildren.isPresent()) {
+                AttackChainEdge attackChainEdge = new AttackChainEdge();
+                attackChainEdge.getCompositeId().setAttackChainNodeParent(attackChainNodeParent.get());
+                attackChainEdge.getCompositeId().setAttackChainNodeChildren(attackChainNodeChildren.get());
+                attackChainEdge.setAttackChainEdgeCondition(dependency.getConditions());
+                attackChainEdgesRepository.save(attackChainEdge);
               }
             }
           }
           // Tags
-          List<String> injectTagIds = resolveJsonIds(injectNode, "inject_tags");
-          injectTagIds.forEach(
+          List<String> attackChainNodeTagIds = resolveJsonIds(attackChainNodeNode, "inject_tags");
+          attackChainNodeTagIds.forEach(
               tagId -> {
                 Base base = baseIds.get(tagId);
                 if (base == null || base.getId() == null) {
                   return;
                 }
-                injectRepository.addTag(injectId, base.getId());
+                attackChainNodeRepository.addTag(attackChainNodeId, base.getId());
               });
           // Teams
-          List<String> injectTeamIds = resolveJsonIds(injectNode, "inject_teams");
-          injectTeamIds.forEach(
+          List<String> attackChainNodeTeamIds = resolveJsonIds(attackChainNodeNode, "inject_teams");
+          attackChainNodeTeamIds.forEach(
               teamId -> {
                 Base base = baseIds.get(teamId);
                 if (base == null || base.getId() == null) {
                   return;
                 }
-                injectRepository.addTeam(injectId, base.getId());
+                attackChainNodeRepository.addTeam(attackChainNodeId, base.getId());
               });
           // Documents
-          List<JsonNode> injectDocuments =
-              resolveJsonElements(injectNode, "inject_documents").toList();
-          injectDocuments.forEach(
+          List<JsonNode> attackChainNodeDocuments =
+              resolveJsonElements(attackChainNodeNode, "inject_documents").toList();
+          attackChainNodeDocuments.forEach(
               jsonNode -> {
                 String docId = jsonNode.get("document_id").textValue();
                 if (hasText(docId) && baseIds.get(docId) != null) {
                   String documentId = baseIds.get(docId).getId();
                   boolean docAttached = jsonNode.get("document_attached").booleanValue();
-                  injectDocumentRepository.addInjectDoc(injectId, documentId, docAttached);
+                  attackChainNodeDocumentRepository.addAttackChainNodeDoc(attackChainNodeId, documentId, docAttached);
                 } else {
                   log.warn("Missing document in the exercise_documents property");
                 }
               });
 
           // Define default AssetsGroup or Assets
-          Optional<Inject> injectOpt = injectRepository.findById(injectId);
-          if (injectOpt.isPresent() && injectOpt.get().getInjectorContract().isPresent()) {
-            Inject inject = injectOpt.get();
+          Optional<AttackChainNode> attackChainNodeOpt = attackChainNodeRepository.findById(attackChainNodeId);
+          if (attackChainNodeOpt.isPresent() && attackChainNodeOpt.get().getNodeContract().isPresent()) {
+            AttackChainNode attackChainNode = attackChainNodeOpt.get();
             if (assetGroup != null
-                && injectorContractContentUtils.hasField(
-                    inject.getInjectorContract().get(), "asset_groups")) {
-              inject.getAssetGroups().add(assetGroup);
+                && nodeContractContentUtils.hasField(
+                    attackChainNode.getNodeContract().get(), "asset_groups")) {
+              attackChainNode.getAssetGroups().add(assetGroup);
             } else if (asset != null
-                && injectorContractContentUtils.hasField(
-                    inject.getInjectorContract().get(), "assets")) {
-              inject.getAssets().add(asset);
+                && nodeContractContentUtils.hasField(
+                    attackChainNode.getNodeContract().get(), "assets")) {
+              attackChainNode.getAssets().add(asset);
             }
-            injectRepository.save(inject);
+            attackChainNodeRepository.save(attackChainNode);
           }
         });
-    // Looking for children of created injects
-    List<JsonNode> childInjects =
-        allInjects.stream()
+    // Looking for children of created attackChainNodes
+    List<JsonNode> childAttackChainNodes =
+        allAttackChainNodes.stream()
             .filter(
                 jsonNode -> {
-                  ArrayNode injectDependsOn = (ArrayNode) jsonNode.get("inject_depends_on");
+                  ArrayNode attackChainNodeDependsOn = (ArrayNode) jsonNode.get("inject_depends_on");
 
-                  // We're getting the parents of this inject
+                  // We're getting the parents of this attackChainNode
                   List<String> parents =
-                      StreamSupport.stream(injectDependsOn.spliterator(), false)
+                      StreamSupport.stream(attackChainNodeDependsOn.spliterator(), false)
                           .map(
                               dependency ->
                                   dependency
@@ -1074,54 +1074,54 @@ public class V1_DataImporter implements Importer {
                   return originalIds.stream().anyMatch(parents::contains);
                 })
             .toList();
-    if (!childInjects.isEmpty()) {
-      importInjects(baseIds, exercise, scenario, asset, assetGroup, childInjects, allInjects);
+    if (!childAttackChainNodes.isEmpty()) {
+      importAttackChainNodes(baseIds, attackChainRun, attackChain, asset, assetGroup, childAttackChainNodes, allAttackChainNodes);
     }
   }
 
   /**
-   * Used to create a dummy injector to be able to import injector contract from the starterpack
-   * before the real contract is created by the real injector
+   * Used to create a dummy nodeExecutor to be able to import nodeExecutor contract from the starterpack
+   * before the real contract is created by the real nodeExecutor
    *
    * @param importNode contract node
    * @return
    */
-  private Injector createDummyInjector(JsonNode importNode) {
+  private NodeExecutor createDummyNodeExecutor(JsonNode importNode) {
 
-    return injectorService.createDummyInjector(
+    return nodeExecutorService.createDummyNodeExecutor(
         importNode.get("injector_contract_injector_type").asText(),
         importNode.get("injector_contract_injector_type_name").asText());
   }
 
   /**
-   * Import injector contract from the starterpack before the real contract is created by the real
-   * injector, this contract will be overriden
+   * Import nodeExecutor contract from the starterpack before the real contract is created by the real
+   * nodeExecutor, this contract will be overriden
    *
    * @param importNode contract node
    * @param payload to set on contract
    * @return
    */
-  private InjectorContract importInjectorContractFromStarterPack(
+  private NodeContract importNodeContractFromStarterPack(
       JsonNode importNode, Payload payload) {
-    InjectorContract injectorContract = new InjectorContract();
-    injectorContract.setId(importNode.get("injector_contract_id").textValue());
-    injectorContract.setCustom(false);
-    injectorContract.setContent(importNode.get("injector_contract_content").textValue());
-    injectorContract.setInjector(createDummyInjector(importNode));
-    injectorContract.setConvertedContent((ObjectNode) importNode.get("convertedContent"));
-    injectorContract.setExternalId(importNode.get("injector_contract_external_id").textValue());
-    injectorContract.setAtomicTesting(
+    NodeContract nodeContract = new NodeContract();
+    nodeContract.setId(importNode.get("injector_contract_id").textValue());
+    nodeContract.setCustom(false);
+    nodeContract.setContent(importNode.get("injector_contract_content").textValue());
+    nodeContract.setNodeExecutor(createDummyNodeExecutor(importNode));
+    nodeContract.setConvertedContent((ObjectNode) importNode.get("convertedContent"));
+    nodeContract.setExternalId(importNode.get("injector_contract_external_id").textValue());
+    nodeContract.setAtomicTesting(
         importNode.get("injector_contract_atomic_testing").booleanValue());
-    injectorContract.setManual(importNode.get("injector_contract_manual").booleanValue());
-    injectorContract.setNeedsExecutor(
+    nodeContract.setManual(importNode.get("injector_contract_manual").booleanValue());
+    nodeContract.setNeedsExecutor(
         importNode.get("injector_contract_needs_executor").booleanValue());
-    injectorContract.setPlatforms(
+    nodeContract.setPlatforms(
         Endpoint.PLATFORM_TYPE.fromJsonNode(importNode.get("injector_contract_platforms")));
-    injectorContract.setLabels(
+    nodeContract.setLabels(
         new ObjectMapper()
             .convertValue(importNode.get("injector_contract_labels"), new TypeReference<>() {}));
-    injectorContract.setPayload(payload);
-    return injectorContractRepository.save(injectorContract);
+    nodeContract.setPayload(payload);
+    return nodeContractRepository.save(nodeContract);
   }
 
   public static ContractOutputType formatStringToContractOutputType(String value) {
@@ -1234,17 +1234,17 @@ public class V1_DataImporter implements Importer {
             .map(baseIds::get)
             .map(Tag.class::cast)
             .collect(Collectors.toSet()));
-    Optional<InjectorContract> injectorContractFromPayload =
-        this.injectorContractRepository.findOne(byPayloadId(payload.getId()));
-    if (injectorContractFromPayload.isPresent()) {
-      return injectorContractFromPayload.get().getId();
+    Optional<NodeContract> nodeContractFromPayload =
+        this.nodeContractRepository.findOne(byPayloadId(payload.getId()));
+    if (nodeContractFromPayload.isPresent()) {
+      return nodeContractFromPayload.get().getId();
     } else {
       log.warn("An error has occurred when importing the payload: {}", payload.getName());
       return null;
     }
   }
 
-  private Optional<InjectorContract> importPayload(
+  private Optional<NodeContract> importPayload(
       @NotNull final JsonNode payloadNode, Map<String, Base> baseIds) {
     // swap executable file id or file drop file id
     if (payloadNode.has("executable_file")) {
@@ -1275,16 +1275,16 @@ public class V1_DataImporter implements Importer {
             .map(Tag.class::cast)
             .collect(Collectors.toSet()));
 
-    Optional<InjectorContract> injectorContractFromPayload =
-        this.injectorContractRepository.findOne(byPayloadId(payload.getId()));
+    Optional<NodeContract> nodeContractFromPayload =
+        this.nodeContractRepository.findOne(byPayloadId(payload.getId()));
 
-    if (injectorContractFromPayload.isPresent()) {
-      return injectorContractFromPayload;
+    if (nodeContractFromPayload.isPresent()) {
+      return nodeContractFromPayload;
     } else {
       log.warn("An error has occurred when importing the payload: {}", payload.getName());
-      InjectorContract injectorContract = new InjectorContract();
-      injectorContract.setPayload(payload);
-      return Optional.of(injectorContract);
+      NodeContract nodeContract = new NodeContract();
+      nodeContract.setPayload(payload);
+      return Optional.of(nodeContract);
     }
   }
 
@@ -1330,8 +1330,8 @@ public class V1_DataImporter implements Importer {
 
   private void importVariables(
       JsonNode importNode,
-      Exercise savedExercise,
-      Scenario savedScenario,
+      AttackChainRun savedAttackChainRun,
+      AttackChain savedAttackChain,
       Map<String, Base> baseIds) {
     Optional<Iterator<JsonNode>> variableNodesOpt = Optional.empty();
     if (ofNullable(importNode.get(EXERCISE_VARIABLES)).isPresent()) {
@@ -1345,10 +1345,10 @@ public class V1_DataImporter implements Importer {
                 variableNode -> {
                   String id = VariableWithValueMixin.getId(variableNode);
                   Variable variable = VariableWithValueMixin.build(variableNode);
-                  if (savedExercise != null) {
-                    variable.setExercise(savedExercise);
-                  } else if (savedScenario != null) {
-                    variable.setScenario(savedScenario);
+                  if (savedAttackChainRun != null) {
+                    variable.setAttackChainRun(savedAttackChainRun);
+                  } else if (savedAttackChain != null) {
+                    variable.setAttackChain(savedAttackChain);
                   }
                   Variable variableSaved = this.variableRepository.save(variable);
                   baseIds.put(id, variableSaved);

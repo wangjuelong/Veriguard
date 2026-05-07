@@ -40,21 +40,21 @@ public class AgentTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public Page<InjectTarget> search(SearchPaginationInput input, Inject scopedInject) {
+  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
 
     Specification<Agent> memberOfAssetGroupSpec =
         specificationUtils.compileSpecificationForAssetGroupMembership(
-            scopedInject, input, joinPath);
+            scopedAttackChainNode, input, joinPath);
 
     Specification<Agent> memberOfAnyTargetGroupSpec =
         specificationUtils.compileSpecificationForAssetGroupMembership(
-            scopedInject,
+            scopedAttackChainNode,
             SearchPaginationInput.builder().filterGroup(new Filters.FilterGroup()).build(),
             joinPath);
 
     Specification<Agent> tagsSpec = specificationUtils.compileSpecificationForTags(input, joinPath);
 
-    SearchPaginationInput translatedInput = this.translate(input, scopedInject);
+    SearchPaginationInput translatedInput = this.translate(input, scopedAttackChainNode);
 
     Page<Agent> eps =
         buildPaginationJPA(
@@ -78,14 +78,14 @@ public class AgentTargetSearchAdaptor extends SearchAdaptorBase {
 
     return new PageImpl<>(
         eps.getContent().stream()
-            .map(endpoint -> convertFromAgent(endpoint, scopedInject))
+            .map(endpoint -> convertFromAgent(endpoint, scopedAttackChainNode))
             .toList(),
         eps.getPageable(),
         eps.getTotalElements());
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForInject(Inject scopedInject, String textSearch) {
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
     log.info(
         "AgentTargetSearchAdaptor.getOptionsForInject: this method is stubbed, as there are no current filters on agent options.");
     return List.of();
@@ -98,9 +98,9 @@ public class AgentTargetSearchAdaptor extends SearchAdaptorBase {
     return List.of();
   }
 
-  private InjectTarget convertFromAgent(Agent agent, Inject inject) {
+  private AttackChainNodeTarget convertFromAgent(Agent agent, AttackChainNode attackChainNode) {
     return helperTargetSearchAdaptor.buildTargetWithExpectations(
-        inject,
+        attackChainNode,
         () ->
             new AgentTarget(
                 agent.getId(),

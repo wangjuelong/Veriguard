@@ -3,13 +3,13 @@ package io.veriguard.injector_contract;
 import java.util.List;
 
 /**
- * Abstract base class for implementing injector contractors.
+ * Abstract base class for implementing nodeExecutor contractors.
  *
  * <p>A Contractor is responsible for defining and providing the contracts (capabilities) of an
- * injector. Each injector implementation extends this class to specify:
+ * nodeExecutor. Each nodeExecutor implementation extends this class to specify:
  *
  * <ul>
- *   <li>The unique type identifier for the injector
+ *   <li>The unique type identifier for the nodeExecutor
  *   <li>The icon displayed in the UI
  *   <li>The configuration metadata
  *   <li>The list of contracts (injection capabilities) provided
@@ -36,14 +36,14 @@ import java.util.List;
 public abstract class Contractor {
 
   /**
-   * Returns the unique type identifier for this contractor's injector.
+   * Returns the unique type identifier for this contractor's nodeExecutor.
    *
-   * @return the injector type (e.g., "email", "sms", "caldera")
+   * @return the nodeExecutor type (e.g., "email", "sms", "caldera")
    */
   public abstract String getType();
 
   /**
-   * Returns the icon to display for this injector.
+   * Returns the icon to display for this nodeExecutor.
    *
    * @return the contractor icon, or null if no custom icon is provided
    */

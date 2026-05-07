@@ -5,8 +5,8 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.repository.EvaluationRepository;
 import io.veriguard.database.repository.ObjectiveRepository;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.inject.service.InjectService;
-import io.veriguard.rest.injector_contract.InjectorContractService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.injector_contract.NodeContractService;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -55,9 +55,9 @@ public class PermissionService {
           ResourceType.EVALUATION);
 
   private final GrantService grantService;
-  private final InjectService injectService;
+  private final AttackChainNodeService attackChainNodeService;
   private final NotificationRuleService notificationRuleService;
-  private final InjectorContractService injectorContractService;
+  private final NodeContractService nodeContractService;
   private final ObjectiveRepository objectiveRepository;
   private final EvaluationRepository evaluationRepository;
 
@@ -83,11 +83,11 @@ public class PermissionService {
 
     // If we are searching for resources with parent permission, the search function must handle the
     // permission computation itself.
-    // Example: export of injects
+    // Example: export of attackChainNodes
     if (RESOURCES_USING_PARENT_PERMISSION.contains(resourceType) && Action.SEARCH.equals(action)) {
       return true;
     }
-    // for inject/article the permission will be based on the parent's (scenario/simulation/test)
+    // for attackChainNode/article the permission will be based on the parent's (attackChain/simulation/test)
     // permission
     if (RESOURCES_USING_PARENT_PERMISSION.contains(resourceType)) {
       Target parentTarget = resolveTarget(resourceId, resourceType, action);
@@ -178,10 +178,10 @@ public class PermissionService {
       @NotNull final ResourceType resourceType,
       @NotNull final Action action) {
     if (resourceType == ResourceType.INJECT) {
-      Inject inject = injectService.inject(resourceId);
+      AttackChainNode attackChainNode = attackChainNodeService.attackChainNode(resourceId);
       // parent action rule: anything non-READ becomes WRITE on the parent
       Action parentAction = (action == Action.READ) ? Action.READ : Action.WRITE;
-      return new Target(inject.getParentResourceId(), inject.getParentResourceType(), parentAction);
+      return new Target(attackChainNode.getParentResourceId(), attackChainNode.getParentResourceType(), parentAction);
     } else if (resourceType == ResourceType.NOTIFICATION_RULE) {
       NotificationRule notificationRule =
           notificationRuleService
@@ -193,7 +193,7 @@ public class PermissionService {
       Action parentAction = Action.READ; // FIXME permission should be linked to userid
       return new Target(notificationRule.getResourceId(), ResourceType.SCENARIO, parentAction);
     } else if (resourceType == ResourceType.INJECTOR_CONTRACT) {
-      InjectorContract ic = injectorContractService.injectorContract(resourceId);
+      NodeContract ic = nodeContractService.nodeContract(resourceId);
       if (ic.getPayload() != null) {
         return new Target(ic.getPayload().getId(), ResourceType.PAYLOAD, action);
       }

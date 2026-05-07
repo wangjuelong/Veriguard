@@ -111,8 +111,8 @@ public class AssetGroup implements Base {
       inverseJoinColumns = @JoinColumn(name = "inject_id"))
   @JsonProperty("asset_group_injects")
   @JsonIgnore
-  @Queryable(filterable = true, dynamicValues = true, path = "injects.id")
-  private List<Inject> injects = new ArrayList<>();
+  @Queryable(filterable = true, dynamicValues = true, path = "attackChainNodes.id")
+  private List<AttackChainNode> attackChainNodes = new ArrayList<>();
 
   // -- AUDIT --
 

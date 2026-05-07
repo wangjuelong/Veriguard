@@ -17,8 +17,8 @@ public class DocumentCreateInput {
   private List<String> tagIds = new ArrayList<>();
 
   @JsonProperty("document_exercises")
-  private List<String> exerciseIds = new ArrayList<>();
+  private List<String> attackChainRunIds = new ArrayList<>();
 
   @JsonProperty("document_scenarios")
-  private List<String> scenarioIds = new ArrayList<>();
+  private List<String> attackChainIds = new ArrayList<>();
 }

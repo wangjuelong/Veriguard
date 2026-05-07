@@ -4,7 +4,7 @@ import io.veriguard.annotation.EsQueryable;
 import io.veriguard.annotation.Indexable;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.model.Endpoint;
-import io.veriguard.database.model.ExerciseStatus;
+import io.veriguard.database.model.AttackChainRunStatus;
 import io.veriguard.engine.model.EsBase;
 import java.time.Instant;
 import java.util.Set;
@@ -21,7 +21,7 @@ public class EsSimulation extends EsBase {
   @Queryable(label = "simulation name", filterable = true)
   private String name;
 
-  @Queryable(label = "simulation status", filterable = true, refEnumClazz = ExerciseStatus.class)
+  @Queryable(label = "simulation status", filterable = true, refEnumClazz = AttackChainRunStatus.class)
   @EsQueryable(keyword = true)
   private String status;
 

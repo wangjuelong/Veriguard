@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * Handler for processing inject executions triggered by an agent.
+ * Handler for processing attackChainNode executions triggered by an agent.
  *
  * <p>This handler generates structured output from the raw execution input and processes additional
  * capabilities such as findings extraction, expectation matching, or asset creation if applicable.
@@ -46,7 +46,7 @@ public class AgentExecutionProcessingHandler extends AbstractExecutionProcessing
     }
 
     Set<OutputParser> outputParsers =
-        structuredOutputUtils.extractOutputParsers(executionContext.inject());
+        structuredOutputUtils.extractOutputParsers(executionContext.attackChainNode());
 
     // Attempt to compute structured output from the raw message
     return structuredOutputUtils

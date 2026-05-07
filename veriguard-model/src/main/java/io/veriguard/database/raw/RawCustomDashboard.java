@@ -4,7 +4,7 @@ package io.veriguard.database.raw;
  * Spring Data projection interface for custom dashboard data.
  *
  * <p>This interface defines a lightweight projection for retrieving custom dashboard identifiers
- * and names. Custom dashboards provide personalized views for exercises and scenarios.
+ * and names. Custom dashboards provide personalized views for attackChainRuns and attackChains.
  *
  * @see io.veriguard.database.model.CustomDashboard
  */

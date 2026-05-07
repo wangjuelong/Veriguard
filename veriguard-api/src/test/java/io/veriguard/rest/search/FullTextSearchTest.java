@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AssetRepository;
-import io.veriguard.database.repository.ScenarioRepository;
+import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.search.FullTextSearchApi;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.fixtures.composers.GrantComposer;
@@ -47,7 +47,7 @@ public class FullTextSearchTest extends IntegrationTest {
 
   @Autowired private MockMvc mvc;
 
-  @Autowired private ScenarioRepository scenarioRepository;
+  @Autowired private AttackChainRepository attackChainRepository;
   @Autowired private AssetRepository assetRepository;
 
   @Autowired private UserComposer userComposer;
@@ -56,21 +56,21 @@ public class FullTextSearchTest extends IntegrationTest {
   @Autowired private GrantComposer grantComposer;
 
   private static final List<String> SCENARIO_IDS = new ArrayList<>();
-  private static Scenario testScenarioCrisis;
-  private static Scenario testScenarioIncident;
+  private static AttackChain testAttackChainCrisis;
+  private static AttackChain testAttackChainIncident;
   private static Asset assetForTest;
 
   private User testUser;
 
   @BeforeAll
   void beforeAll() {
-    Scenario scenario1 = ScenarioFixture.createDefaultCrisisScenario();
-    testScenarioCrisis = this.scenarioRepository.save(scenario1);
-    SCENARIO_IDS.add(testScenarioCrisis.getId());
+    AttackChain attackChain1 = AttackChainFixture.createDefaultCrisisAttackChain();
+    testAttackChainCrisis = this.attackChainRepository.save(attackChain1);
+    SCENARIO_IDS.add(testAttackChainCrisis.getId());
 
-    Scenario scenario2 = ScenarioFixture.createDefaultIncidentResponseScenario();
-    testScenarioIncident = this.scenarioRepository.save(scenario2);
-    SCENARIO_IDS.add(testScenarioIncident.getId());
+    AttackChain attackChain2 = AttackChainFixture.createDefaultIncidentResponseAttackChain();
+    testAttackChainIncident = this.attackChainRepository.save(attackChain2);
+    SCENARIO_IDS.add(testAttackChainIncident.getId());
 
     Asset asset = AssetFixture.createDefaultAsset("Asset for full text search test");
     assetForTest = this.assetRepository.save(asset);
@@ -78,7 +78,7 @@ public class FullTextSearchTest extends IntegrationTest {
 
   @AfterAll
   void afterAll() {
-    this.scenarioRepository.deleteAllById(SCENARIO_IDS);
+    this.attackChainRepository.deleteAllById(SCENARIO_IDS);
     this.assetRepository.delete(assetForTest);
   }
 
@@ -90,7 +90,7 @@ public class FullTextSearchTest extends IntegrationTest {
     grantComposer.reset();
   }
 
-  private static Stream<Arguments> countScenarioTestCases() {
+  private static Stream<Arguments> countAttackChainTestCases() {
     return Stream.of(
         Arguments.of(
             "scenario", 2, "Full text search 'scenario' returns all scenarios - Admin user"),
@@ -101,7 +101,7 @@ public class FullTextSearchTest extends IntegrationTest {
   @ParameterizedTest(name = "{2}")
   @MethodSource("countScenarioTestCases")
   @WithMockUser(isAdmin = true)
-  void given_user_is_admin_search_input_should_return_count_for_all_scenarios(
+  void given_user_is_admin_search_input_should_return_count_for_all_attackChains(
       String searchTerm, int expectedCount, String testDisplayName) throws Exception {
     // -- PREPARE --
     FullTextSearchApi.SearchTerm term = new FullTextSearchApi.SearchTerm();
@@ -114,20 +114,20 @@ public class FullTextSearchTest extends IntegrationTest {
                 .content(asJsonString(term))
                 .with(csrf()))
         .andExpect(status().is2xxSuccessful())
-        .andExpect(jsonPath("$['" + Scenario.class.getName() + "'].count").value(expectedCount));
+        .andExpect(jsonPath("$['" + AttackChain.class.getName() + "'].count").value(expectedCount));
   }
 
-  private static Stream<Arguments> searchScenarioTestCases() {
+  private static Stream<Arguments> searchAttackChainTestCases() {
     return Stream.of(
         Arguments.of(
             "scenario",
             2,
-            List.of(testScenarioCrisis.getId(), testScenarioIncident.getId()),
+            List.of(testAttackChainCrisis.getId(), testAttackChainIncident.getId()),
             "Full text search 'scenario' returns all scenarios - Admin user"),
         Arguments.of(
             "Crisis",
             1,
-            List.of(testScenarioCrisis.getId()),
+            List.of(testAttackChainCrisis.getId()),
             "Full text search 'crisis' returns 1 scenario - Admin user"),
         Arguments.of(
             "test",
@@ -139,7 +139,7 @@ public class FullTextSearchTest extends IntegrationTest {
   @ParameterizedTest(name = "{3}")
   @MethodSource("searchScenarioTestCases")
   @WithMockUser(isAdmin = true)
-  void given_user_is_admin_search_input_should_return_all_scenarios(
+  void given_user_is_admin_search_input_should_return_all_attackChains(
       String searchTerm, int expectedCount, List<String> expectedIds, String testDisplayName)
       throws Exception {
     // -- PREPARE --
@@ -148,7 +148,7 @@ public class FullTextSearchTest extends IntegrationTest {
 
     // -- EXECUTE --
     mvc.perform(
-            post(GLOBAL_SEARCH_URI + "/" + Scenario.class.getName())
+            post(GLOBAL_SEARCH_URI + "/" + AttackChain.class.getName())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(searchPaginationInput))
                 .with(csrf()))
@@ -157,35 +157,35 @@ public class FullTextSearchTest extends IntegrationTest {
         .andExpect(jsonPath("$.content[*].id", containsInAnyOrder(expectedIds.toArray())));
   }
 
-  private static Stream<Arguments> searchScenarioGrantsTestCases() {
+  private static Stream<Arguments> searchAttackChainGrantsTestCases() {
     return Stream.of(
         Arguments.of(
             "scenario",
             2,
-            List.of(testScenarioCrisis.getId(), testScenarioIncident.getId()),
+            List.of(testAttackChainCrisis.getId(), testAttackChainIncident.getId()),
             List.of(
-                GrantFixture.getGrantForScenario(testScenarioCrisis),
-                GrantFixture.getGrantForScenario(testScenarioIncident)),
+                GrantFixture.getGrantForAttackChain(testAttackChainCrisis),
+                GrantFixture.getGrantForAttackChain(testAttackChainIncident)),
             "Full text search 'scenario' returns all scenarios - Granted user"),
         Arguments.of(
             "scenario",
             1,
-            List.of(testScenarioIncident.getId()),
-            List.of(GrantFixture.getGrantForScenario(testScenarioIncident)),
+            List.of(testAttackChainIncident.getId()),
+            List.of(GrantFixture.getGrantForAttackChain(testAttackChainIncident)),
             "Full text search 'scenario' returns 1 scenarios - Partially granted user"),
         Arguments.of(
             "Crisis",
             1,
-            List.of(testScenarioCrisis.getId()),
+            List.of(testAttackChainCrisis.getId()),
             List.of(
-                GrantFixture.getGrantForScenario(testScenarioCrisis),
-                GrantFixture.getGrantForScenario(testScenarioIncident)),
+                GrantFixture.getGrantForAttackChain(testAttackChainCrisis),
+                GrantFixture.getGrantForAttackChain(testAttackChainIncident)),
             "Full text search 'crisis' returns 1 scenario - Granted user"),
         Arguments.of(
             "Crisis",
             0,
             List.<String>of(),
-            List.of(GrantFixture.getGrantForScenario(testScenarioIncident)),
+            List.of(GrantFixture.getGrantForAttackChain(testAttackChainIncident)),
             "Full text search 'crisis' returns 0 scenario - Ungranted user"),
         Arguments.of(
             "Crisis",
@@ -198,8 +198,8 @@ public class FullTextSearchTest extends IntegrationTest {
             0,
             List.<String>of(),
             List.of(
-                GrantFixture.getGrantForScenario(testScenarioCrisis),
-                GrantFixture.getGrantForScenario(testScenarioIncident)),
+                GrantFixture.getGrantForAttackChain(testAttackChainCrisis),
+                GrantFixture.getGrantForAttackChain(testAttackChainIncident)),
             "Full text search 'test' returns no results - Granted user"));
   }
 
@@ -224,7 +224,7 @@ public class FullTextSearchTest extends IntegrationTest {
 
     // -- EXECUTE --
     mvc.perform(
-            post(GLOBAL_SEARCH_URI + "/" + Scenario.class.getName())
+            post(GLOBAL_SEARCH_URI + "/" + AttackChain.class.getName())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(searchPaginationInput))
                 .with(csrf()))

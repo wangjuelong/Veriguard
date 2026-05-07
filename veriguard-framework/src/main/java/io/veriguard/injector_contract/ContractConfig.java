@@ -6,13 +6,13 @@ import java.util.Map;
 import lombok.Getter;
 
 /**
- * Configuration metadata for an injector contract.
+ * Configuration metadata for an nodeExecutor contract.
  *
- * <p>This class holds the display and identification properties used to present an injector in the
+ * <p>This class holds the display and identification properties used to present an nodeExecutor in the
  * user interface, including:
  *
  * <ul>
- *   <li>Type identifier for the injector
+ *   <li>Type identifier for the nodeExecutor
  *   <li>Localized labels for different languages
  *   <li>Theme-specific colors for UI presentation
  * </ul>
@@ -23,7 +23,7 @@ import lombok.Getter;
 @Getter
 public class ContractConfig {
 
-  /** Unique type identifier for this injector (e.g., "email", "sms", "caldera"). */
+  /** Unique type identifier for this nodeExecutor (e.g., "email", "sms", "caldera"). */
   private final String type;
 
   /** Localized display labels, keyed by supported language. */
@@ -40,7 +40,7 @@ public class ContractConfig {
   /**
    * Creates a new ContractConfig.
    *
-   * @param type the injector type identifier
+   * @param type the nodeExecutor type identifier
    * @param label the localized labels for supported languages
    * @param colorDark the color for dark theme UI
    * @param colorLight the color for light theme UI

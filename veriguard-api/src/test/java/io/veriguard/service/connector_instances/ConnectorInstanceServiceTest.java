@@ -25,18 +25,18 @@ class ConnectorInstanceServiceTest {
 
   @Nested
   @DisplayName("Check whether a started connector instance exists for a given injector")
-  class HasStartedConnectorInstanceForInjector {
+  class HasStartedConnectorInstanceForNodeExecutor {
 
     @Test
     void given_startedStatusInDatabase_should_returnTrueWithoutFallbackRequest() {
       // Arrange
-      String injectorId = "injector-1";
+      String nodeExecutorId = "injector-1";
       when(connectorInstanceConfigurationRepository.findStatusByKeyValue(
-              ConnectorType.INJECTOR.getIdKeyName(), injectorId))
+              ConnectorType.INJECTOR.getIdKeyName(), nodeExecutorId))
           .thenReturn(Optional.of(ConnectorInstance.CURRENT_STATUS_TYPE.started.name()));
 
       // Act
-      boolean result = connectorInstanceService.hasStartedConnectorInstanceForInjector(injectorId);
+      boolean result = connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
 
       // Assert
       assertTrue(result);
@@ -45,13 +45,13 @@ class ConnectorInstanceServiceTest {
     @Test
     void given_nonStartedStatusInDatabase_should_returnFalseWithoutFallbackRequest() {
       // Arrange
-      String injectorId = "injector-2";
+      String nodeExecutorId = "injector-2";
       when(connectorInstanceConfigurationRepository.findStatusByKeyValue(
-              ConnectorType.INJECTOR.getIdKeyName(), injectorId))
+              ConnectorType.INJECTOR.getIdKeyName(), nodeExecutorId))
           .thenReturn(Optional.of(ConnectorInstance.CURRENT_STATUS_TYPE.stopped.name()));
 
       // Act
-      boolean result = connectorInstanceService.hasStartedConnectorInstanceForInjector(injectorId);
+      boolean result = connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
 
       // Assert
       assertFalse(result);
@@ -60,13 +60,13 @@ class ConnectorInstanceServiceTest {
     @Test
     void given_missingStatusInDatabase_should_useFallbackRequestAndReturnTrueWhenRequestSucceeds() {
       // Arrange
-      String injectorId = "injector-3";
+      String nodeExecutorId = "injector-3";
       when(connectorInstanceConfigurationRepository.findStatusByKeyValue(
-              ConnectorType.INJECTOR.getIdKeyName(), injectorId))
+              ConnectorType.INJECTOR.getIdKeyName(), nodeExecutorId))
           .thenReturn(Optional.empty());
 
       // Act
-      boolean result = connectorInstanceService.hasStartedConnectorInstanceForInjector(injectorId);
+      boolean result = connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
 
       // Assert
       assertTrue(result);

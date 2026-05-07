@@ -38,13 +38,13 @@ public class ExecutionTrace implements Base {
   @JoinColumn(name = "execution_inject_status_id")
   @Schema(type = "string")
   @JsonSerialize(using = MonoIdSerializer.class)
-  private InjectStatus injectStatus;
+  private AttackChainNodeStatus attackChainNodeStatus;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "execution_inject_test_status_id")
   @Schema(type = "string")
   @JsonSerialize(using = MonoIdSerializer.class)
-  private InjectTestStatus injectTestStatus;
+  private AttackChainNodeTestStatus attackChainNodeTestStatus;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "execution_agent_id")
@@ -151,14 +151,14 @@ public class ExecutionTrace implements Base {
   public ExecutionTrace() {}
 
   public ExecutionTrace(
-      InjectStatus injectStatus,
+      AttackChainNodeStatus attackChainNodeStatus,
       ExecutionTraceStatus status,
       List<String> identifiers,
       String message,
       ExecutionTraceAction action,
       Agent agent,
       Instant time) {
-    this.injectStatus = injectStatus;
+    this.attackChainNodeStatus = attackChainNodeStatus;
     this.status = status;
     this.identifiers = identifiers == null ? new String[0] : identifiers.toArray(new String[0]);
     this.message = message;
@@ -168,7 +168,7 @@ public class ExecutionTrace implements Base {
   }
 
   public ExecutionTrace(ExecutionTrace base, ObjectNode structuredOutput) {
-    this.injectStatus = base.injectStatus;
+    this.attackChainNodeStatus = base.attackChainNodeStatus;
     this.status = base.status;
     this.identifiers = base.identifiers;
     this.message = base.message;

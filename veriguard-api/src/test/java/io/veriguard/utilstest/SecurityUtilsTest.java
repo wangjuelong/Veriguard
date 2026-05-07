@@ -1,6 +1,6 @@
 package io.veriguard.utilstest;
 
-import static io.veriguard.service.InjectImportService.BASE_DIR;
+import static io.veriguard.service.AttackChainNodeImportService.BASE_DIR;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

@@ -66,8 +66,8 @@ public class Manager {
     return candidates.getFirst();
   }
 
-  public io.veriguard.executors.Injector requestInjectorExecutorByType(String injectorType) {
-    return this.request(new ComponentRequest(injectorType), io.veriguard.executors.Injector.class);
+  public io.veriguard.executors.NodeExecutor requestNodeExecutorExecutorByType(String nodeExecutorType) {
+    return this.request(new ComponentRequest(nodeExecutorType), io.veriguard.executors.NodeExecutor.class);
   }
 
   /** Not thread-safe */

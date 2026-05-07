@@ -175,28 +175,28 @@ public class AssetGroupApi extends RestBehavior {
       @RequestParam(required = false) final String sourceId,
       @RequestParam(required = false) final String inputFilterOption) {
     List<FilterUtilsJpa.Option> options = List.of();
-    InputFilterOptions injectFilterOptionEnum;
+    InputFilterOptions attackChainNodeFilterOptionEnum;
     try {
-      injectFilterOptionEnum = InputFilterOptions.valueOf(inputFilterOption);
+      attackChainNodeFilterOptionEnum = InputFilterOptions.valueOf(inputFilterOption);
     } catch (Exception e) {
       if (StringUtils.isEmpty(inputFilterOption)) {
         log.warn("InputFilterOption is null, fall back to backwards compatible case");
         if (StringUtils.isNotEmpty(sourceId)) {
-          injectFilterOptionEnum = InputFilterOptions.SIMULATION_OR_SCENARIO;
+          attackChainNodeFilterOptionEnum = InputFilterOptions.SIMULATION_OR_SCENARIO;
         } else {
-          injectFilterOptionEnum = InputFilterOptions.ATOMIC_TESTING;
+          attackChainNodeFilterOptionEnum = InputFilterOptions.ATOMIC_TESTING;
         }
       } else {
         throw new BadRequestException(
             String.format("Invalid input filter option %s", inputFilterOption));
       }
     }
-    switch (injectFilterOptionEnum) {
+    switch (attackChainNodeFilterOptionEnum) {
       case ALL_INJECTS:
         {
           options =
               assetGroupRepository
-                  .findAllAssetGroupsForAtomicTestingsSimulationsAndScenarios()
+                  .findAllAssetGroupsForAtomicTestingsSimulationsAndAttackChains()
                   .stream()
                   .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
                   .distinct()
@@ -214,7 +214,7 @@ public class AssetGroupApi extends RestBehavior {
         {
           options =
               assetGroupRepository
-                  .findAllBySimulationOrScenarioIdAndName(
+                  .findAllBySimulationOrAttackChainIdAndName(
                       StringUtils.trimToNull(sourceId), StringUtils.trimToNull(searchText))
                   .stream()
                   .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))

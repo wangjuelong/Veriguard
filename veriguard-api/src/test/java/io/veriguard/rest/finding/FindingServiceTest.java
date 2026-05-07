@@ -1,7 +1,7 @@
 package io.veriguard.rest.finding;
 
 import static io.veriguard.utils.fixtures.AssetFixture.createDefaultAsset;
-import static io.veriguard.utils.fixtures.InjectFixture.getDefaultInject;
+import static io.veriguard.utils.fixtures.AttackChainNodeFixture.getDefaultAttackChainNode;
 import static io.veriguard.utils.fixtures.OutputParserFixture.getContractOutputElementTypeIPv6;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,10 +11,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.FindingRepository;
-import io.veriguard.injector_contract.outputs.InjectorContractContentOutputElement;
+import io.veriguard.injector_contract.outputs.NodeContractContentOutputElement;
 import io.veriguard.rest.inject.service.ContractOutputContext;
-import io.veriguard.rest.injector_contract.InjectorContractContentUtils;
-import io.veriguard.utils.helpers.InjectTestHelper;
+import io.veriguard.rest.injector_contract.NodeContractContentUtils;
+import io.veriguard.utils.helpers.AttackChainNodeTestHelper;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
@@ -28,37 +28,37 @@ class FindingServiceTest extends IntegrationTest {
   public static final String ASSET_1 = "asset1";
   public static final String ASSET_2 = "asset2";
 
-  @Autowired private InjectTestHelper injectTestHelper;
+  @Autowired private AttackChainNodeTestHelper attackChainNodeTestHelper;
   @Autowired private FindingService findingService;
   @Autowired private FindingRepository findingRepository;
-  @Autowired private InjectorContractContentUtils injectorContractContentUtils;
+  @Autowired private NodeContractContentUtils nodeContractContentUtils;
 
   @Test
   @DisplayName("Should have two assets when finding already exists with one asset")
   void given_a_finding_already_existent_with_one_asset_should_have_two_assets() {
-    Inject inject = getDefaultInject();
-    Asset asset1 = injectTestHelper.forceSaveAsset(createDefaultAsset(ASSET_1));
-    Asset asset2 = injectTestHelper.forceSaveAsset(createDefaultAsset(ASSET_2));
+    AttackChainNode attackChainNode = getDefaultAttackChainNode();
+    Asset asset1 = attackChainNodeTestHelper.forceSaveAsset(createDefaultAsset(ASSET_1));
+    Asset asset2 = attackChainNodeTestHelper.forceSaveAsset(createDefaultAsset(ASSET_2));
     String value = "value-already-existent";
     ContractOutputElement contractOutputElement = getContractOutputElementTypeIPv6();
     ContractOutputContext contractOutputContext = ContractOutputContext.from(contractOutputElement);
 
     Finding existing = new Finding();
     existing.setValue(value);
-    existing.setInject(inject);
+    existing.setAttackChainNode(attackChainNode);
     existing.setField(contractOutputElement.getKey());
     existing.setType(contractOutputElement.getType());
     existing.setAssets(new ArrayList<>(List.of(asset1)));
 
-    injectTestHelper.forceSaveInject(inject);
-    injectTestHelper.forceSaveFinding(existing);
+    attackChainNodeTestHelper.forceSaveAttackChainNode(attackChainNode);
+    attackChainNodeTestHelper.forceSaveFinding(existing);
 
-    findingService.saveAgentFinding(inject, asset2, contractOutputContext, value);
+    findingService.saveAgentFinding(attackChainNode, asset2, contractOutputContext, value);
 
     Finding result =
         findingRepository
-            .findByInjectIdAndValueAndTypeAndKey(
-                inject.getId(),
+            .findByAttackChainNodeIdAndValueAndTypeAndKey(
+                attackChainNode.getId(),
                 value,
                 contractOutputElement.getType(),
                 contractOutputElement.getKey())
@@ -74,28 +74,28 @@ class FindingServiceTest extends IntegrationTest {
   @Test
   @DisplayName("Should have one asset when finding already exists with the same asset")
   void given_a_finding_already_existent_with_same_asset_should_have_one_asset() {
-    Inject inject = getDefaultInject();
-    Asset asset1 = injectTestHelper.forceSaveAsset(createDefaultAsset(ASSET_1));
+    AttackChainNode attackChainNode = getDefaultAttackChainNode();
+    Asset asset1 = attackChainNodeTestHelper.forceSaveAsset(createDefaultAsset(ASSET_1));
     String value = "value-already-existent";
     ContractOutputElement contractOutputElement = getContractOutputElementTypeIPv6();
     ContractOutputContext contractOutputContext = ContractOutputContext.from(contractOutputElement);
 
     Finding existing = new Finding();
     existing.setValue(value);
-    existing.setInject(inject);
+    existing.setAttackChainNode(attackChainNode);
     existing.setField(contractOutputElement.getKey());
     existing.setType(contractOutputElement.getType());
     existing.setAssets(new ArrayList<>(List.of(asset1)));
 
-    injectTestHelper.forceSaveInject(inject);
-    injectTestHelper.forceSaveFinding(existing);
+    attackChainNodeTestHelper.forceSaveAttackChainNode(attackChainNode);
+    attackChainNodeTestHelper.forceSaveFinding(existing);
 
-    findingService.saveAgentFinding(inject, asset1, contractOutputContext, value);
+    findingService.saveAgentFinding(attackChainNode, asset1, contractOutputContext, value);
 
     Finding result =
         findingRepository
-            .findByInjectIdAndValueAndTypeAndKey(
-                inject.getId(),
+            .findByAttackChainNodeIdAndValueAndTypeAndKey(
+                attackChainNode.getId(),
                 value,
                 contractOutputElement.getType(),
                 contractOutputElement.getKey())
@@ -141,8 +141,8 @@ class FindingServiceTest extends IntegrationTest {
         }
         """);
 
-    List<InjectorContractContentOutputElement> contractOutputs =
-        injectorContractContentUtils.getContractOutputs(convertedContent, mapper);
+    List<NodeContractContentOutputElement> contractOutputs =
+        nodeContractContentUtils.getContractOutputs(convertedContent, mapper);
     ContractOutputContext ctx = ContractOutputContext.from(contractOutputs.getFirst());
     JsonNode elementNode = structuredOutput.path("cves");
 
@@ -193,8 +193,8 @@ class FindingServiceTest extends IntegrationTest {
         }
         """);
 
-    List<InjectorContractContentOutputElement> contractOutputs =
-        injectorContractContentUtils.getContractOutputs(convertedContent, mapper);
+    List<NodeContractContentOutputElement> contractOutputs =
+        nodeContractContentUtils.getContractOutputs(convertedContent, mapper);
     ContractOutputContext ctx = ContractOutputContext.from(contractOutputs.getFirst());
     JsonNode elementNode = structuredOutput.path("port_scans");
 

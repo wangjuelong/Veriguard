@@ -33,40 +33,40 @@ public class GrantHelper {
     return grant;
   }
 
-  public void grantExerciseObserver(Exercise exercise) {
+  public void grantAttackChainRunObserver(AttackChainRun attackChainRun) {
     for (Group group : getAmbientSecurityContextGroups()) {
       Grant grant = createGrantForGroup(group);
-      grant.setResourceId(exercise.getId());
+      grant.setResourceId(attackChainRun.getId());
       grant.setGrantResourceType(Grant.GRANT_RESOURCE_TYPE.SIMULATION);
       grant.setName(Grant.GRANT_TYPE.OBSERVER);
       this.grantRepository.save(grant);
     }
   }
 
-  public void grantExercisePlanner(Exercise exercise) {
+  public void grantAttackChainRunPlanner(AttackChainRun attackChainRun) {
     for (Group group : getAmbientSecurityContextGroups()) {
       Grant grant = createGrantForGroup(group);
-      grant.setResourceId(exercise.getId());
+      grant.setResourceId(attackChainRun.getId());
       grant.setGrantResourceType(Grant.GRANT_RESOURCE_TYPE.SIMULATION);
       grant.setName(Grant.GRANT_TYPE.PLANNER);
       this.grantRepository.save(grant);
     }
   }
 
-  public void grantScenarioObserver(Scenario scenario) {
+  public void grantAttackChainObserver(AttackChain attackChain) {
     for (Group group : getAmbientSecurityContextGroups()) {
       Grant grant = createGrantForGroup(group);
-      grant.setResourceId(scenario.getId());
+      grant.setResourceId(attackChain.getId());
       grant.setGrantResourceType(Grant.GRANT_RESOURCE_TYPE.SCENARIO);
       grant.setName(Grant.GRANT_TYPE.OBSERVER);
       this.grantRepository.save(grant);
     }
   }
 
-  public void grantScenarioPlanner(Scenario scenario) {
+  public void grantAttackChainPlanner(AttackChain attackChain) {
     for (Group group : getAmbientSecurityContextGroups()) {
       Grant grant = createGrantForGroup(group);
-      grant.setResourceId(scenario.getId());
+      grant.setResourceId(attackChain.getId());
       grant.setGrantResourceType(Grant.GRANT_RESOURCE_TYPE.SCENARIO);
       grant.setName(Grant.GRANT_TYPE.PLANNER);
       this.grantRepository.save(grant);

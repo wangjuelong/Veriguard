@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.Asset;
 import io.veriguard.database.model.AssetGroup;
-import io.veriguard.database.model.Exercise;
-import io.veriguard.database.model.Scenario;
+import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.importer.ImportException;
 import io.veriguard.importer.Importer;
 import io.veriguard.importer.V1_DataImporter;
@@ -55,8 +55,8 @@ public class ImportService {
   private void handleDataImport(
       InputStream inputStream,
       Map<String, ImportEntry> docReferences,
-      Exercise exercise,
-      Scenario scenario,
+      AttackChainRun attackChainRun,
+      AttackChain attackChain,
       Asset asset,
       AssetGroup assetGroup,
       String suffix) {
@@ -66,7 +66,7 @@ public class ImportService {
       Importer importer = dataImporters.get(importVersion);
       if (importer != null) {
         importer.importData(
-            importNode, docReferences, exercise, scenario, asset, assetGroup, suffix);
+            importNode, docReferences, attackChainRun, attackChain, asset, assetGroup, suffix);
       } else {
         throw new ImportException("Export with version " + importVersion + " is not supported");
       }
@@ -76,12 +76,12 @@ public class ImportService {
   }
 
   @Transactional(rollbackOn = Exception.class)
-  public void handleFileImport(MultipartFile file, Exercise exercise, Scenario scenario)
+  public void handleFileImport(MultipartFile file, AttackChainRun attackChainRun, AttackChain attackChain)
       throws Exception {
     handleInputStreamImport(
         file.getInputStream(),
-        exercise,
-        scenario,
+        attackChainRun,
+        attackChain,
         null,
         null,
         Constants.IMPORTED_OBJECT_NAME_SUFFIX);
@@ -90,19 +90,19 @@ public class ImportService {
   @Transactional(rollbackOn = Exception.class)
   public void handleInputStreamFileImport(
       InputStream is,
-      Exercise exercise,
-      Scenario scenario,
+      AttackChainRun attackChainRun,
+      AttackChain attackChain,
       Asset asset,
       AssetGroup assetGroup,
       String suffix)
       throws Exception {
-    handleInputStreamImport(is, exercise, scenario, asset, assetGroup, suffix);
+    handleInputStreamImport(is, attackChainRun, attackChain, asset, assetGroup, suffix);
   }
 
   private void handleInputStreamImport(
       InputStream is,
-      Exercise exercise,
-      Scenario scenario,
+      AttackChainRun attackChainRun,
+      AttackChain attackChain,
       Asset asset,
       AssetGroup assetGroup,
       String suffix)
@@ -251,7 +251,7 @@ public class ImportService {
 
       // Process all loaded data
       for (InputStream dataStream : dataImports) {
-        handleDataImport(dataStream, docReferences, exercise, scenario, asset, assetGroup, suffix);
+        handleDataImport(dataStream, docReferences, attackChainRun, attackChain, asset, assetGroup, suffix);
       }
     } finally {
       tempFile.delete();

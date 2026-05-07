@@ -1,7 +1,7 @@
 package io.veriguard.service;
 
-import io.veriguard.database.model.Exercise;
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -12,25 +12,25 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LoadService {
 
-  private final ExerciseRepository exerciseRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
 
   @Transactional
-  public Exercise exercise(@NotBlank final String exerciseId) {
-    Exercise exercise = this.exerciseRepository.findById(exerciseId).orElseThrow();
-    Hibernate.initialize(exercise.getTeams());
-    Hibernate.initialize(exercise.getTeamUsers());
-    Hibernate.initialize(exercise.getTags());
-    Hibernate.initialize(exercise.getObjectives());
-    Hibernate.initialize(exercise.getDocuments());
-    Hibernate.initialize(exercise.getLessonsCategories());
-    exercise
+  public AttackChainRun attackChainRun(@NotBlank final String attackChainRunId) {
+    AttackChainRun attackChainRun = this.attackChainRunRepository.findById(attackChainRunId).orElseThrow();
+    Hibernate.initialize(attackChainRun.getTeams());
+    Hibernate.initialize(attackChainRun.getTeamUsers());
+    Hibernate.initialize(attackChainRun.getTags());
+    Hibernate.initialize(attackChainRun.getObjectives());
+    Hibernate.initialize(attackChainRun.getDocuments());
+    Hibernate.initialize(attackChainRun.getLessonsCategories());
+    attackChainRun
         .getLessonsCategories()
         .forEach(
             lessonsCategory -> {
               Hibernate.initialize(lessonsCategory.getQuestions());
               Hibernate.initialize(lessonsCategory.getTeams());
             });
-    Hibernate.initialize(exercise.getInjects());
-    return exercise;
+    Hibernate.initialize(attackChainRun.getAttackChainNodes());
+    return attackChainRun;
   }
 }

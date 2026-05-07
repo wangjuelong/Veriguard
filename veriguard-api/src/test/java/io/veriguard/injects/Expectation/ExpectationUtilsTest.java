@@ -1,6 +1,6 @@
 package io.veriguard.injects.Expectation;
 
-import static io.veriguard.database.model.InjectExpectationSignature.*;
+import static io.veriguard.database.model.NodeExpectationSignature.*;
 import static io.veriguard.utils.ExpectationUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,9 +25,9 @@ class ExpectationUtilsTest extends IntegrationTest {
   void shouldBuildExpectationsWithSignatureParentProcessNameForOaevImplant_Prevention() {
     // -- PREPARE --
     Endpoint endpoint = EndpointFixture.createEndpoint();
-    InjectorContract injectorContract = InjectorContractFixture.createDefaultInjectorContract();
-    Inject inject = InjectFixture.createTechnicalInject(injectorContract, "Inject", endpoint);
-    inject.setId("injectId");
+    NodeContract nodeContract = NodeContractFixture.createDefaultNodeContract();
+    AttackChainNode attackChainNode = AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
+    attackChainNode.setId("injectId");
 
     Agent agent = AgentFixture.createAgent(endpoint, "ext");
     agent.setId("agentId");
@@ -43,7 +43,7 @@ class ExpectationUtilsTest extends IntegrationTest {
             List.of(agent),
             ExpectationFixture.createExpectation(),
             new HashMap<>(),
-            inject.getId());
+            attackChainNode.getId());
 
     List<DetectionExpectation> detectionExpectations =
         getDetectionExpectationsByAsset(
@@ -52,11 +52,11 @@ class ExpectationUtilsTest extends IntegrationTest {
             List.of(agent),
             ExpectationFixture.createExpectation(),
             new HashMap<>(),
-            inject.getId());
+            attackChainNode.getId());
 
     // -- ASSERT --
-    InjectExpectationSignature signature =
-        InjectExpectationSignature.builder()
+    NodeExpectationSignature signature =
+        NodeExpectationSignature.builder()
             .type(EXPECTATION_SIGNATURE_TYPE_PARENT_PROCESS_NAME)
             .value("oaev-implant-injectId-agent-agentId")
             .build();
@@ -71,7 +71,7 @@ class ExpectationUtilsTest extends IntegrationTest {
         signature,
         preventionExpectations.stream()
             .filter(expectation -> expectation.getAgent() != null)
-            .flatMap(prev -> prev.getInjectExpectationSignatures().stream())
+            .flatMap(prev -> prev.getNodeExpectationSignatures().stream())
             .toList()
             .getFirst());
 
@@ -79,7 +79,7 @@ class ExpectationUtilsTest extends IntegrationTest {
         signature,
         detectionExpectations.stream()
             .filter(expectation -> expectation.getAgent() != null)
-            .flatMap(det -> det.getInjectExpectationSignatures().stream())
+            .flatMap(det -> det.getNodeExpectationSignatures().stream())
             .toList()
             .getFirst());
   }
@@ -89,16 +89,16 @@ class ExpectationUtilsTest extends IntegrationTest {
   void shouldBuildExpectationsWithSignatureParentProcessNameForCalderaImplant() {
     // -- PREPARE --
     Endpoint endpoint = EndpointFixture.createEndpoint();
-    InjectorContract injectorContract = InjectorContractFixture.createDefaultInjectorContract();
-    Inject inject = InjectFixture.createTechnicalInject(injectorContract, "Inject", endpoint);
-    inject.setId("injectId");
+    NodeContract nodeContract = NodeContractFixture.createDefaultNodeContract();
+    AttackChainNode attackChainNode = AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
+    attackChainNode.setId("injectId");
 
     Agent agentParent = AgentFixture.createAgent(endpoint, "ext-parent");
     agentParent.setId("agentParentId");
-    agentParent.setInject(inject);
+    agentParent.setAttackChainNode(attackChainNode);
     Agent agent = AgentFixture.createAgent(endpoint, "ext");
     agent.setId("agentId");
-    agent.setInject(inject);
+    agent.setAttackChainNode(attackChainNode);
     agent.setParent(agentParent);
 
     AssetToExecute assetToExecute = new AssetToExecute(endpoint, true, List.of());
@@ -124,8 +124,8 @@ class ExpectationUtilsTest extends IntegrationTest {
             null);
 
     // -- ASSERT --
-    InjectExpectationSignature signature =
-        InjectExpectationSignature.builder()
+    NodeExpectationSignature signature =
+        NodeExpectationSignature.builder()
             .type(EXPECTATION_SIGNATURE_TYPE_PARENT_PROCESS_NAME)
             .value("oaev-implant-caldera-injectId-agent-agentParentId")
             .build();
@@ -140,7 +140,7 @@ class ExpectationUtilsTest extends IntegrationTest {
         signature,
         preventionExpectations.stream()
             .filter(expectation -> expectation.getAgent() != null)
-            .flatMap(prev -> prev.getInjectExpectationSignatures().stream())
+            .flatMap(prev -> prev.getNodeExpectationSignatures().stream())
             .toList()
             .getFirst());
 
@@ -148,7 +148,7 @@ class ExpectationUtilsTest extends IntegrationTest {
         signature,
         detectionExpectations.stream()
             .filter(expectation -> expectation.getAgent() != null)
-            .flatMap(det -> det.getInjectExpectationSignatures().stream())
+            .flatMap(det -> det.getNodeExpectationSignatures().stream())
             .toList()
             .getFirst());
   }
@@ -162,9 +162,9 @@ class ExpectationUtilsTest extends IntegrationTest {
     endpoint.setIps(fakeIPs);
     endpoint.setSeenIp(fakeSeenIPV6);
 
-    InjectorContract injectorContract = InjectorContractFixture.createDefaultInjectorContract();
-    Inject inject = InjectFixture.createTechnicalInject(injectorContract, "Inject", endpoint);
-    inject.setId("injectId");
+    NodeContract nodeContract = NodeContractFixture.createDefaultNodeContract();
+    AttackChainNode attackChainNode = AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
+    attackChainNode.setId("injectId");
 
     Agent agent = AgentFixture.createAgent(endpoint, "ext");
     agent.setId("agentId");
@@ -190,7 +190,7 @@ class ExpectationUtilsTest extends IntegrationTest {
             List.of(agent),
             ExpectationFixture.createExpectation(),
             targetValues,
-            inject.getId());
+            attackChainNode.getId());
 
     List<String> preventionSourceIpv4SignatureValues = new ArrayList<>();
     List<String> preventionSourceIpv6SignatureValues = new ArrayList<>();
@@ -202,7 +202,7 @@ class ExpectationUtilsTest extends IntegrationTest {
         .filter(expectation -> expectation.getAgent() != null)
         .toList()
         .getFirst()
-        .getInjectExpectationSignatures()
+        .getNodeExpectationSignatures()
         .forEach(
             signature -> {
               switch (signature.getType()) {

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.rest.finding.FindingService;
-import io.veriguard.service.InjectExpectationService;
+import io.veriguard.service.AttackChainNodeExpectationService;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Test;
 class CVEOutputProcessorTest {
 
   private final FindingService findingService = mock(FindingService.class);
-  private final InjectExpectationService injectExpectationService =
-      mock(InjectExpectationService.class);
+  private final AttackChainNodeExpectationService attackChainNodeExpectationService =
+      mock(AttackChainNodeExpectationService.class);
   private final CVEOutputProcessor processor =
-      new CVEOutputProcessor(findingService, injectExpectationService);
+      new CVEOutputProcessor(findingService, attackChainNodeExpectationService);
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Test

@@ -1,8 +1,8 @@
 package io.veriguard.expectation;
 
-import static io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE.*;
+import static io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE.*;
 
-import io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import io.veriguard.model.inject.form.Expectation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

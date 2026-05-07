@@ -86,7 +86,7 @@ public abstract class AbstractConnectorService<T extends BaseConnectorEntity, Ou
   /**
    * Retrieves all connectors including those pending deployment. Pending collectors are identified
    * through their connector instances that exist but haven't yet been registered in the
-   * collector/injector/executor registry. This typically occurs during the deployment process with
+   * collector/nodeExecutor/executor registry. This typically occurs during the deployment process with
    * XTMComposer we first create a connector_instance but the connector hasn't completed
    * initialization.
    *

@@ -30,7 +30,7 @@ public class EsAttackPath {
   @NotBlank private String attackPatternExternalId;
   private Long value;
   private Set<String> attackPatternChildrenIds;
-  private Set<String> injectIds;
+  private Set<String> attackChainNodeIds;
 
   public EsAttackPath(
       @NotBlank String attackPatternId,
@@ -38,14 +38,14 @@ public class EsAttackPath {
       @NotBlank String attackPatternExternalId,
       List<KillChainPhaseObject> killChainPhases,
       Set<String> attackPatternChildrenIds,
-      Set<String> injectIds,
+      Set<String> attackChainNodeIds,
       Long value) {
     this.attackPatternId = attackPatternId;
     this.attackPatternName = attackPatternName;
     this.attackPatternExternalId = attackPatternExternalId;
     this.killChainPhases = killChainPhases;
     this.attackPatternChildrenIds = attackPatternChildrenIds;
-    this.injectIds = injectIds;
+    this.attackChainNodeIds = attackChainNodeIds;
     this.value = value;
   }
 }

@@ -5,7 +5,7 @@ import java.time.Instant;
 /**
  * Spring Data projection interface for finding data.
  *
- * <p>This interface defines a projection for retrieving findings discovered during inject
+ * <p>This interface defines a projection for retrieving findings discovered during attackChainNode
  * execution. Findings represent artifacts, indicators, or other data collected from target systems
  * during attack simulations.
  *
@@ -56,23 +56,23 @@ public interface RawFinding {
   String getFinding_type();
 
   /**
-   * Returns the ID of the inject that produced this finding.
+   * Returns the ID of the attackChainNode that produced this finding.
    *
-   * @return the inject ID
+   * @return the attackChainNode ID
    */
   String getFinding_inject_id();
 
   /**
-   * Returns the ID of the exercise this finding belongs to.
+   * Returns the ID of the attackChainRun this finding belongs to.
    *
-   * @return the exercise ID, or {@code null} if from a scenario
+   * @return the attackChainRun ID, or {@code null} if from a attackChain
    */
-  String getInject_exercise();
+  String getInject_attackChainRun();
 
   /**
-   * Returns the ID of the scenario this finding belongs to.
+   * Returns the ID of the attackChain this finding belongs to.
    *
-   * @return the scenario ID, or {@code null} if from an exercise
+   * @return the attackChain ID, or {@code null} if from an attackChainRun
    */
   String getScenario_id();
 

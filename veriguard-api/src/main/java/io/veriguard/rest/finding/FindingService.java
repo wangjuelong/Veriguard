@@ -10,7 +10,7 @@ import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.rest.inject.service.ContractOutputContext;
 import io.veriguard.rest.inject.service.ExecutionProcessingContext;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FindingService {
 
   private static final String HOST = "host";
-  private final InjectService injectService;
+  private final AttackChainNodeService attackChainNodeService;
 
   private final FindingRepository findingRepository;
   private final AssetRepository assetRepository;
@@ -51,15 +51,15 @@ public class FindingService {
         .orElseThrow(() -> new EntityNotFoundException("Finding not found with id: " + id));
   }
 
-  public Finding createFinding(@NotNull final Finding finding, @NotBlank final String injectId) {
-    Inject inject = this.injectService.inject(injectId);
-    finding.setInject(inject);
+  public Finding createFinding(@NotNull final Finding finding, @NotBlank final String attackChainNodeId) {
+    AttackChainNode attackChainNode = this.attackChainNodeService.attackChainNode(attackChainNodeId);
+    finding.setAttackChainNode(attackChainNode);
     return this.findingRepository.save(finding);
   }
 
-  public Finding updateFinding(@NotNull final Finding finding, @NotNull final String injectId) {
-    if (!finding.getInject().getId().equals(injectId)) {
-      throw new IllegalArgumentException("Inject id cannot be changed: " + injectId);
+  public Finding updateFinding(@NotNull final Finding finding, @NotNull final String attackChainNodeId) {
+    if (!finding.getAttackChainNode().getId().equals(attackChainNodeId)) {
+      throw new IllegalArgumentException("Inject id cannot be changed: " + attackChainNodeId);
     }
     return this.findingRepository.save(finding);
   }
@@ -73,7 +73,7 @@ public class FindingService {
 
   /**
    * Generates findings based on the provided JSON node and context. It determines whether the
-   * execution is agent-based or injector-based and processes the findings accordingly.
+   * execution is agent-based or nodeExecutor-based and processes the findings accordingly.
    *
    * @param executionContext The context of the execution, containing information about whether it's
    *     an agent execution and relevant data for processing.
@@ -84,11 +84,11 @@ public class FindingService {
    * @param validator A predicate function to validate the format of each finding in the JSON node.
    * @param valueExtractor A function to extract the value for each finding from the JSON node.
    * @param assetExtractor A function to extract associated asset IDs for each finding from the JSON
-   *     node (used for injector findings).
+   *     node (used for nodeExecutor findings).
    * @param userExtractor A function to extract associated user IDs for each finding from the JSON
-   *     node (used for injector findings).
+   *     node (used for nodeExecutor findings).
    * @param teamExtractor A function to extract associated team IDs for each finding from the JSON
-   *     node (used for injector findings).
+   *     node (used for nodeExecutor findings).
    */
   public void generateFindings(
       ExecutionProcessingContext executionContext,
@@ -103,16 +103,16 @@ public class FindingService {
     if (executionContext.isAgentExecution()) {
       processAgentFindings(
           structuredOutputNode,
-          executionContext.inject(),
+          executionContext.attackChainNode(),
           executionContext.agent(),
           contractOutputContext,
           executionContext.valueTargetedAssetsMap(),
           validator,
           valueExtractor);
     } else {
-      processInjectorFindings(
+      processNodeExecutorFindings(
           structuredOutputNode,
-          executionContext.inject(),
+          executionContext.attackChainNode(),
           contractOutputContext,
           validator,
           valueExtractor,
@@ -124,7 +124,7 @@ public class FindingService {
 
   public void processAgentFindings(
       JsonNode structuredOutputNode,
-      Inject inject,
+      AttackChainNode attackChainNode,
       Agent agent,
       ContractOutputContext contractOutputContext,
       Map<String, Endpoint> valueTargetedAssetsMap,
@@ -147,20 +147,20 @@ public class FindingService {
           .ifPresentOrElse(
               asset ->
                   saveAgentFinding(
-                      inject, asset, contractOutputContext, valueExtractor.apply(jsonNode)),
+                      attackChainNode, asset, contractOutputContext, valueExtractor.apply(jsonNode)),
               () -> log.warn("Finding dropped: No asset match for host in {}", jsonNode));
     }
   }
 
   public void saveAgentFinding(
-      Inject inject, Asset asset, ContractOutputContext contractOutputContext, String value) {
+      AttackChainNode attackChainNode, Asset asset, ContractOutputContext contractOutputContext, String value) {
 
     findingRepository.saveCompleteFinding(
         contractOutputContext.key(),
         contractOutputContext.type().name(),
         value,
         new String[0],
-        inject.getId(),
+        attackChainNode.getId(),
         contractOutputContext.name(),
         asset.getId(),
         contractOutputContext.tagIds());
@@ -179,9 +179,9 @@ public class FindingService {
         .map(valueTargetedAssetsMap::get);
   }
 
-  public void processInjectorFindings(
+  public void processNodeExecutorFindings(
       JsonNode structuredOutputNode,
-      Inject inject,
+      AttackChainNode attackChainNode,
       ContractOutputContext contractOutputContext,
       Predicate<JsonNode> validator,
       Function<JsonNode, String> valueExtractor,
@@ -204,20 +204,20 @@ public class FindingService {
             userExtractor,
             teamExtractor);
 
-    createFindings(findings, inject.getId());
+    createFindings(findings, attackChainNode.getId());
   }
 
   /**
-   * Persists a list of findings in the database, associating them with a specific inject.
+   * Persists a list of findings in the database, associating them with a specific attackChainNode.
    *
    * @param findings The list of findings to be created and persisted.
-   * @param injectId The identifier of to inject to which the findings will be associated. Must not
+   * @param attackChainNodeId The identifier of to attackChainNode to which the findings will be associated. Must not
    *     be blank.
    */
   public void createFindings(
-      @NotNull final List<Finding> findings, @NotBlank final String injectId) {
-    Inject inject = injectService.inject(injectId);
-    findings.forEach(finding -> finding.setInject(inject));
+      @NotNull final List<Finding> findings, @NotBlank final String attackChainNodeId) {
+    AttackChainNode attackChainNode = attackChainNodeService.attackChainNode(attackChainNodeId);
+    findings.forEach(finding -> finding.setAttackChainNode(attackChainNode));
     List<Finding> deduplicatedFindings = deduplicateFindings(findings);
     findingRepository.saveAll(deduplicatedFindings);
   }

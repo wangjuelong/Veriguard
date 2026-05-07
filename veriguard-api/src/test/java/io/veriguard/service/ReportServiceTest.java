@@ -8,12 +8,12 @@ import static org.mockito.Mockito.when;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.rest.report.form.ReportInformationInput;
-import io.veriguard.rest.report.form.ReportInjectCommentInput;
+import io.veriguard.rest.report.form.ReportAttackChainNodeCommentInput;
 import io.veriguard.rest.report.form.ReportInput;
 import io.veriguard.rest.report.model.Report;
 import io.veriguard.rest.report.model.ReportInformation;
 import io.veriguard.rest.report.model.ReportInformationsType;
-import io.veriguard.rest.report.model.ReportInjectComment;
+import io.veriguard.rest.report.model.ReportAttackChainNodeComment;
 import io.veriguard.rest.report.repository.ReportRepository;
 import io.veriguard.rest.report.service.ReportService;
 import io.veriguard.utilstest.RabbitMQTestListener;
@@ -123,76 +123,76 @@ public class ReportServiceTest extends IntegrationTest {
 
   @Nested
   @DisplayName("Reports inject comment")
-  class ReportInjectCommentTest {
+  class ReportAttackChainNodeCommentTest {
     @DisplayName("Test update existing report inject comment")
     @Test
-    void updateExistingReportInjectComment() {
+    void updateExistingReportAttackChainNodeComment() {
       // -- PREPARE --
       Report report = new Report();
       report.setName("test");
       report.setId(UUID.randomUUID().toString());
-      Inject inject = new Inject();
-      inject.setId("fakeID123");
+      AttackChainNode attackChainNode = new AttackChainNode();
+      attackChainNode.setId("fakeID123");
 
-      // add report inject comment
-      ReportInjectComment existingReportInjectComment = new ReportInjectComment();
-      existingReportInjectComment.setReport(report);
-      existingReportInjectComment.setComment("comment");
-      existingReportInjectComment.setInject(inject);
-      report.setReportInjectsComments(List.of(existingReportInjectComment));
+      // add report attackChainNode comment
+      ReportAttackChainNodeComment existingReportAttackChainNodeComment = new ReportAttackChainNodeComment();
+      existingReportAttackChainNodeComment.setReport(report);
+      existingReportAttackChainNodeComment.setComment("comment");
+      existingReportAttackChainNodeComment.setAttackChainNode(attackChainNode);
+      report.setReportAttackChainNodesComments(List.of(existingReportAttackChainNodeComment));
 
-      ReportInjectCommentInput commentInput = new ReportInjectCommentInput();
-      commentInput.setInjectId(inject.getId());
+      ReportAttackChainNodeCommentInput commentInput = new ReportAttackChainNodeCommentInput();
+      commentInput.setAttackChainNodeId(attackChainNode.getId());
       commentInput.setComment("New comment");
 
       // Mock
-      when(reportRepository.findReportInjectComment(
-              eq(UUID.fromString(report.getId())), eq(inject.getId())))
-          .thenReturn(Optional.of(existingReportInjectComment));
+      when(reportRepository.findReportAttackChainNodeComment(
+              eq(UUID.fromString(report.getId())), eq(attackChainNode.getId())))
+          .thenReturn(Optional.of(existingReportAttackChainNodeComment));
 
       // -- EXECUTE --
-      reportService.updateReportInjectComment(report, inject, commentInput);
+      reportService.updateReportAttackChainNodeComment(report, attackChainNode, commentInput);
 
       // -- ASSERT --
       ArgumentCaptor<Report> reportCaptor = ArgumentCaptor.forClass(Report.class);
       verify(reportRepository).save(reportCaptor.capture());
       Report capturedReport = reportCaptor.getValue();
-      assertEquals(1, capturedReport.getReportInjectsComments().size());
+      assertEquals(1, capturedReport.getReportAttackChainNodesComments().size());
       assertEquals(
           commentInput.getComment(),
-          capturedReport.getReportInjectsComments().getFirst().getComment());
+          capturedReport.getReportAttackChainNodesComments().getFirst().getComment());
     }
 
     @DisplayName("Test add new report inject comment")
     @Test
-    void addReportInjectComment() throws Exception {
+    void addReportAttackChainNodeComment() throws Exception {
       // -- PREPARE --
       Report report = new Report();
       report.setName("test");
       report.setId(UUID.randomUUID().toString());
-      Inject inject = new Inject();
-      inject.setId("fakeID123");
+      AttackChainNode attackChainNode = new AttackChainNode();
+      attackChainNode.setId("fakeID123");
 
-      ReportInjectCommentInput commentInput = new ReportInjectCommentInput();
-      commentInput.setInjectId(inject.getId());
+      ReportAttackChainNodeCommentInput commentInput = new ReportAttackChainNodeCommentInput();
+      commentInput.setAttackChainNodeId(attackChainNode.getId());
       commentInput.setComment("New test comment");
 
       // Mock
-      when(reportRepository.findReportInjectComment(
-              eq(UUID.fromString(report.getId())), eq(inject.getId())))
+      when(reportRepository.findReportAttackChainNodeComment(
+              eq(UUID.fromString(report.getId())), eq(attackChainNode.getId())))
           .thenReturn(Optional.empty());
 
       // -- EXECUTE --
-      reportService.updateReportInjectComment(report, inject, commentInput);
+      reportService.updateReportAttackChainNodeComment(report, attackChainNode, commentInput);
 
       // -- ASSERT --
       ArgumentCaptor<Report> reportCaptor = ArgumentCaptor.forClass(Report.class);
       verify(reportRepository).save(reportCaptor.capture());
       Report capturedReport = reportCaptor.getValue();
-      assertEquals(1, capturedReport.getReportInjectsComments().size());
+      assertEquals(1, capturedReport.getReportAttackChainNodesComments().size());
       assertEquals(
           commentInput.getComment(),
-          capturedReport.getReportInjectsComments().getFirst().getComment());
+          capturedReport.getReportAttackChainNodesComments().getFirst().getComment());
     }
   }
 }

@@ -18,13 +18,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.DetectionRemediation;
-import io.veriguard.database.model.InjectorContract;
+import io.veriguard.database.model.NodeContract;
 import io.veriguard.database.model.Payload;
 import io.veriguard.database.repository.CollectorRepository;
-import io.veriguard.database.repository.InjectorContractRepository;
+import io.veriguard.database.repository.NodeContractRepository;
 import io.veriguard.database.repository.PayloadRepository;
 import io.veriguard.integration.Manager;
-import io.veriguard.integration.impl.injectors.veriguard.VeriguardInjectorIntegrationFactory;
+import io.veriguard.integration.impl.injectors.veriguard.VeriguardNodeExecutorIntegrationFactory;
 import io.veriguard.jsonapi.JsonApiDocument;
 import io.veriguard.jsonapi.Relationship;
 import io.veriguard.jsonapi.ResourceIdentifier;
@@ -50,8 +50,8 @@ class PayloadApiImporterTest extends IntegrationTest {
   @Autowired private ObjectMapper objectMapper;
   @Autowired private ZipJsonService<Payload> zipJsonService;
   @Autowired private PayloadRepository payloadRepository;
-  @Autowired private InjectorContractRepository injectorContractRepository;
-  @Autowired private VeriguardInjectorIntegrationFactory veriguardInjectorIntegrationFactory;
+  @Autowired private NodeContractRepository nodeContractRepository;
+  @Autowired private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
   @Autowired private CollectorRepository collectorRepository;
 
   // -- HELPERS --
@@ -96,8 +96,8 @@ class PayloadApiImporterTest extends IntegrationTest {
 
   @Test
   @DisplayName("Import payload should create injector contract")
-  void importPayloadShouldCreateInjectorContract() throws Exception {
-    new Manager(List.of(veriguardInjectorIntegrationFactory)).monitorIntegrations();
+  void importPayloadShouldCreateNodeContract() throws Exception {
+    new Manager(List.of(veriguardNodeExecutorIntegrationFactory)).monitorIntegrations();
 
     // -- PREPARE --
     String domainId = "02e33774-33ae-4d65-91fd-a9c0e1a37c7b";
@@ -136,11 +136,11 @@ class PayloadApiImporterTest extends IntegrationTest {
     Optional<Payload> payloadPersisted = payloadRepository.findById(payloadId);
     assertFalse(payloadPersisted.isEmpty(), "Payload should have been persisted in the database");
 
-    List<InjectorContract> injectorContracts =
-        injectorContractRepository.findInjectorContractsByPayload(payloadPersisted.get());
-    assertNotNull(injectorContracts);
-    assertEquals(1, injectorContracts.size());
-    assertEquals(payloadId, injectorContracts.getFirst().getPayload().getId());
+    List<NodeContract> nodeContracts =
+        nodeContractRepository.findNodeContractsByPayload(payloadPersisted.get());
+    assertNotNull(nodeContracts);
+    assertEquals(1, nodeContracts.size());
+    assertEquals(payloadId, nodeContracts.getFirst().getPayload().getId());
   }
 
   @Test

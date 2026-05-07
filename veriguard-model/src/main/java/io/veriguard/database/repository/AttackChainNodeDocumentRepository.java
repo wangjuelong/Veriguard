@@ -1,0 +1,38 @@
+package io.veriguard.database.repository;
+
+import io.veriguard.database.model.AttackChainNodeDocument;
+import io.veriguard.database.model.AttackChainNodeDocumentId;
+import jakarta.validation.constraints.NotNull;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface AttackChainNodeDocumentRepository
+    extends CrudRepository<AttackChainNodeDocument, AttackChainNodeDocumentId>,
+        JpaSpecificationExecutor<AttackChainNodeDocument> {
+
+  @NotNull
+  Optional<AttackChainNodeDocument> findById(@NotNull AttackChainNodeDocumentId id);
+
+  @Modifying
+  @Query(
+      value =
+          "insert into injects_documents (inject_id, document_id, document_attached) "
+              + "values (:injectId, :documentId, :documentAttached)",
+      nativeQuery = true)
+  void addAttackChainNodeDoc(
+      @Param("injectId") String attackChainNodeId,
+      @Param("documentId") String docId,
+      @Param("documentAttached") boolean docAttached);
+
+  @Modifying
+  @Query(
+      value = "UPDATE injects_documents SET inject_id = :injectId where inject_id = :oldInjectId",
+      nativeQuery = true)
+  void updateAttackChainNodeId(@Param("injectId") String attackChainNodeId, @Param("oldInjectId") String oldAttackChainNodeId);
+}

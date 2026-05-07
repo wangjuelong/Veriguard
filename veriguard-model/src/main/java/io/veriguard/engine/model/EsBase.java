@@ -7,9 +7,9 @@ import io.veriguard.engine.model.assetgroup.EsAssetGroup;
 import io.veriguard.engine.model.attackpattern.EsAttackPattern;
 import io.veriguard.engine.model.endpoint.EsEndpoint;
 import io.veriguard.engine.model.finding.EsFinding;
-import io.veriguard.engine.model.inject.EsInject;
-import io.veriguard.engine.model.injectexpectation.EsInjectExpectation;
-import io.veriguard.engine.model.scenario.EsScenario;
+import io.veriguard.engine.model.inject.EsAttackChainNode;
+import io.veriguard.engine.model.injectexpectation.EsAttackChainNodeExpectation;
+import io.veriguard.engine.model.scenario.EsAttackChain;
 import io.veriguard.engine.model.securitydomain.EsSecurityDomain;
 import io.veriguard.engine.model.securityplatform.EsSecurityPlatform;
 import io.veriguard.engine.model.simulation.EsSimulation;
@@ -32,9 +32,9 @@ import lombok.Setter;
       EsAttackPattern.class,
       EsEndpoint.class,
       EsFinding.class,
-      EsInject.class,
-      EsInjectExpectation.class,
-      EsScenario.class,
+      EsAttackChainNode.class,
+      EsAttackChainNodeExpectation.class,
+      EsAttackChain.class,
       EsSimulation.class,
       EsTag.class,
       EsVulnerableEndpoint.class,
@@ -47,10 +47,10 @@ import lombok.Setter;
       @DiscriminatorMapping(value = "attack-pattern", schema = EsAttackPattern.class),
       @DiscriminatorMapping(value = "endpoint", schema = EsEndpoint.class),
       @DiscriminatorMapping(value = "finding", schema = EsFinding.class),
-      @DiscriminatorMapping(value = "inject", schema = EsInject.class),
-      @DiscriminatorMapping(value = "expectation-inject", schema = EsInjectExpectation.class),
+      @DiscriminatorMapping(value = "inject", schema = EsAttackChainNode.class),
+      @DiscriminatorMapping(value = "expectation-inject", schema = EsAttackChainNodeExpectation.class),
       @DiscriminatorMapping(value = "simulation", schema = EsSimulation.class),
-      @DiscriminatorMapping(value = "scenario", schema = EsScenario.class),
+      @DiscriminatorMapping(value = "scenario", schema = EsAttackChain.class),
       @DiscriminatorMapping(value = "tag", schema = EsTag.class),
       @DiscriminatorMapping(value = "vulnerable-endpoint", schema = EsVulnerableEndpoint.class),
       @DiscriminatorMapping(value = "team", schema = EsTeam.class),
@@ -81,7 +81,7 @@ public class EsBase {
 
   // To support logical side deletions, means "DELETE CASCADE", to set only if you want to delete
   // the linked object itself
-  // Example : I delete the inject Id-A, all objects which contain in their base_dependencies the
+  // Example : I delete the attackChainNode Id-A, all objects which contain in their base_dependencies the
   // Id-A will be entirely deleted
   // https://github.com/rieske/postgres-cdc could be an alternative.
   private List<String> base_dependencies = new ArrayList<>();

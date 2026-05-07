@@ -15,7 +15,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
  *
  * <p>Provides methods for processing template strings with dynamic data substitution using the
  * FreeMarker template engine. Used for generating dynamic content in emails, messages, and other
- * inject outputs.
+ * attackChainNode outputs.
  *
  * <p>This is a utility class and cannot be instantiated.
  */
@@ -37,7 +37,7 @@ public final class TemplateHelper {
    * Processes a template string with execution context data.
    *
    * <p>Substitutes template variables in the content with values from the execution context, which
-   * includes user information, exercise data, and other contextual variables.
+   * includes user information, attackChainRun data, and other contextual variables.
    *
    * @param content the template string containing FreeMarker expressions
    * @param context the execution context providing variable values

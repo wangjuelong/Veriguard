@@ -17,10 +17,10 @@ import java.util.List;
  * <p>Example usage:
  *
  * <pre>{@code
- * @OneToMany(mappedBy = "exercise")
+ * @OneToMany(mappedBy = "attackChainRun")
  * @JsonSerialize(using = MultiModelSerializer.class)
  * @JsonProperty("exercise_injects")
- * private List<Inject> injects;
+ * private List<AttackChainNode> attackChainNodes;
  * }</pre>
  *
  * @see MultiIdListSerializer

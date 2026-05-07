@@ -71,7 +71,7 @@ public class Comcheck implements Base {
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("comcheck_exercise")
   @Schema(type = "string")
-  private Exercise exercise;
+  private AttackChainRun attackChainRun;
 
   // CascadeType.ALL is required here because comcheck statuses are embedded
   @ArraySchema(schema = @Schema(type = "string"))
@@ -90,10 +90,10 @@ public class Comcheck implements Base {
 
   @Override
   public boolean isUserHasAccess(User user) {
-    if (exercise == null) {
+    if (attackChainRun == null) {
       return user.isAdmin();
     }
-    return exercise.isUserHasAccess(user);
+    return attackChainRun.isUserHasAccess(user);
   }
 
   @Override

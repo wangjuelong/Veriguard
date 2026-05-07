@@ -4,7 +4,7 @@ import static io.veriguard.helper.StreamHelper.fromIterable;
 
 import io.veriguard.database.model.CustomDashboard;
 import io.veriguard.database.model.Filters;
-import io.veriguard.database.model.InjectExpectation;
+import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.Widget;
 import io.veriguard.database.repository.CustomDashboardRepository;
 import io.veriguard.database.repository.WidgetRepository;
@@ -150,18 +150,18 @@ public class WidgetService {
    */
   public ListConfiguration convertSecurityCoverageWidgetToListConfiguration(
       Widget widget, List<String> attackPatternIds) {
-    ListConfiguration listInjectExpectationsConfig =
+    ListConfiguration listAttackChainNodeExpectationsConfig =
         this.convertWidgetToListConfiguration(widget, 0, attackPatternIds);
     List<String> statusFilters =
         List.of(
-            InjectExpectation.EXPECTATION_STATUS.FAILED.name(),
-            InjectExpectation.EXPECTATION_STATUS.SUCCESS.name());
+            AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED.name(),
+            AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS.name());
     WidgetUtils.setOrAddFilterByKey(
-        listInjectExpectationsConfig.getPerspective().getFilter(),
+        listAttackChainNodeExpectationsConfig.getPerspective().getFilter(),
         "inject_expectation_status",
         statusFilters,
         Filters.FilterOperator.contains);
-    return listInjectExpectationsConfig;
+    return listAttackChainNodeExpectationsConfig;
   }
 
 }

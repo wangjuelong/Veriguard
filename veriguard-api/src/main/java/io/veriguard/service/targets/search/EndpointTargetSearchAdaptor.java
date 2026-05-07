@@ -49,18 +49,18 @@ public class EndpointTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public Page<InjectTarget> search(SearchPaginationInput input, @NotNull Inject scopedInject) {
+  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, @NotNull AttackChainNode scopedAttackChainNode) {
     Specification<Endpoint> overallSpec =
         searchSpecificationUtils.compileSpecificationForAssetGroupMembership(
-            scopedInject, input, joinPath);
+            scopedAttackChainNode, input, joinPath);
 
     Specification<Endpoint> memberOfAnyTargetGroupSpec =
         searchSpecificationUtils.compileSpecificationForAssetGroupMembership(
-            scopedInject,
+            scopedAttackChainNode,
             SearchPaginationInput.builder().filterGroup(new Filters.FilterGroup()).build(),
             joinPath);
 
-    SearchPaginationInput translatedInput = this.translate(input, scopedInject);
+    SearchPaginationInput translatedInput = this.translate(input, scopedAttackChainNode);
 
     Page<Endpoint> eps =
         buildPaginationJPA(
@@ -76,21 +76,21 @@ public class EndpointTargetSearchAdaptor extends SearchAdaptorBase {
 
     return new PageImpl<>(
         eps.getContent().stream()
-            .map(endpoint -> convertFromEndpoint(endpoint, scopedInject))
+            .map(endpoint -> convertFromEndpoint(endpoint, scopedAttackChainNode))
             .toList(),
         eps.getPageable(),
         eps.getTotalElements());
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForInject(Inject scopedInject, String textSearch) {
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
     Specification<Endpoint> spec =
         includeMembersOfAssetGroupsSpecification
             .buildSpecification(
-                scopedInject.getAssetGroups().stream().map(AssetGroup::getId).toList(), joinPath)
+                scopedAttackChainNode.getAssetGroups().stream().map(AssetGroup::getId).toList(), joinPath)
             .or(
                 includeDirectEndpointTargetsSpecification.buildSpecification(
-                    scopedInject, joinPath));
+                    scopedAttackChainNode, joinPath));
 
     Specification<Endpoint> nameSpec =
         (root, query, criteriaBuilder) ->
@@ -108,9 +108,9 @@ public class EndpointTargetSearchAdaptor extends SearchAdaptorBase {
         .toList();
   }
 
-  private InjectTarget convertFromEndpoint(Endpoint endpoint, Inject inject) {
+  private AttackChainNodeTarget convertFromEndpoint(Endpoint endpoint, AttackChainNode attackChainNode) {
     return helperTargetSearchAdaptor.buildTargetWithExpectations(
-        inject,
+        attackChainNode,
         () ->
             new EndpointTarget(
                 endpoint.getId(),

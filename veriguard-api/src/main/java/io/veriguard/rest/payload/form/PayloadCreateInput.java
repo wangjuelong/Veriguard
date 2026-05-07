@@ -5,7 +5,7 @@ import static io.veriguard.config.AppConfig.MANDATORY_MESSAGE;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.veriguard.database.model.*;
 import io.veriguard.database.model.Endpoint.PLATFORM_TYPE;
-import io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import io.veriguard.database.model.Payload.PAYLOAD_SOURCE;
 import io.veriguard.database.model.Payload.PAYLOAD_STATUS;
 import io.veriguard.rest.payload.output_parser.OutputParserInput;

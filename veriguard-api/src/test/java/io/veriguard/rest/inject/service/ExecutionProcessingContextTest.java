@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import io.veriguard.database.model.Agent;
-import io.veriguard.database.model.Inject;
-import io.veriguard.rest.inject.form.InjectExecutionInput;
+import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.rest.inject.form.AttackChainNodeExecutionInput;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,18 +18,18 @@ class ExecutionProcessingContextTest {
   void shouldIdentifyAgentExecutionContext() {
     ExecutionProcessingContext context =
         new ExecutionProcessingContext(
-            mock(Inject.class), mock(Agent.class), mock(InjectExecutionInput.class), Map.of());
+            mock(AttackChainNode.class), mock(Agent.class), mock(AttackChainNodeExecutionInput.class), Map.of());
     assertTrue(context.isAgentExecution());
-    assertFalse(context.isInjectorExecution());
+    assertFalse(context.isNodeExecutorExecution());
   }
 
   @Test
   @DisplayName("Should identify injector execution context")
-  void shouldIdentifyInjectorExecutionContext() {
+  void shouldIdentifyNodeExecutorExecutionContext() {
     ExecutionProcessingContext context =
         new ExecutionProcessingContext(
-            mock(Inject.class), null, mock(InjectExecutionInput.class), Map.of());
+            mock(AttackChainNode.class), null, mock(AttackChainNodeExecutionInput.class), Map.of());
     assertFalse(context.isAgentExecution());
-    assertTrue(context.isInjectorExecution());
+    assertTrue(context.isNodeExecutorExecution());
   }
 }

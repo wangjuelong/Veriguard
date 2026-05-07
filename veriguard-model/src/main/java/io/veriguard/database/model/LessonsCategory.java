@@ -40,14 +40,14 @@ public class LessonsCategory implements Base {
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("lessons_category_exercise")
   @Schema(type = "string")
-  private Exercise exercise;
+  private AttackChainRun attackChainRun;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "lessons_category_scenario")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("lessons_category_scenario")
   @Schema(type = "string")
-  private Scenario scenario;
+  private AttackChain attackChain;
 
   @Column(name = "lessons_category_created_at")
   @JsonProperty("lessons_category_created_at")
@@ -98,11 +98,11 @@ public class LessonsCategory implements Base {
 
   @Override
   public boolean isUserHasAccess(User user) {
-    if (getExercise() != null) {
-      return getExercise().isUserHasAccess(user);
+    if (getAttackChainRun() != null) {
+      return getAttackChainRun().isUserHasAccess(user);
     }
-    if (getScenario() != null) {
-      return getScenario().isUserHasAccess(user);
+    if (getAttackChain() != null) {
+      return getAttackChain().isUserHasAccess(user);
     }
     return user.isAdmin();
   }

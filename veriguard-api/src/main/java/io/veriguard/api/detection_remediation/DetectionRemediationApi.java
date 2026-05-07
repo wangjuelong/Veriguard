@@ -7,7 +7,7 @@ import io.veriguard.aop.RBAC;
 import io.veriguard.api.detection_remediation.dto.DetectionRemediationAIOutput;
 import io.veriguard.api.detection_remediation.dto.PayloadInput;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import io.veriguard.rest.payload.form.DetectionRemediationInput;
 import io.veriguard.rest.payload.form.DetectionRemediationOutput;
 import io.veriguard.service.detection_remediation.*;
@@ -30,7 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class DetectionRemediationApi {
   private final DetectionRemediationService detectionRemediationService;
-  private final InjectService injectService;
+  private final AttackChainNodeService attackChainNodeService;
 
   public static final String DETECTION_REMEDIATION_URI = "api/detection-remediations/ai";
 
@@ -142,11 +142,11 @@ public class DetectionRemediationApi {
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PAYLOAD)
   @PostMapping("rules/inject/{injectId}/collector/{collectorType}")
   public ResponseEntity<DetectionRemediationOutput>
-      postRuleDetectionRemediationByInjectIdAndCollectorType(
-          @PathVariable @NotBlank String injectId, @PathVariable @NotBlank String collectorType) {
+      postRuleDetectionRemediationByAttackChainNodeIdAndCollectorType(
+          @PathVariable @NotBlank String attackChainNodeId, @PathVariable @NotBlank String collectorType) {
 
-    Inject inject = injectService.inject(injectId);
-    Optional<Payload> payloadOptional = inject.getPayload();
+    AttackChainNode attackChainNode = attackChainNodeService.attackChainNode(attackChainNodeId);
+    Optional<Payload> payloadOptional = attackChainNode.getPayload();
 
     if (payloadOptional.isEmpty())
       throw new IllegalStateException("Illegal value: Inject has not payload");

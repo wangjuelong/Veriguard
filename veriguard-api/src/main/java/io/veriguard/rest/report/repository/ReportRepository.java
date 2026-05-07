@@ -1,7 +1,7 @@
 package io.veriguard.rest.report.repository;
 
 import io.veriguard.rest.report.model.Report;
-import io.veriguard.rest.report.model.ReportInjectComment;
+import io.veriguard.rest.report.model.ReportAttackChainNodeComment;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,9 +19,9 @@ public interface ReportRepository
 
   @Query(
       value =
-          "SELECT injectComment FROM ReportInjectComment injectComment WHERE injectComment.report.id = :reportId AND injectComment.inject.id = :injectId")
-  Optional<ReportInjectComment> findReportInjectComment(
-      @NotNull final UUID reportId, @NotNull final String injectId);
+          "SELECT attackChainNodeComment FROM ReportAttackChainNodeComment attackChainNodeComment WHERE attackChainNodeComment.report.id = :reportId AND attackChainNodeComment.attackChainNode.id = :attackChainNodeId")
+  Optional<ReportAttackChainNodeComment> findReportAttackChainNodeComment(
+      @NotNull final UUID reportId, @NotNull final String attackChainNodeId);
 
-  Optional<Report> findByIdAndExercise_Id(@NotNull UUID reportId, @NotBlank String exerciseId);
+  Optional<Report> findByIdAndExercise_Id(@NotNull UUID reportId, @NotBlank String attackChainRunId);
 }

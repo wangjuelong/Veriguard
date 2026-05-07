@@ -2,7 +2,7 @@ package io.veriguard.service;
 
 import io.veriguard.database.model.NotificationRuleResourceType;
 import io.veriguard.notification.handler.NotificationEventHandler;
-import io.veriguard.notification.handler.ScenarioNotificationEventHandler;
+import io.veriguard.notification.handler.AttackChainNotificationEventHandler;
 import io.veriguard.notification.model.NotificationEvent;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -21,20 +21,20 @@ import org.springframework.stereotype.Service;
 public class NotificationEventService {
 
   private final ApplicationEventPublisher appPublisher;
-  private final ScenarioNotificationEventHandler scenarioNotificationEventHandler;
+  private final AttackChainNotificationEventHandler attackChainNotificationEventHandler;
   private final ThreadPoolTaskScheduler taskScheduler;
   private final Map<NotificationRuleResourceType, NotificationEventHandler> handlers;
 
   @Autowired
   public NotificationEventService(
       ApplicationEventPublisher appPublisher,
-      ScenarioNotificationEventHandler scenarioNotificationEventHandler,
+      AttackChainNotificationEventHandler attackChainNotificationEventHandler,
       ThreadPoolTaskScheduler taskScheduler) {
 
     this.appPublisher = appPublisher;
-    this.scenarioNotificationEventHandler = scenarioNotificationEventHandler;
+    this.attackChainNotificationEventHandler = attackChainNotificationEventHandler;
     this.taskScheduler = taskScheduler;
-    this.handlers = Map.of(NotificationRuleResourceType.SCENARIO, scenarioNotificationEventHandler);
+    this.handlers = Map.of(NotificationRuleResourceType.SCENARIO, attackChainNotificationEventHandler);
   }
 
   public void sendNotificationEvent(@NotNull final NotificationEvent notificationEvent) {

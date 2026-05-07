@@ -12,28 +12,28 @@ public class SecurityCoverageComposer extends ComposerBase<SecurityCoverage> {
 
   public class Composer extends InnerComposerBase<SecurityCoverage> {
     private final SecurityCoverage securityCoverage;
-    private Optional<ScenarioComposer.Composer> scenarioComposer = Optional.empty();
+    private Optional<AttackChainComposer.Composer> attackChainComposer = Optional.empty();
 
     public Composer(SecurityCoverage securityCoverage) {
       this.securityCoverage = securityCoverage;
     }
 
-    public Composer withScenario(ScenarioComposer.Composer scenarioWrapper) {
-      scenarioComposer = Optional.of(scenarioWrapper);
-      this.securityCoverage.setScenario(scenarioWrapper.get());
+    public Composer withAttackChain(AttackChainComposer.Composer attackChainWrapper) {
+      attackChainComposer = Optional.of(attackChainWrapper);
+      this.securityCoverage.setAttackChain(attackChainWrapper.get());
       return this;
     }
 
     @Override
     public Composer persist() {
-      scenarioComposer.ifPresent(ScenarioComposer.Composer::persist);
+      attackChainComposer.ifPresent(AttackChainComposer.Composer::persist);
       securityCoverageRepository.save(this.securityCoverage);
       return this;
     }
 
     @Override
     public Composer delete() {
-      scenarioComposer.ifPresent(ScenarioComposer.Composer::delete);
+      attackChainComposer.ifPresent(AttackChainComposer.Composer::delete);
       securityCoverageRepository.delete(this.securityCoverage);
       return this;
     }

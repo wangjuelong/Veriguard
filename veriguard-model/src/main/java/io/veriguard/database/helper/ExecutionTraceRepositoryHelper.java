@@ -12,18 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository helper for low-level database operations on execution traces and inject statuses.
+ * Repository helper for low-level database operations on execution traces and attackChainNode statuses.
  *
  * <p>This helper provides optimized JDBC-based operations for performance-critical database
  * updates, bypassing JPA overhead when direct SQL execution is more efficient. It is particularly
- * useful for high-volume operations during inject execution tracking.
+ * useful for high-volume operations during attackChainNode execution tracking.
  *
  * <p>Operations include:
  *
  * <ul>
  *   <li>Inserting new execution traces
- *   <li>Updating inject status states
- *   <li>Updating inject timestamps
+ *   <li>Updating attackChainNode status states
+ *   <li>Updating attackChainNode timestamps
  * </ul>
  *
  * @see ExecutionTrace
@@ -68,7 +68,7 @@ public class ExecutionTraceRepositoryHelper {
    * Saves an execution trace using a direct JDBC call for improved performance.
    *
    * <p>This method bypasses JPA to directly insert the execution trace record, which is more
-   * efficient for high-volume insert operations during inject execution.
+   * efficient for high-volume insert operations during attackChainNode execution.
    *
    * @param executionTrace the execution trace to save
    * @return the generated UUID of the newly created trace
@@ -79,13 +79,13 @@ public class ExecutionTraceRepositoryHelper {
 
       try (PreparedStatement ps = conn.prepareStatement(INSERT_EXECUTION_TRACE)) {
 
-        String injectStatusId = null;
-        if (executionTrace.getInjectStatus() != null) {
-          injectStatusId = executionTrace.getInjectStatus().getId();
+        String attackChainNodeStatusId = null;
+        if (executionTrace.getAttackChainNodeStatus() != null) {
+          attackChainNodeStatusId = executionTrace.getAttackChainNodeStatus().getId();
         }
-        String injectTestStatusId = null;
-        if (executionTrace.getInjectTestStatus() != null) {
-          injectTestStatusId = executionTrace.getInjectTestStatus().getId();
+        String attackChainNodeTestStatusId = null;
+        if (executionTrace.getAttackChainNodeTestStatus() != null) {
+          attackChainNodeTestStatusId = executionTrace.getAttackChainNodeTestStatus().getId();
         }
         String agentId = null;
         if (executionTrace.getAgent() != null) {
@@ -98,8 +98,8 @@ public class ExecutionTraceRepositoryHelper {
         String id = UUID.randomUUID().toString();
 
         ps.setString(1, id);
-        ps.setString(2, injectStatusId);
-        ps.setString(3, injectTestStatusId);
+        ps.setString(2, attackChainNodeStatusId);
+        ps.setString(3, attackChainNodeTestStatusId);
         ps.setString(4, agentId);
         ps.setString(5, executionTrace.getMessage());
         ps.setString(6, structuredOutputAsText);
@@ -120,17 +120,17 @@ public class ExecutionTraceRepositoryHelper {
   }
 
   /**
-   * Updates an inject status with a new status name and end date using direct JDBC.
+   * Updates an attackChainNode status with a new status name and end date using direct JDBC.
    *
-   * <p>This method is used to efficiently update the status of an inject execution without loading
+   * <p>This method is used to efficiently update the status of an attackChainNode execution without loading
    * the full entity through JPA.
    *
-   * @param injectStatusId the ID of the inject status to update
+   * @param attackChainNodeStatusId the ID of the attackChainNode status to update
    * @param name the new status name (e.g., "SUCCESS", "ERROR", "PENDING")
-   * @param endDate the end timestamp for the inject execution, or {@code null} if not yet completed
+   * @param endDate the end timestamp for the attackChainNode execution, or {@code null} if not yet completed
    * @throws RuntimeException if the database update fails
    */
-  public void updateInjectStatus(String injectStatusId, String name, Instant endDate) {
+  public void updateAttackChainNodeStatus(String attackChainNodeStatusId, String name, Instant endDate) {
     String sql =
         "UPDATE injects_statuses SET status_name = ?, tracking_end_date = ? WHERE status_id = ?";
 
@@ -139,7 +139,7 @@ public class ExecutionTraceRepositoryHelper {
 
       ps.setString(1, name);
       ps.setTimestamp(2, endDate != null ? Timestamp.from(endDate) : null);
-      ps.setString(3, injectStatusId);
+      ps.setString(3, attackChainNodeStatusId);
       ps.executeUpdate();
 
     } catch (SQLException e) {
@@ -148,16 +148,16 @@ public class ExecutionTraceRepositoryHelper {
   }
 
   /**
-   * Updates the last modification timestamp of an inject using direct JDBC.
+   * Updates the last modification timestamp of an attackChainNode using direct JDBC.
    *
    * <p>This lightweight operation updates only the {@code inject_updated_at} column without
-   * triggering a full entity update, useful for tracking inject modifications efficiently.
+   * triggering a full entity update, useful for tracking attackChainNode modifications efficiently.
    *
-   * @param id the ID of the inject to update
+   * @param id the ID of the attackChainNode to update
    * @param updatedAt the new update timestamp, or {@code null} to clear the value
    * @throws RuntimeException if the database update fails
    */
-  public void updateInjectUpdateDate(String id, Instant updatedAt) {
+  public void updateAttackChainNodeUpdateDate(String id, Instant updatedAt) {
     String sql = "UPDATE injects SET inject_updated_at = ? WHERE inject_id = ?";
 
     try (Connection conn = dataSource.getConnection();

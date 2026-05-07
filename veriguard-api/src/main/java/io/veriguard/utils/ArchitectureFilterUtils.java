@@ -25,7 +25,7 @@ public class ArchitectureFilterUtils {
   /** Filter key for payload execution architecture. */
   private static final String PAYLOAD_EXECUTION_ARCH = "payload_execution_arch";
 
-  /** Filter key for injector contract architecture. */
+  /** Filter key for nodeExecutor contract architecture. */
   private static final String INJECTOR_CONTRACT_ARCH = "injector_contract_arch";
 
   /** Filter key for endpoint architecture. */

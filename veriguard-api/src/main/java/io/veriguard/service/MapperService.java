@@ -25,7 +25,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.EndpointRepository;
 import io.veriguard.database.repository.ImportMapperRepository;
-import io.veriguard.database.repository.InjectorContractRepository;
+import io.veriguard.database.repository.NodeContractRepository;
 import io.veriguard.helper.ObjectMapperHelper;
 import io.veriguard.rest.asset.endpoint.form.EndpointExportImport;
 import io.veriguard.rest.exception.BadRequestException;
@@ -67,7 +67,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MapperService {
 
   private final ImportMapperRepository importMapperRepository;
-  private final InjectorContractRepository injectorContractRepository;
+  private final NodeContractRepository nodeContractRepository;
   private final EndpointRepository endpointRepository;
   private final EndpointService endpointService;
 
@@ -89,35 +89,35 @@ public class MapperService {
   public ImportMapper createImportMapper(ImportMapperAddInput importMapperAddInput) {
     ImportMapper importMapper = new ImportMapper();
     importMapper.setUpdateAttributes(importMapperAddInput);
-    importMapper.setInjectImporters(new ArrayList<>());
+    importMapper.setAttackChainNodeImporters(new ArrayList<>());
 
-    Map<String, InjectorContract> mapInjectorContracts =
-        getMapOfInjectorContracts(
+    Map<String, NodeContract> mapNodeContracts =
+        getMapOfNodeContracts(
             importMapperAddInput.getImporters().stream()
-                .map(InjectImporterAddInput::getInjectorContractId)
+                .map(AttackChainNodeImporterAddInput::getNodeContractId)
                 .toList());
 
     importMapperAddInput
         .getImporters()
         .forEach(
-            injectImporterInput -> {
-              InjectImporter injectImporter = new InjectImporter();
-              injectImporter.setInjectorContract(
-                  mapInjectorContracts.get(injectImporterInput.getInjectorContractId()));
-              injectImporter.setImportTypeValue(injectImporterInput.getInjectTypeValue());
+            attackChainNodeImporterInput -> {
+              AttackChainNodeImporter attackChainNodeImporter = new AttackChainNodeImporter();
+              attackChainNodeImporter.setNodeContract(
+                  mapNodeContracts.get(attackChainNodeImporterInput.getNodeContractId()));
+              attackChainNodeImporter.setImportTypeValue(attackChainNodeImporterInput.getAttackChainNodeTypeValue());
 
-              injectImporter.setRuleAttributes(new ArrayList<>());
-              injectImporterInput
+              attackChainNodeImporter.setRuleAttributes(new ArrayList<>());
+              attackChainNodeImporterInput
                   .getRuleAttributes()
                   .forEach(
                       ruleAttributeInput -> {
-                        injectImporter
+                        attackChainNodeImporter
                             .getRuleAttributes()
                             .add(
                                 CopyObjectListUtils.copyObjectWithoutId(
                                     ruleAttributeInput, RuleAttribute.class));
                       });
-              importMapper.getInjectImporters().add(injectImporter);
+              importMapper.getAttackChainNodeImporters().add(attackChainNodeImporter);
             });
 
     return importMapper;
@@ -137,26 +137,26 @@ public class MapperService {
       ImportMapper importMapper =
           CopyObjectListUtils.copyObjectWithoutId(importMapperOrigin, ImportMapper.class);
       importMapper.setName(duplicateString(importMapperOrigin.getName()));
-      List<InjectImporter> injectImporters =
-          getInjectImportersDuplicated(importMapperOrigin.getInjectImporters());
-      importMapper.setInjectImporters(injectImporters);
+      List<AttackChainNodeImporter> attackChainNodeImporters =
+          getAttackChainNodeImportersDuplicated(importMapperOrigin.getAttackChainNodeImporters());
+      importMapper.setAttackChainNodeImporters(attackChainNodeImporters);
       return importMapperRepository.save(importMapper);
     }
     throw new ElementNotFoundException();
   }
 
-  private List<InjectImporter> getInjectImportersDuplicated(
-      List<InjectImporter> injectImportersOrigin) {
-    List<InjectImporter> injectImporters =
-        CopyObjectListUtils.copyWithoutIds(injectImportersOrigin, InjectImporter.class);
-    injectImporters.forEach(
-        injectImport -> {
+  private List<AttackChainNodeImporter> getAttackChainNodeImportersDuplicated(
+      List<AttackChainNodeImporter> attackChainNodeImportersOrigin) {
+    List<AttackChainNodeImporter> attackChainNodeImporters =
+        CopyObjectListUtils.copyWithoutIds(attackChainNodeImportersOrigin, AttackChainNodeImporter.class);
+    attackChainNodeImporters.forEach(
+        attackChainNodeImport -> {
           List<RuleAttribute> ruleAttributes =
               CopyObjectListUtils.copyWithoutIds(
-                  injectImport.getRuleAttributes(), RuleAttribute.class);
-          injectImport.setRuleAttributes(ruleAttributes);
+                  attackChainNodeImport.getRuleAttributes(), RuleAttribute.class);
+          attackChainNodeImport.setRuleAttributes(ruleAttributes);
         });
-    return injectImporters;
+    return attackChainNodeImporters;
   }
 
   /**
@@ -175,29 +175,29 @@ public class MapperService {
     importMapper.setUpdateAttributes(importMapperUpdateInput);
     importMapper.setUpdateDate(Instant.now());
 
-    Map<String, InjectorContract> mapInjectorContracts =
-        getMapOfInjectorContracts(
+    Map<String, NodeContract> mapNodeContracts =
+        getMapOfNodeContracts(
             importMapperUpdateInput.getImporters().stream()
-                .map(InjectImporterUpdateInput::getInjectorContractId)
+                .map(AttackChainNodeImporterUpdateInput::getNodeContractId)
                 .toList());
 
-    updateInjectImporter(
+    updateAttackChainNodeImporter(
         importMapperUpdateInput.getImporters(),
-        importMapper.getInjectImporters(),
-        mapInjectorContracts);
+        importMapper.getAttackChainNodeImporters(),
+        mapNodeContracts);
 
     return importMapperRepository.save(importMapper);
   }
 
   /**
-   * Gets a map of injector contracts by ids
+   * Gets a map of nodeExecutor contracts by ids
    *
-   * @param ids The ids of the injector contracts we want
-   * @return The map of injector contracts by ids
+   * @param ids The ids of the nodeExecutor contracts we want
+   * @return The map of nodeExecutor contracts by ids
    */
-  private Map<String, InjectorContract> getMapOfInjectorContracts(List<String> ids) {
-    return stream(injectorContractRepository.findAllById(ids).spliterator(), false)
-        .collect(Collectors.toMap(InjectorContract::getId, Function.identity()));
+  private Map<String, NodeContract> getMapOfNodeContracts(List<String> ids) {
+    return stream(nodeContractRepository.findAllById(ids).spliterator(), false)
+        .collect(Collectors.toMap(NodeContract::getId, Function.identity()));
   }
 
   /**
@@ -243,48 +243,48 @@ public class MapperService {
   }
 
   /**
-   * Updates a list of inject importers from an input one
+   * Updates a list of attackChainNode importers from an input one
    *
-   * @param injectImportersInput the input
-   * @param injectImporters the inject importers to update
-   * @param mapInjectorContracts a map of injector contracts by contract id
+   * @param attackChainNodeImportersInput the input
+   * @param attackChainNodeImporters the attackChainNode importers to update
+   * @param mapNodeContracts a map of nodeExecutor contracts by contract id
    */
-  private void updateInjectImporter(
-      List<InjectImporterUpdateInput> injectImportersInput,
-      List<InjectImporter> injectImporters,
-      Map<String, InjectorContract> mapInjectorContracts) {
+  private void updateAttackChainNodeImporter(
+      List<AttackChainNodeImporterUpdateInput> attackChainNodeImportersInput,
+      List<AttackChainNodeImporter> attackChainNodeImporters,
+      Map<String, NodeContract> mapNodeContracts) {
     // First, we remove the entities that are no longer linked to the mapper
-    injectImporters.removeIf(
+    attackChainNodeImporters.removeIf(
         importer ->
-            !injectImportersInput.stream()
+            !attackChainNodeImportersInput.stream()
                 .anyMatch(importerInput -> importer.getId().equals(importerInput.getId())));
 
     // Then we update the existing ones
-    injectImporters.forEach(
-        injectImporter -> {
-          InjectImporterUpdateInput injectImporterInput =
-              injectImportersInput.stream()
+    attackChainNodeImporters.forEach(
+        attackChainNodeImporter -> {
+          AttackChainNodeImporterUpdateInput attackChainNodeImporterInput =
+              attackChainNodeImportersInput.stream()
                   .filter(
-                      injectImporterUpdateInput ->
-                          injectImporter.getId().equals(injectImporterUpdateInput.getId()))
+                      attackChainNodeImporterUpdateInput ->
+                          attackChainNodeImporter.getId().equals(attackChainNodeImporterUpdateInput.getId()))
                   .findFirst()
                   .orElseThrow(ElementNotFoundException::new);
-          injectImporter.setUpdateAttributes(injectImporterInput);
+          attackChainNodeImporter.setUpdateAttributes(attackChainNodeImporterInput);
           updateRuleAttributes(
-              injectImporterInput.getRuleAttributes(), injectImporter.getRuleAttributes());
+              attackChainNodeImporterInput.getRuleAttributes(), attackChainNodeImporter.getRuleAttributes());
         });
 
     // Then we add the new ones
-    injectImportersInput.forEach(
-        injectImporterUpdateInput -> {
-          if (injectImporterUpdateInput.getId() == null
-              || injectImporterUpdateInput.getId().isBlank()) {
-            InjectImporter injectImporter = new InjectImporter();
-            injectImporter.setInjectorContract(
-                mapInjectorContracts.get(injectImporterUpdateInput.getInjectorContractId()));
-            injectImporter.setImportTypeValue(injectImporterUpdateInput.getInjectTypeValue());
-            injectImporter.setRuleAttributes(new ArrayList<>());
-            injectImporterUpdateInput
+    attackChainNodeImportersInput.forEach(
+        attackChainNodeImporterUpdateInput -> {
+          if (attackChainNodeImporterUpdateInput.getId() == null
+              || attackChainNodeImporterUpdateInput.getId().isBlank()) {
+            AttackChainNodeImporter attackChainNodeImporter = new AttackChainNodeImporter();
+            attackChainNodeImporter.setNodeContract(
+                mapNodeContracts.get(attackChainNodeImporterUpdateInput.getNodeContractId()));
+            attackChainNodeImporter.setImportTypeValue(attackChainNodeImporterUpdateInput.getAttackChainNodeTypeValue());
+            attackChainNodeImporter.setRuleAttributes(new ArrayList<>());
+            attackChainNodeImporterUpdateInput
                 .getRuleAttributes()
                 .forEach(
                     ruleAttributeInput -> {
@@ -293,9 +293,9 @@ public class MapperService {
                       ruleAttribute.setName(ruleAttributeInput.getName());
                       ruleAttribute.setDefaultValue(ruleAttributeInput.getDefaultValue());
                       ruleAttribute.setAdditionalConfig(ruleAttributeInput.getAdditionalConfig());
-                      injectImporter.getRuleAttributes().add(ruleAttribute);
+                      attackChainNodeImporter.getRuleAttributes().add(ruleAttribute);
                     });
-            injectImporters.add(injectImporter);
+            attackChainNodeImporters.add(attackChainNodeImporter);
           }
         });
   }
@@ -312,7 +312,7 @@ public class MapperService {
             .toList();
 
     objectMapper.addMixIn(ImportMapper.class, MapperExportMixins.ImportMapper.class);
-    objectMapper.addMixIn(InjectImporter.class, MapperExportMixins.InjectImporter.class);
+    objectMapper.addMixIn(AttackChainNodeImporter.class, MapperExportMixins.AttackChainNodeImporter.class);
     objectMapper.addMixIn(RuleAttribute.class, MapperExportMixins.RuleAttribute.class);
 
     return objectMapper.writeValueAsString(mappersList);

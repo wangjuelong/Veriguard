@@ -10,7 +10,7 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.*;
 import io.veriguard.rest.domain.enums.PresetDomain;
-import io.veriguard.service.scenario.ScenarioService;
+import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.constants.Constants;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,7 +33,7 @@ class V1_DataImporterTest extends IntegrationTest {
 
   @Autowired private V1_DataImporter importer;
 
-  @Autowired private ExerciseRepository exerciseRepository;
+  @Autowired private AttackChainRunRepository attackChainRunRepository;
 
   @Autowired private TeamRepository teamRepository;
 
@@ -43,9 +43,9 @@ class V1_DataImporterTest extends IntegrationTest {
 
   @Autowired private TagRepository tagRepository;
 
-  @Autowired private ScenarioRepository scenarioRepository;
+  @Autowired private AttackChainRepository attackChainRepository;
 
-  @Autowired private ScenarioService scenarioService;
+  @Autowired private AttackChainService attackChainService;
 
   @Autowired private PayloadRepository payloadRepository;
 
@@ -53,11 +53,11 @@ class V1_DataImporterTest extends IntegrationTest {
 
   @Autowired private KillChainPhaseRepository killChainPhaseRepository;
 
-  @Autowired private InjectorRepository injectorRepository;
+  @Autowired private NodeExecutorRepository nodeExecutorRepository;
 
-  @Autowired private InjectorContractRepository injectorContractRepository;
+  @Autowired private NodeContractRepository nodeContractRepository;
 
-  @Autowired private InjectRepository injectRepository;
+  @Autowired private AttackChainNodeRepository attackChainNodeRepository;
 
   @Autowired private DomainRepository domainRepository;
 
@@ -78,11 +78,11 @@ class V1_DataImporterTest extends IntegrationTest {
   void cleanBefore() throws IOException {
     killChainPhaseRepository.deleteAll();
     attackPatternRepository.deleteAll();
-    exerciseRepository.deleteAll();
-    scenarioRepository.deleteAll();
-    injectRepository.deleteAll();
-    injectorContractRepository.deleteAll();
-    injectorRepository.deleteAll();
+    attackChainRunRepository.deleteAll();
+    attackChainRepository.deleteAll();
+    attackChainNodeRepository.deleteAll();
+    nodeContractRepository.deleteAll();
+    nodeExecutorRepository.deleteAll();
     MockitoAnnotations.openMocks(this);
     ObjectMapper mapper = new ObjectMapper();
     String jsonContent =
@@ -99,8 +99,8 @@ class V1_DataImporterTest extends IntegrationTest {
         this.importNode, Map.of(), null, null, null, null, Constants.IMPORTED_OBJECT_NAME_SUFFIX);
 
     // -- ASSERT --
-    Optional<Exercise> exercise = this.exerciseRepository.findOne(exerciseByName(EXERCISE_NAME));
-    assertTrue(exercise.isPresent());
+    Optional<AttackChainRun> attackChainRun = this.attackChainRunRepository.findOne(attackChainRunByName(EXERCISE_NAME));
+    assertTrue(attackChainRun.isPresent());
 
     Optional<Team> team = this.teamRepository.findByName(TEAM_NAME);
     assertTrue(team.isPresent());
@@ -140,16 +140,16 @@ class V1_DataImporterTest extends IntegrationTest {
 
     Payload payload = payloadRepository.findAll().iterator().next();
 
-    // the scenario should have one inject with one attack pattern with one killchain
+    // the attackChain should have one attackChainNode with one attack pattern with one killchain
     AttackPattern attackPattern = payload.getAttackPatterns().getFirst();
 
     KillChainPhase killChainPhase = attackPattern.getKillChainPhases().getFirst();
     assertEquals(ATTACK_PATTERN_EXTERNAL_ID, attackPattern.getExternalId());
     assertEquals(KILLCHAIN_EXTERNAL_ID, killChainPhase.getExternalId());
 
-    // delete scenario and payload before reimporting to verify that the killchainphase is not
+    // delete attackChain and payload before reimporting to verify that the killchainphase is not
     // recreated
-    scenarioRepository.deleteAll();
+    attackChainRepository.deleteAll();
     payloadRepository.deleteAll();
 
     this.importer.importData(
@@ -166,7 +166,7 @@ class V1_DataImporterTest extends IntegrationTest {
   @Test
   @Transactional
   void
-      testScenario_given_injects_nuclei_without_nuclei_injector_registered_when_starterpack_then_should_create_dummy_injector()
+      testScenario_given_injects_nuclei_without_nuclei_injector_registered_when_starterpack_then_should_create_dummy_nodeExecutor()
           throws IOException {
 
     MockitoAnnotations.openMocks(this);
@@ -180,12 +180,12 @@ class V1_DataImporterTest extends IntegrationTest {
     this.importer.importData(
         this.importNode, Map.of(), null, null, null, null, Constants.IMPORTED_OBJECT_NAME_SUFFIX);
 
-    // dummy injector should be created with 1 associated injector contract
-    Injector dummyInjector =
-        this.injectorRepository.findByType(NMAP_DUMMY_INJECTOR_TYPE).orElseThrow();
-    List<InjectorContract> injectorContracts =
-        injectorContractRepository.findInjectorContractsByInjector(dummyInjector);
-    assertEquals(1, injectorContracts.size());
+    // dummy nodeExecutor should be created with 1 associated nodeExecutor contract
+    NodeExecutor dummyNodeExecutor =
+        this.nodeExecutorRepository.findByType(NMAP_DUMMY_INJECTOR_TYPE).orElseThrow();
+    List<NodeContract> nodeContracts =
+        nodeContractRepository.findNodeContractsByNodeExecutor(dummyNodeExecutor);
+    assertEquals(1, nodeContracts.size());
   }
 
   @Test
@@ -284,7 +284,7 @@ class V1_DataImporterTest extends IntegrationTest {
 
   // -- UTILS --
 
-  private static Specification<Exercise> exerciseByName(@NotNull final String name) {
+  private static Specification<AttackChainRun> attackChainRunByName(@NotNull final String name) {
     return (root, query, cb) -> cb.equal(root.get("name"), name);
   }
 }

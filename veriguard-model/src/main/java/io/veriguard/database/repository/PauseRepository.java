@@ -19,8 +19,8 @@ public interface PauseRepository
   @NotNull
   Optional<Pause> findById(@NotNull String id);
 
-  @Query(value = "select p from Pause p where p.exercise.id = :exerciseId")
-  List<Pause> findAllForExercise(@Param("exerciseId") String exerciseId);
+  @Query(value = "select p from Pause p where p.attackChainRun.id = :attackChainRunId")
+  List<Pause> findAllForAttackChainRun(@Param("exerciseId") String attackChainRunId);
 
   @Query(
       value =
@@ -28,9 +28,9 @@ public interface PauseRepository
               + "FROM pauses p "
               + "WHERE p.pause_exercise = :exerciseId",
       nativeQuery = true)
-  List<RawPause> rawAllForExercise(@Param("exerciseId") String exerciseId);
+  List<RawPause> rawAllForAttackChainRun(@Param("exerciseId") String attackChainRunId);
 
   @Modifying(clearAutomatically = true)
-  @Query("DELETE FROM Pause p WHERE p.exercise.id = :exerciseId")
-  void deleteAllPauseByExerciseId(String exerciseId);
+  @Query("DELETE FROM Pause p WHERE p.attackChainRun.id = :attackChainRunId")
+  void deleteAllPauseByAttackChainRunId(String attackChainRunId);
 }

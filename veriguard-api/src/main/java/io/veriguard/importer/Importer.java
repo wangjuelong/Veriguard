@@ -5,8 +5,8 @@ import static java.util.Spliterators.spliteratorUnknownSize;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.veriguard.database.model.Asset;
 import io.veriguard.database.model.AssetGroup;
-import io.veriguard.database.model.Exercise;
-import io.veriguard.database.model.Scenario;
+import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.service.ImportEntry;
 import java.util.Iterator;
 import java.util.List;
@@ -20,8 +20,8 @@ public interface Importer {
   void importData(
       JsonNode importNode,
       Map<String, ImportEntry> docReferences,
-      Exercise exercise,
-      Scenario scenario,
+      AttackChainRun attackChainRun,
+      AttackChain attackChain,
       Asset asset,
       AssetGroup assetGroup,
       String suffix);

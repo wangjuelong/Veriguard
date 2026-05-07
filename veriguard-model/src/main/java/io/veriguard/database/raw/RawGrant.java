@@ -37,7 +37,7 @@ public interface RawGrant {
   /**
    * Returns the ID of the resource this grant provides access to.
    *
-   * @return the resource ID (e.g., exercise ID, scenario ID)
+   * @return the resource ID (e.g., attackChainRun ID, attackChain ID)
    */
   String getGrant_resource();
 

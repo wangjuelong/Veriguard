@@ -28,16 +28,16 @@ public class Mixins {
         "scenario_documents",
         "scenario_dependencies",
       })
-  public static class Scenario {}
+  public static class AttackChain {}
 
   @JsonIgnoreProperties(value = {"scenario_users", "scenario_organizations"})
-  public static class ScenarioWithoutPlayers {}
+  public static class AttackChainWithoutPlayers {}
 
   @JsonIgnoreProperties(value = {"exercise_users", "exercise_organizations"})
-  public static class ExerciseFileExport {}
+  public static class AttackChainRunFileExport {}
 
   @JsonIgnoreProperties(value = {"inject_users", "inject_organizations"})
-  public static class InjectsFileExport {}
+  public static class AttackChainNodesFileExport {}
 
   @JsonIncludeProperties(
       value = {
@@ -65,7 +65,7 @@ public class Mixins {
       })
   public static class KillChainPhase {}
 
-  public abstract static class InjectorContract {
+  public abstract static class NodeContract {
     @JsonSerialize(using = JsonSerializer.None.class)
     public abstract List<AttackPattern> getAttackPatterns();
   }
@@ -88,7 +88,7 @@ public class Mixins {
         "exercise_tags",
         "exercise_documents",
       })
-  public static class Exercise {}
+  public static class AttackChainRun {}
 
   @JsonIncludeProperties(
       value = {
@@ -147,7 +147,7 @@ public class Mixins {
         "inject_teams",
         "inject_content",
       })
-  public static class Inject {}
+  public static class AttackChainNode {}
 
   @JsonIncludeProperties(
       value = {

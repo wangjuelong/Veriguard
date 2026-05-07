@@ -11,7 +11,7 @@ import org.apache.commons.lang3.tuple.Pair;
  * Utility class for asset-related operations, primarily focused on endpoint management.
  *
  * <p>Provides helper methods for grouping and extracting platform and architecture information from
- * endpoints. These utilities are commonly used when filtering or organizing assets for inject
+ * endpoints. These utilities are commonly used when filtering or organizing assets for attackChainNode
  * execution based on their system characteristics.
  *
  * <p>This is a utility class and cannot be instantiated.

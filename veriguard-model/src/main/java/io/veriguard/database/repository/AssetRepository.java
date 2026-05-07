@@ -40,8 +40,8 @@ public interface AssetRepository
               + "LEFT JOIN injects_assets ia ON a.asset_id = ia.asset_id "
               + "WHERE a.asset_id IN (:assetIds) OR ia.inject_id IN (:injectIds) ;",
       nativeQuery = true)
-  List<RawAsset> rawByIdsOrInjectIds(
-      @Param("assetIds") Set<String> assetIds, @Param("injectIds") Set<String> injectIds);
+  List<RawAsset> rawByIdsOrAttackChainNodeIds(
+      @Param("assetIds") Set<String> assetIds, @Param("injectIds") Set<String> attackChainNodeIds);
 
   @Query(
       value =
@@ -51,7 +51,7 @@ public interface AssetRepository
               + "INNER JOIN injects i ON ia.inject_id = i.inject_id "
               + "WHERE i.inject_exercise in :exerciseIds",
       nativeQuery = true)
-  List<Object[]> assetsByExerciseIds(Set<String> exerciseIds);
+  List<Object[]> assetsByAttackChainRunIds(Set<String> attackChainRunIds);
 
   @Query(
       value =
@@ -60,5 +60,5 @@ public interface AssetRepository
               + "INNER JOIN injects_assets ia ON a.asset_id = ia.asset_id "
               + "WHERE ia.inject_id in :injectIds",
       nativeQuery = true)
-  List<Object[]> assetsByInjectIds(Set<String> injectIds);
+  List<Object[]> assetsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 }

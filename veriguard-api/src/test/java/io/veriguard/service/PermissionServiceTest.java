@@ -10,7 +10,7 @@ import io.veriguard.aop.RBACAspect;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.EvaluationRepository;
 import io.veriguard.database.repository.ObjectiveRepository;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import io.veriguard.utils.fixtures.UserFixture;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import java.util.*;
@@ -30,7 +30,7 @@ public class PermissionServiceTest extends IntegrationTest {
   private static final String USER_ID = "userid";
 
   @Mock private GrantService grantService;
-  @Mock private InjectService injectService;
+  @Mock private AttackChainNodeService attackChainNodeService;
   @Mock private ObjectiveRepository objectiveRepository;
   @Mock private EvaluationRepository evaluationRepository;
 
@@ -225,32 +225,32 @@ public class PermissionServiceTest extends IntegrationTest {
 
   @Test
   public void test_hasPermission_write_inject_WHEN_has_write_grant() {
-    String injectId = "injectId";
-    Inject inject = mock(Inject.class);
-    when(inject.getParentResourceId()).thenReturn(RESOURCE_ID);
-    when(inject.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
-    when(injectService.inject(injectId)).thenReturn(inject);
+    String attackChainNodeId = "injectId";
+    AttackChainNode attackChainNode = mock(AttackChainNode.class);
+    when(attackChainNode.getParentResourceId()).thenReturn(RESOURCE_ID);
+    when(attackChainNode.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
+    when(attackChainNodeService.attackChainNode(attackChainNodeId)).thenReturn(attackChainNode);
 
     User user = getUser(USER_ID, false);
     when(grantService.hasWriteGrant(RESOURCE_ID, user)).thenReturn(true);
     assertTrue(
         permissionService.hasPermission(
-            user, Optional.empty(), injectId, ResourceType.INJECT, Action.WRITE));
+            user, Optional.empty(), attackChainNodeId, ResourceType.INJECT, Action.WRITE));
   }
 
   @Test
   public void test_hasPermission_write_inject_WHEN_has_no_grant() {
-    String injectId = "injectId";
-    Inject inject = mock(Inject.class);
-    when(inject.getParentResourceId()).thenReturn(RESOURCE_ID);
-    when(inject.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
-    when(injectService.inject(injectId)).thenReturn(inject);
+    String attackChainNodeId = "injectId";
+    AttackChainNode attackChainNode = mock(AttackChainNode.class);
+    when(attackChainNode.getParentResourceId()).thenReturn(RESOURCE_ID);
+    when(attackChainNode.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
+    when(attackChainNodeService.attackChainNode(attackChainNodeId)).thenReturn(attackChainNode);
 
     User user = getUser(USER_ID, false);
     when(grantService.hasWriteGrant(RESOURCE_ID, user)).thenReturn(false);
     assertFalse(
         permissionService.hasPermission(
-            user, Optional.empty(), injectId, ResourceType.INJECT, Action.WRITE));
+            user, Optional.empty(), attackChainNodeId, ResourceType.INJECT, Action.WRITE));
   }
 
   @Test
@@ -295,17 +295,17 @@ public class PermissionServiceTest extends IntegrationTest {
 
   @Test
   public void test_hasPermission_search_options_WHEN_has_write_grant() {
-    String injectId = "injectId";
-    Inject inject = mock(Inject.class);
-    when(inject.getParentResourceId()).thenReturn(RESOURCE_ID);
-    when(inject.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
-    when(injectService.inject(injectId)).thenReturn(inject);
+    String attackChainNodeId = "injectId";
+    AttackChainNode attackChainNode = mock(AttackChainNode.class);
+    when(attackChainNode.getParentResourceId()).thenReturn(RESOURCE_ID);
+    when(attackChainNode.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
+    when(attackChainNodeService.attackChainNode(attackChainNodeId)).thenReturn(attackChainNode);
 
     User user = getUser(USER_ID, false);
     when(grantService.hasWriteGrant(RESOURCE_ID, user)).thenReturn(true);
     RBACAspect.HttpMappingInfo mappingInfo =
         new RBACAspect.HttpMappingInfo(
-            RequestMethod.GET, new String[] {"api/injector/options"}, Map.of("sourceId", injectId));
+            RequestMethod.GET, new String[] {"api/injector/options"}, Map.of("sourceId", attackChainNodeId));
     assertTrue(
         permissionService.hasPermission(
             user, Optional.of(mappingInfo), null, ResourceType.INJECTOR, Action.SEARCH));
@@ -313,11 +313,11 @@ public class PermissionServiceTest extends IntegrationTest {
 
   @Test
   public void test_hasNOPermission_search_options_WHEN_has_write_grant() {
-    String injectId = "injectId";
-    Inject inject = mock(Inject.class);
-    when(inject.getParentResourceId()).thenReturn(RESOURCE_ID);
-    when(inject.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
-    when(injectService.inject(injectId)).thenReturn(inject);
+    String attackChainNodeId = "injectId";
+    AttackChainNode attackChainNode = mock(AttackChainNode.class);
+    when(attackChainNode.getParentResourceId()).thenReturn(RESOURCE_ID);
+    when(attackChainNode.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
+    when(attackChainNodeService.attackChainNode(attackChainNodeId)).thenReturn(attackChainNode);
 
     User user = getUser(USER_ID, false);
     when(grantService.hasWriteGrant(RESOURCE_ID, user)).thenReturn(true);
@@ -329,11 +329,11 @@ public class PermissionServiceTest extends IntegrationTest {
   @Test
   public void
       test_hasNOPermission_search_options_WHEN_has_write_grant_AND_incomplete_mapping_info_no_sourceId() {
-    String injectId = "injectId";
-    Inject inject = mock(Inject.class);
-    when(inject.getParentResourceId()).thenReturn(RESOURCE_ID);
-    when(inject.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
-    when(injectService.inject(injectId)).thenReturn(inject);
+    String attackChainNodeId = "injectId";
+    AttackChainNode attackChainNode = mock(AttackChainNode.class);
+    when(attackChainNode.getParentResourceId()).thenReturn(RESOURCE_ID);
+    when(attackChainNode.getParentResourceType()).thenReturn(ResourceType.SIMULATION);
+    when(attackChainNodeService.attackChainNode(attackChainNodeId)).thenReturn(attackChainNode);
 
     User user = getUser(USER_ID, false);
     when(grantService.hasWriteGrant(RESOURCE_ID, user)).thenReturn(true);

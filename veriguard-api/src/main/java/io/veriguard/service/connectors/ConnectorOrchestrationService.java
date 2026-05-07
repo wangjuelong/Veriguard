@@ -8,7 +8,7 @@ import io.veriguard.rest.connector_instance.dto.ConnectorInstanceHealthInput;
 import io.veriguard.rest.connector_instance.dto.CreateConnectorInstanceInput;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.service.InjectorService;
+import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.catalog_connectors.CatalogConnectorService;
 import io.veriguard.service.connector_instances.ConnectorInstanceLogService;
 import io.veriguard.service.connector_instances.ConnectorInstanceService;
@@ -34,7 +34,7 @@ public class ConnectorOrchestrationService {
   private final CatalogConnectorService catalogConnectorService;
 
   private final CollectorService collectorService;
-  private final InjectorService injectorService;
+  private final NodeExecutorService nodeExecutorService;
   private final ExecutorService executorService;
   private final ConnectorInstanceLogService connectorInstanceLogService;
 
@@ -115,7 +115,7 @@ public class ConnectorOrchestrationService {
     if (ConnectorType.COLLECTOR.equals(catalogConnectorType)) {
       connector = collectorService.findCollectorByType(catalogConnectorSlug).orElse(null);
     } else if (ConnectorType.INJECTOR.equals(catalogConnectorType)) {
-      connector = injectorService.injectorByType(catalogConnectorSlug).orElse(null);
+      connector = nodeExecutorService.nodeExecutorByType(catalogConnectorSlug).orElse(null);
     } else {
       connector = executorService.executorByType(catalogConnectorSlug).orElse(null);
     }
@@ -149,7 +149,7 @@ public class ConnectorOrchestrationService {
       if (catalogConnector.getContainerType().equals(ConnectorType.COLLECTOR)) {
         collectorService.collector(connectorId);
       } else if (catalogConnector.getContainerType().equals(ConnectorType.INJECTOR)) {
-        injectorService.injector(connectorId);
+        nodeExecutorService.nodeExecutor(connectorId);
       } else {
         executorService.executor(connectorId);
       }
@@ -160,10 +160,10 @@ public class ConnectorOrchestrationService {
     }
   }
 
-  private void cleanDummyInjectorsIfItExists(
+  private void cleanDummyNodeExecutorsIfItExists(
       String catalogConnectorSlug, ConnectorType catalogConnectorType) {
     if (ConnectorType.INJECTOR.equals(catalogConnectorType)) {
-      injectorService.deleteDummyInjectorIfItExists(catalogConnectorSlug);
+      nodeExecutorService.deleteDummyNodeExecutorIfItExists(catalogConnectorSlug);
     }
   }
 
@@ -237,7 +237,7 @@ public class ConnectorOrchestrationService {
     ConnectorInstancePersisted connectorInstance =
         connectorInstanceService.createConnectorInstance(catalogConnectorWithConfigMap, input);
 
-    cleanDummyInjectorsIfItExists(
+    cleanDummyNodeExecutorsIfItExists(
         catalogConnectorWithConfigMap.catalogConnector.getSlug(),
         catalogConnectorWithConfigMap.catalogConnector.getContainerType());
 

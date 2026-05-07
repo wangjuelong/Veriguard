@@ -6,7 +6,7 @@ import java.util.List;
  * Spring Data projection interface for document data.
  *
  * <p>This interface defines a projection for retrieving document metadata and associations.
- * Documents can be attached to exercises and scenarios, and are stored in MinIO/S3.
+ * Documents can be attached to attackChainRuns and attackChains, and are stored in MinIO/S3.
  *
  * @see io.veriguard.database.model.Document
  */
@@ -55,16 +55,16 @@ public interface RawDocument {
   List<String> getDocument_tags();
 
   /**
-   * Returns the list of exercise IDs this document is attached to.
+   * Returns the list of attackChainRun IDs this document is attached to.
    *
-   * @return list of exercise IDs
+   * @return list of attackChainRun IDs
    */
-  List<String> getDocument_exercises();
+  List<String> getDocument_attackChainRuns();
 
   /**
-   * Returns the list of scenario IDs this document is attached to.
+   * Returns the list of attackChain IDs this document is attached to.
    *
-   * @return list of scenario IDs
+   * @return list of attackChain IDs
    */
-  List<String> getDocument_scenarios();
+  List<String> getDocument_attackChains();
 }

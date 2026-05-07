@@ -28,9 +28,9 @@ public interface AssetGroupRepository
 
   @Override
   @Query(
-      "select COUNT(DISTINCT ag) from Inject i "
+      "select COUNT(DISTINCT ag) from AttackChainNode i "
           + "join i.assetGroups as ag "
-          + "join i.exercise as e "
+          + "join i.attackChainRun as e "
           + "join e.grants as grant "
           + "join grant.group.users as user "
           + "where user.id = :userId and i.createdAt > :creationDate")
@@ -45,28 +45,28 @@ public interface AssetGroupRepository
   @Query(
       "SELECT ag FROM AssetGroup ag "
           + "WHERE ag.id IN (SELECT DISTINCT ag2.id FROM AssetGroup ag2 "
-          + "JOIN ag2.injects i WHERE i.scenario.id = :scenarioId)")
-  List<AssetGroup> findDistinctByInjectsScenarioId(String scenarioId);
+          + "JOIN ag2.attackChainNodes i WHERE i.attackChain.id = :attackChainId)")
+  List<AssetGroup> findDistinctByAttackChainNodesAttackChainId(String attackChainId);
 
   @Query(
       "SELECT ag FROM AssetGroup ag "
           + "WHERE ag.id IN (SELECT DISTINCT ag2.id FROM AssetGroup ag2 "
-          + "JOIN ag2.injects i WHERE i.scenario.id = :scenarioId)"
+          + "JOIN ag2.attackChainNodes i WHERE i.attackChain.id = :attackChainId)"
           + "AND ag.id IN :ids")
-  List<AssetGroup> findDistinctByInjectsScenarioIdAndIdIn(String scenarioId, List<String> ids);
+  List<AssetGroup> findDistinctByAttackChainNodesAttackChainIdAndIdIn(String attackChainId, List<String> ids);
 
   @Query(
       "SELECT ag FROM AssetGroup ag "
           + "WHERE ag.id IN (SELECT DISTINCT ag2.id FROM AssetGroup ag2 "
-          + "JOIN ag2.injects i WHERE i.exercise.id = :simulationId)")
-  List<AssetGroup> findDistinctByInjectsSimulationId(String simulationId);
+          + "JOIN ag2.attackChainNodes i WHERE i.attackChainRun.id = :simulationId)")
+  List<AssetGroup> findDistinctByAttackChainNodesSimulationId(String simulationId);
 
   @Query(
       "SELECT ag FROM AssetGroup ag "
           + "WHERE ag.id IN (SELECT DISTINCT ag2.id FROM AssetGroup ag2 "
-          + "JOIN ag2.injects i WHERE i.exercise.id = :simulationId)"
+          + "JOIN ag2.attackChainNodes i WHERE i.attackChainRun.id = :simulationId)"
           + " AND ag.id IN :ids")
-  List<AssetGroup> findDistinctByInjectsSimulationIdAndIdIn(String simulationId, List<String> ids);
+  List<AssetGroup> findDistinctByAttackChainNodesSimulationIdAndIdIn(String simulationId, List<String> ids);
 
   /**
    * Returns the raw asset group having the ids passed in parameter
@@ -95,8 +95,8 @@ public interface AssetGroupRepository
               + "WHERE iat.asset_group_id IN (:assetGroupIds) OR iat.inject_id IN (:injectIds) "
               + "GROUP BY ag.asset_group_id, ag.asset_group_name, CAST(ag.asset_group_dynamic_filter as text) ;",
       nativeQuery = true)
-  Set<RawAssetGroup> rawByIdsOrInjectIds(
-      @Param("assetGroupIds") Set<String> assetGroupIds, @Param("injectIds") Set<String> injectIds);
+  Set<RawAssetGroup> rawByIdsOrAttackChainNodeIds(
+      @Param("assetGroupIds") Set<String> assetGroupIds, @Param("injectIds") Set<String> attackChainNodeIds);
 
   // -- PAGINATION --
 
@@ -109,7 +109,7 @@ public interface AssetGroupRepository
               + "WHERE iat.inject_id = :injectId "
               + "AND ag.asset_group_dynamic_filter IS NOT NULL;",
       nativeQuery = true)
-  List<RawAssetGroupDynamicFilter> rawDynamicFiltersByInjectId(@Param("injectId") String injectId);
+  List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeId(@Param("injectId") String attackChainNodeId);
 
   @Query(
       value =
@@ -121,8 +121,8 @@ public interface AssetGroupRepository
               + "AND ag.asset_group_dynamic_filter IS NOT NULL "
               + "AND ag.asset_group_id IN :assetGroupIds ;",
       nativeQuery = true)
-  List<RawAssetGroupDynamicFilter> rawDynamicFiltersByInjectIdAndAssetGroupIds(
-      @Param("injectId") String injectId, @Param("assetGroupIds") List<String> assetGroupIds);
+  List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeIdAndAssetGroupIds(
+      @Param("injectId") String attackChainNodeId, @Param("assetGroupIds") List<String> assetGroupIds);
 
   @Query(
       value =
@@ -145,8 +145,8 @@ public interface AssetGroupRepository
               + "AND ag.asset_group_dynamic_filter IS NOT NULL "
               + "AND ag.asset_group_id NOT IN :assetGroupIds ;",
       nativeQuery = true)
-  List<RawAssetGroupDynamicFilter> rawDynamicFiltersByInjectIdAndNotAssetGroupIds(
-      @Param("injectId") String injectId, @Param("assetGroupIds") List<String> assetGroupIds);
+  List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeIdAndNotAssetGroupIds(
+      @Param("injectId") String attackChainNodeId, @Param("assetGroupIds") List<String> assetGroupIds);
 
   @NotNull
   @EntityGraph(value = "AssetGroup.tags-assets", type = EntityGraph.EntityGraphType.LOAD)
@@ -160,7 +160,7 @@ public interface AssetGroupRepository
               + "INNER JOIN injects i ON iag.inject_id = i.inject_id "
               + "WHERE i.inject_exercise in :exerciseIds",
       nativeQuery = true)
-  List<Object[]> assetGroupsByExerciseIds(Set<String> exerciseIds);
+  List<Object[]> assetGroupsByAttackChainRunIds(Set<String> attackChainRunIds);
 
   @Query(
       value =
@@ -169,18 +169,18 @@ public interface AssetGroupRepository
               + "INNER JOIN injects_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
               + "WHERE iag.inject_id in :injectIds",
       nativeQuery = true)
-  List<Object[]> assetGroupsByInjectIds(Set<String> injectIds);
+  List<Object[]> assetGroupsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 
   @Query(
-      "SELECT ag FROM Inject i"
+      "SELECT ag FROM AttackChainNode i"
           + " JOIN i.assetGroups ag"
           + " WHERE ("
-          + "   :simulationOrScenarioId is NULL AND i.exercise.id is NULL AND i.scenario.id IS NULL"
-          + "   OR (i.exercise.id = :simulationOrScenarioId"
-          + "   OR i.scenario.id = :simulationOrScenarioId)"
+          + "   :simulationOrAttackChainId is NULL AND i.attackChainRun.id is NULL AND i.attackChain.id IS NULL"
+          + "   OR (i.attackChainRun.id = :simulationOrAttackChainId"
+          + "   OR i.attackChain.id = :simulationOrAttackChainId)"
           + " ) AND (:name IS NULL OR lower(ag.name) LIKE lower(concat('%', cast(coalesce(:name, '') as string), '%')))")
-  List<AssetGroup> findAllBySimulationOrScenarioIdAndName(
-      String simulationOrScenarioId, String name);
+  List<AssetGroup> findAllBySimulationOrAttackChainIdAndName(
+      String simulationOrAttackChainId, String name);
 
   @Query(
       value =
@@ -188,7 +188,7 @@ public interface AssetGroupRepository
               + "FROM asset_groups ag "
               + "INNER JOIN injects_asset_groups iag ON ag.asset_group_id = iag.asset_group_id",
       nativeQuery = true)
-  List<AssetGroup> findAllAssetGroupsForAtomicTestingsSimulationsAndScenarios();
+  List<AssetGroup> findAllAssetGroupsForAtomicTestingsSimulationsAndAttackChains();
 
   @Query(
       value =

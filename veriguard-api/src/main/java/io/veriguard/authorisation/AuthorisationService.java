@@ -1,6 +1,6 @@
 package io.veriguard.authorisation;
 
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.rest.security.SecurityExpression;
 import lombok.Getter;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class AuthorisationService {
-  private final ExerciseRepository exerciseRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
   private final UserRepository userRepository;
 
   public SecurityExpression getSecurityExpression() {
     return new SecurityExpression(
-        SecurityContextHolder.getContext().getAuthentication(), userRepository, exerciseRepository);
+        SecurityContextHolder.getContext().getAuthentication(), userRepository, attackChainRunRepository);
   }
 }

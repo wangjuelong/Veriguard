@@ -13,13 +13,13 @@ import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.repository.ImportMapperRepository;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import io.veriguard.rest.mapper.MapperApi;
 import io.veriguard.rest.mapper.form.ImportMapperAddInput;
 import io.veriguard.rest.mapper.form.ImportMapperUpdateInput;
-import io.veriguard.rest.scenario.form.InjectsImportTestInput;
+import io.veriguard.rest.scenario.form.AttackChainNodesImportTestInput;
 import io.veriguard.rest.scenario.response.ImportTestSummary;
-import io.veriguard.service.InjectImportService;
+import io.veriguard.service.AttackChainNodeImportService;
 import io.veriguard.service.MapperService;
 import io.veriguard.utils.fixtures.PaginationFixture;
 import io.veriguard.utils.mockMapper.MockMapperUtils;
@@ -62,8 +62,8 @@ public class MapperApiTest extends IntegrationTest {
   @Mock private ImportMapperRepository importMapperRepository;
 
   @Mock private MapperService mapperService;
-  @Mock private InjectService injectService;
-  @Mock private InjectImportService injectImportService;
+  @Mock private AttackChainNodeService attackChainNodeService;
+  @Mock private AttackChainNodeImportService attackChainNodeImportService;
 
   private MapperApi mapperApi;
 
@@ -72,7 +72,7 @@ public class MapperApiTest extends IntegrationTest {
   @BeforeEach
   void before() throws IllegalAccessException, NoSuchFieldException {
     // Injecting mocks into the controller
-    mapperApi = new MapperApi(importMapperRepository, mapperService, injectImportService);
+    mapperApi = new MapperApi(importMapperRepository, mapperService, attackChainNodeImportService);
 
     Field sessionContextField = MapperApi.class.getSuperclass().getDeclaredField("mapper");
     sessionContextField.setAccessible(true);
@@ -140,7 +140,7 @@ public class MapperApiTest extends IntegrationTest {
     ImportMapper importMapper = MockMapperUtils.createImportMapper();
     ImportMapperAddInput importMapperInput = new ImportMapperAddInput();
     importMapperInput.setName("Test");
-    importMapperInput.setInjectTypeColumn("B");
+    importMapperInput.setAttackChainNodeTypeColumn("B");
     when(mapperService.createAndSaveImportMapper(any())).thenReturn(importMapper);
     // -- EXECUTE --
     String response =
@@ -210,7 +210,7 @@ public class MapperApiTest extends IntegrationTest {
     ImportMapper importMapper = MockMapperUtils.createImportMapper();
     ImportMapperUpdateInput importMapperInput = new ImportMapperUpdateInput();
     importMapperInput.setName("New name");
-    importMapperInput.setInjectTypeColumn("B");
+    importMapperInput.setAttackChainNodeTypeColumn("B");
     when(mapperService.updateImportMapper(any(), any())).thenReturn(importMapper);
     // -- EXECUTE --
     String response =
@@ -259,15 +259,15 @@ public class MapperApiTest extends IntegrationTest {
   @Test
   void testTestingXls() throws Exception {
     // -- PREPARE --
-    InjectsImportTestInput injectsImportInput = new InjectsImportTestInput();
-    injectsImportInput.setImportMapper(new ImportMapperAddInput());
-    injectsImportInput.setName("TEST");
-    injectsImportInput.setTimezoneOffset(120);
+    AttackChainNodesImportTestInput attackChainNodesImportInput = new AttackChainNodesImportTestInput();
+    attackChainNodesImportInput.setImportMapper(new ImportMapperAddInput());
+    attackChainNodesImportInput.setName("TEST");
+    attackChainNodesImportInput.setTimezoneOffset(120);
     ImportMapper importMapper = MockMapperUtils.createImportMapper();
 
-    injectsImportInput.getImportMapper().setName("TEST");
+    attackChainNodesImportInput.getImportMapper().setName("TEST");
 
-    when(injectImportService.importInjectIntoScenarioFromXLS(
+    when(attackChainNodeImportService.importAttackChainNodeIntoAttackChainFromXLS(
             any(), any(), any(), any(), anyInt(), anyBoolean()))
         .thenReturn(new ImportTestSummary());
     when(mapperService.createImportMapper(any())).thenReturn(importMapper);
@@ -279,7 +279,7 @@ public class MapperApiTest extends IntegrationTest {
                 MockMvcRequestBuilders.post(
                         "/api/mappers/store/{importId}", UUID.randomUUID().toString())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(injectsImportInput))
+                    .content(asJsonString(attackChainNodesImportInput))
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
             .andReturn()

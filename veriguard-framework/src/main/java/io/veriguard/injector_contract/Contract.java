@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Represents an injector contract that defines the structure and configuration of an injection.
+ * Represents an nodeExecutor contract that defines the structure and configuration of an injection.
  *
  * <p>A contract specifies:
  *
@@ -53,7 +53,7 @@ import lombok.Setter;
 @Getter
 public class Contract {
 
-  /** The configuration containing injector metadata like type, colors, and labels. */
+  /** The configuration containing nodeExecutor metadata like type, colors, and labels. */
   @NotNull private final ContractConfig config;
 
   /** Unique identifier for this contract. */
@@ -122,7 +122,7 @@ public class Contract {
 
     // Add default variables linked to ExecutionContext
     this.variables.add(VariableHelper.userVariable);
-    this.variables.add(VariableHelper.exerciseVariable);
+    this.variables.add(VariableHelper.attackChainRunVariable);
     this.variables.add(VariableHelper.teamVariable);
     this.variables.addAll(VariableHelper.uriVariables);
   }

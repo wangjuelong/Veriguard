@@ -7,7 +7,7 @@ import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.ComcheckRepository;
 import io.veriguard.database.repository.ComcheckStatusRepository;
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.rest.comcheck.form.ComcheckInput;
 import io.veriguard.rest.exception.ElementNotFoundException;
@@ -23,7 +23,7 @@ public class ComcheckApi extends RestBehavior {
 
   private ComcheckRepository comcheckRepository;
   private TeamRepository teamRepository;
-  private ExerciseRepository exerciseRepository;
+  private AttackChainRunRepository attackChainRunRepository;
   private ComcheckStatusRepository comcheckStatusRepository;
 
   @Autowired
@@ -42,8 +42,8 @@ public class ComcheckApi extends RestBehavior {
   }
 
   @Autowired
-  public void setExerciseRepository(ExerciseRepository exerciseRepository) {
-    this.exerciseRepository = exerciseRepository;
+  public void setAttackChainRunRepository(AttackChainRunRepository attackChainRunRepository) {
+    this.attackChainRunRepository = attackChainRunRepository;
   }
 
   @GetMapping("/api/comcheck/{comcheckStatusId}")
@@ -76,7 +76,7 @@ public class ComcheckApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public void deleteComcheck(@PathVariable String exerciseId, @PathVariable String comcheckId) {
+  public void deleteComcheck(@PathVariable String attackChainRunId, @PathVariable String comcheckId) {
     comcheckRepository.deleteById(comcheckId);
   }
 
@@ -87,19 +87,19 @@ public class ComcheckApi extends RestBehavior {
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
   public Comcheck communicationCheck(
-      @PathVariable String exerciseId, @Valid @RequestBody ComcheckInput comCheck) {
+      @PathVariable String attackChainRunId, @Valid @RequestBody ComcheckInput comCheck) {
     // 01. Create the comcheck and get the ID
     Comcheck check = new Comcheck();
     check.setUpdateAttributes(comCheck);
     check.setName(comCheck.getName());
     check.setStart(now());
-    Exercise exercise =
-        exerciseRepository.findById(exerciseId).orElseThrow(ElementNotFoundException::new);
-    check.setExercise(exercise);
+    AttackChainRun attackChainRun =
+        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+    check.setAttackChainRun(attackChainRun);
     // 02. Get users
     List<String> teamIds = comCheck.getTeamIds();
     List<Team> teams =
-        teamIds.isEmpty() ? exercise.getTeams() : fromIterable(teamRepository.findAllById(teamIds));
+        teamIds.isEmpty() ? attackChainRun.getTeams() : fromIterable(teamRepository.findAllById(teamIds));
     List<User> users = teams.stream().flatMap(team -> team.getUsers().stream()).distinct().toList();
     List<ComcheckStatus> comcheckStatuses =
         users.stream()

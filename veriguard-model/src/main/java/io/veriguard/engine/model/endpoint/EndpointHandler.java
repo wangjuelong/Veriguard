@@ -58,15 +58,15 @@ public class EndpointHandler implements Handler<EsEndpoint> {
               } else {
                 esEndpoint.setBase_tags_side(Set.of());
               }
-              if (endpoint.getEndpoint_exercises() != null
-                  && !endpoint.getEndpoint_exercises().isEmpty()) {
-                esEndpoint.setBase_simulation_side(endpoint.getEndpoint_exercises());
+              if (endpoint.getEndpoint_attackChainRuns() != null
+                  && !endpoint.getEndpoint_attackChainRuns().isEmpty()) {
+                esEndpoint.setBase_simulation_side(endpoint.getEndpoint_attackChainRuns());
               } else {
                 esEndpoint.setBase_simulation_side(Set.of());
               }
-              if (endpoint.getEndpoint_scenarios() != null
-                  && !endpoint.getEndpoint_scenarios().isEmpty()) {
-                esEndpoint.setBase_scenario_side(endpoint.getEndpoint_scenarios());
+              if (endpoint.getEndpoint_attackChains() != null
+                  && !endpoint.getEndpoint_attackChains().isEmpty()) {
+                esEndpoint.setBase_scenario_side(endpoint.getEndpoint_attackChains());
               } else {
                 esEndpoint.setBase_scenario_side(Set.of());
               }

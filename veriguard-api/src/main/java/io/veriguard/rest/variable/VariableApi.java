@@ -1,16 +1,16 @@
 package io.veriguard.rest.variable;
 
-import static io.veriguard.rest.exercise.ExerciseApi.EXERCISE_URI;
-import static io.veriguard.rest.scenario.ScenarioApi.SCENARIO_URI;
+import static io.veriguard.rest.exercise.AttackChainRunApi.EXERCISE_URI;
+import static io.veriguard.rest.scenario.AttackChainApi.SCENARIO_URI;
 
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.variable.form.VariableInput;
 import io.veriguard.service.VariableService;
-import io.veriguard.service.scenario.ScenarioService;
+import io.veriguard.service.scenario.AttackChainService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class VariableApi extends RestBehavior {
   public static final String VARIABLE_URI = "/api/variables";
 
   private final VariableService variableService;
-  private final ScenarioService scenarioService;
-  private final ExerciseRepository exerciseRepository;
+  private final AttackChainService attackChainService;
+  private final AttackChainRunRepository attackChainRunRepository;
 
   // -- EXERCISES --
 
@@ -33,14 +33,14 @@ public class VariableApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
-  public Variable createVariableForExercise(
-      @PathVariable @NotBlank final String exerciseId,
+  public Variable createVariableForAttackChainRun(
+      @PathVariable @NotBlank final String attackChainRunId,
       @Valid @RequestBody final VariableInput input) {
     Variable variable = new Variable();
     variable.setUpdateAttributes(input);
-    Exercise exercise =
-        this.exerciseRepository.findById(exerciseId).orElseThrow(ElementNotFoundException::new);
-    variable.setExercise(exercise);
+    AttackChainRun attackChainRun =
+        this.attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+    variable.setAttackChainRun(attackChainRun);
     return this.variableService.createVariable(variable);
   }
 
@@ -49,8 +49,8 @@ public class VariableApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
-  public Iterable<Variable> variablesFromExercise(@PathVariable @NotBlank final String exerciseId) {
-    return this.variableService.variablesFromExercise(exerciseId);
+  public Iterable<Variable> variablesFromAttackChainRun(@PathVariable @NotBlank final String attackChainRunId) {
+    return this.variableService.variablesFromAttackChainRun(attackChainRunId);
   }
 
   @PutMapping(EXERCISE_URI + "/{exerciseId}/variables/{variableId}")
@@ -58,12 +58,12 @@ public class VariableApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
-  public Variable updateVariableForExercise(
-      @PathVariable @NotBlank final String exerciseId,
+  public Variable updateVariableForAttackChainRun(
+      @PathVariable @NotBlank final String attackChainRunId,
       @PathVariable @NotBlank final String variableId,
       @Valid @RequestBody final VariableInput input) {
     Variable variable = this.variableService.variable(variableId);
-    assert exerciseId.equals(variable.getExercise().getId());
+    assert attackChainRunId.equals(variable.getAttackChainRun().getId());
     variable.setUpdateAttributes(input);
     return this.variableService.updateVariable(variable);
   }
@@ -73,11 +73,11 @@ public class VariableApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
-  public void deleteVariableForExercise(
-      @PathVariable @NotBlank final String exerciseId,
+  public void deleteVariableForAttackChainRun(
+      @PathVariable @NotBlank final String attackChainRunId,
       @PathVariable @NotBlank final String variableId) {
     Variable variable = this.variableService.variable(variableId);
-    assert exerciseId.equals(variable.getExercise().getId());
+    assert attackChainRunId.equals(variable.getAttackChainRun().getId());
     this.variableService.deleteVariable(variableId);
   }
 
@@ -88,13 +88,13 @@ public class VariableApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
-  public Variable createVariableForScenario(
-      @PathVariable @NotBlank final String scenarioId,
+  public Variable createVariableForAttackChain(
+      @PathVariable @NotBlank final String attackChainId,
       @Valid @RequestBody final VariableInput input) {
     Variable variable = new Variable();
     variable.setUpdateAttributes(input);
-    Scenario scenario = this.scenarioService.scenario(scenarioId);
-    variable.setScenario(scenario);
+    AttackChain attackChain = this.attackChainService.attackChain(attackChainId);
+    variable.setAttackChain(attackChain);
     return this.variableService.createVariable(variable);
   }
 
@@ -103,8 +103,8 @@ public class VariableApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
-  public Iterable<Variable> variablesFromScenario(@PathVariable @NotBlank final String scenarioId) {
-    return this.variableService.variablesFromScenario(scenarioId);
+  public Iterable<Variable> variablesFromAttackChain(@PathVariable @NotBlank final String attackChainId) {
+    return this.variableService.variablesFromAttackChain(attackChainId);
   }
 
   @PutMapping(SCENARIO_URI + "/{scenarioId}/variables/{variableId}")
@@ -112,12 +112,12 @@ public class VariableApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
-  public Variable updateVariableForScenario(
-      @PathVariable @NotBlank final String scenarioId,
+  public Variable updateVariableForAttackChain(
+      @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String variableId,
       @Valid @RequestBody final VariableInput input) {
     Variable variable = this.variableService.variable(variableId);
-    assert scenarioId.equals(variable.getScenario().getId());
+    assert attackChainId.equals(variable.getAttackChain().getId());
     variable.setUpdateAttributes(input);
     return this.variableService.updateVariable(variable);
   }
@@ -127,11 +127,11 @@ public class VariableApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
-  public void deleteVariableForScenario(
-      @PathVariable @NotBlank final String scenarioId,
+  public void deleteVariableForAttackChain(
+      @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String variableId) {
     Variable variable = this.variableService.variable(variableId);
-    assert scenarioId.equals(variable.getScenario().getId());
+    assert attackChainId.equals(variable.getAttackChain().getId());
     this.variableService.deleteVariable(variableId);
   }
 }

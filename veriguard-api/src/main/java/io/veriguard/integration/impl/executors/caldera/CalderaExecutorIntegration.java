@@ -15,7 +15,7 @@ import io.veriguard.integration.QualifiedComponent;
 import io.veriguard.integration.configuration.BaseIntegrationConfigurationBuilder;
 import io.veriguard.service.AgentService;
 import io.veriguard.service.EndpointService;
-import io.veriguard.service.InjectorService;
+import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.PlatformSettingsService;
 import io.veriguard.service.connector_instances.ConnectorInstanceService;
 import java.lang.reflect.InvocationTargetException;
@@ -42,7 +42,7 @@ public class CalderaExecutorIntegration extends Integration {
   private CalderaExecutorClient client;
   private final AgentService agentService;
   private final EndpointService endpointService;
-  private final InjectorService injectorService;
+  private final NodeExecutorService nodeExecutorService;
   private final PlatformSettingsService platformSettingsService;
   private final ExecutorService executorService;
   private final ThreadPoolTaskScheduler taskScheduler;
@@ -61,7 +61,7 @@ public class CalderaExecutorIntegration extends Integration {
       ExecutorService executorService,
       ComponentRequestEngine componentRequestEngine,
       PlatformSettingsService platformSettingsService,
-      InjectorService injectorService,
+      NodeExecutorService nodeExecutorService,
       ThreadPoolTaskScheduler taskScheduler,
       BaseIntegrationConfigurationBuilder baseIntegrationConfigurationBuilder,
       HttpClientFactory httpClientFactory) {
@@ -69,7 +69,7 @@ public class CalderaExecutorIntegration extends Integration {
     this.endpointService = endpointService;
     this.agentService = agentService;
     this.platformSettingsService = platformSettingsService;
-    this.injectorService = injectorService;
+    this.nodeExecutorService = nodeExecutorService;
     this.taskScheduler = taskScheduler;
     this.executorService = executorService;
     this.connectorInstanceService = connectorInstanceService;
@@ -110,7 +110,7 @@ public class CalderaExecutorIntegration extends Integration {
 
     client = new CalderaExecutorClient(config, httpClientFactory);
     calderaExecutorContextService =
-        new CalderaExecutorContextService(config, injectorService, client);
+        new CalderaExecutorContextService(config, nodeExecutorService, client);
     calderaExecutorService =
         new CalderaExecutorService(
             executor,
@@ -118,7 +118,7 @@ public class CalderaExecutorIntegration extends Integration {
             config,
             calderaExecutorContextService,
             endpointService,
-            injectorService,
+            nodeExecutorService,
             platformSettingsService,
             agentService);
 

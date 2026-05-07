@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record AssetToExecute(
-    Asset asset, boolean isDirectlyLinkedToInject, List<AssetGroup> assetGroups) {
+    Asset asset, boolean isDirectlyLinkedToAttackChainNode, List<AssetGroup> assetGroups) {
 
   public AssetToExecute(final Asset asset) {
     this(asset, true, new ArrayList<>());

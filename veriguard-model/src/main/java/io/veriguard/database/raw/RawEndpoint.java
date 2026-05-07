@@ -7,7 +7,7 @@ import java.util.Set;
  * Spring Data projection interface for endpoint asset data.
  *
  * <p>This interface extends {@link RawAsset} with endpoint-specific fields including network
- * information, platform details, and exercise/scenario associations. Used for queries that need
+ * information, platform details, and attackChainRun/attackChain associations. Used for queries that need
  * detailed endpoint information without full entity loading.
  *
  * @see io.veriguard.database.model.Endpoint
@@ -65,18 +65,18 @@ public interface RawEndpoint extends RawAsset {
   boolean getEndpoint_is_eol();
 
   /**
-   * Returns the set of exercise IDs this endpoint participates in.
+   * Returns the set of attackChainRun IDs this endpoint participates in.
    *
-   * @return set of exercise IDs
+   * @return set of attackChainRun IDs
    */
-  Set<String> getEndpoint_exercises();
+  Set<String> getEndpoint_attackChainRuns();
 
   /**
-   * Returns the set of scenario IDs this endpoint is configured for.
+   * Returns the set of attackChain IDs this endpoint is configured for.
    *
-   * @return set of scenario IDs
+   * @return set of attackChain IDs
    */
-  Set<String> getEndpoint_scenarios();
+  Set<String> getEndpoint_attackChains();
 
   /**
    * Returns the last update timestamp for the endpoint.

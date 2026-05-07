@@ -7,15 +7,15 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class TagHelper {
-  public static List<Tag> crawlAllExerciseTags(Exercise exercise) {
-    List<Tag> tags = new ArrayList<>(exercise.getTags());
-    tags.addAll(exercise.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
+  public static List<Tag> crawlAllAttackChainRunTags(AttackChainRun attackChainRun) {
+    List<Tag> tags = new ArrayList<>(attackChainRun.getTags());
+    tags.addAll(attackChainRun.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
     tags.addAll(
-        exercise.getTeams().stream()
+        attackChainRun.getTeams().stream()
             .flatMap(team -> team.getUsers().stream().flatMap(user -> user.getTags().stream()))
             .toList());
     tags.addAll(
-        exercise.getTeams().stream()
+        attackChainRun.getTeams().stream()
             .flatMap(
                 team ->
                     team.getUsers().stream()
@@ -27,31 +27,31 @@ public class TagHelper {
                                         .filter(Objects::nonNull)))
             .toList());
     tags.addAll(
-        exercise.getDocuments().stream().flatMap(document -> document.getTags().stream()).toList());
+        attackChainRun.getDocuments().stream().flatMap(document -> document.getTags().stream()).toList());
     tags.addAll(
-        exercise.getInjects().stream().flatMap(inject -> inject.getTags().stream()).toList());
+        attackChainRun.getAttackChainNodes().stream().flatMap(attackChainNode -> attackChainNode.getTags().stream()).toList());
     tags.addAll(
-        exercise.getInjects().stream()
+        attackChainRun.getAttackChainNodes().stream()
             .flatMap(
-                inject ->
-                    inject.getInjectorContract().isPresent()
-                        ? inject.getInjectorContract().get().getPayload() != null
-                            ? inject.getInjectorContract().get().getPayload().getTags().stream()
+                attackChainNode ->
+                    attackChainNode.getNodeContract().isPresent()
+                        ? attackChainNode.getNodeContract().get().getPayload() != null
+                            ? attackChainNode.getNodeContract().get().getPayload().getTags().stream()
                             : Stream.of()
                         : Stream.of())
             .toList());
     return tags;
   }
 
-  public static List<Tag> crawlAllScenarioTags(Scenario scenario) {
-    List<Tag> tags = new ArrayList<>(scenario.getTags());
-    tags.addAll(scenario.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
+  public static List<Tag> crawlAllAttackChainTags(AttackChain attackChain) {
+    List<Tag> tags = new ArrayList<>(attackChain.getTags());
+    tags.addAll(attackChain.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
     tags.addAll(
-        scenario.getTeams().stream()
+        attackChain.getTeams().stream()
             .flatMap(team -> team.getUsers().stream().flatMap(user -> user.getTags().stream()))
             .toList());
     tags.addAll(
-        scenario.getTeams().stream()
+        attackChain.getTeams().stream()
             .flatMap(
                 team ->
                     team.getUsers().stream()
@@ -63,38 +63,38 @@ public class TagHelper {
                                         .filter(Objects::nonNull)))
             .toList());
     tags.addAll(
-        scenario.getDocuments().stream().flatMap(document -> document.getTags().stream()).toList());
+        attackChain.getDocuments().stream().flatMap(document -> document.getTags().stream()).toList());
     tags.addAll(
-        scenario.getInjects().stream().flatMap(inject -> inject.getTags().stream()).toList());
+        attackChain.getAttackChainNodes().stream().flatMap(attackChainNode -> attackChainNode.getTags().stream()).toList());
     tags.addAll(
-        scenario.getInjects().stream()
+        attackChain.getAttackChainNodes().stream()
             .flatMap(
-                inject ->
-                    inject.getInjectorContract().isPresent()
-                        ? inject.getInjectorContract().get().getPayload() != null
-                            ? inject.getInjectorContract().get().getPayload().getTags().stream()
+                attackChainNode ->
+                    attackChainNode.getNodeContract().isPresent()
+                        ? attackChainNode.getNodeContract().get().getPayload() != null
+                            ? attackChainNode.getNodeContract().get().getPayload().getTags().stream()
                             : Stream.of()
                         : Stream.of())
             .toList());
     return tags;
   }
 
-  public static List<Tag> crawlAllInjectsTags(List<Inject> injects) {
+  public static List<Tag> crawlAllAttackChainNodesTags(List<AttackChainNode> attackChainNodes) {
     List<Tag> tags =
-        new ArrayList<>(injects.stream().flatMap(inject -> inject.getTags().stream()).toList());
+        new ArrayList<>(attackChainNodes.stream().flatMap(attackChainNode -> attackChainNode.getTags().stream()).toList());
     tags.addAll(
-        injects.stream()
-            .flatMap(inject -> inject.getTeams().stream())
+        attackChainNodes.stream()
+            .flatMap(attackChainNode -> attackChainNode.getTeams().stream())
             .flatMap(team -> team.getTags().stream())
             .toList());
     tags.addAll(
-        injects.stream()
-            .flatMap(inject -> inject.getTeams().stream())
+        attackChainNodes.stream()
+            .flatMap(attackChainNode -> attackChainNode.getTeams().stream())
             .flatMap(team -> team.getUsers().stream().flatMap(user -> user.getTags().stream()))
             .toList());
     tags.addAll(
-        injects.stream()
-            .flatMap(inject -> inject.getTeams().stream())
+        attackChainNodes.stream()
+            .flatMap(attackChainNode -> attackChainNode.getTeams().stream())
             .flatMap(
                 team ->
                     team.getUsers().stream()
@@ -106,19 +106,19 @@ public class TagHelper {
                                         .filter(Objects::nonNull)))
             .toList());
     tags.addAll(
-        injects.stream()
-            .flatMap(inject -> inject.getDocuments().stream())
-            .map(InjectDocument::getDocument)
+        attackChainNodes.stream()
+            .flatMap(attackChainNode -> attackChainNode.getDocuments().stream())
+            .map(AttackChainNodeDocument::getDocument)
             .flatMap(document -> document.getTags().stream())
             .toList());
-    tags.addAll(injects.stream().flatMap(inject -> inject.getTags().stream()).toList());
+    tags.addAll(attackChainNodes.stream().flatMap(attackChainNode -> attackChainNode.getTags().stream()).toList());
     tags.addAll(
-        injects.stream()
+        attackChainNodes.stream()
             .flatMap(
-                inject ->
-                    inject.getInjectorContract().isPresent()
-                        ? inject.getInjectorContract().get().getPayload() != null
-                            ? inject.getInjectorContract().get().getPayload().getTags().stream()
+                attackChainNode ->
+                    attackChainNode.getNodeContract().isPresent()
+                        ? attackChainNode.getNodeContract().get().getPayload() != null
+                            ? attackChainNode.getNodeContract().get().getPayload().getTags().stream()
                             : Stream.of()
                         : Stream.of())
             .toList());

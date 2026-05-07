@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
  *   <li>Uploading files and streams
  *   <li>Downloading files
  *   <li>Deleting files and directories
- *   <li>Retrieving images for injectors, collectors, executors, and connectors
+ *   <li>Retrieving images for nodeExecutors, collectors, executors, and connectors
  * </ul>
  *
  * <p>Files are organized in predefined directory structures within the MinIO bucket.
@@ -38,7 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class FileService {
 
-  /** Base path for injector images. */
+  /** Base path for nodeExecutor images. */
   public static final String INJECTORS_IMAGES_BASE_PATH = "/injectors/images/";
 
   /** Base path for collector images. */
@@ -212,13 +212,13 @@ public class FileService {
   }
 
   /**
-   * Retrieves an injector's image file.
+   * Retrieves an nodeExecutor's image file.
    *
-   * @param injectType the injector type identifier
+   * @param attackChainNodeType the nodeExecutor type identifier
    * @return an Optional containing the image input stream, or empty if not found
    */
-  public Optional<InputStream> getInjectorImage(String injectType) {
-    return getFilePath(INJECTORS_IMAGES_BASE_PATH + injectType + EXT_PNG);
+  public Optional<InputStream> getNodeExecutorImage(String attackChainNodeType) {
+    return getFilePath(INJECTORS_IMAGES_BASE_PATH + attackChainNodeType + EXT_PNG);
   }
 
   /**

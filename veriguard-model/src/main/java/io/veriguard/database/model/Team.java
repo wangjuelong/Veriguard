@@ -110,7 +110,7 @@ public class Team implements Base {
       inverseJoinColumns = @JoinColumn(name = "exercise_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("team_exercises")
-  private List<Exercise> exercises = new ArrayList<>();
+  private List<AttackChainRun> attackChainRuns = new ArrayList<>();
 
   @ArraySchema(
       schema = @Schema(description = "IDs of the scenarios linked to the team", type = "string"))
@@ -121,7 +121,7 @@ public class Team implements Base {
       inverseJoinColumns = @JoinColumn(name = "scenario_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("team_scenarios")
-  private List<Scenario> scenarios = new ArrayList<>();
+  private List<AttackChain> attackChains = new ArrayList<>();
 
   @ArraySchema(schema = @Schema(type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
@@ -131,8 +131,8 @@ public class Team implements Base {
       inverseJoinColumns = @JoinColumn(name = "inject_id"))
   @JsonProperty("team_injects")
   @JsonIgnore
-  @Queryable(filterable = true, dynamicValues = true, path = "injects.id")
-  private List<Inject> injects = new ArrayList<>();
+  @Queryable(filterable = true, dynamicValues = true, path = "attackChainNodes.id")
+  private List<AttackChainNode> attackChainNodes = new ArrayList<>();
 
   @Column(name = "team_contextual")
   @JsonProperty("team_contextual")
@@ -155,7 +155,7 @@ public class Team implements Base {
       orphanRemoval = true)
   @JsonProperty("team_exercises_users")
   @JsonSerialize(using = MultiModelSerializer.class)
-  private List<ExerciseTeamUser> exerciseTeamUsers = new ArrayList<>();
+  private List<AttackChainRunTeamUser> attackChainRunTeamUsers = new ArrayList<>();
 
   @JsonProperty("team_users_number")
   @Schema(description = "Number of users of the team")
@@ -171,19 +171,19 @@ public class Team implements Base {
               type = "string"))
   @JsonProperty("team_exercise_injects")
   @JsonSerialize(using = MultiIdListSerializer.class)
-  public List<Inject> getExercisesInjects() {
-    Predicate<Inject> selectedInject =
-        inject -> inject.isAllTeams() || inject.getTeams().contains(this);
-    return getExercises().stream()
-        .map(exercise -> exercise.getInjects().stream().filter(selectedInject).distinct().toList())
+  public List<AttackChainNode> getAttackChainRunsAttackChainNodes() {
+    Predicate<AttackChainNode> selectedAttackChainNode =
+        attackChainNode -> attackChainNode.isAllTeams() || attackChainNode.getTeams().contains(this);
+    return getAttackChainRuns().stream()
+        .map(attackChainRun -> attackChainRun.getAttackChainNodes().stream().filter(selectedAttackChainNode).distinct().toList())
         .flatMap(List::stream)
         .toList();
   }
 
   @JsonProperty("team_exercise_injects_number")
   @Schema(description = "Number of injects of all simulations of the team")
-  public long getExercisesInjectsNumber() {
-    return getExercisesInjects().size();
+  public long getAttackChainRunsAttackChainNodesNumber() {
+    return getAttackChainRunsAttackChainNodes().size();
   }
 
   @ArraySchema(
@@ -193,19 +193,19 @@ public class Team implements Base {
               type = "string"))
   @JsonProperty("team_scenario_injects")
   @JsonSerialize(using = MultiIdListSerializer.class)
-  public List<Inject> getScenariosInjects() {
-    Predicate<Inject> selectedInject =
-        inject -> inject.isAllTeams() || inject.getTeams().contains(this);
-    return getScenarios().stream()
-        .map(scenario -> scenario.getInjects().stream().filter(selectedInject).distinct().toList())
+  public List<AttackChainNode> getAttackChainsAttackChainNodes() {
+    Predicate<AttackChainNode> selectedAttackChainNode =
+        attackChainNode -> attackChainNode.isAllTeams() || attackChainNode.getTeams().contains(this);
+    return getAttackChains().stream()
+        .map(attackChain -> attackChain.getAttackChainNodes().stream().filter(selectedAttackChainNode).distinct().toList())
         .flatMap(List::stream)
         .toList();
   }
 
   @JsonProperty("team_scenario_injects_number")
   @Schema(description = "Number of injects of all scenarios of the team")
-  public long getScenariosInjectsNumber() {
-    return getScenariosInjects().size();
+  public long getAttackChainsAttackChainNodesNumber() {
+    return getAttackChainsAttackChainNodes().size();
   }
 
   @ArraySchema(
@@ -214,59 +214,59 @@ public class Team implements Base {
   @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("team_inject_expectations")
-  private List<InjectExpectation> injectExpectations = new ArrayList<>();
+  private List<AttackChainNodeExpectation> attackChainNodeExpectations = new ArrayList<>();
 
   @JsonProperty("team_injects_expectations_number")
   @Schema(description = "Number of expectations linked to this team")
-  public long getInjectExpectationsNumber() {
-    return getInjectExpectations().size();
+  public long getAttackChainNodeExpectationsNumber() {
+    return getAttackChainNodeExpectations().size();
   }
 
   @JsonProperty("team_injects_expectations_total_score")
   @NotNull
   @Schema(description = "Total score of expectations linked to this team")
-  public double getInjectExpectationsTotalScore() {
-    return getInjectExpectations().stream()
-        .filter((inject) -> inject.getScore() != null)
-        .mapToDouble(InjectExpectation::getScore)
+  public double getAttackChainNodeExpectationsTotalScore() {
+    return getAttackChainNodeExpectations().stream()
+        .filter((attackChainNode) -> attackChainNode.getScore() != null)
+        .mapToDouble(AttackChainNodeExpectation::getScore)
         .sum();
   }
 
   @JsonProperty("team_injects_expectations_total_score_by_exercise")
   @NotNull
   @Schema(description = "Total score of expectations by simulation linked to this team")
-  public Map<String, Double> getInjectExpectationsTotalScoreByExercise() {
-    return getInjectExpectations().stream()
+  public Map<String, Double> getAttackChainNodeExpectationsTotalScoreByAttackChainRun() {
+    return getAttackChainNodeExpectations().stream()
         .filter(
             expectation ->
-                Objects.nonNull(expectation.getExercise())
+                Objects.nonNull(expectation.getAttackChainRun())
                     && Objects.nonNull(expectation.getScore()))
         .collect(
             Collectors.groupingBy(
-                expectation -> expectation.getExercise().getId(),
-                Collectors.summingDouble(InjectExpectation::getScore)));
+                expectation -> expectation.getAttackChainRun().getId(),
+                Collectors.summingDouble(AttackChainNodeExpectation::getScore)));
   }
 
   @JsonProperty("team_injects_expectations_total_expected_score")
   @NotNull
   @Schema(description = "Total expected score of expectations linked to this team")
-  public double getInjectExpectationsTotalExpectedScore() {
-    return getInjectExpectations().stream()
+  public double getAttackChainNodeExpectationsTotalExpectedScore() {
+    return getAttackChainNodeExpectations().stream()
         .filter(expectation -> Objects.nonNull(expectation.getExpectedScore()))
-        .mapToDouble(InjectExpectation::getExpectedScore)
+        .mapToDouble(AttackChainNodeExpectation::getExpectedScore)
         .sum();
   }
 
   @JsonProperty("team_injects_expectations_total_expected_score_by_exercise")
   @NotNull
   @Schema(description = "Total expected score of expectations by simulation linked to this team")
-  public Map<String, Double> getInjectExpectationsTotalExpectedScoreByExercise() {
-    return getInjectExpectations().stream()
-        .filter(expectation -> Objects.nonNull(expectation.getExercise()))
+  public Map<String, Double> getAttackChainNodeExpectationsTotalExpectedScoreByAttackChainRun() {
+    return getAttackChainNodeExpectations().stream()
+        .filter(expectation -> Objects.nonNull(expectation.getAttackChainRun()))
         .collect(
             Collectors.groupingBy(
-                expectation -> expectation.getExercise().getId(),
-                Collectors.summingDouble(InjectExpectation::getExpectedScore)));
+                expectation -> expectation.getAttackChainRun().getId(),
+                Collectors.summingDouble(AttackChainNodeExpectation::getExpectedScore)));
   }
 
   // endregion
@@ -274,17 +274,17 @@ public class Team implements Base {
   @JsonProperty("team_communications")
   @Schema(description = "List of communications of this team")
   public List<Communication> getCommunications() {
-    return getExercisesInjects().stream()
-        .flatMap(inject -> inject.getCommunications().stream())
+    return getAttackChainRunsAttackChainNodes().stream()
+        .flatMap(attackChainNode -> attackChainNode.getCommunications().stream())
         .distinct()
         .toList();
   }
 
-  public long getUsersNumberInExercise(String exerciseId) {
-    return exerciseId == null
+  public long getUsersNumberInAttackChainRun(String attackChainRunId) {
+    return attackChainRunId == null
         ? 0
-        : getExerciseTeamUsers().stream()
-            .filter(exerciseTeamUser -> exerciseTeamUser.getExercise().getId().equals(exerciseId))
+        : getAttackChainRunTeamUsers().stream()
+            .filter(attackChainRunTeamUser -> attackChainRunTeamUser.getAttackChainRun().getId().equals(attackChainRunId))
             .toList()
             .size();
   }

@@ -32,7 +32,7 @@ public class AssetAgentJob implements Base {
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("asset_agent_inject")
   @Schema(type = "string")
-  private Inject inject;
+  private AttackChainNode attackChainNode;
 
   @Getter
   @ManyToOne(fetch = FetchType.EAGER)

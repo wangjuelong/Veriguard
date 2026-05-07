@@ -33,34 +33,34 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
     this.fieldTranslations.put("target_teams", "user_teams");
   }
 
-  private static Specification<User> playersSpecificationFromInject(Inject scopedInject) {
+  private static Specification<User> playersSpecificationFromAttackChainNode(AttackChainNode scopedAttackChainNode) {
     return (root, query, builder) -> {
-      if (scopedInject.isAtomicTesting()) {
-        Path<Object> injectPath = root.join("teams").join("injects").get("id");
-        return builder.equal(injectPath, scopedInject.getId());
+      if (scopedAttackChainNode.isAtomicTesting()) {
+        Path<Object> attackChainNodePath = root.join("teams").join("injects").get("id");
+        return builder.equal(attackChainNodePath, scopedAttackChainNode.getId());
       } else {
-        if (scopedInject.isAllTeams()) {
-          Path<Object> exerciseTeamUsersPath =
+        if (scopedAttackChainNode.isAllTeams()) {
+          Path<Object> attackChainRunTeamUsersPath =
               root.get("exerciseTeamUsers").get("exercise").get("id");
-          Path<Object> injectPath = root.join("teams").join("exercises").get("injects").get("id");
+          Path<Object> attackChainNodePath = root.join("teams").join("exercises").get("injects").get("id");
           return builder.and(
-              builder.equal(injectPath, scopedInject.getId()),
-              builder.equal(exerciseTeamUsersPath, scopedInject.getExercise().getId()));
+              builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
+              builder.equal(attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
         } else {
-          Path<Object> exerciseTeamUsersPath =
+          Path<Object> attackChainRunTeamUsersPath =
               root.get("exerciseTeamUsers").get("exercise").get("id");
-          Path<Object> injectPath = root.join("teams").join("injects").get("id");
+          Path<Object> attackChainNodePath = root.join("teams").join("injects").get("id");
           return builder.and(
-              builder.equal(injectPath, scopedInject.getId()),
-              builder.equal(exerciseTeamUsersPath, scopedInject.getExercise().getId()));
+              builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
+              builder.equal(attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
         }
       }
     };
   }
 
   @Override
-  public Page<InjectTarget> search(SearchPaginationInput input, Inject scopedInject) {
-    SearchPaginationInput translatedInput = this.translate(input, scopedInject);
+  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
+    SearchPaginationInput translatedInput = this.translate(input, scopedAttackChainNode);
 
     // mind the specific sorts "email" because no name for players
     SortField defaultSort = new SortField("user_email", "ASC", null);
@@ -70,20 +70,20 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
         buildPaginationJPA(
             (Specification<User> specification, Pageable pageable) ->
                 this.userRepository.findAll(
-                    playersSpecificationFromInject(scopedInject).and(specification), pageable),
+                    playersSpecificationFromAttackChainNode(scopedAttackChainNode).and(specification), pageable),
             translatedInput,
             User.class);
 
     return new PageImpl<>(
         filteredPlayers.getContent().stream()
-            .map(player -> convertFromPlayerOutput(player, scopedInject))
+            .map(player -> convertFromPlayerOutput(player, scopedAttackChainNode))
             .toList(),
         filteredPlayers.getPageable(),
         filteredPlayers.getTotalElements());
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForInject(Inject scopedInject, String textSearch) {
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
     throw new NotImplementedException("Implement when needed");
   }
 
@@ -92,9 +92,9 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
     throw new NotImplementedException("Implement when needed");
   }
 
-  private InjectTarget convertFromPlayerOutput(User player, Inject inject) {
+  private AttackChainNodeTarget convertFromPlayerOutput(User player, AttackChainNode attackChainNode) {
     return helperTargetSearchAdaptor.buildTargetWithExpectations(
-        inject,
+        attackChainNode,
         () ->
             new PlayerTarget(
                 player.getId(),

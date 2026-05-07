@@ -1,7 +1,7 @@
 package io.veriguard.database.specification;
 
 import io.veriguard.database.model.ContractOutputType;
-import io.veriguard.database.model.ExerciseStatus;
+import io.veriguard.database.model.AttackChainRunStatus;
 import io.veriguard.database.model.Finding;
 import jakarta.persistence.criteria.*;
 import java.util.List;
@@ -12,8 +12,8 @@ public class FindingSpecification {
 
   private FindingSpecification() {}
 
-  public static Specification<Finding> findFindingsForInject(@NotNull final String injectId) {
-    return (root, query, cb) -> cb.equal(root.get("inject").get("id"), injectId);
+  public static Specification<Finding> findFindingsForAttackChainNode(@NotNull final String attackChainNodeId) {
+    return (root, query, cb) -> cb.equal(root.get("inject").get("id"), attackChainNodeId);
   }
 
   public static Specification<Finding> findFindingsForSimulation(
@@ -22,9 +22,9 @@ public class FindingSpecification {
         cb.equal(root.get("inject").get("exercise").get("id"), simulationId);
   }
 
-  public static Specification<Finding> findFindingsForScenario(@NotNull final String scenarioId) {
+  public static Specification<Finding> findFindingsForAttackChain(@NotNull final String attackChainId) {
     return (root, query, cb) ->
-        cb.equal(root.get("inject").get("exercise").get("scenario").get("id"), scenarioId);
+        cb.equal(root.get("inject").get("exercise").get("scenario").get("id"), attackChainId);
   }
 
   public static Specification<Finding> findFindingsForEndpoint(@NotNull final String endpointId) {
@@ -33,29 +33,29 @@ public class FindingSpecification {
 
   public static Specification<Finding> forLatestSimulations() {
     return (root, query, cb) -> {
-      Join<?, ?> exerciseJoin1 =
+      Join<?, ?> attackChainRunJoin1 =
           root.join("inject", JoinType.INNER).join("exercise", JoinType.LEFT);
-      Join<?, ?> exerciseJoin2 =
-          exerciseJoin1.join("scenario", JoinType.LEFT).join("exercises", JoinType.LEFT);
+      Join<?, ?> attackChainRunJoin2 =
+          attackChainRunJoin1.join("scenario", JoinType.LEFT).join("exercises", JoinType.LEFT);
 
-      exerciseJoin2.on(
+      attackChainRunJoin2.on(
           cb.and(
               cb.equal(
-                  exerciseJoin1.get("scenario").get("id"), exerciseJoin2.get("scenario").get("id")),
+                  attackChainRunJoin1.get("scenario").get("id"), attackChainRunJoin2.get("scenario").get("id")),
               // check this column is not null for joining
-              cb.isNotNull(exerciseJoin1.get("launchOrder")),
-              cb.isNotNull(exerciseJoin2.get("launchOrder")),
+              cb.isNotNull(attackChainRunJoin1.get("launchOrder")),
+              cb.isNotNull(attackChainRunJoin2.get("launchOrder")),
               // only consider finished simulations
-              cb.equal(exerciseJoin1.get("status"), ExerciseStatus.FINISHED),
-              cb.equal(exerciseJoin2.get("status"), ExerciseStatus.FINISHED),
+              cb.equal(attackChainRunJoin1.get("status"), AttackChainRunStatus.FINISHED),
+              cb.equal(attackChainRunJoin2.get("status"), AttackChainRunStatus.FINISHED),
               // trim to "latest" simulation
-              cb.lessThan(exerciseJoin1.get("launchOrder"), exerciseJoin2.get("launchOrder"))));
+              cb.lessThan(attackChainRunJoin1.get("launchOrder"), attackChainRunJoin2.get("launchOrder"))));
 
       return cb.and(
-          cb.isNull(exerciseJoin2.get("id")),
+          cb.isNull(attackChainRunJoin2.get("id")),
           cb.or(
-              cb.equal(exerciseJoin1.get("status"), ExerciseStatus.FINISHED),
-              cb.isNull(exerciseJoin1.get("id"))));
+              cb.equal(attackChainRunJoin1.get("status"), AttackChainRunStatus.FINISHED),
+              cb.isNull(attackChainRunJoin1.get("id"))));
     };
   }
 

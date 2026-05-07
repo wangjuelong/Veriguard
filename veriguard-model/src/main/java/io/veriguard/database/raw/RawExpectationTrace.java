@@ -6,10 +6,10 @@ import java.time.Instant;
  * Spring Data projection interface for expectation trace data.
  *
  * <p>This interface defines a projection for retrieving expectation trace information. Traces
- * represent evidence from security platforms (SIEM, EDR, etc.) that supports or refutes inject
+ * represent evidence from security platforms (SIEM, EDR, etc.) that supports or refutes attackChainNode
  * expectation results.
  *
- * @see io.veriguard.database.model.InjectExpectationTrace
+ * @see io.veriguard.database.model.NodeExpectationTrace
  */
 public interface RawExpectationTrace {
 

@@ -165,7 +165,7 @@ public class ExecutorApi extends RestBehavior {
       if (executor != null) {
         return updateExecutor(executor, input.getType(), input.getName(), input.getPlatforms());
       } else {
-        // save the injector
+        // save the nodeExecutor
         Executor newExecutor = new Executor();
         newExecutor.setId(input.getId());
         newExecutor.setName(input.getName());

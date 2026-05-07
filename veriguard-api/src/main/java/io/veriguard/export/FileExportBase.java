@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.exercise.exports.ExerciseFileExport;
+import io.veriguard.rest.exercise.exports.AttackChainRunFileExport;
 import io.veriguard.rest.exercise.exports.ExportOptions;
 import io.veriguard.rest.exercise.exports.VariableMixin;
 import io.veriguard.rest.exercise.exports.VariableWithValueMixin;
-import io.veriguard.rest.inject.exports.InjectsFileExport;
+import io.veriguard.rest.inject.exports.AttackChainNodesFileExport;
 import lombok.Getter;
 
 @Getter
@@ -24,16 +24,16 @@ public class FileExportBase {
     this.objectMapper = objectMapper;
 
     this.objectMapper.addMixIn(Base.class, Mixins.Base.class);
-    this.objectMapper.addMixIn(Exercise.class, Mixins.Exercise.class);
+    this.objectMapper.addMixIn(AttackChainRun.class, Mixins.AttackChainRun.class);
     this.objectMapper.addMixIn(Document.class, Mixins.Document.class);
     this.objectMapper.addMixIn(Objective.class, Mixins.Objective.class);
     this.objectMapper.addMixIn(LessonsCategory.class, Mixins.LessonsCategory.class);
     this.objectMapper.addMixIn(LessonsQuestion.class, Mixins.LessonsQuestion.class);
     this.objectMapper.addMixIn(User.class, Mixins.User.class);
     this.objectMapper.addMixIn(Organization.class, Mixins.Organization.class);
-    this.objectMapper.addMixIn(Inject.class, Mixins.Inject.class);
+    this.objectMapper.addMixIn(AttackChainNode.class, Mixins.AttackChainNode.class);
     this.objectMapper.addMixIn(Tag.class, Mixins.Tag.class);
-    this.objectMapper.addMixIn(InjectorContract.class, Mixins.InjectorContract.class);
+    this.objectMapper.addMixIn(NodeContract.class, Mixins.NodeContract.class);
     this.objectMapper.addMixIn(AttackPattern.class, Mixins.AttackPattern.class);
     this.objectMapper.addMixIn(Payload.class, Mixins.Payload.class);
     this.objectMapper.addMixIn(KillChainPhase.class, Mixins.KillChainPhase.class);
@@ -50,8 +50,8 @@ public class FileExportBase {
 
     // disable users if not requested; note negation
     if (!ExportOptions.has(ExportOptions.WITH_PLAYERS, this.exportOptionsMask)) {
-      this.objectMapper.addMixIn(ExerciseFileExport.class, Mixins.ExerciseFileExport.class);
-      this.objectMapper.addMixIn(InjectsFileExport.class, Mixins.InjectsFileExport.class);
+      this.objectMapper.addMixIn(AttackChainRunFileExport.class, Mixins.AttackChainRunFileExport.class);
+      this.objectMapper.addMixIn(AttackChainNodesFileExport.class, Mixins.AttackChainNodesFileExport.class);
     }
 
     if (ExportOptions.has(ExportOptions.WITH_TEAMS, this.exportOptionsMask)) {

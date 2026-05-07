@@ -39,7 +39,7 @@ public class PlatformSettings extends PublicPlatformSettings {
 
   @JsonProperty("platform_scenario_dashboard")
   @Schema(description = "Default scenario dashboard of the platform")
-  private String platformScenarioDashboard;
+  private String platformAttackChainDashboard;
 
   @JsonProperty("platform_simulation_dashboard")
   @Schema(description = "Default simulation dashboard of the platform")

@@ -66,8 +66,8 @@ public interface TeamRepository
               + "LEFT JOIN injects_teams it ON t.team_id = it.team_id "
               + "WHERE t.team_id IN (:ids) OR it.inject_id IN (:injectIds) ;",
       nativeQuery = true)
-  Set<RawTeam> rawByIdsOrInjectIds(
-      @Param("ids") Set<String> ids, @Param("injectIds") Set<String> injectIds);
+  Set<RawTeam> rawByIdsOrAttackChainNodeIds(
+      @Param("ids") Set<String> ids, @Param("injectIds") Set<String> attackChainNodeIds);
 
   @Query(
       value =
@@ -121,7 +121,7 @@ public interface TeamRepository
               + "INNER JOIN injects i ON it.inject_id = i.inject_id "
               + "WHERE i.inject_exercise in :exerciseIds",
       nativeQuery = true)
-  List<Object[]> teamsByExerciseIds(Set<String> exerciseIds);
+  List<Object[]> teamsByAttackChainRunIds(Set<String> attackChainRunIds);
 
   @Query(
       value =
@@ -130,17 +130,17 @@ public interface TeamRepository
               + "INNER JOIN injects_teams it ON t.team_id = it.team_id "
               + "WHERE it.inject_id in :injectIds",
       nativeQuery = true)
-  List<Object[]> teamsByInjectIds(Set<String> injectIds);
+  List<Object[]> teamsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 
   @Query(
-      "SELECT t FROM Inject i"
+      "SELECT t FROM AttackChainNode i"
           + " JOIN i.teams t"
           + " WHERE ("
-          + "   :simulationOrScenarioId is NULL AND i.exercise.id is NULL AND i.scenario.id IS NULL"
-          + "   OR (i.exercise.id = :simulationOrScenarioId"
-          + "   OR i.scenario.id = :simulationOrScenarioId)"
+          + "   :simulationOrAttackChainId is NULL AND i.attackChainRun.id is NULL AND i.attackChain.id IS NULL"
+          + "   OR (i.attackChainRun.id = :simulationOrAttackChainId"
+          + "   OR i.attackChain.id = :simulationOrAttackChainId)"
           + " ) AND (:name IS NULL OR lower(t.name) LIKE lower(concat('%', cast(coalesce(:name, '') as string), '%')))")
-  List<Team> findAllBySimulationOrScenarioIdAndName(String simulationOrScenarioId, String name);
+  List<Team> findAllBySimulationOrAttackChainIdAndName(String simulationOrAttackChainId, String name);
 
   @Query(
       value =
@@ -150,7 +150,7 @@ public interface TeamRepository
               + "OR EXISTS (SELECT 1 FROM exercises_teams et WHERE et.team_id = t.team_id) "
               + "OR EXISTS (SELECT 1 FROM scenarios_teams st WHERE st.team_id = t.team_id);",
       nativeQuery = true)
-  List<Team> findAllTeamsForAtomicTestingsSimulationsAndScenarios();
+  List<Team> findAllTeamsForAtomicTestingsSimulationsAndAttackChains();
 
   @Query(
       value =

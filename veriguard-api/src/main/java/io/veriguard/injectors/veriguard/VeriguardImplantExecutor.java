@@ -9,10 +9,10 @@ import static io.veriguard.utils.ExpectationUtils.*;
 import static io.veriguard.utils.VulnerabilityExpectationUtils.vulnerabilityExpectationForAssetGroup;
 
 import io.veriguard.database.model.*;
-import io.veriguard.execution.ExecutableInject;
-import io.veriguard.executors.Injector;
-import io.veriguard.executors.InjectorContext;
-import io.veriguard.injectors.veriguard.model.VeriguardImplantInjectContent;
+import io.veriguard.execution.ExecutableNode;
+import io.veriguard.executors.NodeExecutor;
+import io.veriguard.executors.NodeExecutorContext;
+import io.veriguard.injectors.veriguard.model.VeriguardImplantAttackChainNodeContent;
 import io.veriguard.model.ExecutionProcess;
 import io.veriguard.model.Expectation;
 import io.veriguard.model.expectation.DetectionExpectation;
@@ -20,38 +20,38 @@ import io.veriguard.model.expectation.ManualExpectation;
 import io.veriguard.model.expectation.PreventionExpectation;
 import io.veriguard.model.expectation.VulnerabilityExpectation;
 import io.veriguard.rest.inject.service.AssetToExecute;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import io.veriguard.service.AssetGroupService;
-import io.veriguard.service.InjectExpectationService;
+import io.veriguard.service.AttackChainNodeExpectationService;
 import jakarta.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class VeriguardImplantExecutor extends Injector {
+public class VeriguardImplantExecutor extends NodeExecutor {
 
   private final AssetGroupService assetGroupService;
-  private final InjectExpectationService injectExpectationService;
-  private final InjectService injectService;
+  private final AttackChainNodeExpectationService attackChainNodeExpectationService;
+  private final AttackChainNodeService attackChainNodeService;
 
   public VeriguardImplantExecutor(
-      InjectorContext context,
+      NodeExecutorContext context,
       AssetGroupService assetGroupService,
-      InjectExpectationService injectExpectationService,
-      InjectService injectService) {
+      AttackChainNodeExpectationService attackChainNodeExpectationService,
+      AttackChainNodeService attackChainNodeService) {
     super(context);
     this.assetGroupService = assetGroupService;
-    this.injectExpectationService = injectExpectationService;
-    this.injectService = injectService;
+    this.attackChainNodeExpectationService = attackChainNodeExpectationService;
+    this.attackChainNodeService = attackChainNodeService;
   }
 
   @Override
-  public ExecutionProcess process(Execution execution, ExecutableInject injection)
+  public ExecutionProcess process(Execution execution, ExecutableNode injection)
       throws Exception {
-    Inject inject = this.injectService.inject(injection.getInjection().getInject().getId());
+    AttackChainNode attackChainNode = this.attackChainNodeService.attackChainNode(injection.getInjection().getAttackChainNode().getId());
 
-    List<AssetToExecute> assetToExecutes = this.injectService.resolveAllAssetsToExecute(inject);
+    List<AssetToExecute> assetToExecutes = this.attackChainNodeService.resolveAllAssetsToExecute(attackChainNode);
 
     // Check assetToExecutes target
     if (assetToExecutes.isEmpty()) {
@@ -62,20 +62,20 @@ public class VeriguardImplantExecutor extends Injector {
     }
 
     // Compute expectations
-    VeriguardImplantInjectContent content =
-        contentConvert(injection, VeriguardImplantInjectContent.class);
+    VeriguardImplantAttackChainNodeContent content =
+        contentConvert(injection, VeriguardImplantAttackChainNodeContent.class);
 
     List<Expectation> expectations = new ArrayList<>();
 
     assetToExecutes.forEach(
         assetToExecute ->
-            computeExpectationsForAssetAndAgents(expectations, content, assetToExecute, inject));
+            computeExpectationsForAssetAndAgents(expectations, content, assetToExecute, attackChainNode));
 
     List<AssetGroup> assetGroups = injection.getAssetGroups();
     assetGroups.forEach(
         (assetGroup -> computeExpectationsForAssetGroup(expectations, content, assetGroup)));
 
-    injectExpectationService.buildAndSaveInjectExpectations(injection, expectations);
+    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(injection, expectations);
 
     return new ExecutionProcess(true);
   }
@@ -85,13 +85,13 @@ public class VeriguardImplantExecutor extends Injector {
   /** In case of direct assetToExecute, we have an individual expectation for the assetToExecute */
   private void computeExpectationsForAssetAndAgents(
       @NotNull final List<Expectation> expectations,
-      @NotNull final VeriguardImplantInjectContent content,
+      @NotNull final VeriguardImplantAttackChainNodeContent content,
       @NotNull final AssetToExecute assetToExecute,
-      final Inject inject) {
+      final AttackChainNode attackChainNode) {
 
     if (!content.getExpectations().isEmpty()) {
 
-      Map<String, Endpoint> valueTargetedAssetsMap = injectService.getValueTargetedAssetMap(inject);
+      Map<String, Endpoint> valueTargetedAssetsMap = attackChainNodeService.getValueTargetedAssetMap(attackChainNode);
 
       expectations.addAll(
           content.getExpectations().stream()
@@ -102,34 +102,34 @@ public class VeriguardImplantExecutor extends Injector {
                             getPreventionExpectationsByAsset(
                                 OAEV_IMPLANT,
                                 assetToExecute,
-                                getActiveAgents(assetToExecute.asset(), inject),
+                                getActiveAgents(assetToExecute.asset(), attackChainNode),
                                 expectation,
                                 valueTargetedAssetsMap,
-                                inject.getId())
+                                attackChainNode.getId())
                                 .stream();
                         case DETECTION ->
                             getDetectionExpectationsByAsset(
                                 OAEV_IMPLANT,
                                 assetToExecute,
-                                getActiveAgents(assetToExecute.asset(), inject),
+                                getActiveAgents(assetToExecute.asset(), attackChainNode),
                                 expectation,
                                 valueTargetedAssetsMap,
-                                inject.getId())
+                                attackChainNode.getId())
                                 .stream();
                         case VULNERABILITY ->
                             getVulnerabilityExpectationsByAsset(
                                 OAEV_IMPLANT,
                                 assetToExecute,
-                                getActiveAgents(assetToExecute.asset(), inject),
+                                getActiveAgents(assetToExecute.asset(), attackChainNode),
                                 expectation,
                                 valueTargetedAssetsMap,
-                                inject.getId())
+                                attackChainNode.getId())
                                 .stream();
                         case MANUAL ->
                             getManualExpectationsByAsset(
                                 OAEV_IMPLANT,
                                 assetToExecute,
-                                getActiveAgents(assetToExecute.asset(), inject),
+                                getActiveAgents(assetToExecute.asset(), attackChainNode),
                                 expectation)
                                 .stream();
                         default -> Stream.of();
@@ -144,7 +144,7 @@ public class VeriguardImplantExecutor extends Injector {
    */
   private void computeExpectationsForAssetGroup(
       @NotNull final List<Expectation> expectations,
-      @NotNull final VeriguardImplantInjectContent content,
+      @NotNull final VeriguardImplantAttackChainNodeContent content,
       @NotNull final AssetGroup assetGroup) {
     if (!content.getExpectations().isEmpty()) {
       expectations.addAll(
@@ -162,7 +162,7 @@ public class VeriguardImplantExecutor extends Injector {
                                       expectations.stream()
                                           .filter(
                                               prevExpectation ->
-                                                  InjectExpectation.EXPECTATION_TYPE.PREVENTION
+                                                  AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION
                                                       == prevExpectation.type())
                                           .anyMatch(
                                               prevExpectation ->
@@ -194,7 +194,7 @@ public class VeriguardImplantExecutor extends Injector {
                                       expectations.stream()
                                           .filter(
                                               detExpectation ->
-                                                  InjectExpectation.EXPECTATION_TYPE.DETECTION
+                                                  AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION
                                                       == detExpectation.type())
                                           .anyMatch(
                                               detExpectation ->
@@ -225,7 +225,7 @@ public class VeriguardImplantExecutor extends Injector {
                                       expectations.stream()
                                           .filter(
                                               vulExpectation ->
-                                                  InjectExpectation.EXPECTATION_TYPE.VULNERABILITY
+                                                  AttackChainNodeExpectation.EXPECTATION_TYPE.VULNERABILITY
                                                       == vulExpectation.type())
                                           .anyMatch(
                                               vulExpectation ->
@@ -257,7 +257,7 @@ public class VeriguardImplantExecutor extends Injector {
                                       expectations.stream()
                                           .filter(
                                               manExpectation ->
-                                                  InjectExpectation.EXPECTATION_TYPE.MANUAL
+                                                  AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL
                                                       == manExpectation.type())
                                           .anyMatch(
                                               manExpectation ->

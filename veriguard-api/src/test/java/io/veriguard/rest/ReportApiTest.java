@@ -14,13 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.Capability;
-import io.veriguard.database.model.Exercise;
-import io.veriguard.database.model.Inject;
-import io.veriguard.rest.exercise.service.ExerciseService;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.rest.exercise.service.AttackChainRunService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import io.veriguard.rest.mapper.MapperApi;
 import io.veriguard.rest.report.ReportApi;
-import io.veriguard.rest.report.form.ReportInjectCommentInput;
+import io.veriguard.rest.report.form.ReportAttackChainNodeCommentInput;
 import io.veriguard.rest.report.form.ReportInput;
 import io.veriguard.rest.report.model.Report;
 import io.veriguard.rest.report.service.ReportService;
@@ -53,26 +53,26 @@ public class ReportApiTest extends IntegrationTest {
   private MockMvc mvc;
 
   @Mock private ReportService reportService;
-  @Mock private ExerciseService exerciseService;
-  @Mock private InjectService injectService;
+  @Mock private AttackChainRunService attackChainRunService;
+  @Mock private AttackChainNodeService attackChainNodeService;
 
   @Autowired private ObjectMapper objectMapper;
 
-  private Exercise exercise;
+  private AttackChainRun attackChainRun;
   private Report report;
   private ReportInput reportInput;
 
   @BeforeEach
   void before() throws IllegalAccessException, NoSuchFieldException {
-    ReportApi reportApi = new ReportApi(exerciseService, reportService, injectService);
+    ReportApi reportApi = new ReportApi(attackChainRunService, reportService, attackChainNodeService);
     Field sessionContextField = MapperApi.class.getSuperclass().getDeclaredField("mapper");
     sessionContextField.setAccessible(true);
     sessionContextField.set(reportApi, objectMapper);
     mvc = MockMvcBuilders.standaloneSetup(reportApi).build();
 
-    exercise = new Exercise();
-    exercise.setName("Exercise name");
-    exercise.setId("exercise123");
+    attackChainRun = new AttackChainRun();
+    attackChainRun.setName("Exercise name");
+    attackChainRun.setId("exercise123");
     report = new Report();
     report.setId(UUID.randomUUID().toString());
     reportInput = new ReportInput();
@@ -82,19 +82,19 @@ public class ReportApiTest extends IntegrationTest {
   @Nested
   @WithMockUser(withCapabilities = {Capability.MANAGE_ASSESSMENT})
   @DisplayName("Reports for exercise")
-  class ReportsForExercise {
+  class ReportsForAttackChainRun {
     @DisplayName("Create report")
     @Test
-    void createReportForExercise() throws Exception {
+    void createReportForAttackChainRun() throws Exception {
       // -- PREPARE --
-      when(exerciseService.exercise(anyString())).thenReturn(exercise);
+      when(attackChainRunService.attackChainRun(anyString())).thenReturn(attackChainRun);
       when(reportService.updateReport(any(Report.class), any(ReportInput.class)))
           .thenReturn(report);
 
       // -- EXECUTE --
       String response =
           mvc.perform(
-                  MockMvcRequestBuilders.post("/api/exercises/" + exercise.getId() + "/reports")
+                  MockMvcRequestBuilders.post("/api/exercises/" + attackChainRun.getId() + "/reports")
                       .content(asJsonString(reportInput))
                       .contentType(MediaType.APPLICATION_JSON)
                       .accept(MediaType.APPLICATION_JSON)
@@ -105,17 +105,17 @@ public class ReportApiTest extends IntegrationTest {
               .getContentAsString();
 
       // -- ASSERT --
-      verify(exerciseService).exercise(exercise.getId());
+      verify(attackChainRunService).attackChainRun(attackChainRun.getId());
       assertNotNull(response);
       assertEquals(JsonPath.read(response, "$.report_id"), report.getId());
     }
 
     @DisplayName("Retrieve reports")
     @Test
-    void retrieveReportForExercise() throws Exception {
+    void retrieveReportForAttackChainRun() throws Exception {
       // PREPARE
       List<Report> reports = List.of(report);
-      when(reportService.reportsFromExercise(anyString())).thenReturn(reports);
+      when(reportService.reportsFromAttackChainRun(anyString())).thenReturn(reports);
 
       // -- EXECUTE --
       String response =
@@ -129,16 +129,16 @@ public class ReportApiTest extends IntegrationTest {
               .getContentAsString();
 
       // -- ASSERT --
-      verify(reportService).reportsFromExercise("fakeExercisesId123");
+      verify(reportService).reportsFromAttackChainRun("fakeExercisesId123");
       assertNotNull(response);
       assertEquals(JsonPath.read(response, "$[0].report_id"), report.getId());
     }
 
     @DisplayName("Update Report")
     @Test
-    void updateReportForExercise() throws Exception {
+    void updateReportForAttackChainRun() throws Exception {
       // -- PREPARE --
-      report.setExercise(exercise);
+      report.setAttackChainRun(attackChainRun);
       when(reportService.report(any())).thenReturn(report);
       when(reportService.updateReport(any(Report.class), any(ReportInput.class)))
           .thenReturn(report);
@@ -147,7 +147,7 @@ public class ReportApiTest extends IntegrationTest {
       String response =
           mvc.perform(
                   MockMvcRequestBuilders.put(
-                          "/api/exercises/" + exercise.getId() + "/reports/" + report.getId())
+                          "/api/exercises/" + attackChainRun.getId() + "/reports/" + report.getId())
                       .content(asJsonString(reportInput))
                       .contentType(MediaType.APPLICATION_JSON)
                       .accept(MediaType.APPLICATION_JSON)
@@ -167,21 +167,21 @@ public class ReportApiTest extends IntegrationTest {
 
     @DisplayName("Update report inject comment")
     @Test
-    void updateReportInjectCommentTest() throws Exception {
+    void updateReportAttackChainNodeCommentTest() throws Exception {
       // -- PREPARE --
-      Inject inject = new Inject();
-      inject.setTitle("Test inject");
-      inject.setId(UUID.randomUUID().toString());
-      inject.setExercise(exercise);
-      report.setExercise(exercise);
-      ReportInjectCommentInput injectCommentInput = new ReportInjectCommentInput();
-      injectCommentInput.setInjectId(inject.getId());
-      injectCommentInput.setComment("Comment test");
+      AttackChainNode attackChainNode = new AttackChainNode();
+      attackChainNode.setTitle("Test inject");
+      attackChainNode.setId(UUID.randomUUID().toString());
+      attackChainNode.setAttackChainRun(attackChainRun);
+      report.setAttackChainRun(attackChainRun);
+      ReportAttackChainNodeCommentInput attackChainNodeCommentInput = new ReportAttackChainNodeCommentInput();
+      attackChainNodeCommentInput.setAttackChainNodeId(attackChainNode.getId());
+      attackChainNodeCommentInput.setComment("Comment test");
 
       when(reportService.report(any())).thenReturn(report);
-      when(injectService.inject(any())).thenReturn(inject);
-      when(reportService.updateReportInjectComment(
-              any(Report.class), any(Inject.class), any(ReportInjectCommentInput.class)))
+      when(attackChainNodeService.attackChainNode(any())).thenReturn(attackChainNode);
+      when(reportService.updateReportAttackChainNodeComment(
+              any(Report.class), any(AttackChainNode.class), any(ReportAttackChainNodeCommentInput.class)))
           .thenReturn(null);
 
       // -- EXECUTE --
@@ -189,11 +189,11 @@ public class ReportApiTest extends IntegrationTest {
           mvc.perform(
                   MockMvcRequestBuilders.put(
                           "/api/exercises/"
-                              + exercise.getId()
+                              + attackChainRun.getId()
                               + "/reports/"
                               + report.getId()
                               + "/inject-comments")
-                      .content(asJsonString(injectCommentInput))
+                      .content(asJsonString(attackChainNodeCommentInput))
                       .contentType(MediaType.APPLICATION_JSON)
                       .accept(MediaType.APPLICATION_JSON)
                       .with(csrf()))
@@ -204,22 +204,22 @@ public class ReportApiTest extends IntegrationTest {
 
       // -- ASSERT --
       verify(reportService).report(UUID.fromString(report.getId()));
-      verify(injectService).inject(inject.getId());
-      verify(reportService).updateReportInjectComment(report, inject, injectCommentInput);
+      verify(attackChainNodeService).attackChainNode(attackChainNode.getId());
+      verify(reportService).updateReportAttackChainNodeComment(report, attackChainNode, attackChainNodeCommentInput);
       assertNotNull(response);
     }
 
     @DisplayName("Delete Report")
     @Test
-    void deleteReportForExercise() throws Exception {
+    void deleteReportForAttackChainRun() throws Exception {
       // -- PREPARE --
-      report.setExercise(exercise);
+      report.setAttackChainRun(attackChainRun);
       when(reportService.report(any())).thenReturn(report);
 
       // -- EXECUTE --
       mvc.perform(
               MockMvcRequestBuilders.delete(
-                      "/api/exercises/" + exercise.getId() + "/reports/" + report.getId())
+                      "/api/exercises/" + attackChainRun.getId() + "/reports/" + report.getId())
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(asJsonString(PaginationFixture.getDefault().textSearch("").build()))
                   .with(csrf()))

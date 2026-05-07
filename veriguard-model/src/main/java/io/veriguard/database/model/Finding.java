@@ -88,8 +88,8 @@ public class Finding implements Base {
   @JsonProperty("finding_inject_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
-  @Queryable(filterable = true, dynamicValues = true, sortable = true, path = "inject.id")
-  private Inject inject;
+  @Queryable(filterable = true, dynamicValues = true, sortable = true, path = "attackChainNode.id")
+  private AttackChainNode attackChainNode;
 
   // -- AUDIT --
 
@@ -150,29 +150,29 @@ public class Finding implements Base {
   private final ResourceType resourceType = ResourceType.SIMULATION;
 
   @JsonProperty("finding_simulation")
-  @Queryable(filterable = true, dynamicValues = true, path = "inject.exercise.id")
-  public Exercise getSimulation() {
-    if (getInject() == null) {
+  @Queryable(filterable = true, dynamicValues = true, path = "attackChainNode.attackChainRun.id")
+  public AttackChainRun getSimulation() {
+    if (getAttackChainNode() == null) {
       return null;
     }
-    return getInject().getExercise();
+    return getAttackChainNode().getAttackChainRun();
   }
 
   @JsonProperty("finding_scenario")
-  @Queryable(filterable = true, dynamicValues = true, path = "inject.exercise.scenario.id")
-  public Scenario getScenario() {
-    if (getInject() == null) {
+  @Queryable(filterable = true, dynamicValues = true, path = "attackChainNode.attackChainRun.attackChain.id")
+  public AttackChain getAttackChain() {
+    if (getAttackChainNode() == null) {
       return null;
     }
-    return Optional.ofNullable(getInject().getExercise()).map(Exercise::getScenario).orElse(null);
+    return Optional.ofNullable(getAttackChainNode().getAttackChainRun()).map(AttackChainRun::getAttackChain).orElse(null);
   }
 
   @JsonProperty("finding_asset_groups")
-  @Queryable(filterable = true, dynamicValues = true, path = "inject.assetGroups.id")
+  @Queryable(filterable = true, dynamicValues = true, path = "attackChainNode.assetGroups.id")
   public Set<AssetGroup> getAssetGroups() {
-    if (getInject() == null) {
+    if (getAttackChainNode() == null) {
       return Collections.emptySet();
     }
-    return getInject().getAssetGroups().stream().collect(Collectors.toSet());
+    return getAttackChainNode().getAssetGroups().stream().collect(Collectors.toSet());
   }
 }

@@ -49,7 +49,7 @@ public class PayloadApiImporter extends RestBehavior {
     try {
       ZipJsonService.ImportOutput<Payload> response =
           zipJsonApi.handleImport(file, "payload_name", null, this::sanitize);
-      payloadService.updateInjectorContractsForPayload(response.persistedData());
+      payloadService.updateNodeContractsForPayload(response.persistedData());
       return ResponseEntity.ok(response.jsonApiDocument());
     } catch (Exception ex) {
       log.warn("Fallback to old import due to {}", ex.getMessage(), ex);

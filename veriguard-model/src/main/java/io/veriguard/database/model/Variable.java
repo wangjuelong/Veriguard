@@ -17,22 +17,22 @@ import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
 /**
- * Entity representing a custom variable for exercises and scenarios.
+ * Entity representing a custom variable for attackChainRuns and attackChains.
  *
- * <p>Variables provide a templating mechanism that allows dynamic content substitution in inject
+ * <p>Variables provide a templating mechanism that allows dynamic content substitution in attackChainNode
  * content, email templates, and other text fields. They support:
  *
  * <ul>
- *   <li>Exercise-scoped variables (specific to one exercise)
- *   <li>Scenario-scoped variables (inherited by all exercises from the scenario)
+ *   <li>AttackChainRun-scoped variables (specific to one attackChainRun)
+ *   <li>AttackChain-scoped variables (inherited by all attackChainRuns from the attackChain)
  *   <li>String and Object value types
  * </ul>
  *
  * <p>Variable keys follow a snake_case naming convention (e.g., {@code company_name}, {@code
  * target_ip}) and are referenced in templates using a specific syntax.
  *
- * @see Exercise
- * @see Scenario
+ * @see AttackChainRun
+ * @see AttackChain
  */
 @Data
 @Entity
@@ -84,14 +84,14 @@ public class Variable implements Base {
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("variable_exercise")
   @Schema(type = "string")
-  private Exercise exercise;
+  private AttackChainRun attackChainRun;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "variable_scenario")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("variable_scenario")
   @Schema(type = "string")
-  private Scenario scenario;
+  private AttackChain attackChain;
 
   // -- AUDIT --
 

@@ -10,10 +10,10 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.ImportMapper;
-import io.veriguard.database.model.InjectImporter;
+import io.veriguard.database.model.AttackChainNodeImporter;
 import io.veriguard.database.repository.EndpointRepository;
 import io.veriguard.database.repository.ImportMapperRepository;
-import io.veriguard.database.repository.InjectorContractRepository;
+import io.veriguard.database.repository.NodeContractRepository;
 import io.veriguard.rest.mapper.form.*;
 import io.veriguard.rest.tag.TagService;
 import io.veriguard.utils.mockMapper.MockMapperUtils;
@@ -37,7 +37,7 @@ import org.springframework.test.context.TestExecutionListeners;
 public class MapperServiceTest extends IntegrationTest {
 
   @Mock private ImportMapperRepository importMapperRepository;
-  @Mock private InjectorContractRepository injectorContractRepository;
+  @Mock private NodeContractRepository nodeContractRepository;
   @Mock private EndpointRepository endpointRepository;
   @Mock private ObjectMapper objectMapper;
   @Mock private EndpointService endpointService;
@@ -51,7 +51,7 @@ public class MapperServiceTest extends IntegrationTest {
     mapperService =
         new MapperService(
             importMapperRepository,
-            injectorContractRepository,
+            nodeContractRepository,
             endpointRepository,
             endpointService,
             tagService,
@@ -67,18 +67,18 @@ public class MapperServiceTest extends IntegrationTest {
     ImportMapper importMapper = MockMapperUtils.createImportMapper();
     ImportMapperAddInput importMapperInput = new ImportMapperAddInput();
     importMapperInput.setName(importMapper.getName());
-    importMapperInput.setInjectTypeColumn(importMapper.getInjectTypeColumn());
+    importMapperInput.setAttackChainNodeTypeColumn(importMapper.getAttackChainNodeTypeColumn());
     importMapperInput.setImporters(
-        importMapper.getInjectImporters().stream()
+        importMapper.getAttackChainNodeImporters().stream()
             .map(
-                injectImporter -> {
-                  InjectImporterAddInput injectImporterAddInput = new InjectImporterAddInput();
-                  injectImporterAddInput.setInjectTypeValue(injectImporter.getImportTypeValue());
-                  injectImporterAddInput.setInjectorContractId(
-                      injectImporter.getInjectorContract().getId());
+                attackChainNodeImporter -> {
+                  AttackChainNodeImporterAddInput attackChainNodeImporterAddInput = new AttackChainNodeImporterAddInput();
+                  attackChainNodeImporterAddInput.setAttackChainNodeTypeValue(attackChainNodeImporter.getImportTypeValue());
+                  attackChainNodeImporterAddInput.setNodeContractId(
+                      attackChainNodeImporter.getNodeContract().getId());
 
-                  injectImporterAddInput.setRuleAttributes(
-                      injectImporter.getRuleAttributes().stream()
+                  attackChainNodeImporterAddInput.setRuleAttributes(
+                      attackChainNodeImporter.getRuleAttributes().stream()
                           .map(
                               ruleAttribute -> {
                                 RuleAttributeAddInput ruleAttributeAddInput =
@@ -92,7 +92,7 @@ public class MapperServiceTest extends IntegrationTest {
                                 return ruleAttributeAddInput;
                               })
                           .toList());
-                  return injectImporterAddInput;
+                  return attackChainNodeImporterAddInput;
                 })
             .toList());
     when(importMapperRepository.save(any())).thenReturn(importMapper);
@@ -123,23 +123,23 @@ public class MapperServiceTest extends IntegrationTest {
     ImportMapper capturedImportMapper = importMapperCaptor.getValue();
     // verify importMapper
     assertEquals(duplicateString(importMapper.getName()), capturedImportMapper.getName());
-    assertEquals(importMapper.getInjectTypeColumn(), capturedImportMapper.getInjectTypeColumn());
+    assertEquals(importMapper.getAttackChainNodeTypeColumn(), capturedImportMapper.getAttackChainNodeTypeColumn());
     assertEquals(
-        importMapper.getInjectImporters().size(), capturedImportMapper.getInjectImporters().size());
-    // verify injectImporter
-    assertEquals("", capturedImportMapper.getInjectImporters().get(0).getId());
+        importMapper.getAttackChainNodeImporters().size(), capturedImportMapper.getAttackChainNodeImporters().size());
+    // verify attackChainNodeImporter
+    assertEquals("", capturedImportMapper.getAttackChainNodeImporters().get(0).getId());
     assertEquals(
-        importMapper.getInjectImporters().get(0).getImportTypeValue(),
-        capturedImportMapper.getInjectImporters().get(0).getImportTypeValue());
+        importMapper.getAttackChainNodeImporters().get(0).getImportTypeValue(),
+        capturedImportMapper.getAttackChainNodeImporters().get(0).getImportTypeValue());
     assertEquals(
-        importMapper.getInjectImporters().get(0).getRuleAttributes().size(),
-        capturedImportMapper.getInjectImporters().get(0).getRuleAttributes().size());
+        importMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().size(),
+        capturedImportMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().size());
     // verify ruleAttribute
     assertEquals(
-        "", capturedImportMapper.getInjectImporters().get(0).getRuleAttributes().get(0).getId());
+        "", capturedImportMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().get(0).getId());
     assertEquals(
-        importMapper.getInjectImporters().get(0).getRuleAttributes().get(0).getName(),
-        capturedImportMapper.getInjectImporters().get(0).getRuleAttributes().get(0).getName());
+        importMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().get(0).getName(),
+        capturedImportMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().get(0).getName());
 
     assertEquals(response.getId(), importMapperSaved.getId());
   }
@@ -151,19 +151,19 @@ public class MapperServiceTest extends IntegrationTest {
     ImportMapper importMapper = MockMapperUtils.createImportMapper();
     ImportMapperUpdateInput importMapperInput = new ImportMapperUpdateInput();
     importMapperInput.setName(importMapper.getName());
-    importMapperInput.setInjectTypeColumn(importMapper.getInjectTypeColumn());
+    importMapperInput.setAttackChainNodeTypeColumn(importMapper.getAttackChainNodeTypeColumn());
     importMapperInput.setImporters(
-        importMapper.getInjectImporters().stream()
+        importMapper.getAttackChainNodeImporters().stream()
             .map(
-                injectImporter -> {
-                  InjectImporterUpdateInput injectImporterUpdateInput =
-                      new InjectImporterUpdateInput();
-                  injectImporterUpdateInput.setInjectTypeValue(injectImporter.getImportTypeValue());
-                  injectImporterUpdateInput.setInjectorContractId(
-                      injectImporter.getInjectorContract().getId());
+                attackChainNodeImporter -> {
+                  AttackChainNodeImporterUpdateInput attackChainNodeImporterUpdateInput =
+                      new AttackChainNodeImporterUpdateInput();
+                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(attackChainNodeImporter.getImportTypeValue());
+                  attackChainNodeImporterUpdateInput.setNodeContractId(
+                      attackChainNodeImporter.getNodeContract().getId());
 
-                  injectImporterUpdateInput.setRuleAttributes(
-                      injectImporter.getRuleAttributes().stream()
+                  attackChainNodeImporterUpdateInput.setRuleAttributes(
+                      attackChainNodeImporter.getRuleAttributes().stream()
                           .map(
                               ruleAttribute -> {
                                 RuleAttributeUpdateInput ruleAttributeUpdateInput =
@@ -177,15 +177,15 @@ public class MapperServiceTest extends IntegrationTest {
                                 return ruleAttributeUpdateInput;
                               })
                           .toList());
-                  return injectImporterUpdateInput;
+                  return attackChainNodeImporterUpdateInput;
                 })
             .toList());
     when(importMapperRepository.findById(any())).thenReturn(Optional.of(importMapper));
     when(importMapperRepository.save(any())).thenReturn(importMapper);
-    when(injectorContractRepository.findAllById(any()))
+    when(nodeContractRepository.findAllById(any()))
         .thenReturn(
-            importMapper.getInjectImporters().stream()
-                .map(InjectImporter::getInjectorContract)
+            importMapper.getAttackChainNodeImporters().stream()
+                .map(AttackChainNodeImporter::getNodeContract)
                 .toList());
 
     // -- EXECUTE --
@@ -200,25 +200,25 @@ public class MapperServiceTest extends IntegrationTest {
   @DisplayName(
       "Test update a specific mapper by creating rule attributes and updating new inject importer")
   @Test
-  void updateSpecificMapperWithUpdatedInjectImporter() throws Exception {
+  void updateSpecificMapperWithUpdatedAttackChainNodeImporter() throws Exception {
     // -- PREPARE --
     ImportMapper importMapper = MockMapperUtils.createImportMapper();
     ImportMapperUpdateInput importMapperInput = new ImportMapperUpdateInput();
     importMapperInput.setName(importMapper.getName());
-    importMapperInput.setInjectTypeColumn(importMapper.getInjectTypeColumn());
+    importMapperInput.setAttackChainNodeTypeColumn(importMapper.getAttackChainNodeTypeColumn());
     importMapperInput.setImporters(
-        importMapper.getInjectImporters().stream()
+        importMapper.getAttackChainNodeImporters().stream()
             .map(
-                injectImporter -> {
-                  InjectImporterUpdateInput injectImporterUpdateInput =
-                      new InjectImporterUpdateInput();
-                  injectImporterUpdateInput.setInjectTypeValue(injectImporter.getImportTypeValue());
-                  injectImporterUpdateInput.setInjectorContractId(
-                      injectImporter.getInjectorContract().getId());
-                  injectImporterUpdateInput.setId(injectImporter.getId());
+                attackChainNodeImporter -> {
+                  AttackChainNodeImporterUpdateInput attackChainNodeImporterUpdateInput =
+                      new AttackChainNodeImporterUpdateInput();
+                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(attackChainNodeImporter.getImportTypeValue());
+                  attackChainNodeImporterUpdateInput.setNodeContractId(
+                      attackChainNodeImporter.getNodeContract().getId());
+                  attackChainNodeImporterUpdateInput.setId(attackChainNodeImporter.getId());
 
-                  injectImporterUpdateInput.setRuleAttributes(
-                      injectImporter.getRuleAttributes().stream()
+                  attackChainNodeImporterUpdateInput.setRuleAttributes(
+                      attackChainNodeImporter.getRuleAttributes().stream()
                           .map(
                               ruleAttribute -> {
                                 RuleAttributeUpdateInput ruleAttributeUpdateInput =
@@ -232,15 +232,15 @@ public class MapperServiceTest extends IntegrationTest {
                                 return ruleAttributeUpdateInput;
                               })
                           .toList());
-                  return injectImporterUpdateInput;
+                  return attackChainNodeImporterUpdateInput;
                 })
             .toList());
     when(importMapperRepository.findById(any())).thenReturn(Optional.of(importMapper));
     when(importMapperRepository.save(any())).thenReturn(importMapper);
-    when(injectorContractRepository.findAllById(any()))
+    when(nodeContractRepository.findAllById(any()))
         .thenReturn(
-            importMapper.getInjectImporters().stream()
-                .map(InjectImporter::getInjectorContract)
+            importMapper.getAttackChainNodeImporters().stream()
+                .map(AttackChainNodeImporter::getNodeContract)
                 .toList());
 
     // -- EXECUTE --
@@ -260,20 +260,20 @@ public class MapperServiceTest extends IntegrationTest {
     ImportMapper importMapper = MockMapperUtils.createImportMapper();
     ImportMapperUpdateInput importMapperInput = new ImportMapperUpdateInput();
     importMapperInput.setName(importMapper.getName());
-    importMapperInput.setInjectTypeColumn(importMapper.getInjectTypeColumn());
+    importMapperInput.setAttackChainNodeTypeColumn(importMapper.getAttackChainNodeTypeColumn());
     importMapperInput.setImporters(
-        importMapper.getInjectImporters().stream()
+        importMapper.getAttackChainNodeImporters().stream()
             .map(
-                injectImporter -> {
-                  InjectImporterUpdateInput injectImporterUpdateInput =
-                      new InjectImporterUpdateInput();
-                  injectImporterUpdateInput.setInjectTypeValue(injectImporter.getImportTypeValue());
-                  injectImporterUpdateInput.setInjectorContractId(
-                      injectImporter.getInjectorContract().getId());
-                  injectImporterUpdateInput.setId(injectImporter.getId());
+                attackChainNodeImporter -> {
+                  AttackChainNodeImporterUpdateInput attackChainNodeImporterUpdateInput =
+                      new AttackChainNodeImporterUpdateInput();
+                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(attackChainNodeImporter.getImportTypeValue());
+                  attackChainNodeImporterUpdateInput.setNodeContractId(
+                      attackChainNodeImporter.getNodeContract().getId());
+                  attackChainNodeImporterUpdateInput.setId(attackChainNodeImporter.getId());
 
-                  injectImporterUpdateInput.setRuleAttributes(
-                      injectImporter.getRuleAttributes().stream()
+                  attackChainNodeImporterUpdateInput.setRuleAttributes(
+                      attackChainNodeImporter.getRuleAttributes().stream()
                           .map(
                               ruleAttribute -> {
                                 RuleAttributeUpdateInput ruleAttributeUpdateInput =
@@ -288,15 +288,15 @@ public class MapperServiceTest extends IntegrationTest {
                                 return ruleAttributeUpdateInput;
                               })
                           .toList());
-                  return injectImporterUpdateInput;
+                  return attackChainNodeImporterUpdateInput;
                 })
             .toList());
     when(importMapperRepository.findById(any())).thenReturn(Optional.of(importMapper));
     when(importMapperRepository.save(any())).thenReturn(importMapper);
-    when(injectorContractRepository.findAllById(any()))
+    when(nodeContractRepository.findAllById(any()))
         .thenReturn(
-            importMapper.getInjectImporters().stream()
-                .map(InjectImporter::getInjectorContract)
+            importMapper.getAttackChainNodeImporters().stream()
+                .map(AttackChainNodeImporter::getNodeContract)
                 .toList());
 
     // -- EXECUTE --

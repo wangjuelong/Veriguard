@@ -1,13 +1,13 @@
 package io.veriguard.utils;
 
 /**
- * Enumeration representing the different types of targets that can be used for inject execution.
+ * Enumeration representing the different types of targets that can be used for attackChainNode execution.
  *
- * <p>Targets determine who or what receives the inject during simulation exercises or atomic
+ * <p>Targets determine who or what receives the attackChainNode during simulation attackChainRuns or atomic
  * testing. Each target type represents a specific category of entities in the Veriguard platform.
  *
- * @see io.veriguard.database.model.Inject
- * @see io.veriguard.database.model.InjectorContract
+ * @see io.veriguard.database.model.AttackChainNode
+ * @see io.veriguard.database.model.NodeContract
  */
 public enum TargetType {
 
@@ -23,7 +23,7 @@ public enum TargetType {
   /** Groups of assets organized for collective targeting. */
   ASSETS_GROUPS,
 
-  /** Individual players participating in exercises. */
+  /** Individual players participating in attackChainRuns. */
   PLAYERS,
 
   /** Teams of players organized for collective participation. */

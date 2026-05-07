@@ -9,7 +9,7 @@ import lombok.Data;
 import org.apache.commons.lang3.NotImplementedException;
 
 @Data
-public class EndpointTarget extends InjectTarget {
+public class EndpointTarget extends AttackChainNodeTarget {
   public EndpointTarget(String id, String name, Set<String> tags, String subType) {
     this.setId(id);
     this.setName(name);

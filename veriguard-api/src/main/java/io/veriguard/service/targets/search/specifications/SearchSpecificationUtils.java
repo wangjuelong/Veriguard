@@ -81,8 +81,8 @@ public class SearchSpecificationUtils<T> {
   }
 
   public Specification<T> compileSpecificationForAssetGroupMembership(
-      Inject scopedInject, SearchPaginationInput input, List<String> joinPath) {
-    AssetGroupSplit split = determineAssetGroupSplit(scopedInject, input);
+      AttackChainNode scopedAttackChainNode, SearchPaginationInput input, List<String> joinPath) {
+    AssetGroupSplit split = determineAssetGroupSplit(scopedAttackChainNode, input);
     return switch (split.filterOperator) {
       case null ->
           includeMembersOfAssetGroupsSpecification
@@ -90,7 +90,7 @@ public class SearchSpecificationUtils<T> {
                   split.includedAssetGroups.stream().map(AssetGroup::getId).toList(), joinPath)
               .or(
                   includeDirectEndpointTargetsSpecification.buildSpecification(
-                      scopedInject, joinPath));
+                      scopedAttackChainNode, joinPath));
 
       case contains, not_empty ->
           includeMembersOfAssetGroupsSpecification.buildSpecification(
@@ -102,7 +102,7 @@ public class SearchSpecificationUtils<T> {
                   split.excludedAssetGroups.stream().map(AssetGroup::getId).toList(), joinPath)
               .and(
                   includeDirectEndpointTargetsSpecification.buildSpecification(
-                      scopedInject, joinPath));
+                      scopedAttackChainNode, joinPath));
       case not_contains ->
           includeMembersOfAssetGroupsSpecification
               .buildSpecification(
@@ -112,14 +112,14 @@ public class SearchSpecificationUtils<T> {
                       split.excludedAssetGroups.stream().map(AssetGroup::getId).toList(), joinPath))
               .or(
                   includeDirectEndpointTargetsSpecification.buildSpecification(
-                      scopedInject, joinPath));
+                      scopedAttackChainNode, joinPath));
       default -> throw new IllegalArgumentException();
     };
   }
 
   private AssetGroupSplit determineAssetGroupSplit(
-      Inject scopedInject, SearchPaginationInput input) {
-    List<AssetGroup> allTargetAssetGroups = scopedInject.getAssetGroups();
+      AttackChainNode scopedAttackChainNode, SearchPaginationInput input) {
+    List<AssetGroup> allTargetAssetGroups = scopedAttackChainNode.getAssetGroups();
 
     Filters.Filter assetGroupFilter = getAssetGroupFilter(input);
     if (assetGroupFilter == null) {

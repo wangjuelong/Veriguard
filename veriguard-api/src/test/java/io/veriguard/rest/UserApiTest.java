@@ -17,7 +17,7 @@ import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.Grant;
 import io.veriguard.database.model.Group;
-import io.veriguard.database.model.Scenario;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.User;
 import io.veriguard.database.repository.*;
 import io.veriguard.rest.user.form.login.LoginUserInput;
@@ -28,7 +28,7 @@ import io.veriguard.rest.user.form.user.UpdateUserInput;
 import io.veriguard.service.MailingService;
 import io.veriguard.utils.RandomUtils;
 import io.veriguard.utils.fixtures.OrganizationFixture;
-import io.veriguard.utils.fixtures.ScenarioFixture;
+import io.veriguard.utils.fixtures.AttackChainFixture;
 import io.veriguard.utils.fixtures.TagFixture;
 import io.veriguard.utils.fixtures.UserFixture;
 import io.veriguard.utils.fixtures.composers.OrganizationComposer;
@@ -57,7 +57,7 @@ class UserApiTest extends IntegrationTest {
 
   @Autowired private UserRepository userRepository;
 
-  @Autowired private ScenarioRepository scenarioRepository;
+  @Autowired private AttackChainRepository attackChainRepository;
   @Autowired private GroupRepository groupRepository;
   @Autowired private OrganizationRepository organizationRepository;
   @Autowired private GrantRepository grantRepository;
@@ -85,7 +85,7 @@ class UserApiTest extends IntegrationTest {
 
   @AfterAll
   public void teardown() {
-    this.scenarioRepository.deleteAll();
+    this.attackChainRepository.deleteAll();
     this.userRepository.deleteAll();
     this.groupRepository.deleteAll();
     this.grantRepository.deleteAll();
@@ -268,7 +268,7 @@ class UserApiTest extends IntegrationTest {
                 "user_teams":[],
                 "user_tags":[%s],
                 "user_communications":[],
-                "team_exercises_users":[],
+                "team_attackChainRuns_users":[],
                 "user_gravatar":"https://www.gravatar.com/avatar/48446ca219d9501c60a2fa161f24cc75?d=mm",
                 "user_is_planner":true,
                 "user_is_observer":true,
@@ -476,19 +476,19 @@ class UserApiTest extends IntegrationTest {
   void given_user_with_several_grant_on_same_resource_should_return_highest_grant()
       throws Exception {
 
-    Scenario scenario = scenarioRepository.save(ScenarioFixture.createDefaultCrisisScenario());
+    AttackChain attackChain = attackChainRepository.save(AttackChainFixture.createDefaultCrisisAttackChain());
     User user = userRepository.save(UserFixture.getUser("test", "test", "test3@gmail.com"));
     Group group = new Group();
     group.setName("test");
     group = groupRepository.save(group);
 
     Grant grantObserver = new Grant();
-    grantObserver.setResourceId(scenario.getId());
+    grantObserver.setResourceId(attackChain.getId());
     grantObserver.setGrantResourceType(Grant.GRANT_RESOURCE_TYPE.SCENARIO);
     grantObserver.setGroup(group);
     grantObserver.setName(Grant.GRANT_TYPE.OBSERVER);
     Grant grantPlanner = new Grant();
-    grantPlanner.setResourceId(scenario.getId());
+    grantPlanner.setResourceId(attackChain.getId());
     grantPlanner.setGrantResourceType(Grant.GRANT_RESOURCE_TYPE.SCENARIO);
     grantPlanner.setGroup(group);
     grantPlanner.setName(Grant.GRANT_TYPE.PLANNER);
@@ -515,6 +515,6 @@ class UserApiTest extends IntegrationTest {
 
     Map<String, Object> grants = JsonPath.read(response, "$.user_grants");
     assertEquals(1, grants.size(), 1);
-    assertEquals(Grant.GRANT_TYPE.PLANNER.name(), grants.get(scenario.getId()));
+    assertEquals(Grant.GRANT_TYPE.PLANNER.name(), grants.get(attackChain.getId()));
   }
 }

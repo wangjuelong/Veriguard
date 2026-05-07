@@ -36,60 +36,60 @@ public class TeamTargetSearchAdaptor extends SearchAdaptorBase {
     this.fieldTranslations.put("target_tags", "team_tags");
   }
 
-  private static Specification<Team> teamsSpecificationFromInject(Inject scopedInject) {
+  private static Specification<Team> teamsSpecificationFromAttackChainNode(AttackChainNode scopedAttackChainNode) {
     return (root, query, builder) -> {
-      if (scopedInject.isAtomicTesting()) {
-        Path<Object> injectPath = root.join("injects").get("id");
-        return builder.equal(injectPath, scopedInject.getId());
+      if (scopedAttackChainNode.isAtomicTesting()) {
+        Path<Object> attackChainNodePath = root.join("injects").get("id");
+        return builder.equal(attackChainNodePath, scopedAttackChainNode.getId());
       } else {
-        if (scopedInject.isAllTeams()) {
-          Path<Object> exerciseTeamUsersPath =
+        if (scopedAttackChainNode.isAllTeams()) {
+          Path<Object> attackChainRunTeamUsersPath =
               root.get("exerciseTeamUsers").get("exercise").get("id");
-          Path<Object> injectPath = root.join("exercises").get("injects").get("id");
+          Path<Object> attackChainNodePath = root.join("exercises").get("injects").get("id");
           return builder.and(
-              builder.equal(injectPath, scopedInject.getId()),
-              builder.equal(exerciseTeamUsersPath, scopedInject.getExercise().getId()));
+              builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
+              builder.equal(attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
         } else {
-          Path<Object> exerciseTeamUsersPath =
+          Path<Object> attackChainRunTeamUsersPath =
               root.get("exerciseTeamUsers").get("exercise").get("id");
-          Path<Object> injectPath = root.join("injects").get("id");
+          Path<Object> attackChainNodePath = root.join("injects").get("id");
           return builder.and(
-              builder.equal(injectPath, scopedInject.getId()),
-              builder.equal(exerciseTeamUsersPath, scopedInject.getExercise().getId()));
+              builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
+              builder.equal(attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
         }
       }
     };
   }
 
   @Override
-  public Page<InjectTarget> search(SearchPaginationInput input, Inject scopedInject) {
-    SearchPaginationInput translatedInput = this.translate(input, scopedInject);
+  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
+    SearchPaginationInput translatedInput = this.translate(input, scopedAttackChainNode);
 
     Page<Team> filteredTeams =
         buildPaginationJPA(
             (Specification<Team> specification, Pageable pageable) ->
                 this.teamRepository.findAll(
-                    teamsSpecificationFromInject(scopedInject).and(specification), pageable),
+                    teamsSpecificationFromAttackChainNode(scopedAttackChainNode).and(specification), pageable),
             translatedInput,
             Team.class);
 
     return new PageImpl<>(
         filteredTeams.getContent().stream()
-            .map(team -> convertFromTeamOutput(team, scopedInject))
+            .map(team -> convertFromTeamOutput(team, scopedAttackChainNode))
             .toList(),
         filteredTeams.getPageable(),
         filteredTeams.getTotalElements());
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForInject(Inject scopedInject, String textSearch) {
-    if (scopedInject.isAllTeams()) {
-      return scopedInject.getExercise().getTeams().stream()
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
+    if (scopedAttackChainNode.isAllTeams()) {
+      return scopedAttackChainNode.getAttackChainRun().getTeams().stream()
           .filter(team -> team.getName().toLowerCase().contains(textSearch.toLowerCase()))
           .map(team -> new FilterUtilsJpa.Option(team.getId(), team.getName()))
           .toList();
     } else {
-      return scopedInject.getTeams().stream()
+      return scopedAttackChainNode.getTeams().stream()
           .filter(team -> team.getName().toLowerCase().contains(textSearch.toLowerCase()))
           .map(team -> new FilterUtilsJpa.Option(team.getId(), team.getName()))
           .toList();
@@ -103,9 +103,9 @@ public class TeamTargetSearchAdaptor extends SearchAdaptorBase {
         .toList();
   }
 
-  private InjectTarget convertFromTeamOutput(Team team, Inject inject) {
+  private AttackChainNodeTarget convertFromTeamOutput(Team team, AttackChainNode attackChainNode) {
     return helperTargetSearchAdaptor.buildTargetWithExpectations(
-        inject,
+        attackChainNode,
         () ->
             new TeamTarget(
                 team.getId(),

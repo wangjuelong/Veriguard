@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Lightweight admin notification mailer used for password reset, lessons feedback, and platform
- * notifications. The full attack-simulation Email injector pipeline is removed in 二开 — this
+ * notifications. The full attack-simulation Email nodeExecutor pipeline is removed in 二开 — this
  * service relies on {@link SmtpService} only.
  */
 @Service

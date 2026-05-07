@@ -1,6 +1,6 @@
 package io.veriguard.database.raw.impl;
 
-import io.veriguard.database.model.InjectExpectationTrace;
+import io.veriguard.database.model.NodeExpectationTrace;
 import io.veriguard.database.raw.RawExpectationTrace;
 import java.time.Instant;
 import java.util.Objects;
@@ -20,7 +20,7 @@ public class SimpleRawExpectationTrace implements RawExpectationTrace {
   private Instant inject_expectation_trace_updated_at;
 
   /**
-   * Compute object equality. Two traces are equal if they have the same inject expectation,
+   * Compute object equality. Two traces are equal if they have the same attackChainNode expectation,
    * security platform, name and link. Trace dates are irrelevant for equality for now.
    *
    * @param o object to compare to
@@ -57,20 +57,20 @@ public class SimpleRawExpectationTrace implements RawExpectationTrace {
   }
 
   /**
-   * Convert an InjectExpectationTrace to a SimpleRawExpectationTrace.
+   * Convert an NodeExpectationTrace to a SimpleRawExpectationTrace.
    *
-   * @param injectExpectationTrace InjectExpectationTrace to convert
+   * @param nodeExpectationTrace NodeExpectationTrace to convert
    * @return converted SimpleRawExpectationTrace
    */
-  public static SimpleRawExpectationTrace of(InjectExpectationTrace injectExpectationTrace) {
+  public static SimpleRawExpectationTrace of(NodeExpectationTrace nodeExpectationTrace) {
     return new SimpleRawExpectationTrace(
-        injectExpectationTrace.getId(),
-        injectExpectationTrace.getInjectExpectation().getId(),
-        injectExpectationTrace.getSecurityPlatform().getId(),
-        injectExpectationTrace.getAlertName(),
-        injectExpectationTrace.getAlertLink(),
-        injectExpectationTrace.getAlertDate(),
-        injectExpectationTrace.getCreatedAt(),
-        injectExpectationTrace.getUpdatedAt());
+        nodeExpectationTrace.getId(),
+        nodeExpectationTrace.getAttackChainNodeExpectation().getId(),
+        nodeExpectationTrace.getSecurityPlatform().getId(),
+        nodeExpectationTrace.getAlertName(),
+        nodeExpectationTrace.getAlertLink(),
+        nodeExpectationTrace.getAlertDate(),
+        nodeExpectationTrace.getCreatedAt(),
+        nodeExpectationTrace.getUpdatedAt());
   }
 }

@@ -38,7 +38,7 @@ public class Log implements Base {
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("log_exercise")
   @Schema(type = "string")
-  private Exercise exercise;
+  private AttackChainRun attackChainRun;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "log_user")
@@ -84,14 +84,14 @@ public class Log implements Base {
 
   @Override
   public boolean isUserHasAccess(User user) {
-    if (exercise == null) {
+    if (attackChainRun == null) {
       return user.isAdmin();
     }
-    return exercise.isUserHasAccess(user);
+    return attackChainRun.isUserHasAccess(user);
   }
 
-  public Exercise getExercise() {
-    return exercise;
+  public AttackChainRun getAttackChainRun() {
+    return attackChainRun;
   }
 
   public User getUser() {

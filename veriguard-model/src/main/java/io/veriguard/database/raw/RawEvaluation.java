@@ -4,7 +4,7 @@ package io.veriguard.database.raw;
  * Spring Data projection interface for evaluation data.
  *
  * <p>This interface defines a projection for retrieving evaluation scores assigned to objectives
- * during exercise assessment.
+ * during attackChainRun assessment.
  *
  * @see io.veriguard.database.model.Evaluation
  */

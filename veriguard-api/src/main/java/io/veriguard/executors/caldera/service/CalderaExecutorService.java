@@ -14,7 +14,7 @@ import io.veriguard.executors.caldera.config.CalderaExecutorConfig;
 import io.veriguard.executors.model.AgentRegisterInput;
 import io.veriguard.service.AgentService;
 import io.veriguard.service.EndpointService;
-import io.veriguard.service.InjectorService;
+import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.PlatformSettingsService;
 import io.veriguard.utils.mapper.EndpointMapper;
 import jakarta.validation.constraints.NotBlank;
@@ -33,7 +33,7 @@ public class CalderaExecutorService implements Runnable {
 
   private final CalderaExecutorContextService calderaExecutorContextService;
 
-  private final InjectorService injectorService;
+  private final NodeExecutorService nodeExecutorService;
   private final PlatformSettingsService platformSettingsService;
   private final AgentService agentService;
 
@@ -62,13 +62,13 @@ public class CalderaExecutorService implements Runnable {
       CalderaExecutorConfig config,
       CalderaExecutorContextService calderaExecutorContextService,
       EndpointService endpointService,
-      InjectorService injectorService,
+      NodeExecutorService nodeExecutorService,
       PlatformSettingsService platformSettingsService,
       AgentService agentService) {
     this.client = client;
     this.endpointService = endpointService;
     this.calderaExecutorContextService = calderaExecutorContextService;
-    this.injectorService = injectorService;
+    this.nodeExecutorService = nodeExecutorService;
     this.platformSettingsService = platformSettingsService;
     this.agentService = agentService;
     this.executor = executor;
@@ -240,11 +240,11 @@ public class CalderaExecutorService implements Runnable {
     if ((now().toEpochMilli() - existingAgent.getClearedAt().toEpochMilli()) > CLEAR_TTL) {
       try {
         log.info("Clearing agent caldera " + existingAgent.getExecutedByUser());
-        Iterable<Injector> injectors = injectorService.getAllConnectors();
-        injectors.forEach(
-            injector -> {
-              if (injector.getExecutorClearCommands() != null) {
-                this.calderaExecutorContextService.launchExecutorClear(injector, existingAgent);
+        Iterable<NodeExecutor> nodeExecutors = nodeExecutorService.getAllConnectors();
+        nodeExecutors.forEach(
+            nodeExecutor -> {
+              if (nodeExecutor.getExecutorClearCommands() != null) {
+                this.calderaExecutorContextService.launchExecutorClear(nodeExecutor, existingAgent);
               }
             });
         existingAgent.setClearedAt(now());

@@ -1,6 +1,6 @@
 package io.veriguard.model.expectation;
 
-import static io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE;
+import static io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 
 import io.veriguard.database.model.Agent;
 import io.veriguard.database.model.Asset;

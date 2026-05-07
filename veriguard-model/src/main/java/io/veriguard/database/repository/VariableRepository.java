@@ -18,5 +18,5 @@ public interface VariableRepository
               + "   WHERE old.variable_scenario = :scenarioId",
       nativeQuery = true)
   @Modifying
-  void copyVariableFromScenarioForSimulation(String scenarioId, String exerciseId);
+  void copyVariableFromAttackChainForSimulation(String attackChainId, String attackChainRunId);
 }

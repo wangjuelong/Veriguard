@@ -63,8 +63,8 @@ public class TeamApi extends RestBehavior {
 
   public static final String TEAM_URI = "/api/teams";
 
-  private final ExerciseRepository exerciseRepository;
-  private final ScenarioRepository scenarioRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
+  private final AttackChainRepository attackChainRepository;
   private final TeamRepository teamRepository;
   private final UserRepository userRepository;
   private final OrganizationRepository organizationRepository;
@@ -139,8 +139,8 @@ public class TeamApi extends RestBehavior {
     team.setOrganization(
         updateRelation(input.getOrganizationId(), team.getOrganization(), organizationRepository));
     team.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
-    team.setExercises(fromIterable(exerciseRepository.findAllById(input.getExerciseIds())));
-    team.setScenarios(fromIterable(scenarioRepository.findAllById(input.getScenarioIds())));
+    team.setAttackChainRuns(fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
+    team.setAttackChains(fromIterable(attackChainRepository.findAllById(input.getAttackChainIds())));
     return teamRepository.save(team);
   }
 
@@ -151,7 +151,7 @@ public class TeamApi extends RestBehavior {
       value = {@ApiResponse(responseCode = "200", description = "The created/updated team")})
   @Operation(description = "Create a new team or update an existing team", summary = "Upsert team")
   public Team upsertTeam(@Valid @RequestBody TeamCreateInput input) {
-    if (input.getContextual() && input.getExerciseIds().toArray().length > 1) {
+    if (input.getContextual() && input.getAttackChainRunIds().toArray().length > 1) {
       throw new UnsupportedOperationException(
           "Contextual team can only be associated to one exercise");
     }
@@ -172,8 +172,8 @@ public class TeamApi extends RestBehavior {
           updateRelation(
               input.getOrganizationId(), newTeam.getOrganization(), organizationRepository));
       newTeam.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
-      newTeam.setExercises(fromIterable(exerciseRepository.findAllById(input.getExerciseIds())));
-      newTeam.setScenarios(fromIterable(scenarioRepository.findAllById(input.getScenarioIds())));
+      newTeam.setAttackChainRuns(fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
+      newTeam.setAttackChains(fromIterable(attackChainRepository.findAllById(input.getAttackChainIds())));
       return teamRepository.save(newTeam);
     }
   }
@@ -225,27 +225,27 @@ public class TeamApi extends RestBehavior {
       @RequestParam(required = false) final String sourceId,
       @RequestParam(required = false) final String inputFilterOption) {
     List<FilterUtilsJpa.Option> options = List.of();
-    InputFilterOptions injectFilterOptionEnum;
+    InputFilterOptions attackChainNodeFilterOptionEnum;
     try {
-      injectFilterOptionEnum = InputFilterOptions.valueOf(inputFilterOption);
+      attackChainNodeFilterOptionEnum = InputFilterOptions.valueOf(inputFilterOption);
     } catch (Exception e) {
       if (StringUtils.isEmpty(inputFilterOption)) {
         log.warn("InputFilterOption is null, fall back to backwards compatible case");
         if (StringUtils.isNotEmpty(sourceId)) {
-          injectFilterOptionEnum = InputFilterOptions.SIMULATION_OR_SCENARIO;
+          attackChainNodeFilterOptionEnum = InputFilterOptions.SIMULATION_OR_SCENARIO;
         } else {
-          injectFilterOptionEnum = InputFilterOptions.ATOMIC_TESTING;
+          attackChainNodeFilterOptionEnum = InputFilterOptions.ATOMIC_TESTING;
         }
       } else {
         throw new BadRequestException(
             String.format("Invalid input filter option %s", inputFilterOption));
       }
     }
-    switch (injectFilterOptionEnum) {
+    switch (attackChainNodeFilterOptionEnum) {
       case ALL_INJECTS:
         {
           options =
-              teamRepository.findAllTeamsForAtomicTestingsSimulationsAndScenarios().stream()
+              teamRepository.findAllTeamsForAtomicTestingsSimulationsAndAttackChains().stream()
                   .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
                   .toList();
           break;
@@ -261,7 +261,7 @@ public class TeamApi extends RestBehavior {
         {
           options =
               teamRepository
-                  .findAllBySimulationOrScenarioIdAndName(
+                  .findAllBySimulationOrAttackChainIdAndName(
                       StringUtils.trimToNull(sourceId), StringUtils.trimToNull(searchText))
                   .stream()
                   .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
@@ -294,25 +294,25 @@ public class TeamApi extends RestBehavior {
           "Global teams (non contextual) cannot have the same name (already exists)");
     }
     if (TRUE.equals(input.getContextual())) {
-      String exerciseId = input.getExerciseIds().stream().findFirst().orElse(null);
-      if (hasText(exerciseId)
+      String attackChainRunId = input.getAttackChainRunIds().stream().findFirst().orElse(null);
+      if (hasText(attackChainRunId)
           && teams.stream()
               .anyMatch(
                   t ->
                       TRUE.equals(t.getContextual())
-                          && t.getExercises().stream()
-                              .anyMatch((e) -> exerciseId.equals(e.getId())))) {
+                          && t.getAttackChainRuns().stream()
+                              .anyMatch((e) -> attackChainRunId.equals(e.getId())))) {
         throw new AlreadyExistingException(
             "A contextual team with the same name already exists on this simulation");
       }
-      String scenarioId = input.getScenarioIds().stream().findFirst().orElse(null);
-      if (hasText(scenarioId)
+      String attackChainId = input.getAttackChainIds().stream().findFirst().orElse(null);
+      if (hasText(attackChainId)
           && teams.stream()
               .anyMatch(
                   t ->
                       TRUE.equals(t.getContextual())
-                          && t.getScenarios().stream()
-                              .anyMatch((e) -> scenarioId.equals(e.getId())))) {
+                          && t.getAttackChains().stream()
+                              .anyMatch((e) -> attackChainId.equals(e.getId())))) {
         throw new AlreadyExistingException(
             "A contextual team with the same name already exists on this scenario");
       }

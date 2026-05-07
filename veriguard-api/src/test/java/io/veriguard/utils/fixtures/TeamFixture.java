@@ -19,21 +19,21 @@ public class TeamFixture {
     return teamCreateInput;
   }
 
-  public static TeamCreateInput createContextualExerciseTeam(List<String> exerciseIds) {
+  public static TeamCreateInput createContextualAttackChainRunTeam(List<String> attackChainRunIds) {
     TeamCreateInput teamCreateInput = new TeamCreateInput();
     teamCreateInput.setName(CONTEXTUAL_TEAM_NAME);
     teamCreateInput.setDescription("Team description");
     teamCreateInput.setContextual(true);
-    teamCreateInput.setExerciseIds(exerciseIds);
+    teamCreateInput.setAttackChainRunIds(attackChainRunIds);
     return teamCreateInput;
   }
 
-  public static TeamCreateInput createContextualScenarioTeam(List<String> scenarioIds) {
+  public static TeamCreateInput createContextualAttackChainTeam(List<String> attackChainIds) {
     TeamCreateInput teamCreateInput = new TeamCreateInput();
     teamCreateInput.setName("Scenario team");
     teamCreateInput.setDescription("Team description");
     teamCreateInput.setContextual(true);
-    teamCreateInput.setScenarioIds(scenarioIds);
+    teamCreateInput.setAttackChainIds(attackChainIds);
     return teamCreateInput;
   }
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Optional;
 
 /**
- * Handler interface for processing inject execution contexts.
+ * Handler interface for processing attackChainNode execution contexts.
  *
  * <p>Implementations determine if they support a given context and process it, typically generating
  * structured output and then processing additional capabilities (findings, expectation matching,

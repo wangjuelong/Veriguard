@@ -151,7 +151,7 @@ public class CollectorApi extends RestBehavior {
             collector.getLastExecution(),
             input.getSecurityPlatform());
       } else {
-        // save the injector
+        // save the nodeExecutor
         Collector newCollector = new Collector();
         newCollector.setId(input.getId());
         newCollector.setExternal(true);

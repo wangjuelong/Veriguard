@@ -23,8 +23,8 @@ public class TargetService {
   private final AgentTargetSearchAdaptor agentTargetSearchAdaptor;
   private final PlayerTargetSearchAdaptor playerTargetSearchAdaptor;
 
-  public Page<InjectTarget> searchTargets(
-      TargetType injectTargetType, Inject inject, SearchPaginationInput input) {
+  public Page<AttackChainNodeTarget> searchTargets(
+      TargetType attackChainNodeTargetType, AttackChainNode attackChainNode, SearchPaginationInput input) {
 
     // handle defaults if filter group is null
     if (input.getFilterGroup() == null) {
@@ -33,24 +33,24 @@ public class TargetService {
       filterGroup.setFilters(List.of());
       input.setFilterGroup(filterGroup);
     }
-    return switch (injectTargetType) {
-      case ASSETS_GROUPS -> assetGroupTargetSearchAdaptor.search(input, inject);
-      case ASSETS -> endpointTargetSearchAdaptor.search(input, inject);
-      case TEAMS -> teamTargetSearchAdaptor.search(input, inject);
-      case PLAYERS -> playerTargetSearchAdaptor.search(input, inject);
-      case AGENT -> agentTargetSearchAdaptor.search(input, inject);
-      default -> throw new IllegalArgumentException("Unsupported target type: " + injectTargetType);
+    return switch (attackChainNodeTargetType) {
+      case ASSETS_GROUPS -> assetGroupTargetSearchAdaptor.search(input, attackChainNode);
+      case ASSETS -> endpointTargetSearchAdaptor.search(input, attackChainNode);
+      case TEAMS -> teamTargetSearchAdaptor.search(input, attackChainNode);
+      case PLAYERS -> playerTargetSearchAdaptor.search(input, attackChainNode);
+      case AGENT -> agentTargetSearchAdaptor.search(input, attackChainNode);
+      default -> throw new IllegalArgumentException("Unsupported target type: " + attackChainNodeTargetType);
     };
   }
 
   public List<FilterUtilsJpa.Option> getTargetOptions(
-      TargetType targetType, Inject inject, String textSearch) {
+      TargetType targetType, AttackChainNode attackChainNode, String textSearch) {
     return switch (targetType) {
-      case ASSETS_GROUPS -> assetGroupTargetSearchAdaptor.getOptionsForInject(inject, textSearch);
-      case ASSETS -> endpointTargetSearchAdaptor.getOptionsForInject(inject, textSearch);
-      case TEAMS -> teamTargetSearchAdaptor.getOptionsForInject(inject, textSearch);
-      case PLAYERS -> playerTargetSearchAdaptor.getOptionsForInject(inject, textSearch);
-      case AGENT -> agentTargetSearchAdaptor.getOptionsForInject(inject, textSearch);
+      case ASSETS_GROUPS -> assetGroupTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case ASSETS -> endpointTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case TEAMS -> teamTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case PLAYERS -> playerTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case AGENT -> agentTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
       default -> throw new IllegalArgumentException("Unsupported target type: " + targetType);
     };
   }

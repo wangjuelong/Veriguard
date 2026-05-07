@@ -43,9 +43,9 @@ public class PayloadUpdateInput {
 
   @JsonProperty("payload_expectations")
   @NotNull
-  private InjectExpectation.EXPECTATION_TYPE[] expectations =
-      new InjectExpectation.EXPECTATION_TYPE[] {
-        InjectExpectation.EXPECTATION_TYPE.PREVENTION, InjectExpectation.EXPECTATION_TYPE.DETECTION
+  private AttackChainNodeExpectation.EXPECTATION_TYPE[] expectations =
+      new AttackChainNodeExpectation.EXPECTATION_TYPE[] {
+        AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION, AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION
       };
 
   @JsonProperty("executable_file")

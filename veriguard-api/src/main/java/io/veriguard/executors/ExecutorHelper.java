@@ -29,8 +29,8 @@ public class ExecutorHelper {
   private ExecutorHelper() {}
 
   public static String replaceArgs(
-      PLATFORM_TYPE platformType, String command, String injectId, String agentId) {
-    if (platformType == null || command == null || injectId == null || agentId == null) {
+      PLATFORM_TYPE platformType, String command, String attackChainNodeId, String agentId) {
+    if (platformType == null || command == null || attackChainNodeId == null || agentId == null) {
       throw new IllegalArgumentException(
           "Platform type, command, injectId, and agentId must not be null.");
     }
@@ -45,7 +45,7 @@ public class ExecutorHelper {
 
     return command
         .replace("\"#{location}\"", location)
-        .replace("#{inject}", injectId)
+        .replace("#{inject}", attackChainNodeId)
         .replace("#{agent}", agentId);
   }
 }

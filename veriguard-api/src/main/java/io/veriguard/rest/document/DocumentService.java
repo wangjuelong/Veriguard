@@ -62,8 +62,8 @@ public class DocumentService {
     return URLEncoder.encode(name, StandardCharsets.UTF_8).replace("+", "%20");
   }
 
-  public List<Document> documentsForScenario(String scenarioId) {
-    return this.documentRepository.findAllDistinctByScenarioId(scenarioId);
+  public List<Document> documentsForAttackChain(String attackChainId) {
+    return this.documentRepository.findAllDistinctByAttackChainId(attackChainId);
   }
 
   public List<Document> documentsForSimulation(String simulationId) {

@@ -324,7 +324,7 @@ public class TagRuleServiceTest extends IntegrationTest {
   }
 
   @Test
-  void testApplyTagRuleToInjectCreation() {
+  void testApplyTagRuleToAttackChainNodeCreation() {
     AssetGroup assetGroup1 = AssetGroupFixture.createDefaultAssetGroup("assetgroup1");
     assetGroup1.setId("assetgroup1");
     AssetGroup assetGroup2 = AssetGroupFixture.createDefaultAssetGroup("assetgroup2");
@@ -345,7 +345,7 @@ public class TagRuleServiceTest extends IntegrationTest {
         .thenReturn(List.of(tagRule));
 
     List<AssetGroup> result =
-        tagRuleService.applyTagRuleToInjectCreation(
+        tagRuleService.applyTagRuleToAttackChainNodeCreation(
             List.of(tag1.getId(), tag2.getId()), currentAssetGroups);
     List<AssetGroup> expected = List.of(assetGroup1, assetGroup2, assetGroup3, assetGroup4);
     assertEquals(new HashSet<>(expected), new HashSet<>(result));

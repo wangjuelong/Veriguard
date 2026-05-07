@@ -2,16 +2,16 @@ package io.veriguard.utils.fixtures;
 
 import static io.veriguard.expectation.ExpectationType.*;
 
-import io.veriguard.database.model.InjectExpectation;
+import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.expectation.ExpectationType;
-import io.veriguard.utils.InjectExpectationResultUtils.ExpectationResultsByType;
-import io.veriguard.utils.InjectExpectationResultUtils.ResultDistribution;
+import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
+import io.veriguard.utils.NodeExpectationResultUtils.ResultDistribution;
 import java.util.List;
 
 public class ExpectationResultByTypeFixture {
   public static ExpectationResultsByType createDefaultExpectationResultsByType(
       ExpectationType type,
-      InjectExpectation.EXPECTATION_STATUS avgResult,
+      AttackChainNodeExpectation.EXPECTATION_STATUS avgResult,
       int successCount,
       int pendingCount,
       int partialCount,

@@ -52,104 +52,104 @@ class FindingApiTest extends IntegrationTest {
   @Autowired private FindingComposer findingComposer;
   @Autowired private AssetGroupComposer assetGroupComposer;
   @Autowired private EndpointComposer endpointComposer;
-  @Autowired private InjectComposer injectComposer;
-  @Autowired private InjectorContractComposer injectorContractComposer;
-  @Autowired private ScenarioComposer scenarioComposer;
-  @Autowired private ExerciseComposer simulationComposer;
+  @Autowired private AttackChainNodeComposer attackChainNodeComposer;
+  @Autowired private NodeContractComposer nodeContractComposer;
+  @Autowired private AttackChainComposer attackChainComposer;
+  @Autowired private AttackChainRunComposer simulationComposer;
   @Autowired private AgentComposer agentComposer;
   @Autowired private TagComposer tagComposer;
-  @Autowired private InjectorFixture injectorFixture;
+  @Autowired private NodeExecutorFixture nodeExecutorFixture;
   @Autowired private FindingRepository findingRepository;
   @Autowired private FindingMapper findingMapper;
   @Autowired private EntityManager entityManager;
 
   @BeforeEach
   void setUp() {
-    scenarioComposer.reset();
+    attackChainComposer.reset();
     simulationComposer.reset();
-    injectComposer.reset();
+    attackChainNodeComposer.reset();
     tagComposer.reset();
     agentComposer.reset();
     findingComposer.reset();
     endpointComposer.reset();
     assetGroupComposer.reset();
-    injectorContractComposer.reset();
+    nodeContractComposer.reset();
   }
 
   @Nested
   @DisplayName("With several simulations from same scenario in database")
-  class WithSeveralSimulationsFromSameScenario {
+  class WithSeveralSimulationsFromSameAttackChain {
     private final int numberOfPreviousSimulations = 5;
-    private final String firstInjectName = "firstInjectName";
-    private final String secondInjectName = "secondInjectName";
-    private final String thirdInjectName = "thirdInjectName";
-    private final String fourthInjectName = "fourthInjectName";
+    private final String firstAttackChainNodeName = "firstInjectName";
+    private final String secondAttackChainNodeName = "secondInjectName";
+    private final String thirdAttackChainNodeName = "thirdInjectName";
+    private final String fourthAttackChainNodeName = "fourthInjectName";
 
-    private ScenarioComposer.Composer getScenarioWithSimulationsWrapper() {
-      ScenarioComposer.Composer scenarioWrapper =
-          scenarioComposer.forScenario(ScenarioFixture.getScenario());
+    private AttackChainComposer.Composer getAttackChainWithSimulationsWrapper() {
+      AttackChainComposer.Composer attackChainWrapper =
+          attackChainComposer.forAttackChain(AttackChainFixture.getAttackChain());
 
       // add simulations with default findings
       for (int i = 0; i < numberOfPreviousSimulations; i++) {
-        Hashtable<String, InjectComposer.Composer> injects =
-            attachSimulationToScenario(
-                scenarioWrapper, ExerciseFixture.createFinishedAttackExercise());
-        for (Map.Entry<String, InjectComposer.Composer> entry : injects.entrySet()) {
+        Hashtable<String, AttackChainNodeComposer.Composer> attackChainNodes =
+            attachSimulationToAttackChain(
+                attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+        for (Map.Entry<String, AttackChainNodeComposer.Composer> entry : attackChainNodes.entrySet()) {
           for (FindingComposer.Composer findingWrapper : getDefaultFindings()) {
             entry.getValue().withFinding(findingWrapper);
           }
         }
       }
 
-      return scenarioWrapper;
+      return attackChainWrapper;
     }
 
-    private Hashtable<String, InjectComposer.Composer> attachSimulationToScenario(
-        ScenarioComposer.Composer scenarioWrapper, Exercise simulationFixture) {
-      // create arbitrary injects
-      Hashtable<String, InjectComposer.Composer> injects = new Hashtable<>();
-      injects.put(
-          firstInjectName,
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
-              .withInjectorContract(
-                  injectorContractComposer
-                      .forInjectorContract(InjectorContractFixture.createDefaultInjectorContract())
-                      .withInjector(injectorFixture.getWellKnownOaevImplantInjector())));
-      injects.put(
-          secondInjectName,
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
-              .withInjectorContract(
-                  injectorContractComposer
-                      .forInjectorContract(InjectorContractFixture.createDefaultInjectorContract())
-                      .withInjector(injectorFixture.getWellKnownOaevImplantInjector())));
-      injects.put(
-          thirdInjectName,
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
-              .withInjectorContract(
-                  injectorContractComposer
-                      .forInjectorContract(InjectorContractFixture.createDefaultInjectorContract())
-                      .withInjector(injectorFixture.getWellKnownOaevImplantInjector())));
-      injects.put(
-          fourthInjectName,
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
-              .withInjectorContract(
-                  injectorContractComposer
-                      .forInjectorContract(InjectorContractFixture.createDefaultInjectorContract())
-                      .withInjector(injectorFixture.getWellKnownOaevImplantInjector())));
+    private Hashtable<String, AttackChainNodeComposer.Composer> attachSimulationToAttackChain(
+        AttackChainComposer.Composer attackChainWrapper, AttackChainRun simulationFixture) {
+      // create arbitrary attackChainNodes
+      Hashtable<String, AttackChainNodeComposer.Composer> attackChainNodes = new Hashtable<>();
+      attackChainNodes.put(
+          firstAttackChainNodeName,
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
+              .withNodeContract(
+                  nodeContractComposer
+                      .forNodeContract(NodeContractFixture.createDefaultNodeContract())
+                      .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
+      attackChainNodes.put(
+          secondAttackChainNodeName,
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
+              .withNodeContract(
+                  nodeContractComposer
+                      .forNodeContract(NodeContractFixture.createDefaultNodeContract())
+                      .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
+      attackChainNodes.put(
+          thirdAttackChainNodeName,
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
+              .withNodeContract(
+                  nodeContractComposer
+                      .forNodeContract(NodeContractFixture.createDefaultNodeContract())
+                      .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
+      attackChainNodes.put(
+          fourthAttackChainNodeName,
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
+              .withNodeContract(
+                  nodeContractComposer
+                      .forNodeContract(NodeContractFixture.createDefaultNodeContract())
+                      .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
 
-      ExerciseComposer.Composer simulationWrapper =
-          simulationComposer.forExercise(simulationFixture);
-      for (Map.Entry<String, InjectComposer.Composer> entry : injects.entrySet()) {
-        simulationWrapper.withInject(entry.getValue());
+      AttackChainRunComposer.Composer simulationWrapper =
+          simulationComposer.forAttackChainRun(simulationFixture);
+      for (Map.Entry<String, AttackChainNodeComposer.Composer> entry : attackChainNodes.entrySet()) {
+        simulationWrapper.withAttackChainNode(entry.getValue());
       }
 
-      scenarioWrapper.withSimulation(simulationWrapper);
+      attackChainWrapper.withSimulation(simulationWrapper);
 
-      return injects;
+      return attackChainNodes;
     }
 
     private List<FindingComposer.Composer> getDefaultFindings() {
@@ -166,35 +166,35 @@ class FindingApiTest extends IntegrationTest {
     class WhenSearchingGloballyForFindings {
       @Test
       @DisplayName("Returns only findings for latest simulation of each scenario")
-      public void ReturnsOnlyFindingsForLatestSimulationOfEachScenario() throws Exception {
-        List<ScenarioComposer.Composer> scenarioWrappers =
-            List.of(getScenarioWithSimulationsWrapper(), getScenarioWithSimulationsWrapper());
+      public void ReturnsOnlyFindingsForLatestSimulationOfEachAttackChain() throws Exception {
+        List<AttackChainComposer.Composer> attackChainWrappers =
+            List.of(getAttackChainWithSimulationsWrapper(), getAttackChainWithSimulationsWrapper());
 
         // latest findings
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
 
-        // add latest simulation to each scenario
-        for (ScenarioComposer.Composer scenarioWrapper : scenarioWrappers) {
-          Hashtable<String, InjectComposer.Composer> latestSimulationInjectWrappers =
-              attachSimulationToScenario(
-                  scenarioWrapper, ExerciseFixture.createFinishedAttackExercise());
-          for (Map.Entry<String, InjectComposer.Composer> entry :
-              latestSimulationInjectWrappers.entrySet()) {
+        // add latest simulation to each attackChain
+        for (AttackChainComposer.Composer attackChainWrapper : attackChainWrappers) {
+          Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
+              attachSimulationToAttackChain(
+                  attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+          for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
+              latestSimulationAttackChainNodeWrappers.entrySet()) {
             FindingComposer.Composer findingWrapper =
                 findingComposer.forFinding(createDefaultTextFindingWithRandomValue());
             latestFindingWrappers.add(findingWrapper);
             entry.getValue().withFinding(findingWrapper);
           }
-          scenarioWrapper.persist();
+          attackChainWrapper.persist();
         }
 
-        // add injects (atomic testing) with findings too
+        // add attackChainNodes (atomic testing) with findings too
         for (int i = 0; i < 2; i++) {
           FindingComposer.Composer findingWrapper =
               findingComposer.forFinding(createDefaultTextFindingWithRandomValue());
           latestFindingWrappers.add(findingWrapper);
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
               .withFinding(findingWrapper)
               .persist();
         }
@@ -229,21 +229,21 @@ class FindingApiTest extends IntegrationTest {
 
       @Test
       @DisplayName("Returns only findings for latest finished simulation of each scenario")
-      public void ReturnsOnlyFindingsForLatestFinishedSimulationOfEachScenario() throws Exception {
-        List<ScenarioComposer.Composer> scenarioWrappers =
-            List.of(getScenarioWithSimulationsWrapper(), getScenarioWithSimulationsWrapper());
+      public void ReturnsOnlyFindingsForLatestFinishedSimulationOfEachAttackChain() throws Exception {
+        List<AttackChainComposer.Composer> attackChainWrappers =
+            List.of(getAttackChainWithSimulationsWrapper(), getAttackChainWithSimulationsWrapper());
 
         // latest findings
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
 
-        // add latest simulations to each scenario
-        for (ScenarioComposer.Composer scenarioWrapper : scenarioWrappers) {
+        // add latest simulations to each attackChain
+        for (AttackChainComposer.Composer attackChainWrapper : attackChainWrappers) {
           ///  FINISHED simulation
-          Hashtable<String, InjectComposer.Composer> latestSimulationInjectWrappers =
-              attachSimulationToScenario(
-                  scenarioWrapper, ExerciseFixture.createFinishedAttackExercise());
-          for (Map.Entry<String, InjectComposer.Composer> entry :
-              latestSimulationInjectWrappers.entrySet()) {
+          Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
+              attachSimulationToAttackChain(
+                  attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+          for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
+              latestSimulationAttackChainNodeWrappers.entrySet()) {
             FindingComposer.Composer findingWrapper =
                 findingComposer.forFinding(createDefaultTextFindingWithRandomValue());
             latestFindingWrappers.add(findingWrapper);
@@ -251,18 +251,18 @@ class FindingApiTest extends IntegrationTest {
           }
 
           /// RUNNING simulation with no findings
-          attachSimulationToScenario(
-              scenarioWrapper, ExerciseFixture.createRunningAttackExercise());
-          scenarioWrapper.persist();
+          attachSimulationToAttackChain(
+              attackChainWrapper, AttackChainRunFixture.createRunningAttackAttackChainRun());
+          attackChainWrapper.persist();
         }
 
-        // add injects (atomic testing) with findings too
+        // add attackChainNodes (atomic testing) with findings too
         for (int i = 0; i < 2; i++) {
           FindingComposer.Composer findingWrapper =
               findingComposer.forFinding(createDefaultTextFindingWithRandomValue());
           latestFindingWrappers.add(findingWrapper);
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
               .withFinding(findingWrapper)
               .persist();
         }
@@ -298,27 +298,27 @@ class FindingApiTest extends IntegrationTest {
 
     @Nested
     @DisplayName("When searching for findings on scenario")
-    class WhenSearchingForFindingsOnScenario {
+    class WhenSearchingForFindingsOnAttackChain {
       @Test
       @DisplayName("Returns only findings for latest simulation")
       public void ReturnsOnlyFindingsForLatestSimulation() throws Exception {
-        ScenarioComposer.Composer scenarioWrapper = getScenarioWithSimulationsWrapper();
+        AttackChainComposer.Composer attackChainWrapper = getAttackChainWithSimulationsWrapper();
 
         // latest findings
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
 
-        // add latest simulation to scenario
-        Hashtable<String, InjectComposer.Composer> latestSimulationInjectWrappers =
-            attachSimulationToScenario(
-                scenarioWrapper, ExerciseFixture.createFinishedAttackExercise());
-        for (Map.Entry<String, InjectComposer.Composer> entry :
-            latestSimulationInjectWrappers.entrySet()) {
+        // add latest simulation to attackChain
+        Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
+            attachSimulationToAttackChain(
+                attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+        for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
+            latestSimulationAttackChainNodeWrappers.entrySet()) {
           FindingComposer.Composer findingWrapper =
               findingComposer.forFinding(createDefaultTextFindingWithRandomValue());
           latestFindingWrappers.add(findingWrapper);
           entry.getValue().withFinding(findingWrapper);
         }
-        scenarioWrapper.persist();
+        attackChainWrapper.persist();
 
         SearchPaginationInput input = PaginationFixture.getDefault().build();
 
@@ -327,7 +327,7 @@ class FindingApiTest extends IntegrationTest {
 
         String response =
             performCallbackRequest(
-                    FINDING_URI + "/scenarios/" + scenarioWrapper.get().getId() + "/search", input)
+                    FINDING_URI + "/scenarios/" + attackChainWrapper.get().getId() + "/search", input)
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -356,10 +356,10 @@ class FindingApiTest extends IntegrationTest {
       @Test
       @DisplayName("Returns all findings for observed simulation")
       public void ReturnsAllFindingsForObservedSimulation() throws Exception {
-        ScenarioComposer.Composer scenarioWrapper = getScenarioWithSimulationsWrapper();
-        scenarioWrapper.persist();
+        AttackChainComposer.Composer attackChainWrapper = getAttackChainWithSimulationsWrapper();
+        attackChainWrapper.persist();
 
-        Exercise ex = scenarioWrapper.get().getExercises().getFirst();
+        AttackChainRun ex = attackChainWrapper.get().getAttackChainRuns().getFirst();
 
         SearchPaginationInput input = PaginationFixture.getDefault().build();
         input.setSorts(
@@ -379,8 +379,8 @@ class FindingApiTest extends IntegrationTest {
         List<RelatedFindingOutput> expectedFindings =
             fromIterable(
                     findingRepository.findAllById(
-                        ex.getInjects().stream()
-                            .flatMap(inject -> inject.getFindings().stream().map(Finding::getId))
+                        ex.getAttackChainNodes().stream()
+                            .flatMap(attackChainNode -> attackChainNode.getFindings().stream().map(Finding::getId))
                             .toList()))
                 .stream()
                 .map(findingMapper::toRelatedFindingOutput)
@@ -403,14 +403,14 @@ class FindingApiTest extends IntegrationTest {
 
     @Nested
     @DisplayName("When searching for findings on inject")
-    class WhenSearchingForFindingsOnInject {
+    class WhenSearchingForFindingsOnAttackChainNode {
       @Test
       @DisplayName("Returns all findings for observed inject")
-      public void ReturnsAllFindingsForObservedInject() throws Exception {
-        ScenarioComposer.Composer scenarioWrapper = getScenarioWithSimulationsWrapper();
-        scenarioWrapper.persist();
+      public void ReturnsAllFindingsForObservedAttackChainNode() throws Exception {
+        AttackChainComposer.Composer attackChainWrapper = getAttackChainWithSimulationsWrapper();
+        attackChainWrapper.persist();
 
-        Inject inject = scenarioWrapper.get().getExercises().getFirst().getInjects().getFirst();
+        AttackChainNode attackChainNode = attackChainWrapper.get().getAttackChainRuns().getFirst().getAttackChainNodes().getFirst();
 
         SearchPaginationInput input = PaginationFixture.getDefault().build();
 
@@ -418,7 +418,7 @@ class FindingApiTest extends IntegrationTest {
         entityManager.clear();
 
         String response =
-            performCallbackRequest(FINDING_URI + "/injects/" + inject.getId() + "/search", input)
+            performCallbackRequest(FINDING_URI + "/injects/" + attackChainNode.getId() + "/search", input)
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -426,7 +426,7 @@ class FindingApiTest extends IntegrationTest {
         List<RelatedFindingOutput> expectedFindings =
             fromIterable(
                     findingRepository.findAllById(
-                        inject.getFindings().stream().map(Finding::getId).toList()))
+                        attackChainNode.getFindings().stream().map(Finding::getId).toList()))
                 .stream()
                 .map(findingMapper::toRelatedFindingOutput)
                 .limit(input.getSize())
@@ -447,24 +447,24 @@ class FindingApiTest extends IntegrationTest {
       public void ReturnsAllFindingsForLatestSimulationsInvolvingEndpoint() throws Exception {
         EndpointComposer.Composer endpointWrapper =
             endpointComposer.forEndpoint(EndpointFixture.createEndpoint()).persist();
-        ScenarioComposer.Composer scenarioWrapper = getScenarioWithSimulationsWrapper();
+        AttackChainComposer.Composer attackChainWrapper = getAttackChainWithSimulationsWrapper();
 
         // hack findings to attach to endpoint
-        for (Exercise ex : scenarioWrapper.get().getExercises()) {
-          for (Inject inject : ex.getInjects()) {
-            for (Finding finding : inject.getFindings()) {
+        for (AttackChainRun ex : attackChainWrapper.get().getAttackChainRuns()) {
+          for (AttackChainNode attackChainNode : ex.getAttackChainNodes()) {
+            for (Finding finding : attackChainNode.getFindings()) {
               finding.setAssets(new ArrayList<>(List.of(endpointWrapper.get())));
             }
           }
         }
 
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
-        // add latest simulation to scenario
-        Hashtable<String, InjectComposer.Composer> latestSimulationInjectWrappers =
-            attachSimulationToScenario(
-                scenarioWrapper, ExerciseFixture.createFinishedAttackExercise());
-        for (Map.Entry<String, InjectComposer.Composer> entry :
-            latestSimulationInjectWrappers.entrySet()) {
+        // add latest simulation to attackChain
+        Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
+            attachSimulationToAttackChain(
+                attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+        for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
+            latestSimulationAttackChainNodeWrappers.entrySet()) {
           FindingComposer.Composer findingWrapper =
               findingComposer
                   .forFinding(createDefaultTextFindingWithRandomValue())
@@ -472,15 +472,15 @@ class FindingApiTest extends IntegrationTest {
           entry.getValue().withFinding(findingWrapper);
           latestFindingWrappers.add(findingWrapper);
         }
-        scenarioWrapper.persist();
+        attackChainWrapper.persist();
 
-        // add injects (atomic testing) with findings too
+        // add attackChainNodes (atomic testing) with findings too
         for (int i = 0; i < 2; i++) {
           FindingComposer.Composer findingWrapper =
               findingComposer.forFinding(createDefaultTextFindingWithRandomValue());
           latestFindingWrappers.add(findingWrapper);
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
               .withFinding(findingWrapper.withEndpoint(endpointWrapper))
               .persist();
         }
@@ -521,30 +521,30 @@ class FindingApiTest extends IntegrationTest {
           throws Exception {
         EndpointComposer.Composer endpointWrapper =
             endpointComposer.forEndpoint(EndpointFixture.createEndpoint()).persist();
-        ScenarioComposer.Composer scenarioWrapper = getScenarioWithSimulationsWrapper();
+        AttackChainComposer.Composer attackChainWrapper = getAttackChainWithSimulationsWrapper();
 
         // hack findings to attach to endpoint
-        for (Exercise ex : scenarioWrapper.get().getExercises()) {
-          for (Inject inject : ex.getInjects()) {
-            for (Finding finding : inject.getFindings()) {
+        for (AttackChainRun ex : attackChainWrapper.get().getAttackChainRuns()) {
+          for (AttackChainNode attackChainNode : ex.getAttackChainNodes()) {
+            for (Finding finding : attackChainNode.getFindings()) {
               finding.setAssets(new ArrayList<>(List.of(endpointWrapper.get())));
             }
           }
         }
 
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
-        // add finished simulation to scenario with no findings (= all previous findings solved)
-        attachSimulationToScenario(scenarioWrapper, ExerciseFixture.createFinishedAttackExercise());
+        // add finished simulation to attackChain with no findings (= all previous findings solved)
+        attachSimulationToAttackChain(attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
 
-        scenarioWrapper.persist();
+        attackChainWrapper.persist();
 
-        // add injects (atomic testing) with findings too
+        // add attackChainNodes (atomic testing) with findings too
         for (int i = 0; i < 2; i++) {
           FindingComposer.Composer findingWrapper =
               findingComposer.forFinding(createDefaultTextFindingWithRandomValue());
           latestFindingWrappers.add(findingWrapper);
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
               .withFinding(findingWrapper.withEndpoint(endpointWrapper))
               .persist();
         }
@@ -584,24 +584,24 @@ class FindingApiTest extends IntegrationTest {
           throws Exception {
         EndpointComposer.Composer endpointWrapper =
             endpointComposer.forEndpoint(EndpointFixture.createEndpoint()).persist();
-        ScenarioComposer.Composer scenarioWrapper = getScenarioWithSimulationsWrapper();
+        AttackChainComposer.Composer attackChainWrapper = getAttackChainWithSimulationsWrapper();
 
         // hack findings to attach to endpoint
-        for (Exercise ex : scenarioWrapper.get().getExercises()) {
-          for (Inject inject : ex.getInjects()) {
-            for (Finding finding : inject.getFindings()) {
+        for (AttackChainRun ex : attackChainWrapper.get().getAttackChainRuns()) {
+          for (AttackChainNode attackChainNode : ex.getAttackChainNodes()) {
+            for (Finding finding : attackChainNode.getFindings()) {
               finding.setAssets(new ArrayList<>(List.of(endpointWrapper.get())));
             }
           }
         }
 
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
-        // add latest simulation to scenario
-        Hashtable<String, InjectComposer.Composer> latestSimulationInjectWrappers =
-            attachSimulationToScenario(
-                scenarioWrapper, ExerciseFixture.createFinishedAttackExercise());
-        for (Map.Entry<String, InjectComposer.Composer> entry :
-            latestSimulationInjectWrappers.entrySet()) {
+        // add latest simulation to attackChain
+        Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
+            attachSimulationToAttackChain(
+                attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+        for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
+            latestSimulationAttackChainNodeWrappers.entrySet()) {
           FindingComposer.Composer findingWrapper =
               findingComposer
                   .forFinding(createDefaultTextFindingWithRandomValue())
@@ -610,17 +610,17 @@ class FindingApiTest extends IntegrationTest {
           latestFindingWrappers.add(findingWrapper);
         }
 
-        attachSimulationToScenario(scenarioWrapper, ExerciseFixture.createRunningAttackExercise());
+        attachSimulationToAttackChain(attackChainWrapper, AttackChainRunFixture.createRunningAttackAttackChainRun());
 
-        scenarioWrapper.persist();
+        attackChainWrapper.persist();
 
-        // add injects (atomic testing) with findings too
+        // add attackChainNodes (atomic testing) with findings too
         for (int i = 0; i < 2; i++) {
           FindingComposer.Composer findingWrapper =
               findingComposer.forFinding(createDefaultTextFindingWithRandomValue());
           latestFindingWrappers.add(findingWrapper);
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
               .withFinding(findingWrapper.withEndpoint(endpointWrapper))
               .persist();
         }
@@ -659,12 +659,12 @@ class FindingApiTest extends IntegrationTest {
   @Nested
   @DisplayName("Basic tests")
   class BasicTests {
-    private Exercise savedSimulation;
-    private Scenario savedScenario;
+    private AttackChainRun savedSimulation;
+    private AttackChain savedAttackChain;
     private AssetGroup savedAssetGroup;
     private Endpoint savedEndpoint;
-    private InjectComposer.Composer injectWrapper;
-    private InjectComposer.Composer injectWrapper2;
+    private AttackChainNodeComposer.Composer attackChainNodeWrapper;
+    private AttackChainNodeComposer.Composer attackChainNodeWrapper2;
 
     @BeforeEach
     void setup() {
@@ -683,26 +683,26 @@ class FindingApiTest extends IntegrationTest {
 
       savedAssetGroup = assetGroupWrapper.get();
 
-      injectWrapper =
-          injectComposer
-              .forInject(InjectFixture.getDefaultInject())
+      attackChainNodeWrapper =
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
               .withAssetGroup(assetGroupWrapper);
 
-      injectWrapper2 = injectComposer.forInject(InjectFixture.getDefaultInject());
+      attackChainNodeWrapper2 = attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode());
 
-      ExerciseComposer.Composer simulationWrapper =
+      AttackChainRunComposer.Composer simulationWrapper =
           simulationComposer
-              .forExercise(ExerciseFixture.createFinishedAttackExercise())
-              .withInject(injectWrapper);
+              .forAttackChainRun(AttackChainRunFixture.createFinishedAttackAttackChainRun())
+              .withAttackChainNode(attackChainNodeWrapper);
 
-      savedScenario =
-          scenarioComposer
-              .forScenario(ScenarioFixture.createDefaultCrisisScenario())
+      savedAttackChain =
+          attackChainComposer
+              .forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain())
               .withSimulation(simulationWrapper)
               .persist()
               .get();
 
-      savedSimulation = savedScenario.getExercises().getFirst();
+      savedSimulation = savedAttackChain.getAttackChainRuns().getFirst();
     }
 
     @DisplayName("Search global findings")
@@ -712,7 +712,7 @@ class FindingApiTest extends IntegrationTest {
           findingComposer
               .forFinding(FindingFixture.createDefaultTextFinding())
               .withEndpoint(endpointComposer.forEndpoint(savedEndpoint))
-              .withInject(injectWrapper)
+              .withAttackChainNode(attackChainNodeWrapper)
               .withTag(tagComposer.forTag(TagFixture.getTagWithText("Finding")))
               .persist()
               .get();
@@ -721,7 +721,7 @@ class FindingApiTest extends IntegrationTest {
               ContractOutputType.Text,
               savedFinding,
               savedSimulation,
-              savedScenario,
+              savedAttackChain,
               savedEndpoint,
               savedAssetGroup);
 
@@ -736,12 +736,12 @@ class FindingApiTest extends IntegrationTest {
               jsonPath("$.content.[0].finding_assets.[0].asset_id").value(savedEndpoint.getId()))
           .andExpect(
               jsonPath("$.content.[0].finding_inject.inject_id")
-                  .value(savedFinding.getInject().getId()))
+                  .value(savedFinding.getAttackChainNode().getId()))
           .andExpect(
               jsonPath("$.content.[0].finding_simulation.exercise_id")
                   .value(savedSimulation.getId()))
           .andExpect(
-              jsonPath("$.content.[0].finding_scenario.scenario_id").value(savedScenario.getId()));
+              jsonPath("$.content.[0].finding_scenario.scenario_id").value(savedAttackChain.getId()));
     }
 
     @Test
@@ -751,7 +751,7 @@ class FindingApiTest extends IntegrationTest {
           findingComposer
               .forFinding(FindingFixture.createDefaultIPV6Finding())
               .withEndpoint(endpointComposer.forEndpoint(savedEndpoint))
-              .withInject(injectWrapper)
+              .withAttackChainNode(attackChainNodeWrapper)
               .withTag(tagComposer.forTag(TagFixture.getTagWithText("Finding IPv6")))
               .persist()
               .get();
@@ -770,12 +770,12 @@ class FindingApiTest extends IntegrationTest {
 
     @Test
     @DisplayName("Search findings by scenario")
-    void should_return_findings_by_scenario() throws Exception {
+    void should_return_findings_by_attackChain() throws Exception {
       Finding savedFinding =
           findingComposer
               .forFinding(FindingFixture.createDefaultFindingCredentials())
               .withEndpoint(endpointComposer.forEndpoint(savedEndpoint))
-              .withInject(injectWrapper)
+              .withAttackChainNode(attackChainNodeWrapper)
               .withTag(tagComposer.forTag(TagFixture.getTagWithText("Finding")))
               .persist()
               .get();
@@ -785,16 +785,16 @@ class FindingApiTest extends IntegrationTest {
               ContractOutputType.Credentials,
               savedFinding,
               null,
-              savedScenario,
+              savedAttackChain,
               savedEndpoint,
               savedAssetGroup);
 
       entityManager.flush();
       entityManager.clear();
 
-      performCallbackRequest(FINDING_URI + "/scenarios/" + savedScenario.getId() + "/search", input)
+      performCallbackRequest(FINDING_URI + "/scenarios/" + savedAttackChain.getId() + "/search", input)
           .andExpect(
-              jsonPath("$.content.[0].finding_scenario.scenario_id").value(savedScenario.getId()))
+              jsonPath("$.content.[0].finding_scenario.scenario_id").value(savedAttackChain.getId()))
           .andExpect(
               jsonPath("$.content.[0].finding_type").value(savedFinding.getType().getLabel()))
           .andExpect(jsonPath("$.content.[0].finding_value").value("admin:admin"));
@@ -807,7 +807,7 @@ class FindingApiTest extends IntegrationTest {
           findingComposer
               .forFinding(FindingFixture.createDefaultTextFinding())
               .withEndpoint(endpointComposer.forEndpoint(savedEndpoint))
-              .withInject(injectWrapper)
+              .withAttackChainNode(attackChainNodeWrapper)
               .withTag(tagComposer.forTag(TagFixture.getTagWithText("Finding Text")))
               .persist()
               .get();
@@ -829,7 +829,7 @@ class FindingApiTest extends IntegrationTest {
       Finding f1 =
           findingComposer
               .forFinding(FindingFixture.createDefaultTextFinding())
-              .withInject(injectWrapper)
+              .withAttackChainNode(attackChainNodeWrapper)
               .withEndpoint(endpointComposer.forEndpoint(savedEndpoint))
               .persist()
               .get();
@@ -837,7 +837,7 @@ class FindingApiTest extends IntegrationTest {
       Finding f2 =
           findingComposer
               .forFinding(FindingFixture.createDefaultTextFinding())
-              .withInject(injectWrapper2)
+              .withAttackChainNode(attackChainNodeWrapper2)
               .withEndpoint(endpointComposer.forEndpoint(savedEndpoint))
               .persist()
               .get();
@@ -846,7 +846,7 @@ class FindingApiTest extends IntegrationTest {
       Finding f3 =
           findingComposer
               .forFinding(FindingFixture.createDefaultIPV6Finding())
-              .withInject(injectWrapper)
+              .withAttackChainNode(attackChainNodeWrapper)
               .persist()
               .get();
 
@@ -876,8 +876,8 @@ class FindingApiTest extends IntegrationTest {
   private SearchPaginationInput buildDefaultFilters(
       ContractOutputType type,
       Finding finding,
-      Exercise simulation,
-      Scenario scenario,
+      AttackChainRun simulation,
+      AttackChain attackChain,
       Endpoint endpoint,
       AssetGroup assetGroup) {
     SearchPaginationInput input = new SearchPaginationInput();
@@ -901,7 +901,7 @@ class FindingApiTest extends IntegrationTest {
         buildFilter(
             "finding_inject_id",
             Filters.FilterOperator.contains,
-            List.of(finding.getInject().getId())));
+            List.of(finding.getAttackChainNode().getId())));
 
     if (assetGroup != null) {
       filters.add(
@@ -920,10 +920,10 @@ class FindingApiTest extends IntegrationTest {
           buildFilter(
               "finding_simulation", Filters.FilterOperator.contains, List.of(simulation.getId())));
     }
-    if (scenario != null) {
+    if (attackChain != null) {
       filters.add(
           buildFilter(
-              "finding_scenario", Filters.FilterOperator.contains, List.of(scenario.getId())));
+              "finding_scenario", Filters.FilterOperator.contains, List.of(attackChain.getId())));
     }
 
     group.setFilters(filters);

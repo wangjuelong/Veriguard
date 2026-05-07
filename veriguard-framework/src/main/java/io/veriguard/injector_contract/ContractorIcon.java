@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Represents an icon image for a contractor/injector.
+ * Represents an icon image for a contractor/nodeExecutor.
  *
- * <p>Icons are displayed in the user interface to help identify different injector types. The icon
+ * <p>Icons are displayed in the user interface to help identify different nodeExecutor types. The icon
  * data is provided as an InputStream, typically loaded from resources.
  *
  * <p>Example usage:

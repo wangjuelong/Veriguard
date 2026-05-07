@@ -94,24 +94,24 @@ public class PaloAltoCortexExecutorServiceTest {
   //            List.of(),
   //            "whoami",
   //            Set.of(new Domain(null, "To classify", "#000000", Instant.now(), null)));
-  //    Injector injector = InjectorFixture.createDefaultPayloadInjector();
+  //    NodeExecutor nodeExecutor = NodeExecutorFixture.createDefaultPayloadNodeExecutor();
   //    Map<String, String> executorCommands = new HashMap<>();
   //    executorCommands.put(
   //        Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64, "x86_64");
-  //    injector.setExecutorCommands(executorCommands);
-  //    Inject inject =
-  //        InjectFixture.createTechnicalInject(
-  //            InjectorContractFixture.createPayloadInjectorContract(injector, payloadCommand),
+  //    nodeExecutor.setExecutorCommands(executorCommands);
+  //    AttackChainNode attackChainNode =
+  //        AttackChainNodeFixture.createTechnicalAttackChainNode(
+  //            NodeContractFixture.createPayloadNodeContract(nodeExecutor, payloadCommand),
   //            "Inject",
   //            EndpointFixture.createEndpoint());
-  //    inject.setId("injectId");
+  //    attackChainNode.setId("injectId");
   //    List<Agent> agents =
   //        List.of(AgentFixture.createAgent(EndpointFixture.createEndpoint(), "12345"));
-  //    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
-  //    when(executorService.manageWithoutPlatformAgents(agents, injectStatus)).thenReturn(agents);
+  //    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+  //    when(executorService.manageWithoutPlatformAgents(agents, attackChainNodeStatus)).thenReturn(agents);
   //    // Run method to test
   //    paloAltoCortexExecutorContextService.launchBatchExecutorSubprocess(
-  //        inject, new HashSet<>(agents), injectStatus);
+  //        attackChainNode, new HashSet<>(agents), attackChainNodeStatus);
   //    // Executor scheduled so we have to wait before the execution
   //    Thread.sleep(1000);
   //    // Asserts

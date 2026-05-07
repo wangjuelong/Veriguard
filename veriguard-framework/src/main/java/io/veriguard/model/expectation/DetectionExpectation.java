@@ -1,6 +1,6 @@
 package io.veriguard.model.expectation;
 
-import static io.veriguard.database.model.InjectExpectation.EXPECTATION_TYPE.DETECTION;
+import static io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION;
 
 import io.veriguard.database.model.*;
 import io.veriguard.model.Expectation;
@@ -28,7 +28,7 @@ import lombok.Setter;
  * </ul>
  *
  * @see Expectation
- * @see InjectExpectationSignature
+ * @see NodeExpectationSignature
  */
 @Getter
 @Setter
@@ -59,12 +59,12 @@ public class DetectionExpectation implements Expectation {
   private Long expirationTime;
 
   /** Signatures that can satisfy this detection expectation. */
-  private List<InjectExpectationSignature> injectExpectationSignatures;
+  private List<NodeExpectationSignature> nodeExpectationSignatures;
 
   private DetectionExpectation() {}
 
   @Override
-  public InjectExpectation.EXPECTATION_TYPE type() {
+  public AttackChainNodeExpectation.EXPECTATION_TYPE type() {
     return DETECTION;
   }
 
@@ -78,7 +78,7 @@ public class DetectionExpectation implements Expectation {
    * @param asset the asset where the agent resides
    * @param assetGroup optional asset group for grouping
    * @param expirationTime time in seconds until expiration
-   * @param injectExpectationSignatures signatures that satisfy this expectation
+   * @param nodeExpectationSignatures signatures that satisfy this expectation
    * @return a configured DetectionExpectation
    */
   public static DetectionExpectation detectionExpectationForAgent(
@@ -89,7 +89,7 @@ public class DetectionExpectation implements Expectation {
       @NotNull final Asset asset,
       final AssetGroup assetGroup,
       final Long expirationTime,
-      List<InjectExpectationSignature> injectExpectationSignatures) {
+      List<NodeExpectationSignature> nodeExpectationSignatures) {
     DetectionExpectation detectionExpectation = new DetectionExpectation();
     detectionExpectation.setScore(Objects.requireNonNullElse(score, 100.0));
     detectionExpectation.setName(name);
@@ -98,7 +98,7 @@ public class DetectionExpectation implements Expectation {
     detectionExpectation.setAsset(asset);
     detectionExpectation.setAssetGroup(assetGroup);
     detectionExpectation.setExpirationTime(expirationTime);
-    detectionExpectation.setInjectExpectationSignatures(injectExpectationSignatures);
+    detectionExpectation.setNodeExpectationSignatures(nodeExpectationSignatures);
     return detectionExpectation;
   }
 

@@ -23,7 +23,7 @@ public interface LessonsAnswerRepository
   @Query(
       """
     delete from LessonsAnswer la
-    where la.question.category.exercise.id = :exerciseId
+    where la.question.category.attackChainRun.id = :attackChainRunId
 """)
-  void deleteAllLessonsAnswersQuestionsCategoriesByExerciseId(String exerciseId);
+  void deleteAllLessonsAnswersQuestionsCategoriesByAttackChainRunId(String attackChainRunId);
 }

@@ -17,8 +17,8 @@ public class DocumentUpdateInput {
   private List<String> tagIds;
 
   @JsonProperty("document_exercises")
-  private List<String> exerciseIds = new ArrayList<>();
+  private List<String> attackChainRunIds = new ArrayList<>();
 
   @JsonProperty("document_scenarios")
-  private List<String> scenarioIds = new ArrayList<>();
+  private List<String> attackChainIds = new ArrayList<>();
 }

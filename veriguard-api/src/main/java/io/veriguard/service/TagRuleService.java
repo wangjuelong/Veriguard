@@ -161,14 +161,14 @@ public class TagRuleService {
   }
 
   /**
-   * Apply the rule to add the default asset groups to the input asset groups during Injects
+   * Apply the rule to add the default asset groups to the input asset groups during AttackChainNodes
    * creation
    *
-   * @param tagIds list of Asset Groups of the Inject before applying the rules
-   * @param inputAssetGroups list of Asset Groups of the Inject before applying the rules
+   * @param tagIds list of Asset Groups of the AttackChainNode before applying the rules
+   * @param inputAssetGroups list of Asset Groups of the AttackChainNode before applying the rules
    * @return return the new list of Asset Groups
    */
-  public List<AssetGroup> applyTagRuleToInjectCreation(
+  public List<AssetGroup> applyTagRuleToAttackChainNodeCreation(
       List<String> tagIds, List<AssetGroup> inputAssetGroups) {
 
     List<AssetGroup> defaultAssetGroups = this.getAssetGroupsFromTagIds(tagIds);

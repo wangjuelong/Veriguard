@@ -27,7 +27,7 @@ public interface GrantRepository
               + "LEFT JOIN users_groups ON groups.group_id = grants.grant_group "
               + "WHERE grants.grant_resource_type = 'SIMULATION' and grants.grant_resource IN :ids ;",
       nativeQuery = true)
-  List<RawGrant> rawByExerciseIds(@Param("ids") List<String> ids);
+  List<RawGrant> rawByAttackChainRunIds(@Param("ids") List<String> ids);
 
   @Query(
       "SELECT CASE WHEN COUNT(g) > 0 THEN true ELSE false END "

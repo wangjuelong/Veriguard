@@ -19,9 +19,9 @@ public class FindingMapper {
   private final FindingRepository findingRepository;
   private final EndpointMapper endpointMapper;
   private final AssetGroupMapper assetGroupMapper;
-  private final ExerciseMapper exerciseMapper;
-  private final ScenarioMapper scenarioMapper;
-  private final InjectMapper injectMapper;
+  private final AttackChainRunMapper attackChainRunMapper;
+  private final AttackChainMapper attackChainMapper;
+  private final AttackChainNodeMapper attackChainNodeMapper;
 
   public AggregatedFindingOutput toAggregatedFindingOutput(
       Finding finding, List<Asset> relatedAssets) {
@@ -52,15 +52,15 @@ public class FindingMapper {
             finding.getAssetGroups().stream()
                 .map(assetGroup -> assetGroupMapper.toAssetGroupSimple(assetGroup))
                 .collect(Collectors.toSet()))
-        .inject(injectMapper.toInjectSimple(finding.getInject()))
+        .attackChainNode(attackChainNodeMapper.toAttackChainNodeSimple(finding.getAttackChainNode()))
         .simulation(
-            Optional.ofNullable(finding.getInject().getExercise())
-                .map(exercise -> exerciseMapper.toExerciseSimple(exercise))
+            Optional.ofNullable(finding.getAttackChainNode().getAttackChainRun())
+                .map(attackChainRun -> attackChainRunMapper.toAttackChainRunSimple(attackChainRun))
                 .orElse(null))
-        .scenario(
-            Optional.ofNullable(finding.getInject().getExercise())
-                .map(Exercise::getScenario)
-                .map(scenario -> scenarioMapper.toScenarioSimple(scenario))
+        .attackChain(
+            Optional.ofNullable(finding.getAttackChainNode().getAttackChainRun())
+                .map(AttackChainRun::getAttackChain)
+                .map(attackChain -> attackChainMapper.toAttackChainSimple(attackChain))
                 .orElse(null))
         .creationDate(finding.getCreationDate())
         .build();

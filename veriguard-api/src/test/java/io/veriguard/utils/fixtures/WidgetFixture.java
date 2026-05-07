@@ -3,7 +3,7 @@ package io.veriguard.utils.fixtures;
 import static io.veriguard.engine.api.WidgetType.*;
 
 import io.veriguard.database.model.Filters;
-import io.veriguard.database.model.InjectExpectation;
+import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.Widget;
 import io.veriguard.database.model.WidgetLayout;
 import io.veriguard.engine.api.*;
@@ -74,7 +74,7 @@ public class WidgetFixture {
   }
 
   private static WidgetConfiguration.Series createSecurityCoverageSerie(
-      InjectExpectation.EXPECTATION_TYPE type, InjectExpectation.EXPECTATION_STATUS status) {
+      AttackChainNodeExpectation.EXPECTATION_TYPE type, AttackChainNodeExpectation.EXPECTATION_STATUS status) {
     WidgetConfiguration.Series serie = new WidgetConfiguration.Series();
     Filters.FilterGroup filterGroup = new Filters.FilterGroup();
     filterGroup.setMode(Filters.FilterMode.and);
@@ -104,15 +104,15 @@ public class WidgetFixture {
   public static Widget createSecurityConverageWidget(
       CustomDashboardTimeRange timeRange,
       String dateAttribute,
-      InjectExpectation.EXPECTATION_TYPE type) {
+      AttackChainNodeExpectation.EXPECTATION_TYPE type) {
     Widget widget = new Widget();
     widget.setType(SECURITY_COVERAGE_CHART);
     // series
     StructuralHistogramWidget widgetConfig = new StructuralHistogramWidget();
     WidgetConfiguration.Series successSeries =
-        createSecurityCoverageSerie(type, InjectExpectation.EXPECTATION_STATUS.SUCCESS);
+        createSecurityCoverageSerie(type, AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
     WidgetConfiguration.Series failedSeries =
-        createSecurityCoverageSerie(type, InjectExpectation.EXPECTATION_STATUS.FAILED);
+        createSecurityCoverageSerie(type, AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED);
     // basic configuration
     widgetConfig.setSeries(List.of(successSeries, failedSeries));
     widgetConfig.setTitle("Security coverage");

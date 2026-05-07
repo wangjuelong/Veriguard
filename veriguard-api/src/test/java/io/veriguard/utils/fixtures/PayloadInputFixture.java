@@ -9,7 +9,7 @@ import static io.veriguard.utils.fixtures.payload_fixture.RegexGroupInputFixture
 import static io.veriguard.utils.fixtures.payload_fixture.RegexGroupInputFixture.createDefaultRegexGroupInputIPV6;
 
 import io.veriguard.database.model.*;
-import io.veriguard.rest.injector_contract.form.InjectorContractDomainDTO;
+import io.veriguard.rest.injector_contract.form.NodeContractDomainDTO;
 import io.veriguard.rest.payload.contract_output_element.ContractOutputElementInput;
 import io.veriguard.rest.payload.form.*;
 import io.veriguard.rest.payload.output_parser.OutputParserInput;
@@ -151,7 +151,7 @@ public class PayloadInputFixture {
     input.setStatus(UNVERIFIED);
     input.setPlatforms(new Endpoint.PLATFORM_TYPE[] {Endpoint.PLATFORM_TYPE.MacOS});
     input.setDomains(
-        domains.stream().map(InjectorContractDomainDTO::fromDomain).collect(Collectors.toSet()));
+        domains.stream().map(NodeContractDomainDTO::fromDomain).collect(Collectors.toSet()));
     return input;
   }
 

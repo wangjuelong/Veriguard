@@ -13,7 +13,7 @@ import io.veriguard.executors.utils.ExecutorUtils;
 import io.veriguard.rest.domain.enums.PresetDomain;
 import io.veriguard.rest.exception.AgentException;
 import io.veriguard.rest.inject.output.AgentsAndAssetsAgentless;
-import io.veriguard.rest.inject.service.InjectService;
+import io.veriguard.rest.inject.service.AttackChainNodeService;
 import io.veriguard.utils.fixtures.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -30,7 +30,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ExtendWith(MockitoExtension.class)
 public class ExecutionExecutorServiceTest {
 
-  @Mock private InjectService injectService;
+  @Mock private AttackChainNodeService attackChainNodeService;
   @Mock private ExecutionTraceRepository executionTraceRepository;
   @Mock private ExecutorContextService executorContextService;
 
@@ -48,27 +48,27 @@ public class ExecutionExecutorServiceTest {
     Command payloadCommand =
         PayloadFixture.createCommand(
             "cmd", "whoami", List.of(), "whoami", new HashSet<>(Set.of(PresetDomain.TOCLASSIFY)));
-    Injector injector = InjectorFixture.createDefaultPayloadInjector();
+    NodeExecutor nodeExecutor = NodeExecutorFixture.createDefaultPayloadNodeExecutor();
     Map<String, String> executorCommands = new HashMap<>();
     executorCommands.put(
         Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64, "x86_64");
-    injector.setExecutorCommands(executorCommands);
+    nodeExecutor.setExecutorCommands(executorCommands);
     Endpoint endpoint = EndpointFixture.createEndpoint();
     endpoint.setId("0123456789");
-    Inject inject =
-        InjectFixture.createTechnicalInject(
-            InjectorContractFixture.createPayloadInjectorContract(injector, payloadCommand),
+    AttackChainNode attackChainNode =
+        AttackChainNodeFixture.createTechnicalAttackChainNode(
+            NodeContractFixture.createPayloadNodeContract(nodeExecutor, payloadCommand),
             "Inject",
             endpoint);
-    inject.setStatus(InjectStatusFixture.createPendingInjectStatus());
-    when(injectService.getAgentsAndAgentlessAssetsByInject(inject))
+    attackChainNode.setStatus(AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus());
+    when(attackChainNodeService.getAgentsAndAgentlessAssetsByAttackChainNode(attackChainNode))
         .thenReturn(
             new AgentsAndAssetsAgentless(new HashSet<>(), new HashSet<>(List.of(endpoint))));
     // Run method to test
     assertThrows(
         ExecutionExecutorException.class,
         () -> {
-          executorService.launchExecutorContext(inject);
+          executorService.launchExecutorContext(attackChainNode);
         });
   }
 
@@ -77,9 +77,9 @@ public class ExecutionExecutorServiceTest {
     // Init datas
     Endpoint endpoint = EndpointFixture.createEndpoint();
     endpoint.setId("0123456789");
-    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
+    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveAgentlessAssetsTraces(new HashSet<>(Set.of(endpoint)), injectStatus);
+    executorService.saveAgentlessAssetsTraces(new HashSet<>(Set.of(endpoint)), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository).saveAll(executionTrace.capture());
@@ -94,9 +94,9 @@ public class ExecutionExecutorServiceTest {
   @Test
   void test_saveAgentlessAssetsTraces_withoutAgents() {
     // Init datas
-    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
+    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveAgentlessAssetsTraces(new HashSet<>(), injectStatus);
+    executorService.saveAgentlessAssetsTraces(new HashSet<>(), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository, never()).saveAll(executionTrace.capture());
@@ -110,9 +110,9 @@ public class ExecutionExecutorServiceTest {
     agent.setAsset(endpoint);
     agent.setLastSeen(Instant.now().minus(5, ChronoUnit.DAYS));
     endpoint.setAgents(List.of(agent));
-    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
+    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveInactiveAgentsTraces(new HashSet<>(Set.of(agent)), injectStatus);
+    executorService.saveInactiveAgentsTraces(new HashSet<>(Set.of(agent)), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository).saveAll(executionTrace.capture());
@@ -130,9 +130,9 @@ public class ExecutionExecutorServiceTest {
   @Test
   void test_saveInactiveAgentsTraces_withoutAgents() {
     // Init datas
-    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
+    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveInactiveAgentsTraces(new HashSet<>(), injectStatus);
+    executorService.saveInactiveAgentsTraces(new HashSet<>(), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository, never()).saveAll(executionTrace.capture());
@@ -146,9 +146,9 @@ public class ExecutionExecutorServiceTest {
     agent.setAsset(endpoint);
     agent.setExecutor(null);
     endpoint.setAgents(List.of(agent));
-    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
+    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveWithoutExecutorAgentsTraces(new HashSet<>(Set.of(agent)), injectStatus);
+    executorService.saveWithoutExecutorAgentsTraces(new HashSet<>(Set.of(agent)), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository).saveAll(executionTrace.capture());
@@ -165,9 +165,9 @@ public class ExecutionExecutorServiceTest {
   @Test
   void test_saveWithoutExecutorAgentsTraces_withoutAgents() {
     // Init datas
-    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
+    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveWithoutExecutorAgentsTraces(new HashSet<>(), injectStatus);
+    executorService.saveWithoutExecutorAgentsTraces(new HashSet<>(), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository, never()).saveAll(executionTrace.capture());
@@ -180,10 +180,10 @@ public class ExecutionExecutorServiceTest {
     Agent agent = AgentFixture.createDefaultAgentSession();
     agent.setAsset(endpoint);
     endpoint.setAgents(List.of(agent));
-    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
+    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
     executorService.saveAgentsErrorTraces(
-        new Exception("EXCEPTION !!"), new HashSet<>(Set.of(agent)), injectStatus);
+        new Exception("EXCEPTION !!"), new HashSet<>(Set.of(agent)), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository).saveAll(executionTrace.capture());
@@ -199,9 +199,9 @@ public class ExecutionExecutorServiceTest {
     Agent agent = AgentFixture.createDefaultAgentSession();
     agent.setAsset(endpoint);
     endpoint.setAgents(List.of(agent));
-    InjectStatus injectStatus = InjectStatusFixture.createPendingInjectStatus();
+    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveAgentErrorTrace(new AgentException("EXCEPTION !!", agent), injectStatus);
+    executorService.saveAgentErrorTrace(new AgentException("EXCEPTION !!", agent), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<ExecutionTrace> executionTrace = ArgumentCaptor.forClass(ExecutionTrace.class);
     verify(executionTraceRepository).save(executionTrace.capture());

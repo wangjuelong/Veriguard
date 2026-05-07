@@ -4,8 +4,8 @@ import io.veriguard.database.model.Agent;
 import io.veriguard.database.model.ExecutionTrace;
 import io.veriguard.database.model.ExecutionTraceAction;
 import io.veriguard.database.model.ExecutionTraceStatus;
-import io.veriguard.database.model.InjectStatus;
-import io.veriguard.rest.inject.form.InjectExecutionAction;
+import io.veriguard.database.model.AttackChainNodeStatus;
+import io.veriguard.rest.inject.form.AttackChainNodeExecutionAction;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * Utility class for execution trace conversions.
  *
  * <p>Provides methods for converting between different execution status and action enumerations
- * used in inject execution tracking.
+ * used in attackChainNode execution tracking.
  *
  * <p>This is a utility class and cannot be instantiated.
  *
@@ -28,12 +28,12 @@ public class ExecutionTraceUtils {
   // -- CONVERSION --
 
   /**
-   * Converts an inject execution action to its corresponding trace action.
+   * Converts an attackChainNode execution action to its corresponding trace action.
    *
-   * @param action the inject execution action to convert
+   * @param action the attackChainNode execution action to convert
    * @return the corresponding execution trace action, defaults to EXECUTION for unmapped actions
    */
-  public static ExecutionTraceAction convertExecutionAction(InjectExecutionAction action) {
+  public static ExecutionTraceAction convertExecutionAction(AttackChainNodeExecutionAction action) {
     return switch (action) {
       case prerequisite_check -> ExecutionTraceAction.PREREQUISITE_CHECK;
       case prerequisite_execution -> ExecutionTraceAction.PREREQUISITE_EXECUTION;
@@ -57,10 +57,10 @@ public class ExecutionTraceUtils {
   // -- TRACE BUILDERS --
 
   /**
-   * Adds a COMPLETE/TIMEOUT trace to the given inject status for an agent that did not respond
+   * Adds a COMPLETE/TIMEOUT trace to the given attackChainNode status for an agent that did not respond
    * within the configured threshold.
    */
-  public static void addTimeoutTrace(InjectStatus status, Agent agent, int thresholdMinutes) {
+  public static void addTimeoutTrace(AttackChainNodeStatus status, Agent agent, int thresholdMinutes) {
     status.addTrace(
         ExecutionTraceStatus.TIMEOUT,
         "Agent "
@@ -73,10 +73,10 @@ public class ExecutionTraceUtils {
   }
 
   /**
-   * Adds a START/INFO trace to the given inject status indicating that an implant was spawned by
+   * Adds a START/INFO trace to the given attackChainNode status indicating that an implant was spawned by
    * the agent.
    */
-  public static void addJobRetrievalTrace(InjectStatus status, Agent agent) {
+  public static void addJobRetrievalTrace(AttackChainNodeStatus status, Agent agent) {
     status.addTrace(
         ExecutionTraceStatus.INFO, "Implant spawn by the agent", ExecutionTraceAction.START, agent);
   }

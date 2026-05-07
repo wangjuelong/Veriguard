@@ -72,19 +72,19 @@ public class FindingSearchApi extends RestBehavior {
               schema =
                   @Schema(
                       oneOf = {PageAggregatedFindingOutput.class, PageRelatedFindingOutput.class})))
-  public Page<AggregatedFindingOutput> findingsByInject(
-      @PathVariable @NotNull final String injectId,
+  public Page<AggregatedFindingOutput> findingsByAttackChainNode(
+      @PathVariable @NotNull final String attackChainNodeId,
       @RequestBody @Valid final SearchPaginationInput searchPaginationInput,
       @RequestParam(value = "distinct", required = false, defaultValue = "false")
           boolean distinct) {
     if (distinct) {
-      return findingDistinctSearchService.searchDistinctFindingsByInject(
-          injectId, searchPaginationInput);
+      return findingDistinctSearchService.searchDistinctFindingsByAttackChainNode(
+          attackChainNodeId, searchPaginationInput);
     }
     return buildPaginationJPA(
             (Specification<Finding> specification, Pageable pageable) ->
                 this.findingRepository.findAll(
-                    FindingSpecification.findFindingsForInject(injectId).and(specification),
+                    FindingSpecification.findFindingsForAttackChainNode(attackChainNodeId).and(specification),
                     pageable),
             searchPaginationInput,
             Finding.class)
@@ -136,19 +136,19 @@ public class FindingSearchApi extends RestBehavior {
               schema =
                   @Schema(
                       oneOf = {PageAggregatedFindingOutput.class, PageRelatedFindingOutput.class})))
-  public Page<AggregatedFindingOutput> findingsByScenario(
-      @PathVariable @NotNull final String scenarioId,
+  public Page<AggregatedFindingOutput> findingsByAttackChain(
+      @PathVariable @NotNull final String attackChainId,
       @RequestBody @Valid final SearchPaginationInput searchPaginationInput,
       @RequestParam(value = "distinct", required = false, defaultValue = "false")
           boolean distinct) {
     if (distinct) {
-      return findingDistinctSearchService.searchDistinctFindingsByScenario(
-          scenarioId, searchPaginationInput);
+      return findingDistinctSearchService.searchDistinctFindingsByAttackChain(
+          attackChainId, searchPaginationInput);
     }
     return buildPaginationJPA(
             (Specification<Finding> specification, Pageable pageable) ->
                 this.findingRepository.findAll(
-                    FindingSpecification.findFindingsForScenario(scenarioId)
+                    FindingSpecification.findFindingsForAttackChain(attackChainId)
                         .and(FindingSpecification.forLatestSimulations())
                         .and(specification),
                     pageable),

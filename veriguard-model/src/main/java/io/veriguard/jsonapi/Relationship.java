@@ -24,7 +24,7 @@ public record Relationship(@NotNull Object data) {
   /**
    * Converts the relationship data to a list of resource identifiers.
    *
-   * <p>Use this method for to-many relationships (e.g., one exercise has many teams).
+   * <p>Use this method for to-many relationships (e.g., one attackChainRun has many teams).
    *
    * @return the list of resource identifiers, or an empty list if data is not a list
    */
@@ -40,7 +40,7 @@ public record Relationship(@NotNull Object data) {
   /**
    * Converts the relationship data to a single resource identifier.
    *
-   * <p>Use this method for to-one relationships (e.g., an inject belongs to one exercise).
+   * <p>Use this method for to-one relationships (e.g., an attackChainNode belongs to one attackChainRun).
    *
    * @return the resource identifier, or {@code null} if data cannot be converted
    */

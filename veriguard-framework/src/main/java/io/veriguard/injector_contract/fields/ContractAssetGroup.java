@@ -1,6 +1,6 @@
 package io.veriguard.injector_contract.fields;
 
-import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_ASSET_GROUPS;
+import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_ASSET_GROUPS;
 
 import io.veriguard.injector_contract.ContractCardinality;
 

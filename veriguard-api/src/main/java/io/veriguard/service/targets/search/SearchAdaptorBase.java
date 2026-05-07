@@ -1,8 +1,8 @@
 package io.veriguard.service.targets.search;
 
 import io.veriguard.database.model.Filters;
-import io.veriguard.database.model.Inject;
-import io.veriguard.database.model.InjectTarget;
+import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.AttackChainNodeTarget;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import io.veriguard.utils.pagination.SortField;
@@ -17,14 +17,14 @@ import org.springframework.stereotype.Component;
 public abstract class SearchAdaptorBase {
   protected final Map<String, String> fieldTranslations = new HashMap<>();
 
-  public abstract Page<InjectTarget> search(SearchPaginationInput input, Inject scopedInject);
+  public abstract Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode);
 
-  public abstract List<FilterUtilsJpa.Option> getOptionsForInject(
-      Inject scopedInject, String textSearch);
+  public abstract List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(
+      AttackChainNode scopedAttackChainNode, String textSearch);
 
   public abstract List<FilterUtilsJpa.Option> getOptionsByIds(List<String> ids);
 
-  protected SearchPaginationInput translate(SearchPaginationInput input, Inject scopedInject) {
+  protected SearchPaginationInput translate(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
     SearchPaginationInput newInput = new SearchPaginationInput();
 
     // swap the filters
@@ -42,18 +42,18 @@ public abstract class SearchAdaptorBase {
 
     // the POST payload might or might not have a caller-defined "target_injects" filter
     // this filter is useful for some (not all) target entity types and is added
-    // dynamically here when missing to enable scoping the search on a specific inject.
+    // dynamically here when missing to enable scoping the search on a specific attackChainNode.
     // Also avoid double adding this filter if it's already in the collection
     if (fieldTranslations.containsKey("target_injects")
         && newFilters.stream()
             .noneMatch(filter -> filter.getKey().equals(fieldTranslations.get("target_injects")))) {
-      // add search term on inject scope
-      Filters.Filter injectScopeFilter = new Filters.Filter();
-      injectScopeFilter.setMode(Filters.FilterMode.and);
-      injectScopeFilter.setOperator(Filters.FilterOperator.eq);
-      injectScopeFilter.setValues(List.of(scopedInject.getId()));
-      injectScopeFilter.setKey(fieldTranslations.get("target_injects"));
-      newFilters.add(injectScopeFilter);
+      // add search term on attackChainNode scope
+      Filters.Filter attackChainNodeScopeFilter = new Filters.Filter();
+      attackChainNodeScopeFilter.setMode(Filters.FilterMode.and);
+      attackChainNodeScopeFilter.setOperator(Filters.FilterOperator.eq);
+      attackChainNodeScopeFilter.setValues(List.of(scopedAttackChainNode.getId()));
+      attackChainNodeScopeFilter.setKey(fieldTranslations.get("target_injects"));
+      newFilters.add(attackChainNodeScopeFilter);
     }
 
     Filters.FilterGroup newFilterGroup = new Filters.FilterGroup();

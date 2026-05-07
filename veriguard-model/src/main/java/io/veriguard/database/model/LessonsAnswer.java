@@ -71,12 +71,12 @@ public class LessonsAnswer implements Base {
 
   // region transient
   @JsonProperty("lessons_answer_exercise")
-  public String getExercise() {
+  public String getAttackChainRun() {
     if (getQuestion() == null || getQuestion().getCategory() == null) {
       return null;
     }
-    Exercise exercise = getQuestion().getCategory().getExercise();
-    return exercise != null ? exercise.getId() : null;
+    AttackChainRun attackChainRun = getQuestion().getCategory().getAttackChainRun();
+    return attackChainRun != null ? attackChainRun.getId() : null;
   }
 
   // endregion

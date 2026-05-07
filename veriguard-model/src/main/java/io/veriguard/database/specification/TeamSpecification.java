@@ -1,7 +1,7 @@
 package io.veriguard.database.specification;
 
-import io.veriguard.database.model.Exercise;
-import io.veriguard.database.model.Scenario;
+import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.Team;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.criteria.Join;
@@ -33,19 +33,19 @@ public class TeamSpecification {
     return (root, query, builder) -> builder.isFalse(root.get("contextual"));
   }
 
-  public static Specification<Team> fromExercise(@NotBlank final String exerciseId) {
+  public static Specification<Team> fromAttackChainRun(@NotBlank final String attackChainRunId) {
     return (root, query, cb) -> {
-      Join<Team, Exercise> exercisesJoin = root.join("exercises", JoinType.LEFT);
+      Join<Team, AttackChainRun> attackChainRunsJoin = root.join("exercises", JoinType.LEFT);
       return cb.and(
-          cb.isNotNull(exercisesJoin.get("id")), cb.equal(exercisesJoin.get("id"), exerciseId));
+          cb.isNotNull(attackChainRunsJoin.get("id")), cb.equal(attackChainRunsJoin.get("id"), attackChainRunId));
     };
   }
 
-  public static Specification<Team> fromScenario(String scenarioId) {
+  public static Specification<Team> fromAttackChain(String attackChainId) {
     return (root, query, cb) -> {
-      Join<Team, Scenario> scenariosJoin = root.join("scenarios", JoinType.LEFT);
+      Join<Team, AttackChain> attackChainsJoin = root.join("scenarios", JoinType.LEFT);
       return cb.and(
-          cb.isNotNull(scenariosJoin.get("id")), cb.equal(scenariosJoin.get("id"), scenarioId));
+          cb.isNotNull(attackChainsJoin.get("id")), cb.equal(attackChainsJoin.get("id"), attackChainId));
     };
   }
 

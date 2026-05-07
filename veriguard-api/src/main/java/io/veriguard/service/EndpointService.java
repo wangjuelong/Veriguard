@@ -759,27 +759,27 @@ public class EndpointService {
         platform, upgradeName, adminToken, installationDir, serviceNameOrPrefix);
   }
 
-  public List<Endpoint> endpointsForScenario(String scenarioId) {
-    return this.endpointRepository.findDistinctByInjectsScenarioId(scenarioId);
+  public List<Endpoint> endpointsForAttackChain(String attackChainId) {
+    return this.endpointRepository.findDistinctByAttackChainNodesAttackChainId(attackChainId);
   }
 
-  public List<EndpointOutput> endpointsByIdsForScenario(
-      String scenarioId, List<String> endpointIds) {
+  public List<EndpointOutput> endpointsByIdsForAttackChain(
+      String attackChainId, List<String> endpointIds) {
     return this.endpointRepository
-        .findDistinctByInjectsScenarioIdAndIdIn(scenarioId, endpointIds)
+        .findDistinctByAttackChainNodesAttackChainIdAndIdIn(attackChainId, endpointIds)
         .stream()
         .map(endpointMapper::toEndpointOutput)
         .toList();
   }
 
   public List<Endpoint> endpointsForSimulation(String simulationId) {
-    return this.endpointRepository.findDistinctByInjectsExerciseId(simulationId);
+    return this.endpointRepository.findDistinctByAttackChainNodesAttackChainRunId(simulationId);
   }
 
   public List<EndpointOutput> endpointsByIdsForSimulation(
       String simulationId, List<String> endpointIds) {
     return this.endpointRepository
-        .findDistinctByInjectsExerciseIdAndIdIn(simulationId, endpointIds)
+        .findDistinctByAttackChainNodesAttackChainRunIdAndIdIn(simulationId, endpointIds)
         .stream()
         .map(endpointMapper::toEndpointOutput)
         .toList();

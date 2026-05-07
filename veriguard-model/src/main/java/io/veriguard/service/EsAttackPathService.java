@@ -9,7 +9,7 @@ import io.veriguard.engine.api.ListConfiguration;
 import io.veriguard.engine.api.ListRuntime;
 import io.veriguard.engine.api.StructuralHistogramRuntime;
 import io.veriguard.engine.api.StructuralHistogramWidget;
-import io.veriguard.engine.model.inject.EsInject;
+import io.veriguard.engine.model.inject.EsAttackChainNode;
 import io.veriguard.engine.query.EsAttackPath;
 import io.veriguard.engine.query.EsSeries;
 import io.veriguard.engine.query.EsSeriesData;
@@ -50,18 +50,18 @@ public class EsAttackPathService {
 
     String simulationId = extractSimulationIdFromSeriesFilter(runtime.getWidget());
 
-    CompletableFuture<List<EsInject>> simulationEsInjectsFuture =
+    CompletableFuture<List<EsAttackChainNode>> simulationEsAttackChainNodesFuture =
         CompletableFuture.supplyAsync(
             () ->
-                fetchSimulationInjectsFromES(user, simulationId, parameters, definitionParameters));
+                fetchSimulationAttackChainNodesFromES(user, simulationId, parameters, definitionParameters));
     CompletableFuture<List<EsSeries>> simulationSeriesFuture =
         CompletableFuture.supplyAsync(() -> esService.multiTermHistogram(user, runtime));
 
-    List<EsInject> simulationEsInjects = simulationEsInjectsFuture.get();
+    List<EsAttackChainNode> simulationEsAttackChainNodes = simulationEsAttackChainNodesFuture.get();
     List<EsSeries> simulationSeries = simulationSeriesFuture.get();
 
     // Fetch attackPattern of simulation
-    Set<String> attackPatternIds = extractAttackPatternFromEsInjects(simulationEsInjects);
+    Set<String> attackPatternIds = extractAttackPatternFromEsAttackChainNodes(simulationEsAttackChainNodes);
     Map<String, AttackPattern> attackPatternMap = fetchAttackPatterns(attackPatternIds);
 
     // Process series results
@@ -69,8 +69,8 @@ public class EsAttackPathService {
         computeSuccessRateSeriesByAttackPatternId(simulationSeries);
 
     // Build Attack Paths
-    return buildAttackPathsFromEsInjectList(
-        simulationEsInjects, attackPatternMap, successRateByAttackPatternIdMap);
+    return buildAttackPathsFromEsAttackChainNodeList(
+        simulationEsAttackChainNodes, attackPatternMap, successRateByAttackPatternIdMap);
   }
 
   /**
@@ -88,13 +88,13 @@ public class EsAttackPathService {
   }
 
   /**
-   * Fetches the injects associated with a given simulation ID from Elasticsearch.
+   * Fetches the attackChainNodes associated with a given simulation ID from Elasticsearch.
    *
    * @param user the user requesting the data
-   * @param simulationId the ID of the simulation for which injects are to be fetched
-   * @return a list of EsInject objects associated with the simulation
+   * @param simulationId the ID of the simulation for which attackChainNodes are to be fetched
+   * @return a list of EsAttackChainNode objects associated with the simulation
    */
-  private List<EsInject> fetchSimulationInjectsFromES(
+  private List<EsAttackChainNode> fetchSimulationAttackChainNodesFromES(
       RawUserAuth user,
       String simulationId,
       Map<String, String> parameters,
@@ -107,19 +107,19 @@ public class EsAttackPathService {
     return esService
         .entities(user, new ListRuntime(config, parameters, definitionParameters))
         .stream()
-        .filter(EsInject.class::isInstance)
-        .map(EsInject.class::cast)
+        .filter(EsAttackChainNode.class::isInstance)
+        .map(EsAttackChainNode.class::cast)
         .toList();
   }
 
   /**
-   * Extracts attack pattern IDs from a list of EsInject objects.
+   * Extracts attack pattern IDs from a list of EsAttackChainNode objects.
    *
-   * @param esInject the list of EsInject objects to extract attack patterns from
+   * @param esAttackChainNode the list of EsAttackChainNode objects to extract attack patterns from
    * @return a set of unique attack pattern IDs
    */
-  private Set<String> extractAttackPatternFromEsInjects(List<EsInject> esInject) {
-    return esInject.stream()
+  private Set<String> extractAttackPatternFromEsAttackChainNodes(List<EsAttackChainNode> esAttackChainNode) {
+    return esAttackChainNode.stream()
         .filter(i -> i.getBase_attack_patterns_side() != null)
         .flatMap(i -> i.getBase_attack_patterns_side().stream())
         .collect(Collectors.toSet());
@@ -142,15 +142,15 @@ public class EsAttackPathService {
   }
 
   /**
-   * Computes the success rate series by attack pattern ID from a list of inject expectation
+   * Computes the success rate series by attack pattern ID from a list of attackChainNode expectation
    *
-   * @param injectExpectationSeries the list of EsSeries containing inject expectations
+   * @param attackChainNodeExpectationSeries the list of EsSeries containing attackChainNode expectations
    * @return a map where keys are attack pattern IDs and values are their success rates
    */
   private Map<String, Long> computeSuccessRateSeriesByAttackPatternId(
-      List<EsSeries> injectExpectationSeries) {
-    Map<String, Long> successCounts = aggregateSeriesData(injectExpectationSeries, "SUCCESS");
-    Map<String, Long> failedCounts = aggregateSeriesData(injectExpectationSeries, "FAILED");
+      List<EsSeries> attackChainNodeExpectationSeries) {
+    Map<String, Long> successCounts = aggregateSeriesData(attackChainNodeExpectationSeries, "SUCCESS");
+    Map<String, Long> failedCounts = aggregateSeriesData(attackChainNodeExpectationSeries, "FAILED");
 
     Map<String, Long> successRateMap = new HashMap<>();
     Set<String> allKeys = new HashSet<>(successCounts.keySet());
@@ -184,33 +184,33 @@ public class EsAttackPathService {
   }
 
   /**
-   * Builds a list of attack paths from a list of EsInject objects, mapping them to their
+   * Builds a list of attack paths from a list of EsAttackChainNode objects, mapping them to their
    * corresponding attack patterns and success rates.
    *
-   * @param esInjects the list of EsInject objects to process
+   * @param esAttackChainNodes the list of EsAttackChainNode objects to process
    * @param attackPatterns a map of attack pattern IDs to AttackPattern objects
    * @param successRateMap a map of attack pattern IDs to their success rates
    * @return a list of EsAttackPath objects representing the attack paths
    */
-  private List<EsAttackPath> buildAttackPathsFromEsInjectList(
-      List<EsInject> esInjects,
+  private List<EsAttackPath> buildAttackPathsFromEsAttackChainNodeList(
+      List<EsAttackChainNode> esAttackChainNodes,
       Map<String, AttackPattern> attackPatterns,
       Map<String, Long> successRateMap) {
     Map<String, EsAttackPath> esAttackPathsMap = new HashMap<>();
 
-    for (EsInject inject : esInjects) {
-      if (inject.getBase_attack_patterns_side() == null) {
+    for (EsAttackChainNode attackChainNode : esAttackChainNodes) {
+      if (attackChainNode.getBase_attack_patterns_side() == null) {
         continue;
       }
 
-      for (String attackId : inject.getBase_attack_patterns_side()) {
+      for (String attackId : attackChainNode.getBase_attack_patterns_side()) {
         esAttackPathsMap.compute(
             attackId,
             (key, value) ->
                 value == null
                     ? createNewAttackPath(
-                        attackPatterns.get(attackId), inject, successRateMap.get(attackId))
-                    : updateAttackPath(value, inject));
+                        attackPatterns.get(attackId), attackChainNode, successRateMap.get(attackId))
+                    : updateAttackPath(value, attackChainNode));
       }
     }
 
@@ -218,15 +218,15 @@ public class EsAttackPathService {
   }
 
   /**
-   * Creates a new EsAttackPath object based on the provided attack pattern and inject.
+   * Creates a new EsAttackPath object based on the provided attack pattern and attackChainNode.
    *
    * @param attackPattern the attack pattern to base the attack path on
-   * @param inject the inject containing the base ID and children attack patterns
+   * @param attackChainNode the attackChainNode containing the base ID and children attack patterns
    * @param successRate the success rate of the attack pattern
    * @return a new EsAttackPath object, or null if the attack pattern is null
    */
   private EsAttackPath createNewAttackPath(
-      AttackPattern attackPattern, EsInject inject, Long successRate) {
+      AttackPattern attackPattern, EsAttackChainNode attackChainNode, Long successRate) {
     if (attackPattern == null) {
       return null; // Or handle missing attack pattern appropriately
     }
@@ -242,8 +242,8 @@ public class EsAttackPathService {
             .toList();
 
     Set<String> childrenIds =
-        inject.getBase_attack_patterns_children_side() != null
-            ? new HashSet<>(inject.getBase_attack_patterns_children_side())
+        attackChainNode.getBase_attack_patterns_children_side() != null
+            ? new HashSet<>(attackChainNode.getBase_attack_patterns_children_side())
             : new HashSet<>();
 
     return new EsAttackPath(
@@ -252,24 +252,24 @@ public class EsAttackPathService {
         attackPattern.getExternalId(),
         killChainPhases,
         childrenIds,
-        new HashSet<>(List.of(inject.getBase_id())),
+        new HashSet<>(List.of(attackChainNode.getBase_id())),
         successRate);
   }
 
   /**
-   * Updates an existing EsAttackPath object by adding the inject's base ID and children
+   * Updates an existing EsAttackPath object by adding the attackChainNode's base ID and children
    *
    * @param attackPath the existing EsAttackPath to update
-   * @param inject the EsInject containing the base ID and children attack patterns
+   * @param attackChainNode the EsAttackChainNode containing the base ID and children attack patterns
    * @return the updated EsAttackPath object
    */
-  private EsAttackPath updateAttackPath(EsAttackPath attackPath, EsInject inject) {
-    attackPath.getInjectIds().add(inject.getBase_id());
+  private EsAttackPath updateAttackPath(EsAttackPath attackPath, EsAttackChainNode attackChainNode) {
+    attackPath.getAttackChainNodeIds().add(attackChainNode.getBase_id());
     if (attackPath.getAttackPatternChildrenIds() != null
-        && inject.getBase_attack_patterns_children_side() != null) {
+        && attackChainNode.getBase_attack_patterns_children_side() != null) {
       attackPath
           .getAttackPatternChildrenIds()
-          .addAll(inject.getBase_attack_patterns_children_side());
+          .addAll(attackChainNode.getBase_attack_patterns_children_side());
     }
     return attackPath;
   }

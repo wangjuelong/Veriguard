@@ -3,20 +3,20 @@ package io.veriguard.rest.inject.service;
 import static io.veriguard.utils.ExecutionTraceUtils.convertExecutionAction;
 
 import io.veriguard.database.model.*;
-import io.veriguard.rest.inject.form.InjectExecutionInput;
+import io.veriguard.rest.inject.form.AttackChainNodeExecutionInput;
 import jakarta.annotation.Nullable;
 import java.util.Map;
 
 /**
- * Context object for processing an inject execution.
+ * Context object for processing an attackChainNode execution.
  *
- * <p>Holds references to the inject, agent, input, and targeted assets map. Provides utility
+ * <p>Holds references to the attackChainNode, agent, input, and targeted assets map. Provides utility
  * methods to determine execution status and type.
  */
 public record ExecutionProcessingContext(
-    Inject inject,
+    AttackChainNode attackChainNode,
     @Nullable Agent agent,
-    InjectExecutionInput input,
+    AttackChainNodeExecutionInput input,
     Map<String, Endpoint> valueTargetedAssetsMap) {
 
   /** Returns true if the execution status is SUCCESS. */
@@ -24,8 +24,8 @@ public record ExecutionProcessingContext(
     return ExecutionTraceStatus.SUCCESS.toString().equals(input.getStatus());
   }
 
-  /** Returns true if the execution is for an injector (not agent). */
-  public boolean isInjectorExecution() {
+  /** Returns true if the execution is for an nodeExecutor (not agent). */
+  public boolean isNodeExecutorExecution() {
     return !isAgentExecution();
   }
 

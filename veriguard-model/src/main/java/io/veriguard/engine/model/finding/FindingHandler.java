@@ -48,9 +48,9 @@ public class FindingHandler implements Handler<EsFinding> {
               } else {
                 esFinding.setBase_inject_side(null);
               }
-              if (hasText(finding.getInject_exercise())) {
-                dependencies.add(finding.getInject_exercise());
-                esFinding.setBase_simulation_side(finding.getInject_exercise());
+              if (hasText(finding.getInject_attackChainRun())) {
+                dependencies.add(finding.getInject_attackChainRun());
+                esFinding.setBase_simulation_side(finding.getInject_attackChainRun());
               } else {
                 esFinding.setBase_simulation_side(null);
               }

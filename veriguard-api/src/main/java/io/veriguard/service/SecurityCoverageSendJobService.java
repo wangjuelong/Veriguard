@@ -1,9 +1,9 @@
 package io.veriguard.service;
 
-import io.veriguard.database.model.Exercise;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.SecurityCoverageSendJob;
 import io.veriguard.database.repository.SecurityCoverageSendJobRepository;
-import io.veriguard.rest.exercise.service.ExerciseService;
+import io.veriguard.rest.exercise.service.AttackChainRunService;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -18,13 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SecurityCoverageSendJobService {
   private final SecurityCoverageSendJobRepository securityCoverageSendJobRepository;
-  private final ExerciseService exerciseService;
+  private final AttackChainRunService attackChainRunService;
   private final EntityManager entityManager;
 
-  public void createOrUpdateCoverageSendJobForSimulationsIfReady(List<Exercise> exercises) {
+  public void createOrUpdateCoverageSendJobForSimulationsIfReady(List<AttackChainRun> attackChainRuns) {
     List<SecurityCoverageSendJob> jobs = new ArrayList<>();
-    for (Exercise exercise : new HashSet<>(exercises)) { // deduplicate
-      createOrUpdateCoverageSendJobForSimulationIfReady(exercise).ifPresent(jobs::add);
+    for (AttackChainRun attackChainRun : new HashSet<>(attackChainRuns)) { // deduplicate
+      createOrUpdateCoverageSendJobForSimulationIfReady(attackChainRun).ifPresent(jobs::add);
     }
     if (!jobs.isEmpty()) {
       securityCoverageSendJobRepository.saveAll(jobs);
@@ -32,19 +32,19 @@ public class SecurityCoverageSendJobService {
   }
 
   public Optional<SecurityCoverageSendJob> createOrUpdateCoverageSendJobForSimulationIfReady(
-      Exercise exercise) {
-    if (!shouldCreateCoverageSendJob(exercise)) {
+      AttackChainRun attackChainRun) {
+    if (!shouldCreateCoverageSendJob(attackChainRun)) {
       return Optional.empty();
     }
     Optional<SecurityCoverageSendJob> scsj =
-        securityCoverageSendJobRepository.findBySimulation(exercise);
+        securityCoverageSendJobRepository.findBySimulation(attackChainRun);
     if (scsj.isPresent()) {
       scsj.get().setStatus("PENDING");
       scsj.get().setUpdatedAt(Instant.now());
       return scsj;
     } else {
       SecurityCoverageSendJob newJob = new SecurityCoverageSendJob();
-      newJob.setSimulation(exercise);
+      newJob.setSimulation(attackChainRun);
       newJob.setUpdatedAt(Instant.now());
       return Optional.of(newJob);
     }
@@ -81,10 +81,10 @@ public class SecurityCoverageSendJobService {
     }
   }
 
-  private boolean shouldCreateCoverageSendJob(Exercise exercise) {
-    return exercise != null
-        && exercise.getSecurityCoverage() != null
-        && exerciseService.isFinished(exercise)
-        && exerciseService.getFollowingSimulation(exercise).isEmpty();
+  private boolean shouldCreateCoverageSendJob(AttackChainRun attackChainRun) {
+    return attackChainRun != null
+        && attackChainRun.getSecurityCoverage() != null
+        && attackChainRunService.isFinished(attackChainRun)
+        && attackChainRunService.getFollowingSimulation(attackChainRun).isEmpty();
   }
 }

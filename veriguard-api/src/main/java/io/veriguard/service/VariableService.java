@@ -34,12 +34,12 @@ public class VariableService {
             () -> new ElementNotFoundException("Variable not found with id: " + variableId));
   }
 
-  public List<Variable> variablesFromExercise(@NotBlank final String exerciseId) {
-    return this.variableRepository.findAll(VariableSpecification.fromExercise(exerciseId));
+  public List<Variable> variablesFromAttackChainRun(@NotBlank final String attackChainRunId) {
+    return this.variableRepository.findAll(VariableSpecification.fromAttackChainRun(attackChainRunId));
   }
 
-  public List<Variable> variablesFromScenario(@NotBlank final String scenarioId) {
-    return this.variableRepository.findAll(VariableSpecification.fromScenario(scenarioId));
+  public List<Variable> variablesFromAttackChain(@NotBlank final String attackChainId) {
+    return this.variableRepository.findAll(VariableSpecification.fromAttackChain(attackChainId));
   }
 
   public Variable updateVariable(@NotNull final Variable variable) {
@@ -51,8 +51,8 @@ public class VariableService {
     this.variableRepository.deleteById(variableId);
   }
 
-  public void copyVariableFromScenarioForSimulation(
-      @NotBlank final String scenarioId, @NotBlank final String exerciseId) {
-    this.variableRepository.copyVariableFromScenarioForSimulation(scenarioId, exerciseId);
+  public void copyVariableFromAttackChainForSimulation(
+      @NotBlank final String attackChainId, @NotBlank final String attackChainRunId) {
+    this.variableRepository.copyVariableFromAttackChainForSimulation(attackChainId, attackChainRunId);
   }
 }

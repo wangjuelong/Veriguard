@@ -96,7 +96,7 @@ public class MitigationApi extends RestBehavior {
       skipRBAC =
           true) // TODO: Mitigation API is not called anywhere yet (by us or opencti), so no RBAC
   // yet
-  public Iterable<AttackPattern> injectorContracts(@PathVariable String mitigationId) {
+  public Iterable<AttackPattern> nodeContracts(@PathVariable String mitigationId) {
     mitigationRepository.findById(mitigationId).orElseThrow(ElementNotFoundException::new);
     return attackPatternRepository.findAll(
         AttackPatternSpecification.fromAttackPattern(mitigationId));

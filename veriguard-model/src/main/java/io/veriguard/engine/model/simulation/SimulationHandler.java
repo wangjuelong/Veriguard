@@ -5,7 +5,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
 
 import io.veriguard.database.raw.RawSimulation;
-import io.veriguard.database.repository.ExerciseRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.engine.Handler;
 import java.time.Instant;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SimulationHandler implements Handler<EsSimulation> {
 
-  private final ExerciseRepository simulationRepository;
+  private final AttackChainRunRepository simulationRepository;
 
   @Override
   public List<EsSimulation> fetch(Instant from) {

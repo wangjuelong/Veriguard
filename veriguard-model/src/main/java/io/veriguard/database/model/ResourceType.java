@@ -45,7 +45,7 @@ public enum ResourceType {
   CONNECTOR_INSTANCE_LOG,
   // Special resource types
   UNKNOWN,
-  SIMULATION_OR_SCENARIO, // Used to represent either a simulation or a scenario.
+  SIMULATION_OR_SCENARIO, // Used to represent either a simulation or a attackChain.
   SKIP_RBAC; // Used to skip RBAC checks.
 
   public static ResourceType fromString(@NotNull String name) {

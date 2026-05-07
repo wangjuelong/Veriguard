@@ -1,6 +1,6 @@
 package io.veriguard.injector_contract.fields;
 
-import static io.veriguard.database.model.InjectorContract.CONTRACT_ELEMENT_CONTENT_KEY_CHALLENGES;
+import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_CHALLENGES;
 
 import io.veriguard.injector_contract.ContractCardinality;
 
@@ -8,7 +8,7 @@ import io.veriguard.injector_contract.ContractCardinality;
  * Contract element representing a challenge selector field.
  *
  * <p>Challenge fields allow users to select challenges that targets must complete as part of the
- * injection. This is used for training and skill verification scenarios.
+ * injection. This is used for training and skill verification attackChains.
  *
  * @see ContractCardinalityElement
  */

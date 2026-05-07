@@ -5,7 +5,7 @@ import static java.time.Instant.now;
 
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.CommunicationRepository;
-import io.veriguard.database.repository.InjectRepository;
+import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.SettingRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.service.FileService;
@@ -62,7 +62,7 @@ public class ImapService extends ExternalServiceBase {
   private String sentFolder;
 
   private final UserRepository userRepository;
-  private final InjectRepository injectRepository;
+  private final AttackChainNodeRepository attackChainNodeRepository;
   private final CommunicationRepository communicationRepository;
   private final FileService fileService;
   private final Environment env;
@@ -191,14 +191,14 @@ public class ImapService extends ExternalServiceBase {
         .toList();
   }
 
-  private Inject injectResolver(String content, String contentHtml) {
+  private AttackChainNode attackChainNodeResolver(String content, String contentHtml) {
     Matcher matcher =
         content.length() > 10
             ? INJECT_ID_PATTERN.matcher(content)
             : INJECT_ID_PATTERN.matcher(contentHtml);
     if (matcher.find()) {
-      String injectId = matcher.group(1);
-      return injectRepository.findById(injectId).orElse(null);
+      String attackChainNodeId = matcher.group(1);
+      return attackChainNodeRepository.findById(attackChainNodeId).orElse(null);
     }
     return null;
   }
@@ -211,10 +211,10 @@ public class ImapService extends ExternalServiceBase {
       if (!messageAlreadyAvailable) {
         String content = getTextFromMessage(message);
         String contentHtml = getHtmlFromMessage(message);
-        Inject inject = injectResolver(content, contentHtml);
+        AttackChainNode attackChainNode = attackChainNodeResolver(content, contentHtml);
         List<String> participants = computeParticipants(message);
         List<User> users = userRepository.findAllByEmailInIgnoreCase(participants);
-        if (inject != null && !users.isEmpty()) {
+        if (attackChainNode != null && !users.isEmpty()) {
           String subject = message.getSubject();
           String from = String.valueOf(Arrays.stream(message.getFrom()).toList().get(0));
           String to = String.valueOf(Arrays.stream(message.getAllRecipients()).toList());
@@ -229,29 +229,29 @@ public class ImapService extends ExternalServiceBase {
           communication.setContentHtml(contentHtml);
           communication.setIdentifier(messageID);
           communication.setUsers(users);
-          communication.setInject(inject);
+          communication.setAttackChainNode(attackChainNode);
           communication.setAnimation(isSent);
           communication.setFrom(from);
           communication.setTo(to);
           try {
             // Save the communication
             Communication comm = communicationRepository.save(communication);
-            // Update inject for real time
-            inject.setUpdatedAt(now());
-            injectRepository.save(inject);
+            // Update attackChainNode for real time
+            attackChainNode.setUpdatedAt(now());
+            attackChainNodeRepository.save(attackChainNode);
             // Upload attachments in communication
             final MimeMessageParser mimeParser = new MimeMessageParser(mimeMessage).parse();
             final List<DataSource> attachmentList = mimeParser.getAttachmentList();
             final List<String> uploads = new ArrayList<>();
-            String exerciseId = null;
-            if (inject.getExercise() != null) {
-              exerciseId = inject.getExercise().getId();
+            String attackChainRunId = null;
+            if (attackChainNode.getAttackChainRun() != null) {
+              attackChainRunId = attackChainNode.getAttackChainRun().getId();
             }
             for (DataSource dataSource : attachmentList) {
               final String fileName = dataSource.getName();
               String path =
-                  exerciseId != null
-                      ? "/" + exerciseId + "/communications/" + comm.getId()
+                  attackChainRunId != null
+                      ? "/" + attackChainRunId + "/communications/" + comm.getId()
                       : "/communications/" + comm.getId();
               String uploadName =
                   fileService.uploadStream(path, fileName, dataSource.getInputStream());

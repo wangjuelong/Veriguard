@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * Configuration class for Veriguard admin authentication.
  *
- * <p>This component holds the admin token used for API authentication in automated scenarios and
+ * <p>This component holds the admin token used for API authentication in automated attackChains and
  * initial platform setup.
  *
  * <p><b>Security Note:</b> The admin token provides full platform access and should be kept secret.

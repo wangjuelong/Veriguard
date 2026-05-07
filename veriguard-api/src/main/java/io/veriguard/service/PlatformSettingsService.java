@@ -254,7 +254,7 @@ public class PlatformSettingsService {
         ofNullable(dbSettings.get(DEFAULT_HOME_DASHBOARD.key()))
             .map(Setting::getValue)
             .orElse(DEFAULT_HOME_DASHBOARD.defaultValue()));
-    platformSettings.setPlatformScenarioDashboard(
+    platformSettings.setPlatformAttackChainDashboard(
         ofNullable(dbSettings.get(DEFAULT_SCENARIO_DASHBOARD.key()))
             .map(Setting::getValue)
             .orElse(DEFAULT_SCENARIO_DASHBOARD.defaultValue()));
@@ -391,7 +391,7 @@ public class PlatformSettingsService {
     addSettingIfExists(
         settingsToSave, dbSettings, DEFAULT_HOME_DASHBOARD.key(), input.getHomeDashboard());
     addSettingIfExists(
-        settingsToSave, dbSettings, DEFAULT_SCENARIO_DASHBOARD.key(), input.getScenarioDashboard());
+        settingsToSave, dbSettings, DEFAULT_SCENARIO_DASHBOARD.key(), input.getAttackChainDashboard());
     addSettingIfExists(
         settingsToSave,
         dbSettings,

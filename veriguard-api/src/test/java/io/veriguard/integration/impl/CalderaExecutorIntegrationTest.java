@@ -20,7 +20,7 @@ import io.veriguard.integration.impl.executors.caldera.CalderaExecutorIntegratio
 import io.veriguard.integration.impl.executors.caldera.CalderaExecutorIntegrationFactory;
 import io.veriguard.integration.migration.CalderaExecutorConfigurationMigration;
 import io.veriguard.service.*;
-import io.veriguard.service.InjectorService;
+import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.catalog_connectors.CatalogConnectorService;
 import io.veriguard.service.connector_instances.ConnectorInstanceService;
 import io.veriguard.service.connector_instances.EncryptionFactory;
@@ -61,7 +61,7 @@ public class CalderaExecutorIntegrationTest {
   @Autowired private CalderaExecutorConfigurationMigration calderaExecutorConfigurationMigration;
 
   @Autowired private FileService fileService;
-  @Autowired private InjectorService injectorService;
+  @Autowired private NodeExecutorService nodeExecutorService;
   @Autowired private PlatformSettingsService platformSettingsService;
 
   private CalderaExecutorIntegrationFactory getFactory() {
@@ -73,7 +73,7 @@ public class CalderaExecutorIntegrationTest {
         calderaExecutorConfigurationMigration,
         agentService,
         endpointService,
-        injectorService,
+        nodeExecutorService,
         platformSettingsService,
         taskScheduler,
         fileService,

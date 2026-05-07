@@ -1,10 +1,10 @@
 package io.veriguard.utils.mapper;
 
-import static io.veriguard.utils.mapper.ExerciseMapper.toRelatedEntityOutputs;
-import static io.veriguard.utils.mapper.ExerciseMapper.toSimulationInjects;
-import static io.veriguard.utils.mapper.InjectMapper.toRelatedEntityOutputs;
+import static io.veriguard.utils.mapper.AttackChainRunMapper.toRelatedEntityOutputs;
+import static io.veriguard.utils.mapper.AttackChainRunMapper.toSimulationAttackChainNodes;
+import static io.veriguard.utils.mapper.AttackChainNodeMapper.toRelatedEntityOutputs;
 import static io.veriguard.utils.mapper.PayloadMapper.toRelatedEntityOutputs;
-import static io.veriguard.utils.mapper.ScenarioMapper.toScenarioInjects;
+import static io.veriguard.utils.mapper.AttackChainMapper.toAttackChainAttackChainNodes;
 import static io.veriguard.utils.mapper.SecurityPlatformMapper.toRelatedEntityOutputs;
 
 import io.veriguard.database.model.*;
@@ -20,23 +20,23 @@ import lombok.extern.slf4j.Slf4j;
 public class DocumentMapper {
 
   public static DocumentRelationsOutput toDocumentRelationsOutput(Document document) {
-    Set<Inject> injects =
-        document.getInjectDocuments().stream()
-            .map(InjectDocument::getInject)
+    Set<AttackChainNode> attackChainNodes =
+        document.getAttackChainNodeDocuments().stream()
+            .map(AttackChainNodeDocument::getAttackChainNode)
             .collect(Collectors.toSet());
 
-    Set<Inject> atomics =
-        injects.stream()
-            .filter(inject -> inject.getScenario() == null && inject.getExercise() == null)
+    Set<AttackChainNode> atomics =
+        attackChainNodes.stream()
+            .filter(attackChainNode -> attackChainNode.getAttackChain() == null && attackChainNode.getAttackChainRun() == null)
             .collect(Collectors.toSet());
 
-    Set<Inject> scenarioInjects =
-        injects.stream().filter(inject -> inject.getScenario() != null).collect(Collectors.toSet());
+    Set<AttackChainNode> attackChainAttackChainNodes =
+        attackChainNodes.stream().filter(attackChainNode -> attackChainNode.getAttackChain() != null).collect(Collectors.toSet());
 
-    Set<Inject> simulationInjects =
-        injects.stream().filter(inject -> inject.getExercise() != null).collect(Collectors.toSet());
+    Set<AttackChainNode> simulationAttackChainNodes =
+        attackChainNodes.stream().filter(attackChainNode -> attackChainNode.getAttackChainRun() != null).collect(Collectors.toSet());
 
-    Set<Exercise> simulations =
+    Set<AttackChainRun> simulations =
         Stream.concat(
                 document.getSimulationsByLogoDark().stream(),
                 document.getSimulationsByLogoLight().stream())
@@ -59,8 +59,8 @@ public class DocumentMapper {
         .securityPlatforms(toRelatedEntityOutputs(securityPlatforms))
         .payloads(toRelatedEntityOutputs(payloads))
         .atomicTestings(toRelatedEntityOutputs(atomics))
-        .scenarioInjects(toScenarioInjects(scenarioInjects))
-        .simulationInjects(toSimulationInjects(simulationInjects))
+        .attackChainAttackChainNodes(toAttackChainAttackChainNodes(attackChainAttackChainNodes))
+        .simulationAttackChainNodes(toSimulationAttackChainNodes(simulationAttackChainNodes))
         .build();
   }
 }

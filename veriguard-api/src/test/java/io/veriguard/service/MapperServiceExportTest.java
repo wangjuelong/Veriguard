@@ -23,8 +23,8 @@ class MapperServiceExportTest extends IntegrationTest {
     // -- PREPARE --
     ImportMapper mapper = new ImportMapper();
     mapper.setName("Test Mapper");
-    mapper.setInjectTypeColumn("injectType");
-    mapper.setInjectImporters(new ArrayList<>());
+    mapper.setAttackChainNodeTypeColumn("injectType");
+    mapper.setAttackChainNodeImporters(new ArrayList<>());
     ImportMapper mapperSaved = this.importMapperRepository.save(mapper);
 
     // -- EXECUTE --

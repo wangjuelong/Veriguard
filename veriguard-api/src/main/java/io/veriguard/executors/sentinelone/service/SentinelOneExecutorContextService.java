@@ -44,7 +44,7 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
 
   @Override
   public void launchExecutorSubprocess(
-      @NotNull final Inject inject,
+      @NotNull final AttackChainNode attackChainNode,
       @NotNull final Endpoint assetEndpoint,
       @NotNull final Agent agent) {
     // launchBatchExecutorSubprocess is used here for better performances
@@ -52,22 +52,22 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
 
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
-      Inject inject, Set<Agent> agents, InjectStatus injectStatus) {
+      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
 
     List<Agent> sentinelOneAgents = new ArrayList<>(agents);
 
     // Sometimes, assets from agents aren't fetched even with the EAGER property from Hibernate
     sentinelOneAgents.forEach(agent -> agent.setAsset((Asset) Hibernate.unproxy(agent.getAsset())));
 
-    Injector injector =
-        inject
-            .getInjectorContract()
-            .map(InjectorContract::getInjector)
+    NodeExecutor nodeExecutor =
+        attackChainNode
+            .getNodeContract()
+            .map(NodeContract::getNodeExecutor)
             .orElseThrow(
                 () -> new UnsupportedOperationException("Inject does not have a contract"));
 
     sentinelOneAgents =
-        executorService.manageWithoutPlatformAgents(sentinelOneAgents, injectStatus);
+        executorService.manageWithoutPlatformAgents(sentinelOneAgents, attackChainNodeStatus);
 
     List<SentinelOneAction> actions = new ArrayList<>();
     // Set implant script for each agent
@@ -78,22 +78,22 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
               actions.addAll(
                   getWindowsActions(
                       getAgentsFromOSAndArch(sentinelOneAgents, platform, arch),
-                      injector,
-                      inject.getId(),
+                      nodeExecutor,
+                      attackChainNode.getId(),
                       arch.name()));
           case Linux ->
               actions.addAll(
                   getLinuxActions(
                       getAgentsFromOSAndArch(sentinelOneAgents, platform, arch),
-                      injector,
-                      inject.getId(),
+                      nodeExecutor,
+                      attackChainNode.getId(),
                       arch.name()));
           case MacOS ->
               actions.addAll(
                   getMacOSActions(
                       getAgentsFromOSAndArch(sentinelOneAgents, platform, arch),
-                      injector,
-                      inject.getId(),
+                      nodeExecutor,
+                      attackChainNode.getId(),
                       arch.name()));
           default -> { // No need, only Mac, Windows and Linux for now
           }
@@ -128,7 +128,7 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
   }
 
   private List<SentinelOneAction> getWindowsActions(
-      List<Agent> agents, Injector injector, String injectId, String arch) {
+      List<Agent> agents, NodeExecutor nodeExecutor, String attackChainNodeId, String arch) {
     List<SentinelOneAction> actions = new ArrayList<>();
     if (!agents.isEmpty()) {
       SentinelOneAction actionWindows = new SentinelOneAction();
@@ -141,7 +141,7 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
               + "\";md $location -ea 0;[Environment]::CurrentDirectory";
       Endpoint.PLATFORM_TYPE platform = Endpoint.PLATFORM_TYPE.Windows;
       String executorCommandKey = platform.name() + "." + arch;
-      String command = injector.getExecutorCommands().get(executorCommandKey);
+      String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
       // The default command to download the veriguard implant and execute the attack is modified for
       // Sentinel ONE
       // - WINDOWS_EXTERNAL_REFERENCE: the agent id in the veriguard DB for SentinelOne is the
@@ -149,7 +149,7 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
       // make the batch attack work so we get it with a command line from the endpoint and give it
       // to the implant
       command = WINDOWS_EXTERNAL_REFERENCE + command;
-      command = replaceArgs(platform, command, injectId, AGENT_ID_VARIABLE);
+      command = replaceArgs(platform, command, attackChainNodeId, AGENT_ID_VARIABLE);
       command =
           command.replaceFirst(
               "\\$?x=.+location=.+;\\[Environment]::CurrentDirectory",
@@ -163,14 +163,14 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
   }
 
   private List<SentinelOneAction> getLinuxActions(
-      List<Agent> agents, Injector injector, String injectId, String arch) {
+      List<Agent> agents, NodeExecutor nodeExecutor, String attackChainNodeId, String arch) {
     List<SentinelOneAction> actions = new ArrayList<>();
     if (!agents.isEmpty()) {
       SentinelOneAction actionLinux = new SentinelOneAction();
       actionLinux.setScriptId(this.config.getUnixScriptId());
       actionLinux.setCommandEncoded(
           getUnixCommand(
-              Endpoint.PLATFORM_TYPE.Linux, injector, injectId, LINUX_EXTERNAL_REFERENCE, arch));
+              Endpoint.PLATFORM_TYPE.Linux, nodeExecutor, attackChainNodeId, LINUX_EXTERNAL_REFERENCE, arch));
       actionLinux.setAgents(agents);
       actions.add(actionLinux);
     }
@@ -178,14 +178,14 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
   }
 
   private List<SentinelOneAction> getMacOSActions(
-      List<Agent> agents, Injector injector, String injectId, String arch) {
+      List<Agent> agents, NodeExecutor nodeExecutor, String attackChainNodeId, String arch) {
     List<SentinelOneAction> actions = new ArrayList<>();
     if (!agents.isEmpty()) {
       SentinelOneAction actionMac = new SentinelOneAction();
       actionMac.setScriptId(this.config.getUnixScriptId());
       actionMac.setCommandEncoded(
           getUnixCommand(
-              Endpoint.PLATFORM_TYPE.MacOS, injector, injectId, MAC_EXTERNAL_REFERENCE, arch));
+              Endpoint.PLATFORM_TYPE.MacOS, nodeExecutor, attackChainNodeId, MAC_EXTERNAL_REFERENCE, arch));
       actionMac.setAgents(agents);
       actions.add(actionMac);
     }
@@ -194,8 +194,8 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
 
   private String getUnixCommand(
       Endpoint.PLATFORM_TYPE platform,
-      Injector injector,
-      String injectId,
+      NodeExecutor nodeExecutor,
+      String attackChainNodeId,
       String externalReferenceVariable,
       String arch) {
     String implantLocation =
@@ -205,7 +205,7 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
             + UUID.randomUUID()
             + ";mkdir -p $location;filename=";
     String executorCommandKey = platform.name() + "." + arch;
-    String command = injector.getExecutorCommands().get(executorCommandKey);
+    String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
     // The default command to download the veriguard implant and execute the attack is modified for
     // SentinelOne
     // - externalReferenceVariable: the agent id in the veriguard DB for SentinelOne is the
@@ -213,7 +213,7 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
     // the batch attack works so we get it with a command line from the endpoint and give it to the
     // implant
     command = externalReferenceVariable + command;
-    command = replaceArgs(platform, command, injectId, AGENT_ID_VARIABLE);
+    command = replaceArgs(platform, command, attackChainNodeId, AGENT_ID_VARIABLE);
     command =
         command.replaceFirst(
             "\\$?x=.+location=.+;filename=", Matcher.quoteReplacement(implantLocation));

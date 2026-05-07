@@ -6,10 +6,10 @@ import static java.time.Instant.now;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.Document;
-import io.veriguard.database.model.Exercise;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.repository.DocumentRepository;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.exercise.exports.ExerciseFileExport;
+import io.veriguard.rest.exercise.exports.AttackChainRunFileExport;
 import io.veriguard.rest.exercise.exports.ExportOptions;
 import io.veriguard.service.FileService;
 import jakarta.annotation.Resource;
@@ -29,7 +29,7 @@ public class ExportService {
   @Resource private DocumentRepository documentRepository;
   @Resource private FileService fileService;
 
-  public String getZipFileName(Exercise exercise, int exportOptionsMask) {
+  public String getZipFileName(AttackChainRun attackChainRun, int exportOptionsMask) {
     String infos =
         "("
             + (ExportOptions.has(ExportOptions.WITH_TEAMS, exportOptionsMask)
@@ -44,18 +44,18 @@ public class ExportService {
                 ? "with_variable_values"
                 : "no_variable_values")
             + ")";
-    return (exercise.getName() + "_" + now().toString()) + "_" + infos + ".zip";
+    return (attackChainRun.getName() + "_" + now().toString()) + "_" + infos + ".zip";
   }
 
-  public byte[] exportExerciseToZip(Exercise exercise, int exportOptionsMask) throws IOException {
+  public byte[] exportAttackChainRunToZip(AttackChainRun attackChainRun, int exportOptionsMask) throws IOException {
     ObjectMapper objectMapper = mapper.copy();
 
-    ExerciseFileExport importExport =
-        ExerciseFileExport.fromExercise(exercise, objectMapper).withOptions(exportOptionsMask);
+    AttackChainRunFileExport importExport =
+        AttackChainRunFileExport.fromAttackChainRun(attackChainRun, objectMapper).withOptions(exportOptionsMask);
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     ZipOutputStream zipExport = new ZipOutputStream(outputStream);
-    ZipEntry zipEntry = new ZipEntry(exercise.getName() + ".json");
+    ZipEntry zipEntry = new ZipEntry(attackChainRun.getName() + ".json");
     zipEntry.setComment(EXPORT_ENTRY_EXERCISE);
     zipExport.putNextEntry(zipEntry);
     zipExport.write(

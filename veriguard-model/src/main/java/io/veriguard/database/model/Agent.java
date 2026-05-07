@@ -106,7 +106,7 @@ public class Agent implements Base {
   @JoinColumn(name = "agent_inject")
   @JsonProperty("agent_inject")
   @Schema(type = "string")
-  private Inject inject;
+  private AttackChainNode attackChainNode;
 
   @JsonProperty("agent_active")
   public boolean isActive() {

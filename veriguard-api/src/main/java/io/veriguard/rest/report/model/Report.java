@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.database.model.Base;
-import io.veriguard.database.model.Exercise;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.helper.MultiModelSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -71,7 +71,7 @@ public class Report implements Base {
   @JsonProperty("report_exercise")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
-  private Exercise exercise;
+  private AttackChainRun attackChainRun;
 
   @OneToMany(
       mappedBy = "report",
@@ -80,7 +80,7 @@ public class Report implements Base {
       fetch = FetchType.EAGER)
   @JsonProperty("report_injects_comments")
   @JsonSerialize(using = MultiModelSerializer.class)
-  private List<ReportInjectComment> reportInjectsComments = new ArrayList<>();
+  private List<ReportAttackChainNodeComment> reportAttackChainNodesComments = new ArrayList<>();
 
   @Override
   public String getId() {

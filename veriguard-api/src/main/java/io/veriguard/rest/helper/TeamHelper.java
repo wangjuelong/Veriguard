@@ -2,7 +2,7 @@ package io.veriguard.rest.helper;
 
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.*;
-import io.veriguard.database.repository.InjectRepository;
+import io.veriguard.database.repository.AttackChainNodeRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,9 +22,9 @@ public class TeamHelper {
         .collect(Collectors.toList());
   }
 
-  private static Set<String> getInjectTeamsIds(
-      final String teamId, Set<String> injectIds, final InjectRepository injectRepository) {
-    Set<RawInject> rawInjectTeams = injectRepository.findRawInjectTeams(injectIds, teamId);
-    return rawInjectTeams.stream().map(RawInject::getInject_id).collect(Collectors.toSet());
+  private static Set<String> getAttackChainNodeTeamsIds(
+      final String teamId, Set<String> attackChainNodeIds, final AttackChainNodeRepository attackChainNodeRepository) {
+    Set<RawAttackChainNode> rawAttackChainNodeTeams = attackChainNodeRepository.findRawAttackChainNodeTeams(attackChainNodeIds, teamId);
+    return rawAttackChainNodeTeams.stream().map(RawAttackChainNode::getInject_id).collect(Collectors.toSet());
   }
 }

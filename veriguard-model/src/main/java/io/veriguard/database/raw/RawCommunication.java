@@ -6,8 +6,8 @@ import java.util.Set;
 /**
  * Spring Data projection interface for communication data.
  *
- * <p>This interface defines a projection for retrieving communication messages sent during exercise
- * execution. Communications include emails, SMS, and other messages sent to exercise participants.
+ * <p>This interface defines a projection for retrieving communication messages sent during attackChainRun
+ * execution. Communications include emails, SMS, and other messages sent to attackChainRun participants.
  *
  * @see io.veriguard.database.model.Communication
  */
@@ -49,11 +49,11 @@ public interface RawCommunication {
   String getCommunication_subject();
 
   /**
-   * Returns the ID of the inject that triggered this communication.
+   * Returns the ID of the attackChainNode that triggered this communication.
    *
-   * @return the inject ID
+   * @return the attackChainNode ID
    */
-  String getCommunication_inject();
+  String getCommunication_attackChainNode();
 
   /**
    * Returns the set of user IDs who are recipients of this communication.
@@ -91,9 +91,9 @@ public interface RawCommunication {
   String getCommunication_to();
 
   /**
-   * Returns the ID of the exercise this communication belongs to.
+   * Returns the ID of the attackChainRun this communication belongs to.
    *
-   * @return the exercise ID
+   * @return the attackChainRun ID
    */
-  String getCommunication_exercise();
+  String getCommunication_attackChainRun();
 }
