@@ -6,7 +6,7 @@ import DialogDelete from '../../../../../components/common/DialogDelete';
 import { useFormatter } from '../../../../../components/i18n';
 import { type InjectExpectationResult, type InjectResultOverviewOutput } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
-import type { InjectExpectationsStore } from '../../../common/injects/expectations/Expectation';
+import type { InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import {
   InjectResultOverviewOutputContext,
   type InjectResultOverviewOutputContextType,

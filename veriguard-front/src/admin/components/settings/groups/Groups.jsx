@@ -8,7 +8,7 @@ import { fetchExercises } from '../../../../actions/Exercise';
 import { searchGroups } from '../../../../actions/Group';
 import { fetchOrganizations } from '../../../../actions/Organization';
 import { fetchRoles } from '../../../../actions/roles/roles-actions';
-import { fetchScenarios } from '../../../../actions/scenarios/scenario-actions';
+import { fetchScenarios } from '../../../../actions/attack_chains/scenario-actions';
 import { fetchUsers } from '../../../../actions/users/User';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
 import PaginationComponent from '../../../../components/common/pagination/PaginationComponent';

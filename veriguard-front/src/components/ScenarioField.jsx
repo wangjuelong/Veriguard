@@ -2,7 +2,7 @@ import { Kayaking } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchScenarios } from '../actions/scenarios/scenario-actions';
+import { fetchScenarios } from '../actions/attack_chains/scenario-actions';
 import { useHelper } from '../store';
 import { useAppDispatch } from '../utils/hooks';
 import useDataLoader from '../utils/hooks/useDataLoader';

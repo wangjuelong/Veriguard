@@ -10,7 +10,7 @@ import { fetchCollectorsForAtomicTesting } from '../../../../actions/atomic_test
 import { fetchCollectors } from '../../../../actions/Collector';
 import type { CollectorHelper } from '../../../../actions/collectors/collector-helper';
 import { postDetectionRemediationAIRulesByInject } from '../../../../actions/detection-remediation/detectionremediation-action';
-import { fetchPayloadDetectionRemediationsByInject } from '../../../../actions/injects/inject-action';
+import { fetchPayloadDetectionRemediationsByInject } from '../../../../actions/attack_chain_nodes/inject-action';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
 import { COLLECTOR_LIST } from '../../../../constants/Entities';

@@ -13,7 +13,7 @@ import { zodImplement } from '../../../../utils/Zod';
 import AssetGroupPopover from '../../assets/asset_groups/AssetGroupPopover';
 import AssetGroupsList from '../../assets/asset_groups/AssetGroupsList';
 import { PermissionsContext } from '../../common/Context';
-import InjectAddAssetGroups from '../../simulations/simulation/injects/asset_groups/InjectAddAssetGroups';
+import InjectAddAssetGroups from '../../attack_chain_runs/attack_chain_run/attack_chain_nodes/asset_groups/InjectAddAssetGroups';
 
 interface Props {
   onSubmit: SubmitHandler<TagRuleInput>;

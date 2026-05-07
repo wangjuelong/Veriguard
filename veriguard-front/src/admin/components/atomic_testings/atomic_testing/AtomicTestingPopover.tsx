@@ -2,7 +2,7 @@ import { type FunctionComponent, useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { deleteAtomicTesting, duplicateAtomicTesting } from '../../../../actions/atomic_testings/atomic-testing-actions';
-import { exportInject } from '../../../../actions/injects/inject-action';
+import { exportInject } from '../../../../actions/attack_chain_nodes/inject-action';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogDelete from '../../../../components/common/DialogDelete';
 import DialogDuplicate from '../../../../components/common/DialogDuplicate';

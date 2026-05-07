@@ -1,7 +1,7 @@
 import { Autocomplete, MenuItem, Select, TextField } from '@mui/material';
 import { type FunctionComponent } from 'react';
 
-import { SCENARIO_NOT_SCHEDULED_STATUS, SCENARIO_SCHEDULED_STATUS } from '../../../../../admin/components/scenarios/scenario/ScenarioStatus';
+import { SCENARIO_NOT_SCHEDULED_STATUS, SCENARIO_SCHEDULED_STATUS } from '../../../../../admin/components/attack_chains/attack_chain/ScenarioStatus';
 import { type PropertySchemaDTO } from '../../../../../utils/api-types';
 import { type Option } from '../../../../../utils/Option';
 import { useFormatter } from '../../../../i18n';

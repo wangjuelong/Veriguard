@@ -1,7 +1,7 @@
 // FILE TO REFERENCE ALL CUSTOM TYPES DERIVATIVE FROM API-TYPES
 
 import type { ContractVariable } from '../actions/contract/contract';
-import type { ExpectationInput } from '../admin/components/common/injects/expectations/Expectation';
+import type { ExpectationInput } from '../admin/components/common/attack_chain_nodes/expectations/Expectation';
 import type * as ApiTypes from './api-types';
 
 type PayloadCreateInputOmit = 'payload_type' | 'payload_source' | 'payload_status' | 'payload_created_at' | 'payload_id' | 'payload_updated_at' | 'payload_output_parsers';

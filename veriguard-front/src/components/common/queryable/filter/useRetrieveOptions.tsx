@@ -7,13 +7,13 @@ import { searchSecurityPlatformByIdAsOption } from '../../../../actions/assets/s
 import { searchAttackPatternsByIdAsOption } from '../../../../actions/AttackPattern';
 import { searchCustomDashboardByIdAsOptions } from '../../../../actions/custom_dashboards/customdashboard-action';
 import { searchDomainsByIdsAsOption } from '../../../../actions/domains/domain-actions';
-import { searchExerciseByIdAsOption } from '../../../../actions/exercises/exercise-action';
+import { searchExerciseByIdAsOption } from '../../../../actions/attack_chain_runs/exercise-action';
 import { searchInjectorByIdAsOptions } from '../../../../actions/injectors/injector-action';
-import { searchInjectByIdAsOption, searchTargetOptionsById } from '../../../../actions/injects/inject-action';
+import { searchInjectByIdAsOption, searchTargetOptionsById } from '../../../../actions/attack_chain_nodes/inject-action';
 import { searchKillChainPhasesByIdAsOption } from '../../../../actions/kill_chain_phases/killChainPhase-action';
 import { searchOrganizationByIdAsOptions } from '../../../../actions/organizations/organization-actions';
-import { searchScenarioByIdAsOption } from '../../../../actions/scenarios/scenario-actions';
-import { searchSimulationByIdAsOptions } from '../../../../actions/simulations/simulation-action';
+import { searchScenarioByIdAsOption } from '../../../../actions/attack_chains/scenario-actions';
+import { searchSimulationByIdAsOptions } from '../../../../actions/attack_chain_runs/simulation-action';
 import { searchTagByIdAsOption } from '../../../../actions/tags/tag-action';
 import { searchTeamByIdAsOption } from '../../../../actions/teams/team-actions';
 import ContractOutputElementType from '../../../../admin/components/findings/ContractOutputElementType';

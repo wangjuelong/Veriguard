@@ -4,8 +4,8 @@ import * as R from 'ramda';
 import { Fragment, type FunctionComponent } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectStore } from '../actions/injects/Inject';
-import InjectIcon from '../admin/components/common/injects/InjectIcon';
+import { type InjectStore } from '../actions/attack_chain_nodes/Inject';
+import InjectIcon from '../admin/components/common/attack_chain_nodes/InjectIcon';
 import { type Inject, type Team } from '../utils/api-types';
 import useSearchAndFilter from '../utils/SortingFiltering';
 import { truncate } from '../utils/String';

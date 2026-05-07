@@ -14,7 +14,7 @@ import { type InjectResultOverviewOutput, type KillChainPhaseSimple } from '../.
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
 import { isNotEmptyField } from '../../../../utils/utils';
-import InjectIcon from '../../common/injects/InjectIcon';
+import InjectIcon from '../../common/attack_chain_nodes/InjectIcon';
 
 const useStyles = makeStyles()(() => ({
   chip: {

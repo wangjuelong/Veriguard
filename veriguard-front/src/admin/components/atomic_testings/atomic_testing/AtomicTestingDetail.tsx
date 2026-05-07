@@ -2,11 +2,11 @@ import { Typography } from '@mui/material';
 import { type FunctionComponent, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { getInjectStatusWithGlobalExecutionTraces } from '../../../../actions/injects/inject-action';
+import { getInjectStatusWithGlobalExecutionTraces } from '../../../../actions/attack_chain_nodes/inject-action';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
 import { type InjectResultOverviewOutput, type InjectStatusOutput } from '../../../../utils/api-types';
-import GlobalExecutionTraces from '../../common/injects/status/traces/GlobalExecutionTraces';
+import GlobalExecutionTraces from '../../common/attack_chain_nodes/status/traces/GlobalExecutionTraces';
 
 const AtomicTestingDetail: FunctionComponent = () => {
   const { t } = useFormatter();

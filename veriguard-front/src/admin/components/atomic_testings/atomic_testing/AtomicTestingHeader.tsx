@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import Breadcrumbs, { type BreadcrumbsElement } from '../../../../components/Breadcrumbs';
 import { useFormatter } from '../../../../components/i18n';
 import type { InjectResultOverviewOutput } from '../../../../utils/api-types';
-import ResponsePie from '../../common/injects/ResponsePie';
+import ResponsePie from '../../common/attack_chain_nodes/ResponsePie';
 import AtomicTestingHeaderActions from './AtomicTestingHeaderActions';
 import AtomicTestingTabs from './AtomicTestingTabs';
 import AtomicTestingTitle from './AtomicTestingTitle';

@@ -1,7 +1,7 @@
 import { List } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import { searchTargets } from '../../../../actions/injects/inject-action';
+import { searchTargets } from '../../../../actions/attack_chain_nodes/inject-action';
 import PaginationComponentV2 from '../../../../components/common/queryable/pagination/PaginationComponentV2';
 import { buildSearchPagination } from '../../../../components/common/queryable/QueryableUtils';
 import { useQueryableWithLocalStorage } from '../../../../components/common/queryable/useQueryableWithLocalStorage';

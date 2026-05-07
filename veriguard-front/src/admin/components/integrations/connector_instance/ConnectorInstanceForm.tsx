@@ -16,7 +16,7 @@ import {
   type CreateConnectorInstanceInput,
 } from '../../../../utils/api-types';
 import { type ContractType, type EnhancedContractElement } from '../../../../utils/api-types-custom';
-import InjectContentFieldComponent from '../../common/injects/form/InjectContentFieldComponent';
+import InjectContentFieldComponent from '../../common/attack_chain_nodes/form/InjectContentFieldComponent';
 
 interface Props {
   catalogConnectorSlug: string;

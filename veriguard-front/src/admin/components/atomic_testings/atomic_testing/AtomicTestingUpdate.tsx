@@ -5,7 +5,7 @@ import { updateAtomicTesting } from '../../../../actions/atomic_testings/atomic-
 import { type Inject, type InjectResultOutput, type InjectResultOverviewOutput } from '../../../../utils/api-types';
 import { EndpointContext } from '../../../../utils/context/endpoint/EndpointContext';
 import endpointContextForAtomicTesting from '../../../../utils/context/endpoint/EndpointContextForAtomicTesting';
-import UpdateInject from '../../common/injects/UpdateInject';
+import UpdateInject from '../../common/attack_chain_nodes/UpdateInject';
 import { InjectResultOverviewOutputContext, type InjectResultOverviewOutputContextType } from '../InjectResultOverviewOutputContext';
 
 interface Props {

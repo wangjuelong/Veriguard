@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 
 import { deleteDocument, updateDocument } from '../../../../actions/Document';
 import { fetchExercises } from '../../../../actions/Exercise';
-import { fetchScenarios } from '../../../../actions/scenarios/scenario-actions';
+import { fetchScenarios } from '../../../../actions/attack_chains/scenario-actions';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogDelete from '../../../../components/common/DialogDelete';
 import Drawer from '../../../../components/common/Drawer';

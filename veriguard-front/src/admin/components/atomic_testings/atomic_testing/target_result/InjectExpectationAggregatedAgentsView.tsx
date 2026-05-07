@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 
 import { fetchTargetResultAssetWithAgents } from '../../../../../actions/atomic_testings/atomic-testing-actions';
-import { type InjectHelper } from '../../../../../actions/injects/inject-helper';
+import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
 import ExpandableSection from '../../../../../components/common/ExpandableSection';
 import { useFormatter } from '../../../../../components/i18n';
 import ItemStatus from '../../../../../components/ItemStatus';
@@ -17,7 +17,7 @@ import type {
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import { computeInjectExpectationLabel } from '../../../../../utils/statusUtils';
-import type { InjectExpectationsStore } from '../../../common/injects/expectations/Expectation';
+import type { InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import InjectExpectationResultList from './InjectExpectationResultList';
 
 interface Props {

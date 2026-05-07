@@ -21,9 +21,9 @@ import { type InjectResultOutput, type SearchPaginationInput } from '../../../ut
 import { Can } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
 import { isNotEmptyField } from '../../../utils/utils';
-import InjectIcon from '../common/injects/InjectIcon';
-import InjectImportJsonDialog from '../common/injects/InjectImportJsonDialog';
-import InjectorContract from '../common/injects/InjectorContract';
+import InjectIcon from '../common/attack_chain_nodes/InjectIcon';
+import InjectImportJsonDialog from '../common/attack_chain_nodes/InjectImportJsonDialog';
+import InjectorContract from '../common/attack_chain_nodes/InjectorContract';
 import AtomicTestingPopover from './atomic_testing/AtomicTestingPopover';
 import AtomicTestingResult from './atomic_testing/AtomicTestingResult';
 

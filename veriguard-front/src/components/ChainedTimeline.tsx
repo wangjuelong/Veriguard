@@ -24,10 +24,10 @@ import { makeStyles } from 'tss-react/mui';
 
 import { type AssetGroupsHelper } from '../actions/asset_groups/assetgroup-helper';
 import { type EndpointHelper } from '../actions/assets/asset-helper';
-import { type ExercisesHelper } from '../actions/exercises/exercise-helper';
-import { type InjectOutputType, type InjectStore } from '../actions/injects/Inject';
-import { type InjectHelper } from '../actions/injects/inject-helper';
-import { type ScenariosHelper } from '../actions/scenarios/scenario-helper';
+import { type ExercisesHelper } from '../actions/attack_chain_runs/exercise-helper';
+import { type InjectOutputType, type InjectStore } from '../actions/attack_chain_nodes/Inject';
+import { type InjectHelper } from '../actions/attack_chain_nodes/inject-helper';
+import { type ScenariosHelper } from '../actions/attack_chains/scenario-helper';
 import { type TeamsHelper } from '../actions/teams/team-helper';
 import { InjectTestContext, PermissionsContext } from '../admin/components/common/Context';
 import { useHelper } from '../store';

@@ -6,7 +6,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { useFormatter } from '../../../../components/i18n';
 import { type ExpectationResultsByType, type InjectResultOutput } from '../../../../utils/api-types';
-import { expectationResultTypes } from '../../common/injects/expectations/Expectation';
+import { expectationResultTypes } from '../../common/attack_chain_nodes/expectations/Expectation';
 
 const useStyles = makeStyles()(() => ({
   inline: {

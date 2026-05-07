@@ -4,8 +4,8 @@ import { storeXlsFile } from '../../../../../actions/mapper/mapper-actions';
 import Dialog from '../../../../../components/common/dialog/Dialog';
 import { useFormatter } from '../../../../../components/i18n';
 import { type ImportMapperAddInput, type ImportPostSummary } from '../../../../../utils/api-types';
-import ImportFileSelector from '../../../common/injects/ImportFileSelector';
-import ImportUploaderInjectFromInjectsTest from '../../../common/injects/ImportUploaderInjectFromInjectsTest';
+import ImportFileSelector from '../../../common/attack_chain_nodes/ImportFileSelector';
+import ImportUploaderInjectFromInjectsTest from '../../../common/attack_chain_nodes/ImportUploaderInjectFromInjectsTest';
 
 interface IngestionCsvMapperTestDialogProps {
   open: boolean;

@@ -1,6 +1,6 @@
 import { type Theme } from '@mui/material';
 
-import { HUMAN_EXPECTATION } from '../admin/components/common/injects/expectations/ExpectationUtils';
+import { HUMAN_EXPECTATION } from '../admin/components/common/attack_chain_nodes/expectations/ExpectationUtils';
 import colorStyles from '../components/Color';
 
 const injectExpectationMap = {

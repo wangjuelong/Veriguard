@@ -5,8 +5,8 @@ import { useFormatter } from '../../../../../components/i18n';
 import { type Group } from '../../../../../utils/api-types';
 import GroupManageAtomicTestingGrants from './atomic_testings/GroupManageAtomicTestingGrants';
 import GroupManagePayloadGrants from './payloads/GroupManagePayloadGrants';
-import GroupManageScenarioGrants from './scenarios/GroupManageScenarioGrants';
-import GroupManageSimulationGrants from './simulations/GroupManageSimulationGrants';
+import GroupManageScenarioGrants from './attack_chains/GroupManageScenarioGrants';
+import GroupManageSimulationGrants from './attack_chain_runs/GroupManageSimulationGrants';
 import TabbedView from './ui/TabbedView';
 
 interface GroupManageGrantsProps {

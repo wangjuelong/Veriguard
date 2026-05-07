@@ -10,7 +10,7 @@ import { useCallback, useEffect } from 'react';
 
 import { useFormatter } from '../../../../../components/i18n';
 import { truncate } from '../../../../../utils/String';
-import type { InjectExpectationsStore } from '../../../common/injects/expectations/Expectation';
+import type { InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import nodeTypes from '../types/nodes';
 import type { NodeResultStep } from '../types/nodes/NodeResultStep';
 

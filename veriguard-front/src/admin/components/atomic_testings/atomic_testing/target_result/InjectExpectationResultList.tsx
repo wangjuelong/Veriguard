@@ -19,9 +19,9 @@ import {
   type PayloadSimple,
 } from '../../../../../utils/api-types';
 import { isNotEmptyField } from '../../../../../utils/utils';
-import { type InjectExpectationsStore } from '../../../common/injects/expectations/Expectation';
-import InjectIcon from '../../../common/injects/InjectIcon';
-import { getSourceLabel } from '../../../simulations/simulation/validation/expectations/ExpectationUtils';
+import { type InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import InjectIcon from '../../../common/attack_chain_nodes/InjectIcon';
+import { getSourceLabel } from '../../../attack_chain_runs/attack_chain_run/validation/expectations/ExpectationUtils';
 import InjectExpectationContext from '../context/InjectExpectationContext';
 import TargetResultAlertNumber from './TargetResultAlertNumber';
 

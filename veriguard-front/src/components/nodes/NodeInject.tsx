@@ -5,9 +5,9 @@ import moment from 'moment';
 import { memo, type MouseEvent } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectOutputType, type InjectStore } from '../../actions/injects/Inject';
-import InjectIcon from '../../admin/components/common/injects/InjectIcon';
-import InjectPopover from '../../admin/components/common/injects/InjectPopover';
+import { type InjectOutputType, type InjectStore } from '../../actions/attack_chain_nodes/Inject';
+import InjectIcon from '../../admin/components/common/attack_chain_nodes/InjectIcon';
+import InjectPopover from '../../admin/components/common/attack_chain_nodes/InjectPopover';
 import { isNotEmptyField } from '../../utils/utils';
 import { useFormatter } from '../i18n';
 

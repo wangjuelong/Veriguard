@@ -29,7 +29,7 @@ export const searchFindingsForSimulations = (simulationId: string, searchPaginat
 
 export const searchFindingsForScenarios = (scenarioId: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
-  const uri = `${FINDING_URI}/scenarios/${scenarioId}/search`;
+  const uri = `${FINDING_URI}/attack_chains/${scenarioId}/search`;
   return simplePostCall(uri, data);
 };
 
@@ -61,6 +61,6 @@ export const searchDistinctFindingsForSimulations = (simulationId: string, searc
 
 export const searchDistinctFindingsForScenarios = (scenarioId: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
-  const uri = `${FINDING_URI}/scenarios/${scenarioId}/search?distinct=true`;
+  const uri = `${FINDING_URI}/attack_chains/${scenarioId}/search?distinct=true`;
   return simplePostCall(uri, data);
 };

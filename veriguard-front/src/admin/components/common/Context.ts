@@ -1,7 +1,7 @@
 import { createContext, type ReactElement } from 'react';
 
 import { type FullArticleStore } from '../../../actions/channels/Article';
-import { type InjectOutputType, type InjectStore } from '../../../actions/injects/Inject';
+import { type InjectOutputType, type InjectStore } from '../../../actions/attack_chain_nodes/Inject';
 import { type Page } from '../../../components/common/queryable/Page';
 import {
   type Article,
