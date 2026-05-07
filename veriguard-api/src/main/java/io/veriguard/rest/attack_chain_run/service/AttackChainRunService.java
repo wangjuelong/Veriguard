@@ -625,8 +625,8 @@ public class AttackChainRunService {
     Expression<String[]> tagIdsExpression =
         arrayAggOnId((HibernateCriteriaBuilder) cb, attackChainRunTagsJoin);
 
-    Join<Base, Base> attackChainNodesJoin = attackChainRunRoot.join("injects", JoinType.LEFT);
-    joinMap.put("injects", attackChainNodesJoin);
+    Join<Base, Base> attackChainNodesJoin = attackChainRunRoot.join("attackChainNodes", JoinType.LEFT);
+    joinMap.put("attackChainNodes", attackChainNodesJoin);
     Expression<String[]> attackChainNodeIdsExpression =
         arrayAggOnId((HibernateCriteriaBuilder) cb, attackChainNodesJoin);
 

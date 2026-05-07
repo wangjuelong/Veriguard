@@ -94,12 +94,12 @@ public interface AssetGroupRepository
               + "FROM asset_groups ag "
               + "LEFT JOIN injects_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
               + "LEFT JOIN asset_groups_assets aga ON aga.asset_group_id = ag.asset_group_id "
-              + "WHERE iat.asset_group_id IN (:assetGroupIds) OR iat.inject_id IN (:injectIds) "
+              + "WHERE iat.asset_group_id IN (:assetGroupIds) OR iat.inject_id IN (:attackChainNodeIds) "
               + "GROUP BY ag.asset_group_id, ag.asset_group_name, CAST(ag.asset_group_dynamic_filter as text) ;",
       nativeQuery = true)
   Set<RawAssetGroup> rawByIdsOrAttackChainNodeIds(
       @Param("assetGroupIds") Set<String> assetGroupIds,
-      @Param("injectIds") Set<String> attackChainNodeIds);
+      @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
 
   // -- PAGINATION --
 
@@ -109,11 +109,11 @@ public interface AssetGroupRepository
               + "CAST(asset_group_dynamic_filter as text) as asset_group_dynamic_filter "
               + "FROM asset_groups ag "
               + "JOIN injects_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
-              + "WHERE iat.inject_id = :injectId "
+              + "WHERE iat.inject_id = :attackChainNodeId "
               + "AND ag.asset_group_dynamic_filter IS NOT NULL;",
       nativeQuery = true)
   List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeId(
-      @Param("injectId") String attackChainNodeId);
+      @Param("attackChainNodeId") String attackChainNodeId);
 
   @Query(
       value =
@@ -121,12 +121,12 @@ public interface AssetGroupRepository
               + "CAST(asset_group_dynamic_filter as text) as asset_group_dynamic_filter "
               + "FROM asset_groups ag "
               + "JOIN injects_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
-              + "WHERE iat.inject_id = :injectId "
+              + "WHERE iat.inject_id = :attackChainNodeId "
               + "AND ag.asset_group_dynamic_filter IS NOT NULL "
               + "AND ag.asset_group_id IN :assetGroupIds ;",
       nativeQuery = true)
   List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeIdAndAssetGroupIds(
-      @Param("injectId") String attackChainNodeId,
+      @Param("attackChainNodeId") String attackChainNodeId,
       @Param("assetGroupIds") List<String> assetGroupIds);
 
   @Query(
@@ -146,12 +146,12 @@ public interface AssetGroupRepository
               + "CAST(asset_group_dynamic_filter as text) as asset_group_dynamic_filter "
               + "FROM asset_groups ag "
               + "JOIN injects_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
-              + "WHERE iat.inject_id = :injectId "
+              + "WHERE iat.inject_id = :attackChainNodeId "
               + "AND ag.asset_group_dynamic_filter IS NOT NULL "
               + "AND ag.asset_group_id NOT IN :assetGroupIds ;",
       nativeQuery = true)
   List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeIdAndNotAssetGroupIds(
-      @Param("injectId") String attackChainNodeId,
+      @Param("attackChainNodeId") String attackChainNodeId,
       @Param("assetGroupIds") List<String> assetGroupIds);
 
   @NotNull
@@ -164,7 +164,7 @@ public interface AssetGroupRepository
               + "FROM asset_groups ag "
               + "INNER JOIN injects_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
               + "INNER JOIN injects i ON iag.inject_id = i.inject_id "
-              + "WHERE i.inject_exercise in :exerciseIds",
+              + "WHERE i.inject_exercise in :attackChainRunIds",
       nativeQuery = true)
   List<Object[]> assetGroupsByAttackChainRunIds(Set<String> attackChainRunIds);
 
@@ -173,7 +173,7 @@ public interface AssetGroupRepository
           "SELECT DISTINCT iag.inject_id, ag.asset_group_id, ag.asset_group_name "
               + "FROM asset_groups ag "
               + "INNER JOIN injects_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
-              + "WHERE iag.inject_id in :injectIds",
+              + "WHERE iag.inject_id in :attackChainNodeIds",
       nativeQuery = true)
   List<Object[]> assetGroupsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 

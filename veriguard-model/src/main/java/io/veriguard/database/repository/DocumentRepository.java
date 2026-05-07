@@ -140,10 +140,10 @@ public interface DocumentRepository
               + "WHERE d.document_id IN ("
               + "  SELECT id.document_id FROM injects_documents id "
               + "  JOIN injects i ON i.inject_id = id.inject_id "
-              + "  WHERE i.inject_scenario = :scenarioId "
+              + "  WHERE i.inject_scenario = :attackChainId "
               + ")",
       nativeQuery = true)
-  List<Document> findAllDistinctByAttackChainId(@Param("scenarioId") String attackChainId);
+  List<Document> findAllDistinctByAttackChainId(@Param("attackChainId") String attackChainId);
 
   @Query(
       value =

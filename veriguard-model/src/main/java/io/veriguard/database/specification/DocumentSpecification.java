@@ -12,10 +12,10 @@ public class DocumentSpecification {
   public static Specification<Document> findGrantedFor(@NotBlank final String userId) {
     return (root, query, criteriaBuilder) -> {
       Path<Object> attackChainRunPath =
-          root.join("exercises").join("grants").join("group").join("users").get("id");
+          root.join("attackChainRuns").join("grants").join("group").join("users").get("id");
 
       Path<Object> attackChainPath =
-          root.join("scenarios").join("grants").join("group").join("users").get("id");
+          root.join("attackChains").join("grants").join("group").join("users").get("id");
 
       return criteriaBuilder.or(
           criteriaBuilder.equal(attackChainRunPath, userId),

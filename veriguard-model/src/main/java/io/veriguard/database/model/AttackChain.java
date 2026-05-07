@@ -70,7 +70,7 @@ import org.hibernate.annotations.*;
 @NamedEntityGraphs({
   @NamedEntityGraph(
       name = "Scenario.tags-injects",
-      attributeNodes = {@NamedAttributeNode("tags"), @NamedAttributeNode("injects")})
+      attributeNodes = {@NamedAttributeNode("tags"), @NamedAttributeNode("attackChainNodes")})
 })
 @Grantable(Grant.GRANT_RESOURCE_TYPE.SCENARIO)
 public class AttackChain implements GrantableBase {

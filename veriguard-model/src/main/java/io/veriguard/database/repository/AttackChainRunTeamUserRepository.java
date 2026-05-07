@@ -42,10 +42,10 @@ public interface AttackChainRunTeamUserRepository
   @Query(
       value =
           "insert into exercises_teams_users (exercise_id, team_id, user_id) "
-              + "values (:exerciseId, :teamId, :userId)",
+              + "values (:attackChainRunId, :teamId, :userId)",
       nativeQuery = true)
   void addAttackChainRunTeamUser(
-      @Param("exerciseId") String attackChainRunId,
+      @Param("attackChainRunId") String attackChainRunId,
       @Param("teamId") String teamId,
       @Param("userId") String userId);
 
@@ -61,11 +61,11 @@ public interface AttackChainRunTeamUserRepository
   @Query(
       value =
           "delete from exercises_teams_users "
-              + "where exercise_id = :exerciseId and team_id in :teamIds",
+              + "where exercise_id = :attackChainRunId and team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void deleteByAttackChainRunIdAndTeamIds(
-      @Param("exerciseId") String attackChainRunId, @Param("teamIds") Collection<String> teamIds);
+      @Param("attackChainRunId") String attackChainRunId, @Param("teamIds") Collection<String> teamIds);
 
   boolean existsByAttackChainRunIdAndTeamIdAndUserId(
       String attackChainRunId, String teamId, String userId);

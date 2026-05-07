@@ -82,8 +82,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorWindows = new HashMap<>();
         executorWindows.put("platform", "windows");
         executorWindows.put("name", "psh");
-        executorWindows.put(
-            "command",
+        executorWindows.put("command",
             nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorWindows);
@@ -92,8 +91,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorWindows = new HashMap<>();
         executorWindows.put("platform", "windows");
         executorWindows.put("name", "psh");
-        executorWindows.put(
-            "command",
+        executorWindows.put("command",
             nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorWindows);
@@ -103,8 +101,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorLinux = new HashMap<>();
         executorLinux.put("platform", "linux");
         executorLinux.put("name", "sh");
-        executorLinux.put(
-            "command",
+        executorLinux.put("command",
             nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorLinux);
@@ -113,8 +110,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorLinux = new HashMap<>();
         executorLinux.put("platform", "linux");
         executorLinux.put("name", "sh");
-        executorLinux.put(
-            "command",
+        executorLinux.put("command",
             nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorLinux);
@@ -124,8 +120,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorMac = new HashMap<>();
         executorMac.put("platform", "darwin");
         executorMac.put("name", "sh");
-        executorMac.put(
-            "command",
+        executorMac.put("command",
             nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorMac);
@@ -134,8 +129,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorMac = new HashMap<>();
         executorMac.put("platform", "darwin");
         executorMac.put("name", "sh");
-        executorMac.put(
-            "command",
+        executorMac.put("command",
             nodeExecutorExecutorCommands.get(
                 Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorMac);
@@ -163,8 +157,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorWindows = new HashMap<>();
         executorWindows.put("platform", "windows");
         executorWindows.put("name", "psh");
-        executorWindows.put(
-            "command",
+        executorWindows.put("command",
             nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorWindows);
@@ -173,8 +166,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorWindows = new HashMap<>();
         executorWindows.put("platform", "windows");
         executorWindows.put("name", "psh");
-        executorWindows.put(
-            "command",
+        executorWindows.put("command",
             nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorWindows);
@@ -184,8 +176,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorLinux = new HashMap<>();
         executorLinux.put("platform", "linux");
         executorLinux.put("name", "sh");
-        executorLinux.put(
-            "command",
+        executorLinux.put("command",
             nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorLinux);
@@ -194,8 +185,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorLinux = new HashMap<>();
         executorLinux.put("platform", "linux");
         executorLinux.put("name", "sh");
-        executorLinux.put(
-            "command",
+        executorLinux.put("command",
             nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.Linux.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorLinux);
@@ -205,8 +195,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorMac = new HashMap<>();
         executorMac.put("platform", "darwin");
         executorMac.put("name", "sh");
-        executorMac.put(
-            "command",
+        executorMac.put("command",
             nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.x86_64));
         executors.add(executorMac);
@@ -215,8 +204,7 @@ public class CalderaExecutorClient {
         Map<String, String> executorMac = new HashMap<>();
         executorMac.put("platform", "darwin");
         executorMac.put("name", "sh");
-        executorMac.put(
-            "command",
+        executorMac.put("command",
             nodeExecutorExecutorClearCommands.get(
                 Endpoint.PLATFORM_TYPE.MacOS.name() + "." + Endpoint.PLATFORM_ARCH.arm64));
         executors.add(executorMac);

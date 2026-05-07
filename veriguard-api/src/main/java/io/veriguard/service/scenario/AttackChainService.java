@@ -233,11 +233,11 @@ public class AttackChainService {
         ((HibernateCriteriaBuilder) cb).arrayRemove(arr, nullString);
 
     // Join on INJECT and INJECTOR CONTRACT
-    Join<Base, Base> attackChainNodesJoin = attackChainRoot.join("injects", JoinType.LEFT);
-    joinMap.put("injects", attackChainNodesJoin);
+    Join<Base, Base> attackChainNodesJoin = attackChainRoot.join("attackChainNodes", JoinType.LEFT);
+    joinMap.put("attackChainNodes", attackChainNodesJoin);
     Join<Base, Base> nodeExecutorsContractsJoin =
-        attackChainNodesJoin.join("injectorContract", JoinType.LEFT);
-    joinMap.put("injects.injectorContract", nodeExecutorsContractsJoin);
+        attackChainNodesJoin.join("nodeContract", JoinType.LEFT);
+    joinMap.put("attackChainNodes.nodeContract", nodeExecutorsContractsJoin);
     Expression<String[]> platformExpression =
         cb.function("array_union_agg", String[].class, nodeExecutorsContractsJoin.get("platforms"));
     // SELECT

@@ -14,8 +14,8 @@ public interface VariableRepository
   @Query(
       value =
           "INSERT INTO variables(variable_id, variable_key, variable_value, variable_description, variable_type, variable_exercise)"
-              + "   SELECT gen_random_uuid(), variable_key, variable_value, variable_description, variable_type, :exerciseId FROM variables as old"
-              + "   WHERE old.variable_scenario = :scenarioId",
+              + "   SELECT gen_random_uuid(), variable_key, variable_value, variable_description, variable_type, :attackChainRunId FROM variables as old"
+              + "   WHERE old.variable_scenario = :attackChainId",
       nativeQuery = true)
   @Modifying
   void copyVariableFromAttackChainForSimulation(String attackChainId, String attackChainRunId);

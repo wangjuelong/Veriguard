@@ -24,7 +24,7 @@ public class EndpointSpecification {
       query.groupBy(root.get("id"));
       return criteriaBuilder.and(
           criteriaBuilder.isNull(agentsJoin.get("parent")),
-          criteriaBuilder.isNull(agentsJoin.get("inject")));
+          criteriaBuilder.isNull(agentsJoin.get("attackChainNode")));
     };
   }
 

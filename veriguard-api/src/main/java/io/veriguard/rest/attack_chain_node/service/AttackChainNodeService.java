@@ -1171,8 +1171,8 @@ public class AttackChainNodeService {
       query.distinct(true);
 
       // Use the id expressions for parents (safer than testing the entity path itself)
-      Expression<String> attackChainIdPath = root.get("scenario").get("id");
-      Expression<String> attackChainRunIdPath = root.get("exercise").get("id");
+      Expression<String> attackChainIdPath = root.get("attackChain").get("id");
+      Expression<String> attackChainRunIdPath = root.get("attackChainRun").get("id");
       // Check if both are null -> atomic testing case
       Predicate bothParentsNull =
           cb.and(cb.isNull(attackChainIdPath), cb.isNull(attackChainRunIdPath));
@@ -1208,17 +1208,17 @@ public class AttackChainNodeService {
       return cb.or(
           // Case 1: atomic test (no parents, direct grant required)
           cb.and(
-              cb.isNull(root.get("scenario")),
-              cb.isNull(root.get("exercise")),
+              cb.isNull(root.get("attackChain")),
+              cb.isNull(root.get("attackChainRun")),
               root.get("id").in(accessibleAtomicTestings)),
           // Case 2: linked to a attackChain, and user has access
           cb.and(
-              cb.isNotNull(root.get("scenario")),
-              root.get("scenario").get("id").in(accessibleAttackChains)),
+              cb.isNotNull(root.get("attackChain")),
+              root.get("attackChain").get("id").in(accessibleAttackChains)),
           // Case 3: linked to a simulation, and user has access
           cb.and(
-              cb.isNotNull(root.get("exercise")),
-              root.get("exercise").get("id").in(accessibleSimulations)));
+              cb.isNotNull(root.get("attackChainRun")),
+              root.get("attackChainRun").get("id").in(accessibleSimulations)));
     };
   }
 

@@ -24,15 +24,15 @@ public class AttackChainNodeSpecification {
   // -- FROM PARENT --
 
   public static Specification<AttackChainNode> fromSimulation(String simulationId) {
-    return (root, query, cb) -> cb.equal(root.get("exercise").get("id"), simulationId);
+    return (root, query, cb) -> cb.equal(root.get("attackChainRun").get("id"), simulationId);
   }
 
   public static Specification<AttackChainNode> fromRunningSimulation() {
-    return (root, query, cb) -> cb.equal(root.get("exercise").get("status"), RUNNING);
+    return (root, query, cb) -> cb.equal(root.get("attackChainRun").get("status"), RUNNING);
   }
 
   public static Specification<AttackChainNode> fromAttackChain(String attackChainId) {
-    return (root, query, cb) -> cb.equal(root.get("scenario").get("id"), attackChainId);
+    return (root, query, cb) -> cb.equal(root.get("attackChain").get("id"), attackChainId);
   }
 
   /**
@@ -54,7 +54,7 @@ public class AttackChainNodeSpecification {
 
   public static Specification<AttackChainNode> next() {
     return (root, query, cb) -> {
-      Path<Object> attackChainRunPath = root.get("exercise");
+      Path<Object> attackChainRunPath = root.get("attackChainRun");
       return cb.and(
           cb.equal(root.get("enabled"), true), // isEnable
           cb.isNotNull(attackChainRunPath.get("start")), // fromScheduled
@@ -65,7 +65,7 @@ public class AttackChainNodeSpecification {
 
   public static Specification<AttackChainNode> executable() {
     return (root, query, cb) -> {
-      Path<Object> attackChainRunPath = root.get("exercise");
+      Path<Object> attackChainRunPath = root.get("attackChainRun");
       return cb.and(
           // cb.notEqual(root.get("type"), ManualContract.TYPE),  // notManual
           cb.equal(root.get("enabled"), true), // isEnable
@@ -106,7 +106,7 @@ public class AttackChainNodeSpecification {
   // -- CONTRACT --
 
   public static Specification<AttackChainNode> fromContract(@NotBlank final String contract) {
-    return (root, query, cb) -> cb.equal(root.get("injectorContract").get("id"), contract);
+    return (root, query, cb) -> cb.equal(root.get("nodeContract").get("id"), contract);
   }
 
   // -- TEST --
@@ -116,11 +116,11 @@ public class AttackChainNodeSpecification {
 
   public static Specification<AttackChainNode> testable() {
     return (root, query, cb) ->
-        root.get("injectorContract").get("injector").get("type").in(VALID_TESTABLE_TYPES);
+        root.get("nodeContract").get("nodeExecutor").get("type").in(VALID_TESTABLE_TYPES);
   }
 
   public static Specification<AttackChainNode> isAtomicTesting() {
     return (root, query, cb) ->
-        cb.and(cb.isNull(root.get("scenario")), cb.isNull(root.get("exercise")));
+        cb.and(cb.isNull(root.get("attackChain")), cb.isNull(root.get("attackChainRun")));
   }
 }

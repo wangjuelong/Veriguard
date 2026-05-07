@@ -64,10 +64,10 @@ public interface TeamRepository
           "SELECT DISTINCT t.team_id AS team_id, t.team_name AS team_name "
               + "FROM teams t "
               + "LEFT JOIN injects_teams it ON t.team_id = it.team_id "
-              + "WHERE t.team_id IN (:ids) OR it.inject_id IN (:injectIds) ;",
+              + "WHERE t.team_id IN (:ids) OR it.inject_id IN (:attackChainNodeIds) ;",
       nativeQuery = true)
   Set<RawTeam> rawByIdsOrAttackChainNodeIds(
-      @Param("ids") Set<String> ids, @Param("injectIds") Set<String> attackChainNodeIds);
+      @Param("ids") Set<String> ids, @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
 
   @Query(
       value =
@@ -119,7 +119,7 @@ public interface TeamRepository
               + "FROM teams t "
               + "INNER JOIN injects_teams it ON t.team_id = it.team_id "
               + "INNER JOIN injects i ON it.inject_id = i.inject_id "
-              + "WHERE i.inject_exercise in :exerciseIds",
+              + "WHERE i.inject_exercise in :attackChainRunIds",
       nativeQuery = true)
   List<Object[]> teamsByAttackChainRunIds(Set<String> attackChainRunIds);
 
@@ -128,7 +128,7 @@ public interface TeamRepository
           "SELECT DISTINCT it.inject_id, t.team_id, t.team_name "
               + "FROM teams t "
               + "INNER JOIN injects_teams it ON t.team_id = it.team_id "
-              + "WHERE it.inject_id in :injectIds",
+              + "WHERE it.inject_id in :attackChainNodeIds",
       nativeQuery = true)
   List<Object[]> teamsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 

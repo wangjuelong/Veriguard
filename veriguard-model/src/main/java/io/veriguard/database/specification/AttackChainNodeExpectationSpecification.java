@@ -41,7 +41,7 @@ public class AttackChainNodeExpectationSpecification {
       @NotBlank final String attackChainNodeId, @NotEmpty final List<String> agentIds) {
     return (root, query, cb) ->
         cb.and(
-            cb.equal(root.get("inject").get("id"), attackChainNodeId),
+            cb.equal(root.get("attackChainNode").get("id"), attackChainNodeId),
             root.get("agent").get("id").in(agentIds));
   }
 
@@ -49,7 +49,7 @@ public class AttackChainNodeExpectationSpecification {
       @NotBlank final String attackChainNodeId, @NotEmpty final List<String> assetIds) {
     return (root, query, cb) ->
         cb.and(
-            cb.equal(root.get("inject").get("id"), attackChainNodeId),
+            cb.equal(root.get("attackChainNode").get("id"), attackChainNodeId),
             cb.isNull(root.get("agent")),
             root.get("asset").get("id").in(assetIds));
   }

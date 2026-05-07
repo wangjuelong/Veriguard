@@ -26,11 +26,11 @@ public interface LessonsCategoryRepository
       value =
           "DELETE FROM lessons_categories_teams lct "
               + "WHERE lct.team_id IN :teamIds "
-              + "AND EXISTS (SELECT 1 FROM lessons_categories lc WHERE lct.lessons_category_id = lc.lessons_category_id AND lc.lessons_category_exercise = :exerciseId)",
+              + "AND EXISTS (SELECT 1 FROM lessons_categories lc WHERE lct.lessons_category_id = lc.lessons_category_id AND lc.lessons_category_exercise = :attackChainRunId)",
       nativeQuery = true)
   @Transactional
   void removeTeamsForAttackChainRun(
-      @Param("exerciseId") final String attackChainRunId,
+      @Param("attackChainRunId") final String attackChainRunId,
       @Param("teamIds") final List<String> teamIds);
 
   @Modifying
@@ -38,10 +38,10 @@ public interface LessonsCategoryRepository
       value =
           "DELETE FROM lessons_categories_teams lct "
               + "WHERE lct.team_id IN :teamIds "
-              + "AND EXISTS (SELECT 1 FROM lessons_categories lc WHERE lct.lessons_category_id = lc.lessons_category_id AND lc.lessons_category_scenario = :scenarioId)",
+              + "AND EXISTS (SELECT 1 FROM lessons_categories lc WHERE lct.lessons_category_id = lc.lessons_category_id AND lc.lessons_category_scenario = :attackChainId)",
       nativeQuery = true)
   @Transactional
   void removeTeamsForAttackChain(
-      @Param("scenarioId") final String attackChainId,
+      @Param("attackChainId") final String attackChainId,
       @Param("teamIds") final List<String> teamIds);
 }

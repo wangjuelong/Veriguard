@@ -47,14 +47,11 @@ public class AttackChainNodeStatisticsHelper {
             .filter(attackChainNode -> attackChainNode.getStatus().isPresent())
             .count();
     stats.put("total_executed", executed);
-    stats.put(
-        "total_remaining",
+    stats.put("total_remaining",
         attackChainNodes.stream().filter(AttackChainNode::isNotExecuted).count());
-    stats.put(
-        "total_past",
+    stats.put("total_past",
         attackChainNodes.stream().filter(AttackChainNode::isPastAttackChainNode).count());
-    stats.put(
-        "total_future",
+    stats.put("total_future",
         attackChainNodes.stream().filter(AttackChainNode::isFutureAttackChainNode).count());
     stats.put("total_progress", total > 0 ? (executed * 100 / total) : 0);
     return stats;

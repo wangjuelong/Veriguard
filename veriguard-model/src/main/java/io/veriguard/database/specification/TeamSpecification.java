@@ -35,7 +35,7 @@ public class TeamSpecification {
 
   public static Specification<Team> fromAttackChainRun(@NotBlank final String attackChainRunId) {
     return (root, query, cb) -> {
-      Join<Team, AttackChainRun> attackChainRunsJoin = root.join("exercises", JoinType.LEFT);
+      Join<Team, AttackChainRun> attackChainRunsJoin = root.join("attackChainRuns", JoinType.LEFT);
       return cb.and(
           cb.isNotNull(attackChainRunsJoin.get("id")),
           cb.equal(attackChainRunsJoin.get("id"), attackChainRunId));
@@ -44,7 +44,7 @@ public class TeamSpecification {
 
   public static Specification<Team> fromAttackChain(String attackChainId) {
     return (root, query, cb) -> {
-      Join<Team, AttackChain> attackChainsJoin = root.join("scenarios", JoinType.LEFT);
+      Join<Team, AttackChain> attackChainsJoin = root.join("attackChains", JoinType.LEFT);
       return cb.and(
           cb.isNotNull(attackChainsJoin.get("id")),
           cb.equal(attackChainsJoin.get("id"), attackChainId));

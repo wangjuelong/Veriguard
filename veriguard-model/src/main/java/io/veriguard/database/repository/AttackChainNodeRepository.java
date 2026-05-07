@@ -137,7 +137,7 @@ public interface AttackChainNodeRepository
               + "join doc_rel.document as doc "
               + "where doc.id = :documentId and i.attackChainRun.id = :attackChainRunId")
   List<AttackChainNode> findAllForAttackChainRunAndDoc(
-      @Param("exerciseId") String attackChainRunId, @Param("documentId") String documentId);
+      @Param("attackChainRunId") String attackChainRunId, @Param("documentId") String documentId);
 
   @Query(
       value =
@@ -146,7 +146,7 @@ public interface AttackChainNodeRepository
               + "join doc_rel.document as doc "
               + "where doc.id = :documentId and i.attackChain.id = :attackChainId")
   List<AttackChainNode> findAllForAttackChainAndDoc(
-      @Param("scenarioId") String attackChainId, @Param("documentId") String documentId);
+      @Param("attackChainId") String attackChainId, @Param("documentId") String documentId);
 
   @Modifying
   @Query(
@@ -154,7 +154,7 @@ public interface AttackChainNodeRepository
           "insert into injects (inject_id, inject_title, inject_description, inject_country, inject_city,"
               + "inject_injector_contract, inject_all_teams, inject_enabled, inject_exercise, "
               + "inject_depends_duration, inject_content) "
-              + "values (:id, :title, :description, :country, :city, :contract, :allTeams, :enabled, :exercise, :dependsDuration, :content)",
+              + "values (:id, :title, :description, :country, :city, :contract, :allTeams, :enabled, :attackChainRun, :dependsDuration, :content)",
       nativeQuery = true)
   void importSaveForAttackChainRun(
       @Param("id") String id,
@@ -165,7 +165,7 @@ public interface AttackChainNodeRepository
       @Param("contract") String contract,
       @Param("allTeams") boolean allTeams,
       @Param("enabled") boolean enabled,
-      @Param("exercise") String attackChainRunId,
+      @Param("attackChainRun") String attackChainRunId,
       @Param("dependsDuration") Long dependsDuration,
       @Param("content") String content);
 
@@ -175,7 +175,7 @@ public interface AttackChainNodeRepository
           "insert into injects (inject_id, inject_title, inject_description, inject_country, inject_city,"
               + "inject_injector_contract, inject_all_teams, inject_enabled, inject_scenario, "
               + "inject_depends_duration, inject_content) "
-              + "values (:id, :title, :description, :country, :city, :contract, :allTeams, :enabled, :scenario, :dependsDuration, :content)",
+              + "values (:id, :title, :description, :country, :city, :contract, :allTeams, :enabled, :attackChain, :dependsDuration, :content)",
       nativeQuery = true)
   void importSaveForAttackChain(
       @Param("id") String id,
@@ -186,7 +186,7 @@ public interface AttackChainNodeRepository
       @Param("contract") String contract,
       @Param("allTeams") boolean allTeams,
       @Param("enabled") boolean enabled,
-      @Param("scenario") String attackChainId,
+      @Param("attackChain") String attackChainId,
       @Param("dependsDuration") Long dependsDuration,
       @Param("content") String content);
 
@@ -212,15 +212,15 @@ public interface AttackChainNodeRepository
 
   @Modifying
   @Query(
-      value = "insert into injects_tags (inject_id, tag_id) values (:injectId, :tagId)",
+      value = "insert into injects_tags (inject_id, tag_id) values (:attackChainNodeId, :tagId)",
       nativeQuery = true)
-  void addTag(@Param("injectId") String attackChainNodeId, @Param("tagId") String tagId);
+  void addTag(@Param("attackChainNodeId") String attackChainNodeId, @Param("tagId") String tagId);
 
   @Modifying
   @Query(
-      value = "insert into injects_teams (inject_id, team_id) values (:injectId, :teamId)",
+      value = "insert into injects_teams (inject_id, team_id) values (:attackChainNodeId, :teamId)",
       nativeQuery = true)
-  void addTeam(@Param("injectId") String attackChainNodeId, @Param("teamId") String teamId);
+  void addTeam(@Param("attackChainNodeId") String attackChainNodeId, @Param("teamId") String teamId);
 
   @Override
   @Query(
@@ -378,11 +378,11 @@ public interface AttackChainNodeRepository
       value =
           "DELETE FROM injects_teams it "
               + "WHERE it.team_id IN :teamIds "
-              + "AND EXISTS (SELECT 1 FROM injects i WHERE it.inject_id = i.inject_id AND i.inject_exercise = :exerciseId)",
+              + "AND EXISTS (SELECT 1 FROM injects i WHERE it.inject_id = i.inject_id AND i.inject_exercise = :attackChainRunId)",
       nativeQuery = true)
   @Transactional
   void removeTeamsForAttackChainRun(
-      @Param("exerciseId") final String attackChainRunId,
+      @Param("attackChainRunId") final String attackChainRunId,
       @Param("teamIds") final List<String> teamIds);
 
   @Modifying
@@ -390,11 +390,11 @@ public interface AttackChainNodeRepository
       value =
           "DELETE FROM injects_teams it "
               + "WHERE it.team_id IN :teamIds "
-              + "AND EXISTS (SELECT 1 FROM injects i WHERE it.inject_id = i.inject_id AND i.inject_scenario = :scenarioId)",
+              + "AND EXISTS (SELECT 1 FROM injects i WHERE it.inject_id = i.inject_id AND i.inject_scenario = :attackChainId)",
       nativeQuery = true)
   @Transactional
   void removeTeamsForAttackChain(
-      @Param("scenarioId") final String attackChainId,
+      @Param("attackChainId") final String attackChainId,
       @Param("teamIds") final List<String> teamIds);
 
   @Query(
@@ -426,7 +426,7 @@ public interface AttackChainNodeRepository
       @Param("sourceId") String sourceId, @Param("title") String title, Pageable pageable);
 
   @Query(
-      value = "SELECT i.inject_content FROM injects i WHERE i.inject_id IN :injectIds",
+      value = "SELECT i.inject_content FROM injects i WHERE i.inject_id IN :attackChainNodeIds",
       nativeQuery = true)
   List<String> findContentsByAttackChainNodeIds(@NotBlank Set<String> attackChainNodeIds);
 
@@ -459,10 +459,10 @@ public interface AttackChainNodeRepository
               + "AND p.payload_type = '"
               + DNS_RESOLUTION_TYPE
               + "' "
-              + "AND i.inject_scenario = :scenarioId",
+              + "AND i.inject_scenario = :attackChainId",
       nativeQuery = true)
   void deleteAllAttackChainNodesWithDnsResolutionContractsByAttackChainId(
-      @Param("scenarioId") String attackChainId);
+      @Param("attackChainId") String attackChainId);
 
   @Modifying
   @Query(
@@ -471,10 +471,10 @@ public interface AttackChainNodeRepository
               + "USING injectors_contracts ic, injectors_contracts_vulnerabilities icv "
               + "WHERE i.inject_injector_contract = ic.injector_contract_id "
               + "AND ic.injector_contract_id = icv.injector_contract_id "
-              + "AND i.inject_scenario = :scenarioId",
+              + "AND i.inject_scenario = :attackChainId",
       nativeQuery = true)
   void deleteAllAttackChainNodesWithVulnerableContractsByAttackChainId(
-      @Param("scenarioId") String attackChainId);
+      @Param("attackChainId") String attackChainId);
 
   @Modifying
   @Query(
@@ -483,15 +483,15 @@ public interface AttackChainNodeRepository
               + "USING injectors_contracts ic, injectors_contracts_attack_patterns icap "
               + "WHERE i.inject_injector_contract = ic.injector_contract_id "
               + "AND ic.injector_contract_id = icap.injector_contract_id "
-              + "AND i.inject_scenario = :scenarioId",
+              + "AND i.inject_scenario = :attackChainId",
       nativeQuery = true)
   void deleteAllAttackChainNodesWithAttackPatternContractsByAttackChainId(
-      @Param("scenarioId") String attackChainId);
+      @Param("attackChainId") String attackChainId);
 
   @Modifying
   @Query(
       value =
-          "DELETE FROM injects i WHERE i.inject_injector_contract = :injectorContract AND i.inject_scenario = :scenarioId",
+          "DELETE FROM injects i WHERE i.inject_injector_contract = :nodeContract AND i.inject_scenario = :attackChainId",
       nativeQuery = true)
   void deleteAllByAttackChainIdAndNodeContract(String nodeContract, String attackChainId);
 

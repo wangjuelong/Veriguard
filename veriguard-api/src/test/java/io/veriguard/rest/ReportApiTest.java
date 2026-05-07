@@ -148,8 +148,7 @@ public class ReportApiTest extends IntegrationTest {
       // -- EXECUTE --
       String response =
           mvc.perform(
-                  MockMvcRequestBuilders.put(
-                          "/api/attack_chain_runs/"
+                  MockMvcRequestBuilders.put("/api/attack_chain_runs/"
                               + attackChainRun.getId()
                               + "/reports/"
                               + report.getId())
@@ -195,8 +194,7 @@ public class ReportApiTest extends IntegrationTest {
       // -- EXECUTE --
       String response =
           mvc.perform(
-                  MockMvcRequestBuilders.put(
-                          "/api/attack_chain_runs/"
+                  MockMvcRequestBuilders.put("/api/attack_chain_runs/"
                               + attackChainRun.getId()
                               + "/reports/"
                               + report.getId()

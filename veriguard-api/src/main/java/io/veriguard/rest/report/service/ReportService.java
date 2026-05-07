@@ -39,7 +39,7 @@ public class ReportService {
   public Report reportFromSimulation(
       @NotBlank final String simulationId, @NotNull final UUID reportId) {
     return this.reportRepository
-        .findByIdAndExercise_Id(reportId, simulationId)
+        .findByIdAndAttackChainRun_Id(reportId, simulationId)
         .orElseThrow(ElementNotFoundException::new);
   }
 

@@ -61,7 +61,7 @@ public interface AttackChainRunRepository
       AND e.id != :#{#attackChainRun.id}
     ORDER BY e.launchOrder ASC LIMIT 1
     """)
-  Optional<AttackChainRun> following(@Param("exercise") AttackChainRun attackChainRun);
+  Optional<AttackChainRun> following(@Param("attackChainRun") AttackChainRun attackChainRun);
 
   /**
    * Get the raw version of the attackChainRuns
@@ -108,7 +108,7 @@ public interface AttackChainRunRepository
               + "FROM exercises ex "
               + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
               + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
-              + "WHERE ex.exercise_id IN (:exerciseIds) "
+              + "WHERE ex.exercise_id IN (:attackChainRunIds) "
               + "GROUP BY ex.exercise_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawByAttackChainRunIds(List<String> attackChainRunIds);
@@ -170,11 +170,11 @@ public interface AttackChainRunRepository
               + "INNER JOIN groups ON grants.grant_group = groups.group_id "
               + "INNER JOIN users_groups ON groups.group_id = users_groups.group_id "
               + "WHERE users_groups.user_id = :userId "
-              + "AND ex.exercise_id IN (:exerciseIds) "
+              + "AND ex.exercise_id IN (:attackChainRunIds) "
               + "GROUP BY ex.exercise_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawGrantedByAttackChainRunIds(
-      @Param("userId") String userId, @Param("exerciseIds") List<String> attackChainRunIds);
+      @Param("userId") String userId, @Param("attackChainRunIds") List<String> attackChainRunIds);
 
   /**
    * Get the raw version of the attackChainRuns a user can see
@@ -206,19 +206,19 @@ public interface AttackChainRunRepository
               + "LEFT JOIN lessons_answers la ON la.lessons_answer_question = lq.lessons_question_id "
               + "LEFT JOIN logs ON logs.log_exercise = ex.exercise_id "
               + "LEFT JOIN injects inj ON ex.exercise_id = inj.inject_exercise "
-              + "WHERE ex.exercise_id = :exerciseId "
+              + "WHERE ex.exercise_id = :attackChainRunId "
               + "GROUP BY ex.exercise_id, inj.inject_scenario, se.scenario_id ;",
       nativeQuery = true)
-  RawSimulation rawDetailsById(@Param("exerciseId") String attackChainRunId);
+  RawSimulation rawDetailsById(@Param("attackChainRunId") String attackChainRunId);
 
   @Query(
       value =
           " SELECT DISTINCT (ie.inject_id) "
               + "FROM exercises ex "
               + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "WHERE ex.exercise_id = :exerciseId AND ie.inject_id IS NOT NULL;",
+              + "WHERE ex.exercise_id = :attackChainRunId AND ie.inject_id IS NOT NULL;",
       nativeQuery = true)
-  Set<String> findAttackChainNodesByAttackChainRun(@Param("exerciseId") String attackChainRunId);
+  Set<String> findAttackChainNodesByAttackChainRun(@Param("attackChainRunId") String attackChainRunId);
 
   @Query(
       value =
@@ -236,22 +236,22 @@ public interface AttackChainRunRepository
               + "LEFT JOIN scenarios_exercises s ON s.exercise_id = ex.exercise_id "
               + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
               + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "WHERE s.scenario_id IN (:scenarioIds) "
+              + "WHERE s.scenario_id IN (:attackChainIds) "
               + "GROUP BY ex.exercise_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawAllByAttackChainIds(
-      @Param("scenarioIds") List<String> attackChainIds);
+      @Param("attackChainIds") List<String> attackChainIds);
 
   // -- TEAM --
 
   @Modifying
   @Query(
       value =
-          "DELETE FROM exercises_teams et WHERE et.exercise_id = :exerciseId AND et.team_id in :teamIds",
+          "DELETE FROM exercises_teams et WHERE et.exercise_id = :attackChainRunId AND et.team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void removeTeams(
-      @Param("exerciseId") final String attackChainRunId,
+      @Param("attackChainRunId") final String attackChainRunId,
       @Param("teamIds") final List<String> teamIds);
 
   @Query(
@@ -261,7 +261,7 @@ public interface AttackChainRunRepository
               + "FROM exercises ex "
               + "LEFT JOIN scenarios_exercises s ON s.exercise_id = ex.exercise_id "
               + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "WHERE s.scenario_id = :scenarioId "
+              + "WHERE s.scenario_id = :attackChainId "
               + "AND ex.exercise_status = 'FINISHED' "
               + "AND ex.exercise_end_date IS NOT NULL "
               + "GROUP BY ex.exercise_id, ex.exercise_end_date "
@@ -270,7 +270,7 @@ public interface AttackChainRunRepository
       nativeQuery = true)
   List<RawFinishedAttackChainRunWithAttackChainNodes>
       rawLatestFinishedAttackChainRunsWithAttackChainNodesByAttackChainId(
-          @Param("scenarioId") String attackChainId);
+          @Param("attackChainId") String attackChainId);
 
   @Query(
       value =

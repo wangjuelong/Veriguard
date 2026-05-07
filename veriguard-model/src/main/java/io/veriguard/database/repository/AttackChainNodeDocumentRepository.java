@@ -23,18 +23,18 @@ public interface AttackChainNodeDocumentRepository
   @Query(
       value =
           "insert into injects_documents (inject_id, document_id, document_attached) "
-              + "values (:injectId, :documentId, :documentAttached)",
+              + "values (:attackChainNodeId, :documentId, :documentAttached)",
       nativeQuery = true)
   void addAttackChainNodeDoc(
-      @Param("injectId") String attackChainNodeId,
+      @Param("attackChainNodeId") String attackChainNodeId,
       @Param("documentId") String docId,
       @Param("documentAttached") boolean docAttached);
 
   @Modifying
   @Query(
-      value = "UPDATE injects_documents SET inject_id = :injectId where inject_id = :oldInjectId",
+      value = "UPDATE injects_documents SET inject_id = :attackChainNodeId where inject_id = :oldAttackChainNodeId",
       nativeQuery = true)
   void updateAttackChainNodeId(
-      @Param("injectId") String attackChainNodeId,
-      @Param("oldInjectId") String oldAttackChainNodeId);
+      @Param("attackChainNodeId") String attackChainNodeId,
+      @Param("oldAttackChainNodeId") String oldAttackChainNodeId);
 }

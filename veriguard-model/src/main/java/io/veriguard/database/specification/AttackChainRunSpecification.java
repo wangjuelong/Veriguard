@@ -16,7 +16,7 @@ public class AttackChainRunSpecification {
 
   public static Specification<AttackChainRun> recurringInstanceNotStarted() {
     return (root, query, cb) ->
-        cb.and(cb.equal(root.get("status"), SCHEDULED), cb.isNotNull(root.get("scenario")));
+        cb.and(cb.equal(root.get("status"), SCHEDULED), cb.isNotNull(root.get("attackChain")));
   }
 
   public static Specification<AttackChainRun> findGrantedFor(@NotNull final String userId) {
@@ -27,7 +27,7 @@ public class AttackChainRunSpecification {
   }
 
   public static Specification<AttackChainRun> fromAttackChain(@NotNull final String attackChainId) {
-    return (root, query, cb) -> cb.equal(root.get("scenario").get("id"), attackChainId);
+    return (root, query, cb) -> cb.equal(root.get("attackChain").get("id"), attackChainId);
   }
 
   public static Specification<AttackChainRun> byName(@Nullable final String searchText) {

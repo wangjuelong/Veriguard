@@ -132,21 +132,21 @@ public class AttackChainNodeSearchService {
       Map<String, Join<Base, Base>> joinMap) {
     // Joins
     Join<Base, Base> attackChainNodeAttackChainRunJoin =
-        attackChainNodeRoot.join("exercise", JoinType.LEFT);
-    joinMap.put("exercise", attackChainNodeAttackChainRunJoin);
+        attackChainNodeRoot.join("attackChainRun", JoinType.LEFT);
+    joinMap.put("attackChainRun", attackChainNodeAttackChainRunJoin);
 
     Join<Base, Base> attackChainNodeAttackChainJoin =
-        attackChainNodeRoot.join("scenario", JoinType.LEFT);
-    joinMap.put("scenario", attackChainNodeAttackChainJoin);
+        attackChainNodeRoot.join("attackChain", JoinType.LEFT);
+    joinMap.put("attackChain", attackChainNodeAttackChainJoin);
 
-    Join<Base, Base> nodeContractJoin = attackChainNodeRoot.join("injectorContract", JoinType.LEFT);
-    joinMap.put("injectorContract", nodeContractJoin);
+    Join<Base, Base> nodeContractJoin = attackChainNodeRoot.join("nodeContract", JoinType.LEFT);
+    joinMap.put("nodeContract", nodeContractJoin);
 
     Join<Base, Base> payloadJoin = nodeContractJoin.join("payload", JoinType.LEFT);
     joinMap.put("payload", payloadJoin);
 
-    Join<Base, Base> nodeExecutorJoin = nodeContractJoin.join("injector", JoinType.LEFT);
-    joinMap.put("injector", nodeExecutorJoin);
+    Join<Base, Base> nodeExecutorJoin = nodeContractJoin.join("nodeExecutor", JoinType.LEFT);
+    joinMap.put("nodeExecutor", nodeExecutorJoin);
 
     Join<Base, Base> attackChainEdge = attackChainNodeRoot.join("dependsOn", JoinType.LEFT);
     joinMap.put("dependsOn", attackChainEdge);
@@ -229,7 +229,7 @@ public class AttackChainNodeSearchService {
             (root, query, cb) -> {
               Predicate predicate = cb.conjunction();
               predicate =
-                  cb.and(predicate, cb.equal(root.get("exercise").get("id"), attackChainRunId));
+                  cb.and(predicate, cb.equal(root.get("attackChainRun").get("id"), attackChainRunId));
               return predicate;
             });
 
@@ -271,7 +271,7 @@ public class AttackChainNodeSearchService {
     // Create specification for filtering by attackChainRunId
     Specification<AttackChainNode> specification =
         Specification.where(
-            (root, query, cb) -> cb.equal(root.get("exercise").get("id"), attackChainRunId));
+            (root, query, cb) -> cb.equal(root.get("attackChainRun").get("id"), attackChainRunId));
 
     // Prepare query and execute
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -431,11 +431,11 @@ public class AttackChainNodeSearchService {
       Root<AttackChainNode> attackChainNodeRoot,
       Map<String, Join<Base, Base>> joinMap) {
     // Joins
-    Join<Base, Base> nodeContractJoin = attackChainNodeRoot.join("injectorContract", JoinType.LEFT);
-    joinMap.put("injectorContract", nodeContractJoin);
+    Join<Base, Base> nodeContractJoin = attackChainNodeRoot.join("nodeContract", JoinType.LEFT);
+    joinMap.put("nodeContract", nodeContractJoin);
 
-    Join<Base, Base> nodeExecutorJoin = nodeContractJoin.join("injector", JoinType.LEFT);
-    joinMap.put("injector", nodeExecutorJoin);
+    Join<Base, Base> nodeExecutorJoin = nodeContractJoin.join("nodeExecutor", JoinType.LEFT);
+    joinMap.put("nodeExecutor", nodeExecutorJoin);
 
     Join<Base, Base> payloadJoin = nodeContractJoin.join("payload", JoinType.LEFT);
     joinMap.put("payload", payloadJoin);
@@ -532,8 +532,7 @@ public class AttackChainNodeSearchService {
                         .content(tuple.get("injector_contract_content", String.class))
                         .convertedContent(tuple.get("convertedContent", ObjectNode.class))
                         .platforms(
-                            tuple.get(
-                                "injector_contract_platforms", Endpoint.PLATFORM_TYPE[].class))
+                            tuple.get("injector_contract_platforms", Endpoint.PLATFORM_TYPE[].class))
                         .payload(payloadSimple)
                         .domains(tuple.get("injector_contract_domains", String[].class))
                         .labels(tuple.get("injector_contract_labels", Map.class))

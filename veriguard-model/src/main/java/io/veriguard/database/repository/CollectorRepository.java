@@ -37,5 +37,5 @@ public interface CollectorRepository
               JOIN p.detectionRemediations dr
               WHERE i.id = :attackChainNodeId
           """)
-  List<Collector> findByAttackChainNodeId(@Param("injectId") String attackChainNodeId);
+  List<Collector> findByAttackChainNodeId(@Param("attackChainNodeId") String attackChainNodeId);
 }

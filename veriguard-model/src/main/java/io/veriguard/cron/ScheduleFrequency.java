@@ -78,7 +78,6 @@ public enum ScheduleFrequency {
    * @return all valid values joined by commas
    */
   private static String allValuesCommaSeparated() {
-    return String.join(
-        ", ", Arrays.stream(ScheduleFrequency.values()).map(ScheduleFrequency::toString).toList());
+    return String.join(", ", Arrays.stream(ScheduleFrequency.values()).map(ScheduleFrequency::toString).toList());
   }
 }

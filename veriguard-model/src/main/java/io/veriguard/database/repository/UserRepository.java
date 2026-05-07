@@ -113,16 +113,16 @@ public interface UserRepository
               + "JOIN users_teams ON us.user_id = users_teams.user_id "
               + "JOIN teams ON users_teams.team_id = teams.team_id "
               + "JOIN exercises_teams ON teams.team_id = exercises_teams.team_id "
-              + "WHERE exercises_teams.exercise_id = :exerciseId "
+              + "WHERE exercises_teams.exercise_id = :attackChainRunId "
               + "UNION "
               + "SELECT us.user_id, us.user_email, "
               + "us.user_firstname, us.user_lastname "
               + "FROM users us "
               + "JOIN evaluations ev ON us.user_id = ev.evaluation_user "
               + "JOIN objectives ob ON ob.objective_id = ev.evaluation_objective "
-              + "WHERE ob.objective_exercise = :exerciseId;",
+              + "WHERE ob.objective_exercise = :attackChainRunId;",
       nativeQuery = true)
-  List<RawPlayer> rawPlayersByAttackChainRunId(@Param("exerciseId") String attackChainRunId);
+  List<RawPlayer> rawPlayersByAttackChainRunId(@Param("attackChainRunId") String attackChainRunId);
 
   @Query(
       value =
@@ -132,16 +132,16 @@ public interface UserRepository
               + "JOIN users_teams ON us.user_id = users_teams.user_id "
               + "JOIN teams ON users_teams.team_id = teams.team_id "
               + "JOIN scenarios_teams ON teams.team_id = scenarios_teams.team_id "
-              + "WHERE scenarios_teams.scenario_id = :scenarioId "
+              + "WHERE scenarios_teams.scenario_id = :attackChainId "
               + "UNION "
               + "SELECT us.user_id, us.user_email, "
               + "us.user_firstname, us.user_lastname "
               + "FROM users us "
               + "JOIN evaluations ev ON us.user_id = ev.evaluation_user "
               + "JOIN objectives ob ON ob.objective_id = ev.evaluation_objective "
-              + "WHERE ob.objective_scenario = :scenarioId;",
+              + "WHERE ob.objective_scenario = :attackChainId;",
       nativeQuery = true)
-  List<RawPlayer> rawPlayersByAttackChainId(@Param("scenarioId") String attackChainId);
+  List<RawPlayer> rawPlayersByAttackChainId(@Param("attackChainId") String attackChainId);
 
   @Query(
       value =

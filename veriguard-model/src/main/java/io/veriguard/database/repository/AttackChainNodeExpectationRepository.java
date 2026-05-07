@@ -27,20 +27,20 @@ public interface AttackChainNodeExpectationRepository
       value =
           "select i from AttackChainNodeExpectation i where i.attackChainRun.id = :attackChainRunId")
   List<AttackChainNodeExpectation> findAllForAttackChainRun(
-      @Param("exerciseId") String attackChainRunId);
+      @Param("attackChainRunId") String attackChainRunId);
 
   @Query(
       value =
           "select i from AttackChainNodeExpectation i where i.attackChainNode.id = :attackChainNodeId")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeId(
-      @Param("injectId") @NotBlank final String attackChainNodeId);
+      @Param("attackChainNodeId") @NotBlank final String attackChainNodeId);
 
   @Query(
       value =
           "select i from AttackChainNodeExpectation i where i.attackChainRun.id = :attackChainRunId and i.attackChainNode.id = :attackChainNodeId")
   List<AttackChainNodeExpectation> findAllForAttackChainRunAndAttackChainNode(
-      @Param("exerciseId") @NotBlank final String attackChainRunId,
-      @Param("injectId") @NotBlank final String attackChainNodeId);
+      @Param("attackChainRunId") @NotBlank final String attackChainRunId,
+      @Param("attackChainNodeId") @NotBlank final String attackChainNodeId);
 
   // -- BY TARGET TYPE
 
@@ -52,7 +52,7 @@ public interface AttackChainNodeExpectationRepository
               + "and i.user.id = :playerId "
               + "ORDER BY i.type, i.createdAt")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeAndTeamAndPlayer(
-      @Param("injectId") @NotBlank final String attackChainNodeId,
+      @Param("attackChainNodeId") @NotBlank final String attackChainNodeId,
       @Param("teamId") @NotBlank final String teamId,
       @Param("playerId") @NotBlank final String playerId);
 
@@ -63,7 +63,7 @@ public interface AttackChainNodeExpectationRepository
               + "and i.user.id = :playerId "
               + "ORDER BY i.type, i.createdAt")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeAndPlayer(
-      @Param("injectId") @NotBlank final String attackChainNodeId,
+      @Param("attackChainNodeId") @NotBlank final String attackChainNodeId,
       @Param("playerId") @NotBlank final String playerId);
 
   @Query(
@@ -90,7 +90,7 @@ public interface AttackChainNodeExpectationRepository
       value =
           "select i from AttackChainNodeExpectation i where i.attackChainNode.id = :attackChainNodeId and i.team.id = :teamId and i.user is null")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeAndTeam(
-      @Param("injectId") @NotBlank final String attackChainNodeId,
+      @Param("attackChainNodeId") @NotBlank final String attackChainNodeId,
       @Param("teamId") @NotBlank final String teamId);
 
   // -- INJECT EXPECTATION TECHNICAL --
@@ -102,7 +102,7 @@ public interface AttackChainNodeExpectationRepository
               + "AND i.agent.id = :agentId "
               + "ORDER BY i.type, i.createdAt")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeAndAgent(
-      @Param("injectId") @NotBlank String attackChainNodeId,
+      @Param("attackChainNodeId") @NotBlank String attackChainNodeId,
       @Param("agentId") @NotBlank String agentId);
 
   @Query(
@@ -113,7 +113,7 @@ public interface AttackChainNodeExpectationRepository
               + "AND i.agent IS NULL "
               + "ORDER BY i.type, i.createdAt")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeAndAsset(
-      @Param("injectId") @NotBlank String attackChainNodeId,
+      @Param("attackChainNodeId") @NotBlank String attackChainNodeId,
       @Param("assetId") @NotBlank String assetId);
 
   @Query(
@@ -125,7 +125,7 @@ public interface AttackChainNodeExpectationRepository
               + "AND i.agent IS NOT NULL "
               + "ORDER BY i.type, i.createdAt")
   List<AttackChainNodeExpectation> findAllWithAgentsByAttackChainNodeAndAsset(
-      @Param("injectId") @NotBlank String attackChainNodeId,
+      @Param("attackChainNodeId") @NotBlank String attackChainNodeId,
       @Param("assetId") @NotBlank String assetId,
       @Param("expectationType") @NotBlank
           AttackChainNodeExpectation.EXPECTATION_TYPE expectationType);
@@ -138,7 +138,7 @@ public interface AttackChainNodeExpectationRepository
               + "AND i.asset IS NULL "
               + "AND i.agent IS NULL ")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeAndAssetGroup(
-      @Param("injectId") @NotBlank final String attackChainNodeId,
+      @Param("attackChainNodeId") @NotBlank final String attackChainNodeId,
       @Param("assetGroupId") @NotBlank final String assetGroupId);
 
   @Query(
@@ -158,13 +158,13 @@ public interface AttackChainNodeExpectationRepository
               + "i.inject_expectation_expected_score AS inject_expectation_expected_score, "
               + "i.inject_expectation_group AS inject_expectation_group "
               + "FROM injects_expectations i "
-              + "WHERE i.inject_id IN (:injectIds) "
+              + "WHERE i.inject_id IN (:attackChainNodeIds) "
               + "AND i.user_id is null "
               + "AND i.agent_id is null ;",
       nativeQuery = true)
   // We don't include expectations for players, only for the team, neither for agents, if applicable
   List<RawAttackChainNodeExpectation> rawForComputeGlobalByAttackChainNodeIds(
-      @Param("injectIds") Set<String> attackChainNodeIds);
+      @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
 
   @Query(
       value =
@@ -182,19 +182,19 @@ public interface AttackChainNodeExpectationRepository
               + "i.inject_expectation_expected_score AS inject_expectation_expected_score, "
               + "i.inject_expectation_group AS inject_expectation_group "
               + "FROM injects_expectations i "
-              + "WHERE i.exercise_id IN (:exerciseIds) "
+              + "WHERE i.exercise_id IN (:attackChainRunIds) "
               + "AND i.user_id is null "
               + "AND i.agent_id is null ;",
       nativeQuery = true)
   // We don't include expectations for players, only for the team, if applicable
   List<RawAttackChainNodeExpectation> rawForComputeGlobalByAttackChainRunIds(
-      @Param("exerciseIds") Set<String> attackChainRunIds);
+      @Param("attackChainRunIds") Set<String> attackChainRunIds);
 
   @Query(
       value =
           "select i from AttackChainNodeExpectation i where i.attackChainNode.id in :attackChainNodeIds and i.agent is null and i.user is null")
   List<AttackChainNodeExpectation> findAllForGlobalScoreByAttackChainNodes(
-      @Param("injectIds") Set<String> attackChainNodeIds);
+      @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
 
   @Modifying
   @Query(
@@ -204,13 +204,13 @@ public interface AttackChainNodeExpectationRepository
                 SET inject_expectation_signatures =
                     COALESCE(inject_expectation_signatures, '[]'::jsonb) ||
                     jsonb_build_array(jsonb_build_object('type', :sigType, 'value', :sigValue))
-                WHERE inject_id = :injectId AND agent_id = :agentId
+                WHERE inject_id = :attackChainNodeId AND agent_id = :agentId
                 """,
       nativeQuery = true)
   void insertSignature(
       @Param("sigType") String sigType,
       @Param("sigValue") String sigValue,
-      @Param("injectId") String attackChainNodeId,
+      @Param("attackChainNodeId") String attackChainNodeId,
       @Param("agentId") String agentId);
 
   // -- INDEXING --

@@ -10,6 +10,6 @@ public class ComcheckSpecification {
   }
 
   public static Specification<Comcheck> fromAttackChainRun(String attackChainRunId) {
-    return (root, query, cb) -> cb.equal(root.get("exercise").get("id"), attackChainRunId);
+    return (root, query, cb) -> cb.equal(root.get("attackChainRun").get("id"), attackChainRunId);
   }
 }

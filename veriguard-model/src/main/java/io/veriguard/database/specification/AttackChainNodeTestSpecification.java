@@ -12,7 +12,7 @@ public class AttackChainNodeTestSpecification {
 
     return (root, query, criteriaBuilder) -> {
       Path<Object> path =
-          root.join("inject", JoinType.INNER).join("exercise", JoinType.INNER).get("id");
+          root.join("attackChainNode", JoinType.INNER).join("attackChainRun", JoinType.INNER).get("id");
       return criteriaBuilder.equal(path, attackChainRunId);
     };
   }
@@ -22,7 +22,7 @@ public class AttackChainNodeTestSpecification {
 
     return (root, query, criteriaBuilder) -> {
       Path<Object> path =
-          root.join("inject", JoinType.INNER).join("scenario", JoinType.INNER).get("id");
+          root.join("attackChainNode", JoinType.INNER).join("attackChain", JoinType.INNER).get("id");
       return criteriaBuilder.equal(path, attackChainId);
     };
   }

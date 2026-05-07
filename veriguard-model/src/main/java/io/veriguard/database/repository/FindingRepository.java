@@ -27,7 +27,7 @@ public interface FindingRepository
       value =
           "SELECT f FROM Finding f WHERE f.attackChainNode.id = :attackChainNodeId AND f.value = :value AND f.type = :type AND f.field = :key")
   Optional<Finding> findByAttackChainNodeIdAndValueAndTypeAndKey(
-      @NotBlank @Param("injectId") String attackChainNodeId,
+      @NotBlank @Param("attackChainNodeId") String attackChainNodeId,
       @NotBlank @Param("value") String value,
       @NotNull @Param("type") ContractOutputType type,
       @NotBlank @Param("key") String key);

@@ -27,8 +27,8 @@ import org.hibernate.annotations.UuidGenerator;
       name = "Document.tags-scenarios-exercises",
       attributeNodes = {
         @NamedAttributeNode("tags"),
-        @NamedAttributeNode("scenarios"),
-        @NamedAttributeNode("exercises")
+        @NamedAttributeNode("attackChains"),
+        @NamedAttributeNode("attackChainRuns")
       })
 })
 public class Document implements Base {

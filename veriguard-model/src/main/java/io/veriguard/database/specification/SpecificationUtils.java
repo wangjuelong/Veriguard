@@ -129,8 +129,8 @@ public class SpecificationUtils {
       // attackChainRun.id
       if (AttackChainNode.class.isAssignableFrom(entityClass)) {
         Predicate byAttackChainNodeId = root.get("id").in(accessibleResources);
-        Predicate byAttackChainId = root.get("scenario").get("id").in(accessibleResources);
-        Predicate byAttackChainRunId = root.get("exercise").get("id").in(accessibleResources);
+        Predicate byAttackChainId = root.get("attackChain").get("id").in(accessibleResources);
+        Predicate byAttackChainRunId = root.get("attackChainRun").get("id").in(accessibleResources);
         return cb.or(byAttackChainNodeId, byAttackChainId, byAttackChainRunId);
       }
 

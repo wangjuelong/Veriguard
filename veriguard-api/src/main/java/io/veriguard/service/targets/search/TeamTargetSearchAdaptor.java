@@ -40,21 +40,21 @@ public class TeamTargetSearchAdaptor extends SearchAdaptorBase {
       AttackChainNode scopedAttackChainNode) {
     return (root, query, builder) -> {
       if (scopedAttackChainNode.isAtomicTesting()) {
-        Path<Object> attackChainNodePath = root.join("injects").get("id");
+        Path<Object> attackChainNodePath = root.join("attackChainNodes").get("id");
         return builder.equal(attackChainNodePath, scopedAttackChainNode.getId());
       } else {
         if (scopedAttackChainNode.isAllTeams()) {
           Path<Object> attackChainRunTeamUsersPath =
-              root.get("exerciseTeamUsers").get("exercise").get("id");
-          Path<Object> attackChainNodePath = root.join("exercises").get("injects").get("id");
+              root.get("exerciseTeamUsers").get("attackChainRun").get("id");
+          Path<Object> attackChainNodePath = root.join("attackChainRuns").get("attackChainNodes").get("id");
           return builder.and(
               builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
               builder.equal(
                   attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
         } else {
           Path<Object> attackChainRunTeamUsersPath =
-              root.get("exerciseTeamUsers").get("exercise").get("id");
-          Path<Object> attackChainNodePath = root.join("injects").get("id");
+              root.get("exerciseTeamUsers").get("attackChainRun").get("id");
+          Path<Object> attackChainNodePath = root.join("attackChainNodes").get("id");
           return builder.and(
               builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
               builder.equal(

@@ -141,11 +141,11 @@ public interface AttackChainRepository
               + "INNER JOIN groups ON grants.grant_group = groups.group_id "
               + "INNER JOIN users_groups ON groups.group_id = users_groups.group_id "
               + "WHERE users_groups.user_id = :userId "
-              + "AND sce.scenario_id IN :scenarioIds "
+              + "AND sce.scenario_id IN :attackChainIds "
               + "GROUP BY sce.scenario_id",
       nativeQuery = true)
   List<RawAttackChainSimple> rawGrantedByAttackChainIds(
-      @Param("userId") String userId, @Param("scenarioIds") List<String> attackChainIds);
+      @Param("userId") String userId, @Param("attackChainIds") List<String> attackChainIds);
 
   @Query(
       value =
@@ -161,10 +161,10 @@ public interface AttackChainRepository
           "SELECT sce.scenario_id, sce.scenario_name, sce.scenario_subtitle, array_agg(sct.tag_id) FILTER (WHERE sct.tag_id IS NOT NULL) as scenario_tags "
               + "FROM scenarios sce "
               + "LEFT JOIN scenarios_tags sct ON sct.scenario_id = sce.scenario_id "
-              + "WHERE sce.scenario_id IN :scenarioIds "
+              + "WHERE sce.scenario_id IN :attackChainIds "
               + "GROUP BY sce.scenario_id",
       nativeQuery = true)
-  List<RawAttackChainSimple> rawByAttackChainIds(@Param("scenarioIds") List<String> attackChainIds);
+  List<RawAttackChainSimple> rawByAttackChainIds(@Param("attackChainIds") List<String> attackChainIds);
 
   @Query(
       value =
@@ -173,7 +173,7 @@ public interface AttackChainRepository
               + "  SELECT st.scenario_id, COUNT(DISTINCT ut.user_id) AS scenario_all_users_number "
               + "  FROM scenarios_teams st "
               + "  JOIN users_teams ut ON ut.team_id = st.team_id "
-              + "  WHERE st.scenario_id = :scenarioId "
+              + "  WHERE st.scenario_id = :attackChainId "
               + "  GROUP BY st.scenario_id "
               + "), "
               + "scenario_users AS ( "
@@ -181,14 +181,14 @@ public interface AttackChainRepository
               + "         COUNT(DISTINCT user_id) AS scenario_users_number, "
               + "         json_agg(DISTINCT stu.*) FILTER (WHERE stu IS NOT NULL) AS scenario_teams_users "
               + "  FROM scenarios_teams_users stu "
-              + "  WHERE scenario_id = :scenarioId "
+              + "  WHERE scenario_id = :attackChainId "
               + "  GROUP BY scenario_id "
               + "), "
               + "exercises AS ( "
               + "  SELECT scenario_id, "
               + "         array_agg(DISTINCT exercise_id) FILTER (WHERE exercise_id IS NOT NULL) AS scenario_exercises "
               + "  FROM scenarios_exercises "
-              + "  WHERE scenario_id = :scenarioId "
+              + "  WHERE scenario_id = :attackChainId "
               + "  GROUP BY scenario_id "
               + "), "
               + "kill_chain AS ( "
@@ -199,7 +199,7 @@ public interface AttackChainRepository
               + "  JOIN injectors_contracts_attack_patterns icap ON ic.injector_contract_id = icap.injector_contract_id "
               + "  JOIN attack_patterns_kill_chain_phases apkcp ON icap.attack_pattern_id = apkcp.attack_pattern_id "
               + "  JOIN kill_chain_phases kcp ON kcp.phase_id = apkcp.phase_id "
-              + "  WHERE i.inject_scenario = :scenarioId "
+              + "  WHERE i.inject_scenario = :attackChainId "
               + "  GROUP BY i.inject_scenario "
               + "), "
               + "platforms AS ( "
@@ -209,14 +209,14 @@ public interface AttackChainRepository
               + "         AS scenario_platforms "
               + "  FROM injects i "
               + "  JOIN injectors_contracts ic ON ic.injector_contract_id = i.inject_injector_contract "
-              + "  WHERE i.inject_scenario = :scenarioId "
+              + "  WHERE i.inject_scenario = :attackChainId "
               + "  GROUP BY i.inject_scenario "
               + "), "
               + "tags AS ( "
               + "  SELECT scenario_id, "
               + "         array_agg(DISTINCT tag_id) FILTER (WHERE tag_id IS NOT NULL) AS scenario_tags "
               + "  FROM scenarios_tags "
-              + "  WHERE scenario_id = :scenarioId "
+              + "  WHERE scenario_id = :attackChainId "
               + "  GROUP BY scenario_id "
               + ") "
               + "SELECT s.*, "
@@ -234,9 +234,9 @@ public interface AttackChainRepository
               + "LEFT JOIN kill_chain kc ON kc.scenario_id = s.scenario_id "
               + "LEFT JOIN platforms pf ON pf.scenario_id = s.scenario_id "
               + "LEFT JOIN tags tg ON tg.scenario_id = s.scenario_id "
-              + "WHERE s.scenario_id = :scenarioId",
+              + "WHERE s.scenario_id = :attackChainId",
       nativeQuery = true)
-  RawAttackChain getAttackChainById(@Param("scenarioId") final String attackChainId);
+  RawAttackChain getAttackChainById(@Param("attackChainId") final String attackChainId);
 
   // -- CATEGORY --
 
@@ -256,11 +256,11 @@ public interface AttackChainRepository
   @Modifying
   @Query(
       value =
-          "DELETE FROM scenarios_teams st WHERE st.scenario_id = :scenarioId AND st.team_id in :teamIds",
+          "DELETE FROM scenarios_teams st WHERE st.scenario_id = :attackChainId AND st.team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void removeTeams(
-      @Param("scenarioId") final String attackChainId,
+      @Param("attackChainId") final String attackChainId,
       @Param("teamIds") final List<String> teamIds);
 
   Optional<AttackChain> findByAttackChainRuns_Id(String attackChainRunId);

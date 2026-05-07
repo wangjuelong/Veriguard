@@ -38,10 +38,10 @@ public interface AssetRepository
               + "a.asset_created_at, a.asset_updated_at "
               + "FROM assets a "
               + "LEFT JOIN injects_assets ia ON a.asset_id = ia.asset_id "
-              + "WHERE a.asset_id IN (:assetIds) OR ia.inject_id IN (:injectIds) ;",
+              + "WHERE a.asset_id IN (:assetIds) OR ia.inject_id IN (:attackChainNodeIds) ;",
       nativeQuery = true)
   List<RawAsset> rawByIdsOrAttackChainNodeIds(
-      @Param("assetIds") Set<String> assetIds, @Param("injectIds") Set<String> attackChainNodeIds);
+      @Param("assetIds") Set<String> assetIds, @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
 
   @Query(
       value =
@@ -49,7 +49,7 @@ public interface AssetRepository
               + "FROM assets a "
               + "INNER JOIN injects_assets ia ON a.asset_id = ia.asset_id "
               + "INNER JOIN injects i ON ia.inject_id = i.inject_id "
-              + "WHERE i.inject_exercise in :exerciseIds",
+              + "WHERE i.inject_exercise in :attackChainRunIds",
       nativeQuery = true)
   List<Object[]> assetsByAttackChainRunIds(Set<String> attackChainRunIds);
 
@@ -58,7 +58,7 @@ public interface AssetRepository
           "SELECT DISTINCT ia.inject_id, a.asset_id, a.asset_name "
               + "FROM assets a "
               + "INNER JOIN injects_assets ia ON a.asset_id = ia.asset_id "
-              + "WHERE ia.inject_id in :injectIds",
+              + "WHERE ia.inject_id in :attackChainNodeIds",
       nativeQuery = true)
   List<Object[]> assetsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 }

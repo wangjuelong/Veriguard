@@ -35,11 +35,11 @@ public interface AttackChainTeamUserRepository
   @Query(
       value =
           "delete from scenarios_teams_users "
-              + "where scenario_id = :scenarioId and team_id in :teamIds",
+              + "where scenario_id = :attackChainId and team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void deleteByAttackChainIdAndTeamIds(
-      @Param("scenarioId") String attackChainId, @Param("teamIds") Collection<String> teamIds);
+      @Param("attackChainId") String attackChainId, @Param("teamIds") Collection<String> teamIds);
 
   boolean existsByAttackChainIdAndTeamIdAndUserId(
       String attackChainId, String teamId, String userId);

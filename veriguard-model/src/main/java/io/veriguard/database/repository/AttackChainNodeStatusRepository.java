@@ -24,7 +24,7 @@ public interface AttackChainNodeStatusRepository
       value =
           "select c from AttackChainNodeStatus c where c.name = 'PENDING' and c.attackChainNode.nodeContract.nodeExecutor.type = :attackChainNodeType")
   List<AttackChainNodeStatus> pendingForAttackChainNodeType(
-      @Param("injectType") String attackChainNodeType);
+      @Param("attackChainNodeType") String attackChainNodeType);
 
   Optional<AttackChainNodeStatus> findByAttackChainNodeId(@NotNull String attackChainNodeId);
 
@@ -39,7 +39,7 @@ public interface AttackChainNodeStatusRepository
               + "  ON t.execution_inject_status_id = ins.status_id"
               + "  AND t.execution_agent_id IS NULL"
               + "  AND cardinality(t.execution_context_identifiers) = 0"
-              + " WHERE i.inject_id = :injectId",
+              + " WHERE i.inject_id = :attackChainNodeId",
       nativeQuery = true)
   Optional<AttackChainNodeStatus> findAttackChainNodeStatusWithGlobalExecutionTraces(
       String attackChainNodeId);
