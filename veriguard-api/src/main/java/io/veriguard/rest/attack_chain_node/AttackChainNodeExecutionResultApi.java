@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AttackChainNodeExecutionResultApi extends RestBehavior {
 
-  public static final String INJECT_EXECUTION_URI = "/api/injects/{injectId}";
+  public static final String INJECT_EXECUTION_URI = "/api/attack_chain_nodes/{injectId}";
 
   private final AttackChainNodeExecutionResultService attackChainNodeExecutionService;
 

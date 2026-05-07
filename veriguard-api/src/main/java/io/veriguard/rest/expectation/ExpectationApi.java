@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class ExpectationApi extends RestBehavior {
 
   public static final String EXPECTATIONS_URI = "/api/expectations";
-  public static final String INJECTS_EXPECTATIONS_URI = "/api/injects/expectations";
+  public static final String INJECTS_EXPECTATIONS_URI = "/api/attack_chain_nodes/expectations";
 
   private final AttackChainNodeExpectationService attackChainNodeExpectationService;
   private final ExpectationService expectationService;

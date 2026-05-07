@@ -54,7 +54,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AttackChainApi extends RestBehavior {
 
-  public static final String SCENARIO_URI = "/api/scenarios";
+  public static final String SCENARIO_URI = "/api/attack_chains";
 
   private final CustomDashboardService customDashboardService;
   private final TagRepository tagRepository;

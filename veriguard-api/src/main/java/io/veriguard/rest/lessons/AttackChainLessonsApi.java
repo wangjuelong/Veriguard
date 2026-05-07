@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AttackChainLessonsApi extends RestBehavior {
 
-  public static final String SCENARIO_URI = "/api/scenarios/";
+  public static final String SCENARIO_URI = "/api/attack_chains/";
 
   private final AttackChainRepository attackChainRepository;
   private final TeamRepository teamRepository;

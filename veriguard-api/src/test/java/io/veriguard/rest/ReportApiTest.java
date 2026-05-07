@@ -94,7 +94,7 @@ public class ReportApiTest extends IntegrationTest {
       // -- EXECUTE --
       String response =
           mvc.perform(
-                  MockMvcRequestBuilders.post("/api/exercises/" + attackChainRun.getId() + "/reports")
+                  MockMvcRequestBuilders.post("/api/attack_chain_runs/" + attackChainRun.getId() + "/reports")
                       .content(asJsonString(reportInput))
                       .contentType(MediaType.APPLICATION_JSON)
                       .accept(MediaType.APPLICATION_JSON)
@@ -120,7 +120,7 @@ public class ReportApiTest extends IntegrationTest {
       // -- EXECUTE --
       String response =
           mvc.perform(
-                  MockMvcRequestBuilders.get("/api/exercises/fakeExercisesId123/reports")
+                  MockMvcRequestBuilders.get("/api/attack_chain_runs/fakeExercisesId123/reports")
                       .contentType(MediaType.APPLICATION_JSON)
                       .with(csrf()))
               .andExpect(status().is2xxSuccessful())
@@ -147,7 +147,7 @@ public class ReportApiTest extends IntegrationTest {
       String response =
           mvc.perform(
                   MockMvcRequestBuilders.put(
-                          "/api/exercises/" + attackChainRun.getId() + "/reports/" + report.getId())
+                          "/api/attack_chain_runs/" + attackChainRun.getId() + "/reports/" + report.getId())
                       .content(asJsonString(reportInput))
                       .contentType(MediaType.APPLICATION_JSON)
                       .accept(MediaType.APPLICATION_JSON)
@@ -188,7 +188,7 @@ public class ReportApiTest extends IntegrationTest {
       String response =
           mvc.perform(
                   MockMvcRequestBuilders.put(
-                          "/api/exercises/"
+                          "/api/attack_chain_runs/"
                               + attackChainRun.getId()
                               + "/reports/"
                               + report.getId()
@@ -219,7 +219,7 @@ public class ReportApiTest extends IntegrationTest {
       // -- EXECUTE --
       mvc.perform(
               MockMvcRequestBuilders.delete(
-                      "/api/exercises/" + attackChainRun.getId() + "/reports/" + report.getId())
+                      "/api/attack_chain_runs/" + attackChainRun.getId() + "/reports/" + report.getId())
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(asJsonString(PaginationFixture.getDefault().textSearch("").build()))
                   .with(csrf()))

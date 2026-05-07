@@ -35,7 +35,7 @@ public class ReportApi extends RestBehavior {
     return this.reportService.report(UUID.fromString(reportId));
   }
 
-  @GetMapping("/api/exercises/{simulationId}/reports/{reportId}")
+  @GetMapping("/api/attack_chain_runs/{simulationId}/reports/{reportId}")
   @RBAC(
       resourceId = "#simulationId",
       actionPerformed = Action.READ,
@@ -53,7 +53,7 @@ public class ReportApi extends RestBehavior {
     return this.reportService.reportFromSimulation(simulationId, UUID.fromString(reportId));
   }
 
-  @GetMapping("/api/exercises/{exerciseId}/reports")
+  @GetMapping("/api/attack_chain_runs/{exerciseId}/reports")
   @RBAC(
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
@@ -62,7 +62,7 @@ public class ReportApi extends RestBehavior {
     return this.reportService.reportsFromAttackChainRun(attackChainRunId);
   }
 
-  @PostMapping("/api/exercises/{exerciseId}/reports")
+  @PostMapping("/api/attack_chain_runs/{exerciseId}/reports")
   @RBAC(
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
@@ -76,7 +76,7 @@ public class ReportApi extends RestBehavior {
     return this.reportService.updateReport(report, input);
   }
 
-  @PutMapping("/api/exercises/{exerciseId}/reports/{reportId}/inject-comments")
+  @PutMapping("/api/attack_chain_runs/{exerciseId}/reports/{reportId}/inject-comments")
   @RBAC(
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
@@ -93,7 +93,7 @@ public class ReportApi extends RestBehavior {
     return this.reportService.updateReportAttackChainNodeComment(report, attackChainNode, input);
   }
 
-  @PutMapping("/api/exercises/{exerciseId}/reports/{reportId}")
+  @PutMapping("/api/attack_chain_runs/{exerciseId}/reports/{reportId}")
   @RBAC(
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
@@ -108,7 +108,7 @@ public class ReportApi extends RestBehavior {
     return this.reportService.updateReport(report, input);
   }
 
-  @DeleteMapping("/api/exercises/{exerciseId}/reports/{reportId}")
+  @DeleteMapping("/api/attack_chain_runs/{exerciseId}/reports/{reportId}")
   @RBAC(
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,

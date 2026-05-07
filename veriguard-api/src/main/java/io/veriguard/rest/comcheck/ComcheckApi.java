@@ -70,7 +70,7 @@ public class ComcheckApi extends RestBehavior {
     return status;
   }
 
-  @DeleteMapping("/api/exercises/{exerciseId}/comchecks/{comcheckId}")
+  @DeleteMapping("/api/attack_chain_runs/{exerciseId}/comchecks/{comcheckId}")
   @RBAC(
       resourceId = "#exerciseId",
       actionPerformed = Action.WRITE,
@@ -80,7 +80,7 @@ public class ComcheckApi extends RestBehavior {
     comcheckRepository.deleteById(comcheckId);
   }
 
-  @PostMapping("/api/exercises/{exerciseId}/comchecks")
+  @PostMapping("/api/attack_chain_runs/{exerciseId}/comchecks")
   @RBAC(
       resourceId = "#exerciseId",
       actionPerformed = Action.WRITE,

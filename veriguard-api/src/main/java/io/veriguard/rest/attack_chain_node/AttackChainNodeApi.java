@@ -75,7 +75,7 @@ import org.springframework.web.bind.annotation.*;
 @Setter
 public class AttackChainNodeApi extends RestBehavior {
 
-  public static final String INJECT_URI = "/api/injects";
+  public static final String INJECT_URI = "/api/attack_chain_nodes";
 
   private static final int MAX_NEXT_INJECTS = 6;
 

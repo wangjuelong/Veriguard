@@ -78,7 +78,7 @@ public class AttackChainImportApiTest extends IntegrationTest {
         this.mvc
             .perform(
                 MockMvcRequestBuilders.post(
-                        "/api/scenarios/{scenarioId}/xls/{importId}/dry",
+                        "/api/attack_chains/{scenarioId}/xls/{importId}/dry",
                         SCENARIO_ID,
                         UUID.randomUUID().toString())
                     .contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +111,7 @@ public class AttackChainImportApiTest extends IntegrationTest {
         this.mvc
             .perform(
                 MockMvcRequestBuilders.post(
-                        "/api/scenarios/{scenarioId}/xls/{importId}/import",
+                        "/api/attack_chains/{scenarioId}/xls/{importId}/import",
                         SCENARIO_ID,
                         UUID.randomUUID().toString())
                     .contentType(MediaType.APPLICATION_JSON)

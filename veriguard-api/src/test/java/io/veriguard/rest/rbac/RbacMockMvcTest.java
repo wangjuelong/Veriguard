@@ -178,9 +178,9 @@ public class RbacMockMvcTest extends IntegrationTest {
           if (endpointInfo.getPath().startsWith("/api/atomic-testings/")
               || endpointInfo.getPath().contains("/atomic-testing/")) {
             capa = Capability.of(ResourceType.ATOMIC_TESTING, rbac.actionPerformed()).get();
-          } else if (endpointInfo.getPath().startsWith("/api/exercises/")) {
+          } else if (endpointInfo.getPath().startsWith("/api/attack_chain_runs/")) {
             capa = Capability.of(ResourceType.SIMULATION, rbac.actionPerformed()).get();
-          } else if (endpointInfo.getPath().startsWith("/api/scenarios/")) {
+          } else if (endpointInfo.getPath().startsWith("/api/attack_chains/")) {
             capa = Capability.of(ResourceType.SCENARIO, rbac.actionPerformed()).get();
           } else if (endpointInfo.getPath().startsWith("/api/findings/")) {
             capa = Capability.of(ResourceType.FINDING, rbac.actionPerformed()).get();

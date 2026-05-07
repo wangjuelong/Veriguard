@@ -67,7 +67,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AttackChainRunApi extends RestBehavior {
 
-  public static final String EXERCISE_URI = "/api/exercises";
+  public static final String EXERCISE_URI = "/api/attack_chain_runs";
 
   // region repositories
   private final LogRepository logRepository;
