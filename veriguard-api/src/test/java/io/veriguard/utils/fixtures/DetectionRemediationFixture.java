@@ -24,7 +24,8 @@ public class DetectionRemediationFixture {
 
     Map<String, Relationship> relationships = new HashMap<>();
     if (collectorType != null && collectorId != null) {
-      relationships.put("detection_remediation_collector_type",
+      relationships.put(
+          "detection_remediation_collector_type",
           new Relationship(new ResourceIdentifier(collectorId, collectorType)));
     }
 

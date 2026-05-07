@@ -46,7 +46,8 @@ public class TeamTargetSearchAdaptor extends SearchAdaptorBase {
         if (scopedAttackChainNode.isAllTeams()) {
           Path<Object> attackChainRunTeamUsersPath =
               root.get("attackChainRunTeamUsers").get("attackChainRun").get("id");
-          Path<Object> attackChainNodePath = root.join("attackChainRuns").get("attackChainNodes").get("id");
+          Path<Object> attackChainNodePath =
+              root.join("attackChainRuns").get("attackChainNodes").get("id");
           return builder.and(
               builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
               builder.equal(

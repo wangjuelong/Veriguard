@@ -378,7 +378,9 @@ public class DocumentApi extends RestBehavior {
     return null;
   }
 
-  @GetMapping(value = "/api/images/injectors/id/{nodeExecutorId}", produces = MediaType.IMAGE_PNG_VALUE)
+  @GetMapping(
+      value = "/api/images/injectors/id/{nodeExecutorId}",
+      produces = MediaType.IMAGE_PNG_VALUE)
   @RBAC(skipRBAC = true)
   public @ResponseBody ResponseEntity<byte[]> getNodeExecutorImageFromId(
       @PathVariable String nodeExecutorId) throws IOException {

@@ -125,7 +125,10 @@ public class AttackChainNodeApi extends RestBehavior {
   // -- INJECTS --
 
   @GetMapping(INJECT_URI + "/{attackChainNodeId}")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public AttackChainNode attackChainNode(@PathVariable @NotBlank final String attackChainNodeId) {
     return this.attackChainNodeRepository
         .findById(attackChainNodeId)
@@ -197,7 +200,10 @@ public class AttackChainNodeApi extends RestBehavior {
         @ApiResponse(responseCode = "404", description = "The inject was not found")
       })
   @PostMapping(INJECT_URI + "/{attackChainNodeId}/inject_export")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public void attackChainNodesIndividualExport(
       @PathVariable @NotBlank final String attackChainNodeId,
       @RequestBody @Valid
@@ -252,7 +258,10 @@ public class AttackChainNodeApi extends RestBehavior {
       })
   @LogExecutionTime
   @PostMapping(path = INJECT_URI + "/{attackChainNodeId}/targets/{targetType}/search")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public Page<AttackChainNodeTarget> attackChainNodeTargetSearch(
       @PathVariable String attackChainNodeId,
       @PathVariable String targetType,
@@ -288,7 +297,10 @@ public class AttackChainNodeApi extends RestBehavior {
       })
   @LogExecutionTime
   @GetMapping(path = INJECT_URI + "/{attackChainNodeId}/targets/{targetType}/options")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public List<FilterUtilsJpa.Option> targetOptions(
       @PathVariable String attackChainNodeId,
       @PathVariable String targetType,
@@ -413,7 +425,10 @@ public class AttackChainNodeApi extends RestBehavior {
   }
 
   @GetMapping(INJECT_URI + "/{attackChainNodeId}/{agentId}/executable-payload")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   @Operation(
       summary = "Get the payload ready to be executed",
       description =
@@ -577,7 +592,10 @@ public class AttackChainNodeApi extends RestBehavior {
       description =
           "Get ExecutionTraces from a specific inject and target (asset, agent, team, player)")
   @GetMapping(INJECT_URI + "/execution-traces")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   @LogExecutionTime
   public List<ExecutionTraceOutput> getAttackChainNodeTracesFromAttackChainNodeAndTarget(
       @RequestParam String attackChainNodeId,
@@ -589,7 +607,10 @@ public class AttackChainNodeApi extends RestBehavior {
 
   @Operation(description = "Get InjectStatus with global execution traces")
   @GetMapping(INJECT_URI + "/status")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   @LogExecutionTime
   public AttackChainNodeStatusOutput getAttackChainNodeStatusWithGlobalExecutionTraces(
       @RequestParam String attackChainNodeId) {
@@ -599,7 +620,10 @@ public class AttackChainNodeApi extends RestBehavior {
 
   @Operation(description = "Get detection remediation by inject based on the payload definition")
   @GetMapping(INJECT_URI + "/detection-remediations/{attackChainNodeId}")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public List<DetectionRemediationOutput> getPayloadDetectionRemediations(
       @PathVariable String attackChainNodeId) {
     return payloadMapper.toDetectionRemediationOutputs(
@@ -608,7 +632,10 @@ public class AttackChainNodeApi extends RestBehavior {
 
   @Operation(description = "Get documents by inject and payload id")
   @GetMapping(INJECT_URI + "/{attackChainNodeId}/payload/{payloadId}/documents")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public List<RawDocument> getPayloadDocumentsByAttackChainNodeIdAndPayloadId(
       @PathVariable String attackChainNodeId, @PathVariable String payloadId) {
     Payload payload = attackChainNodeService.getPayloadByAttackChainNodeId(attackChainNodeId);

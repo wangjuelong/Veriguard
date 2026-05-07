@@ -169,7 +169,8 @@ public class CrowdStrikeExecutorClient {
       Map<String, Object> bodyCommand = new HashMap<>();
       bodyCommand.put("batch_id", session.getBatch_id());
       bodyCommand.put("base_command", "runscript");
-      bodyCommand.put("command_string",
+      bodyCommand.put(
+          "command_string",
           "runscript -CloudFile=\""
               + scriptName
               + "\"  -CommandLine=```'{\"command\":\""

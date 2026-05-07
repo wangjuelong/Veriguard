@@ -229,7 +229,8 @@ public class AttackChainNodeSearchService {
             (root, query, cb) -> {
               Predicate predicate = cb.conjunction();
               predicate =
-                  cb.and(predicate, cb.equal(root.get("attackChainRun").get("id"), attackChainRunId));
+                  cb.and(
+                      predicate, cb.equal(root.get("attackChainRun").get("id"), attackChainRunId));
               return predicate;
             });
 
@@ -532,7 +533,8 @@ public class AttackChainNodeSearchService {
                         .content(tuple.get("injector_contract_content", String.class))
                         .convertedContent(tuple.get("convertedContent", ObjectNode.class))
                         .platforms(
-                            tuple.get("injector_contract_platforms", Endpoint.PLATFORM_TYPE[].class))
+                            tuple.get(
+                                "injector_contract_platforms", Endpoint.PLATFORM_TYPE[].class))
                         .payload(payloadSimple)
                         .domains(tuple.get("injector_contract_domains", String[].class))
                         .labels(tuple.get("injector_contract_labels", Map.class))

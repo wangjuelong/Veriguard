@@ -64,7 +64,10 @@ public class FindingSearchApi extends RestBehavior {
 
   @LogExecutionTime
   @PostMapping("/injects/{attackChainNodeId}/search")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   @ApiResponse(
       responseCode = "200",
       content =

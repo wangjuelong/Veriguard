@@ -55,7 +55,10 @@ public class AtomicTestingApi extends RestBehavior {
   // simulation and AT
   @LogExecutionTime
   @GetMapping("/{attackChainNodeId}")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public AttackChainNodeResultOverviewOutput findAtomicTesting(
       @PathVariable String attackChainNodeId) {
     return atomicTestingService.findById(attackChainNodeId);
@@ -63,7 +66,10 @@ public class AtomicTestingApi extends RestBehavior {
 
   @LogExecutionTime
   @GetMapping("/{attackChainNodeId}/payload")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public StatusPayloadOutput findAtomicTestingPayload(@PathVariable String attackChainNodeId) {
     return atomicTestingService.findPayloadOutputByAttackChainNodeId(attackChainNodeId);
   }
@@ -128,7 +134,10 @@ public class AtomicTestingApi extends RestBehavior {
   }
 
   @GetMapping("/{attackChainNodeId}/target_results/{targetId}/types/{targetType}")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public List<AttackChainNodeExpectation> findTargetResult(
       @PathVariable String attackChainNodeId,
       @PathVariable String targetId,
@@ -140,7 +149,10 @@ public class AtomicTestingApi extends RestBehavior {
   }
 
   @GetMapping("/{attackChainNodeId}/target_results/{targetId}/asset_with_agents")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   @Operation(
       summary = "Get the agents injects expectations from an inject, asset and expectation type")
   @ApiResponses(
@@ -177,7 +189,10 @@ public class AtomicTestingApi extends RestBehavior {
         @ApiResponse(responseCode = "400", description = "An invalid target type was specified")
       })
   @GetMapping("/{attackChainNodeId}/target_results/{targetId}/types/{targetType}/merged")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public List<AttackChainNodeExpectation> findTargetResultMerged(
       @PathVariable String attackChainNodeId,
       @PathVariable String targetId,
@@ -203,7 +218,10 @@ public class AtomicTestingApi extends RestBehavior {
   }
 
   @GetMapping("/{attackChainNodeId}/collectors")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   @Operation(summary = "Get the Collectors used in an atomic testing remediation")
   @ApiResponses(
       value = {

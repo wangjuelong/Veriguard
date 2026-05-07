@@ -748,10 +748,12 @@ class AttackChainNodeServiceTest {
                 NodeExecutorFixture.createDefaultPayloadNodeExecutor(), null, List.of()));
 
     ObjectNode expectationDetection = mapper.createObjectNode();
-    expectationDetection.put("expectation_type", AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION.toString());
+    expectationDetection.put(
+        "expectation_type", AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION.toString());
 
     ObjectNode expectationPrevention = mapper.createObjectNode();
-    expectationPrevention.put("expectation_type", AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION.toString());
+    expectationPrevention.put(
+        "expectation_type", AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION.toString());
 
     ArrayNode expectationsArray = mapper.createArrayNode();
     expectationsArray.add(expectationDetection);

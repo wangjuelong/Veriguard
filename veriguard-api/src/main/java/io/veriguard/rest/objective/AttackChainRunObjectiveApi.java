@@ -88,7 +88,8 @@ public class AttackChainRunObjectiveApi extends RestBehavior {
   // endregion
 
   // region evaluations
-  @GetMapping(EXERCISE_URI + "{attackChainRunId}/objectives/{objectiveId}/evaluations/{evaluationId}")
+  @GetMapping(
+      EXERCISE_URI + "{attackChainRunId}/objectives/{objectiveId}/evaluations/{evaluationId}")
   @RBAC(
       resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
@@ -138,7 +139,8 @@ public class AttackChainRunObjectiveApi extends RestBehavior {
     return result;
   }
 
-  @PutMapping(EXERCISE_URI + "{attackChainRunId}/objectives/{objectiveId}/evaluations/{evaluationId}")
+  @PutMapping(
+      EXERCISE_URI + "{attackChainRunId}/objectives/{objectiveId}/evaluations/{evaluationId}")
   @RBAC(
       resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
@@ -165,7 +167,8 @@ public class AttackChainRunObjectiveApi extends RestBehavior {
     return result;
   }
 
-  @DeleteMapping(EXERCISE_URI + "{attackChainRunId}/objectives/{objectiveId}/evaluations/{evaluationId}")
+  @DeleteMapping(
+      EXERCISE_URI + "{attackChainRunId}/objectives/{objectiveId}/evaluations/{evaluationId}")
   @RBAC(
       resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,

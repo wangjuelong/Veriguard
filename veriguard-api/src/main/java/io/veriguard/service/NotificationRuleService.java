@@ -120,7 +120,8 @@ public class NotificationRuleService {
               .map(setting -> ImageUtils.downloadImageAndEncodeBase64(setting.getValue()))
               .orElse("");
       data.put("custom_logo_b64", b64CustomLogo);
-      data.put("hide_branding_logo", Boolean.toString(platformSettingsService.isPlatformWhiteMarked()));
+      data.put(
+          "hide_branding_logo", Boolean.toString(platformSettingsService.isPlatformWhiteMarked()));
     }
 
     for (NotificationRule rule : rules) {

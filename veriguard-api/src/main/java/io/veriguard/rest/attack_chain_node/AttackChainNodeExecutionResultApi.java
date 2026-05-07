@@ -25,7 +25,10 @@ public class AttackChainNodeExecutionResultApi extends RestBehavior {
   private final AttackChainNodeExecutionResultService attackChainNodeExecutionService;
 
   @GetMapping(INJECT_EXECUTION_URI + "/execution-result")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public AttackChainNodeResultPayloadExecutionOutput attackChainNodeExecutionResultPayload(
       @PathVariable @NotBlank final String attackChainNodeId,
       @RequestParam @NotBlank final String targetId,

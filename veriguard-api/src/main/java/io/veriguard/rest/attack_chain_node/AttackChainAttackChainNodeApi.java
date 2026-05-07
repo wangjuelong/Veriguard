@@ -89,7 +89,10 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
   }
 
   @GetMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public AttackChainNode attackChainAttackChainNode(
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId) {

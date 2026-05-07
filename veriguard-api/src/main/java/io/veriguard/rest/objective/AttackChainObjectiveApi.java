@@ -159,7 +159,8 @@ public class AttackChainObjectiveApi extends RestBehavior {
     return result;
   }
 
-  @DeleteMapping(SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}/evaluations/{evaluationId}")
+  @DeleteMapping(
+      SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}/evaluations/{evaluationId}")
   @RBAC(
       resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,

@@ -132,7 +132,8 @@ class V1_DataImporterTest extends IntegrationTest {
     String jsonContent =
         new String(
             Files.readAllBytes(
-                Paths.get("src/test/resources/importer-v1/import-scenario-with-attack-pattern.json")));
+                Paths.get(
+                    "src/test/resources/importer-v1/import-scenario-with-attack-pattern.json")));
     this.importNode = mapper.readTree(jsonContent);
     this.importer.importData(
         this.importNode, Map.of(), null, null, null, null, Constants.IMPORTED_OBJECT_NAME_SUFFIX);
@@ -173,7 +174,8 @@ class V1_DataImporterTest extends IntegrationTest {
     String jsonContent =
         new String(
             Files.readAllBytes(
-                Paths.get("src/test/resources/importer-v1/scenario_with_injects_from_injector.json")));
+                Paths.get(
+                    "src/test/resources/importer-v1/scenario_with_injects_from_injector.json")));
     this.importNode = mapper.readTree(jsonContent);
     this.importer.importData(
         this.importNode, Map.of(), null, null, null, null, Constants.IMPORTED_OBJECT_NAME_SUFFIX);
@@ -193,7 +195,8 @@ class V1_DataImporterTest extends IntegrationTest {
     String jsonContent =
         new String(
             Files.readAllBytes(
-                Paths.get("src/test/resources/payload-json-for-domain-tests/payload_with_no_domain.json")));
+                Paths.get(
+                    "src/test/resources/payload-json-for-domain-tests/payload_with_no_domain.json")));
     this.importNode = mapper.readTree(jsonContent);
 
     Domain domainToClassify =
@@ -217,7 +220,8 @@ class V1_DataImporterTest extends IntegrationTest {
     String jsonContent =
         new String(
             Files.readAllBytes(
-                Paths.get("src/test/resources/importer-v1/import-scenario-payload-missing-arrays.json")));
+                Paths.get(
+                    "src/test/resources/importer-v1/import-scenario-payload-missing-arrays.json")));
     this.importNode = mapper.readTree(jsonContent);
 
     // -- EXECUTE --
@@ -253,7 +257,8 @@ class V1_DataImporterTest extends IntegrationTest {
     String jsonContent =
         new String(
             Files.readAllBytes(
-                Paths.get("src/test/resources/importer-v1/import-scenario-payload-null-arrays.json")));
+                Paths.get(
+                    "src/test/resources/importer-v1/import-scenario-payload-null-arrays.json")));
     this.importNode = mapper.readTree(jsonContent);
 
     // -- EXECUTE --

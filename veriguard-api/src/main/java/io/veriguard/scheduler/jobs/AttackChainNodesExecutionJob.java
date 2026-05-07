@@ -319,7 +319,8 @@ public class AttackChainNodesExecutionJob implements Job {
 
     parents.forEach(
         parent -> {
-          mapCondition.put("Execution",
+          mapCondition.put(
+              "Execution",
               parent.getStatus().isPresent()
                   && !ExecutionStatus.ERROR.equals(parent.getStatus().get().getName())
                   && !executionStatusesNotReady.contains(parent.getStatus().get().getName()));

@@ -153,7 +153,10 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
   }
 
   @GetMapping(EXERCISE_URI + "/{attackChainRunId}/injects/{attackChainNodeId}")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public AttackChainNode attackChainRunAttackChainNode(
       @PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
     return simulationAttackChainNodeService.findAttackChainNodeForSimulation(
@@ -161,7 +164,10 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
   }
 
   @GetMapping(EXERCISE_URI + "/{attackChainRunId}/injects/{attackChainNodeId}/teams")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public Iterable<Team> attackChainRunAttackChainNodeTeams(
       @PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
     return simulationAttackChainNodeService.findAttackChainNodeTeamsForSimulation(
@@ -169,7 +175,10 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
   }
 
   @GetMapping(EXERCISE_URI + "/{attackChainRunId}/injects/{attackChainNodeId}/communications")
-  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.INJECT)
   public Iterable<Communication> attackChainRunAttackChainNodeCommunications(
       @PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
     return simulationAttackChainNodeService.findAndAckCommunicationsForSimulation(

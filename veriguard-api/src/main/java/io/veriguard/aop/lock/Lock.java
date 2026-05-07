@@ -6,7 +6,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Lock {
-  /** SpEL expression for the lock key Examples: "#attackChainNodeId", "#user.id", "#id + ':' + #type" */
+  /**
+   * SpEL expression for the lock key Examples: "#attackChainNodeId", "#user.id", "#id + ':' +
+   * #type"
+   */
   String key();
 
   /** Lock resource type Allows different stripe configurations for different resources */
