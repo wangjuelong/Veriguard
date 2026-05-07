@@ -128,7 +128,7 @@ const Index = () => {
         </Typography>
         {/* eslint-disable-next-line i18next/no-literal-string */}
         <pre>
-          GET /api/exercises
+          GET /api/attack_chain_runs
           {/* eslint-disable-next-line i18next/no-literal-string */}
           <br />
           Content-Type: application/json

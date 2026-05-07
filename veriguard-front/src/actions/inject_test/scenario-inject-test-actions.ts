@@ -2,7 +2,7 @@ import { simpleCall, simpleDelCall, simplePostCall } from '../../utils/Action';
 import { type InjectBulkProcessingInput, type SearchPaginationInput } from '../../utils/api-types';
 import { MESSAGING$ } from '../../utils/Environment';
 
-const SCENARIO_URI = `/api/scenarios`;
+const SCENARIO_URI = `/api/attack_chains`;
 
 export const searchInjectTests = (scenarioId: string, searchPaginationInput: SearchPaginationInput) => {
   const uri = `${SCENARIO_URI}/${scenarioId}/injects/test/search`;

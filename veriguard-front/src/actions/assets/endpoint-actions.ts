@@ -73,23 +73,23 @@ export const importEndpoints = (file: FormData, targetType: string) => {
 // -- SIMULATIONS --
 
 export const fetchSimulationEndpoints = (simulationId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/exercises/${simulationId}/endpoints`;
+  const uri = `/api/attack_chain_runs/${simulationId}/endpoints`;
   return getReferential(arrayOfEndpoints, uri)(dispatch);
 };
 
 export const findSimulationEndpointsByIds = (simulationId: string, endpointIds: string[]) => {
-  const uri = `/api/exercises/${simulationId}/endpoints/find`;
+  const uri = `/api/attack_chain_runs/${simulationId}/endpoints/find`;
   return simplePostCall(uri, endpointIds);
 };
 
 // -- SCENARIOS --
 
 export const fetchScenarioEndpoints = (scenarioId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/endpoints`;
+  const uri = `/api/attack_chains/${scenarioId}/endpoints`;
   return getReferential(arrayOfEndpoints, uri)(dispatch);
 };
 
 export const findScenarioEndpointsByIds = (simulationId: string, endpointIds: string[]) => {
-  const uri = `/api/scenarios/${simulationId}/endpoints/find`;
+  const uri = `/api/attack_chains/${simulationId}/endpoints/find`;
   return simplePostCall(uri, endpointIds);
 };

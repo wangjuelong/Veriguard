@@ -2,7 +2,7 @@ import { simpleCall, simpleDelCall, simplePostCall } from '../../utils/Action';
 import { type InjectBulkProcessingInput, type SearchPaginationInput } from '../../utils/api-types';
 import { MESSAGING$ } from '../../utils/Environment';
 
-const EXERCISE_URI = `/api/exercises`;
+const EXERCISE_URI = `/api/attack_chain_runs`;
 
 export const searchInjectTests = (simulationId: string, searchPaginationInput: SearchPaginationInput) => {
   const uri = `${EXERCISE_URI}/${simulationId}/injects/test/search`;

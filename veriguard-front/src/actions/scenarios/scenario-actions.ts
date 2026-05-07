@@ -30,7 +30,7 @@ import { MESSAGING$ } from '../../utils/Environment';
 import * as schema from '../Schema';
 import { arrayOfScenarios, scenario } from './scenario-schema';
 
-export const SCENARIO_URI = '/api/scenarios';
+export const SCENARIO_URI = '/api/attack_chains';
 
 export const addScenario = (data: ScenarioInput) => (dispatch: Dispatch) => {
   return postReferential(scenario, SCENARIO_URI, data)(dispatch);
@@ -46,7 +46,7 @@ export const fetchScenariosById = (exerciseIds: GetScenariosInput) => (dispatch:
 
 export const searchScenarios = (paginationInput: SearchPaginationInput) => {
   const data = paginationInput;
-  const uri = '/api/scenarios/search';
+  const uri = '/api/attack_chains/search';
   return simplePostCall(uri, data);
 };
 
@@ -92,36 +92,36 @@ export const createRunningExerciseFromScenario = (scenarioId: string) => {
 // -- TEAMS --
 
 export const fetchPlayersByScenario = (scenarioId: Scenario['scenario_id']) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/players`;
+  const uri = `/api/attack_chains/${scenarioId}/players`;
   return getReferential(schema.arrayOfUsers, uri)(dispatch);
 };
 
 export const fetchScenarioTeams = (scenarioId: Scenario['scenario_id']) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/teams`;
+  const uri = `/api/attack_chains/${scenarioId}/teams`;
   return getReferential(schema.arrayOfTeams, uri)(dispatch);
 };
 
 export const enableScenarioTeamPlayers = (scenarioId: Scenario['scenario_id'], teamId: Team['team_id'], data: ScenarioTeamPlayersEnableInput) => (dispatch: Dispatch) => putReferential(
   scenario,
-  `/api/scenarios/${scenarioId}/teams/${teamId}/players/enable`,
+  `/api/attack_chains/${scenarioId}/teams/${teamId}/players/enable`,
   data,
 )(dispatch);
 
 export const disableScenarioTeamPlayers = (scenarioId: Scenario['scenario_id'], teamId: Team['team_id'], data: ScenarioTeamPlayersEnableInput) => (dispatch: Dispatch) => putReferential(
   scenario,
-  `/api/scenarios/${scenarioId}/teams/${teamId}/players/disable`,
+  `/api/attack_chains/${scenarioId}/teams/${teamId}/players/disable`,
   data,
 )(dispatch);
 
 export const addScenarioTeamPlayers = (scenarioId: Scenario['scenario_id'], teamId: Team['team_id'], data: ScenarioTeamPlayersEnableInput) => (dispatch: Dispatch) => putReferential(
   scenario,
-  `/api/scenarios/${scenarioId}/teams/${teamId}/players/add`,
+  `/api/attack_chains/${scenarioId}/teams/${teamId}/players/add`,
   data,
 )(dispatch);
 
 export const removeScenarioTeamPlayers = (scenarioId: Scenario['scenario_id'], teamId: Team['team_id'], data: ScenarioTeamPlayersEnableInput) => (dispatch: Dispatch) => putReferential(
   scenario,
-  `/api/scenarios/${scenarioId}/teams/${teamId}/players/remove`,
+  `/api/attack_chains/${scenarioId}/teams/${teamId}/players/remove`,
   data,
 )(dispatch);
 
@@ -129,7 +129,7 @@ export const removeScenarioTeamPlayers = (scenarioId: Scenario['scenario_id'], t
 
 export const searchScenarioExercises = (scenarioId: Scenario['scenario_id'], paginationInput: SearchPaginationInput) => {
   const data = paginationInput;
-  const uri = `/api/scenarios/${scenarioId}/exercises/search`;
+  const uri = `/api/attack_chains/${scenarioId}/exercises/search`;
   return simplePostCall(uri, data);
 };
 
@@ -201,95 +201,95 @@ export const searchScenarioCategoryAsOption = (searchText: string = '') => {
 
 export const updateScenarioLessons = (scenarioId: string, data: LessonsInput) => (dispatch: Dispatch) => putReferential(
   scenario,
-  `/api/scenarios/${scenarioId}/lessons`,
+  `/api/attack_chains/${scenarioId}/lessons`,
   data,
 )(dispatch);
 
 export const fetchLessonsCategories = (scenarioId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_categories`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_categories`;
   return getReferential(schema.arrayOfLessonsCategories, uri)(dispatch);
 };
 
 export const updateLessonsCategory = (scenarioId: string, lessonsCategoryId: string, data: LessonsCategoryUpdateInput) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_categories/${lessonsCategoryId}`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_categories/${lessonsCategoryId}`;
   return putReferential(schema.lessonsCategory, uri, data)(dispatch);
 };
 
 export const updateLessonsCategoryTeams = (scenarioId: string, lessonsCategoryId: string, data: LessonsCategoryTeamsInput) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_categories/${lessonsCategoryId}/teams`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_categories/${lessonsCategoryId}/teams`;
   return putReferential(schema.lessonsCategory, uri, data)(dispatch);
 };
 
 export const addLessonsCategory = (scenarioId: string, data: LessonsCategoryCreateInput) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_categories`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_categories`;
   return postReferential(schema.lessonsCategory, uri, data)(dispatch);
 };
 
 export const deleteLessonsCategory = (scenarioId: string, lessonsCategoryId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_categories/${lessonsCategoryId}`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_categories/${lessonsCategoryId}`;
   return delReferential(uri, 'lessonscategorys', lessonsCategoryId)(dispatch);
 };
 
 export const applyLessonsTemplate = (scenarioId: string, lessonsTemplateId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_apply_template/${lessonsTemplateId}`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_apply_template/${lessonsTemplateId}`;
   return postReferential(schema.arrayOfLessonsCategories, uri, {})(dispatch);
 };
 
 export const fetchLessonsQuestions = (scenarioId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_questions`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_questions`;
   return getReferential(schema.arrayOfLessonsQuestions, uri)(dispatch);
 };
 
 export const updateLessonsQuestion = (scenarioId: string, lessonsCategoryId: string, lessonsQuestionId: string, data: LessonsQuestionUpdateInput) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_categories/${lessonsCategoryId}/lessons_questions/${lessonsQuestionId}`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_categories/${lessonsCategoryId}/lessons_questions/${lessonsQuestionId}`;
   return putReferential(schema.lessonsQuestion, uri, data)(dispatch);
 };
 
 export const addLessonsQuestion = (scenarioId: string, lessonsCategoryId: string, data: LessonsQuestionCreateInput) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_categories/${lessonsCategoryId}/lessons_questions`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_categories/${lessonsCategoryId}/lessons_questions`;
   return postReferential(schema.lessonsQuestion, uri, data)(dispatch);
 };
 
 export const deleteLessonsQuestion = (scenarioId: string, lessonsCategoryId: string, lessonsQuestionId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_categories/${lessonsCategoryId}/lessons_questions/${lessonsQuestionId}`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_categories/${lessonsCategoryId}/lessons_questions/${lessonsQuestionId}`;
   return delReferential(uri, 'lessonsquestions', lessonsQuestionId)(dispatch);
 };
 
 export const emptyLessonsCategories = (scenarioId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/lessons_empty`;
+  const uri = `/api/attack_chains/${scenarioId}/lessons_empty`;
   return postReferential(schema.arrayOfLessonsCategories, uri, {})(dispatch);
 };
 
 export const checkScenarioTagRules = (scenarioId: string, newTagIds: string[]) => {
-  const uri = `/api/scenarios/${scenarioId}/check-rules`;
+  const uri = `/api/attack_chains/${scenarioId}/check-rules`;
   const input = { new_tags: newTagIds };
   return simplePostCall(uri, input);
 };
 
 export const fetchCustomDashboardFromScenario = (scenarioId: string) => {
-  return simpleCall(`/api/scenarios/${scenarioId}/dashboard`);
+  return simpleCall(`/api/attack_chains/${scenarioId}/dashboard`);
 };
 
 export const countByScenario = (scenarioId: string, widgetId: string, parameters: Record<string, string | undefined>) => {
-  return simplePostCall(`/api/scenarios/${scenarioId}/dashboard/count/${widgetId}`, parameters);
+  return simplePostCall(`/api/attack_chains/${scenarioId}/dashboard/count/${widgetId}`, parameters);
 };
 
 export const averageByScenario = (scenarioId: string, widgetId: string, parameters: Record<string, string | undefined>) => {
-  return simplePostCall(`/api/scenarios/${scenarioId}/dashboard/average/${widgetId}`, parameters);
+  return simplePostCall(`/api/attack_chains/${scenarioId}/dashboard/average/${widgetId}`, parameters);
 };
 
 export const seriesByScenario = (scenarioId: string, widgetId: string, parameters: Record<string, string | undefined>) => {
-  return simplePostCall(`/api/scenarios/${scenarioId}/dashboard/series/${widgetId}`, parameters);
+  return simplePostCall(`/api/attack_chains/${scenarioId}/dashboard/series/${widgetId}`, parameters);
 };
 
 export const entitiesByScenario = (scenarioId: string, widgetId: string, parameters: Record<string, string | undefined>) => {
-  return simplePostCall(`/api/scenarios/${scenarioId}/dashboard/entities/${widgetId}`, parameters);
+  return simplePostCall(`/api/attack_chains/${scenarioId}/dashboard/entities/${widgetId}`, parameters);
 };
 
 export const widgetToEntitiesByByScenario = (scenarioId: string, widgetId: string, input: WidgetToEntitiesInput) => {
-  return simplePostCall(`/api/scenarios/${scenarioId}/dashboard/entities-runtime/${widgetId}`, input);
+  return simplePostCall(`/api/attack_chains/${scenarioId}/dashboard/entities-runtime/${widgetId}`, input);
 };
 
 export const attackPathsByScenario = (scenarioId: string, widgetId: string, parameters: Record<string, string | undefined>) => {
-  return simplePostCall(`/api/scenarios/${scenarioId}/dashboard/attack-paths/${widgetId}`, parameters);
+  return simplePostCall(`/api/attack_chains/${scenarioId}/dashboard/attack-paths/${widgetId}`, parameters);
 };

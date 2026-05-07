@@ -2,27 +2,27 @@ import { delReferential, getReferential, postReferential } from '../utils/Action
 import * as schema from './Schema';
 
 export const fetchComchecks = exerciseId => (dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/comchecks`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/comchecks`;
   return getReferential(schema.arrayOfComchecks, uri)(dispatch);
 };
 
 export const fetchComcheck = (exerciseId, comcheckId) => (dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/comchecks/${comcheckId}`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/comchecks/${comcheckId}`;
   return getReferential(schema.comcheck, uri)(dispatch);
 };
 
 export const addComcheck = (exerciseId, data) => (dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/comchecks`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/comchecks`;
   return postReferential(schema.comcheck, uri, data)(dispatch);
 };
 
 export const deleteComcheck = (exerciseId, comcheckId) => (dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/comchecks/${comcheckId}`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/comchecks/${comcheckId}`;
   return delReferential(uri, 'comchecks', comcheckId)(dispatch);
 };
 
 export const fetchComcheckStatuses = (exerciseId, comcheckId) => (dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/comchecks/${comcheckId}/statuses`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/comchecks/${comcheckId}/statuses`;
   return getReferential(schema.arrayOfComcheckStatuses, uri)(dispatch);
 };
 

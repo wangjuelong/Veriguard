@@ -7,10 +7,10 @@ import {
 } from '../../utils/api-types';
 import { MESSAGING$ } from '../../utils/Environment';
 
-export const INJECT_URI = '/api/injects';
+export const INJECT_URI = '/api/attack_chain_nodes';
 
 export const exportInjectSearch = (data: InjectExportFromSearchRequestInput) => {
-  const uri = '/api/injects/search/export';
+  const uri = '/api/attack_chain_nodes/search/export';
   return simplePostCall(uri, data, { responseType: 'arraybuffer' }).catch((error) => {
     MESSAGING$.notifyError('Could not request export of injects');
     throw error;
@@ -18,7 +18,7 @@ export const exportInjectSearch = (data: InjectExportFromSearchRequestInput) => 
 };
 
 export const exportInjects = (data: InjectExportRequestInput) => {
-  const uri = '/api/injects/export';
+  const uri = '/api/attack_chain_nodes/export';
   return simplePostCall(uri, data, { responseType: 'arraybuffer' }).catch((error) => {
     MESSAGING$.notifyError('Could not request export of injects');
     throw error;
@@ -26,7 +26,7 @@ export const exportInjects = (data: InjectExportRequestInput) => {
 };
 
 export const exportInject = (injectId: string, data: InjectIndividualExportRequestInput) => {
-  const uri = `/api/injects/${injectId}/inject_export`;
+  const uri = `/api/attack_chain_nodes/${injectId}/inject_export`;
   return simplePostCall(uri, data, { responseType: 'arraybuffer' }).catch((error) => {
     MESSAGING$.notifyError('Could not request export of inject');
     throw error;
@@ -37,19 +37,19 @@ export const exportInject = (injectId: string, data: InjectIndividualExportReque
 
 export const searchTargets = (injectId: string, targetType: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
-  const uri = `/api/injects/${injectId}/targets/${targetType}/search`;
+  const uri = `/api/attack_chain_nodes/${injectId}/targets/${targetType}/search`;
   return simplePostCall(uri, data);
 };
 
 export const searchTargetOptions = (injectId: string, targetType: string, searchText = '') => {
   const params = { searchText };
-  const uri = `/api/injects/${injectId}/targets/${targetType}/options`;
+  const uri = `/api/attack_chain_nodes/${injectId}/targets/${targetType}/options`;
   return simpleCall(uri, { params });
 };
 
 export const searchTargetOptionsById = (targetType: string, ids: string[]) => {
   const data = ids;
-  const uri = `/api/injects/targets/${targetType}/options`;
+  const uri = `/api/attack_chain_nodes/targets/${targetType}/options`;
   return simplePostCall(uri, data);
 };
 

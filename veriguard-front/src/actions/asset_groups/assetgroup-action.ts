@@ -88,23 +88,23 @@ export const searchAssetGroupByIdAsOption = (ids: string[]) => {
 // -- SIMULATIONS --
 
 export const fetchSimulationAssetGroups = (simulationId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/exercises/${simulationId}/asset-groups`;
+  const uri = `/api/attack_chain_runs/${simulationId}/asset-groups`;
   return getReferential(arrayOfAssetGroups, uri)(dispatch);
 };
 
 export const findSimulationAssetGroupsByIds = (simulationId: string, assetGroupIds: string[]) => {
-  const uri = `/api/exercises/${simulationId}/asset-groups/find`;
+  const uri = `/api/attack_chain_runs/${simulationId}/asset-groups/find`;
   return simplePostCall(uri, assetGroupIds);
 };
 
 // -- SCENARIOS --
 
 export const fetchScenarioAssetGroups = (scenarioId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/asset-groups`;
+  const uri = `/api/attack_chains/${scenarioId}/asset-groups`;
   return getReferential(arrayOfAssetGroups, uri)(dispatch);
 };
 
 export const findScenarioAssetGroupsByIds = (scenarioId: string, assetGroupIds: string[]) => {
-  const uri = `/api/scenarios/${scenarioId}/asset-groups/find`;
+  const uri = `/api/attack_chains/${scenarioId}/asset-groups/find`;
   return simplePostCall(uri, assetGroupIds);
 };

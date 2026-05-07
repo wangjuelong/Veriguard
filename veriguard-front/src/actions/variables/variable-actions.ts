@@ -7,7 +7,7 @@ import * as schema from '../Schema';
 // -- EXERCISES --
 
 export const addVariableForExercise = (exerciseId: Exercise['exercise_id'], data: VariableInput) => (dispatch: Dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/variables`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/variables`;
   return postReferential(schema.variable, uri, data)(dispatch);
 };
 
@@ -16,24 +16,24 @@ export const updateVariableForExercise = (
   variableId: Variable['variable_id'],
   data: VariableInput,
 ) => (dispatch: Dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/variables/${variableId}`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/variables/${variableId}`;
   return putReferential(schema.variable, uri, data)(dispatch);
 };
 
 export const deleteVariableForExercise = (exerciseId: Exercise['exercise_id'], variableId: Variable['variable_id']) => (dispatch: Dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/variables/${variableId}`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/variables/${variableId}`;
   return delReferential(uri, 'variables', variableId)(dispatch);
 };
 
 export const fetchVariablesForExercise = (exerciseId: Exercise['exercise_id']) => (dispatch: Dispatch) => {
-  const uri = `/api/exercises/${exerciseId}/variables`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/variables`;
   return getReferential(schema.arrayOfVariables, uri)(dispatch);
 };
 
 // -- SCENARIOS --
 
 export const addVariableForScenario = (scenarioId: Scenario['scenario_id'], data: VariableInput) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/variables`;
+  const uri = `/api/attack_chains/${scenarioId}/variables`;
   return postReferential(schema.variable, uri, data)(dispatch);
 };
 
@@ -42,16 +42,16 @@ export const updateVariableForScenario = (
   variableId: Variable['variable_id'],
   data: VariableInput,
 ) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/variables/${variableId}`;
+  const uri = `/api/attack_chains/${scenarioId}/variables/${variableId}`;
   return putReferential(schema.variable, uri, data)(dispatch);
 };
 
 export const deleteVariableForScenario = (scenarioId: Scenario['scenario_id'], variableId: Variable['variable_id']) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/variables/${variableId}`;
+  const uri = `/api/attack_chains/${scenarioId}/variables/${variableId}`;
   return delReferential(uri, 'variables', variableId)(dispatch);
 };
 
 export const fetchVariablesForScenario = (scenarioId: Scenario['scenario_id']) => (dispatch: Dispatch) => {
-  const uri = `/api/scenarios/${scenarioId}/variables`;
+  const uri = `/api/attack_chains/${scenarioId}/variables`;
   return getReferential(schema.arrayOfVariables, uri)(dispatch);
 };

@@ -111,7 +111,7 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
 
   const submitExport = (withPlayers: boolean, withTeams: boolean, withVariableValues: boolean) => {
     const link = document.createElement('a');
-    link.href = `/api/exercises/${exercise.exercise_id}/export?isWithTeams=${withTeams}&isWithPlayers=${withPlayers}&isWithVariableValues=${withVariableValues}`;
+    link.href = `/api/attack_chain_runs/${exercise.exercise_id}/export?isWithTeams=${withTeams}&isWithPlayers=${withPlayers}&isWithVariableValues=${withVariableValues}`;
     link.click();
     handleCloseExport();
   };
