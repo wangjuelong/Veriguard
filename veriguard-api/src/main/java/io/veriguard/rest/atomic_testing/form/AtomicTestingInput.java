@@ -2,7 +2,7 @@ package io.veriguard.rest.atomic_testing.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.veriguard.rest.inject.form.AttackChainNodeDocumentInput;
+import io.veriguard.rest.attack_chain_node.form.AttackChainNodeDocumentInput;
 import jakarta.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;

@@ -5,8 +5,8 @@ import io.veriguard.database.model.*;
 import io.veriguard.helper.NodeModelHelper;
 import io.veriguard.rest.atomic_testing.form.*;
 import io.veriguard.rest.document.form.RelatedEntityOutput;
-import io.veriguard.rest.inject.output.AttackChainNodeOutput;
-import io.veriguard.rest.inject.output.AttackChainNodeSimple;
+import io.veriguard.rest.attack_chain_node.output.AttackChainNodeOutput;
+import io.veriguard.rest.attack_chain_node.output.AttackChainNodeSimple;
 import io.veriguard.rest.payload.output.PayloadSimple;
 import io.veriguard.utils.NodeExpectationResultUtils;
 import io.veriguard.utils.AttackChainNodeUtils;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
  * response objects, including result overviews, simple representations, and target mappings.
  *
  * @see io.veriguard.database.model.AttackChainNode
- * @see io.veriguard.rest.inject.output.AttackChainNodeOutput
+ * @see io.veriguard.rest.attack_chain_node.output.AttackChainNodeOutput
  */
 @Component
 @RequiredArgsConstructor

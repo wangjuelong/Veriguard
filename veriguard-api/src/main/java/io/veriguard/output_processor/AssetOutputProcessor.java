@@ -6,8 +6,8 @@ import static io.veriguard.database.model.AssetType.Values.SECURITY_PLATFORM_TYP
 import com.fasterxml.jackson.databind.JsonNode;
 import io.veriguard.database.model.*;
 import io.veriguard.rest.asset.endpoint.form.EndpointInput;
-import io.veriguard.rest.inject.service.ContractOutputContext;
-import io.veriguard.rest.inject.service.ExecutionProcessingContext;
+import io.veriguard.rest.attack_chain_node.service.ContractOutputContext;
+import io.veriguard.rest.attack_chain_node.service.ExecutionProcessingContext;
 import io.veriguard.rest.tag.TagService;
 import io.veriguard.service.EndpointService;
 import java.util.*;

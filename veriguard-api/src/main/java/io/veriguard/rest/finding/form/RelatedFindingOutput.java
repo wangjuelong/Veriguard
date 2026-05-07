@@ -4,9 +4,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.rest.exercise.form.AttackChainRunSimple;
-import io.veriguard.rest.inject.output.AttackChainNodeSimple;
-import io.veriguard.rest.scenario.form.AttackChainSimple;
+import io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple;
+import io.veriguard.rest.attack_chain_node.output.AttackChainNodeSimple;
+import io.veriguard.rest.attack_chain.form.AttackChainSimple;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

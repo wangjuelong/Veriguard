@@ -1,6 +1,6 @@
 package io.veriguard.scheduler.jobs;
 
-import io.veriguard.rest.inject.service.BatchingAttackChainNodeStatusService;
+import io.veriguard.rest.attack_chain_node.service.BatchingAttackChainNodeStatusService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -10,7 +10,7 @@ import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.rest.collector.service.CollectorService;
-import io.veriguard.rest.inject.form.AttackChainNodeExpectationUpdateInput;
+import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationUpdateInput;
 import io.veriguard.service.AttackChainNodeExpectationService;
 import io.veriguard.utils.ExpectationUtils;
 import jakarta.validation.constraints.NotNull;

@@ -18,7 +18,7 @@ import io.veriguard.database.repository.AssetGroupRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.TagRepository;
 import io.veriguard.rest.asset_group.form.AssetGroupInput;
-import io.veriguard.rest.exercise.service.AttackChainRunService;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.TagFixture;
 import io.veriguard.utils.mockUser.WithMockUser;

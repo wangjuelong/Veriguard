@@ -14,7 +14,7 @@ import io.veriguard.database.repository.*;
 import io.veriguard.rest.catalog_connector.dto.ConnectorIds;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.service.AttackChainNodeStatusService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
 import io.veriguard.rest.injector.form.NodeExecutorCreateInput;
 import io.veriguard.rest.injector.form.NodeExecutorOutput;
 import io.veriguard.rest.injector.form.NodeExecutorUpdateInput;

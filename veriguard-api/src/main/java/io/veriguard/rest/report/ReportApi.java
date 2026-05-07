@@ -2,9 +2,9 @@ package io.veriguard.rest.report;
 
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.exercise.service.AttackChainRunService;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.report.form.ReportAttackChainNodeCommentInput;
 import io.veriguard.rest.report.form.ReportInput;
 import io.veriguard.rest.report.model.Report;

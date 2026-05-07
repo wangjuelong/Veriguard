@@ -2,7 +2,7 @@ package io.veriguard.rest.team;
 
 import static io.veriguard.database.specification.TeamSpecification.contextual;
 import static io.veriguard.database.specification.TeamSpecification.fromAttackChainRun;
-import static io.veriguard.rest.exercise.AttackChainRunApi.EXERCISE_URI;
+import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
 
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;

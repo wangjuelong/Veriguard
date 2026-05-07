@@ -13,7 +13,7 @@ import io.veriguard.execution.ExecutableNode;
 import io.veriguard.execution.ExecutableNodeDTOMapper;
 import io.veriguard.execution.ExecutionExecutorService;
 import io.veriguard.integration.ManagerFactory;
-import io.veriguard.rest.inject.service.AttackChainNodeStatusService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
 import io.veriguard.service.NodeExecutorService;
 import io.veriguard.service.connector_instances.ConnectorInstanceService;
 import jakarta.annotation.Resource;

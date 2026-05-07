@@ -1,7 +1,7 @@
 package io.veriguard.rest.finding;
 
 import io.veriguard.database.model.Finding;
-import io.veriguard.rest.inject.service.ContractOutputContext;
+import io.veriguard.rest.attack_chain_node.service.ContractOutputContext;
 import org.jetbrains.annotations.NotNull;
 
 public final class FindingUtils {

@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.veriguard.rest.inject.service.ContractOutputContext;
-import io.veriguard.rest.inject.service.ExecutionProcessingContext;
+import io.veriguard.rest.attack_chain_node.service.ContractOutputContext;
+import io.veriguard.rest.attack_chain_node.service.ExecutionProcessingContext;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

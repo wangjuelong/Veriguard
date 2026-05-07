@@ -5,7 +5,7 @@ import io.veriguard.database.model.ContractOutputField;
 import io.veriguard.database.model.ContractOutputTechnicalType;
 import io.veriguard.database.model.ContractOutputType;
 import io.veriguard.rest.finding.FindingService;
-import io.veriguard.rest.inject.service.ExecutionProcessingContext;
+import io.veriguard.rest.attack_chain_node.service.ExecutionProcessingContext;
 import io.veriguard.service.AttackChainNodeExpectationService;
 import java.util.ArrayList;
 import java.util.Collections;

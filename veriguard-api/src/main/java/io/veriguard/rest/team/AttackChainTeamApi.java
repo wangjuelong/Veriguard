@@ -1,7 +1,7 @@
 package io.veriguard.rest.team;
 
 import static io.veriguard.database.specification.TeamSpecification.*;
-import static io.veriguard.rest.scenario.AttackChainApi.SCENARIO_URI;
+import static io.veriguard.rest.attack_chain.AttackChainApi.SCENARIO_URI;
 
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;

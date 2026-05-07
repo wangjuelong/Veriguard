@@ -16,7 +16,7 @@ import io.veriguard.rest.asset.endpoint.form.*;
 import io.veriguard.rest.asset.endpoint.output.EndpointTargetOutput;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.service.AttackChainNodeStatusService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
 import io.veriguard.service.EndpointService;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.HttpReqRespUtils;

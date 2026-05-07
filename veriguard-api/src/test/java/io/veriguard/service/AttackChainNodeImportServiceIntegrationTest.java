@@ -8,7 +8,7 @@ import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeImporter;
 import io.veriguard.database.model.AttackChain;
-import io.veriguard.rest.scenario.response.ImportTestSummary;
+import io.veriguard.rest.attack_chain.response.ImportTestSummary;
 import io.veriguard.utils.fixtures.AttackChainFixture;
 import io.veriguard.utils.fixtures.XlsFixture;
 import io.veriguard.utils.fixtures.import_mapper.ImportMapperFixture;

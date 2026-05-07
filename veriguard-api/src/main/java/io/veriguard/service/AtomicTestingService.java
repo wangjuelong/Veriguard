@@ -19,7 +19,7 @@ import io.veriguard.database.specification.SpecificationUtils;
 import io.veriguard.injector_contract.fields.ContractFieldType;
 import io.veriguard.rest.atomic_testing.form.*;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.utils.mapper.AttackChainNodeMapper;
 import io.veriguard.utils.mapper.PayloadMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;

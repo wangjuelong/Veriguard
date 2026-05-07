@@ -26,7 +26,7 @@ import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.TagRepository;
 import io.veriguard.rest.asset.endpoint.form.EndpointInput;
 import io.veriguard.rest.asset.endpoint.form.EndpointRegisterInput;
-import io.veriguard.rest.exercise.service.AttackChainRunService;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.service.EndpointService;
 import io.veriguard.utils.fixtures.EndpointFixture;
 import io.veriguard.utils.fixtures.ExecutorFixture;

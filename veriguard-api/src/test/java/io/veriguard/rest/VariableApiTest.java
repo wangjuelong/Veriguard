@@ -1,6 +1,6 @@
 package io.veriguard.rest;
 
-import static io.veriguard.rest.scenario.AttackChainApi.SCENARIO_URI;
+import static io.veriguard.rest.attack_chain.AttackChainApi.SCENARIO_URI;
 import static io.veriguard.utils.JsonTestUtils.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

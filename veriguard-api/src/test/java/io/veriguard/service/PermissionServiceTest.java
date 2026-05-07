@@ -10,7 +10,7 @@ import io.veriguard.aop.RBACAspect;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.EvaluationRepository;
 import io.veriguard.database.repository.ObjectiveRepository;
-import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.utils.fixtures.UserFixture;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import java.util.*;

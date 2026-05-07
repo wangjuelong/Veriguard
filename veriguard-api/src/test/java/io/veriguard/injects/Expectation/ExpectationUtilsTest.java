@@ -9,7 +9,7 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.model.expectation.DetectionExpectation;
 import io.veriguard.model.expectation.PreventionExpectation;
-import io.veriguard.rest.inject.service.AssetToExecute;
+import io.veriguard.rest.attack_chain_node.service.AssetToExecute;
 import io.veriguard.utils.fixtures.*;
 import java.util.*;
 import org.junit.jupiter.api.DisplayName;

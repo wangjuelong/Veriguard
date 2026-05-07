@@ -7,7 +7,7 @@ import io.veriguard.executors.utils.ExecutorUtils;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.healthcheck.enums.ExternalServiceDependency;
 import io.veriguard.helper.NodeModelHelper;
-import io.veriguard.rest.inject.output.AgentsAndAssetsAgentless;
+import io.veriguard.rest.attack_chain_node.output.AgentsAndAssetsAgentless;
 import jakarta.validation.constraints.NotNull;
 import java.util.*;
 import lombok.RequiredArgsConstructor;

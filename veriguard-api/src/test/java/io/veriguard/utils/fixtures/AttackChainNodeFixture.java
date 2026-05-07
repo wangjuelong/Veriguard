@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.database.model.*;
 import io.veriguard.rest.atomic_testing.form.AtomicTestingInput;
-import io.veriguard.rest.inject.form.AttackChainNodeDocumentInput;
+import io.veriguard.rest.attack_chain_node.form.AttackChainNodeDocumentInput;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

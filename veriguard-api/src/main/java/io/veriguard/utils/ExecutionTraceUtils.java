@@ -5,7 +5,7 @@ import io.veriguard.database.model.ExecutionTrace;
 import io.veriguard.database.model.ExecutionTraceAction;
 import io.veriguard.database.model.ExecutionTraceStatus;
 import io.veriguard.database.model.AttackChainNodeStatus;
-import io.veriguard.rest.inject.form.AttackChainNodeExecutionAction;
+import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionAction;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

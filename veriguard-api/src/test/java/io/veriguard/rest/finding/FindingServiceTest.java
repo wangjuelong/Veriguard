@@ -12,7 +12,7 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.FindingRepository;
 import io.veriguard.injector_contract.outputs.NodeContractContentOutputElement;
-import io.veriguard.rest.inject.service.ContractOutputContext;
+import io.veriguard.rest.attack_chain_node.service.ContractOutputContext;
 import io.veriguard.rest.injector_contract.NodeContractContentUtils;
 import io.veriguard.utils.helpers.AttackChainNodeTestHelper;
 import java.util.*;

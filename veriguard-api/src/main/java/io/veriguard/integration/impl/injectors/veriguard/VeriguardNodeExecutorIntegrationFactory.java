@@ -10,7 +10,7 @@ import io.veriguard.injectors.veriguard.VeriguardImplantContract;
 import io.veriguard.integration.ComponentRequestEngine;
 import io.veriguard.integration.Integration;
 import io.veriguard.integration.IntegrationFactory;
-import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.service.AssetGroupService;
 import io.veriguard.service.AttackChainNodeExpectationService;
 import io.veriguard.service.NodeExecutorService;

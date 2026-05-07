@@ -1,7 +1,7 @@
 package io.veriguard.rest.inject_test_status;
 
 import static io.veriguard.database.specification.AttackChainNodeSpecification.testable;
-import static io.veriguard.rest.exercise.AttackChainRunApi.EXERCISE_URI;
+import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
 
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
@@ -11,9 +11,9 @@ import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.ResourceType;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.form.AttackChainNodeBulkProcessingInput;
-import io.veriguard.rest.inject.output.AttackChainNodeTestStatusOutput;
-import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.form.AttackChainNodeBulkProcessingInput;
+import io.veriguard.rest.attack_chain_node.output.AttackChainNodeTestStatusOutput;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.service.AttackChainNodeTestStatusService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import io.swagger.v3.oas.annotations.Operation;

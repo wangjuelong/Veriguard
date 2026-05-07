@@ -7,7 +7,7 @@ import io.veriguard.aop.RBAC;
 import io.veriguard.api.detection_remediation.dto.DetectionRemediationAIOutput;
 import io.veriguard.api.detection_remediation.dto.PayloadInput;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.payload.form.DetectionRemediationInput;
 import io.veriguard.rest.payload.form.DetectionRemediationOutput;
 import io.veriguard.service.detection_remediation.*;

@@ -5,7 +5,7 @@ import static java.util.Collections.emptyList;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawAttackChainNodeExpectation;
 import io.veriguard.database.repository.AttackChainNodeExpectationRepository;
-import io.veriguard.rest.inject.form.NodeExpectationResultsByAttackPattern;
+import io.veriguard.rest.attack_chain_node.form.NodeExpectationResultsByAttackPattern;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.mapper.AttackChainNodeExpectationMapper;
 import jakarta.validation.constraints.NotNull;

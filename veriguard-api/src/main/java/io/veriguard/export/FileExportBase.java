@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.exercise.exports.AttackChainRunFileExport;
-import io.veriguard.rest.exercise.exports.ExportOptions;
-import io.veriguard.rest.exercise.exports.VariableMixin;
-import io.veriguard.rest.exercise.exports.VariableWithValueMixin;
-import io.veriguard.rest.inject.exports.AttackChainNodesFileExport;
+import io.veriguard.rest.attack_chain_run.exports.AttackChainRunFileExport;
+import io.veriguard.rest.attack_chain_run.exports.ExportOptions;
+import io.veriguard.rest.attack_chain_run.exports.VariableMixin;
+import io.veriguard.rest.attack_chain_run.exports.VariableWithValueMixin;
+import io.veriguard.rest.attack_chain_node.exports.AttackChainNodesFileExport;
 import lombok.Getter;
 
 @Getter

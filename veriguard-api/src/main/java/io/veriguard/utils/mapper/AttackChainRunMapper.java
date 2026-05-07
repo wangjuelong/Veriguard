@@ -13,7 +13,7 @@ import io.veriguard.database.repository.AttackChainNodeExpectationRepository;
 import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.rest.atomic_testing.form.TargetSimple;
 import io.veriguard.rest.document.form.RelatedEntityOutput;
-import io.veriguard.rest.exercise.form.AttackChainRunSimple;
+import io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.TargetType;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
  * response objects, including target resolution and expectation result aggregation.
  *
  * @see io.veriguard.database.model.AttackChainRun
- * @see io.veriguard.rest.exercise.form.AttackChainRunSimple
+ * @see io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple
  */
 @RequiredArgsConstructor
 @Component

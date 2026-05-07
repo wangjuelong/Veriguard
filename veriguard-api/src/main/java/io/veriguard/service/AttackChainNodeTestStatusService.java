@@ -13,7 +13,7 @@ import io.veriguard.execution.ExecutionContext;
 import io.veriguard.execution.ExecutionContextService;
 import io.veriguard.integration.ManagerFactory;
 import io.veriguard.rest.exception.BadRequestException;
-import io.veriguard.rest.inject.output.AttackChainNodeTestStatusOutput;
+import io.veriguard.rest.attack_chain_node.output.AttackChainNodeTestStatusOutput;
 import io.veriguard.utils.mapper.AttackChainNodeStatusMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import jakarta.persistence.EntityNotFoundException;

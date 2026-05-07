@@ -1,7 +1,7 @@
 package io.veriguard.rest.helper.queue.executor;
 
-import io.veriguard.rest.inject.form.AttackChainNodeExecutionCallback;
-import io.veriguard.rest.inject.service.BatchingAttackChainNodeStatusService;
+import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionCallback;
+import io.veriguard.rest.attack_chain_node.service.BatchingAttackChainNodeStatusService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

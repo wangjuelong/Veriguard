@@ -11,7 +11,7 @@ import io.veriguard.model.expectation.DetectionExpectation;
 import io.veriguard.model.expectation.PreventionExpectation;
 import io.veriguard.model.expectation.VulnerabilityExpectation;
 import io.veriguard.model.inject.form.Expectation;
-import io.veriguard.rest.exercise.form.ExpectationUpdateInput;
+import io.veriguard.rest.attack_chain_run.form.ExpectationUpdateInput;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;

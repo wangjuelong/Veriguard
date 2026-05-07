@@ -10,7 +10,7 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AttackChainEdgesRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.SecurityCoverageSendJobRepository;
-import io.veriguard.rest.exercise.service.AttackChainRunService;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.scheduler.jobs.exception.ErrorMessagesPreExecutionException;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.fixtures.composers.*;

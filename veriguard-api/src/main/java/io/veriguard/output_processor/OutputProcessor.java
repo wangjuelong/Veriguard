@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.veriguard.database.model.ContractOutputField;
 import io.veriguard.database.model.ContractOutputTechnicalType;
 import io.veriguard.database.model.ContractOutputType;
-import io.veriguard.rest.inject.service.ContractOutputContext;
-import io.veriguard.rest.inject.service.ExecutionProcessingContext;
+import io.veriguard.rest.attack_chain_node.service.ContractOutputContext;
+import io.veriguard.rest.attack_chain_node.service.ExecutionProcessingContext;
 import java.util.List;
 
 /**

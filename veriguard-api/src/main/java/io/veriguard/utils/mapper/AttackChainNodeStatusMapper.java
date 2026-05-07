@@ -4,7 +4,7 @@ import static io.veriguard.utils.mapper.AgentMapper.toAgentOutput;
 
 import io.veriguard.database.model.*;
 import io.veriguard.rest.atomic_testing.form.*;
-import io.veriguard.rest.inject.output.AttackChainNodeTestStatusOutput;
+import io.veriguard.rest.attack_chain_node.output.AttackChainNodeTestStatusOutput;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

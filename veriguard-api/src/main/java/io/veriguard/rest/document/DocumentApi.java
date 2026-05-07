@@ -19,7 +19,7 @@ import io.veriguard.rest.document.form.DocumentTagUpdateInput;
 import io.veriguard.rest.document.form.DocumentUpdateInput;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.inject.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.service.FileService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import io.swagger.v3.oas.annotations.Operation;

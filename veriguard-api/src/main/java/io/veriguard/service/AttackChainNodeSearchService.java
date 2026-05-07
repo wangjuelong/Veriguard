@@ -19,7 +19,7 @@ import io.veriguard.rest.atomic_testing.form.AttackChainNodeResultOutput;
 import io.veriguard.rest.atomic_testing.form.AttackChainNodeStatusSimple;
 import io.veriguard.rest.atomic_testing.form.NodeContractSimple;
 import io.veriguard.rest.atomic_testing.form.TargetSimple;
-import io.veriguard.rest.inject.output.AttackChainNodeOutput;
+import io.veriguard.rest.attack_chain_node.output.AttackChainNodeOutput;
 import io.veriguard.rest.payload.output.PayloadSimple;
 import io.veriguard.utils.NodeExpectationResultUtils;
 import io.veriguard.utils.TargetType;

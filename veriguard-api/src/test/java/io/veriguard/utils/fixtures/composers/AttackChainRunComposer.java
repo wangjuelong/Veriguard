@@ -2,7 +2,7 @@ package io.veriguard.utils.fixtures.composers;
 
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.rest.exercise.service.AttackChainRunService;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;

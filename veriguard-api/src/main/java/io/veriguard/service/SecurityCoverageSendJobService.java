@@ -3,7 +3,7 @@ package io.veriguard.service;
 import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.SecurityCoverageSendJob;
 import io.veriguard.database.repository.SecurityCoverageSendJobRepository;
-import io.veriguard.rest.exercise.service.AttackChainRunService;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

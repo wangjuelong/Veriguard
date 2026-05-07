@@ -1,7 +1,7 @@
 package io.veriguard.utils.fixtures;
 
 import io.veriguard.database.model.*;
-import io.veriguard.rest.inject.form.AttackChainNodeExpectationUpdateInput;
+import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationUpdateInput;
 import jakarta.annotation.Nullable;
 import java.util.Map;
 

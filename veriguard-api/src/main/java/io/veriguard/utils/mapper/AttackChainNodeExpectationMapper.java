@@ -15,7 +15,7 @@ import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.raw.RawAttackChainNodeExpectation;
 import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.expectation.ExpectationType;
-import io.veriguard.rest.inject.form.NodeExpectationResultsByAttackPattern;
+import io.veriguard.rest.attack_chain_node.form.NodeExpectationResultsByAttackPattern;
 import io.veriguard.utils.NodeExpectationResultUtils;
 import io.veriguard.utils.AttackChainNodeUtils;
 import jakarta.validation.constraints.NotNull;

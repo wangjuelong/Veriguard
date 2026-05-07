@@ -20,7 +20,7 @@ import io.veriguard.model.expectation.ManualExpectation;
 import io.veriguard.model.expectation.PreventionExpectation;
 import io.veriguard.model.expectation.VulnerabilityExpectation;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.inject.service.AssetToExecute;
+import io.veriguard.rest.attack_chain_node.service.AssetToExecute;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;

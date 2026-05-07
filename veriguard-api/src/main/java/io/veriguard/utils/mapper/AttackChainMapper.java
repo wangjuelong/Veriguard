@@ -4,9 +4,9 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawAttackChain;
 import io.veriguard.rest.document.form.RelatedEntityOutput;
 import io.veriguard.rest.kill_chain_phase.response.KillChainPhaseOutput;
-import io.veriguard.rest.scenario.form.AttackChainSimple;
-import io.veriguard.rest.scenario.response.AttackChainOutput;
-import io.veriguard.rest.scenario.response.AttackChainTeamUserOutput;
+import io.veriguard.rest.attack_chain.form.AttackChainSimple;
+import io.veriguard.rest.attack_chain.response.AttackChainOutput;
+import io.veriguard.rest.attack_chain.response.AttackChainTeamUserOutput;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
  * response objects, including simple representations and full output formats.
  *
  * @see io.veriguard.database.model.AttackChain
- * @see io.veriguard.rest.scenario.form.AttackChainSimple
- * @see io.veriguard.rest.scenario.response.AttackChainOutput
+ * @see io.veriguard.rest.attack_chain.form.AttackChainSimple
+ * @see io.veriguard.rest.attack_chain.response.AttackChainOutput
  */
 @RequiredArgsConstructor
 @Component

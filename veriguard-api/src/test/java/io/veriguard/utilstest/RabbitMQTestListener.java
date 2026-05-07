@@ -1,6 +1,6 @@
 package io.veriguard.utilstest;
 
-import io.veriguard.rest.inject.AttackChainNodeApi;
+import io.veriguard.rest.attack_chain_node.AttackChainNodeApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestContext;
