@@ -155,7 +155,7 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
     String response =
         mvc.perform(
                 get(INJECT_EXPECTATION_TRACES_URI
-                        + "?injectExpectationId="
+                        + "?attackChainNodeExpectationId="
                         + savedAttackChainNodeExpectation.getId()
                         + "&sourceId="
                         + savedCollector.getId())
@@ -191,7 +191,7 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
     String response =
         mvc.perform(
                 get(INJECT_EXPECTATION_TRACES_URI
-                        + "/count?injectExpectationId="
+                        + "/count?attackChainNodeExpectationId="
                         + savedAttackChainNodeExpectation.getId()
                         + "&sourceId="
                         + savedSecurityPlatform.getExternalReference()
@@ -216,7 +216,7 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
     String response =
         mvc.perform(
                 get(INJECT_EXPECTATION_TRACES_URI
-                        + "/count?injectExpectationId="
+                        + "/count?attackChainNodeExpectationId="
                         + savedAttackChainNodeExpectation.getId()
                         + "&sourceId="
                         + savedSecurityPlatform.getExternalReference()
@@ -241,7 +241,7 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
     String response =
         mvc.perform(
                 get(INJECT_EXPECTATION_TRACES_URI
-                        + "/count?injectExpectationId="
+                        + "/count?attackChainNodeExpectationId="
                         + savedAttackChainNodeExpectation.getId()
                         + "&sourceId="
                         + savedSecurityPlatform.getId()

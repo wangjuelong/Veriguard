@@ -42,7 +42,7 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
       } else {
         if (scopedAttackChainNode.isAllTeams()) {
           Path<Object> attackChainRunTeamUsersPath =
-              root.get("exerciseTeamUsers").get("attackChainRun").get("id");
+              root.get("attackChainRunTeamUsers").get("attackChainRun").get("id");
           Path<Object> attackChainNodePath =
               root.join("teams").join("attackChainRuns").get("attackChainNodes").get("id");
           return builder.and(
@@ -51,7 +51,7 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
                   attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
         } else {
           Path<Object> attackChainRunTeamUsersPath =
-              root.get("exerciseTeamUsers").get("attackChainRun").get("id");
+              root.get("attackChainRunTeamUsers").get("attackChainRun").get("id");
           Path<Object> attackChainNodePath = root.join("teams").join("attackChainNodes").get("id");
           return builder.and(
               builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
