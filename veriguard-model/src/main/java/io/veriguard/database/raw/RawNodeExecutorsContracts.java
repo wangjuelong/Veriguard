@@ -5,12 +5,12 @@ import java.util.List;
 /**
  * Spring Data projection interface for nodeExecutor contract data with attack patterns.
  *
- * <p>This interface defines a lightweight projection for retrieving nodeExecutor contracts along with
- * their associated attack pattern external IDs. It is used for efficient bulk retrieval of contract
- * metadata without loading full entity graphs.
+ * <p>This interface defines a lightweight projection for retrieving nodeExecutor contracts along
+ * with their associated attack pattern external IDs. It is used for efficient bulk retrieval of
+ * contract metadata without loading full entity graphs.
  *
- * <p>The projection is populated from native SQL queries that join nodeExecutor contracts with attack
- * patterns, aggregating the external IDs into an array.
+ * <p>The projection is populated from native SQL queries that join nodeExecutor contracts with
+ * attack patterns, aggregating the external IDs into an array.
  *
  * @see io.veriguard.database.model.NodeContract
  * @see io.veriguard.database.repository.NodeContractRepository

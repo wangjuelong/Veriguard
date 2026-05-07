@@ -53,7 +53,8 @@ public interface AssetGroupRepository
           + "WHERE ag.id IN (SELECT DISTINCT ag2.id FROM AssetGroup ag2 "
           + "JOIN ag2.attackChainNodes i WHERE i.attackChain.id = :attackChainId)"
           + "AND ag.id IN :ids")
-  List<AssetGroup> findDistinctByAttackChainNodesAttackChainIdAndIdIn(String attackChainId, List<String> ids);
+  List<AssetGroup> findDistinctByAttackChainNodesAttackChainIdAndIdIn(
+      String attackChainId, List<String> ids);
 
   @Query(
       "SELECT ag FROM AssetGroup ag "
@@ -66,7 +67,8 @@ public interface AssetGroupRepository
           + "WHERE ag.id IN (SELECT DISTINCT ag2.id FROM AssetGroup ag2 "
           + "JOIN ag2.attackChainNodes i WHERE i.attackChainRun.id = :simulationId)"
           + " AND ag.id IN :ids")
-  List<AssetGroup> findDistinctByAttackChainNodesSimulationIdAndIdIn(String simulationId, List<String> ids);
+  List<AssetGroup> findDistinctByAttackChainNodesSimulationIdAndIdIn(
+      String simulationId, List<String> ids);
 
   /**
    * Returns the raw asset group having the ids passed in parameter
@@ -96,7 +98,8 @@ public interface AssetGroupRepository
               + "GROUP BY ag.asset_group_id, ag.asset_group_name, CAST(ag.asset_group_dynamic_filter as text) ;",
       nativeQuery = true)
   Set<RawAssetGroup> rawByIdsOrAttackChainNodeIds(
-      @Param("assetGroupIds") Set<String> assetGroupIds, @Param("injectIds") Set<String> attackChainNodeIds);
+      @Param("assetGroupIds") Set<String> assetGroupIds,
+      @Param("injectIds") Set<String> attackChainNodeIds);
 
   // -- PAGINATION --
 
@@ -109,7 +112,8 @@ public interface AssetGroupRepository
               + "WHERE iat.inject_id = :injectId "
               + "AND ag.asset_group_dynamic_filter IS NOT NULL;",
       nativeQuery = true)
-  List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeId(@Param("injectId") String attackChainNodeId);
+  List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeId(
+      @Param("injectId") String attackChainNodeId);
 
   @Query(
       value =
@@ -122,7 +126,8 @@ public interface AssetGroupRepository
               + "AND ag.asset_group_id IN :assetGroupIds ;",
       nativeQuery = true)
   List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeIdAndAssetGroupIds(
-      @Param("injectId") String attackChainNodeId, @Param("assetGroupIds") List<String> assetGroupIds);
+      @Param("injectId") String attackChainNodeId,
+      @Param("assetGroupIds") List<String> assetGroupIds);
 
   @Query(
       value =
@@ -146,7 +151,8 @@ public interface AssetGroupRepository
               + "AND ag.asset_group_id NOT IN :assetGroupIds ;",
       nativeQuery = true)
   List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeIdAndNotAssetGroupIds(
-      @Param("injectId") String attackChainNodeId, @Param("assetGroupIds") List<String> assetGroupIds);
+      @Param("injectId") String attackChainNodeId,
+      @Param("assetGroupIds") List<String> assetGroupIds);
 
   @NotNull
   @EntityGraph(value = "AssetGroup.tags-assets", type = EntityGraph.EntityGraphType.LOAD)

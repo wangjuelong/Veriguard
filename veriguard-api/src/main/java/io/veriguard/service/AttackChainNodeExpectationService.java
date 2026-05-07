@@ -21,11 +21,11 @@ import io.veriguard.expectation.ExpectationPropertiesConfig;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.model.Expectation;
 import io.veriguard.rest.atomic_testing.form.AttackChainNodeExpectationAgentOutput;
-import io.veriguard.rest.collector.service.CollectorService;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.attack_chain_run.form.ExpectationUpdateInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationUpdateInput;
 import io.veriguard.rest.attack_chain_node.service.ExecutionProcessingContext;
+import io.veriguard.rest.attack_chain_run.form.ExpectationUpdateInput;
+import io.veriguard.rest.collector.service.CollectorService;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.utils.ExpectationUtils;
 import io.veriguard.utils.TargetType;
 import jakarta.annotation.Nullable;
@@ -66,7 +66,8 @@ public class AttackChainNodeExpectationService {
 
   // -- CRUD --
 
-  public AttackChainNodeExpectation findAttackChainNodeExpectation(@NotBlank final String attackChainNodeExpectationId) {
+  public AttackChainNodeExpectation findAttackChainNodeExpectation(
+      @NotBlank final String attackChainNodeExpectationId) {
     return this.attackChainNodeExpectationRepository
         .findById(attackChainNodeExpectationId)
         .orElseThrow(ElementNotFoundException::new);
@@ -76,14 +77,18 @@ public class AttackChainNodeExpectationService {
 
   public AttackChainNodeExpectation updateAttackChainNodeExpectation(
       @NotBlank final String expectationId, @NotNull final ExpectationUpdateInput input) {
-    AttackChainNodeExpectation attackChainNodeExpectation = this.findAttackChainNodeExpectation(expectationId);
+    AttackChainNodeExpectation attackChainNodeExpectation =
+        this.findAttackChainNodeExpectation(expectationId);
 
     if (HUMAN_EXPECTATION.contains(attackChainNodeExpectation.getType())) {
       String result =
           ExpectationType.label(
-              attackChainNodeExpectation.getType(), attackChainNodeExpectation.getExpectedScore(), input.getScore());
+              attackChainNodeExpectation.getType(),
+              attackChainNodeExpectation.getExpectedScore(),
+              input.getScore());
       computeAttackChainNodeExpectationForHumanResponse(attackChainNodeExpectation, input, result);
-      AttackChainNodeExpectation updated = this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
+      AttackChainNodeExpectation updated =
+          this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
       propagateHumanResponseExpectation(updated, result);
       return updated;
     } else if (List.of(DETECTION, PREVENTION).contains(attackChainNodeExpectation.getType())) {
@@ -105,8 +110,10 @@ public class AttackChainNodeExpectationService {
         return attackChainNodeExpectation;
         // Computation on agent or asset agentless
       } else {
-        computeAttackChainNodeExpectationForAgentOrAssetAgentless(attackChainNodeExpectation, input);
-        AttackChainNodeExpectation updated = this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
+        computeAttackChainNodeExpectationForAgentOrAssetAgentless(
+            attackChainNodeExpectation, input);
+        AttackChainNodeExpectation updated =
+            this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
         propagateTechnicalExpectation(updated, isAgentless, null);
         return updated;
       }
@@ -121,7 +128,8 @@ public class AttackChainNodeExpectationService {
     AttackChainNodeExpectation attackChainNodeExpectation =
         this.attackChainNodeExpectationRepository.findById(expectationId).orElseThrow();
     deleteResult(attackChainNodeExpectation, sourceId);
-    AttackChainNodeExpectation updated = this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
+    AttackChainNodeExpectation updated =
+        this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
     if (HUMAN_EXPECTATION.contains(attackChainNodeExpectation.getType())) {
       propagateHumanResponseExpectation(updated, null);
     } else if (List.of(DETECTION, PREVENTION).contains(attackChainNodeExpectation.getType())) {
@@ -153,7 +161,8 @@ public class AttackChainNodeExpectationService {
     // Keep only one result
     attackChainNodeExpectation.getResults().clear();
     addResult(attackChainNodeExpectation, input, result);
-    final Double score = computeScore(attackChainNodeExpectation.getResults(), attackChainNodeExpectation);
+    final Double score =
+        computeScore(attackChainNodeExpectation.getResults(), attackChainNodeExpectation);
     attackChainNodeExpectation.setScore(score);
   }
 
@@ -164,13 +173,15 @@ public class AttackChainNodeExpectationService {
     // Keep only one result
     attackChainNodeExpectation.getResults().clear();
     addResult(attackChainNodeExpectation, input, collector);
-    final Double score = computeScore(attackChainNodeExpectation.getResults(), attackChainNodeExpectation);
+    final Double score =
+        computeScore(attackChainNodeExpectation.getResults(), attackChainNodeExpectation);
     attackChainNodeExpectation.setScore(score);
     return attackChainNodeExpectation;
   }
 
   private void propagateHumanResponseExpectation(
-      @NotNull AttackChainNodeExpectation attackChainNodeExpectation, @Nullable final String result) {
+      @NotNull AttackChainNodeExpectation attackChainNodeExpectation,
+      @Nullable final String result) {
     // If the updated expectation was a player expectation, We have to update the team expectation
     // using player expectations (based on validation type)
     List<AttackChainNodeExpectation> expectations = new ArrayList<>();
@@ -184,11 +195,13 @@ public class AttackChainNodeExpectationService {
     // Security coverage job creation
     List<AttackChainRun> attackChainRuns = new ArrayList<>();
     attackChainRuns.add(attackChainNodeExpectation.getAttackChainNode().getAttackChainRun());
-    securityCoverageSendJobService.createOrUpdateCoverageSendJobForSimulationsIfReady(attackChainRuns);
+    securityCoverageSendJobService.createOrUpdateCoverageSendJobForSimulationsIfReady(
+        attackChainRuns);
   }
 
   private List<AttackChainNodeExpectation> propagateToPlayers(
-      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation, @Nullable final String result) {
+      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation,
+      @Nullable final String result) {
     // If I update the expectation team: What happens with children? -> update expectation score
     // for all children -> set score from AttackChainNodeExpectation
     List<AttackChainNodeExpectation> expectationsForPlayers =
@@ -206,10 +219,12 @@ public class AttackChainNodeExpectationService {
   }
 
   private List<AttackChainNodeExpectation> propagateToTeam(
-      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation, @Nullable final String result) {
+      @NotNull final AttackChainNodeExpectation attackChainNodeExpectation,
+      @Nullable final String result) {
     List<AttackChainNodeExpectation> expectationsForPlayers =
         getExpectationsPlayersForTeam(attackChainNodeExpectation);
-    List<AttackChainNodeExpectation> expectationForTeams = getExpectationTeams(attackChainNodeExpectation);
+    List<AttackChainNodeExpectation> expectationForTeams =
+        getExpectationTeams(attackChainNodeExpectation);
     computeScores(
         expectationsForPlayers,
         expectationForTeams,
@@ -225,9 +240,12 @@ public class AttackChainNodeExpectationService {
       @NotNull final ExpectationUpdateInput input) {
     String result =
         ExpectationType.label(
-            attackChainNodeExpectation.getType(), attackChainNodeExpectation.getExpectedScore(), input.getScore());
+            attackChainNodeExpectation.getType(),
+            attackChainNodeExpectation.getExpectedScore(),
+            input.getScore());
     addResult(attackChainNodeExpectation, input, result);
-    final Double score = computeScore(attackChainNodeExpectation.getResults(), attackChainNodeExpectation);
+    final Double score =
+        computeScore(attackChainNodeExpectation.getResults(), attackChainNodeExpectation);
     attackChainNodeExpectation.setScore(score);
   }
 
@@ -249,7 +267,8 @@ public class AttackChainNodeExpectationService {
     // Security coverage job creation
     List<AttackChainRun> attackChainRuns = new ArrayList<>();
     attackChainRuns.add(attackChainNodeExpectation.getAttackChainNode().getAttackChainRun());
-    securityCoverageSendJobService.createOrUpdateCoverageSendJobForSimulationsIfReady(attackChainRuns);
+    securityCoverageSendJobService.createOrUpdateCoverageSendJobForSimulationsIfReady(
+        attackChainRuns);
   }
 
   private List<AttackChainNodeExpectation> propagateToAsset(
@@ -257,8 +276,10 @@ public class AttackChainNodeExpectationService {
       @Nullable final Function<Double, NodeExpectationResult> addResult) {
     List<AttackChainNodeExpectation> expectationsForAgents =
         getExpectationsAgentsForAsset(attackChainNodeExpectation);
-    List<AttackChainNodeExpectation> expectationsForAssets = getExpectationsAssets(attackChainNodeExpectation);
-    computeScores(expectationsForAgents, expectationsForAssets, attackChainNodeExpectation, addResult);
+    List<AttackChainNodeExpectation> expectationsForAssets =
+        getExpectationsAssets(attackChainNodeExpectation);
+    computeScores(
+        expectationsForAgents, expectationsForAssets, attackChainNodeExpectation, addResult);
     return expectationsForAssets;
   }
 
@@ -270,7 +291,8 @@ public class AttackChainNodeExpectationService {
           getExpectationsAssetsForAssetGroup(attackChainNodeExpectation);
       List<AttackChainNodeExpectation> expectationForAssetGroups =
           getExpectationAssetGroups(attackChainNodeExpectation);
-      computeScores(expectationsForAssets, expectationForAssetGroups, attackChainNodeExpectation, addResult);
+      computeScores(
+          expectationsForAssets, expectationForAssetGroups, attackChainNodeExpectation, addResult);
       return expectationForAssetGroups;
     }
     return new ArrayList<>();
@@ -280,7 +302,8 @@ public class AttackChainNodeExpectationService {
 
   public AttackChainNodeExpectation updateAttackChainNodeExpectation(
       @NotBlank String expectationId, @Valid @NotNull AttackChainNodeExpectationUpdateInput input) {
-    AttackChainNodeExpectation attackChainNodeExpectation = this.findAttackChainNodeExpectation(expectationId);
+    AttackChainNodeExpectation attackChainNodeExpectation =
+        this.findAttackChainNodeExpectation(expectationId);
     Collector collector = this.collectorService.collector(input.getCollectorId());
 
     computeTechnicalExpectation(attackChainNodeExpectation, collector, input, false);
@@ -297,7 +320,8 @@ public class AttackChainNodeExpectationService {
     List<AttackChainNodeExpectation> attackChainNodeExpectations =
         fromIterable(this.attackChainNodeExpectationRepository.findAllById(inputs.keySet()));
     Map<String, AttackChainNodeExpectation> expectationsToUpdate =
-        attackChainNodeExpectations.stream().collect(Collectors.toMap(AttackChainNodeExpectation::getId, e -> e));
+        attackChainNodeExpectations.stream()
+            .collect(Collectors.toMap(AttackChainNodeExpectation::getId, e -> e));
 
     Collector collector =
         this.collectorService.collector(
@@ -311,7 +335,8 @@ public class AttackChainNodeExpectationService {
       String attackChainNodeExpectationId = entry.getKey();
       AttackChainNodeExpectationUpdateInput input = entry.getValue();
 
-      AttackChainNodeExpectation attackChainNodeExpectation = expectationsToUpdate.get(attackChainNodeExpectationId);
+      AttackChainNodeExpectation attackChainNodeExpectation =
+          expectationsToUpdate.get(attackChainNodeExpectationId);
       if (attackChainNodeExpectation == null) {
         log.error("Inject expectation not found for ID: {}", attackChainNodeExpectationId);
         continue;
@@ -327,14 +352,14 @@ public class AttackChainNodeExpectationService {
       boolean shouldPropagateLastNodeExpectationResult) {
     // Update attackChainNode expectation at agent level
     attackChainNodeExpectation =
-        this.computeAttackChainNodeExpectationForAgentOrAssetAgentless(attackChainNodeExpectation, input, collector);
-    AttackChainNodeExpectation updated = this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
+        this.computeAttackChainNodeExpectationForAgentOrAssetAgentless(
+            attackChainNodeExpectation, input, collector);
+    AttackChainNodeExpectation updated =
+        this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
     propagateTechnicalExpectation(
         updated,
         false,
-        shouldPropagateLastNodeExpectationResult
-            ? score -> updated.getResults().getLast()
-            : null);
+        shouldPropagateLastNodeExpectationResult ? score -> updated.getResults().getLast() : null);
   }
 
   // -- COMPUTE RESULTS FROM INJECT EXPECTATIONS --
@@ -413,7 +438,8 @@ public class AttackChainNodeExpectationService {
 
   // -- PREVENTION --
 
-  public List<AttackChainNodeExpectation> preventionExpectationsNotExpired(final Integer expirationTime) {
+  public List<AttackChainNodeExpectation> preventionExpectationsNotExpired(
+      final Integer expirationTime) {
     return this.attackChainNodeExpectationRepository.findAll(
         Specification.where(
             AttackChainNodeExpectationSpecification.type(PREVENTION)
@@ -424,7 +450,8 @@ public class AttackChainNodeExpectationService {
                         Instant.now().minus(expirationTime, ChronoUnit.MINUTES)))));
   }
 
-  public List<AttackChainNodeExpectation> preventionExpectationsNotFill(@NotBlank final String sourceId) {
+  public List<AttackChainNodeExpectation> preventionExpectationsNotFill(
+      @NotBlank final String sourceId) {
     return this.attackChainNodeExpectationRepository
         .findAll(Specification.where(AttackChainNodeExpectationSpecification.type(PREVENTION)))
         .stream()
@@ -454,7 +481,8 @@ public class AttackChainNodeExpectationService {
 
   // -- DETECTION --
 
-  public List<AttackChainNodeExpectation> detectionExpectationsNotExpired(final Integer expirationTime) {
+  public List<AttackChainNodeExpectation> detectionExpectationsNotExpired(
+      final Integer expirationTime) {
     return this.attackChainNodeExpectationRepository.findAll(
         Specification.where(
             AttackChainNodeExpectationSpecification.type(DETECTION)
@@ -465,7 +493,8 @@ public class AttackChainNodeExpectationService {
                         Instant.now().minus(expirationTime, ChronoUnit.MINUTES)))));
   }
 
-  public List<AttackChainNodeExpectation> detectionExpectationsNotFill(@NotBlank final String sourceId) {
+  public List<AttackChainNodeExpectation> detectionExpectationsNotFill(
+      @NotBlank final String sourceId) {
     return this.attackChainNodeExpectationRepository
         .findAll(Specification.where(AttackChainNodeExpectationSpecification.type(DETECTION)))
         .stream()
@@ -496,7 +525,8 @@ public class AttackChainNodeExpectationService {
 
   // -- MANUAL
 
-  public List<AttackChainNodeExpectation> manualExpectationsNotExpired(final Integer expirationTime) {
+  public List<AttackChainNodeExpectation> manualExpectationsNotExpired(
+      final Integer expirationTime) {
     return this.attackChainNodeExpectationRepository.findAll(
         Specification.where(
             AttackChainNodeExpectationSpecification.type(MANUAL)
@@ -507,7 +537,8 @@ public class AttackChainNodeExpectationService {
                         Instant.now().minus(expirationTime, ChronoUnit.MINUTES)))));
   }
 
-  public List<AttackChainNodeExpectation> manualExpectationsNotFill(@NotBlank final String sourceId) {
+  public List<AttackChainNodeExpectation> manualExpectationsNotFill(
+      @NotBlank final String sourceId) {
     return this.attackChainNodeExpectationRepository
         .findAll(Specification.where(AttackChainNodeExpectationSpecification.type(MANUAL)))
         .stream()
@@ -530,10 +561,11 @@ public class AttackChainNodeExpectationService {
 
   // -- BY TARGET TYPE
 
-  public List<AttackChainNodeExpectation> findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
-      @NotBlank final String attackChainNodeId,
-      @NotBlank final String targetId,
-      @NotBlank final String targetType) {
+  public List<AttackChainNodeExpectation>
+      findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
+          @NotBlank final String attackChainNodeId,
+          @NotBlank final String targetId,
+          @NotBlank final String targetType) {
     try {
       TargetType targetTypeEnum = TargetType.valueOf(targetType);
       return mergeExpectationResultsByExpectationType(
@@ -542,9 +574,14 @@ public class AttackChainNodeExpectationService {
                 this.findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
                     attackChainNodeId, targetId, "not applicable", targetType);
             case PLAYERS ->
-                attackChainNodeExpectationRepository.findAllByAttackChainNodeAndPlayer(attackChainNodeId, targetId);
-            case AGENT -> attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(attackChainNodeId, targetId);
-            case ASSETS -> attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(attackChainNodeId, targetId);
+                attackChainNodeExpectationRepository.findAllByAttackChainNodeAndPlayer(
+                    attackChainNodeId, targetId);
+            case AGENT ->
+                attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+                    attackChainNodeId, targetId);
+            case ASSETS ->
+                attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+                    attackChainNodeId, targetId);
             default ->
                 throw new RuntimeException(
                     "Target type "
@@ -556,22 +593,30 @@ public class AttackChainNodeExpectationService {
     }
   }
 
-  public List<AttackChainNodeExpectation> findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
-      @NotBlank final String attackChainNodeId,
-      @NotBlank final String targetId,
-      @NotBlank final String parentTargetId,
-      @NotBlank final String targetType) {
+  public List<AttackChainNodeExpectation>
+      findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
+          @NotBlank final String attackChainNodeId,
+          @NotBlank final String targetId,
+          @NotBlank final String parentTargetId,
+          @NotBlank final String targetType) {
     try {
       TargetType targetTypeEnum = TargetType.valueOf(targetType);
       return switch (targetTypeEnum) {
-        case TEAMS -> attackChainNodeExpectationRepository.findAllByAttackChainNodeAndTeam(attackChainNodeId, targetId);
+        case TEAMS ->
+            attackChainNodeExpectationRepository.findAllByAttackChainNodeAndTeam(
+                attackChainNodeId, targetId);
         case PLAYERS ->
             attackChainNodeExpectationRepository.findAllByAttackChainNodeAndTeamAndPlayer(
                 attackChainNodeId, parentTargetId, targetId);
-        case AGENT -> attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(attackChainNodeId, targetId);
-        case ASSETS -> attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(attackChainNodeId, targetId);
+        case AGENT ->
+            attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAgent(
+                attackChainNodeId, targetId);
+        case ASSETS ->
+            attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAsset(
+                attackChainNodeId, targetId);
         case ASSETS_GROUPS ->
-            attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(attackChainNodeId, targetId);
+            attackChainNodeExpectationRepository.findAllByAttackChainNodeAndAssetGroup(
+                attackChainNodeId, targetId);
         default ->
             throw new RuntimeException(
                 "Target type "
@@ -583,8 +628,9 @@ public class AttackChainNodeExpectationService {
     }
   }
 
-  private static List<AttackChainNodeExpectationAgentOutput> toAttackChainNodeExpectationAgentsOutput(
-      List<AttackChainNodeExpectation> attackChainNodeExpectations, String assetId) {
+  private static List<AttackChainNodeExpectationAgentOutput>
+      toAttackChainNodeExpectationAgentsOutput(
+          List<AttackChainNodeExpectation> attackChainNodeExpectations, String assetId) {
     return attackChainNodeExpectations.stream()
         .map(
             ie ->
@@ -605,12 +651,15 @@ public class AttackChainNodeExpectationService {
         .collect(Collectors.toList());
   }
 
-  public List<AttackChainNodeExpectationAgentOutput> findMergedExpectationsWithAgentsByAttackChainNodeAndAsset(
-      String attackChainNodeId, String assetId, String expectationType) {
+  public List<AttackChainNodeExpectationAgentOutput>
+      findMergedExpectationsWithAgentsByAttackChainNodeAndAsset(
+          String attackChainNodeId, String assetId, String expectationType) {
     List<AttackChainNodeExpectationAgentOutput> attackChainNodeExpectationAgentOutputs =
         toAttackChainNodeExpectationAgentsOutput(
             attackChainNodeExpectationRepository.findAllWithAgentsByAttackChainNodeAndAsset(
-                attackChainNodeId, assetId, AttackChainNodeExpectation.EXPECTATION_TYPE.valueOf(expectationType)),
+                attackChainNodeId,
+                assetId,
+                AttackChainNodeExpectation.EXPECTATION_TYPE.valueOf(expectationType)),
             assetId);
     attackChainNodeExpectationAgentOutputs.sort(
         Comparator.comparing(AttackChainNodeExpectationAgentOutput::getAgentName));
@@ -631,7 +680,8 @@ public class AttackChainNodeExpectationService {
       @NotBlank final Instant date,
       @NotBlank final String signatureType) {
     // Insert the signature for all agent and attackChainNode in one query
-    attackChainNodeExpectationRepository.insertSignature(signatureType, date.toString(), attackChainNodeId, agentId);
+    attackChainNodeExpectationRepository.insertSignature(
+        signatureType, date.toString(), attackChainNodeId, agentId);
   }
 
   /**
@@ -669,8 +719,8 @@ public class AttackChainNodeExpectationService {
       List<AttackChainNodeExpectation> expectations) {
     List<String> notCopiedSourceTypes = List.of(COLLECTOR);
 
-    HashMap<AttackChainNodeExpectation.EXPECTATION_TYPE, AttackChainNodeExpectation> electedExpectations =
-        new HashMap<>();
+    HashMap<AttackChainNodeExpectation.EXPECTATION_TYPE, AttackChainNodeExpectation>
+        electedExpectations = new HashMap<>();
     for (AttackChainNodeExpectation expectation : expectations) {
       if (!electedExpectations.containsKey(expectation.getType())) {
         electedExpectations.put(expectation.getType(), expectation);
@@ -710,7 +760,8 @@ public class AttackChainNodeExpectationService {
       return;
     }
 
-    final boolean isAtomicTesting = executableAttackChainNode.getInjection().getAttackChainNode().isAtomicTesting();
+    final boolean isAtomicTesting =
+        executableAttackChainNode.getInjection().getAttackChainNode().isAtomicTesting();
     final boolean isScheduledAttackChainNode = !executableAttackChainNode.isDirect();
 
     if (!isScheduledAttackChainNode && !isAtomicTesting) {
@@ -759,7 +810,8 @@ public class AttackChainNodeExpectationService {
                                                     expectationPropertiesConfig))))
                 .toList();
       } else {
-        final String attackChainRunId = executableAttackChainNode.getInjection().getAttackChainRun().getId();
+        final String attackChainRunId =
+            executableAttackChainNode.getInjection().getAttackChainRun().getId();
         // Create expectations for every enabled player in every team
         attackChainNodeExpectationsByUserAndTeam =
             teams.stream()
@@ -768,7 +820,10 @@ public class AttackChainNodeExpectationService {
                         team.getAttackChainRunTeamUsers().stream()
                             .filter(
                                 attackChainRunTeamUser ->
-                                    attackChainRunTeamUser.getAttackChainRun().getId().equals(attackChainRunId))
+                                    attackChainRunTeamUser
+                                        .getAttackChainRun()
+                                        .getId()
+                                        .equals(attackChainRunId))
                             .flatMap(
                                 attackChainRunTeamUser ->
                                     expectations.stream()
@@ -829,8 +884,8 @@ public class AttackChainNodeExpectationService {
    * <p>For technical expectations (PREVENTION, DETECTION, VULNERABILITY), results are only set when
    * an agent is assigned
    *
-   * <p>So in this function for all expected result we will set attackChainNodeExpectation.results[*].result
-   * = null
+   * <p>So in this function for all expected result we will set
+   * attackChainNodeExpectation.results[*].result = null
    *
    * @param attackChainNodeExpectations the list of expectations to initialize
    */
@@ -876,10 +931,11 @@ public class AttackChainNodeExpectationService {
   }
 
   /**
-   * Function used to check if the output contains vulnerabilities and update the related attackChainNode
-   * expectations with the result.
+   * Function used to check if the output contains vulnerabilities and update the related
+   * attackChainNode expectations with the result.
    *
-   * @param ctx the execution processing context containing the attackChainNode and agent information
+   * @param ctx the execution processing context containing the attackChainNode and agent
+   *     information
    * @param jsonNode the JSON node containing the output to check for vulnerabilities
    */
   public void matchesVulnerabilityExpectations(ExecutionProcessingContext ctx, JsonNode jsonNode) {
@@ -892,7 +948,8 @@ public class AttackChainNodeExpectationService {
     AttackChainNode attackChainNode = ctx.attackChainNode();
     Agent agent = ctx.agent();
 
-    List<AttackChainNodeExpectation> expectations = fetchVulnerabilityExpectations(attackChainNode, agent);
+    List<AttackChainNodeExpectation> expectations =
+        fetchVulnerabilityExpectations(attackChainNode, agent);
 
     if (expectations.isEmpty()) {
       return;
@@ -909,11 +966,13 @@ public class AttackChainNodeExpectationService {
   }
 
   /**
-   * Function used to fetch attackChainNode expectations of type VULNERABILITY for a given attackChainNode and agent.
+   * Function used to fetch attackChainNode expectations of type VULNERABILITY for a given
+   * attackChainNode and agent.
    *
    * @param attackChainNode the attackChainNode for which to fetch the expectations
    * @param agent the agent for which to fetch the expectations
-   * @return the list of attackChainNode expectations of type VULNERABILITY for the given attackChainNode and agent
+   * @return the list of attackChainNode expectations of type VULNERABILITY for the given
+   *     attackChainNode and agent
    */
   private static List<AttackChainNodeExpectation> fetchVulnerabilityExpectations(
       AttackChainNode attackChainNode, Agent agent) {
@@ -934,14 +993,15 @@ public class AttackChainNodeExpectationService {
   }
 
   /**
-   * Function used to set the result of attackChainNode expectations of type VULNERABILITY with a label and a
-   * score.
+   * Function used to set the result of attackChainNode expectations of type VULNERABILITY with a
+   * label and a score.
    *
    * @param attackChainNodeExpectations the list of attackChainNode expectations to update
    * @param nodeExpectationResult the result to set for the attackChainNode expectations
    */
   public void validateResultForAsset(
-      List<AttackChainNodeExpectation> attackChainNodeExpectations, NodeExpectationResult nodeExpectationResult) {
+      List<AttackChainNodeExpectation> attackChainNodeExpectations,
+      NodeExpectationResult nodeExpectationResult) {
     attackChainNodeExpectations.forEach(
         attackChainNodeExpectation ->
             updateAttackChainNodeExpectation(

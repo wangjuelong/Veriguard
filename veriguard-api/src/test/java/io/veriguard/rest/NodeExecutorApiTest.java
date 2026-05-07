@@ -20,8 +20,8 @@ import io.veriguard.database.repository.NodeExecutorRepository;
 import io.veriguard.utils.AgentUtils;
 import io.veriguard.utils.HashUtils;
 import io.veriguard.utils.fixtures.AgentFixture;
-import io.veriguard.utils.fixtures.EndpointFixture;
 import io.veriguard.utils.fixtures.AttackChainNodeFixture;
+import io.veriguard.utils.fixtures.EndpointFixture;
 import io.veriguard.utils.fixtures.composers.*;
 import io.veriguard.utils.mockUser.WithMockUser;
 import jakarta.transaction.Transactional;
@@ -50,8 +50,8 @@ public class NodeExecutorApiTest extends IntegrationTest {
   @Autowired private ConnectorInstanceComposer connectorInstanceComposer;
   @Autowired private ConnectorInstanceConfigurationComposer connectorInstanceConfigurationComposer;
 
-  private ConnectorInstancePersisted getNodeExecutorInstance(String nodeExecutorId, String nodeExecutorName)
-      throws JsonProcessingException {
+  private ConnectorInstancePersisted getNodeExecutorInstance(
+      String nodeExecutorId, String nodeExecutorName) throws JsonProcessingException {
     return connectorInstanceComposer
         .forConnectorInstance(createDefaultConnectorInstance())
         .withCatalogConnector(
@@ -105,7 +105,8 @@ public class NodeExecutorApiTest extends IntegrationTest {
       assertThatJson(response)
           .inPath(path + ".catalog.catalog_connector_id")
           .isArray()
-          .containsExactly(connectorInstanceLinkToCreatedNodeExecutor.getCatalogConnector().getId());
+          .containsExactly(
+              connectorInstanceLinkToCreatedNodeExecutor.getCatalogConnector().getId());
 
       assertThatJson(response).inPath(path + ".is_verified").isArray().containsExactly(true);
     }
@@ -138,7 +139,8 @@ public class NodeExecutorApiTest extends IntegrationTest {
           .isArray()
           .containsExactlyInAnyOrderElementsOf(
               Stream.concat(
-                      existingNodeExecutors.stream().map(NodeExecutor::getId), Stream.of(pendingNodeExecutorId))
+                      existingNodeExecutors.stream().map(NodeExecutor::getId),
+                      Stream.of(pendingNodeExecutorId))
                   .toList());
       String path = "$[?(@.injector_id == '" + pendingNodeExecutorId + "')]";
 
@@ -240,7 +242,9 @@ public class NodeExecutorApiTest extends IntegrationTest {
     public void given_platformAndArch_then_downloadExecutableSucceeds(String platform, String arch)
         throws Exception {
       AttackChainNodeComposer.Composer attackChainNodeWrapper =
-          attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode()).persist();
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
+              .persist();
       AgentComposer.Composer agentWrapper =
           agentComposer.forAgent(AgentFixture.createDefaultAgentService());
       endpointComposer
@@ -286,7 +290,9 @@ public class NodeExecutorApiTest extends IntegrationTest {
     @MethodSource("platformArchCombinationsImplantFailure")
     public void given_platformAndArch_then_downloadExecutableFails(String platform, String arch) {
       AttackChainNodeComposer.Composer attackChainNodeWrapper =
-          attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode()).persist();
+          attackChainNodeComposer
+              .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
+              .persist();
       AgentComposer.Composer agentWrapper =
           agentComposer.forAgent(AgentFixture.createDefaultAgentService());
       endpointComposer

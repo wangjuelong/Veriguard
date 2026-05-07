@@ -26,9 +26,9 @@ import reactor.util.function.Tuples;
 /**
  * Helper component for attackChainNode operations and execution context building.
  *
- * <p>Provides methods for retrieving pending attackChainNodes, converting attackChainNodes to executable form, and
- * building execution contexts with team and user information. This component is central to the
- * attackChainNode execution pipeline.
+ * <p>Provides methods for retrieving pending attackChainNodes, converting attackChainNodes to
+ * executable form, and building execution contexts with team and user information. This component
+ * is central to the attackChainNode execution pipeline.
  *
  * @see io.veriguard.execution.ExecutableNode
  * @see io.veriguard.execution.ExecutionContext
@@ -45,9 +45,9 @@ public class AttackChainNodeHelper {
   /**
    * Retrieves the teams targeted by an attackChainNode.
    *
-   * <p>If the attackChainNode targets all teams, returns all teams from the attackChainRun. Otherwise, returns
-   * only the specifically targeted teams. Also initializes users within teams for player
-   * expectation processing.
+   * <p>If the attackChainNode targets all teams, returns all teams from the attackChainRun.
+   * Otherwise, returns only the specifically targeted teams. Also initializes users within teams
+   * for player expectation processing.
    *
    * @param attackChainNode the attackChainNode to get teams for
    * @return list of targeted teams with initialized users
@@ -72,7 +72,8 @@ public class AttackChainNodeHelper {
       List<Team> teams = getAttackChainNodeTeams(attackChainNode);
       // We get all the teams for this attackChainNode
       // But those team can be used in other attackChainRuns with different players enabled
-      // So we need to focus on team players only enabled in the context of the current attackChainRun
+      // So we need to focus on team players only enabled in the context of the current
+      // attackChainRun
       if (attackChainNode.isAtomicTesting()) {
         return teams.stream()
             .flatMap(team -> team.getUsers().stream().map(user -> Tuples.of(user, team.getName())));
@@ -114,13 +115,14 @@ public class AttackChainNodeHelper {
   /**
    * Retrieves all pending attackChainNodes within a time threshold.
    *
-   * <p>Finds attackChainNodes that are pending execution and scheduled within the specified number of
-   * minutes from now. Used for pre-loading upcoming attackChainNodes.
+   * <p>Finds attackChainNodes that are pending execution and scheduled within the specified number
+   * of minutes from now. Used for pre-loading upcoming attackChainNodes.
    *
    * @param thresholdMinutes the time window in minutes to look ahead
    * @return list of pending attackChainNodes scheduled within the threshold
    */
-  public List<AttackChainNode> getAllPendingAttackChainNodesWithThresholdMinutes(int thresholdMinutes) {
+  public List<AttackChainNode> getAllPendingAttackChainNodesWithThresholdMinutes(
+      int thresholdMinutes) {
     return this.attackChainNodeRepository.findAll(
         AttackChainNodeSpecification.pendingAttackChainNodeWithThresholdMinutes(thresholdMinutes));
   }
@@ -136,7 +138,8 @@ public class AttackChainNodeHelper {
         false,
         attackChainNode,
         getAttackChainNodeTeams(attackChainNode),
-        attackChainNode.getAssets(), // TODO There is also inefficient lazy loading inside this get function
+        attackChainNode
+            .getAssets(), // TODO There is also inefficient lazy loading inside this get function
         attackChainNode.getAssetGroups(),
         usersFromInjection(attackChainNode));
   }
@@ -144,8 +147,9 @@ public class AttackChainNodeHelper {
   /**
    * Retrieves all attackChainNodes that are ready for execution.
    *
-   * <p>Combines regular attackChainRun attackChainNodes and atomic testing attackChainNodes that are scheduled for now or
-   * earlier, converting them to executable form with all necessary context (teams, assets, users).
+   * <p>Combines regular attackChainRun attackChainNodes and atomic testing attackChainNodes that
+   * are scheduled for now or earlier, converting them to executable form with all necessary context
+   * (teams, assets, users).
    *
    * <p>This method runs in a transaction to ensure consistent data loading.
    *
@@ -154,7 +158,8 @@ public class AttackChainNodeHelper {
   @Transactional
   public List<ExecutableNode> getAttackChainNodesToRun() {
     // Get attackChainNodes
-    List<AttackChainNode> attackChainNodes = this.attackChainNodeRepository.findAll(AttackChainNodeSpecification.executable());
+    List<AttackChainNode> attackChainNodes =
+        this.attackChainNodeRepository.findAll(AttackChainNodeSpecification.executable());
     Stream<ExecutableNode> executableAttackChainNodes =
         attackChainNodes.stream()
             .filter(this::isBeforeOrEqualsNow)

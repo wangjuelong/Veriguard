@@ -38,7 +38,7 @@ public interface PayloadRepository
       @Param("payloadExternalIds") List<String> payloadExternalIds);
 
   @Query(
-      """
+"""
     SELECT dr
     FROM AttackChainNode inj
     JOIN inj.nodeContract ic
@@ -46,5 +46,6 @@ public interface PayloadRepository
     JOIN DetectionRemediation dr ON dr.payload = p
     WHERE inj.id = :attackChainNodeId
 """)
-  List<DetectionRemediation> fetchDetectionRemediationsByAttackChainNodeId(String attackChainNodeId);
+  List<DetectionRemediation> fetchDetectionRemediationsByAttackChainNodeId(
+      String attackChainNodeId);
 }

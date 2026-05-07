@@ -9,8 +9,8 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.model.AttackChainNodeImporter;
+import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.repository.EndpointRepository;
 import io.veriguard.database.repository.ImportMapperRepository;
 import io.veriguard.database.repository.NodeContractRepository;
@@ -72,8 +72,10 @@ public class MapperServiceTest extends IntegrationTest {
         importMapper.getAttackChainNodeImporters().stream()
             .map(
                 attackChainNodeImporter -> {
-                  AttackChainNodeImporterAddInput attackChainNodeImporterAddInput = new AttackChainNodeImporterAddInput();
-                  attackChainNodeImporterAddInput.setAttackChainNodeTypeValue(attackChainNodeImporter.getImportTypeValue());
+                  AttackChainNodeImporterAddInput attackChainNodeImporterAddInput =
+                      new AttackChainNodeImporterAddInput();
+                  attackChainNodeImporterAddInput.setAttackChainNodeTypeValue(
+                      attackChainNodeImporter.getImportTypeValue());
                   attackChainNodeImporterAddInput.setNodeContractId(
                       attackChainNodeImporter.getNodeContract().getId());
 
@@ -123,9 +125,12 @@ public class MapperServiceTest extends IntegrationTest {
     ImportMapper capturedImportMapper = importMapperCaptor.getValue();
     // verify importMapper
     assertEquals(duplicateString(importMapper.getName()), capturedImportMapper.getName());
-    assertEquals(importMapper.getAttackChainNodeTypeColumn(), capturedImportMapper.getAttackChainNodeTypeColumn());
     assertEquals(
-        importMapper.getAttackChainNodeImporters().size(), capturedImportMapper.getAttackChainNodeImporters().size());
+        importMapper.getAttackChainNodeTypeColumn(),
+        capturedImportMapper.getAttackChainNodeTypeColumn());
+    assertEquals(
+        importMapper.getAttackChainNodeImporters().size(),
+        capturedImportMapper.getAttackChainNodeImporters().size());
     // verify attackChainNodeImporter
     assertEquals("", capturedImportMapper.getAttackChainNodeImporters().get(0).getId());
     assertEquals(
@@ -136,10 +141,21 @@ public class MapperServiceTest extends IntegrationTest {
         capturedImportMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().size());
     // verify ruleAttribute
     assertEquals(
-        "", capturedImportMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().get(0).getId());
+        "",
+        capturedImportMapper
+            .getAttackChainNodeImporters()
+            .get(0)
+            .getRuleAttributes()
+            .get(0)
+            .getId());
     assertEquals(
         importMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().get(0).getName(),
-        capturedImportMapper.getAttackChainNodeImporters().get(0).getRuleAttributes().get(0).getName());
+        capturedImportMapper
+            .getAttackChainNodeImporters()
+            .get(0)
+            .getRuleAttributes()
+            .get(0)
+            .getName());
 
     assertEquals(response.getId(), importMapperSaved.getId());
   }
@@ -158,7 +174,8 @@ public class MapperServiceTest extends IntegrationTest {
                 attackChainNodeImporter -> {
                   AttackChainNodeImporterUpdateInput attackChainNodeImporterUpdateInput =
                       new AttackChainNodeImporterUpdateInput();
-                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(attackChainNodeImporter.getImportTypeValue());
+                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(
+                      attackChainNodeImporter.getImportTypeValue());
                   attackChainNodeImporterUpdateInput.setNodeContractId(
                       attackChainNodeImporter.getNodeContract().getId());
 
@@ -212,7 +229,8 @@ public class MapperServiceTest extends IntegrationTest {
                 attackChainNodeImporter -> {
                   AttackChainNodeImporterUpdateInput attackChainNodeImporterUpdateInput =
                       new AttackChainNodeImporterUpdateInput();
-                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(attackChainNodeImporter.getImportTypeValue());
+                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(
+                      attackChainNodeImporter.getImportTypeValue());
                   attackChainNodeImporterUpdateInput.setNodeContractId(
                       attackChainNodeImporter.getNodeContract().getId());
                   attackChainNodeImporterUpdateInput.setId(attackChainNodeImporter.getId());
@@ -267,7 +285,8 @@ public class MapperServiceTest extends IntegrationTest {
                 attackChainNodeImporter -> {
                   AttackChainNodeImporterUpdateInput attackChainNodeImporterUpdateInput =
                       new AttackChainNodeImporterUpdateInput();
-                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(attackChainNodeImporter.getImportTypeValue());
+                  attackChainNodeImporterUpdateInput.setAttackChainNodeTypeValue(
+                      attackChainNodeImporter.getImportTypeValue());
                   attackChainNodeImporterUpdateInput.setNodeContractId(
                       attackChainNodeImporter.getNodeContract().getId());
                   attackChainNodeImporterUpdateInput.setId(attackChainNodeImporter.getId());

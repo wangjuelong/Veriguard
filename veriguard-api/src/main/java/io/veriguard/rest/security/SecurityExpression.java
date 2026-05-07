@@ -35,7 +35,8 @@ public class SecurityExpression extends SecurityExpressionRoot
   }
 
   private VeriguardPrincipal getUser() {
-    return (VeriguardPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return (VeriguardPrincipal)
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
   }
 
   public boolean isAdmin() {
@@ -109,7 +110,8 @@ public class SecurityExpression extends SecurityExpressionRoot
     if (isUserHasBypass()) {
       return true;
     }
-    AttackChainRun attackChainRun = attackChainRunRepository.findById(attackChainRunId).orElseThrow();
+    AttackChainRun attackChainRun =
+        attackChainRunRepository.findById(attackChainRunId).orElseThrow();
     List<User> players = attackChainRun.getUsers();
     Optional<User> player =
         players.stream().filter(user -> user.getId().equals(getUser().getId())).findAny();

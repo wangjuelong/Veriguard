@@ -7,8 +7,8 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.veriguard.database.model.Endpoint;
 import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.Endpoint;
 import io.veriguard.rest.asset.endpoint.form.EndpointInput;
 import io.veriguard.rest.attack_chain_node.service.ContractOutputContext;
 import io.veriguard.rest.attack_chain_node.service.ExecutionProcessingContext;

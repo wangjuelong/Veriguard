@@ -263,10 +263,12 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
       List<AttackChainNodeExpectation> attackChainNodeExpectations =
           List.of(
               attackChainNodeExpectationRepository
-                  .findAllByAttackChainNodeAndAgent(savedAttackChainNode.getId(), savedAgent1.getId())
+                  .findAllByAttackChainNodeAndAgent(
+                      savedAttackChainNode.getId(), savedAgent1.getId())
                   .getFirst(),
               attackChainNodeExpectationRepository
-                  .findAllByAttackChainNodeAndAgent(savedAttackChainNode.getId(), savedAgent2.getId())
+                  .findAllByAttackChainNodeAndAgent(
+                      savedAttackChainNode.getId(), savedAgent2.getId())
                   .getFirst());
 
       attackChainNodeExpectations.forEach(
@@ -353,13 +355,16 @@ public class ExpectationsExpirationManagerServiceTest extends IntegrationTest {
       List<AttackChainNodeExpectation> attackChainNodeExpectations =
           List.of(
               attackChainNodeExpectationRepository
-                  .findAllByAttackChainNodeAndAgent(savedAttackChainNode.getId(), savedAgent1.getId())
+                  .findAllByAttackChainNodeAndAgent(
+                      savedAttackChainNode.getId(), savedAgent1.getId())
                   .getFirst(),
               attackChainNodeExpectationRepository
-                  .findAllByAttackChainNodeAndAgent(savedAttackChainNode.getId(), savedAgent2.getId())
+                  .findAllByAttackChainNodeAndAgent(
+                      savedAttackChainNode.getId(), savedAgent2.getId())
                   .getFirst());
 
-      List<String> ids = attackChainNodeExpectations.stream().map(AttackChainNodeExpectation::getId).toList();
+      List<String> ids =
+          attackChainNodeExpectations.stream().map(AttackChainNodeExpectation::getId).toList();
 
       attackChainNodeExpectationRepository.deleteAllById(ids);
 

@@ -23,8 +23,13 @@ public class TeamHelper {
   }
 
   private static Set<String> getAttackChainNodeTeamsIds(
-      final String teamId, Set<String> attackChainNodeIds, final AttackChainNodeRepository attackChainNodeRepository) {
-    Set<RawAttackChainNode> rawAttackChainNodeTeams = attackChainNodeRepository.findRawAttackChainNodeTeams(attackChainNodeIds, teamId);
-    return rawAttackChainNodeTeams.stream().map(RawAttackChainNode::getInject_id).collect(Collectors.toSet());
+      final String teamId,
+      Set<String> attackChainNodeIds,
+      final AttackChainNodeRepository attackChainNodeRepository) {
+    Set<RawAttackChainNode> rawAttackChainNodeTeams =
+        attackChainNodeRepository.findRawAttackChainNodeTeams(attackChainNodeIds, teamId);
+    return rawAttackChainNodeTeams.stream()
+        .map(RawAttackChainNode::getInject_id)
+        .collect(Collectors.toSet());
   }
 }

@@ -1,5 +1,7 @@
 package io.veriguard.engine.model;
 
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.annotation.EsQueryable;
 import io.veriguard.annotation.Indexable;
 import io.veriguard.annotation.Queryable;
@@ -16,8 +18,6 @@ import io.veriguard.engine.model.simulation.EsSimulation;
 import io.veriguard.engine.model.tag.EsTag;
 import io.veriguard.engine.model.team.EsTeam;
 import io.veriguard.engine.model.vulnerableendpoint.EsVulnerableEndpoint;
-import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,9 @@ import lombok.Setter;
       @DiscriminatorMapping(value = "endpoint", schema = EsEndpoint.class),
       @DiscriminatorMapping(value = "finding", schema = EsFinding.class),
       @DiscriminatorMapping(value = "inject", schema = EsAttackChainNode.class),
-      @DiscriminatorMapping(value = "expectation-inject", schema = EsAttackChainNodeExpectation.class),
+      @DiscriminatorMapping(
+          value = "expectation-inject",
+          schema = EsAttackChainNodeExpectation.class),
       @DiscriminatorMapping(value = "simulation", schema = EsSimulation.class),
       @DiscriminatorMapping(value = "scenario", schema = EsAttackChain.class),
       @DiscriminatorMapping(value = "tag", schema = EsTag.class),
@@ -81,7 +83,8 @@ public class EsBase {
 
   // To support logical side deletions, means "DELETE CASCADE", to set only if you want to delete
   // the linked object itself
-  // Example : I delete the attackChainNode Id-A, all objects which contain in their base_dependencies the
+  // Example : I delete the attackChainNode Id-A, all objects which contain in their
+  // base_dependencies the
   // Id-A will be entirely deleted
   // https://github.com/rieske/postgres-cdc could be an alternative.
   private List<String> base_dependencies = new ArrayList<>();

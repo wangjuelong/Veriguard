@@ -3,9 +3,9 @@ package io.veriguard.importer;
 import static io.veriguard.database.specification.NodeContractSpecification.byPayloadExternalId;
 import static io.veriguard.database.specification.NodeContractSpecification.byPayloadId;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
+import static io.veriguard.rest.attack_chain.export.AttackChainFileExport.SCENARIO_VARIABLES;
 import static io.veriguard.rest.attack_chain_run.exports.AttackChainRunFileExport.EXERCISE_VARIABLES;
 import static io.veriguard.rest.payload.PayloadUtils.buildPayload;
-import static io.veriguard.rest.attack_chain.export.AttackChainFileExport.SCENARIO_VARIABLES;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -18,10 +18,10 @@ import com.google.common.annotations.VisibleForTesting;
 import io.veriguard.database.model.*;
 import io.veriguard.database.model.AttackChain.SEVERITY;
 import io.veriguard.database.repository.*;
+import io.veriguard.rest.attack_chain_node.form.AttackChainEdgeInput;
+import io.veriguard.rest.attack_chain_run.exports.VariableWithValueMixin;
 import io.veriguard.rest.domain.DomainService;
 import io.veriguard.rest.domain.enums.PresetDomain;
-import io.veriguard.rest.attack_chain_run.exports.VariableWithValueMixin;
-import io.veriguard.rest.attack_chain_node.form.AttackChainEdgeInput;
 import io.veriguard.rest.injector_contract.NodeContractContentUtils;
 import io.veriguard.rest.payload.contract_output_element.ContractOutputElementInput;
 import io.veriguard.rest.payload.form.*;
@@ -124,11 +124,14 @@ public class V1_DataImporter implements Importer {
     }
     importTags(importNode, prefix, baseIds);
     AttackChainRun savedAttackChainRun =
-        Optional.ofNullable(importAttackChainRun(importNode, baseIds, suffix)).orElse(attackChainRun);
+        Optional.ofNullable(importAttackChainRun(importNode, baseIds, suffix))
+            .orElse(attackChainRun);
     AttackChain savedAttackChain =
         Optional.ofNullable(importAttackChain(importNode, baseIds, suffix)).orElse(attackChain);
-    importDocuments(importNode, prefix, docReferences, savedAttackChainRun, savedAttackChain, baseIds);
-    importDocument(importNode, prefix, docReferences, savedAttackChainRun, savedAttackChain, baseIds);
+    importDocuments(
+        importNode, prefix, docReferences, savedAttackChainRun, savedAttackChain, baseIds);
+    importDocument(
+        importNode, prefix, docReferences, savedAttackChainRun, savedAttackChain, baseIds);
 
     // Should be done after tags & documents
     if (prefix.equals("payload_")) {
@@ -140,7 +143,8 @@ public class V1_DataImporter implements Importer {
     importTeams(importNode, prefix, savedAttackChainRun, savedAttackChain, baseIds);
     importObjectives(importNode, prefix, savedAttackChainRun, savedAttackChain, baseIds);
     importLessons(importNode, prefix, savedAttackChainRun, savedAttackChain, baseIds);
-    importAttackChainNodes(importNode, prefix, savedAttackChainRun, savedAttackChain, asset, assetGroup, baseIds);
+    importAttackChainNodes(
+        importNode, prefix, savedAttackChainRun, savedAttackChain, asset, assetGroup, baseIds);
     importVariables(importNode, savedAttackChainRun, savedAttackChain, baseIds);
   }
 
@@ -314,7 +318,8 @@ public class V1_DataImporter implements Importer {
 
   // -- EXERCISE --
 
-  private AttackChainRun importAttackChainRun(JsonNode importNode, Map<String, Base> baseIds, String suffix) {
+  private AttackChainRun importAttackChainRun(
+      JsonNode importNode, Map<String, Base> baseIds, String suffix) {
     JsonNode attackChainRunNode = importNode.get("exercise_information");
     if (attackChainRunNode == null) {
       return null;
@@ -337,7 +342,8 @@ public class V1_DataImporter implements Importer {
 
   // -- SCENARIO --
 
-  private AttackChain importAttackChain(JsonNode importNode, Map<String, Base> baseIds, String suffix) {
+  private AttackChain importAttackChain(
+      JsonNode importNode, Map<String, Base> baseIds, String suffix) {
     JsonNode attackChainNode = importNode.get("scenario_information");
     if (attackChainNode == null) {
       return null;
@@ -357,7 +363,8 @@ public class V1_DataImporter implements Importer {
         .ifPresent(attackChain::setRecurrence);
     ofNullable(attackChainNode.get("scenario_recurrence_start"))
         .map(JsonNode::textValue)
-        .ifPresent(recurrenceStart -> attackChain.setRecurrenceStart(Instant.parse(recurrenceStart)));
+        .ifPresent(
+            recurrenceStart -> attackChain.setRecurrenceStart(Instant.parse(recurrenceStart)));
     ofNullable(attackChainNode.get("scenario_recurrence_end"))
         .map(JsonNode::textValue)
         .ifPresent(recurrenceEnd -> attackChain.setRecurrenceEnd(Instant.parse(recurrenceEnd)));
@@ -396,7 +403,8 @@ public class V1_DataImporter implements Importer {
           ImportEntry entry = docReferences.get(target);
 
           if (entry != null) {
-            handleDocumentWithEntry(nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
+            handleDocumentWithEntry(
+                nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
           }
         });
     // Handle argument documents
@@ -408,7 +416,8 @@ public class V1_DataImporter implements Importer {
           ImportEntry entry = docReferences.get(target);
 
           if (entry != null) {
-            handleDocumentWithEntry(nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
+            handleDocumentWithEntry(
+                nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
           }
         });
   }
@@ -431,7 +440,8 @@ public class V1_DataImporter implements Importer {
     if (target != null) {
       ImportEntry entry = docReferences.get(target);
       if (entry != null) {
-        handleDocumentWithEntry(nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
+        handleDocumentWithEntry(
+            nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, baseIds);
       }
     }
   }
@@ -447,9 +457,11 @@ public class V1_DataImporter implements Importer {
     Optional<Document> targetDocument = this.documentRepository.findByTarget(target);
 
     if (targetDocument.isPresent()) {
-      updateExistingDocument(nodeDoc, targetDocument.get(), savedAttackChainRun, savedAttackChain, baseIds);
+      updateExistingDocument(
+          nodeDoc, targetDocument.get(), savedAttackChainRun, savedAttackChain, baseIds);
     } else {
-      uploadNewDocument(nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, contentType, baseIds);
+      uploadNewDocument(
+          nodeDoc, entry, target, savedAttackChainRun, savedAttackChain, contentType, baseIds);
     }
   }
 
@@ -708,7 +720,8 @@ public class V1_DataImporter implements Importer {
         .forEach(
             nodeObjective -> {
               String id = nodeObjective.get("objective_id").textValue();
-              Objective objective = createObjective(nodeObjective, savedAttackChainRun, savedAttackChain);
+              Objective objective =
+                  createObjective(nodeObjective, savedAttackChainRun, savedAttackChain);
               baseIds.put(id, this.objectiveRepository.save(objective));
             });
   }
@@ -739,7 +752,8 @@ public class V1_DataImporter implements Importer {
             nodeLessonCategory -> {
               String id = nodeLessonCategory.get("lessonscategory_id").textValue();
               LessonsCategory lessonsCategory =
-                  createLessonsCategory(nodeLessonCategory, savedAttackChainRun, savedAttackChain, baseIds);
+                  createLessonsCategory(
+                      nodeLessonCategory, savedAttackChainRun, savedAttackChain, baseIds);
               baseIds.put(id, this.lessonsCategoryRepository.save(lessonsCategory));
             });
     resolveJsonElements(importNode, prefix + "lessons_questions")
@@ -865,16 +879,22 @@ public class V1_DataImporter implements Importer {
           String country = attackChainNodeNode.get("inject_country").textValue();
           String city = attackChainNodeNode.get("inject_city").textValue();
           boolean enabled =
-              ofNullable(attackChainNodeNode.get("inject_enabled")).map(JsonNode::booleanValue).orElse(true);
+              ofNullable(attackChainNodeNode.get("inject_enabled"))
+                  .map(JsonNode::booleanValue)
+                  .orElse(true);
           String nodeContractIdFromNode = null;
-          JsonNode attackChainNodeContractNode = attackChainNodeNode.get("inject_injector_contract");
+          JsonNode attackChainNodeContractNode =
+              attackChainNodeNode.get("inject_injector_contract");
           if (attackChainNodeContractNode != null && !attackChainNodeContractNode.isNull()) {
-            nodeContractIdFromNode = attackChainNodeContractNode.get("injector_contract_id").textValue();
+            nodeContractIdFromNode =
+                attackChainNodeContractNode.get("injector_contract_id").textValue();
           }
 
           // Check If attackChainNode contract exists
           if (nodeContractIdFromNode == null) {
-            log.warn("Import Inject Failed: Missing injector contract ID on inject: {}", attackChainNodeId);
+            log.warn(
+                "Import Inject Failed: Missing injector contract ID on inject: {}",
+                attackChainNodeId);
             return;
           }
           Optional<NodeContract> nodeContract =
@@ -915,21 +935,25 @@ public class V1_DataImporter implements Importer {
                 && attackChain.getDependencies() != null
                 && Arrays.asList(attackChain.getDependencies())
                     .contains(AttackChain.Dependency.STARTERPACK)) {
-              // if we are importing the starter pack, we will create the nodeExecutor contract so the
+              // if we are importing the starter pack, we will create the nodeExecutor contract so
+              // the
               // attackChainNodes are created before the nodeExecutor registered
               // once the nodeExecutor register the contract will be overriden and will be the one
               // provided by the nodeExecutor
               Payload createdPayload = nodeContract.map(ic -> ic.getPayload()).orElse(null);
               nodeContractId =
-                  importNodeContractFromStarterPack(attackChainNodeContractNode, createdPayload).getId();
+                  importNodeContractFromStarterPack(attackChainNodeContractNode, createdPayload)
+                      .getId();
             } else {
               log.warn(
-                  "Import Inject Failed: Unresolved injector contract ID on inject: {}", attackChainNodeId);
+                  "Import Inject Failed: Unresolved injector contract ID on inject: {}",
+                  attackChainNodeId);
             }
           }
 
           // If contract is not know, attackChainNode can't be imported
-          String content = handleAttackChainNodeContent(baseIds, nodeContractId, attackChainNodeNode);
+          String content =
+              handleAttackChainNodeContent(baseIds, nodeContractId, attackChainNodeNode);
           Long dependsDuration = attackChainNodeNode.get("inject_depends_duration").asLong();
           boolean allTeams = attackChainNodeNode.get("inject_all_teams").booleanValue();
           if (attackChainRun != null) {
@@ -975,9 +999,11 @@ public class V1_DataImporter implements Importer {
           originalIds.add(id);
 
           // Once the attackChainNode has been saved, we deal with the dependencies
-          ArrayNode attackChainNodeDependsOn = (ArrayNode) attackChainNodeNode.get("inject_depends_on");
+          ArrayNode attackChainNodeDependsOn =
+              (ArrayNode) attackChainNodeNode.get("inject_depends_on");
           for (JsonNode dependsOnNode : attackChainNodeDependsOn) {
-            // If there are dependencies where the added attackChainNode is the children, we add it to the
+            // If there are dependencies where the added attackChainNode is the children, we add it
+            // to the
             // database
             if (id.equals(
                 dependsOnNode.get("dependency_relationship").get("inject_children_id").asText())) {
@@ -986,15 +1012,23 @@ public class V1_DataImporter implements Importer {
 
               Optional<AttackChainNode> attackChainNodeParent =
                   attackChainNodeRepository.findById(
-                      baseIds.get(dependency.getRelationship().getAttackChainNodeParentId()).getId());
+                      baseIds
+                          .get(dependency.getRelationship().getAttackChainNodeParentId())
+                          .getId());
               Optional<AttackChainNode> attackChainNodeChildren =
                   attackChainNodeRepository.findById(
-                      baseIds.get(dependency.getRelationship().getAttackChainNodeChildrenId()).getId());
+                      baseIds
+                          .get(dependency.getRelationship().getAttackChainNodeChildrenId())
+                          .getId());
 
               if (attackChainNodeParent.isPresent() && attackChainNodeChildren.isPresent()) {
                 AttackChainEdge attackChainEdge = new AttackChainEdge();
-                attackChainEdge.getCompositeId().setAttackChainNodeParent(attackChainNodeParent.get());
-                attackChainEdge.getCompositeId().setAttackChainNodeChildren(attackChainNodeChildren.get());
+                attackChainEdge
+                    .getCompositeId()
+                    .setAttackChainNodeParent(attackChainNodeParent.get());
+                attackChainEdge
+                    .getCompositeId()
+                    .setAttackChainNodeChildren(attackChainNodeChildren.get());
                 attackChainEdge.setAttackChainEdgeCondition(dependency.getConditions());
                 attackChainEdgesRepository.save(attackChainEdge);
               }
@@ -1029,15 +1063,18 @@ public class V1_DataImporter implements Importer {
                 if (hasText(docId) && baseIds.get(docId) != null) {
                   String documentId = baseIds.get(docId).getId();
                   boolean docAttached = jsonNode.get("document_attached").booleanValue();
-                  attackChainNodeDocumentRepository.addAttackChainNodeDoc(attackChainNodeId, documentId, docAttached);
+                  attackChainNodeDocumentRepository.addAttackChainNodeDoc(
+                      attackChainNodeId, documentId, docAttached);
                 } else {
                   log.warn("Missing document in the exercise_documents property");
                 }
               });
 
           // Define default AssetsGroup or Assets
-          Optional<AttackChainNode> attackChainNodeOpt = attackChainNodeRepository.findById(attackChainNodeId);
-          if (attackChainNodeOpt.isPresent() && attackChainNodeOpt.get().getNodeContract().isPresent()) {
+          Optional<AttackChainNode> attackChainNodeOpt =
+              attackChainNodeRepository.findById(attackChainNodeId);
+          if (attackChainNodeOpt.isPresent()
+              && attackChainNodeOpt.get().getNodeContract().isPresent()) {
             AttackChainNode attackChainNode = attackChainNodeOpt.get();
             if (assetGroup != null
                 && nodeContractContentUtils.hasField(
@@ -1056,7 +1093,8 @@ public class V1_DataImporter implements Importer {
         allAttackChainNodes.stream()
             .filter(
                 jsonNode -> {
-                  ArrayNode attackChainNodeDependsOn = (ArrayNode) jsonNode.get("inject_depends_on");
+                  ArrayNode attackChainNodeDependsOn =
+                      (ArrayNode) jsonNode.get("inject_depends_on");
 
                   // We're getting the parents of this attackChainNode
                   List<String> parents =
@@ -1075,13 +1113,20 @@ public class V1_DataImporter implements Importer {
                 })
             .toList();
     if (!childAttackChainNodes.isEmpty()) {
-      importAttackChainNodes(baseIds, attackChainRun, attackChain, asset, assetGroup, childAttackChainNodes, allAttackChainNodes);
+      importAttackChainNodes(
+          baseIds,
+          attackChainRun,
+          attackChain,
+          asset,
+          assetGroup,
+          childAttackChainNodes,
+          allAttackChainNodes);
     }
   }
 
   /**
-   * Used to create a dummy nodeExecutor to be able to import nodeExecutor contract from the starterpack
-   * before the real contract is created by the real nodeExecutor
+   * Used to create a dummy nodeExecutor to be able to import nodeExecutor contract from the
+   * starterpack before the real contract is created by the real nodeExecutor
    *
    * @param importNode contract node
    * @return
@@ -1094,15 +1139,14 @@ public class V1_DataImporter implements Importer {
   }
 
   /**
-   * Import nodeExecutor contract from the starterpack before the real contract is created by the real
-   * nodeExecutor, this contract will be overriden
+   * Import nodeExecutor contract from the starterpack before the real contract is created by the
+   * real nodeExecutor, this contract will be overriden
    *
    * @param importNode contract node
    * @param payload to set on contract
    * @return
    */
-  private NodeContract importNodeContractFromStarterPack(
-      JsonNode importNode, Payload payload) {
+  private NodeContract importNodeContractFromStarterPack(JsonNode importNode, Payload payload) {
     NodeContract nodeContract = new NodeContract();
     nodeContract.setId(importNode.get("injector_contract_id").textValue());
     nodeContract.setCustom(false);

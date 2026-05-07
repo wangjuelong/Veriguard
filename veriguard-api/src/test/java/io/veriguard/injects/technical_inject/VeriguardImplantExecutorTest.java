@@ -38,7 +38,9 @@ import org.springframework.test.context.TestExecutionListeners;
     value = {RabbitMQTestListener.class},
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class VeriguardImplantExecutorTest extends IntegrationTest {
-  @Autowired private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
+  @Autowired
+  private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
+
   @Autowired private AttackChainNodeExpectationRepository attackChainNodeExpectationRepository;
 
   @Autowired private AttackChainNodeComposer attackChainNodeComposer;
@@ -91,8 +93,7 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
         .withNodeContract(
             nodeContractComposer
                 .forNodeContract(
-                    NodeContractFixture.createDefaultNodeContractWithExternalId(
-                        "external-id"))
+                    NodeContractFixture.createDefaultNodeContractWithExternalId("external-id"))
                 .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor()))
         .persist()
         .get();
@@ -101,7 +102,9 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
   private static Stream<Arguments> expectationTypeProvider() {
     return Stream.of(
         Arguments.of(
-            "detection", AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION, CollectorsUtils.CROWDSTRIKE),
+            "detection",
+            AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION,
+            CollectorsUtils.CROWDSTRIKE),
         Arguments.of(
             "vulnerability",
             AttackChainNodeExpectation.EXPECTATION_TYPE.VULNERABILITY,
@@ -145,7 +148,8 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
     veriguardImplantExecutor.process(execution, executableAttackChainNode);
 
     // -- ASSERT --
-    // Should have 4 attackChainNode expectations - 1 for asset group - 1 for the endpoint - 1 per agent
+    // Should have 4 attackChainNode expectations - 1 for asset group - 1 for the endpoint - 1 per
+    // agent
     List<AttackChainNodeExpectation> attackChainNodeExpectationList =
         attackChainNodeExpectationRepository.findAllByAttackChainNodeId(attackChainNode.getId());
     assertEquals(4, attackChainNodeExpectationList.size());
@@ -168,7 +172,8 @@ public class VeriguardImplantExecutorTest extends IntegrationTest {
             .toList();
     assertEquals(2, agentExpectations.size());
 
-    // AttackChainNodeExpectation.results.result should be set to null for all existing security platforms at
+    // AttackChainNodeExpectation.results.result should be set to null for all existing security
+    // platforms at
     // the agent level only.
     assertTrue(assetGroupExpectations.getFirst().getResults().isEmpty());
     assertTrue(endpointExpectations.getFirst().getResults().isEmpty());

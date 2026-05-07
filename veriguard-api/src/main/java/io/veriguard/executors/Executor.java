@@ -52,23 +52,28 @@ public class Executor {
   @Qualifier("coreInjectorService")
   private final NodeExecutorService nodeExecutorService;
 
-  private AttackChainNodeStatus executeExternal(ExecutableNode executableAttackChainNode, NodeExecutor nodeExecutor)
+  private AttackChainNodeStatus executeExternal(
+      ExecutableNode executableAttackChainNode, NodeExecutor nodeExecutor)
       throws IOException, TimeoutException {
     AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();
     String jsonAttackChainNode =
         mapper.writeValueAsString(
             executableAttackChainNodeDTOMapper.toExecutableNodeDTO(executableAttackChainNode));
     AttackChainNodeStatus attackChainNodeStatus =
-        this.attackChainNodeStatusRepository.findByAttackChainNodeId(attackChainNode.getId()).orElseThrow();
+        this.attackChainNodeStatusRepository
+            .findByAttackChainNodeId(attackChainNode.getId())
+            .orElseThrow();
 
-    queueService.publish(nodeExecutorService.getOriginNodeExecutorType(nodeExecutor.getType()), jsonAttackChainNode);
+    queueService.publish(
+        nodeExecutorService.getOriginNodeExecutorType(nodeExecutor.getType()), jsonAttackChainNode);
     attackChainNodeStatus.addInfoTrace(
         "The inject has been published and is now waiting to be consumed.",
         ExecutionTraceAction.EXECUTION);
     return this.attackChainNodeStatusRepository.save(attackChainNodeStatus);
   }
 
-  private AttackChainNodeStatus executeInternal(ExecutableNode executableAttackChainNode, NodeExecutor nodeExecutor) {
+  private AttackChainNodeStatus executeInternal(
+      ExecutableNode executableAttackChainNode, NodeExecutor nodeExecutor) {
     AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();
     io.veriguard.executors.NodeExecutor executor =
         managerFactory.getManager().requestNodeExecutorExecutorByType(nodeExecutor.getType());
@@ -78,8 +83,11 @@ public class Executor {
     // Injection status is filled after complete execution
     // Report attackChainNode execution
     AttackChainNodeStatus attackChainNodeStatus =
-        this.attackChainNodeStatusRepository.findByAttackChainNodeId(attackChainNode.getId()).orElseThrow();
-    AttackChainNodeStatus completeStatus = attackChainNodeStatusService.fromExecution(execution, attackChainNodeStatus);
+        this.attackChainNodeStatusRepository
+            .findByAttackChainNodeId(attackChainNode.getId())
+            .orElseThrow();
+    AttackChainNodeStatus completeStatus =
+        attackChainNodeStatusService.fromExecution(execution, attackChainNodeStatus);
     return attackChainNodeStatusRepository.save(completeStatus);
   }
 
@@ -102,7 +110,8 @@ public class Executor {
                             + nodeContract.getNodeExecutor().getType()));
 
     boolean hasStartedConnectorInstanceForNodeExecutor =
-        this.connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutor.getId());
+        this.connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(
+            nodeExecutor.getId());
     if (!hasStartedConnectorInstanceForNodeExecutor) {
       throw new IllegalStateException(
           "No started connector instance found for injector type: " + nodeExecutor.getType());
@@ -110,7 +119,8 @@ public class Executor {
 
     // Status
     AttackChainNodeStatus updatedStatus =
-        this.attackChainNodeStatusService.initializeAttackChainNodeStatus(attackChainNode.getId(), EXECUTING);
+        this.attackChainNodeStatusService.initializeAttackChainNodeStatus(
+            attackChainNode.getId(), EXECUTING);
     attackChainNode.setStatus(updatedStatus);
     if (Boolean.TRUE.equals(nodeContract.getNeedsExecutor())) {
       this.executionExecutorService.launchExecutorContext(attackChainNode);
@@ -122,7 +132,8 @@ public class Executor {
     }
   }
 
-  public AttackChainNodeStatus directExecute(ExecutableNode executableAttackChainNode) throws Exception {
+  public AttackChainNodeStatus directExecute(ExecutableNode executableAttackChainNode)
+      throws Exception {
     boolean isScheduledAttackChainNode = !executableAttackChainNode.isDirect();
     // If empty content, attackChainNode must be rejected
     AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();

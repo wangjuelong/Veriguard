@@ -40,7 +40,8 @@ public record Relationship(@NotNull Object data) {
   /**
    * Converts the relationship data to a single resource identifier.
    *
-   * <p>Use this method for to-one relationships (e.g., an attackChainNode belongs to one attackChainRun).
+   * <p>Use this method for to-one relationships (e.g., an attackChainNode belongs to one
+   * attackChainRun).
    *
    * @return the resource identifier, or {@code null} if data cannot be converted
    */

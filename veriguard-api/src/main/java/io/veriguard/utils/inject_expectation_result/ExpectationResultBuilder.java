@@ -6,11 +6,11 @@ import static io.veriguard.service.AttackChainNodeExpectationService.COLLECTOR;
 import static java.time.Instant.now;
 import static org.springframework.util.StringUtils.hasText;
 
-import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.AttackChainNodeExpectation;
+import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.NodeExpectationResult;
-import io.veriguard.rest.attack_chain_run.form.ExpectationUpdateInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationUpdateInput;
+import io.veriguard.rest.attack_chain_run.form.ExpectationUpdateInput;
 import io.veriguard.service.AttackChainNodeExpectationUtils;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -146,7 +146,8 @@ public final class ExpectationResultBuilder {
       @NotNull final AttackChainNodeExpectationUpdateInput input,
       @NotNull final Collector collector) {
     final double score =
-        AttackChainNodeExpectationUtils.computeScore(attackChainNodeExpectation, input.getIsSuccess());
+        AttackChainNodeExpectationUtils.computeScore(
+            attackChainNodeExpectation, input.getIsSuccess());
 
     NodeExpectationResult existing =
         findResultBySourceId(attackChainNodeExpectation.getResults(), collector.getId());
@@ -206,7 +207,8 @@ public final class ExpectationResultBuilder {
 
   public static NodeExpectationResult buildForMediaPressure(
       @NotNull final AttackChainNodeExpectation attackChainNodeExpectation) {
-    return buildForMediaPressure(Instant.now().toString(), attackChainNodeExpectation.getExpectedScore());
+    return buildForMediaPressure(
+        Instant.now().toString(), attackChainNodeExpectation.getExpectedScore());
   }
 
   public static NodeExpectationResult buildDefaultForMediaPressure() {
@@ -270,9 +272,7 @@ public final class ExpectationResultBuilder {
   // -- CLOSE --
 
   public static void expireEmptyResults(
-      @NotNull final List<NodeExpectationResult> results,
-      final Double score,
-      final String result) {
+      @NotNull final List<NodeExpectationResult> results, final Double score, final String result) {
     results.stream()
         .filter(r -> !hasText(r.getResult()))
         .forEach(

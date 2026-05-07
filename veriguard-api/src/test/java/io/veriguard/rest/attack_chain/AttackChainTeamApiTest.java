@@ -26,9 +26,9 @@ import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.database.repository.AttackChainTeamUserRepository;
 import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.database.repository.UserRepository;
+import io.veriguard.rest.attack_chain.form.AttackChainUpdateTeamsInput;
 import io.veriguard.rest.attack_chain_run.form.AttackChainRunTeamPlayersEnableInput;
 import io.veriguard.rest.attack_chain_run.form.AttackChainTeamPlayersEnableInput;
-import io.veriguard.rest.attack_chain.form.AttackChainUpdateTeamsInput;
 import io.veriguard.utils.fixtures.PaginationFixture;
 import io.veriguard.utils.fixtures.UserFixture;
 import io.veriguard.utils.mockUser.WithMockUser;
@@ -60,7 +60,8 @@ class AttackChainTeamApiTest extends IntegrationTest {
   @DisplayName("Given a valid scenario and team input, should add team to scenario successfully")
   @Test
   @WithMockUser(isAdmin = true)
-  void given_validAttackChainAndTeamInput_should_replaceTeamToAttackChainSuccessfully() throws Exception {
+  void given_validAttackChainAndTeamInput_should_replaceTeamToAttackChainSuccessfully()
+      throws Exception {
     // -- PREPARE --
     AttackChain attackChain = getAttackChain();
     Team teamToRemove = new Team();
@@ -108,7 +109,8 @@ class AttackChainTeamApiTest extends IntegrationTest {
     assertEquals(
         List.of(attackChainCreated.getId()), responseMap.get(TEAM_NAME).get("team_scenarios"));
 
-    Optional<AttackChain> attackChainSaved = this.attackChainRepository.findById(attackChainCreated.getId());
+    Optional<AttackChain> attackChainSaved =
+        this.attackChainRepository.findById(attackChainCreated.getId());
     assertTrue(attackChainSaved.isPresent());
     assertEquals(1, (long) attackChainSaved.get().getTeams().size());
     assertEquals(teamCreated.getId(), attackChainSaved.get().getTeams().getFirst().getId());
@@ -186,7 +188,8 @@ class AttackChainTeamApiTest extends IntegrationTest {
         fromIterable(this.attackChainTeamUserRepository.findAll());
     assertTrue(!attackChainTeamUsers.isEmpty());
     assertTrue(
-        attackChainTeamUsers.stream().anyMatch(s -> userCreated.getId().equals(s.getUser().getId())));
+        attackChainTeamUsers.stream()
+            .anyMatch(s -> userCreated.getId().equals(s.getUser().getId())));
   }
 
   @DisplayName(
@@ -244,7 +247,8 @@ class AttackChainTeamApiTest extends IntegrationTest {
   @DisplayName("Given a valid scenario with a team, should remove team from scenario successfully")
   @Test
   @WithMockUser(isAdmin = true)
-  void given_validAttackChainWithTeam_should_removeTeamFromAttackChainSuccessfully() throws Exception {
+  void given_validAttackChainWithTeam_should_removeTeamFromAttackChainSuccessfully()
+      throws Exception {
     // -- PREPARE --
     Team team = new Team();
     team.setName(TEAM_NAME);

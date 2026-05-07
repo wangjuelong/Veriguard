@@ -20,9 +20,9 @@ import org.hibernate.generator.EventType;
  *   <li>If no ID is set, a new random UUID is generated
  * </ul>
  *
- * <p>This is particularly useful for import attackChains where entities may already have assigned IDs
- * that should be retained (e.g., importing from another Veriguard instance or restoring backups),
- * while still supporting automatic generation for newly created entities.
+ * <p>This is particularly useful for import attackChains where entities may already have assigned
+ * IDs that should be retained (e.g., importing from another Veriguard instance or restoring
+ * backups), while still supporting automatic generation for newly created entities.
  *
  * <p>Usage: Apply the {@link io.veriguard.annotation.ControlledUuidGeneration} annotation to entity
  * ID fields.

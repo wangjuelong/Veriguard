@@ -36,7 +36,8 @@ class ConnectorInstanceServiceTest {
           .thenReturn(Optional.of(ConnectorInstance.CURRENT_STATUS_TYPE.started.name()));
 
       // Act
-      boolean result = connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
+      boolean result =
+          connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
 
       // Assert
       assertTrue(result);
@@ -51,7 +52,8 @@ class ConnectorInstanceServiceTest {
           .thenReturn(Optional.of(ConnectorInstance.CURRENT_STATUS_TYPE.stopped.name()));
 
       // Act
-      boolean result = connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
+      boolean result =
+          connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
 
       // Assert
       assertFalse(result);
@@ -66,7 +68,8 @@ class ConnectorInstanceServiceTest {
           .thenReturn(Optional.empty());
 
       // Act
-      boolean result = connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
+      boolean result =
+          connectorInstanceService.hasStartedConnectorInstanceForNodeExecutor(nodeExecutorId);
 
       // Assert
       assertTrue(result);

@@ -109,8 +109,8 @@ public class ConnectorInstanceService {
    * Checks whether a started connector instance exists for the given nodeExecutor.
    *
    * <p>Only applies to connectors persisted in the database. If no record is found, meaning the
-   * nodeExecutor was either deployed manually with no attached instance, or it is an nodeExecutor that
-   * starts automatically and cannot be stopped. {@code true} is returned to avoid blocking
+   * nodeExecutor was either deployed manually with no attached instance, or it is an nodeExecutor
+   * that starts automatically and cannot be stopped. {@code true} is returned to avoid blocking
    * executions. The same applies if any exception occurs.
    *
    * @param nodeExecutorId the nodeExecutor ID to look up
@@ -392,7 +392,10 @@ public class ConnectorInstanceService {
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("No token found for current user"));
     return createConfiguration(
-        "VERIGUARD_TOKEN", objectMapper.getNodeFactory().textNode(token.getValue()), false, instance);
+        "VERIGUARD_TOKEN",
+        objectMapper.getNodeFactory().textNode(token.getValue()),
+        false,
+        instance);
   }
 
   private ConnectorInstanceConfiguration createContainerIdConfiguration(

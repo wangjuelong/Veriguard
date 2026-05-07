@@ -1,5 +1,8 @@
 package io.veriguard.rest.inject_expectation_trace;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
@@ -13,9 +16,6 @@ import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.inject_expectation_trace.form.NodeExpectationTraceBulkInsertInput;
 import io.veriguard.rest.inject_expectation_trace.form.NodeExpectationTraceInput;
 import io.veriguard.service.NodeExpectationTraceService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
@@ -89,8 +89,7 @@ public class NodeExpectationTraceApi extends RestBehavior {
     if (inputs.getExpectationTraces().isEmpty()) {
       return;
     }
-    this.nodeExpectationTraceService.bulkInsertNodeExpectationTraces(
-        inputs.getExpectationTraces());
+    this.nodeExpectationTraceService.bulkInsertNodeExpectationTraces(inputs.getExpectationTraces());
   }
 
   @Operation(summary = "Get inject expectation traces from collector")

@@ -18,7 +18,8 @@ public class DocumentSpecification {
           root.join("scenarios").join("grants").join("group").join("users").get("id");
 
       return criteriaBuilder.or(
-          criteriaBuilder.equal(attackChainRunPath, userId), criteriaBuilder.equal(attackChainPath, userId));
+          criteriaBuilder.equal(attackChainRunPath, userId),
+          criteriaBuilder.equal(attackChainPath, userId));
     };
   }
 }

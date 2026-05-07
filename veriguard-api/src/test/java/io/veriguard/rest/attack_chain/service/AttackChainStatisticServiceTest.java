@@ -9,8 +9,8 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.database.raw.RawFinishedAttackChainRunWithAttackChainNodes;
 import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.expectation.ExpectationType;
-import io.veriguard.rest.attack_chain.response.GlobalScoreBySimulationEndDate;
 import io.veriguard.rest.attack_chain.response.AttackChainStatistic;
+import io.veriguard.rest.attack_chain.response.GlobalScoreBySimulationEndDate;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.fixtures.ExpectationResultsByTypeFixture;
 import java.time.Instant;
@@ -34,7 +34,8 @@ class AttackChainStatisticServiceTest extends IntegrationTest {
 
   @BeforeEach
   void setUp() {
-    attackChainStatisticService = new AttackChainStatisticService(attackChainRunRepository, resultUtils);
+    attackChainStatisticService =
+        new AttackChainStatisticService(attackChainRunRepository, resultUtils);
   }
 
   @Test
@@ -46,19 +47,26 @@ class AttackChainStatisticServiceTest extends IntegrationTest {
     String attackChainNodeId3 = "0f728b68-ec1f-4a5d-a2e5-53d897c7a7fd";
     String attackChainNodeId4 = "92b0531d-b32f-4a22-9bfd-65c773c30e61";
 
-    Set<String> attackChainRun1AttackChainNodeIds = Set.of(attackChainNodeId1, attackChainNodeId2, attackChainNodeId3);
+    Set<String> attackChainRun1AttackChainNodeIds =
+        Set.of(attackChainNodeId1, attackChainNodeId2, attackChainNodeId3);
     Set<String> attackChainRun2AttackChainNodeIds = Set.of(attackChainNodeId4);
 
     Instant attackChainRun1EndDate = Instant.parse("2023-12-12T10:15:30.00Z");
     Instant attackChainRun2EndDate = Instant.parse("2023-12-10T11:15:30.00Z");
 
     RawFinishedAttackChainRunWithAttackChainNodes rawFinishedAttackChainRunWithAttackChainNodes1 =
-        createDefaultRawFinishedAttackChainRunWithAttackChainNodes(attackChainRun1EndDate, attackChainRun1AttackChainNodeIds);
+        createDefaultRawFinishedAttackChainRunWithAttackChainNodes(
+            attackChainRun1EndDate, attackChainRun1AttackChainNodeIds);
     RawFinishedAttackChainRunWithAttackChainNodes rawFinishedAttackChainRunWithAttackChainNodes2 =
-        createDefaultRawFinishedAttackChainRunWithAttackChainNodes(attackChainRun2EndDate, attackChainRun2AttackChainNodeIds);
+        createDefaultRawFinishedAttackChainRunWithAttackChainNodes(
+            attackChainRun2EndDate, attackChainRun2AttackChainNodeIds);
 
-    when(attackChainRunRepository.rawLatestFinishedAttackChainRunsWithAttackChainNodesByAttackChainId(attackChainId))
-        .thenReturn(List.of(rawFinishedAttackChainRunWithAttackChainNodes1, rawFinishedAttackChainRunWithAttackChainNodes2));
+    when(attackChainRunRepository
+            .rawLatestFinishedAttackChainRunsWithAttackChainNodesByAttackChainId(attackChainId))
+        .thenReturn(
+            List.of(
+                rawFinishedAttackChainRunWithAttackChainNodes1,
+                rawFinishedAttackChainRunWithAttackChainNodes2));
 
     when(resultUtils.computeGlobalExpectationResults(attackChainRun1AttackChainNodeIds))
         .thenReturn(ExpectationResultsByTypeFixture.attackChainRun1GlobalScores);

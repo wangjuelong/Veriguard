@@ -35,7 +35,8 @@ public class ExpectationFixture {
     return expectation;
   }
 
-  public static Expectation createExpectation(AttackChainNodeExpectation.EXPECTATION_TYPE expectationType) {
+  public static Expectation createExpectation(
+      AttackChainNodeExpectation.EXPECTATION_TYPE expectationType) {
     return createExpectation(expectationType, "Expectation 1");
   }
 

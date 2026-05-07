@@ -51,7 +51,8 @@ public class AttackChainNodeStatusComposer extends ComposerBase<AttackChainNodeS
     }
   }
 
-  public AttackChainNodeStatusComposer.Composer forAttackChainNodeStatus(AttackChainNodeStatus attackChainNodeStatus) {
+  public AttackChainNodeStatusComposer.Composer forAttackChainNodeStatus(
+      AttackChainNodeStatus attackChainNodeStatus) {
     generatedItems.add(attackChainNodeStatus);
     return new AttackChainNodeStatusComposer.Composer(attackChainNodeStatus);
   }

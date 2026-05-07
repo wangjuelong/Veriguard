@@ -10,8 +10,8 @@ import java.util.Map;
 /**
  * Context object for processing an attackChainNode execution.
  *
- * <p>Holds references to the attackChainNode, agent, input, and targeted assets map. Provides utility
- * methods to determine execution status and type.
+ * <p>Holds references to the attackChainNode, agent, input, and targeted assets map. Provides
+ * utility methods to determine execution status and type.
  */
 public record ExecutionProcessingContext(
     AttackChainNode attackChainNode,

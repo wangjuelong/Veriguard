@@ -56,7 +56,8 @@ public class FullTextSearchService<T extends Base> {
             (Class<T>) Organization.class,
                 (JpaSpecificationExecutor<T>) this.organizationRepository,
             (Class<T>) AttackChain.class, (JpaSpecificationExecutor<T>) this.attackChainRepository,
-            (Class<T>) AttackChainRun.class, (JpaSpecificationExecutor<T>) this.attackChainRunRepository);
+            (Class<T>) AttackChainRun.class,
+                (JpaSpecificationExecutor<T>) this.attackChainRunRepository);
 
     this.searchListByClassMap =
         Map.of(

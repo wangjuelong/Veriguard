@@ -7,7 +7,8 @@ import io.veriguard.database.model.User;
 
 public class AttackChainRunTeamUserFixture {
 
-  public static AttackChainRunTeamUser createAttackChainRunTeamUser(AttackChainRun attackChainRun, Team team, User user) {
+  public static AttackChainRunTeamUser createAttackChainRunTeamUser(
+      AttackChainRun attackChainRun, Team team, User user) {
     AttackChainRunTeamUser attackChainRunTeamUser = new AttackChainRunTeamUser();
     attackChainRunTeamUser.setAttackChainRun(attackChainRun);
     attackChainRunTeamUser.setTeam(team);

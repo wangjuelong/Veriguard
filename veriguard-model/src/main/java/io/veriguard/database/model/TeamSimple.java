@@ -4,8 +4,8 @@ import static java.time.Instant.now;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.database.raw.RawTeam;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.database.raw.RawTeam;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -97,7 +97,8 @@ public class TeamSimple {
     return this.attackChainsAttackChainNodes.size();
   }
 
-  @JsonIgnore private List<AttackChainNodeExpectation> attackChainNodeExpectations = new ArrayList<>();
+  @JsonIgnore
+  private List<AttackChainNodeExpectation> attackChainNodeExpectations = new ArrayList<>();
 
   @JsonProperty("team_inject_expectations")
   @Schema(description = "List of expectation ids linked to this team")
@@ -173,7 +174,8 @@ public class TeamSimple {
     this.attackChainRunsAttackChainNodes =
         Optional.ofNullable(raw.getTeam_exercise_attackChainNodes()).orElse(new HashSet<>());
     this.contextual = raw.getTeam_contextual();
-    this.attackChainRuns = Optional.ofNullable(raw.getTeam_attackChainRuns()).orElse(new HashSet<>());
+    this.attackChainRuns =
+        Optional.ofNullable(raw.getTeam_attackChainRuns()).orElse(new HashSet<>());
     this.createdAt = raw.getTeam_created_at();
     this.description = raw.getTeam_description();
     this.updatedAt = raw.getTeam_updated_at();

@@ -34,7 +34,8 @@ public class FindingApi extends RestBehavior {
   public ResponseEntity<Finding> createFinding(
       @RequestBody @Valid @NotNull final FindingInput input) {
     return ResponseEntity.ok(
-        this.findingService.createFinding(input.toFinding(new Finding()), input.getAttackChainNodeId()));
+        this.findingService.createFinding(
+            input.toFinding(new Finding()), input.getAttackChainNodeId()));
   }
 
   @PutMapping("/{id}")

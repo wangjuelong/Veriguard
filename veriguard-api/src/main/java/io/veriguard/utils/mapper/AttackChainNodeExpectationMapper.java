@@ -9,15 +9,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.veriguard.database.model.AttackPattern;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeExpectation;
+import io.veriguard.database.model.AttackPattern;
 import io.veriguard.database.raw.RawAttackChainNodeExpectation;
 import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.rest.attack_chain_node.form.NodeExpectationResultsByAttackPattern;
-import io.veriguard.utils.NodeExpectationResultUtils;
 import io.veriguard.utils.AttackChainNodeUtils;
+import io.veriguard.utils.NodeExpectationResultUtils;
 import jakarta.validation.constraints.NotNull;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -29,9 +29,9 @@ import org.springframework.stereotype.Component;
 /**
  * Mapper component for processing and converting attackChainNode expectations.
  *
- * <p>Provides methods for extracting expectation results from various sources including attackChainNode
- * content, raw database queries, and entity objects. Handles the complex logic of building
- * expectation result aggregations by type.
+ * <p>Provides methods for extracting expectation results from various sources including
+ * attackChainNode content, raw database queries, and entity objects. Handles the complex logic of
+ * building expectation result aggregations by type.
  *
  * @see io.veriguard.database.model.AttackChainNodeExpectation
  * @see io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType
@@ -63,7 +63,8 @@ public class AttackChainNodeExpectationMapper {
   public <T> List<ExpectationResultsByType> extractExpectationResults(
       ObjectNode attackChainNodeContent,
       List<T> expectations,
-      BiFunction<List<AttackChainNodeExpectation.EXPECTATION_TYPE>, List<T>, List<Double>> scoreExtractor) {
+      BiFunction<List<AttackChainNodeExpectation.EXPECTATION_TYPE>, List<T>, List<Double>>
+          scoreExtractor) {
     List<ExpectationResultsByType> expectationResultByTypes =
         getExpectationResultByTypes(expectations, scoreExtractor);
 
@@ -108,7 +109,8 @@ public class AttackChainNodeExpectationMapper {
   }
 
   /**
-   * Build NodeExpectationResultsByAttackPattern from AttackChainNodeExpectation related to attackPatterns
+   * Build NodeExpectationResultsByAttackPattern from AttackChainNodeExpectation related to
+   * attackPatterns
    *
    * @param attackPattern
    * @param attackChainNodes
@@ -122,10 +124,8 @@ public class AttackChainNodeExpectationMapper {
             attackChainNodes.stream()
                 .map(
                     attackChainNode -> {
-                      NodeExpectationResultsByAttackPattern.NodeExpectationResultsByType
-                          result =
-                              new NodeExpectationResultsByAttackPattern
-                                  .NodeExpectationResultsByType();
+                      NodeExpectationResultsByAttackPattern.NodeExpectationResultsByType result =
+                          new NodeExpectationResultsByAttackPattern.NodeExpectationResultsByType();
                       result.setAttackChainNodeId(attackChainNode.getId());
                       result.setAttackChainNodeTitle(attackChainNode.getTitle());
                       result.setResults(
@@ -184,8 +184,10 @@ public class AttackChainNodeExpectationMapper {
   private List<ExpectationResultsByType> buildExpectationResultsFromAttackChainNodeContents(
       @NotNull Set<String> attackChainNodeIds) {
 
-    // Fetch all attackChainNode contents in order to extract expectations defined in every attackChainNode
-    List<String> rawContents = attackChainNodeRepository.findContentsByAttackChainNodeIds(attackChainNodeIds);
+    // Fetch all attackChainNode contents in order to extract expectations defined in every
+    // attackChainNode
+    List<String> rawContents =
+        attackChainNodeRepository.findContentsByAttackChainNodeIds(attackChainNodeIds);
     Set<ExpectationType> foundTypes = new HashSet<>();
 
     for (String contentJson : rawContents) {

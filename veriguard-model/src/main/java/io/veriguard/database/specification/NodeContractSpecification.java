@@ -24,8 +24,7 @@ public class NodeContractSpecification {
     };
   }
 
-  public static Specification<NodeContract> byPayloadExternalId(
-      final String payloadExternalId) {
+  public static Specification<NodeContract> byPayloadExternalId(final String payloadExternalId) {
     if (payloadExternalId == null || payloadExternalId.isEmpty()) {
       throw new IllegalArgumentException("Payload external ID must not be null or empty");
     }
@@ -40,15 +39,13 @@ public class NodeContractSpecification {
    * contracts without payload are always accessible. NodeExecutor contracts with payload are only
    * accessible if the user has at least OBSERVER grant on the payload OR the ACCESS capability on
    * payloads. Usage:
-   * myResourceSearchSpecification.and(SpecificationUtils.hasAccessToNodeContract(userId,
-   * isAdmin, hasCapaForClass)) Only works for NodeContract entities, return cb.conjunction()
-   * otherwise.
+   * myResourceSearchSpecification.and(SpecificationUtils.hasAccessToNodeContract(userId, isAdmin,
+   * hasCapaForClass)) Only works for NodeContract entities, return cb.conjunction() otherwise.
    *
    * @param currentUser current user performing the search
    * @return Specification for filtering NodeContracts based on user grants
    */
-  public static Specification<NodeContract> hasAccessToNodeContract(
-      final User currentUser) {
+  public static Specification<NodeContract> hasAccessToNodeContract(final User currentUser) {
     return (root, query, cb) -> {
       // If user bypasses grants entirely or has the specific capa for payloads, return all
       if (currentUser.isAdminOrBypass()

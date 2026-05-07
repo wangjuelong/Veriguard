@@ -3,8 +3,8 @@ package io.veriguard.rest.attack_chain.service;
 import io.veriguard.database.raw.RawFinishedAttackChainRunWithAttackChainNodes;
 import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.expectation.ExpectationType;
-import io.veriguard.rest.attack_chain.response.GlobalScoreBySimulationEndDate;
 import io.veriguard.rest.attack_chain.response.AttackChainStatistic;
+import io.veriguard.rest.attack_chain.response.GlobalScoreBySimulationEndDate;
 import io.veriguard.rest.attack_chain.response.SimulationsResultsLatest;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.NodeExpectationResultUtils.ResultDistribution;
@@ -43,9 +43,11 @@ public class AttackChainStatisticService {
   }
 
   private Map<ExpectationType, List<GlobalScoreBySimulationEndDate>>
-      getGlobalScoresByExpectationTypes(List<FinishedAttackChainRunWithAttackChainNodes> finishedAttackChainRuns) {
+      getGlobalScoresByExpectationTypes(
+          List<FinishedAttackChainRunWithAttackChainNodes> finishedAttackChainRuns) {
 
-    List<ExpectationTypeAndGlobalScore> allGlobalScores = getAllGlobalScores(finishedAttackChainRuns);
+    List<ExpectationTypeAndGlobalScore> allGlobalScores =
+        getAllGlobalScores(finishedAttackChainRuns);
 
     Map<ExpectationType, List<GlobalScoreBySimulationEndDate>> result = new HashMap<>();
 
@@ -62,12 +64,16 @@ public class AttackChainStatisticService {
 
   private List<ExpectationTypeAndGlobalScore> getAllGlobalScores(
       List<FinishedAttackChainRunWithAttackChainNodes> finishedAttackChainRuns) {
-    return finishedAttackChainRuns.stream().flatMap(this::getExpectationTypeAndGlobalScores).toList();
+    return finishedAttackChainRuns.stream()
+        .flatMap(this::getExpectationTypeAndGlobalScores)
+        .toList();
   }
 
   private Stream<ExpectationTypeAndGlobalScore> getExpectationTypeAndGlobalScores(
       FinishedAttackChainRunWithAttackChainNodes finishedAttackChainRun) {
-    return resultUtils.computeGlobalExpectationResults(finishedAttackChainRun.attackChainNodeIds()).stream()
+    return resultUtils
+        .computeGlobalExpectationResults(finishedAttackChainRun.attackChainNodeIds())
+        .stream()
         .map(
             expectationResultByType ->
                 getExpectationTypeAndGlobalScore(finishedAttackChainRun, expectationResultByType));
@@ -79,7 +85,8 @@ public class AttackChainStatisticService {
     return new ExpectationTypeAndGlobalScore(
         expectationResultByType.type(),
         new GlobalScoreBySimulationEndDate(
-            finishedAttackChainRun.endDate(), getPercentageOfAttackChainNodesOnSuccess(expectationResultByType)));
+            finishedAttackChainRun.endDate(),
+            getPercentageOfAttackChainNodesOnSuccess(expectationResultByType)));
   }
 
   private static List<GlobalScoreBySimulationEndDate> getGlobalScoresForExpectationType(
@@ -90,9 +97,11 @@ public class AttackChainStatisticService {
         .toList();
   }
 
-  private List<FinishedAttackChainRunWithAttackChainNodes> getOrderedFinishedAttackChainRuns(String attackChainId) {
+  private List<FinishedAttackChainRunWithAttackChainNodes> getOrderedFinishedAttackChainRuns(
+      String attackChainId) {
     List<RawFinishedAttackChainRunWithAttackChainNodes> rawFinishedAttackChainRuns =
-        attackChainRunRepository.rawLatestFinishedAttackChainRunsWithAttackChainNodesByAttackChainId(attackChainId);
+        attackChainRunRepository
+            .rawLatestFinishedAttackChainRunsWithAttackChainNodesByAttackChainId(attackChainId);
     return rawFinishedAttackChainRuns.stream()
         .map(
             attackChainRun ->
@@ -128,17 +137,20 @@ public class AttackChainStatisticService {
         .floatValue();
   }
 
-  private static int getNumberOfAttackChainNodesOnSuccess(ExpectationResultsByType expectationResultByType) {
+  private static int getNumberOfAttackChainNodesOnSuccess(
+      ExpectationResultsByType expectationResultByType) {
     return expectationResultByType.distribution().getFirst().value();
   }
 
-  private static int getTotalNumberOfAttackChainNodes(ExpectationResultsByType expectationResultByType) {
+  private static int getTotalNumberOfAttackChainNodes(
+      ExpectationResultsByType expectationResultByType) {
     return expectationResultByType.distribution().stream()
         .map(ResultDistribution::value)
         .reduce(0, Integer::sum);
   }
 
-  private record FinishedAttackChainRunWithAttackChainNodes(Instant endDate, Set<String> attackChainNodeIds)
+  private record FinishedAttackChainRunWithAttackChainNodes(
+      Instant endDate, Set<String> attackChainNodeIds)
       implements Comparable<FinishedAttackChainRunWithAttackChainNodes> {
     @Override
     public int compareTo(FinishedAttackChainRunWithAttackChainNodes attackChainRun) {

@@ -84,14 +84,21 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
 
   private AttackChainNode saveAttackChainNode(NodeContract nodeContract) {
     AttackChainNode attackChainNode =
-        AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, INJECTION_NAME, savedAsset);
+        AttackChainNodeFixture.createTechnicalAttackChainNode(
+            nodeContract, INJECTION_NAME, savedAsset);
     return attackChainNodeRepository.save(attackChainNode);
   }
 
   private ExecutableNode createExecutableNode(
       AttackChainNode savedAttackChainNode, List<AssetGroup> assetGroups) {
     return new ExecutableNode(
-        false, true, savedAttackChainNode, emptyList(), List.of(savedAsset), assetGroups, emptyList());
+        false,
+        true,
+        savedAttackChainNode,
+        emptyList(),
+        List.of(savedAsset),
+        assetGroups,
+        emptyList());
   }
 
   private Agent createAgent(String external01) {
@@ -111,7 +118,8 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
     // -- PREPARE --
     Agent savedAgent = createAgent("external01");
     AttackChainNode savedAttackChainNode = saveAttackChainNode(savedNodeContract);
-    ExecutableNode executableAttackChainNode = createExecutableNode(savedAttackChainNode, emptyList());
+    ExecutableNode executableAttackChainNode =
+        createExecutableNode(savedAttackChainNode, emptyList());
     List<Expectation> detectionExpectations =
         createDetectionExpectations(
             List.of(savedAgent), savedAsset, null, DEFAULT_TECHNICAL_EXPECTATION_EXPIRATION_TIME);
@@ -124,10 +132,12 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
             .toList();
 
     // -- EXECUTE --
-    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(executableAttackChainNode, expectations);
+    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+        executableAttackChainNode, expectations);
 
     // -- ASSERT --
-    assertEquals(4, attackChainNodeExpectationRepository.findAll().spliterator().getExactSizeIfKnown());
+    assertEquals(
+        4, attackChainNodeExpectationRepository.findAll().spliterator().getExactSizeIfKnown());
     assertEquals(
         2,
         attackChainNodeExpectationRepository
@@ -168,10 +178,12 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
             .toList();
 
     // -- EXECUTE --
-    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(executableAttackChainNode, expectations);
+    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+        executableAttackChainNode, expectations);
 
     // -- ASSERT --
-    assertEquals(6, attackChainNodeExpectationRepository.findAll().spliterator().getExactSizeIfKnown());
+    assertEquals(
+        6, attackChainNodeExpectationRepository.findAll().spliterator().getExactSizeIfKnown());
     assertEquals(
         2,
         attackChainNodeExpectationRepository
@@ -180,7 +192,8 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
     assertEquals(
         2,
         attackChainNodeExpectationRepository
-            .findAllByAttackChainNodeAndAssetGroup(savedAttackChainNode.getId(), savedAssetGroup.getId())
+            .findAllByAttackChainNodeAndAssetGroup(
+                savedAttackChainNode.getId(), savedAssetGroup.getId())
             .size());
     assertEquals(
         2,
@@ -196,7 +209,8 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
     Agent savedAgent = createAgent("external01");
     Agent savedAgent1 = createAgent("external02");
     AttackChainNode savedAttackChainNode = saveAttackChainNode(savedNodeContract);
-    ExecutableNode executableAttackChainNode = createExecutableNode(savedAttackChainNode, emptyList());
+    ExecutableNode executableAttackChainNode =
+        createExecutableNode(savedAttackChainNode, emptyList());
     List<Expectation> detectionExpectations =
         createDetectionExpectations(
             List.of(savedAgent, savedAgent1),
@@ -215,10 +229,12 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
             .toList();
 
     // -- EXECUTE --
-    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(executableAttackChainNode, expectations);
+    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+        executableAttackChainNode, expectations);
 
     // -- ASSERT --
-    assertEquals(6, attackChainNodeExpectationRepository.findAll().spliterator().getExactSizeIfKnown());
+    assertEquals(
+        6, attackChainNodeExpectationRepository.findAll().spliterator().getExactSizeIfKnown());
     assertEquals(
         2,
         attackChainNodeExpectationRepository
@@ -265,10 +281,12 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
             .toList();
 
     // -- EXECUTE --
-    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(executableAttackChainNode, expectations);
+    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+        executableAttackChainNode, expectations);
 
     // -- ASSERT --
-    assertEquals(8, attackChainNodeExpectationRepository.findAll().spliterator().getExactSizeIfKnown());
+    assertEquals(
+        8, attackChainNodeExpectationRepository.findAll().spliterator().getExactSizeIfKnown());
     assertEquals(
         2,
         attackChainNodeExpectationRepository
@@ -277,7 +295,8 @@ class AttackChainNodeExpectationServiceTest extends IntegrationTest {
     assertEquals(
         2,
         attackChainNodeExpectationRepository
-            .findAllByAttackChainNodeAndAssetGroup(savedAttackChainNode.getId(), savedAssetGroup.getId())
+            .findAllByAttackChainNodeAndAssetGroup(
+                savedAttackChainNode.getId(), savedAssetGroup.getId())
             .size());
     assertEquals(
         2,

@@ -7,8 +7,8 @@ import lombok.Setter;
 /**
  * Represents an icon image for a contractor/nodeExecutor.
  *
- * <p>Icons are displayed in the user interface to help identify different nodeExecutor types. The icon
- * data is provided as an InputStream, typically loaded from resources.
+ * <p>Icons are displayed in the user interface to help identify different nodeExecutor types. The
+ * icon data is provided as an InputStream, typically loaded from resources.
  *
  * <p>Example usage:
  *

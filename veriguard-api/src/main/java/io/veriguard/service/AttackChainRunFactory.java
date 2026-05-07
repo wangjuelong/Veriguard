@@ -38,7 +38,9 @@ public class AttackChainRunFactory {
 
   @Transactional(rollbackFor = Exception.class)
   public AttackChainRun toAttackChainRun(
-      @NotBlank final AttackChain attackChain, @Nullable final Instant start, final boolean isRunning) {
+      @NotBlank final AttackChain attackChain,
+      @Nullable final Instant start,
+      final boolean isRunning) {
     AttackChainRun attackChainRun = new AttackChainRun();
     attackChainRun.setAttackChain(attackChain);
     attackChainRun.setName(attackChain.getName());
@@ -73,7 +75,8 @@ public class AttackChainRunFactory {
 
     // Grants
     List<Grant> attackChainRunGrants =
-        grantService.duplicateGrants(attackChain.getGrants(), attackChainRunSaved.getId(), SIMULATION);
+        grantService.duplicateGrants(
+            attackChain.getGrants(), attackChainRunSaved.getId(), SIMULATION);
     attackChainRunSaved.setGrants(attackChainRunGrants);
 
     // Teams
@@ -167,11 +170,14 @@ public class AttackChainRunFactory {
                   .map(
                       attackChainLessonsQuestion -> {
                         LessonsQuestion attackChainRunLessonsQuestion = new LessonsQuestion();
-                        attackChainRunLessonsQuestion.setContent(attackChainLessonsQuestion.getContent());
+                        attackChainRunLessonsQuestion.setContent(
+                            attackChainLessonsQuestion.getContent());
                         attackChainRunLessonsQuestion.setExplanation(
                             attackChainLessonsQuestion.getExplanation());
-                        attackChainRunLessonsQuestion.setOrder(attackChainLessonsQuestion.getOrder());
-                        attackChainRunLessonsQuestion.setCategory(attackChainRunLessonCategorySaved);
+                        attackChainRunLessonsQuestion.setOrder(
+                            attackChainLessonsQuestion.getOrder());
+                        attackChainRunLessonsQuestion.setCategory(
+                            attackChainRunLessonCategorySaved);
                         return attackChainRunLessonsQuestion;
                       })
                   .toList();
@@ -180,39 +186,49 @@ public class AttackChainRunFactory {
 
     // AttackChainNodes
     List<AttackChainNode> attackChainAttackChainNodes = attackChain.getAttackChainNodes();
-    Map<String, AttackChainNode> mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode = new HashMap<>();
+    Map<String, AttackChainNode> mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode =
+        new HashMap<>();
     attackChainAttackChainNodes.forEach(
         attackChainAttackChainNode -> {
           AttackChainNode attackChainRunAttackChainNode = new AttackChainNode();
           attackChainRunAttackChainNode.setTitle(attackChainAttackChainNode.getTitle());
           attackChainRunAttackChainNode.setDescription(attackChainAttackChainNode.getDescription());
-          attackChainRunAttackChainNode.setNodeContract(attackChainAttackChainNode.getNodeContract().orElse(null));
+          attackChainRunAttackChainNode.setNodeContract(
+              attackChainAttackChainNode.getNodeContract().orElse(null));
           attackChainRunAttackChainNode.setCountry(attackChainAttackChainNode.getCountry());
           attackChainRunAttackChainNode.setCity(attackChainAttackChainNode.getCity());
           attackChainRunAttackChainNode.setEnabled(attackChainAttackChainNode.isEnabled());
           attackChainRunAttackChainNode.setAllTeams(attackChainAttackChainNode.isAllTeams());
           attackChainRunAttackChainNode.setAttackChainRun(attackChainRunSaved);
-          attackChainRunAttackChainNode.setDependsDuration(attackChainAttackChainNode.getDependsDuration());
+          attackChainRunAttackChainNode.setDependsDuration(
+              attackChainAttackChainNode.getDependsDuration());
           attackChainRunAttackChainNode.setUser(attackChainAttackChainNode.getUser());
-          attackChainRunAttackChainNode.setStatus(attackChainAttackChainNode.getStatus().orElse(null));
-          attackChainRunAttackChainNode.setTags(CopyObjectListUtils.copy(attackChainAttackChainNode.getTags(), Tag.class));
+          attackChainRunAttackChainNode.setStatus(
+              attackChainAttackChainNode.getStatus().orElse(null));
+          attackChainRunAttackChainNode.setTags(
+              CopyObjectListUtils.copy(attackChainAttackChainNode.getTags(), Tag.class));
           attackChainRunAttackChainNode.setContent(attackChainAttackChainNode.getContent());
 
           // 二开移除 Channel nodeExecutor — no contract-specific content remapping.
 
           // Teams
           List<Team> teams = new ArrayList<>();
-          attackChainAttackChainNode.getTeams().forEach(team -> teams.add(computeTeam(team, contextualTeams)));
+          attackChainAttackChainNode
+              .getTeams()
+              .forEach(team -> teams.add(computeTeam(team, contextualTeams)));
           attackChainRunAttackChainNode.setTeams(teams);
 
           // Assets & Asset Groups
           attackChainRunAttackChainNode.setAssets(
               CopyObjectListUtils.copy(attackChainAttackChainNode.getAssets(), Asset.class));
           attackChainRunAttackChainNode.setAssetGroups(
-              CopyObjectListUtils.copy(attackChainAttackChainNode.getAssetGroups(), AssetGroup.class));
-          AttackChainNode attackChainNodeSaved = this.attackChainNodeRepository.save(attackChainRunAttackChainNode);
+              CopyObjectListUtils.copy(
+                  attackChainAttackChainNode.getAssetGroups(), AssetGroup.class));
+          AttackChainNode attackChainNodeSaved =
+              this.attackChainNodeRepository.save(attackChainRunAttackChainNode);
 
-          mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode.put(attackChainAttackChainNode.getId(), attackChainNodeSaved);
+          mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode.put(
+              attackChainAttackChainNode.getId(), attackChainNodeSaved);
 
           // Documents
           List<AttackChainNodeDocument> attackChainRunAttackChainNodeDocuments = new ArrayList<>();
@@ -220,11 +236,15 @@ public class AttackChainRunFactory {
               .getDocuments()
               .forEach(
                   attackChainNodeDocument -> {
-                    AttackChainNodeDocument attackChainRunAttackChainNodeDocument = new AttackChainNodeDocument();
+                    AttackChainNodeDocument attackChainRunAttackChainNodeDocument =
+                        new AttackChainNodeDocument();
                     attackChainRunAttackChainNodeDocument.setAttackChainNode(attackChainNodeSaved);
-                    attackChainRunAttackChainNodeDocument.setDocument(attackChainNodeDocument.getDocument());
-                    attackChainRunAttackChainNodeDocument.setAttached(attackChainNodeDocument.isAttached());
-                    attackChainRunAttackChainNodeDocuments.add(attackChainRunAttackChainNodeDocument);
+                    attackChainRunAttackChainNodeDocument.setDocument(
+                        attackChainNodeDocument.getDocument());
+                    attackChainRunAttackChainNodeDocument.setAttached(
+                        attackChainNodeDocument.isAttached());
+                    attackChainRunAttackChainNodeDocuments.add(
+                        attackChainRunAttackChainNodeDocument);
                   });
           this.attackChainNodeDocumentRepository.saveAll(attackChainRunAttackChainNodeDocuments);
         });
@@ -233,7 +253,9 @@ public class AttackChainRunFactory {
     attackChainAttackChainNodes.forEach(
         attackChainAttackChainNode -> {
           if (attackChainAttackChainNode.getDependsOn() != null) {
-            AttackChainNode attackChainNodeToUpdate = mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode.get(attackChainAttackChainNode.getId());
+            AttackChainNode attackChainNodeToUpdate =
+                mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode.get(
+                    attackChainAttackChainNode.getId());
             attackChainNodeToUpdate.getDependsOn().clear();
             attackChainNodeToUpdate
                 .getDependsOn()
@@ -247,9 +269,13 @@ public class AttackChainRunFactory {
                                   attackChainEdge.getAttackChainEdgeCondition());
                               dep.getCompositeId()
                                   .setAttackChainNodeParent(
-                                      mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode.get(
-                                          dep.getCompositeId().getAttackChainNodeParent().getId()));
-                              dep.getCompositeId().setAttackChainNodeChildren(attackChainNodeToUpdate);
+                                      mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode
+                                          .get(
+                                              dep.getCompositeId()
+                                                  .getAttackChainNodeParent()
+                                                  .getId()));
+                              dep.getCompositeId()
+                                  .setAttackChainNodeChildren(attackChainNodeToUpdate);
                               return dep;
                             }))
                         .toList());

@@ -41,5 +41,6 @@ public interface AttackChainTeamUserRepository
   void deleteByAttackChainIdAndTeamIds(
       @Param("scenarioId") String attackChainId, @Param("teamIds") Collection<String> teamIds);
 
-  boolean existsByAttackChainIdAndTeamIdAndUserId(String attackChainId, String teamId, String userId);
+  boolean existsByAttackChainIdAndTeamIdAndUserId(
+      String attackChainId, String teamId, String userId);
 }

@@ -75,7 +75,8 @@ public interface EndpointRepository
           + "   OR (i.attackChainRun.id = :simulationOrAttackChainId"
           + "   OR i.attackChain.id = :simulationOrAttackChainId)"
           + " ) AND (:name IS NULL OR lower(a.name) LIKE lower(concat('%', cast(coalesce(:name, '') as string), '%')))")
-  List<Endpoint> findAllBySimulationOrAttackChainIdAndName(String simulationOrAttackChainId, String name);
+  List<Endpoint> findAllBySimulationOrAttackChainIdAndName(
+      String simulationOrAttackChainId, String name);
 
   @Query(
       value =
@@ -180,9 +181,11 @@ public interface EndpointRepository
 
   List<Endpoint> findDistinctByAttackChainNodesAttackChainId(String attackChainId);
 
-  List<Endpoint> findDistinctByAttackChainNodesAttackChainIdAndIdIn(String attackChainId, List<String> ids);
+  List<Endpoint> findDistinctByAttackChainNodesAttackChainIdAndIdIn(
+      String attackChainId, List<String> ids);
 
   List<Endpoint> findDistinctByAttackChainNodesAttackChainRunId(String attackChainRunId);
 
-  List<Endpoint> findDistinctByAttackChainNodesAttackChainRunIdAndIdIn(String attackChainRunId, List<String> ids);
+  List<Endpoint> findDistinctByAttackChainNodesAttackChainRunIdAndIdIn(
+      String attackChainRunId, List<String> ids);
 }

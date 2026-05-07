@@ -23,5 +23,6 @@ public interface ReportRepository
   Optional<ReportAttackChainNodeComment> findReportAttackChainNodeComment(
       @NotNull final UUID reportId, @NotNull final String attackChainNodeId);
 
-  Optional<Report> findByIdAndExercise_Id(@NotNull UUID reportId, @NotBlank String attackChainRunId);
+  Optional<Report> findByIdAndExercise_Id(
+      @NotNull UUID reportId, @NotBlank String attackChainRunId);
 }

@@ -8,13 +8,19 @@ import static io.veriguard.utils.SecurityUtils.validateJFrogUri;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
 import io.veriguard.rest.catalog_connector.dto.ConnectorIds;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
 import io.veriguard.rest.injector.form.NodeExecutorCreateInput;
 import io.veriguard.rest.injector.form.NodeExecutorOutput;
 import io.veriguard.rest.injector.form.NodeExecutorUpdateInput;
@@ -22,12 +28,6 @@ import io.veriguard.rest.injector.response.NodeExecutorRegistration;
 import io.veriguard.service.NodeExecutorService;
 import io.veriguard.utils.AgentUtils;
 import io.veriguard.utils.FilterUtilsJpa;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import java.io.BufferedInputStream;
@@ -60,7 +60,8 @@ public class NodeExecutorApi extends RestBehavior {
   @Value("${info.app.version:unknown}")
   String version;
 
-  @Value("${executor.veriguard-implant.binaries.origin:${executor.veriguard.binaries.origin:local}}")
+  @Value(
+      "${executor.veriguard-implant.binaries.origin:${executor.veriguard.binaries.origin:local}}")
   private String implantBinaryOrigin;
 
   @Value(
@@ -93,7 +94,8 @@ public class NodeExecutorApi extends RestBehavior {
       resourceId = "#injectorId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.INJECTOR)
-  public Collection<JsonNode> nodeExecutorAttackChainNodeTypes(@PathVariable String nodeExecutorId) {
+  public Collection<JsonNode> nodeExecutorAttackChainNodeTypes(
+      @PathVariable String nodeExecutorId) {
     NodeExecutor nodeExecutor =
         nodeExecutorRepository.findById(nodeExecutorId).orElseThrow(ElementNotFoundException::new);
     return fromIterable(nodeContractRepository.findNodeContractsByNodeExecutor(nodeExecutor))
@@ -136,7 +138,9 @@ public class NodeExecutorApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.INJECTOR)
   public NodeExecutor nodeExecutor(@PathVariable String nodeExecutorId) {
-    return nodeExecutorRepository.findById(nodeExecutorId).orElseThrow(ElementNotFoundException::new);
+    return nodeExecutorRepository
+        .findById(nodeExecutorId)
+        .orElseThrow(ElementNotFoundException::new);
   }
 
   @GetMapping(INJECT0R_URI + "/{injectorId}/related-ids")
@@ -178,7 +182,9 @@ public class NodeExecutorApi extends RestBehavior {
             Optional.ofNullable(architecture).map(String::toLowerCase).orElse(""));
     if (!AVAILABLE_PLATFORMS.contains(platform)) {
       this.attackChainNodeStatusService.setImplantErrorTrace(
-          attackChainNodeId, agentId, "Unable to download the implant. Platform invalid: " + platform);
+          attackChainNodeId,
+          agentId,
+          "Unable to download the implant. Platform invalid: " + platform);
     }
     if (!AVAILABLE_ARCHITECTURES.contains(architecture)) {
       this.attackChainNodeStatusService.setImplantErrorTrace(

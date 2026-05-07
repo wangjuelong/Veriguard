@@ -1,30 +1,28 @@
 package io.veriguard.rest.document;
 
-import static io.veriguard.config.VeriguardAnonymous.ANONYMOUS;
 import static io.veriguard.config.SessionHelper.currentUser;
+import static io.veriguard.config.VeriguardAnonymous.ANONYMOUS;
 import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
 import static io.veriguard.utils.mapper.DocumentMapper.toDocumentRelationsOutput;
 import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationJPA;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawDocument;
 import io.veriguard.database.raw.RawPaginationDocument;
 import io.veriguard.database.repository.*;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.document.form.DocumentCreateInput;
 import io.veriguard.rest.document.form.DocumentRelationsOutput;
 import io.veriguard.rest.document.form.DocumentTagUpdateInput;
 import io.veriguard.rest.document.form.DocumentUpdateInput;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.service.FileService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -300,15 +298,20 @@ public class DocumentApi extends RestBehavior {
                                 () -> new ElementNotFoundException("Current user not found"))))
             .map(AttackChainRun::getId);
     List<String> askAttackChainRunIds =
-        Stream.concat(askAttackChainRunIdsStream, input.getAttackChainRunIds().stream()).distinct().toList();
+        Stream.concat(askAttackChainRunIdsStream, input.getAttackChainRunIds().stream())
+            .distinct()
+            .toList();
     List<AttackChainRun> removedAttackChainRuns =
         document.getAttackChainRuns().stream()
             .filter(attackChainRun -> !askAttackChainRunIds.contains(attackChainRun.getId()))
             .toList();
-    document.setAttackChainRuns(iterableToSet(attackChainRunRepository.findAllById(askAttackChainRunIds)));
+    document.setAttackChainRuns(
+        iterableToSet(attackChainRunRepository.findAllById(askAttackChainRunIds)));
     // In case of attackChainRun removal, all attackChainNode doc attachment for attackChainRun
     removedAttackChainRuns.forEach(
-        attackChainRun -> attackChainNodeService.cleanAttackChainNodesDocAttackChainRun(attackChainRun.getId(), documentId));
+        attackChainRun ->
+            attackChainNodeService.cleanAttackChainNodesDocAttackChainRun(
+                attackChainRun.getId(), documentId));
 
     // Get removed attackChains
     Stream<String> askAttackChainIdsStream =
@@ -322,7 +325,9 @@ public class DocumentApi extends RestBehavior {
                                 () -> new ElementNotFoundException("Current user not found"))))
             .map(AttackChain::getId);
     List<String> askAttackChainIds =
-        Stream.concat(askAttackChainIdsStream, input.getAttackChainIds().stream()).distinct().toList();
+        Stream.concat(askAttackChainIdsStream, input.getAttackChainIds().stream())
+            .distinct()
+            .toList();
     List<AttackChain> removedAttackChains =
         document.getAttackChains().stream()
             .filter(attackChain -> !askAttackChainIds.contains(attackChain.getId()))
@@ -330,7 +335,9 @@ public class DocumentApi extends RestBehavior {
     document.setAttackChains(iterableToSet(attackChainRepository.findAllById(askAttackChainIds)));
     // In case of attackChain removal, all attackChainNode doc attachment for attackChain
     removedAttackChains.forEach(
-        attackChain -> attackChainNodeService.cleanAttackChainNodesDocAttackChain(attackChain.getId(), documentId));
+        attackChain ->
+            attackChainNodeService.cleanAttackChainNodesDocAttackChain(
+                attackChain.getId(), documentId));
 
     // Save and return
     return documentRepository.save(document);
@@ -360,8 +367,8 @@ public class DocumentApi extends RestBehavior {
 
   @GetMapping(value = "/api/images/injectors/{injectorType}", produces = MediaType.IMAGE_PNG_VALUE)
   @RBAC(skipRBAC = true)
-  public @ResponseBody ResponseEntity<byte[]> getNodeExecutorImage(@PathVariable String nodeExecutorType)
-      throws IOException {
+  public @ResponseBody ResponseEntity<byte[]> getNodeExecutorImage(
+      @PathVariable String nodeExecutorType) throws IOException {
     Optional<InputStream> fileStream = fileService.getNodeExecutorImage(nodeExecutorType);
     if (fileStream.isPresent()) {
       return ResponseEntity.ok()
@@ -486,14 +493,16 @@ public class DocumentApi extends RestBehavior {
 
   private List<Document> getAttackChainRunPlayerDocuments(AttackChainRun attackChainRun) {
     return attackChainRun.getAttackChainNodes().stream()
-        .flatMap(attackChainNode -> attackChainNode.getDocuments().stream().map(d -> d.getDocument()))
+        .flatMap(
+            attackChainNode -> attackChainNode.getDocuments().stream().map(d -> d.getDocument()))
         .distinct()
         .toList();
   }
 
   private List<Document> getAttackChainPlayerDocuments(AttackChain attackChain) {
     return attackChain.getAttackChainNodes().stream()
-        .flatMap(attackChainNode -> attackChainNode.getDocuments().stream().map(d -> d.getDocument()))
+        .flatMap(
+            attackChainNode -> attackChainNode.getDocuments().stream().map(d -> d.getDocument()))
         .distinct()
         .toList();
   }
@@ -524,8 +533,10 @@ public class DocumentApi extends RestBehavior {
   @RBAC(skipRBAC = true)
   public List<Document> playerDocuments(
       @PathVariable String attackChainRunOrAttackChainId, @RequestParam Optional<String> userId) {
-    Optional<AttackChainRun> attackChainRunOpt = this.attackChainRunRepository.findById(attackChainRunOrAttackChainId);
-    Optional<AttackChain> attackChainOpt = this.attackChainRepository.findById(attackChainRunOrAttackChainId);
+    Optional<AttackChainRun> attackChainRunOpt =
+        this.attackChainRunRepository.findById(attackChainRunOrAttackChainId);
+    Optional<AttackChain> attackChainOpt =
+        this.attackChainRepository.findById(attackChainRunOrAttackChainId);
 
     final User user = impersonateUser(userRepository, userId);
     if (user.getId().equals(ANONYMOUS)) {
@@ -557,8 +568,10 @@ public class DocumentApi extends RestBehavior {
       @RequestParam Optional<String> userId,
       HttpServletResponse response)
       throws IOException {
-    Optional<AttackChainRun> attackChainRunOpt = this.attackChainRunRepository.findById(attackChainRunOrAttackChainId);
-    Optional<AttackChain> attackChainOpt = this.attackChainRepository.findById(attackChainRunOrAttackChainId);
+    Optional<AttackChainRun> attackChainRunOpt =
+        this.attackChainRunRepository.findById(attackChainRunOrAttackChainId);
+    Optional<AttackChain> attackChainOpt =
+        this.attackChainRepository.findById(attackChainRunOrAttackChainId);
 
     final User user = impersonateUser(userRepository, userId);
     if (user.getId().equals(ANONYMOUS)) {

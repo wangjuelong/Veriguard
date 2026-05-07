@@ -12,8 +12,8 @@ import io.veriguard.execution.ExecutableNode;
 import io.veriguard.execution.ExecutionContext;
 import io.veriguard.execution.ExecutionContextService;
 import io.veriguard.integration.ManagerFactory;
-import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.attack_chain_node.output.AttackChainNodeTestStatusOutput;
+import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.utils.mapper.AttackChainNodeStatusMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import jakarta.persistence.EntityNotFoundException;
@@ -73,7 +73,8 @@ public class AttackChainNodeTestStatusService {
    */
   public List<AttackChainNodeTestStatusOutput> bulkTestAttackChainNodes(
       final Specification<AttackChainNode> searchSpecifications) {
-    List<AttackChainNode> searchResult = this.attackChainNodeRepository.findAll(searchSpecifications);
+    List<AttackChainNode> searchResult =
+        this.attackChainNodeRepository.findAll(searchSpecifications);
     if (searchResult.isEmpty()) {
       throw new BadRequestException("No inject ID is testable");
     }
@@ -83,8 +84,11 @@ public class AttackChainNodeTestStatusService {
             .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
     List<AttackChainNodeTestStatus> results = new ArrayList<>();
-    searchResult.forEach(attackChainNode -> results.add(testAttackChainNode(attackChainNode, user)));
-    return results.stream().map(attackChainNodeStatusMapper::toAttackChainNodeTestStatusOutput).toList();
+    searchResult.forEach(
+        attackChainNode -> results.add(testAttackChainNode(attackChainNode, user)));
+    return results.stream()
+        .map(attackChainNodeStatusMapper::toAttackChainNodeTestStatusOutput)
+        .toList();
   }
 
   public Page<AttackChainNodeTestStatusOutput> findAllAttackChainNodeTestsByAttackChainRunId(
@@ -92,7 +96,9 @@ public class AttackChainNodeTestStatusService {
     return buildPaginationJPA(
             (Specification<AttackChainNodeTestStatus> specification, Pageable pageable) ->
                 attackChainNodeTestStatusRepository.findAll(
-                    AttackChainNodeTestSpecification.findAttackChainNodeTestInAttackChainRun(attackChainRunId).and(specification),
+                    AttackChainNodeTestSpecification.findAttackChainNodeTestInAttackChainRun(
+                            attackChainRunId)
+                        .and(specification),
                     pageable),
             searchPaginationInput,
             AttackChainNodeTestStatus.class)
@@ -104,7 +110,9 @@ public class AttackChainNodeTestStatusService {
     return buildPaginationJPA(
             (Specification<AttackChainNodeTestStatus> specification, Pageable pageable) ->
                 attackChainNodeTestStatusRepository.findAll(
-                    AttackChainNodeTestSpecification.findAttackChainNodeTestInAttackChain(attackChainId).and(specification),
+                    AttackChainNodeTestSpecification.findAttackChainNodeTestInAttackChain(
+                            attackChainId)
+                        .and(specification),
                     pageable),
             searchPaginationInput,
             AttackChainNodeTestStatus.class)
@@ -117,7 +125,8 @@ public class AttackChainNodeTestStatusService {
   }
 
   // -- PRIVATE --
-  private AttackChainNodeTestStatus testAttackChainNode(AttackChainNode attackChainNode, User user) {
+  private AttackChainNodeTestStatus testAttackChainNode(
+      AttackChainNode attackChainNode, User user) {
     ExecutionContext userAttackChainNodeContext =
         this.executionContextService.executionContext(user, attackChainNode, "Direct test");
 
@@ -146,7 +155,8 @@ public class AttackChainNodeTestStatusService {
             .findByAttackChainNode(attackChainNode)
             .map(
                 existingStatus -> {
-                  AttackChainNodeTestStatus updatedStatus = AttackChainNodeTestStatus.fromExecutionTest(execution);
+                  AttackChainNodeTestStatus updatedStatus =
+                      AttackChainNodeTestStatus.fromExecutionTest(execution);
                   updatedStatus.setId(existingStatus.getId());
                   updatedStatus.setTestCreationDate(existingStatus.getTestCreationDate());
                   updatedStatus.setAttackChainNode(attackChainNode);
@@ -154,7 +164,8 @@ public class AttackChainNodeTestStatusService {
                 })
             .orElseGet(
                 () -> {
-                  AttackChainNodeTestStatus newStatus = AttackChainNodeTestStatus.fromExecutionTest(execution);
+                  AttackChainNodeTestStatus newStatus =
+                      AttackChainNodeTestStatus.fromExecutionTest(execution);
                   newStatus.setAttackChainNode(attackChainNode);
                   return newStatus;
                 });

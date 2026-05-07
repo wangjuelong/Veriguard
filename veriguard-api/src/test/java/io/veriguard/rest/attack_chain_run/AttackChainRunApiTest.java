@@ -21,14 +21,11 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.*;
 import io.veriguard.rest.attack_chain_run.form.*;
-import io.veriguard.rest.attack_chain_node.form.AttackChainNodeInput;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.fixtures.composers.*;
 import io.veriguard.utils.mockUser.WithMockUser;
 import io.veriguard.utilstest.RabbitMQTestListener;
-import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -127,7 +124,8 @@ public class AttackChainRunApiTest extends IntegrationTest {
 
     // -- ASSERT --
     String newAttackChainRunId = JsonPath.read(response, "$.exercise_id");
-    AttackChainRun newAttackChainRun = this.attackChainRunRepository.findById(newAttackChainRunId).orElseThrow();
+    AttackChainRun newAttackChainRun =
+        this.attackChainRunRepository.findById(newAttackChainRunId).orElseThrow();
     assertEquals(customDashboardSaved.getId(), newAttackChainRun.getCustomDashboard().getId());
   }
 
@@ -159,7 +157,8 @@ public class AttackChainRunApiTest extends IntegrationTest {
       attackChainRunTeamUser2.setAttackChainRun(attackChainRunSaved);
       attackChainRunTeamUser2.setTeam(teamB);
       attackChainRunTeamUser2.setUser(userBen);
-      attackChainRunTeamUserRepository.saveAll(Arrays.asList(attackChainRunTeamUser, attackChainRunTeamUser2));
+      attackChainRunTeamUserRepository.saveAll(
+          Arrays.asList(attackChainRunTeamUser, attackChainRunTeamUser2));
 
       mvc.perform(
               get(EXERCISE_URI + "/" + attackChainRunSaved.getId() + "/players")
@@ -181,12 +180,14 @@ public class AttackChainRunApiTest extends IntegrationTest {
       AttackChainRun attackChainRun1Saved = attackChainRunRepository.save(attackChainRun1);
       EXERCISE_IDS.add(attackChainRun1Saved.getId());
 
-      AttackChainRun attackChainRun2 = AttackChainRunFixture.createDefaultIncidentResponseAttackChainRun();
+      AttackChainRun attackChainRun2 =
+          AttackChainRunFixture.createDefaultIncidentResponseAttackChainRun();
       AttackChainRun attackChainRun2Saved = attackChainRunRepository.save(attackChainRun2);
       EXERCISE_IDS.add(attackChainRun2Saved.getId());
 
       AttackChainRunsGlobalScoresInput input =
-          new AttackChainRunsGlobalScoresInput(List.of(attackChainRun1Saved.getId(), attackChainRun2Saved.getId()));
+          new AttackChainRunsGlobalScoresInput(
+              List.of(attackChainRun1Saved.getId(), attackChainRun2Saved.getId()));
 
       String response =
           mvc.perform(
@@ -213,7 +214,8 @@ public class AttackChainRunApiTest extends IntegrationTest {
   @Test
   @DisplayName("Get scenario from exercise id")
   @WithMockUser(isAdmin = true)
-  void givenAttackChainRunId_whenGettingAttackChainFromExercise_thenReturnAttackChain() throws Exception {
+  void givenAttackChainRunId_whenGettingAttackChainFromExercise_thenReturnAttackChain()
+      throws Exception {
     AttackChain attackChain = AttackChainFixture.createDefaultCrisisAttackChain();
     AttackChain attackChainSaved = attackChainRepository.save(attackChain);
 
@@ -252,7 +254,9 @@ public class AttackChainRunApiTest extends IntegrationTest {
     tagRule.setAssetGroups(List.of(assetGroup));
     this.tagRuleRepository.save(tagRule);
 
-    AttackChainRun attackChainRun = this.attackChainRunRepository.save(AttackChainRunFixture.createDefaultCrisisAttackChainRun());
+    AttackChainRun attackChainRun =
+        this.attackChainRunRepository.save(
+            AttackChainRunFixture.createDefaultCrisisAttackChainRun());
 
     CheckAttackChainRunRulesInput input = new CheckAttackChainRunRulesInput();
     input.setNewTags(List.of(tag2.getId()));
@@ -285,7 +289,9 @@ public class AttackChainRunApiTest extends IntegrationTest {
     CheckAttackChainRunRulesInput input = new CheckAttackChainRunRulesInput();
     input.setNewTags(List.of(tag2.getId()));
 
-    AttackChainRun attackChainRun = this.attackChainRunRepository.save(AttackChainRunFixture.createDefaultCrisisAttackChainRun());
+    AttackChainRun attackChainRun =
+        this.attackChainRunRepository.save(
+            AttackChainRunFixture.createDefaultCrisisAttackChainRun());
 
     String response =
         this.mvc
@@ -409,20 +415,26 @@ public class AttackChainRunApiTest extends IntegrationTest {
       // -- ASSERT --
       // The link of attackChainRunA must have been deleted
       assertTrue(
-          attackChainRunTeamUserRepository.rawByAttackChainRunIds(List.of(attackChainRunASaved.getId())).isEmpty(),
+          attackChainRunTeamUserRepository
+              .rawByAttackChainRunIds(List.of(attackChainRunASaved.getId()))
+              .isEmpty(),
           "The link exercise-team-user of exerciseA should have been deleted");
 
       // The link of attackChainRunB must still exist
-      var linksB = attackChainRunTeamUserRepository.rawByAttackChainRunIds(List.of(attackChainRunBSaved.getId()));
+      var linksB =
+          attackChainRunTeamUserRepository.rawByAttackChainRunIds(
+              List.of(attackChainRunBSaved.getId()));
       assertEquals(1, linksB.size(), "The link exercise-team-user of exerciseB should be intact");
       assertEquals(sharedTeam.getId(), linksB.getFirst().getTeam_id());
 
       // attackChainRunA should not have any team anymore
-      List<Team> attackChainRunATeams = teamRepository.findAll(fromAttackChainRun(attackChainRunASaved.getId()));
+      List<Team> attackChainRunATeams =
+          teamRepository.findAll(fromAttackChainRun(attackChainRunASaved.getId()));
       assertTrue(attackChainRunATeams.isEmpty());
 
       // attackChainRunB should still have sharedTeam in its team list
-      List<Team> attackChainRunBTeams = teamRepository.findAll(fromAttackChainRun(attackChainRunBSaved.getId()));
+      List<Team> attackChainRunBTeams =
+          teamRepository.findAll(fromAttackChainRun(attackChainRunBSaved.getId()));
       assertEquals(1, attackChainRunBTeams.size());
       assertEquals(sharedTeam.getId(), attackChainRunBTeams.getFirst().getId());
     }

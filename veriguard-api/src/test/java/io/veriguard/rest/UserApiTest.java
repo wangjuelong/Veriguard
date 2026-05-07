@@ -15,9 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.Grant;
 import io.veriguard.database.model.Group;
-import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.User;
 import io.veriguard.database.repository.*;
 import io.veriguard.rest.user.form.login.LoginUserInput;
@@ -27,8 +27,8 @@ import io.veriguard.rest.user.form.user.CreateUserInput;
 import io.veriguard.rest.user.form.user.UpdateUserInput;
 import io.veriguard.service.MailingService;
 import io.veriguard.utils.RandomUtils;
-import io.veriguard.utils.fixtures.OrganizationFixture;
 import io.veriguard.utils.fixtures.AttackChainFixture;
+import io.veriguard.utils.fixtures.OrganizationFixture;
 import io.veriguard.utils.fixtures.TagFixture;
 import io.veriguard.utils.fixtures.UserFixture;
 import io.veriguard.utils.fixtures.composers.OrganizationComposer;
@@ -476,7 +476,8 @@ class UserApiTest extends IntegrationTest {
   void given_user_with_several_grant_on_same_resource_should_return_highest_grant()
       throws Exception {
 
-    AttackChain attackChain = attackChainRepository.save(AttackChainFixture.createDefaultCrisisAttackChain());
+    AttackChain attackChain =
+        attackChainRepository.save(AttackChainFixture.createDefaultCrisisAttackChain());
     User user = userRepository.save(UserFixture.getUser("test", "test", "test3@gmail.com"));
     Group group = new Group();
     group.setName("test");

@@ -16,21 +16,21 @@ import static java.util.Optional.ofNullable;
 
 import io.veriguard.config.VeriguardConfig;
 import io.veriguard.database.model.*;
-import io.veriguard.database.raw.RawAttackChainRunSimple;
 import io.veriguard.database.raw.RawAttackChainNodeExpectation;
+import io.veriguard.database.raw.RawAttackChainRunSimple;
 import io.veriguard.database.raw.RawSimulation;
 import io.veriguard.database.repository.*;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.rest.atomic_testing.form.TargetSimple;
-import io.veriguard.rest.document.DocumentService;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple;
-import io.veriguard.rest.attack_chain_run.form.AttackChainRunsGlobalScoresInput;
-import io.veriguard.rest.attack_chain_run.response.AttackChainRunsGlobalScoresOutput;
+import io.veriguard.rest.attack_chain.service.AttackChainStatisticService;
 import io.veriguard.rest.attack_chain_node.form.NodeExpectationResultsByAttackPattern;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeDuplicateService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
-import io.veriguard.rest.attack_chain.service.AttackChainStatisticService;
+import io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple;
+import io.veriguard.rest.attack_chain_run.form.AttackChainRunsGlobalScoresInput;
+import io.veriguard.rest.attack_chain_run.response.AttackChainRunsGlobalScoresOutput;
+import io.veriguard.rest.document.DocumentService;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.AttackChainRecurrenceService;
@@ -38,9 +38,9 @@ import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.TargetType;
-import io.veriguard.utils.mapper.AttackChainRunMapper;
 import io.veriguard.utils.mapper.AttackChainNodeExpectationMapper;
 import io.veriguard.utils.mapper.AttackChainNodeMapper;
+import io.veriguard.utils.mapper.AttackChainRunMapper;
 import io.veriguard.utils.pagination.SortUtilsCriteriaBuilder;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
@@ -162,7 +162,8 @@ public class AttackChainRunService {
         currentUser.isAdminOrBypass()
                 || currentUser.getCapabilities().contains(Capability.ACCESS_ASSESSMENT)
             ? attackChainRunRepository.rawByAttackChainRunIds(attackChainRunIds)
-            : attackChainRunRepository.rawGrantedByAttackChainRunIds(currentUser().getId(), attackChainRunIds);
+            : attackChainRunRepository.rawGrantedByAttackChainRunIds(
+                currentUser().getId(), attackChainRunIds);
     return attackChainRunMapper.getAttackChainRunSimples(attackChainRuns);
   }
 
@@ -175,12 +176,14 @@ public class AttackChainRunService {
   // -- DUPLICATION --
   @Transactional
   public AttackChainRun getDuplicateAttackChainRun(@NotBlank String attackChainRunId) {
-    AttackChainRun attackChainRunOrigin = attackChainRunRepository.findById(attackChainRunId).orElseThrow();
+    AttackChainRun attackChainRunOrigin =
+        attackChainRunRepository.findById(attackChainRunId).orElseThrow();
     AttackChainRun attackChainRun = copyExercice(attackChainRunOrigin);
     AttackChainRun attackChainRunDuplicate = attackChainRunRepository.save(attackChainRun);
     duplicateGrants(attackChainRunDuplicate, attackChainRunOrigin);
     getListOfDuplicatedAttackChainNodes(attackChainRunDuplicate, attackChainRunOrigin);
-    Map<String, Team> contextualTeams = getListOfAttackChainRunTeams(attackChainRunDuplicate, attackChainRunOrigin);
+    Map<String, Team> contextualTeams =
+        getListOfAttackChainRunTeams(attackChainRunDuplicate, attackChainRunOrigin);
     duplicateTeamUsers(attackChainRunDuplicate, attackChainRunOrigin, contextualTeams);
     getListOfVariables(attackChainRunDuplicate, attackChainRunOrigin);
     getObjectives(attackChainRunDuplicate, attackChainRunOrigin);
@@ -212,7 +215,9 @@ public class AttackChainRunService {
 
   public List<Document> getAttackChainRunPlayerDocuments(AttackChainRun attackChainRun) {
     return attackChainRun.getAttackChainNodes().stream()
-        .flatMap(attackChainNode -> attackChainNode.getDocuments().stream().map(AttackChainNodeDocument::getDocument))
+        .flatMap(
+            attackChainNode ->
+                attackChainNode.getDocuments().stream().map(AttackChainNodeDocument::getDocument))
         .distinct()
         .toList();
   }
@@ -274,18 +279,24 @@ public class AttackChainRunService {
     return contextualTeams;
   }
 
-  private void getListOfDuplicatedAttackChainNodes(AttackChainRun attackChainRun, AttackChainRun attackChainRunOrigin) {
+  private void getListOfDuplicatedAttackChainNodes(
+      AttackChainRun attackChainRun, AttackChainRun attackChainRunOrigin) {
     List<AttackChainNode> attackChainNodeListForAttackChainRun =
         attackChainRunOrigin.getAttackChainNodes().stream()
-            .map(attackChainNode -> attackChainNodeDuplicateService.duplicateAttackChainNodeForAttackChainRun(attackChainRun, attackChainNode))
+            .map(
+                attackChainNode ->
+                    attackChainNodeDuplicateService.duplicateAttackChainNodeForAttackChainRun(
+                        attackChainRun, attackChainNode))
             .toList();
     attackChainRun.setAttackChainNodes(new ArrayList<>(attackChainNodeListForAttackChainRun));
   }
 
   // 二开移除 Articles/Channels — attackChainRun duplication 不再处理 article 字段。
 
-  private void getListOfVariables(AttackChainRun attackChainRun, AttackChainRun attackChainRunOrigin) {
-    List<Variable> variables = variableService.variablesFromAttackChainRun(attackChainRunOrigin.getId());
+  private void getListOfVariables(
+      AttackChainRun attackChainRun, AttackChainRun attackChainRunOrigin) {
+    List<Variable> variables =
+        variableService.variablesFromAttackChainRun(attackChainRunOrigin.getId());
     List<Variable> variableList =
         variables.stream()
             .map(
@@ -302,7 +313,8 @@ public class AttackChainRunService {
     variableService.createVariables(variableList);
   }
 
-  private void getLessonsCategories(AttackChainRun duplicatedAttackChainRun, AttackChainRun originalAttackChainRun) {
+  private void getLessonsCategories(
+      AttackChainRun duplicatedAttackChainRun, AttackChainRun originalAttackChainRun) {
     List<LessonsCategory> duplicatedCategories = new ArrayList<>();
     for (LessonsCategory originalCategory : originalAttackChainRun.getLessonsCategories()) {
       LessonsCategory duplicatedCategory = new LessonsCategory();
@@ -340,7 +352,8 @@ public class AttackChainRunService {
     duplicatedAttackChainRun.setLessonsCategories(duplicatedCategories);
   }
 
-  private void getObjectives(AttackChainRun duplicatedAttackChainRun, AttackChainRun originalAttackChainRun) {
+  private void getObjectives(
+      AttackChainRun duplicatedAttackChainRun, AttackChainRun originalAttackChainRun) {
     List<Objective> duplicatedObjectives = new ArrayList<>();
     for (Objective originalObjective : originalAttackChainRun.getObjectives()) {
       Objective duplicatedObjective = new Objective();
@@ -372,7 +385,8 @@ public class AttackChainRunService {
       @NotNull AttackChainRun target,
       @NotNull AttackChainRun source,
       @NotNull Map<String, Team> contextualTeams) {
-    attackChainRunTeamUserService.duplicateTeamUsers(target, source.getTeamUsers(), contextualTeams);
+    attackChainRunTeamUserService.duplicateTeamUsers(
+        target, source.getTeamUsers(), contextualTeams);
   }
 
   // -- EXERCISES --
@@ -414,9 +428,12 @@ public class AttackChainRunService {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  public AttackChainRun changeAttackChainRunStatus(AttackChainRunStatus status, String attackChainRunId) {
+  public AttackChainRun changeAttackChainRunStatus(
+      AttackChainRunStatus status, String attackChainRunId) {
     AttackChainRun attackChainRun =
-        this.attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        this.attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     // Check if next status is possible
     List<AttackChainRunStatus> nextPossibleStatus = attackChainRun.nextPossibleStatus();
     if (!nextPossibleStatus.contains(status)) {
@@ -441,7 +458,8 @@ public class AttackChainRunService {
     // we log the pause date to be able to recompute attackChainNode dates.
     if (AttackChainRunStatus.PAUSED.equals(attackChainRun.getStatus())
         && AttackChainRunStatus.RUNNING.equals(status)) {
-      Instant lastPause = attackChainRun.getCurrentPause().orElseThrow(ElementNotFoundException::new);
+      Instant lastPause =
+          attackChainRun.getCurrentPause().orElseThrow(ElementNotFoundException::new);
       attackChainRun.setCurrentPause(null);
       pauseAttackChainRunService.endPauseByAttackChainRun(lastPause, attackChainRun);
     }
@@ -465,7 +483,8 @@ public class AttackChainRunService {
     pauseAttackChainRunService.deleteAllPauseByAttackChainRunId(attackChainRun.getId());
 
     // 2. RESET INJECTS (status, communications, findings, expectations, collect status)
-    // Fetched separately from attackChainRun.getAttackChainNodes() for performance (avoids Eager loading overhead)
+    // Fetched separately from attackChainRun.getAttackChainNodes() for performance (avoids Eager
+    // loading overhead)
     attackChainNodeService.resetAttackChainNodeByAttackChainRunId(attackChainRun.getId());
 
     // 3. RESET LESSONS ANSWERS
@@ -501,7 +520,9 @@ public class AttackChainRunService {
   }
 
   public void throwIfAttackChainRunNotLaunchable(AttackChainRun attackChainRun) {
-    attackChainRun.getAttackChainNodes().forEach(attackChainNodeService::throwIfAttackChainNodeNotLaunchable);
+    attackChainRun
+        .getAttackChainNodes()
+        .forEach(attackChainNodeService::throwIfAttackChainNodeNotLaunchable);
   }
 
   public boolean checkIfTagRulesApplies(
@@ -515,7 +536,8 @@ public class AttackChainRunService {
       Pageable pageable,
       CriteriaBuilderAndAttackChainRuns result) {
     // -- Count Query --
-    Long total = countQuery(result.cb(), this.entityManager, AttackChainRun.class, specificationCount);
+    Long total =
+        countQuery(result.cb(), this.entityManager, AttackChainRun.class, specificationCount);
 
     return new PageImpl<>(result.attackChainRuns(), pageable, total);
   }
@@ -569,7 +591,8 @@ public class AttackChainRunService {
     List<Object[]> results;
 
     if (trimmedSimulationOrAttackChainId == null) {
-      results = attackChainRunRepository.findAllOptionByNameLinkedToFindings(trimmedSearchText, pageable);
+      results =
+          attackChainRunRepository.findAllOptionByNameLinkedToFindings(trimmedSearchText, pageable);
     } else {
       results =
           attackChainRunRepository.findAllOptionByNameLinkedToFindingsWithContext(
@@ -586,11 +609,14 @@ public class AttackChainRunService {
     return resultUtils.computeNodeExpectationResults(attackChainRun.getAttackChainNodes());
   }
 
-  private record CriteriaBuilderAndAttackChainRuns(CriteriaBuilder cb, List<AttackChainRunSimple> attackChainRuns) {}
+  private record CriteriaBuilderAndAttackChainRuns(
+      CriteriaBuilder cb, List<AttackChainRunSimple> attackChainRuns) {}
 
   // -- SELECT --
   private List<Selection<?>> getCriteriaBuilderSelections(
-      CriteriaBuilder cb, Root<AttackChainRun> attackChainRunRoot, Map<String, Join<Base, Base>> joinMap) {
+      CriteriaBuilder cb,
+      Root<AttackChainRun> attackChainRunRoot,
+      Map<String, Join<Base, Base>> joinMap) {
     List<Selection<?>> selections = new ArrayList<>();
 
     // Array aggregations
@@ -628,14 +654,16 @@ public class AttackChainRunService {
               AttackChainRunSimple attackChainRunSimple = new AttackChainRunSimple();
               attackChainRunSimple.setId(tuple.get("exercise_id", String.class));
               attackChainRunSimple.setName(tuple.get("exercise_name", String.class));
-              attackChainRunSimple.setStatus(tuple.get("exercise_status", AttackChainRunStatus.class));
+              attackChainRunSimple.setStatus(
+                  tuple.get("exercise_status", AttackChainRunStatus.class));
               attackChainRunSimple.setSubtitle(tuple.get("exercise_subtitle", String.class));
               attackChainRunSimple.setCategory(tuple.get("exercise_category", String.class));
               attackChainRunSimple.setStart(tuple.get("exercise_start_date", Instant.class));
               attackChainRunSimple.setUpdatedAt(tuple.get("exercise_updated_at", Instant.class));
               attackChainRunSimple.setTagIds(
                   new HashSet<>(Arrays.asList(tuple.get("exercise_tags", String[].class))));
-              attackChainRunSimple.setAttackChainNodeIds(tuple.get("exercise_injects", String[].class));
+              attackChainRunSimple.setAttackChainNodeIds(
+                  tuple.get("exercise_injects", String[].class));
               return attackChainRunSimple;
             })
         .toList();
@@ -649,7 +677,8 @@ public class AttackChainRunService {
     }
 
     Set<String> attackChainRunIds = getAttackChainRunIds(attackChainRuns);
-    MappingsByAttackChainRunIds mappingsByAttackChainRunIds = getResultsByAttackChainRunIds(attackChainRunIds);
+    MappingsByAttackChainRunIds mappingsByAttackChainRunIds =
+        getResultsByAttackChainRunIds(attackChainRunIds);
 
     Map<String, List<RawAttackChainNodeExpectation>> expectationsByAttackChainRunIds =
         getExpectationsByAttackChainRunId(attackChainRunIds);
@@ -661,7 +690,8 @@ public class AttackChainRunService {
     }
   }
 
-  private void setComputedAttributesWithEmptyGlobalScore(List<AttackChainRunSimple> originalAttackChainRuns) {
+  private void setComputedAttributesWithEmptyGlobalScore(
+      List<AttackChainRunSimple> originalAttackChainRuns) {
     List<AttackChainRunSimple> attackChainRuns = getAttackChainRunsWithId(originalAttackChainRuns);
     if (attackChainRuns.isEmpty()) {
       return;
@@ -677,8 +707,11 @@ public class AttackChainRunService {
     }
   }
 
-  private static List<AttackChainRunSimple> getAttackChainRunsWithId(List<AttackChainRunSimple> attackChainRuns) {
-    return attackChainRuns.stream().filter(attackChainRun -> attackChainRun.getId() != null).toList();
+  private static List<AttackChainRunSimple> getAttackChainRunsWithId(
+      List<AttackChainRunSimple> attackChainRuns) {
+    return attackChainRuns.stream()
+        .filter(attackChainRun -> attackChainRun.getId() != null)
+        .toList();
   }
 
   private static Set<String> getAttackChainRunIds(List<AttackChainRunSimple> attackChainRuns) {
@@ -687,7 +720,8 @@ public class AttackChainRunService {
 
   private MappingsByAttackChainRunIds getResultsByAttackChainRunIds(Set<String> attackChainRunIds) {
     Map<String, List<Object[]>> teamsByAttackChainRunIds =
-        getTeamsOrAssetsOrAssetGroupsByAttackChainRunIds(teamRepository.teamsByAttackChainRunIds(attackChainRunIds));
+        getTeamsOrAssetsOrAssetGroupsByAttackChainRunIds(
+            teamRepository.teamsByAttackChainRunIds(attackChainRunIds));
 
     Map<String, List<Object[]>> assetsByAttackChainRunIds =
         getTeamsOrAssetsOrAssetGroupsByAttackChainRunIds(
@@ -719,7 +753,9 @@ public class AttackChainRunService {
 
   private Map<String, List<RawAttackChainNodeExpectation>> getExpectationsByAttackChainRunId(
       Set<String> attackChainRunIds) {
-    return ofNullable(attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainRunIds(attackChainRunIds))
+    return ofNullable(
+            attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainRunIds(
+                attackChainRunIds))
         .orElse(emptyList())
         .stream()
         .filter(Objects::nonNull)
@@ -727,21 +763,32 @@ public class AttackChainRunService {
   }
 
   private void setGlobalScore(
-      AttackChainRunSimple attackChainRun, Map<String, List<RawAttackChainNodeExpectation>> expectationsByAttackChainRunIds) {
+      AttackChainRunSimple attackChainRun,
+      Map<String, List<RawAttackChainNodeExpectation>> expectationsByAttackChainRunIds) {
     List<RawAttackChainNodeExpectation> expectations =
         expectationsByAttackChainRunIds.getOrDefault(attackChainRun.getId(), emptyList());
-    HashSet<String> attackChainNodeIds = new HashSet<>(Arrays.asList(attackChainRun.getAttackChainNodeIds()));
+    HashSet<String> attackChainNodeIds =
+        new HashSet<>(Arrays.asList(attackChainRun.getAttackChainNodeIds()));
 
     attackChainRun.setExpectationResultByTypes(
-        attackChainNodeExpectationMapper.extractExpectationResultByTypesFromRaw(attackChainNodeIds, expectations));
+        attackChainNodeExpectationMapper.extractExpectationResultByTypesFromRaw(
+            attackChainNodeIds, expectations));
   }
 
-  private void setTargets(AttackChainRunSimple attackChainRun, MappingsByAttackChainRunIds mappingsByAttackChainRunIds) {
+  private void setTargets(
+      AttackChainRunSimple attackChainRun,
+      MappingsByAttackChainRunIds mappingsByAttackChainRunIds) {
     List<TargetSimple> allTargets =
         Stream.of(
-                getTargets(attackChainRun, mappingsByAttackChainRunIds.teamsByAttackChainRunIds, TargetType.TEAMS)
+                getTargets(
+                    attackChainRun,
+                    mappingsByAttackChainRunIds.teamsByAttackChainRunIds,
+                    TargetType.TEAMS)
                     .stream(),
-                getTargets(attackChainRun, mappingsByAttackChainRunIds.assetsByAttackChainRunIds, TargetType.ASSETS)
+                getTargets(
+                    attackChainRun,
+                    mappingsByAttackChainRunIds.assetsByAttackChainRunIds,
+                    TargetType.ASSETS)
                     .stream(),
                 getTargets(
                     attackChainRun,
@@ -763,7 +810,8 @@ public class AttackChainRunService {
 
   // -- SCENARIO EXERCISES --
   public Iterable<AttackChainRunSimple> attackChainAttackChainRuns(@NotBlank String attackChainId) {
-    List<RawAttackChainRunSimple> attackChainRuns = attackChainRunRepository.rawAllByAttackChainIds(List.of(attackChainId));
+    List<RawAttackChainRunSimple> attackChainRuns =
+        attackChainRunRepository.rawAllByAttackChainIds(List.of(attackChainId));
     return attackChainRunMapper.getAttackChainRunSimples(attackChainRuns);
   }
 
@@ -773,7 +821,8 @@ public class AttackChainRunService {
         attackChainRunRepository.findAttackChainNodesByAttackChainRun(attackChainRunId));
   }
 
-  public AttackChainRunsGlobalScoresOutput getAttackChainRunsGlobalScores(AttackChainRunsGlobalScoresInput input) {
+  public AttackChainRunsGlobalScoresOutput getAttackChainRunsGlobalScores(
+      AttackChainRunsGlobalScoresInput input) {
     Map<String, List<ExpectationResultsByType>> globalScoresByAttackChainRunIds =
         input.attackChainRunIds().stream()
             .collect(Collectors.toMap(Function.identity(), this::getGlobalResults));
@@ -787,7 +836,8 @@ public class AttackChainRunService {
     // Remove teams from attackChainRun
     this.attackChainRunRepository.removeTeams(attackChainRunId, teamIds);
     // Remove only associations for this attackChainRun
-    this.attackChainRunTeamUserRepository.deleteByAttackChainRunIdAndTeamIds(attackChainRunId, teamIds);
+    this.attackChainRunTeamUserRepository.deleteByAttackChainRunIdAndTeamIds(
+        attackChainRunId, teamIds);
     // Remove all association between attackChainNodes and teams
     this.attackChainNodeRepository.removeTeamsForAttackChainRun(attackChainRunId, teamIds);
     // Remove all association between lessons learned and teams
@@ -807,9 +857,12 @@ public class AttackChainRunService {
     removedTeamIds.removeAll(targetTeamIds);
     if (!removedTeamIds.isEmpty()) {
       List<String> removedTeamIdsList = new ArrayList<>(removedTeamIds);
-      this.attackChainRunTeamUserRepository.deleteByAttackChainRunIdAndTeamIds(attackChainRunId, removedTeamIdsList);
-      this.attackChainNodeRepository.removeTeamsForAttackChainRun(attackChainRunId, removedTeamIdsList);
-      this.lessonsCategoryRepository.removeTeamsForAttackChainRun(attackChainRunId, removedTeamIdsList);
+      this.attackChainRunTeamUserRepository.deleteByAttackChainRunIdAndTeamIds(
+          attackChainRunId, removedTeamIdsList);
+      this.attackChainNodeRepository.removeTeamsForAttackChainRun(
+          attackChainRunId, removedTeamIdsList);
+      this.lessonsCategoryRepository.removeTeamsForAttackChainRun(
+          attackChainRunId, removedTeamIdsList);
     }
 
     // Replace teams from attackChainRun
@@ -842,7 +895,9 @@ public class AttackChainRunService {
       @NotNull final Team team,
       @NotNull final List<String> playerIds) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     playerIds.forEach(
         playerId -> {
           boolean alreadyLinked =
@@ -869,7 +924,9 @@ public class AttackChainRunService {
    */
   @Transactional
   public AttackChainRun updateExercice(
-      @NotNull final AttackChainRun attackChainRun, @NotNull final Set<Tag> currentTags, boolean applyRule) {
+      @NotNull final AttackChainRun attackChainRun,
+      @NotNull final Set<Tag> currentTags,
+      boolean applyRule) {
     if (applyRule) {
       // Get asset groups from the TagRule of the added tags
       List<AssetGroup> defaultAssetGroupsToAdd =
@@ -881,7 +938,10 @@ public class AttackChainRunService {
 
       // Add the default asset groups to the attackChainNodes
       attackChainRun.getAttackChainNodes().stream()
-          .filter(attackChainNode -> this.attackChainNodeService.canApplyTargetType(attackChainNode, TargetType.ASSETS_GROUPS))
+          .filter(
+              attackChainNode ->
+                  this.attackChainNodeService.canApplyTargetType(
+                      attackChainNode, TargetType.ASSETS_GROUPS))
           .forEach(
               attackChainNode ->
                   attackChainNodeService.applyDefaultAssetGroupsToAttackChainNode(

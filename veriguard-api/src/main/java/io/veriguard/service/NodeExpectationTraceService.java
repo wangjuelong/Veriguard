@@ -2,8 +2,8 @@ package io.veriguard.service;
 
 import static io.veriguard.service.AttackChainNodeExpectationService.COLLECTOR;
 
-import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.AttackChainNodeExpectation;
+import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.NodeExpectationTrace;
 import io.veriguard.database.model.SecurityPlatform;
 import io.veriguard.database.raw.impl.SimpleRawExpectationTrace;
@@ -46,7 +46,8 @@ public class NodeExpectationTraceService {
       return this.nodeExpectationTraceRepository.countAlerts(
           attackChainNodeExpectationId, securityPlatform.getId());
     } else {
-      return this.nodeExpectationTraceRepository.countAlerts(attackChainNodeExpectationId, sourceId);
+      return this.nodeExpectationTraceRepository.countAlerts(
+          attackChainNodeExpectationId, sourceId);
     }
   }
 

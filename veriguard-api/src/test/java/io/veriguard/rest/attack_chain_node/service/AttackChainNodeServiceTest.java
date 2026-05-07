@@ -19,10 +19,10 @@ import io.veriguard.healthcheck.enums.ExternalServiceDependency;
 import io.veriguard.healthcheck.utils.HealthCheckUtils;
 import io.veriguard.injectors.email.service.ImapService;
 import io.veriguard.injectors.email.service.SmtpService;
+import io.veriguard.rest.attack_chain_node.form.*;
 import io.veriguard.rest.collector.service.CollectorService;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.attack_chain_node.form.*;
 import io.veriguard.rest.injector_contract.NodeContractContentUtils;
 import io.veriguard.rest.injector_contract.NodeContractService;
 import io.veriguard.rest.security.SecurityExpressionHandler;
@@ -114,7 +114,8 @@ class AttackChainNodeServiceTest {
     ReflectionTestUtils.setField(
         attackChainNodeService,
         "injectMapper",
-        new AttackChainNodeMapper(attackChainNodeStatusMapper, attackChainNodeExpectationMapper, attackChainNodeUtils));
+        new AttackChainNodeMapper(
+            attackChainNodeStatusMapper, attackChainNodeExpectationMapper, attackChainNodeUtils));
     ReflectionTestUtils.setField(
         attackChainNodeService, "injectorContractContentUtils", nodeContractContentUtils);
   }
@@ -124,7 +125,8 @@ class AttackChainNodeServiceTest {
     doReturn(Optional.empty()).when(attackChainNodeRepository).findById(INJECT_ID);
     assertThrows(
         ElementNotFoundException.class,
-        () -> attackChainNodeService.applyDefaultAssetGroupsToAttackChainNode(INJECT_ID, List.of()));
+        () ->
+            attackChainNodeService.applyDefaultAssetGroupsToAttackChainNode(INJECT_ID, List.of()));
   }
 
   @Test
@@ -138,9 +140,11 @@ class AttackChainNodeServiceTest {
     attackChainNode.setAssetGroups(List.of(assetGroup1, assetGroup2, assetGroup3));
     doReturn(Optional.of(attackChainNode)).when(attackChainNodeRepository).findById(INJECT_ID);
 
-    attackChainNodeService.applyDefaultAssetGroupsToAttackChainNode(INJECT_ID, List.of(assetGroup4));
+    attackChainNodeService.applyDefaultAssetGroupsToAttackChainNode(
+        INJECT_ID, List.of(assetGroup4));
 
-    ArgumentCaptor<AttackChainNode> attackChainNodeCaptor = ArgumentCaptor.forClass(AttackChainNode.class);
+    ArgumentCaptor<AttackChainNode> attackChainNodeCaptor =
+        ArgumentCaptor.forClass(AttackChainNode.class);
     verify(attackChainNodeRepository).save(attackChainNodeCaptor.capture());
     AttackChainNode capturedAttackChainNode = attackChainNodeCaptor.getValue();
     assertEquals(INJECT_ID, capturedAttackChainNode.getId());
@@ -159,7 +163,8 @@ class AttackChainNodeServiceTest {
     attackChainNode.setAssetGroups(List.of(assetGroup1, assetGroup2, assetGroup3));
     doReturn(Optional.of(attackChainNode)).when(attackChainNodeRepository).findById(INJECT_ID);
 
-    attackChainNodeService.applyDefaultAssetGroupsToAttackChainNode(INJECT_ID, List.of(assetGroup1));
+    attackChainNodeService.applyDefaultAssetGroupsToAttackChainNode(
+        INJECT_ID, List.of(assetGroup1));
 
     verify(attackChainNodeRepository, never()).save(any());
   }
@@ -234,7 +239,9 @@ class AttackChainNodeServiceTest {
     BadRequestException exception =
         assertThrows(
             BadRequestException.class,
-            () -> attackChainNodeService.getAttackChainNodeSpecification(input, Grant.GRANT_TYPE.OBSERVER));
+            () ->
+                attackChainNodeService.getAttackChainNodeSpecification(
+                    input, Grant.GRANT_TYPE.OBSERVER));
 
     // Assert
     assertEquals(
@@ -298,10 +305,12 @@ class AttackChainNodeServiceTest {
 
     List<AttackChainNode> expectedUpdatedAttackChainNodes = List.of(i1updated, i2updated);
 
-    when(attackChainNodeRepository.saveAll(expectedUpdatedAttackChainNodes)).thenReturn(expectedUpdatedAttackChainNodes);
+    when(attackChainNodeRepository.saveAll(expectedUpdatedAttackChainNodes))
+        .thenReturn(expectedUpdatedAttackChainNodes);
 
     // Act
-    List<AttackChainNode> updatedAttackChainNodes = attackChainNodeService.bulkUpdateAttackChainNode(attackChainNodesToUpdate, operations);
+    List<AttackChainNode> updatedAttackChainNodes =
+        attackChainNodeService.bulkUpdateAttackChainNode(attackChainNodesToUpdate, operations);
 
     // Assert
     assertNotNull(updatedAttackChainNodes);
@@ -319,13 +328,16 @@ class AttackChainNodeServiceTest {
   @Test
   void bulkUpdateAttackChainNodesWithEmptyOperations() {
     // Arrange
-    List<AttackChainNode> attackChainNodesToUpdate = List.of(new AttackChainNode(), new AttackChainNode());
+    List<AttackChainNode> attackChainNodesToUpdate =
+        List.of(new AttackChainNode(), new AttackChainNode());
     List<AttackChainNodeBulkUpdateOperation> operations = List.of();
 
-    when(attackChainNodeRepository.saveAll(attackChainNodesToUpdate)).thenReturn(attackChainNodesToUpdate);
+    when(attackChainNodeRepository.saveAll(attackChainNodesToUpdate))
+        .thenReturn(attackChainNodesToUpdate);
 
     // Act
-    List<AttackChainNode> updatedAttackChainNodes = attackChainNodeService.bulkUpdateAttackChainNode(attackChainNodesToUpdate, operations);
+    List<AttackChainNode> updatedAttackChainNodes =
+        attackChainNodeService.bulkUpdateAttackChainNode(attackChainNodesToUpdate, operations);
 
     // Assert
     assertNotNull(updatedAttackChainNodes);
@@ -362,10 +374,12 @@ class AttackChainNodeServiceTest {
 
     List<AttackChainNode> expectedUpdatedAttackChainNodes = List.of(i1updated, i2updated);
 
-    when(attackChainNodeRepository.saveAll(expectedUpdatedAttackChainNodes)).thenReturn(expectedUpdatedAttackChainNodes);
+    when(attackChainNodeRepository.saveAll(expectedUpdatedAttackChainNodes))
+        .thenReturn(expectedUpdatedAttackChainNodes);
 
     // Act
-    List<AttackChainNode> updatedAttackChainNodes = attackChainNodeService.bulkUpdateAttackChainNode(attackChainNodesToUpdate, operations);
+    List<AttackChainNode> updatedAttackChainNodes =
+        attackChainNodeService.bulkUpdateAttackChainNode(attackChainNodesToUpdate, operations);
 
     // Assert
     assertNotNull(updatedAttackChainNodes);
@@ -391,7 +405,8 @@ class AttackChainNodeServiceTest {
 
     // Act
     List<AttackChainNode> result =
-        attackChainNodeService.getAttackChainNodesAndCheckPermission(input, Grant.GRANT_TYPE.PLANNER);
+        attackChainNodeService.getAttackChainNodesAndCheckPermission(
+            input, Grant.GRANT_TYPE.PLANNER);
 
     // Assert
     assertNotNull(result);
@@ -414,7 +429,8 @@ class AttackChainNodeServiceTest {
 
     // Act
     List<AttackChainNode> result =
-        attackChainNodeService.getAttackChainNodesAndCheckPermission(input, Grant.GRANT_TYPE.PLANNER);
+        attackChainNodeService.getAttackChainNodesAndCheckPermission(
+            input, Grant.GRANT_TYPE.PLANNER);
 
     // Assert
     assertNotNull(result);
@@ -438,7 +454,8 @@ class AttackChainNodeServiceTest {
 
     // Act
     List<AttackChainNode> result =
-        attackChainNodeService.getAttackChainNodesAndCheckPermission(input, Grant.GRANT_TYPE.PLANNER);
+        attackChainNodeService.getAttackChainNodesAndCheckPermission(
+            input, Grant.GRANT_TYPE.PLANNER);
 
     // Assert
     assertNotNull(result);
@@ -455,7 +472,9 @@ class AttackChainNodeServiceTest {
     BadRequestException exception =
         assertThrows(
             BadRequestException.class,
-            () -> attackChainNodeService.getAttackChainNodesAndCheckPermission(input, Grant.GRANT_TYPE.PLANNER));
+            () ->
+                attackChainNodeService.getAttackChainNodesAndCheckPermission(
+                    input, Grant.GRANT_TYPE.PLANNER));
 
     // Assert
     assertEquals(
@@ -510,13 +529,13 @@ class AttackChainNodeServiceTest {
     NodeContract nodeContract = new NodeContract();
     nodeContract.setContent(
         "{\"manual\":true,\"fields\":[{\"key\":\"content\",\"label\":\"Content\",\"mandatory\":true,\"readOnly\":false,\"mandatoryGroups\":null,\"linkedFields\":[],\"linkedValues\":[],\"defaultValue\":\"\",\"richText\":false,\"type\":\"textarea\"}]}");
-    nodeContract.setConvertedContent(
-        (ObjectNode) mapper.readTree(nodeContract.getContent()));
+    nodeContract.setConvertedContent((ObjectNode) mapper.readTree(nodeContract.getContent()));
     AttackChainNode attackChainNode = new AttackChainNode();
     doCallRealMethod().when(nodeContractService).checkTargetSupport(any(), any());
     attackChainNode.setNodeContract(nodeContract);
 
-    assertFalse(attackChainNodeService.canApplyTargetType(attackChainNode, TargetType.ASSETS_GROUPS));
+    assertFalse(
+        attackChainNodeService.canApplyTargetType(attackChainNode, TargetType.ASSETS_GROUPS));
   }
 
   @DisplayName("Test canApplyTargetType with inject with asset group")
@@ -525,13 +544,13 @@ class AttackChainNodeServiceTest {
     NodeContract nodeContract = new NodeContract();
     nodeContract.setContent(
         "{\"manual\":true,\"fields\":[{\"key\":\"assetgroups\",\"label\":\"Content\",\"mandatory\":true,\"readOnly\":false,\"mandatoryGroups\":null,\"linkedFields\":[],\"linkedValues\":[],\"defaultValue\":\"\",\"richText\":false,\"type\":\"asset-group\"}]}");
-    nodeContract.setConvertedContent(
-        (ObjectNode) mapper.readTree(nodeContract.getContent()));
+    nodeContract.setConvertedContent((ObjectNode) mapper.readTree(nodeContract.getContent()));
     AttackChainNode attackChainNode = new AttackChainNode();
     doCallRealMethod().when(nodeContractService).checkTargetSupport(any(), any());
     attackChainNode.setNodeContract(nodeContract);
 
-    assertTrue(attackChainNodeService.canApplyTargetType(attackChainNode, TargetType.ASSETS_GROUPS));
+    assertTrue(
+        attackChainNodeService.canApplyTargetType(attackChainNode, TargetType.ASSETS_GROUPS));
   }
 
   @Test
@@ -547,12 +566,16 @@ class AttackChainNodeServiceTest {
     attackChainNodeStatus.setAttackChainNode(attackChainNode);
     StatusPayload statusPayload = new StatusPayload();
 
-    when(attackChainNodeUtils.getStatusPayloadFromAttackChainNode(attackChainNode)).thenReturn(statusPayload);
-    when(attackChainNodeRepository.findById(attackChainNodeId)).thenReturn(Optional.of(attackChainNode));
+    when(attackChainNodeUtils.getStatusPayloadFromAttackChainNode(attackChainNode))
+        .thenReturn(statusPayload);
+    when(attackChainNodeRepository.findById(attackChainNodeId))
+        .thenReturn(Optional.of(attackChainNode));
 
-    attackChainNodeStatusService.initializeAttackChainNodeStatus(attackChainNodeId, executionStatus);
+    attackChainNodeStatusService.initializeAttackChainNodeStatus(
+        attackChainNodeId, executionStatus);
 
-    ArgumentCaptor<AttackChainNodeStatus> statusCaptor = ArgumentCaptor.forClass(AttackChainNodeStatus.class);
+    ArgumentCaptor<AttackChainNodeStatus> statusCaptor =
+        ArgumentCaptor.forClass(AttackChainNodeStatus.class);
     verify(attackChainNodeStatusRepository).save(statusCaptor.capture());
     AttackChainNodeStatus savedStatus = statusCaptor.getValue();
     assertNotNull(savedStatus);
@@ -598,7 +621,8 @@ class AttackChainNodeServiceTest {
 
     attackChainNodeService.createAndSaveAttackChainNode(null, attackChain, attackChainNodeInput);
 
-    ArgumentCaptor<AttackChainNode> attackChainNodeCaptor = ArgumentCaptor.forClass(AttackChainNode.class);
+    ArgumentCaptor<AttackChainNode> attackChainNodeCaptor =
+        ArgumentCaptor.forClass(AttackChainNode.class);
     verify(attackChainNodeRepository).save(attackChainNodeCaptor.capture());
     AttackChainNode capturedAttackChainNode = attackChainNodeCaptor.getValue();
 
@@ -822,8 +846,9 @@ class AttackChainNodeServiceTest {
   }
 
   @Test
-  public void given_nodeExecutorDependenciesOnNuclei_when_nucleiIsRegistered_then_healtchCheckCreated()
-      throws JsonProcessingException {
+  public void
+      given_nodeExecutorDependenciesOnNuclei_when_nucleiIsRegistered_then_healtchCheckCreated()
+          throws JsonProcessingException {
 
     // PREPARE
     AttackChainNode attackChainNode =

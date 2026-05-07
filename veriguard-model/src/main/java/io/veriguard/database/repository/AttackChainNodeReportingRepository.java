@@ -7,7 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AttackChainNodeReportingRepository extends CrudRepository<AttackChainNodeStatus, String> {
+public interface AttackChainNodeReportingRepository
+    extends CrudRepository<AttackChainNodeStatus, String> {
 
   @NotNull
   Optional<AttackChainNodeStatus> findById(@NotNull String id);

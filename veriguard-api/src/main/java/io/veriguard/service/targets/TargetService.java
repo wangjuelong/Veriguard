@@ -24,7 +24,9 @@ public class TargetService {
   private final PlayerTargetSearchAdaptor playerTargetSearchAdaptor;
 
   public Page<AttackChainNodeTarget> searchTargets(
-      TargetType attackChainNodeTargetType, AttackChainNode attackChainNode, SearchPaginationInput input) {
+      TargetType attackChainNodeTargetType,
+      AttackChainNode attackChainNode,
+      SearchPaginationInput input) {
 
     // handle defaults if filter group is null
     if (input.getFilterGroup() == null) {
@@ -39,18 +41,25 @@ public class TargetService {
       case TEAMS -> teamTargetSearchAdaptor.search(input, attackChainNode);
       case PLAYERS -> playerTargetSearchAdaptor.search(input, attackChainNode);
       case AGENT -> agentTargetSearchAdaptor.search(input, attackChainNode);
-      default -> throw new IllegalArgumentException("Unsupported target type: " + attackChainNodeTargetType);
+      default ->
+          throw new IllegalArgumentException(
+              "Unsupported target type: " + attackChainNodeTargetType);
     };
   }
 
   public List<FilterUtilsJpa.Option> getTargetOptions(
       TargetType targetType, AttackChainNode attackChainNode, String textSearch) {
     return switch (targetType) {
-      case ASSETS_GROUPS -> assetGroupTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
-      case ASSETS -> endpointTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
-      case TEAMS -> teamTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
-      case PLAYERS -> playerTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
-      case AGENT -> agentTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case ASSETS_GROUPS ->
+          assetGroupTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case ASSETS ->
+          endpointTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case TEAMS ->
+          teamTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case PLAYERS ->
+          playerTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
+      case AGENT ->
+          agentTargetSearchAdaptor.getOptionsForAttackChainNode(attackChainNode, textSearch);
       default -> throw new IllegalArgumentException("Unsupported target type: " + targetType);
     };
   }

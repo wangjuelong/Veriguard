@@ -4,9 +4,9 @@ import static java.time.Instant.now;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.helper.MonoIdSerializer;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,8 +19,8 @@ import org.hibernate.annotations.UuidGenerator;
 /**
  * Entity representing a custom variable for attackChainRuns and attackChains.
  *
- * <p>Variables provide a templating mechanism that allows dynamic content substitution in attackChainNode
- * content, email templates, and other text fields. They support:
+ * <p>Variables provide a templating mechanism that allows dynamic content substitution in
+ * attackChainNode content, email templates, and other text fields. They support:
  *
  * <ul>
  *   <li>AttackChainRun-scoped variables (specific to one attackChainRun)

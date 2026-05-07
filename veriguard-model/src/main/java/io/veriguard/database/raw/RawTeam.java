@@ -7,7 +7,8 @@ import java.util.Set;
  * Spring Data projection interface for team data with relationships.
  *
  * <p>This interface defines a projection for retrieving team information including metadata,
- * organizational context, and associations with users, attackChainRuns, attackChains, and attackChainNodes.
+ * organizational context, and associations with users, attackChainRuns, attackChains, and
+ * attackChainNodes.
  *
  * @see io.veriguard.database.model.Team
  */
@@ -58,8 +59,8 @@ public interface RawTeam {
   /**
    * Returns whether this is a contextual team.
    *
-   * <p>Contextual teams are created specifically for a particular attackChainRun or attackChain and are not
-   * reusable across different simulations.
+   * <p>Contextual teams are created specifically for a particular attackChainRun or attackChain and
+   * are not reusable across different simulations.
    *
    * @return {@code true} if the team is contextual, {@code false} if it's reusable
    */

@@ -52,7 +52,9 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
 
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
-      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
+      AttackChainNode attackChainNode,
+      Set<Agent> agents,
+      AttackChainNodeStatus attackChainNodeStatus) {
 
     List<Agent> sentinelOneAgents = new ArrayList<>(agents);
 
@@ -142,7 +144,8 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
       Endpoint.PLATFORM_TYPE platform = Endpoint.PLATFORM_TYPE.Windows;
       String executorCommandKey = platform.name() + "." + arch;
       String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
-      // The default command to download the veriguard implant and execute the attack is modified for
+      // The default command to download the veriguard implant and execute the attack is modified
+      // for
       // Sentinel ONE
       // - WINDOWS_EXTERNAL_REFERENCE: the agent id in the veriguard DB for SentinelOne is the
       // SentinelOne agent id to
@@ -170,7 +173,11 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
       actionLinux.setScriptId(this.config.getUnixScriptId());
       actionLinux.setCommandEncoded(
           getUnixCommand(
-              Endpoint.PLATFORM_TYPE.Linux, nodeExecutor, attackChainNodeId, LINUX_EXTERNAL_REFERENCE, arch));
+              Endpoint.PLATFORM_TYPE.Linux,
+              nodeExecutor,
+              attackChainNodeId,
+              LINUX_EXTERNAL_REFERENCE,
+              arch));
       actionLinux.setAgents(agents);
       actions.add(actionLinux);
     }
@@ -185,7 +192,11 @@ public class SentinelOneExecutorContextService extends ExecutorContextService {
       actionMac.setScriptId(this.config.getUnixScriptId());
       actionMac.setCommandEncoded(
           getUnixCommand(
-              Endpoint.PLATFORM_TYPE.MacOS, nodeExecutor, attackChainNodeId, MAC_EXTERNAL_REFERENCE, arch));
+              Endpoint.PLATFORM_TYPE.MacOS,
+              nodeExecutor,
+              attackChainNodeId,
+              MAC_EXTERNAL_REFERENCE,
+              arch));
       actionMac.setAgents(agents);
       actions.add(actionMac);
     }

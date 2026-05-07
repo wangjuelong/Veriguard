@@ -3,8 +3,8 @@ package io.veriguard.scheduler.jobs;
 import static io.veriguard.database.specification.AttackChainRunSpecification.recurringInstanceNotStarted;
 
 import io.veriguard.aop.LogExecutionTime;
-import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.service.AttackChainRunFactory;
 import io.veriguard.service.period.CronService;
@@ -89,7 +89,8 @@ public class AttackChainExecutionJob implements Job {
     // Find each attackChain with cron is outdated:
     List<AttackChain> attackChains =
         this.attackChainService.potentialOutdatedRecurringAttackChain(Instant.now());
-    List<AttackChain> validAttackChains = attackChains.stream().filter(this::isAttackChainOutdated).toList();
+    List<AttackChain> validAttackChains =
+        attackChains.stream().filter(this::isAttackChainOutdated).toList();
 
     // Remove recurring setup
     validAttackChains.forEach(

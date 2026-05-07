@@ -2,9 +2,9 @@ package io.veriguard.rest.custom_dashboard;
 
 import static io.veriguard.helper.StreamHelper.fromIterable;
 
+import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.CustomDashboard;
 import io.veriguard.database.model.Filters;
-import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.Widget;
 import io.veriguard.database.repository.CustomDashboardRepository;
 import io.veriguard.database.repository.WidgetRepository;
@@ -163,5 +163,4 @@ public class WidgetService {
         Filters.FilterOperator.contains);
     return listAttackChainNodeExpectationsConfig;
   }
-
 }

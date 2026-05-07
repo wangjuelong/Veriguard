@@ -10,8 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
-import io.veriguard.database.repository.NotificationRuleRepository;
 import io.veriguard.database.repository.AttackChainRepository;
+import io.veriguard.database.repository.NotificationRuleRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.rest.notification_rule.form.CreateNotificationRuleInput;
 import io.veriguard.rest.notification_rule.form.UpdateNotificationRuleInput;

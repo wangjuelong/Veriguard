@@ -11,7 +11,8 @@ public class AttackChainRunLessonsCategoryFixture {
   public static final String LESSON_CATEGORY_DESCRIPTION = "Category description";
   public static final int LESSON_CATEGORY_ORDER = 0;
 
-  public static LessonsCategory getLessonsCategory(AttackChainRun attackChainRun, List<Team> categoryTeams) {
+  public static LessonsCategory getLessonsCategory(
+      AttackChainRun attackChainRun, List<Team> categoryTeams) {
     LessonsCategory lessonsCategory = new LessonsCategory();
     lessonsCategory.setAttackChainRun(attackChainRun);
     lessonsCategory.setName(LESSON_CATEGORY_NAME);

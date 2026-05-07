@@ -10,10 +10,10 @@ import io.veriguard.execution.ExecutionExecutorException;
 import io.veriguard.execution.ExecutionExecutorService;
 import io.veriguard.executors.ExecutorContextService;
 import io.veriguard.executors.utils.ExecutorUtils;
-import io.veriguard.rest.domain.enums.PresetDomain;
-import io.veriguard.rest.exception.AgentException;
 import io.veriguard.rest.attack_chain_node.output.AgentsAndAssetsAgentless;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.domain.enums.PresetDomain;
+import io.veriguard.rest.exception.AgentException;
 import io.veriguard.utils.fixtures.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -77,9 +77,11 @@ public class ExecutionExecutorServiceTest {
     // Init datas
     Endpoint endpoint = EndpointFixture.createEndpoint();
     endpoint.setId("0123456789");
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveAgentlessAssetsTraces(new HashSet<>(Set.of(endpoint)), attackChainNodeStatus);
+    executorService.saveAgentlessAssetsTraces(
+        new HashSet<>(Set.of(endpoint)), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository).saveAll(executionTrace.capture());
@@ -94,7 +96,8 @@ public class ExecutionExecutorServiceTest {
   @Test
   void test_saveAgentlessAssetsTraces_withoutAgents() {
     // Init datas
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
     executorService.saveAgentlessAssetsTraces(new HashSet<>(), attackChainNodeStatus);
     // Asserts
@@ -110,7 +113,8 @@ public class ExecutionExecutorServiceTest {
     agent.setAsset(endpoint);
     agent.setLastSeen(Instant.now().minus(5, ChronoUnit.DAYS));
     endpoint.setAgents(List.of(agent));
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
     executorService.saveInactiveAgentsTraces(new HashSet<>(Set.of(agent)), attackChainNodeStatus);
     // Asserts
@@ -130,7 +134,8 @@ public class ExecutionExecutorServiceTest {
   @Test
   void test_saveInactiveAgentsTraces_withoutAgents() {
     // Init datas
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
     executorService.saveInactiveAgentsTraces(new HashSet<>(), attackChainNodeStatus);
     // Asserts
@@ -146,9 +151,11 @@ public class ExecutionExecutorServiceTest {
     agent.setAsset(endpoint);
     agent.setExecutor(null);
     endpoint.setAgents(List.of(agent));
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveWithoutExecutorAgentsTraces(new HashSet<>(Set.of(agent)), attackChainNodeStatus);
+    executorService.saveWithoutExecutorAgentsTraces(
+        new HashSet<>(Set.of(agent)), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<List<ExecutionTrace>> executionTrace = ArgumentCaptor.forClass(List.class);
     verify(executionTraceRepository).saveAll(executionTrace.capture());
@@ -165,7 +172,8 @@ public class ExecutionExecutorServiceTest {
   @Test
   void test_saveWithoutExecutorAgentsTraces_withoutAgents() {
     // Init datas
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
     executorService.saveWithoutExecutorAgentsTraces(new HashSet<>(), attackChainNodeStatus);
     // Asserts
@@ -180,7 +188,8 @@ public class ExecutionExecutorServiceTest {
     Agent agent = AgentFixture.createDefaultAgentSession();
     agent.setAsset(endpoint);
     endpoint.setAgents(List.of(agent));
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
     executorService.saveAgentsErrorTraces(
         new Exception("EXCEPTION !!"), new HashSet<>(Set.of(agent)), attackChainNodeStatus);
@@ -199,9 +208,11 @@ public class ExecutionExecutorServiceTest {
     Agent agent = AgentFixture.createDefaultAgentSession();
     agent.setAsset(endpoint);
     endpoint.setAgents(List.of(agent));
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
     // Run method to test
-    executorService.saveAgentErrorTrace(new AgentException("EXCEPTION !!", agent), attackChainNodeStatus);
+    executorService.saveAgentErrorTrace(
+        new AgentException("EXCEPTION !!", agent), attackChainNodeStatus);
     // Asserts
     ArgumentCaptor<ExecutionTrace> executionTrace = ArgumentCaptor.forClass(ExecutionTrace.class);
     verify(executionTraceRepository).save(executionTrace.capture());

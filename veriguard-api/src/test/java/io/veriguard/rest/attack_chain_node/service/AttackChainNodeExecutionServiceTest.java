@@ -24,8 +24,10 @@ class AttackChainNodeExecutionServiceTest {
     agentHandler = mock(AgentExecutionProcessingHandler.class);
     nodeExecutorHandler = mock(NodeExecutorExecutionProcessingHandler.class);
     AttackChainNodeService attackChainNodeService = mock(AttackChainNodeService.class);
-    AttackChainNodeStatusService attackChainNodeStatusService = mock(AttackChainNodeStatusService.class);
-    AttackChainNodeExpectationService attackChainNodeExpectationService = mock(AttackChainNodeExpectationService.class);
+    AttackChainNodeStatusService attackChainNodeStatusService =
+        mock(AttackChainNodeStatusService.class);
+    AttackChainNodeExpectationService attackChainNodeExpectationService =
+        mock(AttackChainNodeExpectationService.class);
     service =
         new AttackChainNodeExecutionService(
             null,
@@ -60,7 +62,8 @@ class AttackChainNodeExecutionServiceTest {
   @Test
   @DisplayName(
       "Should call processContext on handler in processInjectExecution when source is an injector")
-  void shouldCallProcessContextOnNodeExecutorHandlerInProcessAttackChainNodeExecution() throws Exception {
+  void shouldCallProcessContextOnNodeExecutorHandlerInProcessAttackChainNodeExecution()
+      throws Exception {
     AttackChainNode attackChainNode = mock(AttackChainNode.class);
 
     AttackChainNodeExecutionInput input = new AttackChainNodeExecutionInput();

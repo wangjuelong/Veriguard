@@ -5,8 +5,8 @@ import static io.veriguard.utils.JsonTestUtils.asJsonString;
 import static io.veriguard.utils.fixtures.AgentFixture.createAgent;
 import static io.veriguard.utils.fixtures.AssetGroupFixture.createAssetGroupWithAssets;
 import static io.veriguard.utils.fixtures.AssetGroupFixture.createDefaultAssetGroup;
-import static io.veriguard.utils.fixtures.EndpointFixture.*;
 import static io.veriguard.utils.fixtures.AttackChainNodeFixture.getDefaultAttackChainNode;
+import static io.veriguard.utils.fixtures.EndpointFixture.*;
 import static io.veriguard.utils.fixtures.TagFixture.getTag;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,16 +21,16 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.AssetGroupRepository;
-import io.veriguard.database.repository.EndpointRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
+import io.veriguard.database.repository.EndpointRepository;
 import io.veriguard.database.repository.TagRepository;
 import io.veriguard.rest.asset.endpoint.form.EndpointInput;
 import io.veriguard.rest.asset.endpoint.form.EndpointRegisterInput;
 import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.service.EndpointService;
+import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.EndpointFixture;
 import io.veriguard.utils.fixtures.ExecutorFixture;
-import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.PaginationFixture;
 import io.veriguard.utils.fixtures.composers.ExecutorComposer;
 import io.veriguard.utils.mapper.EndpointMapper;
@@ -499,7 +499,8 @@ class EndpointApiTest extends IntegrationTest {
         mvc.perform(
                 get(ENDPOINT_URI + "/options")
                     .queryParam("searchText", searchText)
-                    .queryParam("sourceId", simulationOrAttackChainId ? attackChainRun.getId() : null)
+                    .queryParam(
+                        "sourceId", simulationOrAttackChainId ? attackChainRun.getId() : null)
                     .accept(MediaType.APPLICATION_JSON)
                     .with(csrf()))
             .andReturn()

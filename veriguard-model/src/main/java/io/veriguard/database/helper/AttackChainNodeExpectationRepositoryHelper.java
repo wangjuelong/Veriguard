@@ -26,8 +26,8 @@ public class AttackChainNodeExpectationRepositoryHelper {
    * Appends a new signature entry to an attackChainNode expectation's signature array.
    *
    * <p>This method atomically appends a type/value tuple to the JSONB signature array for a
-   * specific attackChainNode and agent combination. The operation is performed using PostgreSQL's native
-   * JSONB concatenation for optimal performance.
+   * specific attackChainNode and agent combination. The operation is performed using PostgreSQL's
+   * native JSONB concatenation for optimal performance.
    *
    * @param attackChainNodeId the ID of the attackChainNode
    * @param agentId the ID of the agent

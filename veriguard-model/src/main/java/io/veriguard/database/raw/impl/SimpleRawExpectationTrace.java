@@ -20,8 +20,8 @@ public class SimpleRawExpectationTrace implements RawExpectationTrace {
   private Instant inject_expectation_trace_updated_at;
 
   /**
-   * Compute object equality. Two traces are equal if they have the same attackChainNode expectation,
-   * security platform, name and link. Trace dates are irrelevant for equality for now.
+   * Compute object equality. Two traces are equal if they have the same attackChainNode
+   * expectation, security platform, name and link. Trace dates are irrelevant for equality for now.
    *
    * @param o object to compare to
    * @return equality result

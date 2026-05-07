@@ -1,7 +1,7 @@
 package io.veriguard.rest.variable;
 
-import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
 import static io.veriguard.rest.attack_chain.AttackChainApi.SCENARIO_URI;
+import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
 
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
@@ -39,7 +39,9 @@ public class VariableApi extends RestBehavior {
     Variable variable = new Variable();
     variable.setUpdateAttributes(input);
     AttackChainRun attackChainRun =
-        this.attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        this.attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     variable.setAttackChainRun(attackChainRun);
     return this.variableService.createVariable(variable);
   }
@@ -49,7 +51,8 @@ public class VariableApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
-  public Iterable<Variable> variablesFromAttackChainRun(@PathVariable @NotBlank final String attackChainRunId) {
+  public Iterable<Variable> variablesFromAttackChainRun(
+      @PathVariable @NotBlank final String attackChainRunId) {
     return this.variableService.variablesFromAttackChainRun(attackChainRunId);
   }
 
@@ -103,7 +106,8 @@ public class VariableApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
-  public Iterable<Variable> variablesFromAttackChain(@PathVariable @NotBlank final String attackChainId) {
+  public Iterable<Variable> variablesFromAttackChain(
+      @PathVariable @NotBlank final String attackChainId) {
     return this.variableService.variablesFromAttackChain(attackChainId);
   }
 

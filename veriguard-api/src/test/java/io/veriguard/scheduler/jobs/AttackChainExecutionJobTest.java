@@ -8,8 +8,8 @@ import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mockStatic;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.fixtures.AttackChainFixture;
@@ -75,7 +75,8 @@ class AttackChainExecutionJobTest extends IntegrationTest {
       List<AttackChainRun> createdAttackChainRuns =
           fromIterable(attackChainRunRepository.findAll()).stream()
               .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
-              .filter(attackChainRun -> SCENARIO_ID_1.equals(attackChainRun.getAttackChain().getId()))
+              .filter(
+                  attackChainRun -> SCENARIO_ID_1.equals(attackChainRun.getAttackChain().getId()))
               .toList();
       assertEquals(0, createdAttackChainRuns.size());
     }
@@ -103,7 +104,8 @@ class AttackChainExecutionJobTest extends IntegrationTest {
       List<AttackChainRun> createdAttackChainRuns =
           fromIterable(attackChainRunRepository.findAll()).stream()
               .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
-              .filter(attackChainRun -> SCENARIO_ID_2.equals(attackChainRun.getAttackChain().getId()))
+              .filter(
+                  attackChainRun -> SCENARIO_ID_2.equals(attackChainRun.getAttackChain().getId()))
               .toList();
       assertEquals(1, createdAttackChainRuns.size());
       AttackChainRun createdAttackChainRun = createdAttackChainRuns.getFirst();
@@ -139,7 +141,8 @@ class AttackChainExecutionJobTest extends IntegrationTest {
       List<AttackChainRun> createdAttackChainRuns =
           fromIterable(attackChainRunRepository.findAll()).stream()
               .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
-              .filter(attackChainRun -> SCENARIO_ID_2.equals(attackChainRun.getAttackChain().getId()))
+              .filter(
+                  attackChainRun -> SCENARIO_ID_2.equals(attackChainRun.getAttackChain().getId()))
               .toList();
       assertEquals(1, createdAttackChainRuns.size());
     }
@@ -170,7 +173,8 @@ class AttackChainExecutionJobTest extends IntegrationTest {
       List<AttackChainRun> createdAttackChainRuns =
           fromIterable(attackChainRunRepository.findAll()).stream()
               .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
-              .filter(attackChainRun -> SCENARIO_ID_3.equals(attackChainRun.getAttackChain().getId()))
+              .filter(
+                  attackChainRun -> SCENARIO_ID_3.equals(attackChainRun.getAttackChain().getId()))
               .toList();
       assertEquals(0, createdAttackChainRuns.size());
     }
@@ -213,7 +217,10 @@ class AttackChainExecutionJobTest extends IntegrationTest {
                 .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
                 .filter(
                     attackChainRun ->
-                        attackChainWrapper.get().getId().equals(attackChainRun.getAttackChain().getId()))
+                        attackChainWrapper
+                            .get()
+                            .getId()
+                            .equals(attackChainRun.getAttackChain().getId()))
                 .toList();
         assertThat(createdAttackChainRuns).isEmpty();
       }
@@ -226,7 +233,8 @@ class AttackChainExecutionJobTest extends IntegrationTest {
         AttackChain attackChain = getAttackChain();
 
         setMockedInstant(
-            mockedInstant, attackChainStartTime.plus(1, ChronoUnit.DAYS).minus(1, ChronoUnit.MINUTES));
+            mockedInstant,
+            attackChainStartTime.plus(1, ChronoUnit.DAYS).minus(1, ChronoUnit.MINUTES));
 
         AttackChainComposer.Composer attackChainWrapper =
             attackChainComposer.forAttackChain(attackChain).persist();
@@ -240,12 +248,17 @@ class AttackChainExecutionJobTest extends IntegrationTest {
                 .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
                 .filter(
                     attackChainRun ->
-                        attackChainWrapper.get().getId().equals(attackChainRun.getAttackChain().getId()))
+                        attackChainWrapper
+                            .get()
+                            .getId()
+                            .equals(attackChainRun.getAttackChain().getId()))
                 .toList();
         assertThat(createdAttackChainRuns)
             .singleElement()
             .satisfies(
-                attackChainRun -> assertThat(attackChainRun.getAttackChain()).isEqualTo(attackChainWrapper.get()));
+                attackChainRun ->
+                    assertThat(attackChainRun.getAttackChain())
+                        .isEqualTo(attackChainWrapper.get()));
       }
     }
 
@@ -257,7 +270,8 @@ class AttackChainExecutionJobTest extends IntegrationTest {
         AttackChain attackChain = getAttackChain();
 
         setMockedInstant(
-            mockedInstant, attackChainStartTime.plus(1, ChronoUnit.DAYS).minus(1, ChronoUnit.MINUTES));
+            mockedInstant,
+            attackChainStartTime.plus(1, ChronoUnit.DAYS).minus(1, ChronoUnit.MINUTES));
 
         AttackChainComposer.Composer attackChainWrapper =
             attackChainComposer.forAttackChain(attackChain).persist();
@@ -273,12 +287,17 @@ class AttackChainExecutionJobTest extends IntegrationTest {
                 .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
                 .filter(
                     attackChainRun ->
-                        attackChainWrapper.get().getId().equals(attackChainRun.getAttackChain().getId()))
+                        attackChainWrapper
+                            .get()
+                            .getId()
+                            .equals(attackChainRun.getAttackChain().getId()))
                 .toList();
         assertThat(createdAttackChainRuns)
             .singleElement()
             .satisfies(
-                attackChainRun -> assertThat(attackChainRun.getAttackChain()).isEqualTo(attackChainWrapper.get()));
+                attackChainRun ->
+                    assertThat(attackChainRun.getAttackChain())
+                        .isEqualTo(attackChainWrapper.get()));
       }
     }
 
@@ -305,7 +324,10 @@ class AttackChainExecutionJobTest extends IntegrationTest {
                 .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
                 .filter(
                     attackChainRun ->
-                        attackChainWrapper.get().getId().equals(attackChainRun.getAttackChain().getId()))
+                        attackChainWrapper
+                            .get()
+                            .getId()
+                            .equals(attackChainRun.getAttackChain().getId()))
                 .toList();
         assertThat(createdAttackChainRuns).isEmpty();
       }
@@ -318,7 +340,8 @@ class AttackChainExecutionJobTest extends IntegrationTest {
       throws JobExecutionException {
     AttackChain attackChain = AttackChainFixture.getAttackChain();
     attackChain.setRecurrence("can not handle this expression!");
-    AttackChainComposer.Composer attackChainWrapper = attackChainComposer.forAttackChain(attackChain).persist();
+    AttackChainComposer.Composer attackChainWrapper =
+        attackChainComposer.forAttackChain(attackChain).persist();
 
     // -- EXECUTE --
     job.execute(null);
@@ -328,7 +351,11 @@ class AttackChainExecutionJobTest extends IntegrationTest {
         fromIterable(attackChainRunRepository.findAll()).stream()
             .filter(attackChainRun -> attackChainRun.getAttackChain() != null)
             .filter(
-                attackChainRun -> attackChainWrapper.get().getId().equals(attackChainRun.getAttackChain().getId()))
+                attackChainRun ->
+                    attackChainWrapper
+                        .get()
+                        .getId()
+                        .equals(attackChainRun.getAttackChain().getId()))
             .toList();
     assertThat(createdAttackChainRuns).isEmpty();
   }

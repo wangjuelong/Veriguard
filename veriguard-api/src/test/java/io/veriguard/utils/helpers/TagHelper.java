@@ -9,7 +9,8 @@ import java.util.stream.Stream;
 public class TagHelper {
   public static List<Tag> crawlAllAttackChainRunTags(AttackChainRun attackChainRun) {
     List<Tag> tags = new ArrayList<>(attackChainRun.getTags());
-    tags.addAll(attackChainRun.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
+    tags.addAll(
+        attackChainRun.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
     tags.addAll(
         attackChainRun.getTeams().stream()
             .flatMap(team -> team.getUsers().stream().flatMap(user -> user.getTags().stream()))
@@ -27,16 +28,25 @@ public class TagHelper {
                                         .filter(Objects::nonNull)))
             .toList());
     tags.addAll(
-        attackChainRun.getDocuments().stream().flatMap(document -> document.getTags().stream()).toList());
+        attackChainRun.getDocuments().stream()
+            .flatMap(document -> document.getTags().stream())
+            .toList());
     tags.addAll(
-        attackChainRun.getAttackChainNodes().stream().flatMap(attackChainNode -> attackChainNode.getTags().stream()).toList());
+        attackChainRun.getAttackChainNodes().stream()
+            .flatMap(attackChainNode -> attackChainNode.getTags().stream())
+            .toList());
     tags.addAll(
         attackChainRun.getAttackChainNodes().stream()
             .flatMap(
                 attackChainNode ->
                     attackChainNode.getNodeContract().isPresent()
                         ? attackChainNode.getNodeContract().get().getPayload() != null
-                            ? attackChainNode.getNodeContract().get().getPayload().getTags().stream()
+                            ? attackChainNode
+                                .getNodeContract()
+                                .get()
+                                .getPayload()
+                                .getTags()
+                                .stream()
                             : Stream.of()
                         : Stream.of())
             .toList());
@@ -63,16 +73,25 @@ public class TagHelper {
                                         .filter(Objects::nonNull)))
             .toList());
     tags.addAll(
-        attackChain.getDocuments().stream().flatMap(document -> document.getTags().stream()).toList());
+        attackChain.getDocuments().stream()
+            .flatMap(document -> document.getTags().stream())
+            .toList());
     tags.addAll(
-        attackChain.getAttackChainNodes().stream().flatMap(attackChainNode -> attackChainNode.getTags().stream()).toList());
+        attackChain.getAttackChainNodes().stream()
+            .flatMap(attackChainNode -> attackChainNode.getTags().stream())
+            .toList());
     tags.addAll(
         attackChain.getAttackChainNodes().stream()
             .flatMap(
                 attackChainNode ->
                     attackChainNode.getNodeContract().isPresent()
                         ? attackChainNode.getNodeContract().get().getPayload() != null
-                            ? attackChainNode.getNodeContract().get().getPayload().getTags().stream()
+                            ? attackChainNode
+                                .getNodeContract()
+                                .get()
+                                .getPayload()
+                                .getTags()
+                                .stream()
                             : Stream.of()
                         : Stream.of())
             .toList());
@@ -81,7 +100,10 @@ public class TagHelper {
 
   public static List<Tag> crawlAllAttackChainNodesTags(List<AttackChainNode> attackChainNodes) {
     List<Tag> tags =
-        new ArrayList<>(attackChainNodes.stream().flatMap(attackChainNode -> attackChainNode.getTags().stream()).toList());
+        new ArrayList<>(
+            attackChainNodes.stream()
+                .flatMap(attackChainNode -> attackChainNode.getTags().stream())
+                .toList());
     tags.addAll(
         attackChainNodes.stream()
             .flatMap(attackChainNode -> attackChainNode.getTeams().stream())
@@ -111,14 +133,22 @@ public class TagHelper {
             .map(AttackChainNodeDocument::getDocument)
             .flatMap(document -> document.getTags().stream())
             .toList());
-    tags.addAll(attackChainNodes.stream().flatMap(attackChainNode -> attackChainNode.getTags().stream()).toList());
+    tags.addAll(
+        attackChainNodes.stream()
+            .flatMap(attackChainNode -> attackChainNode.getTags().stream())
+            .toList());
     tags.addAll(
         attackChainNodes.stream()
             .flatMap(
                 attackChainNode ->
                     attackChainNode.getNodeContract().isPresent()
                         ? attackChainNode.getNodeContract().get().getPayload() != null
-                            ? attackChainNode.getNodeContract().get().getPayload().getTags().stream()
+                            ? attackChainNode
+                                .getNodeContract()
+                                .get()
+                                .getPayload()
+                                .getTags()
+                                .stream()
                             : Stream.of()
                         : Stream.of())
             .toList());

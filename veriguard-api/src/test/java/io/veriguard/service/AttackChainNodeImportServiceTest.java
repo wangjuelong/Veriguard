@@ -72,7 +72,8 @@ class AttackChainNodeImportServiceTest {
     Date date = Date.from(LocalDateTime.of(2025, 1, 2, 12, 0).toInstant(ZoneOffset.UTC));
     cell.setCellValue(date);
     // -- EXECUTE --
-    String result = AttackChainNodeImportUtils.getDateAsStringFromCell(row, "A", "DD/MM/YY HH:mm:ss");
+    String result =
+        AttackChainNodeImportUtils.getDateAsStringFromCell(row, "A", "DD/MM/YY HH:mm:ss");
 
     // -- ASSERT --
     assertNotNull(result);
@@ -237,7 +238,8 @@ class AttackChainNodeImportServiceTest {
   void testGetAttackChainNodeTimeWithoutPattern() {
     // -- PREPARE --
     AttackChainNodeTime attackChainNodeTime = new AttackChainNodeTime();
-    attackChainNodeTime.setUnformattedDate(LocalTime.of(12, 0, 0).format(DateTimeFormatter.ISO_TIME));
+    attackChainNodeTime.setUnformattedDate(
+        LocalTime.of(12, 0, 0).format(DateTimeFormatter.ISO_TIME));
     // -- EXECUTE --
     Temporal result = AttackChainNodeImportUtils.getAttackChainNodeDate(attackChainNodeTime, null);
 
@@ -266,7 +268,9 @@ class AttackChainNodeImportServiceTest {
     AttackChainNodeTime attackChainNodeTime = new AttackChainNodeTime();
     attackChainNodeTime.setUnformattedDate("25/01/20 13h05:52");
     // -- EXECUTE --
-    Temporal result = AttackChainNodeImportUtils.getAttackChainNodeDate(attackChainNodeTime, "yy/MM/dd HH'h'mm:ss");
+    Temporal result =
+        AttackChainNodeImportUtils.getAttackChainNodeDate(
+            attackChainNodeTime, "yy/MM/dd HH'h'mm:ss");
 
     // -- ASSERT --
     assertNotNull(result);
@@ -280,7 +284,8 @@ class AttackChainNodeImportServiceTest {
     AttackChainNodeTime attackChainNodeTime = new AttackChainNodeTime();
     attackChainNodeTime.setUnformattedDate("13h05:52");
     // -- EXECUTE --
-    Temporal result = AttackChainNodeImportUtils.getAttackChainNodeDate(attackChainNodeTime, "HH'h'mm:ss");
+    Temporal result =
+        AttackChainNodeImportUtils.getAttackChainNodeDate(attackChainNodeTime, "HH'h'mm:ss");
 
     // -- ASSERT --
     assertNotNull(result);
@@ -294,7 +299,8 @@ class AttackChainNodeImportServiceTest {
     AttackChainNodeTime attackChainNodeTime = new AttackChainNodeTime();
     attackChainNodeTime.setUnformattedDate("13 heures et demi");
     // -- EXECUTE --
-    Temporal result = AttackChainNodeImportUtils.getAttackChainNodeDate(attackChainNodeTime, "HH'h'mm:ss");
+    Temporal result =
+        AttackChainNodeImportUtils.getAttackChainNodeDate(attackChainNodeTime, "HH'h'mm:ss");
 
     // -- ASSERT --
     assertNull(result);

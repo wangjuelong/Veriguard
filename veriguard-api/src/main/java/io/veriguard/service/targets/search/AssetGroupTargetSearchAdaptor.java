@@ -35,19 +35,24 @@ public class AssetGroupTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
+  public Page<AttackChainNodeTarget> search(
+      SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
     Page<AssetGroupOutput> filteredAssetGroups =
-        assetGroupCriteriaBuilderService.assetGroupPagination(this.translate(input, scopedAttackChainNode));
+        assetGroupCriteriaBuilderService.assetGroupPagination(
+            this.translate(input, scopedAttackChainNode));
     return new PageImpl<>(
         filteredAssetGroups.getContent().stream()
-            .map(assetGroupOutput -> convertFromAssetGroupOutput(assetGroupOutput, scopedAttackChainNode))
+            .map(
+                assetGroupOutput ->
+                    convertFromAssetGroupOutput(assetGroupOutput, scopedAttackChainNode))
             .toList(),
         filteredAssetGroups.getPageable(),
         filteredAssetGroups.getTotalElements());
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(
+      AttackChainNode scopedAttackChainNode, String textSearch) {
     return scopedAttackChainNode.getAssetGroups().stream()
         .filter(ag -> ag.getName().toLowerCase().contains(textSearch.toLowerCase()))
         .map(ag -> new FilterUtilsJpa.Option(ag.getId(), ag.getName()))

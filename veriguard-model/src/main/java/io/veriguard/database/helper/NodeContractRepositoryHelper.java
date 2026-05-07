@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 /**
  * Repository helper for complex nodeExecutor contract queries.
  *
- * <p>This helper provides custom query operations for {@link NodeContract} entities that
- * require dynamic SQL generation or complex joins not easily expressed through Spring Data JPA
- * repository methods.
+ * <p>This helper provides custom query operations for {@link NodeContract} entities that require
+ * dynamic SQL generation or complex joins not easily expressed through Spring Data JPA repository
+ * methods.
  *
  * @see NodeContract
  */
@@ -26,9 +26,9 @@ public class NodeContractRepositoryHelper {
    * Searches for nodeExecutor contracts matching an attack pattern and platform-architecture
    * constraints.
    *
-   * <p>This method performs a complex query that joins nodeExecutor contracts with payloads and attack
-   * patterns, filtering by the external attack pattern ID and ensuring platform and architecture
-   * compatibility.
+   * <p>This method performs a complex query that joins nodeExecutor contracts with payloads and
+   * attack patterns, filtering by the external attack pattern ID and ensuring platform and
+   * architecture compatibility.
    *
    * <p>Results are randomly ordered to provide variety when selecting contracts for automated
    * attack simulations.

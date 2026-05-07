@@ -15,8 +15,8 @@ import org.hibernate.annotations.IdGeneratorType;
  * behavior: if a value is already set, it will be preserved; otherwise, a new UUID will be
  * generated automatically.
  *
- * <p>This is particularly useful for import attackChains where entities may already have assigned IDs
- * that should be retained, while still allowing automatic generation for new entities.
+ * <p>This is particularly useful for import attackChains where entities may already have assigned
+ * IDs that should be retained, while still allowing automatic generation for new entities.
  *
  * <p>Example usage:
  *

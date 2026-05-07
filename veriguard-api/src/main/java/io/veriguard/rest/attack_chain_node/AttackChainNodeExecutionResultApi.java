@@ -30,6 +30,7 @@ public class AttackChainNodeExecutionResultApi extends RestBehavior {
       @PathVariable @NotBlank final String attackChainNodeId,
       @RequestParam @NotBlank final String targetId,
       @RequestParam @NotNull final TargetType targetType) {
-    return this.attackChainNodeExecutionService.attackChainNodeExecutionResultPayload(attackChainNodeId, targetId, targetType);
+    return this.attackChainNodeExecutionService.attackChainNodeExecutionResultPayload(
+        attackChainNodeId, targetId, targetType);
   }
 }

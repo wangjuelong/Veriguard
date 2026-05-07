@@ -7,7 +7,8 @@ import lombok.Setter;
 /** Represent the input of an export request from a search */
 @Setter
 @Getter
-public class AttackChainNodeExportFromSearchRequestInput extends AttackChainNodeBulkProcessingInput {
+public class AttackChainNodeExportFromSearchRequestInput
+    extends AttackChainNodeBulkProcessingInput {
   /** The export options to alter the shape of the response */
   @JsonProperty("options")
   private ExportOptionsInput exportOptions = new ExportOptionsInput();

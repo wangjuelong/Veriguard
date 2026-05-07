@@ -7,8 +7,8 @@ import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationCrite
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
-import io.veriguard.database.model.Base;
 import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.Base;
 import io.veriguard.database.model.ResourceType;
 import io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple;
 import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;

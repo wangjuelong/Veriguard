@@ -44,7 +44,8 @@ class AttackChainNodeExpectationServiceTest {
   void setUp() {
     agent = AgentFixture.createDefaultAgentService();
     attackChainNode = AttackChainNodeFixture.getDefaultAttackChainNode();
-    attackChainNode.setExpectations(List.of(createVulnerabilityAttackChainNodeExpectation(attackChainNode, agent)));
+    attackChainNode.setExpectations(
+        List.of(createVulnerabilityAttackChainNodeExpectation(attackChainNode, agent)));
   }
 
   private void mockExpectation(AttackChainNodeExpectation expectation) {
@@ -74,13 +75,13 @@ class AttackChainNodeExpectationServiceTest {
     NodeExecutor nodeExecutor = NodeExecutorFixture.createDefaultNodeExecutor("InjectorName");
     Payload payload = PayloadFixture.createDefaultCommand();
     payload.setOutputParsers(outputParser != null ? Set.of(outputParser) : Set.of());
-    NodeContract contract =
-        NodeContractFixture.createPayloadNodeContract(nodeExecutor, payload);
+    NodeContract contract = NodeContractFixture.createPayloadNodeContract(nodeExecutor, payload);
     attackChainNode.setNodeContract(contract);
   }
 
   private void setupVulnerabilityExpectation() {
-    AttackChainNodeExpectation expectation = createVulnerabilityAttackChainNodeExpectation(attackChainNode, agent);
+    AttackChainNodeExpectation expectation =
+        createVulnerabilityAttackChainNodeExpectation(attackChainNode, agent);
     attackChainNode.setExpectations(List.of(expectation));
     mockExpectation(expectation);
   }
@@ -95,9 +96,11 @@ class AttackChainNodeExpectationServiceTest {
   @DisplayName("Should return all prevention expectations when none expired")
   void shouldReturnAllPreventionExpectationsWhenNoneExpired() {
     AttackChainNodeExpectation expectation1 =
-        AttackChainNodeExpectationFixture.createPreventionAttackChainNodeExpectation(attackChainNode, null);
+        AttackChainNodeExpectationFixture.createPreventionAttackChainNodeExpectation(
+            attackChainNode, null);
     AttackChainNodeExpectation expectation2 =
-        AttackChainNodeExpectationFixture.createPreventionAttackChainNodeExpectation(attackChainNode, null);
+        AttackChainNodeExpectationFixture.createPreventionAttackChainNodeExpectation(
+            attackChainNode, null);
     when(attackChainNodeExpectationRepository.findAll(any()))
         .thenReturn(List.of(expectation1, expectation2));
 
@@ -114,9 +117,11 @@ class AttackChainNodeExpectationServiceTest {
   @DisplayName("Should return all detection expectations when none expired")
   void shouldReturnAllDetectionExpectationsWhenNoneExpired() {
     AttackChainNodeExpectation expectation1 =
-        AttackChainNodeExpectationFixture.createDetectionAttackChainNodeExpectation(attackChainNode, null);
+        AttackChainNodeExpectationFixture.createDetectionAttackChainNodeExpectation(
+            attackChainNode, null);
     AttackChainNodeExpectation expectation2 =
-        AttackChainNodeExpectationFixture.createDetectionAttackChainNodeExpectation(attackChainNode, null);
+        AttackChainNodeExpectationFixture.createDetectionAttackChainNodeExpectation(
+            attackChainNode, null);
     when(attackChainNodeExpectationRepository.findAll(any()))
         .thenReturn(List.of(expectation1, expectation2));
 
@@ -133,9 +138,11 @@ class AttackChainNodeExpectationServiceTest {
   @DisplayName("Should return all manual expectations when none expired")
   void shouldReturnAllManualExpectationsWhenNoneExpired() {
     AttackChainNodeExpectation expectation1 =
-        AttackChainNodeExpectationFixture.createManualAttackChainNodeExpectation(null, attackChainNode);
+        AttackChainNodeExpectationFixture.createManualAttackChainNodeExpectation(
+            null, attackChainNode);
     AttackChainNodeExpectation expectation2 =
-        AttackChainNodeExpectationFixture.createManualAttackChainNodeExpectation(null, attackChainNode);
+        AttackChainNodeExpectationFixture.createManualAttackChainNodeExpectation(
+            null, attackChainNode);
     when(attackChainNodeExpectationRepository.findAll(any()))
         .thenReturn(List.of(expectation1, expectation2));
 
@@ -283,9 +290,11 @@ class AttackChainNodeExpectationServiceTest {
   void shouldDoNothingWhenExpectationsAreNotVulnerabilityType() {
     // Only non-VULNERABILITY expectations -> filtered out -> early return
     AttackChainNodeExpectation prevention =
-        AttackChainNodeExpectationFixture.createPreventionAttackChainNodeExpectation(attackChainNode, null);
+        AttackChainNodeExpectationFixture.createPreventionAttackChainNodeExpectation(
+            attackChainNode, null);
     AttackChainNodeExpectation detection =
-        AttackChainNodeExpectationFixture.createDetectionAttackChainNodeExpectation(attackChainNode, null);
+        AttackChainNodeExpectationFixture.createDetectionAttackChainNodeExpectation(
+            attackChainNode, null);
     attackChainNode.setExpectations(List.of(prevention, detection));
 
     try (MockedStatic<ExpectationUtils> mocked = Mockito.mockStatic(ExpectationUtils.class)) {
@@ -302,7 +311,8 @@ class AttackChainNodeExpectationServiceTest {
   @DisplayName("Should do nothing when expectation has a null agent")
   void shouldDoNothingWhenExpectationHasNullAgent() {
     // exp.getAgent() == null -> filtered out -> early return
-    AttackChainNodeExpectation expectationWithNullAgent = createVulnerabilityAttackChainNodeExpectation(attackChainNode, null);
+    AttackChainNodeExpectation expectationWithNullAgent =
+        createVulnerabilityAttackChainNodeExpectation(attackChainNode, null);
     attackChainNode.setExpectations(List.of(expectationWithNullAgent));
 
     try (MockedStatic<ExpectationUtils> mocked = Mockito.mockStatic(ExpectationUtils.class)) {
@@ -347,8 +357,10 @@ class AttackChainNodeExpectationServiceTest {
   @DisplayName("Should call update for each vulnerability expectation")
   void shouldCallUpdateForEachVulnerabilityExpectation() {
     // Two vulnerability expectations for the same agent
-    AttackChainNodeExpectation exp1 = createVulnerabilityAttackChainNodeExpectation(attackChainNode, agent);
-    AttackChainNodeExpectation exp2 = createVulnerabilityAttackChainNodeExpectation(attackChainNode, agent);
+    AttackChainNodeExpectation exp1 =
+        createVulnerabilityAttackChainNodeExpectation(attackChainNode, agent);
+    AttackChainNodeExpectation exp2 =
+        createVulnerabilityAttackChainNodeExpectation(attackChainNode, agent);
     attackChainNode.setExpectations(List.of(exp1, exp2));
     doReturn(exp1)
         .when(attackChainNodeExpectationService)
@@ -361,7 +373,8 @@ class AttackChainNodeExpectationServiceTest {
 
       // updateAttackChainNodeExpectation called once per expectation
       verify(attackChainNodeExpectationService, times(2))
-          .updateAttackChainNodeExpectation(any(), any(AttackChainNodeExpectationUpdateInput.class));
+          .updateAttackChainNodeExpectation(
+              any(), any(AttackChainNodeExpectationUpdateInput.class));
       verify(attackChainNodeExpectationRepository, times(1)).saveAll(any());
     }
   }

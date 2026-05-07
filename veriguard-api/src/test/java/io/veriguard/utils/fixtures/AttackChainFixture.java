@@ -2,8 +2,8 @@ package io.veriguard.utils.fixtures;
 
 import static io.veriguard.database.model.AttackChain.SEVERITY.critical;
 
-import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.Team;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -29,7 +29,8 @@ public class AttackChainFixture {
     return attackChain;
   }
 
-  public static AttackChain getAttackChain(List<Team> attackChainTeams, Set<AttackChainNode> attackChainAttackChainNodes) {
+  public static AttackChain getAttackChain(
+      List<Team> attackChainTeams, Set<AttackChainNode> attackChainAttackChainNodes) {
     AttackChain attackChain = new AttackChain();
     attackChain.setName("Crisis simulation");
     attackChain.setDescription("A crisis simulation for my enterprise");

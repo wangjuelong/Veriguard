@@ -14,6 +14,7 @@ public class BatchExecutionTraceExecutor {
 
   public List<AttackChainNodeExecutionCallback> handleAttackChainNodeExecutionCallbackList(
       List<AttackChainNodeExecutionCallback> attackChainNodeExecutionCallbacks) {
-    return batchingAttackChainNodeStatusService.handleAttackChainNodeExecutionCallback(attackChainNodeExecutionCallbacks);
+    return batchingAttackChainNodeStatusService.handleAttackChainNodeExecutionCallback(
+        attackChainNodeExecutionCallbacks);
   }
 }

@@ -10,8 +10,8 @@ import org.hibernate.Hibernate;
  * Utility class for agent-related operations and validations.
  *
  * <p>Provides helper methods for filtering, validating, and retrieving agents associated with
- * assets and attackChainNodes. Agents are software components deployed on endpoints that execute attackChainNode
- * commands during simulations.
+ * assets and attackChainNodes. Agents are software components deployed on endpoints that execute
+ * attackChainNode commands during simulations.
  *
  * <p>This is a utility class and cannot be instantiated.
  *

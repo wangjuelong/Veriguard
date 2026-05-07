@@ -165,7 +165,8 @@ public class PayloadService {
       @NotNull final String contractId,
       @NotNull final NodeExecutor nodeExecutor,
       @NotNull final Payload payload) {
-    Map<SupportedLanguage, String> labels = Map.of(en, nodeExecutor.getName(), fr, nodeExecutor.getName());
+    Map<SupportedLanguage, String> labels =
+        Map.of(en, nodeExecutor.getName(), fr, nodeExecutor.getName());
     ContractConfig contractConfig =
         new ContractConfig(
             nodeExecutor.getType(),
@@ -214,7 +215,8 @@ public class PayloadService {
         payload.getDomains());
   }
 
-  private ContractExpectations expectations(AttackChainNodeExpectation.EXPECTATION_TYPE[] expectationTypes) {
+  private ContractExpectations expectations(
+      AttackChainNodeExpectation.EXPECTATION_TYPE[] expectationTypes) {
     List<Expectation> expectations = new ArrayList<>();
     if (expectationTypes != null) {
       for (AttackChainNodeExpectation.EXPECTATION_TYPE type : expectationTypes) {

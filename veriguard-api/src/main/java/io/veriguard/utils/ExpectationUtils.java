@@ -19,8 +19,8 @@ import io.veriguard.model.expectation.DetectionExpectation;
 import io.veriguard.model.expectation.ManualExpectation;
 import io.veriguard.model.expectation.PreventionExpectation;
 import io.veriguard.model.expectation.VulnerabilityExpectation;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.service.AssetToExecute;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -121,7 +121,9 @@ public class ExpectationUtils {
                     } else { // type all
                       if (nullPlayerResponses == 0) {
                         OptionalDouble avgAllPlayer =
-                            toProcess.stream().mapToDouble(AttackChainNodeExpectation::getScore).average();
+                            toProcess.stream()
+                                .mapToDouble(AttackChainNodeExpectation::getScore)
+                                .average();
                         parentExpectation.setScore(avgAllPlayer.getAsDouble());
                       } else {
                         if (zeroPlayerResponses == 0) {
@@ -239,7 +241,9 @@ public class ExpectationUtils {
                 expectation.getExpirationTime(),
                 computeSignatures(
                     implantType,
-                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getAttackChainNode().getId() : attackChainNodeId,
+                    OAEV_IMPLANT_CALDERA.equals(implantType)
+                        ? agent.getAttackChainNode().getId()
+                        : attackChainNodeId,
                     assetToExecute.asset(),
                     OAEV_IMPLANT_CALDERA.equals(implantType)
                         ? agent.getParent().getId()
@@ -287,7 +291,9 @@ public class ExpectationUtils {
                 expectation.getExpirationTime(),
                 computeSignatures(
                     implantType,
-                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getAttackChainNode().getId() : attackChainNodeId,
+                    OAEV_IMPLANT_CALDERA.equals(implantType)
+                        ? agent.getAttackChainNode().getId()
+                        : attackChainNodeId,
                     assetToExecute.asset(),
                     OAEV_IMPLANT_CALDERA.equals(implantType)
                         ? agent.getParent().getId()
@@ -370,7 +376,9 @@ public class ExpectationUtils {
                 expectation.getExpirationTime(),
                 computeSignatures(
                     implantType,
-                    OAEV_IMPLANT_CALDERA.equals(implantType) ? agent.getAttackChainNode().getId() : attackChainNodeId,
+                    OAEV_IMPLANT_CALDERA.equals(implantType)
+                        ? agent.getAttackChainNode().getId()
+                        : attackChainNodeId,
                     assetToExecute.asset(),
                     OAEV_IMPLANT_CALDERA.equals(implantType)
                         ? agent.getParent().getId()
@@ -602,7 +610,11 @@ public class ExpectationUtils {
       @NotNull final AttackChainNodeExpectation attackChainNodeExpectation) {
     return attackChainNodeExpectation.getAttackChainNode().getExpectations().stream()
         .filter(ExpectationUtils::isAssetGroupExpectation)
-        .filter(e -> e.getAssetGroup().getId().equals(attackChainNodeExpectation.getAssetGroup().getId()))
+        .filter(
+            e ->
+                e.getAssetGroup()
+                    .getId()
+                    .equals(attackChainNodeExpectation.getAssetGroup().getId()))
         .filter(e -> e.getType().equals(attackChainNodeExpectation.getType()))
         .toList();
   }

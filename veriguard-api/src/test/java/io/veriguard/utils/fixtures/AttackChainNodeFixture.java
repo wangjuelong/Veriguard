@@ -59,7 +59,8 @@ public class AttackChainNodeFixture {
         CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS,
         objectMapper.convertValue(
             List.of(
-                ExpectationFixture.createExpectation(AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL)),
+                ExpectationFixture.createExpectation(
+                    AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL)),
             ArrayNode.class));
     return attackChainNodeContent;
   }
@@ -132,12 +133,14 @@ public class AttackChainNodeFixture {
     return createAttackChainNode(nodeContract, INJECT_EMAIL_NAME);
   }
 
-  public static AttackChainNode createAttackChainNodeWithPayloadArg(Map<String, Object> payloadArguments) {
+  public static AttackChainNode createAttackChainNodeWithPayloadArg(
+      Map<String, Object> payloadArguments) {
     AttackChainNode attackChainNode = createAttackChainNodeWithTitle("Inject title");
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectNode attackChainNodeContent = objectMapper.createObjectNode();
     payloadArguments.forEach(
-        (key, value) -> attackChainNodeContent.set(key, objectMapper.convertValue(value, JsonNode.class)));
+        (key, value) ->
+            attackChainNodeContent.set(key, objectMapper.convertValue(value, JsonNode.class)));
 
     payloadArguments.forEach(
         (key, value) -> {

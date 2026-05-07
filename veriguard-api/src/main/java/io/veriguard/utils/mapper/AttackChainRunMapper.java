@@ -2,18 +2,18 @@ package io.veriguard.utils.mapper;
 
 import static java.util.Collections.emptyList;
 
+import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.AttackChainRunStatus;
-import io.veriguard.database.model.AttackChainNode;
-import io.veriguard.database.raw.RawAttackChainRunSimple;
 import io.veriguard.database.raw.RawAttackChainNodeExpectation;
+import io.veriguard.database.raw.RawAttackChainRunSimple;
 import io.veriguard.database.repository.AssetGroupRepository;
 import io.veriguard.database.repository.AssetRepository;
 import io.veriguard.database.repository.AttackChainNodeExpectationRepository;
 import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.rest.atomic_testing.form.TargetSimple;
-import io.veriguard.rest.document.form.RelatedEntityOutput;
 import io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple;
+import io.veriguard.rest.document.form.RelatedEntityOutput;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.TargetType;
 import java.util.ArrayList;
@@ -28,8 +28,8 @@ import org.springframework.stereotype.Component;
 /**
  * Mapper component for converting AttackChainRun entities to output DTOs.
  *
- * <p>Provides methods for transforming attackChainRun domain objects and raw database results into API
- * response objects, including target resolution and expectation result aggregation.
+ * <p>Provides methods for transforming attackChainRun domain objects and raw database results into
+ * API response objects, including target resolution and expectation result aggregation.
  *
  * @see io.veriguard.database.model.AttackChainRun
  * @see io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple
@@ -50,7 +50,8 @@ public class AttackChainRunMapper {
   // -- EXERCISE SIMPLE --
 
   /**
-   * Converts a raw attackChainRun to a simplified attackChainRun DTO with full target and score resolution.
+   * Converts a raw attackChainRun to a simplified attackChainRun DTO with full target and score
+   * resolution.
    *
    * <p>Performs additional database queries to resolve teams, assets, and asset groups, then
    * computes global expectation results.
@@ -73,14 +74,17 @@ public class AttackChainRunMapper {
       List<Object[]> assets =
           assetRepository.assetsByAttackChainRunIds(Set.of(rawAttackChainRun.getExercise_id()));
       List<Object[]> assetGroups =
-          assetGroupRepository.assetGroupsByAttackChainRunIds(Set.of(rawAttackChainRun.getExercise_id()));
+          assetGroupRepository.assetGroupsByAttackChainRunIds(
+              Set.of(rawAttackChainRun.getExercise_id()));
 
       List<TargetSimple> allTargets =
           Stream.concat(
                   attackChainNodeMapper.toTargetSimple(teams, TargetType.TEAMS).stream(),
                   Stream.concat(
                       attackChainNodeMapper.toTargetSimple(assets, TargetType.ASSETS).stream(),
-                      attackChainNodeMapper.toTargetSimple(assetGroups, TargetType.ASSETS_GROUPS).stream()))
+                      attackChainNodeMapper
+                          .toTargetSimple(assetGroups, TargetType.ASSETS_GROUPS)
+                          .stream()))
               .toList();
 
       simple.getTargets().addAll(allTargets);
@@ -99,10 +103,13 @@ public class AttackChainRunMapper {
    * @param attackChainRuns the list of raw attackChainRun data
    * @return list of attackChainRun simple DTOs with resolved targets and scores
    */
-  public List<AttackChainRunSimple> getAttackChainRunSimples(List<RawAttackChainRunSimple> attackChainRuns) {
+  public List<AttackChainRunSimple> getAttackChainRunSimples(
+      List<RawAttackChainRunSimple> attackChainRuns) {
     // -- MAP TO GENERATE TARGETSIMPLEs
     Set<String> attackChainRunIds =
-        attackChainRuns.stream().map(RawAttackChainRunSimple::getExercise_id).collect(Collectors.toSet());
+        attackChainRuns.stream()
+            .map(RawAttackChainRunSimple::getExercise_id)
+            .collect(Collectors.toSet());
 
     Map<String, List<Object[]>> teamMap =
         teamRepository.teamsByAttackChainRunIds(attackChainRunIds).stream()
@@ -117,7 +124,9 @@ public class AttackChainRunMapper {
             .collect(Collectors.groupingBy(row -> (String) row[0]));
 
     Map<String, List<RawAttackChainNodeExpectation>> expectationMap =
-        attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainRunIds(attackChainRunIds).stream()
+        attackChainNodeExpectationRepository
+            .rawForComputeGlobalByAttackChainRunIds(attackChainRunIds)
+            .stream()
             .collect(Collectors.groupingBy(RawAttackChainNodeExpectation::getExercise_id));
 
     List<AttackChainRunSimple> attackChainRunSimples = new ArrayList<>();
@@ -156,7 +165,9 @@ public class AttackChainRunMapper {
                   attackChainNodeMapper.toTargetSimple(teams, TargetType.TEAMS).stream(),
                   Stream.concat(
                       attackChainNodeMapper.toTargetSimple(assets, TargetType.ASSETS).stream(),
-                      attackChainNodeMapper.toTargetSimple(assetGroups, TargetType.ASSETS_GROUPS).stream()))
+                      attackChainNodeMapper
+                          .toTargetSimple(assetGroups, TargetType.ASSETS_GROUPS)
+                          .stream()))
               .toList();
 
       simple.getTargets().addAll(allTargets);
@@ -166,7 +177,8 @@ public class AttackChainRunMapper {
   }
 
   // -- RAWEXERCISESIMPLE to EXERCISESIMPLE --
-  private AttackChainRunSimple fromRawAttackChainRunSimple(RawAttackChainRunSimple rawAttackChainRun) {
+  private AttackChainRunSimple fromRawAttackChainRunSimple(
+      RawAttackChainRunSimple rawAttackChainRun) {
     AttackChainRunSimple simple = new AttackChainRunSimple();
     simple.setId(rawAttackChainRun.getExercise_id());
     simple.setName(rawAttackChainRun.getExercise_name());
@@ -210,14 +222,18 @@ public class AttackChainRunMapper {
    * @param attackChainRuns the attackChainRuns to convert
    * @return set of related entity output DTOs
    */
-  public static Set<RelatedEntityOutput> toRelatedEntityOutputs(Set<AttackChainRun> attackChainRuns) {
+  public static Set<RelatedEntityOutput> toRelatedEntityOutputs(
+      Set<AttackChainRun> attackChainRuns) {
     return attackChainRuns.stream()
         .map(attackChainRun -> toRelatedEntityOutput(attackChainRun))
         .collect(Collectors.toSet());
   }
 
   private static RelatedEntityOutput toRelatedEntityOutput(AttackChainRun attackChainRun) {
-    return RelatedEntityOutput.builder().id(attackChainRun.getId()).name(attackChainRun.getName()).build();
+    return RelatedEntityOutput.builder()
+        .id(attackChainRun.getId())
+        .name(attackChainRun.getName())
+        .build();
   }
 
   /**
@@ -226,8 +242,11 @@ public class AttackChainRunMapper {
    * @param attackChainNodes the attackChainNodes to convert
    * @return set of related entity output DTOs including attackChainRun context
    */
-  public static Set<RelatedEntityOutput> toSimulationAttackChainNodes(Set<AttackChainNode> attackChainNodes) {
-    return attackChainNodes.stream().map(attackChainNode -> toSimulationAttackChainNode(attackChainNode)).collect(Collectors.toSet());
+  public static Set<RelatedEntityOutput> toSimulationAttackChainNodes(
+      Set<AttackChainNode> attackChainNodes) {
+    return attackChainNodes.stream()
+        .map(attackChainNode -> toSimulationAttackChainNode(attackChainNode))
+        .collect(Collectors.toSet());
   }
 
   private static RelatedEntityOutput toSimulationAttackChainNode(AttackChainNode attackChainNode) {

@@ -58,7 +58,8 @@ public class ExecutableNodeService {
 
   private String getArgumentValueOrDefault(
       String key, ObjectNode attackChainNodeContent, String defaultValue) {
-    return attackChainNodeContent.get(key) != null && !attackChainNodeContent.get(key).asText().isEmpty()
+    return attackChainNodeContent.get(key) != null
+            && !attackChainNodeContent.get(key).asText().isEmpty()
         ? attackChainNodeContent.get(key).asText()
         : defaultValue;
   }
@@ -102,7 +103,10 @@ public class ExecutableNodeService {
           && ContractFieldType.TargetedAsset.label.equals(defaultPayloadArgument.getType())) {
         value =
             getTargetedAssetArgumentValue(
-                argumentKey, attackChainNodeContent, defaultPayloadArgument, nodeContractContentFields);
+                argumentKey,
+                attackChainNodeContent,
+                defaultPayloadArgument,
+                nodeContractContentFields);
 
       } else {
         value =
@@ -192,8 +196,8 @@ public class ExecutableNodeService {
     return Base64.getEncoder().encodeToString(computedCommand.getBytes());
   }
 
-  public Payload getExecutablePayloadAndUpdateAttackChainNodeStatus(String attackChainNodeId, String agentId)
-      throws Exception {
+  public Payload getExecutablePayloadAndUpdateAttackChainNodeStatus(
+      String attackChainNodeId, String agentId) throws Exception {
     // Need startTime to be defined before everything else to be the most accurate start time, as
     // this whole process is
     // called at the beginning of the implant execution. A better solution would be to have the
@@ -204,8 +208,9 @@ public class ExecutableNodeService {
     Payload payloadToExecute = getExecutablePayloadAttackChainNode(attackChainNodeId);
     this.attackChainNodeStatusService.addStartImplantExecutionTraceByAttackChainNode(
         attackChainNodeId, agentId, "Implant is up and starting execution", startTime);
-    this.attackChainNodeExpectationService.addStartDateSignatureToAttackChainNodeExpectationsByAgent(
-        attackChainNodeId, agentId, startTime);
+    this.attackChainNodeExpectationService
+        .addStartDateSignatureToAttackChainNodeExpectationsByAgent(
+            attackChainNodeId, agentId, startTime);
     return payloadToExecute;
   }
 
@@ -216,7 +221,8 @@ public class ExecutableNodeService {
             .getNodeContract()
             .orElseThrow(() -> new ElementNotFoundException("Inject contract not found"));
     VeriguardImplantAttackChainNodeContent content =
-        attackChainNodeService.convertAttackChainNodeContent(attackChainNode, VeriguardImplantAttackChainNodeContent.class);
+        attackChainNodeService.convertAttackChainNodeContent(
+            attackChainNode, VeriguardImplantAttackChainNodeContent.class);
     String obfuscator = content.getObfuscator() != null ? content.getObfuscator() : "plain-text";
 
     if (contract.getPayload() == null) {
@@ -318,11 +324,15 @@ public class ExecutableNodeService {
     return payloadCommand;
   }
 
-  private Payload processDnsResolutionPayload(Payload payloadToExecute, AttackChainNode attackChainNode) {
+  private Payload processDnsResolutionPayload(
+      Payload payloadToExecute, AttackChainNode attackChainNode) {
     DnsResolution dnsResolution = (DnsResolution) payloadToExecute;
     dnsResolution.setHostname(
         replaceArgumentsByValue(
-            dnsResolution.getHostname(), dnsResolution.getArguments(), null, attackChainNode.getContent()));
+            dnsResolution.getHostname(),
+            dnsResolution.getArguments(),
+            null,
+            attackChainNode.getContent()));
     return dnsResolution;
   }
 }

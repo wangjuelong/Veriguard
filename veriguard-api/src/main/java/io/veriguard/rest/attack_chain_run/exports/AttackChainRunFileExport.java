@@ -93,7 +93,9 @@ public class AttackChainRunFileExport extends FileExportBase {
 
   public List<AttackChainNode> getAttackChainNodes() {
     if (attackChainNodes == null) {
-      return this.attackChainRun == null ? new ArrayList<>() : this.attackChainRun.getAttackChainNodes();
+      return this.attackChainRun == null
+          ? new ArrayList<>()
+          : this.attackChainRun.getAttackChainNodes();
     }
     return attackChainNodes;
   }
@@ -154,7 +156,8 @@ public class AttackChainRunFileExport extends FileExportBase {
                       return Stream.of();
                     }
                     if (attackChainNode.getPayload().get().getAttachedDocument().isPresent()) {
-                      return Stream.of(attackChainNode.getPayload().get().getAttachedDocument().get());
+                      return Stream.of(
+                          attackChainNode.getPayload().get().getAttachedDocument().get());
                     }
                     return Stream.of();
                   })
@@ -214,7 +217,8 @@ public class AttackChainRunFileExport extends FileExportBase {
     this.attackChainRun = attackChainRun;
   }
 
-  public static AttackChainRunFileExport fromAttackChainRun(AttackChainRun attackChainRun, ObjectMapper objectMapper) {
+  public static AttackChainRunFileExport fromAttackChainRun(
+      AttackChainRun attackChainRun, ObjectMapper objectMapper) {
     return new AttackChainRunFileExport(attackChainRun, objectMapper);
   }
 

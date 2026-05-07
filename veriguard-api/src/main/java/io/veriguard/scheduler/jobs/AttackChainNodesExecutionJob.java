@@ -10,16 +10,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.database.model.*;
-import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.AttackChainEdgesRepository;
 import io.veriguard.database.repository.AttackChainNodeExpectationRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.execution.ExecutableNode;
 import io.veriguard.helper.AttackChainNodeHelper;
 import io.veriguard.notification.model.NotificationEvent;
 import io.veriguard.notification.model.NotificationEventType;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.scheduler.jobs.exception.ErrorMessagesPreExecutionException;
 import io.veriguard.service.NotificationEventService;
 import io.veriguard.service.SecurityCoverageSendJobService;
@@ -96,7 +96,8 @@ public class AttackChainNodesExecutionJob implements Job {
   }
 
   public void handleAutoStartAttackChainRuns() {
-    List<AttackChainRun> attackChainRuns = attackChainRunRepository.findAllShouldBeInRunningState(now());
+    List<AttackChainRun> attackChainRuns =
+        attackChainRunRepository.findAllShouldBeInRunningState(now());
     if (attackChainRuns.isEmpty()) {
       return;
     }
@@ -133,7 +134,8 @@ public class AttackChainNodesExecutionJob implements Job {
         .filter(
             ex ->
                 ex.getAttackChain()
-                    != null) // only send notification for attackChainRun associated to a attackChain
+                    != null) // only send notification for attackChainRun associated to a
+        // attackChain
         .forEach(
             ex ->
                 notificationEventService.sendNotificationEventWithDelay(
@@ -148,14 +150,16 @@ public class AttackChainNodesExecutionJob implements Job {
 
   public void handlePendingAttackChainNode() {
     List<AttackChainNode> pendingAttackChainNodes =
-        attackChainNodeHelper.getAllPendingAttackChainNodesWithThresholdMinutes(this.attackChainNodeExecutionThreshold);
+        attackChainNodeHelper.getAllPendingAttackChainNodesWithThresholdMinutes(
+            this.attackChainNodeExecutionThreshold);
 
     if (pendingAttackChainNodes.isEmpty()) {
       return;
     }
 
     for (AttackChainNode attackChainNode : pendingAttackChainNodes) {
-      AttackChainNodeStatus status = attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new);
+      AttackChainNodeStatus status =
+          attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new);
       // Find agents that already have a COMPLETE trace
       Set<String> completedAgentIds = ExecutionTraceUtils.getCompletedAgentIds(status.getTraces());
 
@@ -165,7 +169,8 @@ public class AttackChainNodesExecutionJob implements Job {
       // Add a COMPLETE/TIMEOUT trace for each agent that never responded
       for (Agent agent : allAgents) {
         if (!completedAgentIds.contains(agent.getId())) {
-          ExecutionTraceUtils.addTimeoutTrace(status, agent, this.attackChainNodeExecutionThreshold);
+          ExecutionTraceUtils.addTimeoutTrace(
+              status, agent, this.attackChainNodeExecutionThreshold);
         }
       }
       attackChainNodeStatusService.updateFinalAttackChainNodeStatus(status);
@@ -173,7 +178,9 @@ public class AttackChainNodesExecutionJob implements Job {
 
     attackChainNodeStatusService.saveAll(
         pendingAttackChainNodes.stream()
-            .map(attackChainNode -> attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new))
+            .map(
+                attackChainNode ->
+                    attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new))
             .collect(Collectors.toList()));
   }
 
@@ -182,7 +189,8 @@ public class AttackChainNodesExecutionJob implements Job {
     AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();
     // We are now checking if we depend on another attackChainNode and if it did not failed
     if (ofNullable(executableAttackChainNode.getAttackChainRunId()).isPresent()) {
-      checkErrorMessagesPreExecution(executableAttackChainNode.getAttackChainRunId(), attackChainNode);
+      checkErrorMessagesPreExecution(
+          executableAttackChainNode.getAttackChainRunId(), attackChainNode);
     }
     if (!attackChainNode.isReady()) {
       throw new UnsupportedOperationException(
@@ -199,7 +207,8 @@ public class AttackChainNodesExecutionJob implements Job {
    * @param attackChainNode the attackChainNode to check
    */
   @VisibleForTesting
-  protected void checkErrorMessagesPreExecution(String attackChainRunId, AttackChainNode attackChainNode)
+  protected void checkErrorMessagesPreExecution(
+      String attackChainRunId, AttackChainNode attackChainNode)
       throws ErrorMessagesPreExecutionException {
     List<AttackChainEdge> attackChainEdges =
         attackChainEdgesRepository.findParents(List.of(attackChainNode.getId()));
@@ -297,7 +306,9 @@ public class AttackChainNodesExecutionJob implements Job {
    * @return a map of expectations and their value
    */
   private @NotNull Map<String, Boolean> getStringBooleanMap(
-      List<AttackChainNode> parents, String attackChainRunId, List<AttackChainEdge> attackChainEdges) {
+      List<AttackChainNode> parents,
+      String attackChainRunId,
+      List<AttackChainEdge> attackChainEdges) {
     Map<String, Boolean> mapCondition =
         attackChainEdges.stream()
             .flatMap(
@@ -315,24 +326,34 @@ public class AttackChainNodesExecutionJob implements Job {
                   && !executionStatusesNotReady.contains(parent.getStatus().get().getName()));
 
           List<AttackChainNodeExpectation> expectations =
-              attackChainNodeExpectationRepository.findAllForAttackChainRunAndAttackChainNode(attackChainRunId, parent.getId());
+              attackChainNodeExpectationRepository.findAllForAttackChainRunAndAttackChainNode(
+                  attackChainRunId, parent.getId());
           expectations.forEach(
               attackChainNodeExpectation -> {
                 String name =
-                    StringUtils.capitalize(attackChainNodeExpectation.getType().toString().toLowerCase());
-                if (attackChainNodeExpectation.getType().equals(AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL)) {
+                    StringUtils.capitalize(
+                        attackChainNodeExpectation.getType().toString().toLowerCase());
+                if (attackChainNodeExpectation
+                    .getType()
+                    .equals(AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL)) {
                   name = attackChainNodeExpectation.getName();
                 }
-                if (AttackChainNodeExpectation.EXPECTATION_TYPE.CHALLENGE.equals(attackChainNodeExpectation.getType())
+                if (AttackChainNodeExpectation.EXPECTATION_TYPE.CHALLENGE.equals(
+                        attackChainNodeExpectation.getType())
                     || AttackChainNodeExpectation.EXPECTATION_TYPE.ARTICLE.equals(
                         attackChainNodeExpectation.getType())) {
-                  if (attackChainNodeExpectation.getUser() == null && attackChainNodeExpectation.getScore() != null) {
+                  if (attackChainNodeExpectation.getUser() == null
+                      && attackChainNodeExpectation.getScore() != null) {
                     mapCondition.put(
-                        name, attackChainNodeExpectation.getScore() >= attackChainNodeExpectation.getExpectedScore());
+                        name,
+                        attackChainNodeExpectation.getScore()
+                            >= attackChainNodeExpectation.getExpectedScore());
                   }
                 } else {
                   mapCondition.put(
-                      name, expectationStatusesSuccess.contains(attackChainNodeExpectation.getResponse()));
+                      name,
+                      expectationStatusesSuccess.contains(
+                          attackChainNodeExpectation.getResponse()));
                 }
               });
         });
@@ -340,19 +361,23 @@ public class AttackChainNodesExecutionJob implements Job {
   }
 
   private List<String> labelFromCondition(
-      AttackChainNode attackChainNodeParent, AttackChainEdgeConditions.AttackChainEdgeCondition condition) {
+      AttackChainNode attackChainNodeParent,
+      AttackChainEdgeConditions.AttackChainEdgeCondition condition) {
     List<String> result = new ArrayList<>();
     for (AttackChainEdgeConditions.Condition conditionElement : condition.getConditions()) {
       result.add(
           String.format(
               "Inject '%s' - %s is %s",
-              attackChainNodeParent.getTitle(), conditionElement.getKey(), conditionElement.isValue()));
+              attackChainNodeParent.getTitle(),
+              conditionElement.getKey(),
+              conditionElement.isValue()));
     }
     return result;
   }
 
   public void updateAttackChainRun(String attackChainRunId) {
-    AttackChainRun attackChainRun = attackChainRunRepository.findById(attackChainRunId).orElseThrow();
+    AttackChainRun attackChainRun =
+        attackChainRunRepository.findById(attackChainRunId).orElseThrow();
     attackChainRun.setUpdatedAt(now());
     attackChainRunRepository.save(attackChainRun);
   }
@@ -366,25 +391,36 @@ public class AttackChainNodesExecutionJob implements Job {
       // Get all attackChainNodes to execute grouped by attackChainRun.
       List<ExecutableNode> attackChainNodes = attackChainNodeHelper.getAttackChainNodesToRun();
 
-      // We're grouping the attackChainNodes to run by attackChainRuns but also making sure no attackChainNodes
+      // We're grouping the attackChainNodes to run by attackChainRuns but also making sure no
+      // attackChainNodes
       // run in the same batch as it's parents
       Map<String, List<ExecutableNode>> byAttackChainRuns =
           attackChainNodes.stream()
               .filter(
                   executableAttackChainNode ->
                       // If we got dependencies, we check that the parents are not part of the
-                      // current batch of attackChainNodes running. If so, we're filtering them out and
-                      // they'll be part of the next batch of launched attackChainNodes. Do note that this is
+                      // current batch of attackChainNodes running. If so, we're filtering them out
+                      // and
+                      // they'll be part of the next batch of launched attackChainNodes. Do note
+                      // that this is
                       // an edge case as it's not allowed to add a dependency less than a minute
                       // after a parent but can happen if the platform was restarted after some time
-                      // out. It'll then start the attackChainNodes that were not started because the
+                      // out. It'll then start the attackChainNodes that were not started because
+                      // the
                       // platform was down.
-                      executableAttackChainNode.getInjection().getAttackChainNode().getDependsOn() == null
+                      executableAttackChainNode.getInjection().getAttackChainNode().getDependsOn()
+                              == null
                           || !intersect(
                               attackChainNodes.stream()
-                                  .map(execAttackChainNode -> execAttackChainNode.getInjection().getId())
+                                  .map(
+                                      execAttackChainNode ->
+                                          execAttackChainNode.getInjection().getId())
                                   .toList(),
-                              executableAttackChainNode.getInjection().getAttackChainNode().getDependsOn().stream()
+                              executableAttackChainNode
+                                  .getInjection()
+                                  .getAttackChainNode()
+                                  .getDependsOn()
+                                  .stream()
                                   .map(
                                       attackChainEdge ->
                                           attackChainEdge
@@ -411,9 +447,11 @@ public class AttackChainNodesExecutionJob implements Job {
                           try {
                             this.executeAttackChainNode(executableAttackChainNode);
                           } catch (Exception e) {
-                            AttackChainNode attackChainNode = executableAttackChainNode.getInjection().getAttackChainNode();
+                            AttackChainNode attackChainNode =
+                                executableAttackChainNode.getInjection().getAttackChainNode();
                             log.warn(e.getMessage(), e);
-                            attackChainNodeStatusService.failAttackChainNodeStatus(attackChainNode.getId(), e.getMessage());
+                            attackChainNodeStatusService.failAttackChainNodeStatus(
+                                attackChainNode.getId(), e.getMessage());
                           }
                         });
                 // Update the attackChainRun
@@ -443,7 +481,9 @@ public class AttackChainNodesExecutionJob implements Job {
         fulfilled.add(attackChainNode);
       } else {
         List<NodeExpectationResult> results =
-            attackChainNode.getExpectations().stream().flatMap(ie -> ie.getResults().stream()).toList();
+            attackChainNode.getExpectations().stream()
+                .flatMap(ie -> ie.getResults().stream())
+                .toList();
         if (hasValidResults(results)) {
           attackChainNode.setCollectExecutionStatus(COMPLETED);
           fulfilled.add(attackChainNode);

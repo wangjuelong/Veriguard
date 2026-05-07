@@ -2,8 +2,8 @@ package io.veriguard.rest.atomic_testing.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;

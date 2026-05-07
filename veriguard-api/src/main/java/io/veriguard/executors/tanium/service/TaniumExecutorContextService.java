@@ -44,7 +44,9 @@ public class TaniumExecutorContextService extends ExecutorContextService {
 
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
-      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
+      AttackChainNode attackChainNode,
+      Set<Agent> agents,
+      AttackChainNodeStatus attackChainNodeStatus) {
 
     List<Agent> taniumAgents = new ArrayList<>(agents);
 
@@ -115,7 +117,10 @@ public class TaniumExecutorContextService extends ExecutorContextService {
   }
 
   private List<TaniumAction> getWindowsActions(
-      List<Agent> agents, NodeExecutor nodeExecutor, String attackChainNodeId, Endpoint.PLATFORM_ARCH arch) {
+      List<Agent> agents,
+      NodeExecutor nodeExecutor,
+      String attackChainNodeId,
+      Endpoint.PLATFORM_ARCH arch) {
     List<TaniumAction> actions = new ArrayList<>();
     for (Agent agent : agents) {
       TaniumAction actionWindows = new TaniumAction();
@@ -128,7 +133,8 @@ public class TaniumExecutorContextService extends ExecutorContextService {
               + "\";md $location -ea 0;[Environment]::CurrentDirectory";
       String executorCommandKey = Endpoint.PLATFORM_TYPE.Windows.name() + "." + arch.name();
       String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
-      command = replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, attackChainNodeId, agent.getId());
+      command =
+          replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, attackChainNodeId, agent.getId());
       command =
           command.replaceFirst(
               "\\$?x=.+location=.+;\\[Environment]::CurrentDirectory",

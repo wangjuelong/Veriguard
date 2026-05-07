@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.Asset;
 import io.veriguard.database.model.AssetGroup;
-import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.importer.ImportException;
 import io.veriguard.importer.Importer;
 import io.veriguard.importer.V1_DataImporter;
@@ -76,8 +76,8 @@ public class ImportService {
   }
 
   @Transactional(rollbackOn = Exception.class)
-  public void handleFileImport(MultipartFile file, AttackChainRun attackChainRun, AttackChain attackChain)
-      throws Exception {
+  public void handleFileImport(
+      MultipartFile file, AttackChainRun attackChainRun, AttackChain attackChain) throws Exception {
     handleInputStreamImport(
         file.getInputStream(),
         attackChainRun,
@@ -251,7 +251,8 @@ public class ImportService {
 
       // Process all loaded data
       for (InputStream dataStream : dataImports) {
-        handleDataImport(dataStream, docReferences, attackChainRun, attackChain, asset, assetGroup, suffix);
+        handleDataImport(
+            dataStream, docReferences, attackChainRun, attackChain, asset, assetGroup, suffix);
       }
     } finally {
       tempFile.delete();

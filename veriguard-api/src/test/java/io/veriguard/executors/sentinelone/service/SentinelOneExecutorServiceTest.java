@@ -109,8 +109,10 @@ public class SentinelOneExecutorServiceTest {
     attackChainNode.setId("injectId");
     List<Agent> agents =
         List.of(AgentFixture.createAgent(EndpointFixture.createEndpoint(), "12345"));
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
-    when(executorService.manageWithoutPlatformAgents(agents, attackChainNodeStatus)).thenReturn(agents);
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    when(executorService.manageWithoutPlatformAgents(agents, attackChainNodeStatus))
+        .thenReturn(agents);
     // Run method to test
     sentinelOneExecutorContextService.launchBatchExecutorSubprocess(
         attackChainNode, new HashSet<>(agents), attackChainNodeStatus);

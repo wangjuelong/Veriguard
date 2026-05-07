@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.*;
+import io.veriguard.rest.attack_chain_node.exports.AttackChainNodesFileExport;
 import io.veriguard.rest.attack_chain_run.exports.AttackChainRunFileExport;
 import io.veriguard.rest.attack_chain_run.exports.ExportOptions;
 import io.veriguard.rest.attack_chain_run.exports.VariableMixin;
 import io.veriguard.rest.attack_chain_run.exports.VariableWithValueMixin;
-import io.veriguard.rest.attack_chain_node.exports.AttackChainNodesFileExport;
 import lombok.Getter;
 
 @Getter
@@ -50,8 +50,10 @@ public class FileExportBase {
 
     // disable users if not requested; note negation
     if (!ExportOptions.has(ExportOptions.WITH_PLAYERS, this.exportOptionsMask)) {
-      this.objectMapper.addMixIn(AttackChainRunFileExport.class, Mixins.AttackChainRunFileExport.class);
-      this.objectMapper.addMixIn(AttackChainNodesFileExport.class, Mixins.AttackChainNodesFileExport.class);
+      this.objectMapper.addMixIn(
+          AttackChainRunFileExport.class, Mixins.AttackChainRunFileExport.class);
+      this.objectMapper.addMixIn(
+          AttackChainNodesFileExport.class, Mixins.AttackChainNodesFileExport.class);
     }
 
     if (ExportOptions.has(ExportOptions.WITH_TEAMS, this.exportOptionsMask)) {

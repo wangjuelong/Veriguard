@@ -140,7 +140,8 @@ public interface TeamRepository
           + "   OR (i.attackChainRun.id = :simulationOrAttackChainId"
           + "   OR i.attackChain.id = :simulationOrAttackChainId)"
           + " ) AND (:name IS NULL OR lower(t.name) LIKE lower(concat('%', cast(coalesce(:name, '') as string), '%')))")
-  List<Team> findAllBySimulationOrAttackChainIdAndName(String simulationOrAttackChainId, String name);
+  List<Team> findAllBySimulationOrAttackChainIdAndName(
+      String simulationOrAttackChainId, String name);
 
   @Query(
       value =

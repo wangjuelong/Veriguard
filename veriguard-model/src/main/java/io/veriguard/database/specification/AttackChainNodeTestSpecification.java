@@ -7,7 +7,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class AttackChainNodeTestSpecification {
 
-  public static Specification<AttackChainNodeTestStatus> findAttackChainNodeTestInAttackChainRun(String attackChainRunId) {
+  public static Specification<AttackChainNodeTestStatus> findAttackChainNodeTestInAttackChainRun(
+      String attackChainRunId) {
 
     return (root, query, criteriaBuilder) -> {
       Path<Object> path =
@@ -16,7 +17,8 @@ public class AttackChainNodeTestSpecification {
     };
   }
 
-  public static Specification<AttackChainNodeTestStatus> findAttackChainNodeTestInAttackChain(String attackChainId) {
+  public static Specification<AttackChainNodeTestStatus> findAttackChainNodeTestInAttackChain(
+      String attackChainId) {
 
     return (root, query, criteriaBuilder) -> {
       Path<Object> path =

@@ -1,8 +1,8 @@
 package io.veriguard.database.repository;
 
 import io.veriguard.database.model.AttackChain;
-import io.veriguard.database.raw.RawAttackChainRunSimple;
 import io.veriguard.database.raw.RawAttackChain;
+import io.veriguard.database.raw.RawAttackChainRunSimple;
 import io.veriguard.database.raw.RawAttackChainSimple;
 import io.veriguard.utils.Constants;
 import java.time.Instant;
@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
  * Repository interface for {@link AttackChain} entities.
  *
  * <p>This repository provides data access operations for attackChains, which are reusable templates
- * for security attackChainRuns. AttackChains define collections of attackChainNodes, team configurations, and
- * recurrence settings. It supports:
+ * for security attackChainRuns. AttackChains define collections of attackChainNodes, team
+ * configurations, and recurrence settings. It supports:
  *
  * <ul>
  *   <li>Standard CRUD operations via {@link JpaRepository}
@@ -260,7 +260,8 @@ public interface AttackChainRepository
       nativeQuery = true)
   @Transactional
   void removeTeams(
-      @Param("scenarioId") final String attackChainId, @Param("teamIds") final List<String> teamIds);
+      @Param("scenarioId") final String attackChainId,
+      @Param("teamIds") final List<String> teamIds);
 
   Optional<AttackChain> findByAttackChainRuns_Id(String attackChainRunId);
 }

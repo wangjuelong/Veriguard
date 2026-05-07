@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.database.model.*;
 import io.veriguard.helper.NodeModelHelper;
 import io.veriguard.rest.atomic_testing.form.*;
-import io.veriguard.rest.document.form.RelatedEntityOutput;
 import io.veriguard.rest.attack_chain_node.output.AttackChainNodeOutput;
 import io.veriguard.rest.attack_chain_node.output.AttackChainNodeSimple;
+import io.veriguard.rest.document.form.RelatedEntityOutput;
 import io.veriguard.rest.payload.output.PayloadSimple;
-import io.veriguard.utils.NodeExpectationResultUtils;
 import io.veriguard.utils.AttackChainNodeUtils;
+import io.veriguard.utils.NodeExpectationResultUtils;
 import io.veriguard.utils.TargetType;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 /**
  * Mapper component for converting AttackChainNode entities to various output DTOs.
  *
- * <p>Provides comprehensive mapping methods for transforming attackChainNode domain objects into API
- * response objects, including result overviews, simple representations, and target mappings.
+ * <p>Provides comprehensive mapping methods for transforming attackChainNode domain objects into
+ * API response objects, including result overviews, simple representations, and target mappings.
  *
  * @see io.veriguard.database.model.AttackChainNode
  * @see io.veriguard.rest.attack_chain_node.output.AttackChainNodeOutput
@@ -42,7 +42,8 @@ public class AttackChainNodeMapper {
    * @param attackChainNode the attackChainNode to convert
    * @return the attackChainNode result overview output DTO
    */
-  public AttackChainNodeResultOverviewOutput toAttackChainNodeResultOverviewOutput(AttackChainNode attackChainNode) {
+  public AttackChainNodeResultOverviewOutput toAttackChainNodeResultOverviewOutput(
+      AttackChainNode attackChainNode) {
     // --
     Optional<NodeContract> nodeContract = attackChainNode.getNodeContract();
 
@@ -61,7 +62,8 @@ public class AttackChainNodeMapper {
         .tagIds(attackChainNode.getTags().stream().map(Tag::getId).toList())
         .documentIds(documentIds)
         .nodeContract(toNodeContractOutput(nodeContract))
-        .status(attackChainNodeStatusMapper.toAttackChainNodeStatusSimple(attackChainNode.getStatus()))
+        .status(
+            attackChainNodeStatusMapper.toAttackChainNodeStatusSimple(attackChainNode.getStatus()))
         .expectations(toAttackChainNodeExpectationSimples(attackChainNode.getExpectations()))
         .killChainPhases(toKillChainPhasesSimples(attackChainNode.getKillChainPhases()))
         .tags(attackChainNode.getTags().stream().map(Tag::getId).collect(Collectors.toSet()))
@@ -114,8 +116,7 @@ public class AttackChainNodeMapper {
    * @param nodeContract the optional nodeExecutor contract
    * @return the nodeExecutor contract output DTO, or null if not present
    */
-  public AtomicNodeContractOutput toNodeContractOutput(
-      Optional<NodeContract> nodeContract) {
+  public AtomicNodeContractOutput toNodeContractOutput(Optional<NodeContract> nodeContract) {
     return nodeContract
         .map(
             contract ->
@@ -159,7 +160,8 @@ public class AttackChainNodeMapper {
     return expectations.stream().filter(Objects::nonNull).map(this::toExpectationSimple).toList();
   }
 
-  private AttackChainNodeExpectationSimple toExpectationSimple(AttackChainNodeExpectation expectation) {
+  private AttackChainNodeExpectationSimple toExpectationSimple(
+      AttackChainNodeExpectation expectation) {
     return AttackChainNodeExpectationSimple.builder()
         .id(expectation.getId())
         .name(expectation.getName())
@@ -195,7 +197,10 @@ public class AttackChainNodeMapper {
    * @return the simplified attackChainNode DTO
    */
   public AttackChainNodeSimple toAttackChainNodeSimple(AttackChainNode attackChainNode) {
-    return AttackChainNodeSimple.builder().id(attackChainNode.getId()).title(attackChainNode.getTitle()).build();
+    return AttackChainNodeSimple.builder()
+        .id(attackChainNode.getId())
+        .title(attackChainNode.getTitle())
+        .build();
   }
 
   /**
@@ -206,21 +211,25 @@ public class AttackChainNodeMapper {
    * @param attackChainNodes the attackChainNodes to convert
    * @return set of related entity output DTOs
    */
-  public static Set<RelatedEntityOutput> toRelatedEntityOutputs(Set<AttackChainNode> attackChainNodes) {
+  public static Set<RelatedEntityOutput> toRelatedEntityOutputs(
+      Set<AttackChainNode> attackChainNodes) {
     return attackChainNodes.stream()
         .map(attackChainNode -> toRelatedEntityOutput(attackChainNode))
         .collect(Collectors.toSet());
   }
 
   private static RelatedEntityOutput toRelatedEntityOutput(AttackChainNode attackChainNode) {
-    return RelatedEntityOutput.builder().id(attackChainNode.getId()).name(attackChainNode.getTitle()).build();
+    return RelatedEntityOutput.builder()
+        .id(attackChainNode.getId())
+        .name(attackChainNode.getTitle())
+        .build();
   }
 
   /**
    * Creates an attackChainNode output DTO from individual components.
    *
-   * <p>Assembles an attackChainNode output from raw data components, typically from database query results.
-   * Calculates readiness based on contract requirements and target assignments.
+   * <p>Assembles an attackChainNode output from raw data components, typically from database query
+   * results. Calculates readiness based on contract requirements and target assignments.
    *
    * @param id the attackChainNode ID
    * @param title the attackChainNode title
@@ -263,7 +272,8 @@ public class AttackChainNodeMapper {
     attackChainNodeOutput.setAttackChain(attackChainId);
     attackChainNodeOutput.setDependsDuration(dependsDuration);
     attackChainNodeOutput.setNodeContract(nodeContract);
-    attackChainNodeOutput.setTags(tags != null ? new HashSet<>(Arrays.asList(tags)) : new HashSet<>());
+    attackChainNodeOutput.setTags(
+        tags != null ? new HashSet<>(Arrays.asList(tags)) : new HashSet<>());
     attackChainNodeOutput.setTeams(
         teams != null ? new ArrayList<>(Arrays.asList(teams)) : new ArrayList<>());
     attackChainNodeOutput.setAssets(

@@ -41,14 +41,15 @@ public class PayloadMapper {
   /**
    * Extracts payload output information from an attackChainNode.
    *
-   * <p>Determines the appropriate payload representation based on whether the attackChainNode has been
-   * executed. For executed attackChainNodes, returns the saved status payload. For pending attackChainNodes,
-   * constructs the payload output from the nodeExecutor contract configuration.
+   * <p>Determines the appropriate payload representation based on whether the attackChainNode has
+   * been executed. For executed attackChainNodes, returns the saved status payload. For pending
+   * attackChainNodes, constructs the payload output from the nodeExecutor contract configuration.
    *
    * @param attackChainNode the optional attackChainNode to extract payload from
    * @return the status payload output DTO, or null if no payload available
    */
-  public StatusPayloadOutput getStatusPayloadOutputFromAttackChainNode(Optional<AttackChainNode> attackChainNode) {
+  public StatusPayloadOutput getStatusPayloadOutputFromAttackChainNode(
+      Optional<AttackChainNode> attackChainNode) {
 
     if (attackChainNode.isEmpty()) {
       return null;
@@ -64,7 +65,9 @@ public class PayloadMapper {
     StatusPayloadOutput.StatusPayloadOutputBuilder statusPayloadOutputBuilder =
         StatusPayloadOutput.builder();
 
-    if (ofNullable(attackChainNode.get().getContent()).map(c -> c.has("obfuscator")).orElse(Boolean.FALSE)) {
+    if (ofNullable(attackChainNode.get().getContent())
+        .map(c -> c.has("obfuscator"))
+        .orElse(Boolean.FALSE)) {
       String obfuscator = attackChainNode.get().getContent().findValue("obfuscator").asText();
       statusPayloadOutputBuilder.obfuscator(obfuscator);
     }
@@ -73,7 +76,8 @@ public class PayloadMapper {
     Payload payload = nodeContract.getPayload();
 
     // Handle the case when attackChainNode has not been executed yet or no payload output exists
-    if (attackChainNodeStatusOpt.isEmpty() || attackChainNodeStatusOpt.get().getPayloadOutput() == null) {
+    if (attackChainNodeStatusOpt.isEmpty()
+        || attackChainNodeStatusOpt.get().getPayloadOutput() == null) {
       if (payload != null) {
         populatePayloadDetails(statusPayloadOutputBuilder, payload, nodeContract);
 
@@ -90,8 +94,7 @@ public class PayloadMapper {
         .map(AttackChainNodeStatus::getPayloadOutput)
         .map(
             statusPayload ->
-                populateExecutedPayload(
-                    statusPayloadOutputBuilder, statusPayload, nodeContract))
+                populateExecutedPayload(statusPayloadOutputBuilder, statusPayload, nodeContract))
         .orElse(null);
   }
 
@@ -266,9 +269,7 @@ public class PayloadMapper {
    */
   public List<DetectionRemediationOutput> toDetectionRemediationOutputs(
       List<DetectionRemediation> detectionRemediations) {
-    return detectionRemediations.stream()
-        .map(PayloadMapper::toDetectionRemediationOutput)
-        .toList();
+    return detectionRemediations.stream().map(PayloadMapper::toDetectionRemediationOutput).toList();
   }
 
   public static DetectionRemediationOutput toDetectionRemediationOutput(

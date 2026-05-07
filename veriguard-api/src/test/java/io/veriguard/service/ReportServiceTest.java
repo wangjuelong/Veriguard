@@ -7,13 +7,13 @@ import static org.mockito.Mockito.when;
 
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
-import io.veriguard.rest.report.form.ReportInformationInput;
 import io.veriguard.rest.report.form.ReportAttackChainNodeCommentInput;
+import io.veriguard.rest.report.form.ReportInformationInput;
 import io.veriguard.rest.report.form.ReportInput;
 import io.veriguard.rest.report.model.Report;
+import io.veriguard.rest.report.model.ReportAttackChainNodeComment;
 import io.veriguard.rest.report.model.ReportInformation;
 import io.veriguard.rest.report.model.ReportInformationsType;
-import io.veriguard.rest.report.model.ReportAttackChainNodeComment;
 import io.veriguard.rest.report.repository.ReportRepository;
 import io.veriguard.rest.report.service.ReportService;
 import io.veriguard.utilstest.RabbitMQTestListener;
@@ -135,7 +135,8 @@ public class ReportServiceTest extends IntegrationTest {
       attackChainNode.setId("fakeID123");
 
       // add report attackChainNode comment
-      ReportAttackChainNodeComment existingReportAttackChainNodeComment = new ReportAttackChainNodeComment();
+      ReportAttackChainNodeComment existingReportAttackChainNodeComment =
+          new ReportAttackChainNodeComment();
       existingReportAttackChainNodeComment.setReport(report);
       existingReportAttackChainNodeComment.setComment("comment");
       existingReportAttackChainNodeComment.setAttackChainNode(attackChainNode);

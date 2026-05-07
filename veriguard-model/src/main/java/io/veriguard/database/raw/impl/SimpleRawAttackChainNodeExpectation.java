@@ -10,9 +10,9 @@ import lombok.Setter;
 /**
  * Simple implementation of {@link RawAttackChainNodeExpectation} for programmatic construction.
  *
- * <p>This class provides a mutable implementation of the {@link RawAttackChainNodeExpectation} projection
- * interface, allowing expectation data to be constructed programmatically rather than exclusively
- * from database queries.
+ * <p>This class provides a mutable implementation of the {@link RawAttackChainNodeExpectation}
+ * projection interface, allowing expectation data to be constructed programmatically rather than
+ * exclusively from database queries.
  *
  * <p>Used when expectation data needs to be assembled from multiple sources or transformed before
  * use.

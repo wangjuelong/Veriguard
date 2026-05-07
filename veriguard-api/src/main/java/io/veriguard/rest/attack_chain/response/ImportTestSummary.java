@@ -36,14 +36,20 @@ public class ImportTestSummary {
                     attackChainNode.isEnabled(),
                     attackChainNode.getContent(),
                     attackChainNode.isAllTeams(),
-                    Optional.ofNullable(attackChainNode.getAttackChainRun()).map(AttackChainRun::getId).orElse(null),
-                    Optional.ofNullable(attackChainNode.getAttackChain()).map(AttackChain::getId).orElse(null),
+                    Optional.ofNullable(attackChainNode.getAttackChainRun())
+                        .map(AttackChainRun::getId)
+                        .orElse(null),
+                    Optional.ofNullable(attackChainNode.getAttackChain())
+                        .map(AttackChain::getId)
+                        .orElse(null),
                     attackChainNode.getDependsDuration(),
                     attackChainNode.getNodeContract().orElse(null),
                     attackChainNode.getTags().stream().map(Tag::getId).toArray(String[]::new),
                     attackChainNode.getTeams().stream().map(Team::getId).toArray(String[]::new),
                     attackChainNode.getAssets().stream().map(Asset::getId).toArray(String[]::new),
-                    attackChainNode.getAssetGroups().stream().map(AssetGroup::getId).toArray(String[]::new),
+                    attackChainNode.getAssetGroups().stream()
+                        .map(AssetGroup::getId)
+                        .toArray(String[]::new),
                     attackChainNode
                         .getNodeContract()
                         .map(NodeContract::getNodeExecutor)

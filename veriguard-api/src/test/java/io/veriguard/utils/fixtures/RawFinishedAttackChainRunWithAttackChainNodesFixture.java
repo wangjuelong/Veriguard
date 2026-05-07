@@ -6,7 +6,8 @@ import java.util.Set;
 
 public class RawFinishedAttackChainRunWithAttackChainNodesFixture {
 
-  private record TestableRawFinishedAttackChainRunWithAttackChainNodes(Instant endDate, Set<String> attackChainNodeIds)
+  private record TestableRawFinishedAttackChainRunWithAttackChainNodes(
+      Instant endDate, Set<String> attackChainNodeIds)
       implements RawFinishedAttackChainRunWithAttackChainNodes {
 
     @Override
@@ -20,8 +21,9 @@ public class RawFinishedAttackChainRunWithAttackChainNodesFixture {
     }
   }
 
-  public static RawFinishedAttackChainRunWithAttackChainNodes createDefaultRawFinishedAttackChainRunWithAttackChainNodes(
-      Instant endDate, Set<String> attackChainNodeIds) {
+  public static RawFinishedAttackChainRunWithAttackChainNodes
+      createDefaultRawFinishedAttackChainRunWithAttackChainNodes(
+          Instant endDate, Set<String> attackChainNodeIds) {
     return new TestableRawFinishedAttackChainRunWithAttackChainNodes(endDate, attackChainNodeIds);
   }
 }

@@ -26,7 +26,8 @@ class ExpectationUtilsTest extends IntegrationTest {
     // -- PREPARE --
     Endpoint endpoint = EndpointFixture.createEndpoint();
     NodeContract nodeContract = NodeContractFixture.createDefaultNodeContract();
-    AttackChainNode attackChainNode = AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
+    AttackChainNode attackChainNode =
+        AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
     attackChainNode.setId("injectId");
 
     Agent agent = AgentFixture.createAgent(endpoint, "ext");
@@ -90,7 +91,8 @@ class ExpectationUtilsTest extends IntegrationTest {
     // -- PREPARE --
     Endpoint endpoint = EndpointFixture.createEndpoint();
     NodeContract nodeContract = NodeContractFixture.createDefaultNodeContract();
-    AttackChainNode attackChainNode = AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
+    AttackChainNode attackChainNode =
+        AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
     attackChainNode.setId("injectId");
 
     Agent agentParent = AgentFixture.createAgent(endpoint, "ext-parent");
@@ -163,7 +165,8 @@ class ExpectationUtilsTest extends IntegrationTest {
     endpoint.setSeenIp(fakeSeenIPV6);
 
     NodeContract nodeContract = NodeContractFixture.createDefaultNodeContract();
-    AttackChainNode attackChainNode = AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
+    AttackChainNode attackChainNode =
+        AttackChainNodeFixture.createTechnicalAttackChainNode(nodeContract, "Inject", endpoint);
     attackChainNode.setId("injectId");
 
     Agent agent = AgentFixture.createAgent(endpoint, "ext");

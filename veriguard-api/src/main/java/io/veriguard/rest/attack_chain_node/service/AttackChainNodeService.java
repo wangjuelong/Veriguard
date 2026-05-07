@@ -9,8 +9,8 @@ import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
 import static io.veriguard.service.AttackChainNodeExpectationUtils.extractAssetIdsFromAttackChainNodeExpectationsResults;
 import static io.veriguard.utils.AgentUtils.isPrimaryAgent;
-import static io.veriguard.utils.FilterUtilsJpa.computeFilterGroupJpa;
 import static io.veriguard.utils.AttackChainNodeUtils.extractAttackChainNodeExpectationsFromAttackChainNodes;
+import static io.veriguard.utils.FilterUtilsJpa.computeFilterGroupJpa;
 import static io.veriguard.utils.StringUtils.duplicateString;
 import static io.veriguard.utils.mapper.AttackChainNodeStatusMapper.toExecutionTracesOutput;
 import static io.veriguard.utils.pagination.SearchUtilsJpa.computeSearchJpa;
@@ -31,23 +31,23 @@ import io.veriguard.injector_contract.ContractTargetedProperty;
 import io.veriguard.injector_contract.fields.ContractFieldType;
 import io.veriguard.injectors.email.service.ImapService;
 import io.veriguard.injectors.email.service.SmtpService;
-import io.veriguard.rest.atomic_testing.form.ExecutionTraceOutput;
 import io.veriguard.rest.atomic_testing.form.AttackChainNodeResultOverviewOutput;
 import io.veriguard.rest.atomic_testing.form.AttackChainNodeStatusOutput;
+import io.veriguard.rest.atomic_testing.form.ExecutionTraceOutput;
+import io.veriguard.rest.attack_chain_node.form.*;
+import io.veriguard.rest.attack_chain_node.output.AgentsAndAssetsAgentless;
 import io.veriguard.rest.collector.service.CollectorService;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.attack_chain_node.form.*;
-import io.veriguard.rest.attack_chain_node.output.AgentsAndAssetsAgentless;
 import io.veriguard.rest.injector_contract.NodeContractContentUtils;
 import io.veriguard.rest.injector_contract.NodeContractService;
 import io.veriguard.rest.security.SecurityExpression;
 import io.veriguard.rest.security.SecurityExpressionHandler;
 import io.veriguard.rest.tag.TagService;
 import io.veriguard.service.*;
-import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.AttackChainNodeUtils;
+import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.JpaUtils;
 import io.veriguard.utils.TargetType;
 import io.veriguard.utils.mapper.AttackChainNodeMapper;
@@ -131,7 +131,10 @@ public class AttackChainNodeService {
       List<AttackChainNodeInput> attackChainNodeInputs) {
 
     List<AttackChainNode> attackChainNodes = new ArrayList<>();
-    attackChainNodeInputs.forEach(attackChainNodeInput -> attackChainNodes.add(buildAttackChainNode(attackChainRun, attackChain, attackChainNodeInput)));
+    attackChainNodeInputs.forEach(
+        attackChainNodeInput ->
+            attackChainNodes.add(
+                buildAttackChainNode(attackChainRun, attackChain, attackChainNodeInput)));
     return attackChainNodeRepository.saveAll(attackChainNodes);
   }
 
@@ -139,12 +142,12 @@ public class AttackChainNodeService {
       @Nullable final AttackChainRun attackChainRun,
       @Nullable final AttackChain attackChain,
       @NotNull final AttackChainNodeInput input) {
-    if (attackChainRun == null && attackChain == null || attackChainRun != null && attackChain != null) {
+    if (attackChainRun == null && attackChain == null
+        || attackChainRun != null && attackChain != null) {
       throw new IllegalArgumentException("Exactly one of exercise or scenario should be present");
     }
 
-    NodeContract nodeContract =
-        this.nodeContractService.nodeContract(input.getNodeContract());
+    NodeContract nodeContract = this.nodeContractService.nodeContract(input.getNodeContract());
     // Get common attributes
     AttackChainNode attackChainNode = input.toAttackChainNode(nodeContract);
     attackChainNode.setUser(this.userService.currentUser());
@@ -167,7 +170,9 @@ public class AttackChainNodeService {
                           attackChainEdgeInput.toAttackChainEdge(
                               attackChainNode,
                               this.attackChainNode(
-                                  attackChainEdgeInput.getRelationship().getAttackChainNodeParentId())))
+                                  attackChainEdgeInput
+                                      .getRelationship()
+                                      .getAttackChainNodeParentId())))
                   .toList());
     }
 
@@ -223,11 +228,13 @@ public class AttackChainNodeService {
   public AttackChainNode attackChainNode(@NotBlank final String attackChainNodeId) {
     return this.attackChainNodeRepository
         .findById(attackChainNodeId)
-        .orElseThrow(() -> new ElementNotFoundException("Inject not found with id: " + attackChainNodeId));
+        .orElseThrow(
+            () -> new ElementNotFoundException("Inject not found with id: " + attackChainNodeId));
   }
 
   /**
-   * Builds an AttackChainNode object based on the provided NodeContract, title, description and enabled
+   * Builds an AttackChainNode object based on the provided NodeContract, title, description and
+   * enabled
    *
    * @param nodeContract the NodeContract associated with the AttackChainNode
    * @param title the title of the AttackChainNode
@@ -308,7 +315,8 @@ public class AttackChainNodeService {
   }
 
   // -- ASSETS --
-  public List<AssetToExecute> resolveAllAssetsToExecute(@NotNull final AttackChainNode attackChainNode) {
+  public List<AssetToExecute> resolveAllAssetsToExecute(
+      @NotNull final AttackChainNode attackChainNode) {
     List<AssetToExecute> assetToExecutes = new ArrayList<>();
 
     attackChainNode.getAssets().forEach(asset -> assetToExecutes.add(new AssetToExecute(asset)));
@@ -360,7 +368,8 @@ public class AttackChainNodeService {
     attackChainNodeDocumentRepository.deleteAll(updatedAttackChainNodes);
   }
 
-  public <T> T convertAttackChainNodeContent(@NotNull final AttackChainNode attackChainNode, @NotNull final Class<T> converter)
+  public <T> T convertAttackChainNodeContent(
+      @NotNull final AttackChainNode attackChainNode, @NotNull final Class<T> converter)
       throws Exception {
     ObjectNode content = attackChainNode.getContent();
     return this.mapper.treeToValue(content, converter);
@@ -388,7 +397,8 @@ public class AttackChainNodeService {
   public AttackChainNodeResultOverviewOutput duplicate(String id) {
     AttackChainNode duplicatedAttackChainNode = findAndDuplicateAttackChainNode(id);
     duplicatedAttackChainNode.setTitle(duplicateString(duplicatedAttackChainNode.getTitle()));
-    AttackChainNode savedAttackChainNode = attackChainNodeRepository.save(duplicatedAttackChainNode);
+    AttackChainNode savedAttackChainNode =
+        attackChainNodeRepository.save(duplicatedAttackChainNode);
     return attackChainNodeMapper.toAttackChainNodeResultOverviewOutput(savedAttackChainNode);
   }
 
@@ -398,7 +408,8 @@ public class AttackChainNodeService {
 
   @Transactional
   public AttackChainNodeResultOverviewOutput launch(String id) {
-    AttackChainNode attackChainNode = attackChainNodeRepository.findById(id).orElseThrow(ElementNotFoundException::new);
+    AttackChainNode attackChainNode =
+        attackChainNodeRepository.findById(id).orElseThrow(ElementNotFoundException::new);
     this.throwIfAttackChainNodeNotLaunchable(attackChainNode);
     attackChainNode.clean();
     attackChainNode.setUpdatedAt(Instant.now());
@@ -410,7 +421,8 @@ public class AttackChainNodeService {
   public AttackChainNodeResultOverviewOutput relaunch(String id) {
     AttackChainNode duplicatedAttackChainNode = findAndDuplicateAttackChainNode(id);
     this.throwIfAttackChainNodeNotLaunchable(duplicatedAttackChainNode);
-    AttackChainNode savedAttackChainNode = saveAttackChainNodeAndStatusAsQueuing(duplicatedAttackChainNode);
+    AttackChainNode savedAttackChainNode =
+        saveAttackChainNodeAndStatusAsQueuing(duplicatedAttackChainNode);
     deleteForRelaunch(id, savedAttackChainNode.getId());
     return attackChainNodeMapper.toAttackChainNodeResultOverviewOutput(savedAttackChainNode);
   }
@@ -439,7 +451,9 @@ public class AttackChainNodeService {
 
     // fetch the attackChainNode
     AttackChainNode attackChainNode =
-        this.attackChainNodeRepository.findById(attackChainNodeId).orElseThrow(ElementNotFoundException::new);
+        this.attackChainNodeRepository
+            .findById(attackChainNodeId)
+            .orElseThrow(ElementNotFoundException::new);
 
     // remove/add default asset groups and remove duplicates
     List<AssetGroup> currentAssetGroups = attackChainNode.getAssetGroups();
@@ -466,7 +480,8 @@ public class AttackChainNodeService {
     return nodeContractService.checkTargetSupport(ic.get(), targetType);
   }
 
-  public void assignAssetGroup(final AttackChainNode attackChainNode, List<AssetGroup> assetGroups) {
+  public void assignAssetGroup(
+      final AttackChainNode attackChainNode, List<AssetGroup> assetGroups) {
     if (this.canApplyTargetType(attackChainNode, TargetType.ASSETS_GROUPS)) {
       attackChainNode.setAssetGroups(assetGroups);
     } else if (this.canApplyTargetType(attackChainNode, TargetType.ASSETS)) {
@@ -482,18 +497,21 @@ public class AttackChainNodeService {
   }
 
   private AttackChainNode findAndDuplicateAttackChainNode(String id) {
-    AttackChainNode attackChainNodeOrigin = attackChainNodeRepository.findById(id).orElseThrow(ElementNotFoundException::new);
+    AttackChainNode attackChainNodeOrigin =
+        attackChainNodeRepository.findById(id).orElseThrow(ElementNotFoundException::new);
     return AttackChainNodeUtils.duplicateAttackChainNode(attackChainNodeOrigin);
   }
 
   private AttackChainNode saveAttackChainNodeAndStatusAsQueuing(AttackChainNode attackChainNode) {
     AttackChainNode savedAttackChainNode = attackChainNodeRepository.save(attackChainNode);
-    AttackChainNodeStatus attackChainNodeStatus = saveAttackChainNodeStatusAsQueuing(savedAttackChainNode);
+    AttackChainNodeStatus attackChainNodeStatus =
+        saveAttackChainNodeStatusAsQueuing(savedAttackChainNode);
     savedAttackChainNode.setStatus(attackChainNodeStatus);
     return savedAttackChainNode;
   }
 
-  private AttackChainNodeStatus saveAttackChainNodeStatusAsQueuing(AttackChainNode attackChainNode) {
+  private AttackChainNodeStatus saveAttackChainNodeStatusAsQueuing(
+      AttackChainNode attackChainNode) {
     AttackChainNodeStatus attackChainNodeStatus = new AttackChainNodeStatus();
     attackChainNodeStatus.setAttackChainNode(attackChainNode);
     attackChainNodeStatus.setTrackingSentDate(Instant.now());
@@ -503,14 +521,14 @@ public class AttackChainNodeService {
   }
 
   /**
-   * Get the attackChainNode specification for the search pagination input related where the user has grants
-   * (through attackChains or simulations)
+   * Get the attackChainNode specification for the search pagination input related where the user
+   * has grants (through attackChains or simulations)
    *
    * @param input the search input
    * @param requestedGrantLevel the requested grant level to filter the attackChainNodes
    * @return the attackChainNode specification to search in DB
-   * @throws BadRequestException if neither of the searchPaginationInput or attackChainNodeIDsToSearch is
-   *     provided
+   * @throws BadRequestException if neither of the searchPaginationInput or
+   *     attackChainNodeIDsToSearch is provided
    */
   public Specification<AttackChainNode> getAttackChainNodeSpecification(
       final AttackChainNodeBulkProcessingInput input, Grant.GRANT_TYPE requestedGrantLevel) {
@@ -522,11 +540,13 @@ public class AttackChainNodeService {
           "Either inject_ids_to_process or search_pagination_input must be provided, and not both at the same time");
     }
     Specification<AttackChainNode> filterSpecifications =
-        AttackChainNodeSpecification.fromAttackChainOrSimulation(input.getSimulationOrAttackChainId());
+        AttackChainNodeSpecification.fromAttackChainOrSimulation(
+            input.getSimulationOrAttackChainId());
     if (input.getSearchPaginationInput() == null) {
       filterSpecifications =
           filterSpecifications.and(
-              JpaUtils.computeIn(AttackChainNode.ID_FIELD_NAME, input.getAttackChainNodeIDsToProcess()));
+              JpaUtils.computeIn(
+                  AttackChainNode.ID_FIELD_NAME, input.getAttackChainNodeIDsToProcess()));
     } else {
       filterSpecifications =
           filterSpecifications.and(
@@ -538,11 +558,13 @@ public class AttackChainNodeService {
     if (!CollectionUtils.isEmpty(input.getAttackChainNodeIDsToIgnore())) {
       filterSpecifications =
           filterSpecifications.and(
-              JpaUtils.computeNotIn(AttackChainNode.ID_FIELD_NAME, input.getAttackChainNodeIDsToIgnore()));
+              JpaUtils.computeNotIn(
+                  AttackChainNode.ID_FIELD_NAME, input.getAttackChainNodeIDsToIgnore()));
     }
     // Filter out any attackChainNodes not related to resources where the user is granted with the
     // appropriate level
-    filterSpecifications = filterSpecifications.and(hasGrantAccessForAttackChainNode(requestedGrantLevel));
+    filterSpecifications =
+        filterSpecifications.and(hasGrantAccessForAttackChainNode(requestedGrantLevel));
     return filterSpecifications;
   }
 
@@ -554,7 +576,8 @@ public class AttackChainNodeService {
    * @return the list of updated attackChainNodes
    */
   public List<AttackChainNode> bulkUpdateAttackChainNode(
-      final List<AttackChainNode> attackChainNodesToUpdate, final List<AttackChainNodeBulkUpdateOperation> operations) {
+      final List<AttackChainNode> attackChainNodesToUpdate,
+      final List<AttackChainNodeBulkUpdateOperation> operations) {
     // We aggregate the different field values in distinct sets in order to avoid retrieving the
     // same data multiple times
     Set<String> teamsIDs = new HashSet<>();
@@ -588,7 +611,8 @@ public class AttackChainNodeService {
     // we update the attackChainNodes values
     attackChainNodesToUpdate.forEach(
         attackChainNode -> {
-          applyUpdateOperation(attackChainNode, operations, teamsFromDB, assetsFromDB, assetGroupsFromDB);
+          applyUpdateOperation(
+              attackChainNode, operations, teamsFromDB, assetsFromDB, assetGroupsFromDB);
           attackChainNode.setUpdatedAt(now());
         });
 
@@ -597,7 +621,8 @@ public class AttackChainNodeService {
   }
 
   /**
-   * Get the attackChainNodes to update/delete and check if the user is allowed to update/delete them
+   * Get the attackChainNodes to update/delete and check if the user is allowed to update/delete
+   * them
    *
    * @param input the attackChainNodes search input.
    * @return the attackChainNodes to update/delete
@@ -611,7 +636,8 @@ public class AttackChainNodeService {
         getAttackChainNodeSpecification(input, requested_grant_level);
 
     // Services calls
-    // Bulk select, only on attackChainNodes granted through attackChain or simulation (or without grant for
+    // Bulk select, only on attackChainNodes granted through attackChain or simulation (or without
+    // grant for
     // atomic tests)
     return this.attackChainNodeRepository.findAll(filterSpecifications);
   }
@@ -625,7 +651,8 @@ public class AttackChainNodeService {
    * @return List of all authorised AttackChainNodes
    */
   public AttackChainNodeAuthorisationResult authorise(
-      List<AttackChainNode> attackChainNodes, BiFunction<SecurityExpression, String, Boolean> authoriseFunction) {
+      List<AttackChainNode> attackChainNodes,
+      BiFunction<SecurityExpression, String, Boolean> authoriseFunction) {
     AttackChainNodeAuthorisationResult result = new AttackChainNodeAuthorisationResult();
     for (AttackChainNode attackChainNode : attackChainNodes) {
       if (authoriseFunction.apply(getAmbientSecurityExpression(), attackChainNode.getId())) {
@@ -638,9 +665,12 @@ public class AttackChainNodeService {
   }
 
   public AttackChainNode updateAttackChainNode(
-      @NotBlank final String attackChainNodeId, @jakarta.validation.constraints.NotNull AttackChainNodeInput input) {
+      @NotBlank final String attackChainNodeId,
+      @jakarta.validation.constraints.NotNull AttackChainNodeInput input) {
     AttackChainNode attackChainNode =
-        this.attackChainNodeRepository.findById(attackChainNodeId).orElseThrow(ElementNotFoundException::new);
+        this.attackChainNodeRepository
+            .findById(attackChainNodeId)
+            .orElseThrow(ElementNotFoundException::new);
     attackChainNode.setUpdateAttributes(input);
 
     // Set dependencies
@@ -702,7 +732,8 @@ public class AttackChainNodeService {
                           (attackChainEdgeInput ->
                               attackChainEdgeInput.getRelationship().getAttackChainNodeParentId()))
                       .toList()
-                      .contains(attackChainEdge.getCompositeId().getAttackChainNodeParent().getId())) {
+                      .contains(
+                          attackChainEdge.getCompositeId().getAttackChainNodeParent().getId())) {
                     attackChainNodeDepencyToRemove.add(attackChainEdge);
                   }
                 });
@@ -714,7 +745,8 @@ public class AttackChainNodeService {
 
     attackChainNode.setTeams(fromIterable(this.teamRepository.findAllById(input.getTeams())));
     attackChainNode.setAssets(fromIterable(this.assetService.assets(input.getAssets())));
-    attackChainNode.setAssetGroups(fromIterable(this.assetGroupService.assetGroups(input.getAssetGroups())));
+    attackChainNode.setAssetGroups(
+        fromIterable(this.assetGroupService.assetGroups(input.getAssetGroups())));
     attackChainNode.setTags(iterableToSet(this.tagRepository.findAllById(input.getTagIds())));
 
     // Set documents
@@ -724,11 +756,15 @@ public class AttackChainNodeService {
     List<String> askedDocumentIds =
         inputDocuments.stream().map(AttackChainNodeDocumentInput::getDocumentId).toList();
     List<String> currentDocumentIds =
-        attackChainNode.getDocuments().stream().map(document -> document.getDocument().getId()).toList();
+        attackChainNode.getDocuments().stream()
+            .map(document -> document.getDocument().getId())
+            .toList();
     // To delete
     List<AttackChainNodeDocument> toRemoveDocuments =
         attackChainNodeDocuments.stream()
-            .filter(attackChainNodeDoc -> !askedDocumentIds.contains(attackChainNodeDoc.getDocument().getId()))
+            .filter(
+                attackChainNodeDoc ->
+                    !askedDocumentIds.contains(attackChainNodeDoc.getDocument().getId()))
             .toList();
     attackChainNodeDocuments.removeAll(toRemoveDocuments);
     // To add
@@ -743,7 +779,8 @@ public class AttackChainNodeService {
                 Document document = doc.get();
                 attackChainNodeDocument.setDocument(document);
                 attackChainNodeDocument.setAttached(in.isAttached());
-                AttackChainNodeDocument savedAttackChainNodeDoc = this.attackChainNodeDocumentRepository.save(attackChainNodeDocument);
+                AttackChainNodeDocument savedAttackChainNodeDoc =
+                    this.attackChainNodeDocumentRepository.save(attackChainNodeDocument);
                 attackChainNodeDocuments.add(savedAttackChainNodeDoc);
               }
             });
@@ -754,7 +791,8 @@ public class AttackChainNodeService {
               input.getDocuments().stream()
                   .filter(id -> id.getDocumentId().equals(attackChainNodeDoc.getDocument().getId()))
                   .findFirst();
-          Boolean attached = inputAttackChainNodeDoc.map(AttackChainNodeDocumentInput::isAttached).orElse(false);
+          Boolean attached =
+              inputAttackChainNodeDoc.map(AttackChainNodeDocumentInput::isAttached).orElse(false);
           attackChainNodeDoc.setAttached(attached);
         });
     attackChainNode.setDocuments(attackChainNodeDocuments);
@@ -766,7 +804,9 @@ public class AttackChainNodeService {
       @NotBlank final String attackChainNodeId,
       @jakarta.validation.constraints.NotNull final AttackChainNodeUpdateActivationInput input) {
     AttackChainNode attackChainNode =
-        this.attackChainNodeRepository.findById(attackChainNodeId).orElseThrow(ElementNotFoundException::new);
+        this.attackChainNodeRepository
+            .findById(attackChainNodeId)
+            .orElseThrow(ElementNotFoundException::new);
     attackChainNode.setEnabled(input.isEnabled());
     attackChainNode.setUpdatedAt(now());
     return attackChainNodeRepository.save(attackChainNode);
@@ -818,7 +858,8 @@ public class AttackChainNodeService {
   }
 
   public void resetAttackChainNodeByAttackChainRunId(String simulationId) {
-    List<AttackChainNode> attackChainNodes = attackChainNodeRepository.findAllAttackChainNodeBySimulationId(simulationId);
+    List<AttackChainNode> attackChainNodes =
+        attackChainNodeRepository.findAllAttackChainNodeBySimulationId(simulationId);
     if (attackChainNodes.isEmpty()) return;
     attackChainNodes.forEach(AttackChainNode::clean);
     attackChainNodeRepository.saveAll(attackChainNodes);
@@ -863,7 +904,8 @@ public class AttackChainNodeService {
         });
   }
 
-  public AgentsAndAssetsAgentless getAgentsAndAgentlessAssetsByAttackChainNode(AttackChainNode attackChainNode) {
+  public AgentsAndAssetsAgentless getAgentsAndAgentlessAssetsByAttackChainNode(
+      AttackChainNode attackChainNode) {
     Set<Agent> agents = new HashSet<>();
     Set<Asset> assetsAgentless = new HashSet<>();
 
@@ -929,7 +971,8 @@ public class AttackChainNodeService {
     List<Object[]> results;
 
     if (trimmedSimulationOrAttackChainId == null) {
-      results = attackChainNodeRepository.findAllByTitleLinkedToFindings(trimmedSearchText, pageable);
+      results =
+          attackChainNodeRepository.findAllByTitleLinkedToFindings(trimmedSearchText, pageable);
     } else {
       results =
           attackChainNodeRepository.findAllByTitleLinkedToFindingsWithContext(
@@ -944,30 +987,40 @@ public class AttackChainNodeService {
   public List<ExecutionTraceOutput> getAttackChainNodeTracesOutputFromAttackChainNodeAndTarget(
       final String attackChainNodeId, final String targetId, final TargetType targetType) {
     return toExecutionTracesOutput(
-        getAttackChainNodeTracesFromAttackChainNodeAndTarget(attackChainNodeId, targetId, targetType));
+        getAttackChainNodeTracesFromAttackChainNodeAndTarget(
+            attackChainNodeId, targetId, targetType));
   }
 
   public List<ExecutionTrace> getAttackChainNodeTracesFromAttackChainNodeAndTarget(
       final String attackChainNodeId, final String targetId, final TargetType targetType) {
     return switch (targetType) {
-      case AGENT -> this.executionTraceRepository.findByAttackChainNodeIdAndAgentId(attackChainNodeId, targetId);
-      case ASSETS -> this.executionTraceRepository.findByAttackChainNodeIdAndAssetId(attackChainNodeId, targetId);
-      case TEAMS -> this.executionTraceRepository.findByAttackChainNodeIdAndTeamId(attackChainNodeId, targetId);
-      case PLAYERS -> this.executionTraceRepository.findByAttackChainNodeIdAndPlayerId(attackChainNodeId, targetId);
+      case AGENT ->
+          this.executionTraceRepository.findByAttackChainNodeIdAndAgentId(
+              attackChainNodeId, targetId);
+      case ASSETS ->
+          this.executionTraceRepository.findByAttackChainNodeIdAndAssetId(
+              attackChainNodeId, targetId);
+      case TEAMS ->
+          this.executionTraceRepository.findByAttackChainNodeIdAndTeamId(
+              attackChainNodeId, targetId);
+      case PLAYERS ->
+          this.executionTraceRepository.findByAttackChainNodeIdAndPlayerId(
+              attackChainNodeId, targetId);
       default -> throw new BadRequestException("Target type " + targetType + " is not supported");
     };
   }
 
-  public AttackChainNodeStatusOutput getAttackChainNodeStatusWithGlobalExecutionTraces(String attackChainNodeId) {
+  public AttackChainNodeStatusOutput getAttackChainNodeStatusWithGlobalExecutionTraces(
+      String attackChainNodeId) {
     return attackChainNodeStatusMapper.toAttackChainNodeStatusOutput(
-        attackChainNodeStatusRepository.findAttackChainNodeStatusWithGlobalExecutionTraces(attackChainNodeId));
+        attackChainNodeStatusRepository.findAttackChainNodeStatusWithGlobalExecutionTraces(
+            attackChainNodeId));
   }
 
   /**
    * Function used to get the targeted property field of a targeted asset.
    *
-   * @param nodeContractFields NodeContract Fields from where to extract the targeted
-   *     property
+   * @param nodeContractFields NodeContract Fields from where to extract the targeted property
    * @param targetedAssetKey The key of the targeted Asset field
    * @return the object node of targetedProperty field
    */
@@ -1036,9 +1089,10 @@ public class AttackChainNodeService {
   /**
    * Function used to retrieve the targetedAsset value from an AttackChainNode.
    *
-   * @param nodeContractContentFields NodeContract Content fields from which to retrieve all
-   *     the fields set on the attackChainNode
-   * @param attackChainNodeContent AttackChainNode content to obtain the value set on an attackChainNode
+   * @param nodeContractContentFields NodeContract Content fields from which to retrieve all the
+   *     fields set on the attackChainNode
+   * @param attackChainNodeContent AttackChainNode content to obtain the value set on an
+   *     attackChainNode
    * @param targetedAssetKey The targeted asset key for which we want to retrieve values (can have
    *     many assets set on one targeted asset key)
    * @return a map where the key is the value of the targeted asset (e.g., hostname, seen_ip) and
@@ -1081,24 +1135,27 @@ public class AttackChainNodeService {
   }
 
   /**
-   * Function used to fetch the detection remediations in a attackChainNode based on payload definition.
+   * Function used to fetch the detection remediations in a attackChainNode based on payload
+   * definition.
    *
    * @param attackChainNodeId
    * @return a list of detection remediations
    */
-  public List<DetectionRemediation> fetchDetectionRemediationsByAttackChainNodeId(String attackChainNodeId) {
+  public List<DetectionRemediation> fetchDetectionRemediationsByAttackChainNodeId(
+      String attackChainNodeId) {
     return payloadRepository.fetchDetectionRemediationsByAttackChainNodeId(attackChainNodeId);
   }
 
   /**
-   * Check if a user is granted on an attackChainNode. A user can be granteed on an attackChainNode if: - The attackChainNode
-   * is linked to a attackChain or simulation that the user has access to - The attackChainNode is an atomic
-   * testing and the user has access to it
+   * Check if a user is granted on an attackChainNode. A user can be granteed on an attackChainNode
+   * if: - The attackChainNode is linked to a attackChain or simulation that the user has access to
+   * - The attackChainNode is an atomic testing and the user has access to it
    *
    * @param grantType the grant type to check
    * @return a Specification that checks if the user has access to the attackChainNode
    */
-  public Specification<AttackChainNode> hasGrantAccessForAttackChainNode(Grant.GRANT_TYPE grantType) {
+  public Specification<AttackChainNode> hasGrantAccessForAttackChainNode(
+      Grant.GRANT_TYPE grantType) {
 
     User currentUser = userService.currentUser();
     boolean hasCapabilityAccessAssessment =
@@ -1117,7 +1174,8 @@ public class AttackChainNodeService {
       Expression<String> attackChainIdPath = root.get("scenario").get("id");
       Expression<String> attackChainRunIdPath = root.get("exercise").get("id");
       // Check if both are null -> atomic testing case
-      Predicate bothParentsNull = cb.and(cb.isNull(attackChainIdPath), cb.isNull(attackChainRunIdPath));
+      Predicate bothParentsNull =
+          cb.and(cb.isNull(attackChainIdPath), cb.isNull(attackChainRunIdPath));
 
       // Get allowed grant types
       List<Grant.GRANT_TYPE> allowedGrantTypes = grantType.andHigher();
@@ -1165,8 +1223,8 @@ public class AttackChainNodeService {
   }
 
   /**
-   * Extracts the attackChainNode coverage from the attackChain's attackChainNodes, mapping each attackChainNode to its set of
-   * (AttackPattern × Platform × Architecture) combinations.
+   * Extracts the attackChainNode coverage from the attackChain's attackChainNodes, mapping each
+   * attackChainNode to its set of (AttackPattern × Platform × Architecture) combinations.
    *
    * @param attackChain the attackChain containing attackChainNodes
    * @return a map of attackChainNodes to their AttackPattern-platform-architecture combinations
@@ -1179,10 +1237,13 @@ public class AttackChainNodeService {
             attackChainNode ->
                 attackChainNode.getPayload().isEmpty()
                     || !(attackChainNode.getPayload().get() instanceof DnsResolution))
-        .map(attackChainNode -> attackChainNode.getNodeContract().map(ic -> Map.entry(attackChainNode, ic)))
+        .map(
+            attackChainNode ->
+                attackChainNode.getNodeContract().map(ic -> Map.entry(attackChainNode, ic)))
         .flatMap(Optional::stream)
         // Only keep attack patterns that specify both platform and architecture.
-        // Other cases should be reviewed depending on the nodeExecutor contract source: vulnerability,
+        // Other cases should be reviewed depending on the nodeExecutor contract source:
+        // vulnerability,
         // placeholder, other
         .filter(
             entry ->
@@ -1266,7 +1327,8 @@ public class AttackChainNodeService {
         .getPayload()
         .orElseThrow(
             () ->
-                new ElementNotFoundException("payload not found on inject with id : " + attackChainNodeId));
+                new ElementNotFoundException(
+                    "payload not found on inject with id : " + attackChainNodeId));
   }
 
   /**

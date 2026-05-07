@@ -8,6 +8,9 @@ import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.springframework.util.StringUtils.hasText;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
@@ -17,22 +20,19 @@ import io.veriguard.database.repository.*;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.rest.asset.endpoint.form.EndpointOutput;
 import io.veriguard.rest.asset_group.form.AssetGroupOutput;
+import io.veriguard.rest.attack_chain.form.*;
+import io.veriguard.rest.attack_chain.response.AttackChainOutput;
+import io.veriguard.rest.attack_chain_run.form.AttackChainTeamPlayersEnableInput;
+import io.veriguard.rest.attack_chain_run.form.LessonsInput;
 import io.veriguard.rest.custom_dashboard.CustomDashboardService;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.attack_chain_run.form.LessonsInput;
-import io.veriguard.rest.attack_chain_run.form.AttackChainTeamPlayersEnableInput;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.attack_chain.form.*;
-import io.veriguard.rest.attack_chain.response.AttackChainOutput;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -164,7 +164,8 @@ public class AttackChainApi extends RestBehavior {
     } else {
       attackChain.setCustomDashboard(null);
     }
-    return this.attackChainService.updateAttackChain(attackChain, currentTagList, input.isApplyTagRule());
+    return this.attackChainService.updateAttackChain(
+        attackChain, currentTagList, input.isApplyTagRule());
   }
 
   @DeleteMapping(SCENARIO_URI + "/{scenarioId}")
@@ -189,7 +190,8 @@ public class AttackChainApi extends RestBehavior {
     AttackChain attackChain = this.attackChainService.attackChain(attackChainId);
     Set<Tag> currentTagList = attackChain.getTags();
     attackChain.setTags(iterableToSet(this.tagRepository.findAllById(input.getTagIds())));
-    return this.attackChainService.updateAttackChain(attackChain, currentTagList, input.isApplyTagRule());
+    return this.attackChainService.updateAttackChain(
+        attackChain, currentTagList, input.isApplyTagRule());
   }
 
   // -- EXPORT --
@@ -299,7 +301,8 @@ public class AttackChainApi extends RestBehavior {
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String teamId,
       @Valid @RequestBody final AttackChainTeamPlayersEnableInput input) {
-    return this.attackChainService.addAttackChainPlayer(attackChainId, teamId, input.getPlayersIds());
+    return this.attackChainService.addAttackChainPlayer(
+        attackChainId, teamId, input.getPlayersIds());
   }
 
   @Transactional(rollbackOn = Exception.class)

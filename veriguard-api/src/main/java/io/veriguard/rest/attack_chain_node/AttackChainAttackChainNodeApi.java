@@ -7,13 +7,13 @@ import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationCrite
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateActivationInput;
 import io.veriguard.rest.attack_chain_node.output.AttackChainNodeOutput;
+import io.veriguard.rest.attack_chain_node.service.AttackChainAttackChainNodeService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeDuplicateService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
-import io.veriguard.rest.attack_chain_node.service.AttackChainAttackChainNodeService;
+import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
@@ -81,7 +81,8 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
-  public Iterable<AttackChainNode> attackChainAttackChainNodes(@PathVariable @NotBlank final String attackChainId) {
+  public Iterable<AttackChainNode> attackChainAttackChainNodes(
+      @PathVariable @NotBlank final String attackChainId) {
     return this.attackChainNodeRepository.findByAttackChainId(attackChainId).stream()
         .sorted(AttackChainNode.executionComparator)
         .toList();
@@ -92,7 +93,8 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
   public AttackChainNode attackChainAttackChainNode(
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId) {
-    return attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(attackChainId, attackChainNodeId);
+    return attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(
+        attackChainId, attackChainNodeId);
   }
 
   // -- CREATE --
@@ -104,7 +106,8 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackFor = Exception.class)
   public AttackChainNode createAttackChainNodeForAttackChain(
-      @PathVariable @NotBlank final String attackChainId, @Valid @RequestBody AttackChainNodeInput input) {
+      @PathVariable @NotBlank final String attackChainId,
+      @Valid @RequestBody AttackChainNodeInput input) {
     AttackChain attackChain = this.attackChainService.attackChain(attackChainId);
     return this.attackChainNodeService.createAndSaveAttackChainNode(null, attackChain, input);
   }
@@ -130,8 +133,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
   public AttackChainNode duplicateAttackChainNodeForAttackChain(
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId) {
-    return attackChainNodeDuplicateService.duplicateAttackChainNodeForAttackChainWithDuplicateWordInTitle(
-        attackChainId, attackChainNodeId);
+    return attackChainNodeDuplicateService
+        .duplicateAttackChainNodeForAttackChainWithDuplicateWordInTitle(
+            attackChainId, attackChainNodeId);
   }
 
   // -- UPDATE --
@@ -146,7 +150,8 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId,
       @Valid @RequestBody @NotNull AttackChainNodeInput input) {
-    return attackChainAttackChainNodeService.updateAttackChainNodeForAttackChain(attackChainId, attackChainNodeId, input);
+    return attackChainAttackChainNodeService.updateAttackChainNodeForAttackChain(
+        attackChainId, attackChainNodeId, input);
   }
 
   @PutMapping(SCENARIO_URI + "/{scenarioId}/injects/{injectId}/activation")
@@ -158,7 +163,8 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId,
       @Valid @RequestBody AttackChainNodeUpdateActivationInput input) {
-    return attackChainAttackChainNodeService.updateAttackChainNodeActivationForAttackChain(attackChainId, attackChainNodeId, input);
+    return attackChainAttackChainNodeService.updateAttackChainNodeActivationForAttackChain(
+        attackChainId, attackChainNodeId, input);
   }
 
   // -- DELETE --

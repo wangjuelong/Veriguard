@@ -1,8 +1,8 @@
 package io.veriguard.rest.injector.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.rest.connector.dto.ConnectorOutput;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.rest.connector.dto.ConnectorOutput;
 import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
 import lombok.experimental.SuperBuilder;

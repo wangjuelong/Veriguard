@@ -9,9 +9,9 @@ import com.google.common.annotations.VisibleForTesting;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AgentRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionAction;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionInput;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.service.AttackChainNodeExpectationService;
 import jakarta.annotation.Nullable;
 import jakarta.annotation.Resource;
@@ -46,7 +46,8 @@ public class AttackChainNodeExecutionService {
 
     try {
       attackChainNode = loadAttackChainNodeOrThrow(attackChainNodeId);
-      // issue/3550: added this condition to ensure we only update statuses if the attackChainNode is in a
+      // issue/3550: added this condition to ensure we only update statuses if the attackChainNode
+      // is in a
       // coherent state.
       // This prevents issues where the PENDING status took more time to persist than it took for
       // the agent to send the complete action.
@@ -54,7 +55,8 @@ public class AttackChainNodeExecutionService {
       // implant are
       // launched with the async value to true, which force the implant to go from EXECUTING to
       // PENDING, before going to EXECUTED.
-      // So if in the future, this function is called to update a synchronous attackChainNode, we will need
+      // So if in the future, this function is called to update a synchronous attackChainNode, we
+      // will need
       // to find a way to get the async boolean somehow and add it to this condition.
       if (AttackChainNodeExecutionAction.complete.equals(input.getAction())
           && (attackChainNode.getStatus().isEmpty()
@@ -64,7 +66,8 @@ public class AttackChainNodeExecutionService {
         log.warn(
             String.format(
                 "Received a complete action for inject %s with status %s, but current status is not PENDING",
-                attackChainNodeId, attackChainNode.getStatus().map(is -> is.getName().toString()).orElse("unknown")));
+                attackChainNodeId,
+                attackChainNode.getStatus().map(is -> is.getName().toString()).orElse("unknown")));
         throw new DataIntegrityViolationException(
             "Cannot complete inject that is not in PENDING state");
       }
@@ -84,17 +87,20 @@ public class AttackChainNodeExecutionService {
     processAttackChainNodeExecution(attackChainNode, agent, input, agentExecutionProcessingHandler);
   }
 
-  public void processAttackChainNodeExecutionWithNodeExecutor(AttackChainNode attackChainNode, AttackChainNodeExecutionInput input) {
-    processAttackChainNodeExecution(attackChainNode, null, input, nodeExecutorExecutionProcessingHandler);
+  public void processAttackChainNodeExecutionWithNodeExecutor(
+      AttackChainNode attackChainNode, AttackChainNodeExecutionInput input) {
+    processAttackChainNodeExecution(
+        attackChainNode, null, input, nodeExecutorExecutionProcessingHandler);
   }
 
   /**
    * Processes the execution of an attackChainNode by resolving the appropriate handler based on the
-   * execution source (nodeExecutor or agent), extracting findings, matching expectations and updating
-   * the attackChainNode status.
+   * execution source (nodeExecutor or agent), extracting findings, matching expectations and
+   * updating the attackChainNode status.
    *
    * @param attackChainNode the attackChainNode being executed
-   * @param agent the agent executing to attackChainNode, or {@code null} if triggered by an nodeExecutor
+   * @param agent the agent executing to attackChainNode, or {@code null} if triggered by an
+   *     nodeExecutor
    * @param input the execution input containing action, status, and output data
    * @throws RuntimeException if the output structured cannot be parsed
    */
@@ -104,14 +110,16 @@ public class AttackChainNodeExecutionService {
       AttackChainNodeExecutionInput input,
       AbstractExecutionProcessingHandler handler) {
     try {
-      Map<String, Endpoint> valueTargetedAssetsMap = attackChainNodeService.getValueTargetedAssetMap(attackChainNode);
+      Map<String, Endpoint> valueTargetedAssetsMap =
+          attackChainNodeService.getValueTargetedAssetMap(attackChainNode);
       // Build the context encapsulating all execution data and conditions (success, action, source)
       ExecutionProcessingContext executionContext =
           new ExecutionProcessingContext(attackChainNode, agent, input, valueTargetedAssetsMap);
       // Delegate to the appropriate handler (nodeExecutor or agent) to process output execution
       ObjectNode resolvedStructured = handler.processContext(executionContext).orElse(null);
 
-      attackChainNodeStatusService.updateAttackChainNodeStatus(attackChainNode, agent, input, resolvedStructured);
+      attackChainNodeStatusService.updateAttackChainNodeStatus(
+          attackChainNode, agent, input, resolvedStructured);
       addEndDateAttackChainNodeExpectationTimeSignatureIfNeeded(attackChainNode, agent, input);
 
     } catch (JsonProcessingException e) {

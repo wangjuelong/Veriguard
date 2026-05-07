@@ -3,10 +3,10 @@ package io.veriguard.rest.payload.form;
 import static io.veriguard.config.AppConfig.MANDATORY_MESSAGE;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.model.*;
 import io.veriguard.database.model.Endpoint.PLATFORM_TYPE;
 import io.veriguard.rest.payload.output_parser.OutputParserInput;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -45,7 +45,8 @@ public class PayloadUpdateInput {
   @NotNull
   private AttackChainNodeExpectation.EXPECTATION_TYPE[] expectations =
       new AttackChainNodeExpectation.EXPECTATION_TYPE[] {
-        AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION, AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION
+        AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION,
+        AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION
       };
 
   @JsonProperty("executable_file")

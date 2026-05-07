@@ -3,7 +3,8 @@ package io.veriguard.utils;
 /**
  * Enumeration of filter options for attackChainNode queries.
  *
- * <p>Defines the scope of attackChainNodes to include when searching or filtering attackChainNode data.
+ * <p>Defines the scope of attackChainNodes to include when searching or filtering attackChainNode
+ * data.
  *
  * @see io.veriguard.database.model.AttackChainNode
  */

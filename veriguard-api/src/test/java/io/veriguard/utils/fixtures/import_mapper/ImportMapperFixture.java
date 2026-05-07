@@ -3,8 +3,8 @@ package io.veriguard.utils.fixtures.import_mapper;
 import static io.veriguard.utils.fixtures.NodeContractFixture.createDefaultNodeContract;
 import static io.veriguard.utils.fixtures.import_mapper.RuleAttributeFixture.createRuleAttribute;
 
-import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.model.AttackChainNodeImporter;
+import io.veriguard.database.model.ImportMapper;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -24,7 +24,8 @@ public class ImportMapperFixture {
   public static final String DEFAULT_TRIGGER_TIME_COLUMN = "D";
 
   public static ImportMapper createImportMapper(String attackChainNodeTypeValue) {
-    return createImportMapper(DEFAULT_MAPPER_NAME, attackChainNodeTypeValue, DEFAULT_INJECT_TYPE_COLUMN);
+    return createImportMapper(
+        DEFAULT_MAPPER_NAME, attackChainNodeTypeValue, DEFAULT_INJECT_TYPE_COLUMN);
   }
 
   public static ImportMapper createImportMapper(
@@ -33,7 +34,9 @@ public class ImportMapperFixture {
     importMapper.setName(mapperName);
     importMapper.setAttackChainNodeTypeColumn(attackChainNodeTypeColumn);
     importMapper.setAttackChainNodeImporters(new ArrayList<>());
-    importMapper.getAttackChainNodeImporters().add(createAttackChainNodeImporter(attackChainNodeTypeValue));
+    importMapper
+        .getAttackChainNodeImporters()
+        .add(createAttackChainNodeImporter(attackChainNodeTypeValue));
     return importMapper;
   }
 

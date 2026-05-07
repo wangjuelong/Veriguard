@@ -65,8 +65,10 @@ class AttackChainRunTeamUserServiceTest extends IntegrationTest {
     User user1 = getUser("User1", "Last1", "user1@test.invalid");
     User user2 = getUser("User2", "Last2", "user2@test.invalid");
 
-    AttackChainRunTeamUser source1 = createAttackChainRunTeamUser(sourceAttackChainRun, team, user1);
-    AttackChainRunTeamUser source2 = createAttackChainRunTeamUser(sourceAttackChainRun, team, user2);
+    AttackChainRunTeamUser source1 =
+        createAttackChainRunTeamUser(sourceAttackChainRun, team, user1);
+    AttackChainRunTeamUser source2 =
+        createAttackChainRunTeamUser(sourceAttackChainRun, team, user2);
 
     // -- ACT --
     attackChainRunTeamUserService.duplicateTeamUsers(

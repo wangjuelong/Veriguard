@@ -60,7 +60,8 @@ public class GrantService {
         attackChainRunRepository.existsById(resourceId)
             || attackChainRepository.existsById(resourceId)
             // Atomic testings:
-            || attackChainNodeRepository.existsByIdAndAttackChainIsNullAndAttackChainRunIsNull(resourceId)
+            || attackChainNodeRepository.existsByIdAndAttackChainIsNullAndAttackChainRunIsNull(
+                resourceId)
             || payloadRepository.existsById(resourceId);
 
     if (!exists) {

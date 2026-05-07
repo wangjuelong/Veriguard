@@ -21,8 +21,8 @@ public class SimulationService {
   private final AttackChainRunRepository attackChainRunRepository;
 
   /**
-   * Retrieves all attackChainRuns whose names match the provided search text, and converts them into
-   * {@link Option} DTOs for UI consumption.
+   * Retrieves all attackChainRuns whose names match the provided search text, and converts them
+   * into {@link Option} DTOs for UI consumption.
    *
    * @param searchText partial or full name to filter attackChainRuns
    * @return list of {@link Option} objects containing attackChainRun IDs and names
@@ -37,8 +37,8 @@ public class SimulationService {
   }
 
   /**
-   * Retrieves all attackChainRuns with IDs matching the given list, and converts them into {@link Option}
-   * DTOs for UI consumption.
+   * Retrieves all attackChainRuns with IDs matching the given list, and converts them into {@link
+   * Option} DTOs for UI consumption.
    *
    * @param ids list of attackChainRun IDs to retrieve
    * @return list of {@link Option} objects containing attackChainRun IDs and names

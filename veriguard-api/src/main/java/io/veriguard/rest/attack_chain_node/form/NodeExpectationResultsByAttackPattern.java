@@ -2,10 +2,10 @@ package io.veriguard.rest.attack_chain_node.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.model.AttackPattern;
 import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

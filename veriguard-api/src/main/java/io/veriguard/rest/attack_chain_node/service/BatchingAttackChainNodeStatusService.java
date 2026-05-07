@@ -3,14 +3,14 @@ package io.veriguard.rest.attack_chain_node.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.database.model.Agent;
-import io.veriguard.database.model.ExecutionStatus;
 import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.ExecutionStatus;
 import io.veriguard.database.repository.AgentRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.helper.queue.BatchQueueService;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionAction;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionCallback;
+import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.rest.helper.queue.BatchQueueService;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
@@ -34,17 +34,21 @@ public class BatchingAttackChainNodeStatusService {
 
   private static final int MAX_RETRIES = 5;
   // Inmemory queue system to add delay to actual re-queuing mechanism
-  private final Queue<AttackChainNodeExecutionCallback> callbacksToRequeue = new ConcurrentLinkedQueue<>();
+  private final Queue<AttackChainNodeExecutionCallback> callbacksToRequeue =
+      new ConcurrentLinkedQueue<>();
 
   private final AttackChainNodeRepository attackChainNodeRepository;
   private final AgentRepository agentRepository;
   private final StructuredOutputUtils structuredOutputUtils;
   private final AttackChainNodeExecutionService attackChainNodeExecutionService;
 
-  // Set from AttackChainNodeApi.init() function. I preferred that to creating a dedicated @Bean instance
+  // Set from AttackChainNodeApi.init() function. I preferred that to creating a dedicated @Bean
+  // instance
   // to avoid making too big changes.
-  // Also, it can be null when the attackChainNode-trace queue is not configured (e.g. legacy mode, tests).
-  @Setter private BatchQueueService<AttackChainNodeExecutionCallback> attackChainNodeTraceQueueService;
+  // Also, it can be null when the attackChainNode-trace queue is not configured (e.g. legacy mode,
+  // tests).
+  @Setter
+  private BatchQueueService<AttackChainNodeExecutionCallback> attackChainNodeTraceQueueService;
 
   @Resource protected ObjectMapper mapper;
 
@@ -82,7 +86,8 @@ public class BatchingAttackChainNodeStatusService {
                 false)
             .collect(Collectors.toMap(Agent::getId, Function.identity()));
 
-    // Sorting the attackChainNode execution callbacks to make sure we handle them in chronological order
+    // Sorting the attackChainNode execution callbacks to make sure we handle them in chronological
+    // order
     Stream<AttackChainNodeExecutionCallback> sortedAttackChainNodeExecutionCallbacks =
         attackChainNodeExecutionCallbacks.stream()
             .sorted(Comparator.comparing(AttackChainNodeExecutionCallback::getEmissionDate));
@@ -100,7 +105,8 @@ public class BatchingAttackChainNodeStatusService {
                         () ->
                             new ElementNotFoundException(
                                 "Inject not found: " + callback.getAttackChainNodeId()));
-            // issue/3550: added this condition to ensure we only update statuses if the attackChainNode is
+            // issue/3550: added this condition to ensure we only update statuses if the
+            // attackChainNode is
             // in a coherent state.
             // This prevents issues where the PENDING status took more time to persist than it took
             // for the agent to send the complete action.
@@ -108,24 +114,33 @@ public class BatchingAttackChainNodeStatusService {
             // form our implants.
             // These implants are launched with the async value to true, which force the implant to
             // go from EXECUTING to PENDING, before going to EXECUTED.
-            // So if in the future, this function is called to update a synchronous attackChainNode, we will
+            // So if in the future, this function is called to update a synchronous attackChainNode,
+            // we will
             // need to find a way to get the async boolean somehow and add it to this condition.
             if (callback
                     .getAttackChainNodeExecutionInput()
                     .getAction()
                     .equals(AttackChainNodeExecutionAction.complete)
                 && (attackChainNode.getStatus().isEmpty()
-                    || !attackChainNode.getStatus().get().getName().equals(ExecutionStatus.PENDING))) {
+                    || !attackChainNode
+                        .getStatus()
+                        .get()
+                        .getName()
+                        .equals(ExecutionStatus.PENDING))) {
               // If we receive a status update with a terminal state status, we must first check
               // that the current status is in the PENDING state
               log.warn(
                   String.format(
                       "Received a complete action for inject %s with status %s, but current status is not PENDING (retry %d/%d)",
                       callback.getAttackChainNodeId(),
-                      attackChainNode.getStatus().map(is -> is.getName().toString()).orElse("unknown"),
+                      attackChainNode
+                          .getStatus()
+                          .map(is -> is.getName().toString())
+                          .orElse("unknown"),
                       callback.getRetryCount(),
                       MAX_RETRIES));
-              if (callback.getRetryCount() < MAX_RETRIES && attackChainNodeTraceQueueService != null) {
+              if (callback.getRetryCount() < MAX_RETRIES
+                  && attackChainNodeTraceQueueService != null) {
                 callback.setRetryCount(callback.getRetryCount() + 1);
                 // We change the emission date to current timestamp here to be more accurate
                 // order has become meaningless in case of re-queueing the message any way
@@ -141,10 +156,12 @@ public class BatchingAttackChainNodeStatusService {
                 }
                 // Max retry reached, we save the trace anyway, to make sure no information is lost
                 // and let the expiration manager logic handle the discrepancies if any exists
-                saveExecutionTrace(callback, mapAgentsById, attackChainNode, successfullyProcessedCallbacks);
+                saveExecutionTrace(
+                    callback, mapAgentsById, attackChainNode, successfullyProcessedCallbacks);
               }
             } else {
-              saveExecutionTrace(callback, mapAgentsById, attackChainNode, successfullyProcessedCallbacks);
+              saveExecutionTrace(
+                  callback, mapAgentsById, attackChainNode, successfullyProcessedCallbacks);
             }
           } catch (ElementNotFoundException e) {
             attackChainNodeExecutionService.handleAttackChainNodeExecutionError(attackChainNode, e);
@@ -197,8 +214,8 @@ public class BatchingAttackChainNodeStatusService {
   }
 
   /**
-   * Requeue all callbacks that were received too soon compared to the attackChainNode status This is called
-   * from a quartz job
+   * Requeue all callbacks that were received too soon compared to the attackChainNode status This
+   * is called from a quartz job
    */
   public void requeueCallbacks() throws IOException {
     if (attackChainNodeTraceQueueService == null) {

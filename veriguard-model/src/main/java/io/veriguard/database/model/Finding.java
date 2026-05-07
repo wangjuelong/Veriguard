@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.helper.MultiIdListSerializer;
 import io.veriguard.helper.MultiIdSetSerializer;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -159,12 +159,17 @@ public class Finding implements Base {
   }
 
   @JsonProperty("finding_scenario")
-  @Queryable(filterable = true, dynamicValues = true, path = "attackChainNode.attackChainRun.attackChain.id")
+  @Queryable(
+      filterable = true,
+      dynamicValues = true,
+      path = "attackChainNode.attackChainRun.attackChain.id")
   public AttackChain getAttackChain() {
     if (getAttackChainNode() == null) {
       return null;
     }
-    return Optional.ofNullable(getAttackChainNode().getAttackChainRun()).map(AttackChainRun::getAttackChain).orElse(null);
+    return Optional.ofNullable(getAttackChainNode().getAttackChainRun())
+        .map(AttackChainRun::getAttackChain)
+        .orElse(null);
   }
 
   @JsonProperty("finding_asset_groups")

@@ -1,5 +1,6 @@
 package io.veriguard.api.payload;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.Payload;
@@ -12,7 +13,6 @@ import io.veriguard.rest.payload.PayloadApi;
 import io.veriguard.rest.payload.service.PayloadService;
 import io.veriguard.service.ImportService;
 import io.veriguard.service.ZipJsonService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -5,9 +5,9 @@ import static org.mockito.Mockito.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.Execution;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeExpectation;
+import io.veriguard.database.model.Execution;
 import io.veriguard.database.model.Injection;
 import io.veriguard.execution.ExecutableNode;
 import io.veriguard.executors.NodeExecutorContext;
@@ -59,7 +59,8 @@ public class ManualExecutorTest extends IntegrationTest {
     when(executableAttackChainNode.getInjection()).thenReturn(injection);
     when(mapper.treeToValue(content, ManualContent.class)).thenReturn(manualContent);
 
-    ManualExecutor executor = new ManualExecutor(nodeExecutorContext, attackChainNodeExpectationService);
+    ManualExecutor executor =
+        new ManualExecutor(nodeExecutorContext, attackChainNodeExpectationService);
     executor.process(execution, executableAttackChainNode);
 
     // verify that the expectations are saved

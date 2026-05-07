@@ -1,7 +1,7 @@
 package io.veriguard.utils.mockMapper;
 
-import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.model.AttackChainNodeImporter;
+import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.model.NodeContract;
 import io.veriguard.database.model.RuleAttribute;
 import java.time.Instant;

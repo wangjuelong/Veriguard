@@ -35,7 +35,9 @@ public class CalderaExecutorContextService extends ExecutorContextService {
                 abilities.stream()
                     .filter(
                         ability ->
-                            ability.getName().equals("caldera-subprocessor-" + nodeExecutor.getName()))
+                            ability
+                                .getName()
+                                .equals("caldera-subprocessor-" + nodeExecutor.getName()))
                     .toList();
             if (!filteredAbilities.isEmpty()) {
               Ability existingAbility = filteredAbilities.getFirst();
@@ -48,7 +50,8 @@ public class CalderaExecutorContextService extends ExecutorContextService {
             List<Ability> filteredAbilities =
                 abilities.stream()
                     .filter(
-                        ability -> ability.getName().equals("caldera-clear-" + nodeExecutor.getName()))
+                        ability ->
+                            ability.getName().equals("caldera-clear-" + nodeExecutor.getName()))
                     .toList();
             if (!filteredAbilities.isEmpty()) {
               Ability existingAbility = filteredAbilities.getFirst();
@@ -90,11 +93,14 @@ public class CalderaExecutorContextService extends ExecutorContextService {
   }
 
   public List<Agent> launchBatchExecutorSubprocess(
-      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
+      AttackChainNode attackChainNode,
+      Set<Agent> agents,
+      AttackChainNodeStatus attackChainNodeStatus) {
     return new ArrayList<>();
   }
 
-  public void launchExecutorClear(@NotNull final NodeExecutor nodeExecutor, @NotNull final Agent agent) {
+  public void launchExecutorClear(
+      @NotNull final NodeExecutor nodeExecutor, @NotNull final Agent agent) {
     if (this.nodeExecutorExecutorAbilities.containsKey(nodeExecutor.getId())) {
       calderaExecutorClient.exploit(
           "base64",

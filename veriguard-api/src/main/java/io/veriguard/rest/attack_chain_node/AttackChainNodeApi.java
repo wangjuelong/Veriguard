@@ -5,35 +5,38 @@ import static io.veriguard.helper.StreamHelper.fromIterable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.aop.lock.Lock;
 import io.veriguard.aop.lock.LockResourceType;
-import io.veriguard.config.VeriguardConfig;
 import io.veriguard.config.RabbitMQSslConfiguration;
 import io.veriguard.config.RabbitmqConfig;
+import io.veriguard.config.VeriguardConfig;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawDocument;
-import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.database.specification.AttackChainNodeSpecification;
 import io.veriguard.database.specification.SpecificationUtils;
-import io.veriguard.rest.atomic_testing.form.ExecutionTraceOutput;
 import io.veriguard.rest.atomic_testing.form.AttackChainNodeStatusOutput;
-import io.veriguard.rest.document.DocumentService;
-import io.veriguard.rest.exception.BadRequestException;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.attack_chain_run.exports.ExportOptions;
-import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.helper.queue.BatchQueueService;
-import io.veriguard.rest.helper.queue.executor.BatchExecutionTraceExecutor;
+import io.veriguard.rest.atomic_testing.form.ExecutionTraceOutput;
 import io.veriguard.rest.attack_chain_node.form.*;
-import io.veriguard.rest.attack_chain_node.service.BatchingAttackChainNodeStatusService;
-import io.veriguard.rest.attack_chain_node.service.ExecutableNodeService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeExecutionService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeExportService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.service.BatchingAttackChainNodeStatusService;
+import io.veriguard.rest.attack_chain_node.service.ExecutableNodeService;
+import io.veriguard.rest.attack_chain_run.exports.ExportOptions;
+import io.veriguard.rest.document.DocumentService;
+import io.veriguard.rest.exception.BadRequestException;
+import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.rest.helper.RestBehavior;
+import io.veriguard.rest.helper.queue.BatchQueueService;
+import io.veriguard.rest.helper.queue.executor.BatchExecutionTraceExecutor;
 import io.veriguard.rest.payload.form.DetectionRemediationOutput;
 import io.veriguard.rest.settings.PreviewFeature;
 import io.veriguard.service.PreviewFeatureService;
@@ -43,9 +46,6 @@ import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.TargetType;
 import io.veriguard.utils.mapper.PayloadMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -101,7 +101,8 @@ public class AttackChainNodeApi extends RestBehavior {
   private final PreviewFeatureService previewFeatureService;
 
   // For testing purpose, we add a setter
-  @Setter private BatchQueueService<AttackChainNodeExecutionCallback> attackChainNodeTraceQueueService;
+  @Setter
+  private BatchQueueService<AttackChainNodeExecutionCallback> attackChainNodeTraceQueueService;
 
   @PostConstruct
   public void init() throws IOException, TimeoutException {
@@ -116,7 +117,8 @@ public class AttackChainNodeApi extends RestBehavior {
               veriguardConfig.getQueueConfig().get("inject-trace"),
               rabbitMQSslConfiguration);
       // Share the queue with the batching service so it can requeue delayed callbacks
-      batchingAttackChainNodeStatusService.setAttackChainNodeTraceQueueService(attackChainNodeTraceQueueService);
+      batchingAttackChainNodeStatusService.setAttackChainNodeTraceQueueService(
+          attackChainNodeTraceQueueService);
     }
   }
 
@@ -125,14 +127,17 @@ public class AttackChainNodeApi extends RestBehavior {
   @GetMapping(INJECT_URI + "/{injectId}")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
   public AttackChainNode attackChainNode(@PathVariable @NotBlank final String attackChainNodeId) {
-    return this.attackChainNodeRepository.findById(attackChainNodeId).orElseThrow(ElementNotFoundException::new);
+    return this.attackChainNodeRepository
+        .findById(attackChainNodeId)
+        .orElseThrow(ElementNotFoundException::new);
   }
 
   @LogExecutionTime
   @PostMapping(INJECT_URI + "/search/export")
   @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.INJECT)
   public void attackChainNodesExportFromSearch(
-      @RequestBody @Valid AttackChainNodeExportFromSearchRequestInput input, HttpServletResponse response)
+      @RequestBody @Valid AttackChainNodeExportFromSearchRequestInput input,
+      HttpServletResponse response)
       throws IOException {
 
     // Control and format inputs
@@ -196,11 +201,15 @@ public class AttackChainNodeApi extends RestBehavior {
   public void attackChainNodesIndividualExport(
       @PathVariable @NotBlank final String attackChainNodeId,
       @RequestBody @Valid
-          final AttackChainNodeIndividualExportRequestInput attackChainNodeIndividualExportRequestInput,
+          final AttackChainNodeIndividualExportRequestInput
+              attackChainNodeIndividualExportRequestInput,
       HttpServletResponse response)
       throws IOException {
 
-    AttackChainNode attackChainNode = attackChainNodeRepository.findById(attackChainNodeId).orElseThrow(ElementNotFoundException::new);
+    AttackChainNode attackChainNode =
+        attackChainNodeRepository
+            .findById(attackChainNodeId)
+            .orElseThrow(ElementNotFoundException::new);
     int exportOptionsMask =
         ExportOptions.mask(
             attackChainNodeIndividualExportRequestInput.getExportOptions().isWithPlayers(),
@@ -212,7 +221,9 @@ public class AttackChainNodeApi extends RestBehavior {
   private void runAttackChainNodeExport(
       List<AttackChainNode> attackChainNodes, int exportOptionsMask, HttpServletResponse response)
       throws IOException {
-    byte[] zippedExport = attackChainNodeExportService.exportAttackChainNodesToZip(attackChainNodes, exportOptionsMask);
+    byte[] zippedExport =
+        attackChainNodeExportService.exportAttackChainNodesToZip(
+            attackChainNodes, exportOptionsMask);
     String zipName = attackChainNodeExportService.getZipFileName(exportOptionsMask);
 
     response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipName);
@@ -331,9 +342,14 @@ public class AttackChainNodeApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
   public AttackChainNode attackChainNodeExecutionReception(
-      @PathVariable String attackChainNodeId, @Valid @RequestBody AttackChainNodeReceptionInput input) {
-    AttackChainNode attackChainNode = attackChainNodeRepository.findById(attackChainNodeId).orElseThrow(ElementNotFoundException::new);
-    AttackChainNodeStatus attackChainNodeStatus = attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new);
+      @PathVariable String attackChainNodeId,
+      @Valid @RequestBody AttackChainNodeReceptionInput input) {
+    AttackChainNode attackChainNode =
+        attackChainNodeRepository
+            .findById(attackChainNodeId)
+            .orElseThrow(ElementNotFoundException::new);
+    AttackChainNodeStatus attackChainNodeStatus =
+        attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new);
     attackChainNodeStatus.setName(ExecutionStatus.PENDING);
     return attackChainNodeRepository.save(attackChainNode);
   }
@@ -344,7 +360,8 @@ public class AttackChainNodeApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
   public void attackChainNodeExecutionCallback(
-      @PathVariable String attackChainNodeId, @Valid @RequestBody AttackChainNodeExecutionInput input)
+      @PathVariable String attackChainNodeId,
+      @Valid @RequestBody AttackChainNodeExecutionInput input)
       throws IOException {
     attackChainNodeExecutionCallback(null, attackChainNodeId, input);
   }
@@ -372,7 +389,8 @@ public class AttackChainNodeApi extends RestBehavior {
       })
   public void attackChainNodeExecutionCallback(
       @PathVariable
-          String agentId, // must allow null because http nodeExecutor used also this method to work.
+          String
+              agentId, // must allow null because http nodeExecutor used also this method to work.
       @PathVariable String attackChainNodeId,
       @Valid @RequestBody AttackChainNodeExecutionInput input)
       throws IOException {
@@ -389,7 +407,8 @@ public class AttackChainNodeApi extends RestBehavior {
       // Publishing the parameters into a queue for later ingestion
       attackChainNodeTraceQueueService.publish(attackChainNodeExecutionCallback);
     } else {
-      attackChainNodeExecutionService.handleAttackChainNodeExecutionCallback(attackChainNodeId, agentId, input);
+      attackChainNodeExecutionService.handleAttackChainNodeExecutionCallback(
+          attackChainNodeId, agentId, input);
     }
   }
 
@@ -400,9 +419,11 @@ public class AttackChainNodeApi extends RestBehavior {
       description =
           "This endpoint is invoked by implants to retrieve a payload command that's pre-configured and ready for execution.")
   public Payload getExecutablePayloadAttackChainNode(
-      @PathVariable @NotBlank final String attackChainNodeId, @PathVariable @NotBlank final String agentId)
+      @PathVariable @NotBlank final String attackChainNodeId,
+      @PathVariable @NotBlank final String agentId)
       throws Exception {
-    return executableAttackChainNodeService.getExecutablePayloadAndUpdateAttackChainNodeStatus(attackChainNodeId, agentId);
+    return executableAttackChainNodeService.getExecutablePayloadAndUpdateAttackChainNodeStatus(
+        attackChainNodeId, agentId);
   }
 
   // -- EXERCISES --
@@ -418,10 +439,14 @@ public class AttackChainNodeApi extends RestBehavior {
       @PathVariable String attackChainNodeId,
       @Valid @RequestBody AttackChainNodeInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
-    AttackChainNode attackChainNode = attackChainNodeService.updateAttackChainNode(attackChainNodeId, input);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
+    AttackChainNode attackChainNode =
+        attackChainNodeService.updateAttackChainNode(attackChainNodeId, input);
 
-    // It should not be possible to add a EE executor on attackChainNode when the attackChainRun is already
+    // It should not be possible to add a EE executor on attackChainNode when the attackChainRun is
+    // already
     // started.
     if (attackChainRun.getStart().isPresent()) {
       this.attackChainNodeService.throwIfAttackChainNodeNotLaunchable(attackChainNode);
@@ -470,14 +495,16 @@ public class AttackChainNodeApi extends RestBehavior {
   @PutMapping(INJECT_URI)
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.INJECT)
   @LogExecutionTime
-  public List<AttackChainNode> bulkUpdateAttackChainNode(@RequestBody @Valid final AttackChainNodeBulkUpdateInputs input) {
+  public List<AttackChainNode> bulkUpdateAttackChainNode(
+      @RequestBody @Valid final AttackChainNodeBulkUpdateInputs input) {
 
     // Control and format inputs
     List<AttackChainNode> attackChainNodesToUpdate =
         getAttackChainNodesAndCheckInputForBulkProcessing(input, Grant.GRANT_TYPE.PLANNER);
 
     // Bulk update
-    return this.attackChainNodeService.bulkUpdateAttackChainNode(attackChainNodesToUpdate, input.getUpdateOperations());
+    return this.attackChainNodeService.bulkUpdateAttackChainNode(
+        attackChainNodesToUpdate, input.getUpdateOperations());
   }
 
   @Operation(
@@ -487,14 +514,16 @@ public class AttackChainNodeApi extends RestBehavior {
   @DeleteMapping(INJECT_URI)
   @RBAC(actionPerformed = Action.DELETE, resourceType = ResourceType.INJECT)
   @LogExecutionTime
-  public List<AttackChainNode> bulkDelete(@RequestBody @Valid final AttackChainNodeBulkProcessingInput input) {
+  public List<AttackChainNode> bulkDelete(
+      @RequestBody @Valid final AttackChainNodeBulkProcessingInput input) {
 
     // Control and format inputs
     List<AttackChainNode> attackChainNodesToDelete =
         getAttackChainNodesAndCheckInputForBulkProcessing(input, Grant.GRANT_TYPE.PLANNER);
 
     // Bulk delete
-    this.attackChainNodeService.deleteAllByIds(attackChainNodesToDelete.stream().map(AttackChainNode::getId).toList());
+    this.attackChainNodeService.deleteAllByIds(
+        attackChainNodesToDelete.stream().map(AttackChainNode::getId).toList());
     return attackChainNodesToDelete;
   }
 
@@ -518,8 +547,8 @@ public class AttackChainNodeApi extends RestBehavior {
   }
 
   /**
-   * Retrieve attackChainNodes that match the search input and check that the user is allowed to bulk process
-   * them
+   * Retrieve attackChainNodes that match the search input and check that the user is allowed to
+   * bulk process them
    *
    * @param input The input for the bulk processing
    * @return The list of attackChainNodes to process
@@ -536,9 +565,11 @@ public class AttackChainNodeApi extends RestBehavior {
           "Either inject_ids_to_process or search_pagination_input must be provided, and not both at the same time");
     }
 
-    // Retrieve attackChainNodes that match the search input and check that the user is allowed to bulk
+    // Retrieve attackChainNodes that match the search input and check that the user is allowed to
+    // bulk
     // process them
-    return this.attackChainNodeService.getAttackChainNodesAndCheckPermission(input, requested_grant_level);
+    return this.attackChainNodeService.getAttackChainNodesAndCheckPermission(
+        input, requested_grant_level);
   }
 
   // -- Execution Traces
@@ -562,7 +593,8 @@ public class AttackChainNodeApi extends RestBehavior {
   @LogExecutionTime
   public AttackChainNodeStatusOutput getAttackChainNodeStatusWithGlobalExecutionTraces(
       @RequestParam String attackChainNodeId) {
-    return this.attackChainNodeService.getAttackChainNodeStatusWithGlobalExecutionTraces(attackChainNodeId);
+    return this.attackChainNodeService.getAttackChainNodeStatusWithGlobalExecutionTraces(
+        attackChainNodeId);
   }
 
   @Operation(description = "Get detection remediation by inject based on the payload definition")

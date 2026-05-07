@@ -4,10 +4,10 @@ import static java.time.Instant.now;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.jsonapi.BusinessId;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,8 +24,8 @@ import org.hibernate.annotations.UuidGenerator;
 /**
  * Entity representing a tag for categorizing and organizing entities.
  *
- * <p>Tags provide a flexible labeling system that can be applied to attackChains, attackChainRuns, attackChainNodes,
- * and other entities. They support:
+ * <p>Tags provide a flexible labeling system that can be applied to attackChains, attackChainRuns,
+ * attackChainNodes, and other entities. They support:
  *
  * <ul>
  *   <li>Free-form categorization with custom names

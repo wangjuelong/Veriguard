@@ -14,7 +14,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AttackChainNodeStatusRepository
-    extends CrudRepository<AttackChainNodeStatus, String>, JpaSpecificationExecutor<AttackChainNodeStatus> {
+    extends CrudRepository<AttackChainNodeStatus, String>,
+        JpaSpecificationExecutor<AttackChainNodeStatus> {
 
   @NotNull
   Optional<AttackChainNodeStatus> findById(@NotNull String id);
@@ -22,7 +23,8 @@ public interface AttackChainNodeStatusRepository
   @Query(
       value =
           "select c from AttackChainNodeStatus c where c.name = 'PENDING' and c.attackChainNode.nodeContract.nodeExecutor.type = :attackChainNodeType")
-  List<AttackChainNodeStatus> pendingForAttackChainNodeType(@Param("injectType") String attackChainNodeType);
+  List<AttackChainNodeStatus> pendingForAttackChainNodeType(
+      @Param("injectType") String attackChainNodeType);
 
   Optional<AttackChainNodeStatus> findByAttackChainNodeId(@NotNull String attackChainNodeId);
 
@@ -39,7 +41,8 @@ public interface AttackChainNodeStatusRepository
               + "  AND cardinality(t.execution_context_identifiers) = 0"
               + " WHERE i.inject_id = :injectId",
       nativeQuery = true)
-  Optional<AttackChainNodeStatus> findAttackChainNodeStatusWithGlobalExecutionTraces(String attackChainNodeId);
+  Optional<AttackChainNodeStatus> findAttackChainNodeStatusWithGlobalExecutionTraces(
+      String attackChainNodeId);
 
   @Modifying(clearAutomatically = true)
   @Query("delete from AttackChainNodeStatus i where i.id in :ids")

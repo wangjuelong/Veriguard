@@ -2,8 +2,8 @@ package io.veriguard.utils.fixtures;
 
 import static io.veriguard.database.model.Command.COMMAND_TYPE;
 
-import io.veriguard.database.model.ExecutionStatus;
 import io.veriguard.database.model.AttackChainNodeStatus;
+import io.veriguard.database.model.ExecutionStatus;
 import io.veriguard.database.model.PayloadCommandBlock;
 import io.veriguard.database.model.StatusPayload;
 import java.time.Instant;

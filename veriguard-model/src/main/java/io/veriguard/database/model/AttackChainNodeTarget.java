@@ -4,9 +4,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.annotation.Queryable;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.annotation.Queryable;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Set;

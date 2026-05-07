@@ -1,9 +1,9 @@
 package io.veriguard.rest.injector_contract.output;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.database.model.*;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.database.model.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;

@@ -27,8 +27,10 @@ public class TeamQueryHelper {
     // Array aggregations
     Expression<String[]> tagIdsExpression = createJoinArrayAggOnId(cb, teamRoot, "tags");
     Expression<String[]> userIdsExpression = createJoinArrayAggOnId(cb, teamRoot, "users");
-    Expression<String[]> attackChainRunIdsExpression = createJoinArrayAggOnId(cb, teamRoot, "exercises");
-    Expression<String[]> attackChainIdsExpression = createJoinArrayAggOnId(cb, teamRoot, "scenarios");
+    Expression<String[]> attackChainRunIdsExpression =
+        createJoinArrayAggOnId(cb, teamRoot, "exercises");
+    Expression<String[]> attackChainIdsExpression =
+        createJoinArrayAggOnId(cb, teamRoot, "scenarios");
     Expression<String[]> organizationIdExpression =
         createLeftJoin(teamRoot, "organization").get("id");
 

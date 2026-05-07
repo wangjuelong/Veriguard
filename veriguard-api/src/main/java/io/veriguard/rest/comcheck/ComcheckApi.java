@@ -5,9 +5,9 @@ import static java.time.Instant.now;
 
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.ComcheckRepository;
 import io.veriguard.database.repository.ComcheckStatusRepository;
-import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.rest.comcheck.form.ComcheckInput;
 import io.veriguard.rest.exception.ElementNotFoundException;
@@ -76,7 +76,8 @@ public class ComcheckApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public void deleteComcheck(@PathVariable String attackChainRunId, @PathVariable String comcheckId) {
+  public void deleteComcheck(
+      @PathVariable String attackChainRunId, @PathVariable String comcheckId) {
     comcheckRepository.deleteById(comcheckId);
   }
 
@@ -94,12 +95,16 @@ public class ComcheckApi extends RestBehavior {
     check.setName(comCheck.getName());
     check.setStart(now());
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     check.setAttackChainRun(attackChainRun);
     // 02. Get users
     List<String> teamIds = comCheck.getTeamIds();
     List<Team> teams =
-        teamIds.isEmpty() ? attackChainRun.getTeams() : fromIterable(teamRepository.findAllById(teamIds));
+        teamIds.isEmpty()
+            ? attackChainRun.getTeams()
+            : fromIterable(teamRepository.findAllById(teamIds));
     List<User> users = teams.stream().flatMap(team -> team.getUsers().stream()).distinct().toList();
     List<ComcheckStatus> comcheckStatuses =
         users.stream()

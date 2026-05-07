@@ -34,7 +34,8 @@ public class StructuredOutputUtils {
 
     Set<OutputParser> outputParsers = optionalPayload.get().getOutputParsers();
     if (outputParsers == null || outputParsers.isEmpty()) {
-      log.info("No output parsers available for payload used in inject: " + attackChainNode.getId());
+      log.info(
+          "No output parsers available for payload used in inject: " + attackChainNode.getId());
       return Collections.emptySet();
     }
     return outputParsers;

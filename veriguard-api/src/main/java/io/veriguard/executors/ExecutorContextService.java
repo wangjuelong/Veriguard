@@ -1,9 +1,9 @@
 package io.veriguard.executors;
 
 import io.veriguard.database.model.Agent;
-import io.veriguard.database.model.Endpoint;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeStatus;
+import io.veriguard.database.model.Endpoint;
 import io.veriguard.rest.exception.AgentException;
 import java.util.List;
 import java.util.Set;
@@ -18,8 +18,8 @@ public abstract class ExecutorContextService {
    * @param agent concerned by the attack
    * @throws AgentException if problem
    */
-  public abstract void launchExecutorSubprocess(AttackChainNode attackChainNode, Endpoint assetEndpoint, Agent agent)
-      throws AgentException;
+  public abstract void launchExecutorSubprocess(
+      AttackChainNode attackChainNode, Endpoint assetEndpoint, Agent agent) throws AgentException;
 
   /**
    * To use when possible for better performance, launch one attack for X agents, used by
@@ -32,5 +32,7 @@ public abstract class ExecutorContextService {
    * @throws InterruptedException if problem
    */
   public abstract List<Agent> launchBatchExecutorSubprocess(
-      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus);
+      AttackChainNode attackChainNode,
+      Set<Agent> agents,
+      AttackChainNodeStatus attackChainNodeStatus);
 }

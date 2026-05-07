@@ -4,8 +4,8 @@ import static lombok.AccessLevel.NONE;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.veriguard.helper.MonoIdSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.helper.MonoIdSerializer;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Objects;

@@ -44,7 +44,8 @@ public class AttackChainHandler implements Handler<EsAttackChain> {
               esAttackChain.setBase_representative(attackChain.getScenario_name());
               esAttackChain.setBase_restrictions(buildRestrictions(attackChain.getScenario_id()));
               // Specific
-              esAttackChain.setBase_platforms_side_denormalized(attackChain.getScenario_platforms());
+              esAttackChain.setBase_platforms_side_denormalized(
+                  attackChain.getScenario_platforms());
               // Dependencies (see base_dependencies in EsBase)
               if (!isEmpty(attackChain.getScenario_tags())) {
                 esAttackChain.setBase_tags_side(attackChain.getScenario_tags());

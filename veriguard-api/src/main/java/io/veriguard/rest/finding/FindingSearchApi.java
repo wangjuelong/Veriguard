@@ -2,6 +2,9 @@ package io.veriguard.rest.finding;
 
 import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationJPA;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
@@ -15,9 +18,6 @@ import io.veriguard.rest.finding.form.PageRelatedFindingOutput;
 import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.utils.mapper.FindingMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +84,8 @@ public class FindingSearchApi extends RestBehavior {
     return buildPaginationJPA(
             (Specification<Finding> specification, Pageable pageable) ->
                 this.findingRepository.findAll(
-                    FindingSpecification.findFindingsForAttackChainNode(attackChainNodeId).and(specification),
+                    FindingSpecification.findFindingsForAttackChainNode(attackChainNodeId)
+                        .and(specification),
                     pageable),
             searchPaginationInput,
             Finding.class)

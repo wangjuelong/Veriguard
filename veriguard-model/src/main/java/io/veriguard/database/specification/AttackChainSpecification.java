@@ -27,21 +27,24 @@ public class AttackChainSpecification {
             cb.lessThanOrEqualTo(root.get("recurrenceStart"), startDate));
   }
 
-  public static Specification<AttackChain> recurrenceSartDateAfter(@NotNull final Instant startDate) {
+  public static Specification<AttackChain> recurrenceSartDateAfter(
+      @NotNull final Instant startDate) {
     return (root, query, cb) ->
         cb.or(
             cb.isNull(root.get("recurrenceStart")),
             cb.greaterThanOrEqualTo(root.get("recurrenceStart"), startDate));
   }
 
-  public static Specification<AttackChain> recurrenceStopDateAfter(@NotNull final Instant stopDate) {
+  public static Specification<AttackChain> recurrenceStopDateAfter(
+      @NotNull final Instant stopDate) {
     return (root, query, cb) ->
         cb.or(
             cb.isNull(root.get("recurrenceEnd")),
             cb.greaterThanOrEqualTo(root.get("recurrenceEnd"), stopDate));
   }
 
-  public static Specification<AttackChain> recurrenceStopDateBefore(@NotNull final Instant stopDate) {
+  public static Specification<AttackChain> recurrenceStopDateBefore(
+      @NotNull final Instant stopDate) {
     return (root, query, cb) ->
         cb.or(
             cb.isNull(root.get("recurrenceEnd")),

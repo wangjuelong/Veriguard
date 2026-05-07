@@ -1,17 +1,17 @@
 package io.veriguard.rest.report;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.report.form.ReportAttackChainNodeCommentInput;
 import io.veriguard.rest.report.form.ReportInput;
 import io.veriguard.rest.report.model.Report;
 import io.veriguard.rest.report.service.ReportService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -88,7 +88,8 @@ public class ReportApi extends RestBehavior {
       @Valid @RequestBody ReportAttackChainNodeCommentInput input) {
     Report report = this.reportService.report(UUID.fromString(reportId));
     assert attackChainRunId.equals(report.getAttackChainRun().getId());
-    AttackChainNode attackChainNode = this.attackChainNodeService.attackChainNode(input.getAttackChainNodeId());
+    AttackChainNode attackChainNode =
+        this.attackChainNodeService.attackChainNode(input.getAttackChainNodeId());
     assert attackChainRunId.equals(attackChainNode.getAttackChainRun().getId());
     return this.reportService.updateReportAttackChainNodeComment(report, attackChainNode, input);
   }
@@ -114,7 +115,8 @@ public class ReportApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public void deleteAttackChainRunReport(@PathVariable String attackChainRunId, @PathVariable String reportId) {
+  public void deleteAttackChainRunReport(
+      @PathVariable String attackChainRunId, @PathVariable String reportId) {
     Report report = this.reportService.report(UUID.fromString(reportId));
     assert attackChainRunId.equals(report.getAttackChainRun().getId());
     this.reportService.deleteReport(UUID.fromString(reportId));

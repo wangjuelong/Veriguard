@@ -58,9 +58,9 @@ import org.springframework.stereotype.Service;
 /**
  * Service for managing nodeExecutor contracts.
  *
- * <p>Provides CRUD operations, search functionality, and mapping management for nodeExecutor contracts.
- * NodeExecutor contracts define the interface between attackChainNodes and nodeExecutors, specifying input fields,
- * target types, and associated attack patterns.
+ * <p>Provides CRUD operations, search functionality, and mapping management for nodeExecutor
+ * contracts. NodeExecutor contracts define the interface between attackChainNodes and
+ * nodeExecutors, specifying input fields, target types, and associated attack patterns.
  *
  * @see io.veriguard.database.model.NodeContract
  * @see io.veriguard.database.model.NodeExecutor
@@ -178,8 +178,7 @@ public class NodeContractService {
     QuerySetup qs = setupQuery(specification, specificationCount, pageable, true);
 
     // -- EXECUTION --
-    List<NodeContractFullOutput> nodeContractFullOutputs =
-        execNodeExecutorFullContract(qs.query);
+    List<NodeContractFullOutput> nodeContractFullOutputs = execNodeExecutorFullContract(qs.query);
 
     return new PageImpl<>(nodeContractFullOutputs, pageable, qs.total);
   }
@@ -201,8 +200,7 @@ public class NodeContractService {
     QuerySetup qs = setupQuery(specification, specificationCount, pageable, false);
 
     // -- EXECUTION --
-    List<NodeContractBaseOutput> nodeContractBaseOutputs =
-        execNodeExecutorBaseContract(qs.query);
+    List<NodeContractBaseOutput> nodeContractBaseOutputs = execNodeExecutorBaseContract(qs.query);
 
     return new PageImpl<>(nodeContractBaseOutputs, pageable, qs.total);
   }
@@ -259,7 +257,8 @@ public class NodeContractService {
         input.getVulnerabilityExternalIds(), input.getVulnerabilityIds(), nodeContract);
 
     nodeContract.setNodeExecutor(
-        updateRelation(input.getNodeExecutorId(), nodeContract.getNodeExecutor(), nodeExecutorRepository));
+        updateRelation(
+            input.getNodeExecutorId(), nodeContract.getNodeExecutor(), nodeExecutorRepository));
     nodeContract.setDomains(
         !nodeContract.getNodeExecutor().isPayloads()
             ? this.domainService.upserts(input.getDomains())
@@ -277,13 +276,11 @@ public class NodeContractService {
     return target;
   }
 
-  public void updateBuiltInNodeContract(
-      NodeContract target, Contract source, boolean isPayloads) {
+  public void updateBuiltInNodeContract(NodeContract target, Contract source, boolean isPayloads) {
     applyBuiltinContractData(target, source, isPayloads);
   }
 
-  private void applyBuiltinContractData(
-      NodeContract target, Contract source, boolean isPayloads) {
+  private void applyBuiltinContractData(NodeContract target, Contract source, boolean isPayloads) {
     target.setManual(source.isManual());
     target.setAtomicTesting(source.isAtomicTesting());
     target.setPlatforms(source.getPlatforms().toArray(new Endpoint.PLATFORM_TYPE[0]));
@@ -332,8 +329,7 @@ public class NodeContractService {
    * @return the updated nodeExecutor contract
    * @throws ElementNotFoundException if not found
    */
-  public NodeContract updateNodeContract(
-      String nodeContractId, NodeContractUpdateInput input) {
+  public NodeContract updateNodeContract(String nodeContractId, NodeContractUpdateInput input) {
     NodeContract nodeContract =
         nodeContractRepository
             .findByIdOrExternalId(nodeContractId, nodeContractId)
@@ -402,12 +398,10 @@ public class NodeContractService {
             .findByIdOrExternalId(nodeContractId, nodeContractId)
             .orElseThrow(
                 () ->
-                    new ElementNotFoundException(
-                        "Injector contract not found: " + nodeContractId));
+                    new ElementNotFoundException("Injector contract not found: " + nodeContractId));
     if (!nodeContract.getCustom()) {
       throw new IllegalArgumentException(
-          "This injector contract can't be removed because is not a custom one: "
-              + nodeContractId);
+          "This injector contract can't be removed because is not a custom one: " + nodeContractId);
     } else {
       this.nodeContractRepository.deleteById(nodeContract.getId());
     }
@@ -514,9 +508,12 @@ public class NodeContractService {
         .toList();
   }
 
-  private List<String> resolveEffectiveDomains(String[] nodeExecutorDomains, String[] payloadDomains) {
+  private List<String> resolveEffectiveDomains(
+      String[] nodeExecutorDomains, String[] payloadDomains) {
     String[] effectiveDomains =
-        (payloadDomains != null && payloadDomains.length > 0) ? payloadDomains : nodeExecutorDomains;
+        (payloadDomains != null && payloadDomains.length > 0)
+            ? payloadDomains
+            : nodeExecutorDomains;
     if (effectiveDomains == null) {
       return List.of();
     }
@@ -556,7 +553,8 @@ public class NodeContractService {
    * @return the created nodeExecutor contract (not yet persisted)
    */
   // TODO JRI => REFACTOR TO RELY ON INJECTOR SERVICE
-  public NodeContract convertNodeExecutorFromInput(NodeContractInput in, NodeExecutor nodeExecutor) {
+  public NodeContract convertNodeExecutorFromInput(
+      NodeContractInput in, NodeExecutor nodeExecutor) {
     NodeContract nodeContract = new NodeContract();
     nodeContract.setId(in.getId());
     nodeContract.setManual(in.isManual());

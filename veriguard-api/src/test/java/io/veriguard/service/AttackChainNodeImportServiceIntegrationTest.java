@@ -4,10 +4,10 @@ import static io.veriguard.utils.fixtures.import_mapper.RuleAttributeFixture.cre
 import static org.junit.jupiter.api.Assertions.*;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.ImportMapper;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeImporter;
-import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.ImportMapper;
 import io.veriguard.rest.attack_chain.response.ImportTestSummary;
 import io.veriguard.utils.fixtures.AttackChainFixture;
 import io.veriguard.utils.fixtures.XlsFixture;

@@ -5,8 +5,8 @@ import io.veriguard.database.model.*;
 import io.veriguard.expectation.ExpectationType;
 import io.veriguard.notification.model.NotificationEvent;
 import io.veriguard.notification.model.NotificationEventType;
-import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.rest.attack_chain.service.AttackChainStatisticService;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.service.NotificationRuleService;
 import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
@@ -32,7 +32,8 @@ public class AttackChainNotificationEventHandler implements NotificationEventHan
     if (NotificationEventType.SIMULATION_COMPLETED.equals(event.getEventType())) {
       // get the last 2 simulations
       AttackChainRun lastSimulation =
-          attackChainRunService.previousFinishedSimulation(event.getResourceId(), event.getTimestamp());
+          attackChainRunService.previousFinishedSimulation(
+              event.getResourceId(), event.getTimestamp());
       if (lastSimulation == null || lastSimulation.getEnd().isEmpty()) {
         return;
       }

@@ -53,7 +53,8 @@ public class EsAttackPathService {
     CompletableFuture<List<EsAttackChainNode>> simulationEsAttackChainNodesFuture =
         CompletableFuture.supplyAsync(
             () ->
-                fetchSimulationAttackChainNodesFromES(user, simulationId, parameters, definitionParameters));
+                fetchSimulationAttackChainNodesFromES(
+                    user, simulationId, parameters, definitionParameters));
     CompletableFuture<List<EsSeries>> simulationSeriesFuture =
         CompletableFuture.supplyAsync(() -> esService.multiTermHistogram(user, runtime));
 
@@ -61,7 +62,8 @@ public class EsAttackPathService {
     List<EsSeries> simulationSeries = simulationSeriesFuture.get();
 
     // Fetch attackPattern of simulation
-    Set<String> attackPatternIds = extractAttackPatternFromEsAttackChainNodes(simulationEsAttackChainNodes);
+    Set<String> attackPatternIds =
+        extractAttackPatternFromEsAttackChainNodes(simulationEsAttackChainNodes);
     Map<String, AttackPattern> attackPatternMap = fetchAttackPatterns(attackPatternIds);
 
     // Process series results
@@ -118,7 +120,8 @@ public class EsAttackPathService {
    * @param esAttackChainNode the list of EsAttackChainNode objects to extract attack patterns from
    * @return a set of unique attack pattern IDs
    */
-  private Set<String> extractAttackPatternFromEsAttackChainNodes(List<EsAttackChainNode> esAttackChainNode) {
+  private Set<String> extractAttackPatternFromEsAttackChainNodes(
+      List<EsAttackChainNode> esAttackChainNode) {
     return esAttackChainNode.stream()
         .filter(i -> i.getBase_attack_patterns_side() != null)
         .flatMap(i -> i.getBase_attack_patterns_side().stream())
@@ -142,15 +145,19 @@ public class EsAttackPathService {
   }
 
   /**
-   * Computes the success rate series by attack pattern ID from a list of attackChainNode expectation
+   * Computes the success rate series by attack pattern ID from a list of attackChainNode
+   * expectation
    *
-   * @param attackChainNodeExpectationSeries the list of EsSeries containing attackChainNode expectations
+   * @param attackChainNodeExpectationSeries the list of EsSeries containing attackChainNode
+   *     expectations
    * @return a map where keys are attack pattern IDs and values are their success rates
    */
   private Map<String, Long> computeSuccessRateSeriesByAttackPatternId(
       List<EsSeries> attackChainNodeExpectationSeries) {
-    Map<String, Long> successCounts = aggregateSeriesData(attackChainNodeExpectationSeries, "SUCCESS");
-    Map<String, Long> failedCounts = aggregateSeriesData(attackChainNodeExpectationSeries, "FAILED");
+    Map<String, Long> successCounts =
+        aggregateSeriesData(attackChainNodeExpectationSeries, "SUCCESS");
+    Map<String, Long> failedCounts =
+        aggregateSeriesData(attackChainNodeExpectationSeries, "FAILED");
 
     Map<String, Long> successRateMap = new HashMap<>();
     Set<String> allKeys = new HashSet<>(successCounts.keySet());
@@ -260,10 +267,12 @@ public class EsAttackPathService {
    * Updates an existing EsAttackPath object by adding the attackChainNode's base ID and children
    *
    * @param attackPath the existing EsAttackPath to update
-   * @param attackChainNode the EsAttackChainNode containing the base ID and children attack patterns
+   * @param attackChainNode the EsAttackChainNode containing the base ID and children attack
+   *     patterns
    * @return the updated EsAttackPath object
    */
-  private EsAttackPath updateAttackPath(EsAttackPath attackPath, EsAttackChainNode attackChainNode) {
+  private EsAttackPath updateAttackPath(
+      EsAttackPath attackPath, EsAttackChainNode attackChainNode) {
     attackPath.getAttackChainNodeIds().add(attackChainNode.getBase_id());
     if (attackPath.getAttackPatternChildrenIds() != null
         && attackChainNode.getBase_attack_patterns_children_side() != null) {

@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class NodeExecutorFixture {
   @Autowired NodeExecutorRepository nodeExecutorRepository;
-  @Autowired private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
+
+  @Autowired
+  private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
 
   public static NodeExecutor createDefaultPayloadNodeExecutor() {
     NodeExecutor nodeExecutor =
@@ -39,7 +41,9 @@ public class NodeExecutorFixture {
 
   public static NodeExecutor createDefaultNodeExecutor(String nodeExecutorName) {
     return createNodeExecutor(
-        UUID.randomUUID().toString(), nodeExecutorName, nodeExecutorName.toLowerCase().replace(" ", "-"));
+        UUID.randomUUID().toString(),
+        nodeExecutorName,
+        nodeExecutorName.toLowerCase().replace(" ", "-"));
   }
 
   private NodeExecutor initializeOAEVImplantNodeExecutor() {

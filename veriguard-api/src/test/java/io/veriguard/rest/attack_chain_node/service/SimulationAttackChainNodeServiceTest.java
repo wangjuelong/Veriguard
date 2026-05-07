@@ -5,18 +5,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.Team;
 import io.veriguard.database.repository.AttackChainNodeRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeTeamsInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateActivationInput;
-import io.veriguard.utils.fixtures.AttackChainRunFixture;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.utils.fixtures.AttackChainNodeFixture;
+import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.TeamFixture;
-import io.veriguard.utils.fixtures.composers.AttackChainRunComposer;
 import io.veriguard.utils.fixtures.composers.AttackChainNodeComposer;
+import io.veriguard.utils.fixtures.composers.AttackChainRunComposer;
 import io.veriguard.utils.fixtures.composers.TeamComposer;
 import io.veriguard.utils.mockUser.WithMockUser;
 import jakarta.transaction.Transactional;
@@ -45,9 +45,11 @@ class SimulationAttackChainNodeServiceTest extends IntegrationTest {
   @BeforeEach
   void setUp() {
     AttackChainNodeComposer.Composer attackChainNodeComposerA =
-        attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode());
+        attackChainNodeComposer.forAttackChainNode(
+            AttackChainNodeFixture.getDefaultAttackChainNode());
     AttackChainNodeComposer.Composer attackChainNodeComposerB =
-        attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode());
+        attackChainNodeComposer.forAttackChainNode(
+            AttackChainNodeFixture.getDefaultAttackChainNode());
 
     attackChainRunComposer
         .forAttackChainRun(AttackChainRunFixture.createDefaultAttackChainRun())
@@ -74,7 +76,8 @@ class SimulationAttackChainNodeServiceTest extends IntegrationTest {
     void given_attackChainNodeBelongsToSimulation_should_returnAttackChainNode() {
       // -- ACT --
       AttackChainNode result =
-          simulationAttackChainNodeService.findAttackChainNodeForSimulation(simulationA.getId(), attackChainNodeInA.getId());
+          simulationAttackChainNodeService.findAttackChainNodeForSimulation(
+              simulationA.getId(), attackChainNodeInA.getId());
 
       // -- ASSERT --
       assertThat(result.getId()).isEqualTo(attackChainNodeInA.getId());
@@ -134,7 +137,8 @@ class SimulationAttackChainNodeServiceTest extends IntegrationTest {
 
     @Test
     @WithMockUser(isAdmin = true)
-    void given_attackChainNodeBelongsToSimulation_should_updateActivationAndReturnAttackChainNode() {
+    void
+        given_attackChainNodeBelongsToSimulation_should_updateActivationAndReturnAttackChainNode() {
       // -- ARRANGE --
       AttackChainNodeUpdateActivationInput input = new AttackChainNodeUpdateActivationInput();
       input.setEnabled(false);
@@ -170,7 +174,8 @@ class SimulationAttackChainNodeServiceTest extends IntegrationTest {
 
     @Test
     @WithMockUser(isAdmin = true)
-    void given_attackChainNodeBelongsToSimulation_should_setTriggerNowDateAndReturnAttackChainNode() {
+    void
+        given_attackChainNodeBelongsToSimulation_should_setTriggerNowDateAndReturnAttackChainNode() {
       // -- ACT --
       AttackChainNode result =
           simulationAttackChainNodeService.triggerAttackChainNodeForSimulation(
@@ -242,7 +247,8 @@ class SimulationAttackChainNodeServiceTest extends IntegrationTest {
     @WithMockUser(isAdmin = true)
     void given_attackChainNodeBelongsToSimulation_should_deleteAttackChainNode() {
       // -- ACT --
-      simulationAttackChainNodeService.deleteAttackChainNode(simulationA.getId(), attackChainNodeInA.getId());
+      simulationAttackChainNodeService.deleteAttackChainNode(
+          simulationA.getId(), attackChainNodeInA.getId());
 
       // -- ASSERT --
       assertThat(attackChainNodeRepository.findById(attackChainNodeInA.getId())).isEmpty();
@@ -253,7 +259,9 @@ class SimulationAttackChainNodeServiceTest extends IntegrationTest {
     void given_attackChainNodeBelongsToAnotherSimulation_should_throwElementNotFoundException() {
       // -- ACT & ASSERT --
       assertThatThrownBy(
-              () -> simulationAttackChainNodeService.deleteAttackChainNode(simulationA.getId(), attackChainNodeInB.getId()))
+              () ->
+                  simulationAttackChainNodeService.deleteAttackChainNode(
+                      simulationA.getId(), attackChainNodeInB.getId()))
           .isInstanceOf(ElementNotFoundException.class);
     }
   }

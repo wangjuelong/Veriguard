@@ -2,6 +2,9 @@ package io.veriguard.rest.attack_chain;
 
 import static io.veriguard.rest.attack_chain.AttackChainApi.SCENARIO_URI;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.CustomDashboard;
@@ -14,9 +17,6 @@ import io.veriguard.engine.query.EsSeries;
 import io.veriguard.rest.custom_dashboard.CustomDashboardService;
 import io.veriguard.rest.dashboard.model.WidgetToEntitiesInput;
 import io.veriguard.rest.dashboard.model.WidgetToEntitiesOutput;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +56,8 @@ public class AttackChainDashboardApi {
       @PathVariable final String attackChainId,
       @PathVariable final String widgetId,
       @RequestBody(required = false) Map<String, String> parameters) {
-    return this.customDashboardService.dashboardCountOnResourceId(attackChainId, widgetId, parameters);
+    return this.customDashboardService.dashboardCountOnResourceId(
+        attackChainId, widgetId, parameters);
   }
 
   @PostMapping(SCENARIO_URI + "/{scenarioId}/dashboard/average/{widgetId}")

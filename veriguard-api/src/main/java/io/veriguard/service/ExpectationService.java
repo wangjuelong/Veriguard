@@ -37,8 +37,7 @@ public class ExpectationService {
    * @return available expectations
    */
   public List<Expectation> getAvailableExpectationsForAttackChainNode(String nodeContractId) {
-    NodeContract nodeContract =
-        nodeContractService.nodeContract(nodeContractId);
+    NodeContract nodeContract = nodeContractService.nodeContract(nodeContractId);
     ObjectNode nodeContractContent = nodeContract.getConvertedContent();
     boolean isHumanAttackChainNode = false;
     List<io.veriguard.model.inject.form.Expectation> availableExpectations = new ArrayList<>();

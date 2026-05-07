@@ -17,7 +17,8 @@ public class AttackChainComposer extends ComposerBase<AttackChain> {
 
   public class Composer extends InnerComposerBase<AttackChain> {
     private final AttackChain attackChain;
-    private final List<AttackChainNodeComposer.Composer> attackChainNodeComposers = new ArrayList<>();
+    private final List<AttackChainNodeComposer.Composer> attackChainNodeComposers =
+        new ArrayList<>();
     private final List<AttackChainRunComposer.Composer> simulationComposers = new ArrayList<>();
     private final List<TagComposer.Composer> tagComposers = new ArrayList<>();
     private final List<VariableComposer.Composer> variableComposers = new ArrayList<>();
@@ -26,7 +27,8 @@ public class AttackChainComposer extends ComposerBase<AttackChain> {
       this.attackChain = attackChain;
     }
 
-    public Composer withAttackChainNodes(List<AttackChainNodeComposer.Composer> attackChainNodeComposers) {
+    public Composer withAttackChainNodes(
+        List<AttackChainNodeComposer.Composer> attackChainNodeComposers) {
       attackChainNodeComposers.forEach(this::withAttackChainNode);
       return this;
     }
@@ -41,7 +43,8 @@ public class AttackChainComposer extends ComposerBase<AttackChain> {
 
     public Composer withAttackChainNode(AttackChainNodeComposer.Composer attackChainNodeComposer) {
       attackChainNodeComposers.add(attackChainNodeComposer);
-      Set<AttackChainNode> tempAttackChainNodes = new HashSet<>(this.attackChain.getAttackChainNodes());
+      Set<AttackChainNode> tempAttackChainNodes =
+          new HashSet<>(this.attackChain.getAttackChainNodes());
       attackChainNodeComposer.get().setAttackChain(attackChain);
       tempAttackChainNodes.add(attackChainNodeComposer.get());
       this.attackChain.setAttackChainNodes(tempAttackChainNodes);

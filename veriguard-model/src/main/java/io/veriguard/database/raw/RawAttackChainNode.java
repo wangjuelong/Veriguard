@@ -6,9 +6,10 @@ import java.util.Set;
 /**
  * Spring Data projection interface for attackChainNode data with relationships.
  *
- * <p>This interface defines a projection for retrieving attackChainNode information including associated
- * teams, assets, expectations, and execution metadata. Used for efficient bulk operations and
- * queries that require attackChainNode relationship data without full entity loading.
+ * <p>This interface defines a projection for retrieving attackChainNode information including
+ * associated teams, assets, expectations, and execution metadata. Used for efficient bulk
+ * operations and queries that require attackChainNode relationship data without full entity
+ * loading.
  *
  * @see io.veriguard.database.model.AttackChainNode
  */

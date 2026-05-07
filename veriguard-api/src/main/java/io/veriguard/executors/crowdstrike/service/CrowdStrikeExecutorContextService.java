@@ -54,7 +54,9 @@ public class CrowdStrikeExecutorContextService extends ExecutorContextService {
 
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
-      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
+      AttackChainNode attackChainNode,
+      Set<Agent> agents,
+      AttackChainNodeStatus attackChainNodeStatus) {
 
     List<Agent> csAgents = new ArrayList<>(agents);
 
@@ -73,15 +75,21 @@ public class CrowdStrikeExecutorContextService extends ExecutorContextService {
     // Set implant script for Windows CS agents
     actions.addAll(
         getWindowsActions(
-            getAgentsFromOS(csAgents, Endpoint.PLATFORM_TYPE.Windows), nodeExecutor, attackChainNode.getId()));
+            getAgentsFromOS(csAgents, Endpoint.PLATFORM_TYPE.Windows),
+            nodeExecutor,
+            attackChainNode.getId()));
     // Set implant script for Linux CS agents
     actions.addAll(
         getLinuxActions(
-            getAgentsFromOS(csAgents, Endpoint.PLATFORM_TYPE.Linux), nodeExecutor, attackChainNode.getId()));
+            getAgentsFromOS(csAgents, Endpoint.PLATFORM_TYPE.Linux),
+            nodeExecutor,
+            attackChainNode.getId()));
     // Set implant script for MacOS CS agents
     actions.addAll(
         getMacOSActions(
-            getAgentsFromOS(csAgents, Endpoint.PLATFORM_TYPE.MacOS), nodeExecutor, attackChainNode.getId()));
+            getAgentsFromOS(csAgents, Endpoint.PLATFORM_TYPE.MacOS),
+            nodeExecutor,
+            attackChainNode.getId()));
     // Launch payloads with CS API
     executeActions(actions);
     return csAgents;
@@ -126,7 +134,8 @@ public class CrowdStrikeExecutorContextService extends ExecutorContextService {
       // (we update this when the download implant script is launched on the endpoint)
       String executorCommandKey = platform.name() + "." + Endpoint.PLATFORM_ARCH.x86_64.name();
       String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
-      // The default command to download the veriguard implant and execute the attack is modified for
+      // The default command to download the veriguard implant and execute the attack is modified
+      // for
       // CS
       // - WINDOWS_ARCH: CS doesn't know the endpoint architecture so we include it to get the
       // architecture before downloading the implant and we replace the default x86_64 put before
@@ -161,7 +170,10 @@ public class CrowdStrikeExecutorContextService extends ExecutorContextService {
       actionLinux.setScriptName(this.crowdStrikeExecutorConfig.getUnixScriptName());
       actionLinux.setCommandEncoded(
           getUnixCommand(
-              Endpoint.PLATFORM_TYPE.Linux, nodeExecutor, attackChainNodeId, LINUX_EXTERNAL_REFERENCE));
+              Endpoint.PLATFORM_TYPE.Linux,
+              nodeExecutor,
+              attackChainNodeId,
+              LINUX_EXTERNAL_REFERENCE));
       actionLinux.setAgents(agents);
       actions.add(actionLinux);
     }
@@ -175,7 +187,11 @@ public class CrowdStrikeExecutorContextService extends ExecutorContextService {
       CrowdStrikeAction actionMac = new CrowdStrikeAction();
       actionMac.setScriptName(this.crowdStrikeExecutorConfig.getUnixScriptName());
       actionMac.setCommandEncoded(
-          getUnixCommand(Endpoint.PLATFORM_TYPE.MacOS, nodeExecutor, attackChainNodeId, MAC_EXTERNAL_REFERENCE));
+          getUnixCommand(
+              Endpoint.PLATFORM_TYPE.MacOS,
+              nodeExecutor,
+              attackChainNodeId,
+              MAC_EXTERNAL_REFERENCE));
       actionMac.setAgents(agents);
       actions.add(actionMac);
     }
@@ -197,10 +213,12 @@ public class CrowdStrikeExecutorContextService extends ExecutorContextService {
     // (we update this when the download implant script is launched on the endpoint)
     String executorCommandKey = platform.name() + "." + Endpoint.PLATFORM_ARCH.x86_64.name();
     String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
-    // The default command to download the veriguard implant and execute the attack is modified for CS
+    // The default command to download the veriguard implant and execute the attack is modified for
+    // CS
     // - UNIX_ARCH: CS doesn't know the endpoint architecture so we include it to get the
     // architecture before downloading the implant and we replace the default x86_64 put before
-    // - externalReferenceVariable: the agent id in the veriguard DB for CS is the CS agent id to make
+    // - externalReferenceVariable: the agent id in the veriguard DB for CS is the CS agent id to
+    // make
     // the batch attack works so we get it with a command line from the endpoint and give it to the
     // implant
     command =

@@ -5,14 +5,14 @@ import static io.veriguard.helper.StreamHelper.fromIterable;
 import static java.time.Instant.now;
 
 import io.veriguard.database.model.*;
-import io.veriguard.database.repository.CommunicationRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
+import io.veriguard.database.repository.CommunicationRepository;
 import io.veriguard.database.repository.TeamRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeTeamsInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateActivationInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateStatusInput;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,10 @@ public class SimulationAttackChainNodeService {
         .orElseThrow(
             () ->
                 new ElementNotFoundException(
-                    "Inject not found with id: " + attackChainNodeId + " in simulation: " + simulationId));
+                    "Inject not found with id: "
+                        + attackChainNodeId
+                        + " in simulation: "
+                        + simulationId));
   }
 
   /** Returns the teams assigned to an attackChainNode that belongs to the given simulation. */
@@ -55,7 +58,8 @@ public class SimulationAttackChainNodeService {
   }
 
   /**
-   * Returns and acknowledges all communications for an attackChainNode that belongs to the given simulation.
+   * Returns and acknowledges all communications for an attackChainNode that belongs to the given
+   * simulation.
    */
   public Iterable<Communication> findAndAckCommunicationsForSimulation(
       @NotBlank final String simulationId, @NotBlank final String attackChainNodeId) {
@@ -81,7 +85,8 @@ public class SimulationAttackChainNodeService {
   /** Triggers immediate execution of an attackChainNode that belongs to the given simulation. */
   public AttackChainNode triggerAttackChainNodeForSimulation(
       @NotBlank final String simulationId, @NotBlank final String attackChainNodeId) {
-    AttackChainNode attackChainNode = findAttackChainNodeForSimulation(simulationId, attackChainNodeId);
+    AttackChainNode attackChainNode =
+        findAttackChainNodeForSimulation(simulationId, attackChainNodeId);
     attackChainNode.setTriggerNowDate(now());
     attackChainNode.setUpdatedAt(now());
     return attackChainNodeRepository.save(attackChainNode);
@@ -101,7 +106,8 @@ public class SimulationAttackChainNodeService {
       @NotBlank final String simulationId,
       @NotBlank final String attackChainNodeId,
       AttackChainNodeTeamsInput input) {
-    AttackChainNode attackChainNode = findAttackChainNodeForSimulation(simulationId, attackChainNodeId);
+    AttackChainNode attackChainNode =
+        findAttackChainNodeForSimulation(simulationId, attackChainNodeId);
     Iterable<Team> attackChainNodeTeams = teamRepository.findAllById(input.getTeamIds());
     attackChainNode.setTeams(fromIterable(attackChainNodeTeams));
     return attackChainNodeRepository.save(attackChainNode);
@@ -110,7 +116,8 @@ public class SimulationAttackChainNodeService {
   // -- DELETE --
 
   /** Deletes an attackChainNode that belongs to the given simulation. */
-  public void deleteAttackChainNode(@NotBlank final String simulationId, @NotBlank final String attackChainNodeId) {
+  public void deleteAttackChainNode(
+      @NotBlank final String simulationId, @NotBlank final String attackChainNodeId) {
     checkAttackChainNodeForSimulation(simulationId, attackChainNodeId);
     AttackChainRun attackChainRun = this.attackChainRunService.attackChainRun(simulationId);
     attackChainNodeService.delete(attackChainNodeId);

@@ -35,7 +35,8 @@ public class VariableService {
   }
 
   public List<Variable> variablesFromAttackChainRun(@NotBlank final String attackChainRunId) {
-    return this.variableRepository.findAll(VariableSpecification.fromAttackChainRun(attackChainRunId));
+    return this.variableRepository.findAll(
+        VariableSpecification.fromAttackChainRun(attackChainRunId));
   }
 
   public List<Variable> variablesFromAttackChain(@NotBlank final String attackChainId) {
@@ -53,6 +54,7 @@ public class VariableService {
 
   public void copyVariableFromAttackChainForSimulation(
       @NotBlank final String attackChainId, @NotBlank final String attackChainRunId) {
-    this.variableRepository.copyVariableFromAttackChainForSimulation(attackChainId, attackChainRunId);
+    this.variableRepository.copyVariableFromAttackChainForSimulation(
+        attackChainId, attackChainRunId);
   }
 }

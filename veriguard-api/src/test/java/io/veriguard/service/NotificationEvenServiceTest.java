@@ -33,7 +33,8 @@ public class NotificationEvenServiceTest extends IntegrationTest {
   @BeforeEach
   public void setUp() {
     notificationEventService =
-        new NotificationEventService(appPublisher, attackChainNotificationEventHandler, taskScheduler);
+        new NotificationEventService(
+            appPublisher, attackChainNotificationEventHandler, taskScheduler);
   }
 
   @Test

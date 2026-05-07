@@ -11,7 +11,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class AttackChainNodeExpectationSpecification {
 
-  public static Specification<AttackChainNodeExpectation> type(@NotBlank final EXPECTATION_TYPE type) {
+  public static Specification<AttackChainNodeExpectation> type(
+      @NotBlank final EXPECTATION_TYPE type) {
     return (root, query, cb) -> cb.equal(root.get("type"), type);
   }
 

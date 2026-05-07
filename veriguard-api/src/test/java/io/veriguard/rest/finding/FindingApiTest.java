@@ -94,7 +94,8 @@ class FindingApiTest extends IntegrationTest {
         Hashtable<String, AttackChainNodeComposer.Composer> attackChainNodes =
             attachSimulationToAttackChain(
                 attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
-        for (Map.Entry<String, AttackChainNodeComposer.Composer> entry : attackChainNodes.entrySet()) {
+        for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
+            attackChainNodes.entrySet()) {
           for (FindingComposer.Composer findingWrapper : getDefaultFindings()) {
             entry.getValue().withFinding(findingWrapper);
           }
@@ -115,7 +116,8 @@ class FindingApiTest extends IntegrationTest {
               .withNodeContract(
                   nodeContractComposer
                       .forNodeContract(NodeContractFixture.createDefaultNodeContract())
-                      .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
+                      .withNodeExecutor(
+                          nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
       attackChainNodes.put(
           secondAttackChainNodeName,
           attackChainNodeComposer
@@ -123,7 +125,8 @@ class FindingApiTest extends IntegrationTest {
               .withNodeContract(
                   nodeContractComposer
                       .forNodeContract(NodeContractFixture.createDefaultNodeContract())
-                      .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
+                      .withNodeExecutor(
+                          nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
       attackChainNodes.put(
           thirdAttackChainNodeName,
           attackChainNodeComposer
@@ -131,7 +134,8 @@ class FindingApiTest extends IntegrationTest {
               .withNodeContract(
                   nodeContractComposer
                       .forNodeContract(NodeContractFixture.createDefaultNodeContract())
-                      .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
+                      .withNodeExecutor(
+                          nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
       attackChainNodes.put(
           fourthAttackChainNodeName,
           attackChainNodeComposer
@@ -139,11 +143,13 @@ class FindingApiTest extends IntegrationTest {
               .withNodeContract(
                   nodeContractComposer
                       .forNodeContract(NodeContractFixture.createDefaultNodeContract())
-                      .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
+                      .withNodeExecutor(
+                          nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())));
 
       AttackChainRunComposer.Composer simulationWrapper =
           simulationComposer.forAttackChainRun(simulationFixture);
-      for (Map.Entry<String, AttackChainNodeComposer.Composer> entry : attackChainNodes.entrySet()) {
+      for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
+          attackChainNodes.entrySet()) {
         simulationWrapper.withAttackChainNode(entry.getValue());
       }
 
@@ -175,9 +181,11 @@ class FindingApiTest extends IntegrationTest {
 
         // add latest simulation to each attackChain
         for (AttackChainComposer.Composer attackChainWrapper : attackChainWrappers) {
-          Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
-              attachSimulationToAttackChain(
-                  attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+          Hashtable<String, AttackChainNodeComposer.Composer>
+              latestSimulationAttackChainNodeWrappers =
+                  attachSimulationToAttackChain(
+                      attackChainWrapper,
+                      AttackChainRunFixture.createFinishedAttackAttackChainRun());
           for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
               latestSimulationAttackChainNodeWrappers.entrySet()) {
             FindingComposer.Composer findingWrapper =
@@ -229,7 +237,8 @@ class FindingApiTest extends IntegrationTest {
 
       @Test
       @DisplayName("Returns only findings for latest finished simulation of each scenario")
-      public void ReturnsOnlyFindingsForLatestFinishedSimulationOfEachAttackChain() throws Exception {
+      public void ReturnsOnlyFindingsForLatestFinishedSimulationOfEachAttackChain()
+          throws Exception {
         List<AttackChainComposer.Composer> attackChainWrappers =
             List.of(getAttackChainWithSimulationsWrapper(), getAttackChainWithSimulationsWrapper());
 
@@ -239,9 +248,11 @@ class FindingApiTest extends IntegrationTest {
         // add latest simulations to each attackChain
         for (AttackChainComposer.Composer attackChainWrapper : attackChainWrappers) {
           ///  FINISHED simulation
-          Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
-              attachSimulationToAttackChain(
-                  attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+          Hashtable<String, AttackChainNodeComposer.Composer>
+              latestSimulationAttackChainNodeWrappers =
+                  attachSimulationToAttackChain(
+                      attackChainWrapper,
+                      AttackChainRunFixture.createFinishedAttackAttackChainRun());
           for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
               latestSimulationAttackChainNodeWrappers.entrySet()) {
             FindingComposer.Composer findingWrapper =
@@ -308,9 +319,10 @@ class FindingApiTest extends IntegrationTest {
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
 
         // add latest simulation to attackChain
-        Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
-            attachSimulationToAttackChain(
-                attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+        Hashtable<String, AttackChainNodeComposer.Composer>
+            latestSimulationAttackChainNodeWrappers =
+                attachSimulationToAttackChain(
+                    attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
         for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
             latestSimulationAttackChainNodeWrappers.entrySet()) {
           FindingComposer.Composer findingWrapper =
@@ -327,7 +339,8 @@ class FindingApiTest extends IntegrationTest {
 
         String response =
             performCallbackRequest(
-                    FINDING_URI + "/scenarios/" + attackChainWrapper.get().getId() + "/search", input)
+                    FINDING_URI + "/scenarios/" + attackChainWrapper.get().getId() + "/search",
+                    input)
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -380,7 +393,9 @@ class FindingApiTest extends IntegrationTest {
             fromIterable(
                     findingRepository.findAllById(
                         ex.getAttackChainNodes().stream()
-                            .flatMap(attackChainNode -> attackChainNode.getFindings().stream().map(Finding::getId))
+                            .flatMap(
+                                attackChainNode ->
+                                    attackChainNode.getFindings().stream().map(Finding::getId))
                             .toList()))
                 .stream()
                 .map(findingMapper::toRelatedFindingOutput)
@@ -410,7 +425,13 @@ class FindingApiTest extends IntegrationTest {
         AttackChainComposer.Composer attackChainWrapper = getAttackChainWithSimulationsWrapper();
         attackChainWrapper.persist();
 
-        AttackChainNode attackChainNode = attackChainWrapper.get().getAttackChainRuns().getFirst().getAttackChainNodes().getFirst();
+        AttackChainNode attackChainNode =
+            attackChainWrapper
+                .get()
+                .getAttackChainRuns()
+                .getFirst()
+                .getAttackChainNodes()
+                .getFirst();
 
         SearchPaginationInput input = PaginationFixture.getDefault().build();
 
@@ -418,7 +439,8 @@ class FindingApiTest extends IntegrationTest {
         entityManager.clear();
 
         String response =
-            performCallbackRequest(FINDING_URI + "/injects/" + attackChainNode.getId() + "/search", input)
+            performCallbackRequest(
+                    FINDING_URI + "/injects/" + attackChainNode.getId() + "/search", input)
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -460,9 +482,10 @@ class FindingApiTest extends IntegrationTest {
 
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
         // add latest simulation to attackChain
-        Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
-            attachSimulationToAttackChain(
-                attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+        Hashtable<String, AttackChainNodeComposer.Composer>
+            latestSimulationAttackChainNodeWrappers =
+                attachSimulationToAttackChain(
+                    attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
         for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
             latestSimulationAttackChainNodeWrappers.entrySet()) {
           FindingComposer.Composer findingWrapper =
@@ -534,7 +557,8 @@ class FindingApiTest extends IntegrationTest {
 
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
         // add finished simulation to attackChain with no findings (= all previous findings solved)
-        attachSimulationToAttackChain(attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+        attachSimulationToAttackChain(
+            attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
 
         attackChainWrapper.persist();
 
@@ -597,9 +621,10 @@ class FindingApiTest extends IntegrationTest {
 
         List<FindingComposer.Composer> latestFindingWrappers = new ArrayList<>();
         // add latest simulation to attackChain
-        Hashtable<String, AttackChainNodeComposer.Composer> latestSimulationAttackChainNodeWrappers =
-            attachSimulationToAttackChain(
-                attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
+        Hashtable<String, AttackChainNodeComposer.Composer>
+            latestSimulationAttackChainNodeWrappers =
+                attachSimulationToAttackChain(
+                    attackChainWrapper, AttackChainRunFixture.createFinishedAttackAttackChainRun());
         for (Map.Entry<String, AttackChainNodeComposer.Composer> entry :
             latestSimulationAttackChainNodeWrappers.entrySet()) {
           FindingComposer.Composer findingWrapper =
@@ -610,7 +635,8 @@ class FindingApiTest extends IntegrationTest {
           latestFindingWrappers.add(findingWrapper);
         }
 
-        attachSimulationToAttackChain(attackChainWrapper, AttackChainRunFixture.createRunningAttackAttackChainRun());
+        attachSimulationToAttackChain(
+            attackChainWrapper, AttackChainRunFixture.createRunningAttackAttackChainRun());
 
         attackChainWrapper.persist();
 
@@ -688,7 +714,9 @@ class FindingApiTest extends IntegrationTest {
               .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
               .withAssetGroup(assetGroupWrapper);
 
-      attackChainNodeWrapper2 = attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode());
+      attackChainNodeWrapper2 =
+          attackChainNodeComposer.forAttackChainNode(
+              AttackChainNodeFixture.getDefaultAttackChainNode());
 
       AttackChainRunComposer.Composer simulationWrapper =
           simulationComposer
@@ -741,7 +769,8 @@ class FindingApiTest extends IntegrationTest {
               jsonPath("$.content.[0].finding_simulation.exercise_id")
                   .value(savedSimulation.getId()))
           .andExpect(
-              jsonPath("$.content.[0].finding_scenario.scenario_id").value(savedAttackChain.getId()));
+              jsonPath("$.content.[0].finding_scenario.scenario_id")
+                  .value(savedAttackChain.getId()));
     }
 
     @Test
@@ -792,9 +821,11 @@ class FindingApiTest extends IntegrationTest {
       entityManager.flush();
       entityManager.clear();
 
-      performCallbackRequest(FINDING_URI + "/scenarios/" + savedAttackChain.getId() + "/search", input)
+      performCallbackRequest(
+              FINDING_URI + "/scenarios/" + savedAttackChain.getId() + "/search", input)
           .andExpect(
-              jsonPath("$.content.[0].finding_scenario.scenario_id").value(savedAttackChain.getId()))
+              jsonPath("$.content.[0].finding_scenario.scenario_id")
+                  .value(savedAttackChain.getId()))
           .andExpect(
               jsonPath("$.content.[0].finding_type").value(savedFinding.getType().getLabel()))
           .andExpect(jsonPath("$.content.[0].finding_value").value("admin:admin"));

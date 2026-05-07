@@ -6,8 +6,8 @@ import java.util.Set;
 /**
  * Spring Data projection interface for simplified attackChainRun data.
  *
- * <p>This interface defines a lightweight projection for retrieving essential attackChainRun information
- * without loading full entity relationships. Used for list views and summary displays.
+ * <p>This interface defines a lightweight projection for retrieving essential attackChainRun
+ * information without loading full entity relationships. Used for list views and summary displays.
  *
  * @see io.veriguard.database.model.AttackChainRun
  * @see RawSimulation

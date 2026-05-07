@@ -83,7 +83,8 @@ public class HealthCheckUtils {
    * @param collectors all available collectors
    * @return all found collectors healthchecks issues
    */
-  public List<HealthCheck> runCollectorChecks(AttackChainNode attackChainNode, List<Collector> collectors) {
+  public List<HealthCheck> runCollectorChecks(
+      AttackChainNode attackChainNode, List<Collector> collectors) {
     List<HealthCheck> result = new ArrayList<>();
     boolean isDetectionOrPrenvention =
         NodeModelHelper.isDetectionOrPrevention(attackChainNode.getContent());
@@ -108,20 +109,25 @@ public class HealthCheckUtils {
    * @return list of the healthcheck result
    */
   public List<HealthCheck> runAllNodeExecutorChecks(
-      @NotNull final AttackChainNode attackChainNode, @NotNull final List<NodeExecutor> nodeExecutors) {
+      @NotNull final AttackChainNode attackChainNode,
+      @NotNull final List<NodeExecutor> nodeExecutors) {
 
     List<HealthCheck> results = new ArrayList<>();
     results.addAll(
-        runNodeExecutorCheck(attackChainNode, nodeExecutors, ExternalServiceDependency.NMAP, HealthCheck.Type.NMAP));
+        runNodeExecutorCheck(
+            attackChainNode, nodeExecutors, ExternalServiceDependency.NMAP, HealthCheck.Type.NMAP));
     results.addAll(
         runNodeExecutorCheck(
-            attackChainNode, nodeExecutors, ExternalServiceDependency.NUCLEI, HealthCheck.Type.NUCLEI));
+            attackChainNode,
+            nodeExecutors,
+            ExternalServiceDependency.NUCLEI,
+            HealthCheck.Type.NUCLEI));
     return results;
   }
 
   /**
-   * Verify whether an nodeExecutor contract depends on an nodeExecutor and whether that nodeExecutor is
-   * registered; if not, add an error to the health check.
+   * Verify whether an nodeExecutor contract depends on an nodeExecutor and whether that
+   * nodeExecutor is registered; if not, add an error to the health check.
    *
    * @param attackChainNode
    * @param nodeExecutors
@@ -166,7 +172,8 @@ public class HealthCheckUtils {
   public List<HealthCheck> runMissingContentChecks(@NotNull final AttackChain attackChain) {
     List<HealthCheck> result = new ArrayList<>();
     boolean atLeastOneAttackChainNodeIsNotReady =
-        attackChain.getAttackChainNodes().stream().anyMatch(attackChainNode -> !attackChainNode.isReady());
+        attackChain.getAttackChainNodes().stream()
+            .anyMatch(attackChainNode -> !attackChainNode.isReady());
 
     if (atLeastOneAttackChainNodeIsNotReady) {
       result.add(
@@ -195,12 +202,20 @@ public class HealthCheckUtils {
                     attackChainNode.getNodeContract() != null
                         && attackChainNode.getNodeContract().isPresent()
                         && attackChainNode.getNodeContract().get().getNodeExecutor() != null
-                        && attackChainNode.getNodeContract().get().getNodeExecutor().getDependencies()
+                        && attackChainNode
+                                .getNodeContract()
+                                .get()
+                                .getNodeExecutor()
+                                .getDependencies()
                             != null)
             .flatMap(
                 attackChainNode ->
                     Arrays.stream(
-                        attackChainNode.getNodeContract().get().getNodeExecutor().getDependencies()))
+                        attackChainNode
+                            .getNodeContract()
+                            .get()
+                            .getNodeExecutor()
+                            .getDependencies()))
             .anyMatch(
                 dependency ->
                     ExternalServiceDependency.SMTP.equals(dependency)

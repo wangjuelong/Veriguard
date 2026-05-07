@@ -22,8 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Repository interface for {@link AttackChainNode} entities.
  *
- * <p>This repository provides comprehensive data access operations for attackChainNodes, which represent
- * individual attack simulation steps within attackChainRuns and attackChains. It supports:
+ * <p>This repository provides comprehensive data access operations for attackChainNodes, which
+ * represent individual attack simulation steps within attackChainRuns and attackChains. It
+ * supports:
  *
  * <ul>
  *   <li>Standard CRUD operations via {@link JpaRepository}
@@ -41,7 +42,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 public interface AttackChainNodeRepository
-    extends JpaRepository<AttackChainNode, String>, JpaSpecificationExecutor<AttackChainNode>, StatisticRepository {
+    extends JpaRepository<AttackChainNode, String>,
+        JpaSpecificationExecutor<AttackChainNode>,
+        StatisticRepository {
 
   @NotNull
   Optional<AttackChainNode> findById(@NotNull String id);
@@ -53,13 +56,15 @@ public interface AttackChainNodeRepository
 
   List<AttackChainNode> findByAttackChainRunId(@NotNull String attackChainRunId);
 
-  Optional<AttackChainNode> findByIdAndAttackChainRunId(@NotNull String id, @NotNull String attackChainRunId);
+  Optional<AttackChainNode> findByIdAndAttackChainRunId(
+      @NotNull String id, @NotNull String attackChainRunId);
 
   boolean existsByIdAndAttackChainRunId(@NotNull String id, @NotNull String attackChainRunId);
 
   // -- SCENARIO --
 
-  Optional<AttackChainNode> findByIdAndAttackChainId(@NotNull String id, @NotNull String attackChainId);
+  Optional<AttackChainNode> findByIdAndAttackChainId(
+      @NotNull String id, @NotNull String attackChainId);
 
   boolean existsByIdAndAttackChainId(@NotNull String id, @NotNull String attackChainId);
 
@@ -377,7 +382,8 @@ public interface AttackChainNodeRepository
       nativeQuery = true)
   @Transactional
   void removeTeamsForAttackChainRun(
-      @Param("exerciseId") final String attackChainRunId, @Param("teamIds") final List<String> teamIds);
+      @Param("exerciseId") final String attackChainRunId,
+      @Param("teamIds") final List<String> teamIds);
 
   @Modifying
   @Query(
@@ -388,7 +394,8 @@ public interface AttackChainNodeRepository
       nativeQuery = true)
   @Transactional
   void removeTeamsForAttackChain(
-      @Param("scenarioId") final String attackChainId, @Param("teamIds") final List<String> teamIds);
+      @Param("scenarioId") final String attackChainId,
+      @Param("teamIds") final List<String> teamIds);
 
   @Query(
       value =
@@ -424,13 +431,14 @@ public interface AttackChainNodeRepository
   List<String> findContentsByAttackChainNodeIds(@NotBlank Set<String> attackChainNodeIds);
 
   /**
-   * Check if an AttackChainNode exists by its ID without loading the entity. This is useful for because of
-   * the cascade configuration
+   * Check if an AttackChainNode exists by its ID without loading the entity. This is useful for
+   * because of the cascade configuration
    *
    * @param id the ID of the AttackChainNode to check
    * @return true if the AttackChainNode exists, false otherwise
    */
-  @Query("SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END FROM AttackChainNode i WHERE i.id = :id")
+  @Query(
+      "SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END FROM AttackChainNode i WHERE i.id = :id")
   boolean existsByIdWithoutLoading(@Param("id") String id);
 
   /**
@@ -465,7 +473,8 @@ public interface AttackChainNodeRepository
               + "AND ic.injector_contract_id = icv.injector_contract_id "
               + "AND i.inject_scenario = :scenarioId",
       nativeQuery = true)
-  void deleteAllAttackChainNodesWithVulnerableContractsByAttackChainId(@Param("scenarioId") String attackChainId);
+  void deleteAllAttackChainNodesWithVulnerableContractsByAttackChainId(
+      @Param("scenarioId") String attackChainId);
 
   @Modifying
   @Query(
@@ -499,5 +508,6 @@ public interface AttackChainNodeRepository
   void deleteByAllIdsNative(@Param("ids") List<String> ids);
 
   @Query("SELECT i FROM AttackChainNode i WHERE i.attackChainRun.id = :simulationId")
-  List<AttackChainNode> findAllAttackChainNodeBySimulationId(@Param("simulationId") String simulationId);
+  List<AttackChainNode> findAllAttackChainNodeBySimulationId(
+      @Param("simulationId") String simulationId);
 }

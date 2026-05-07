@@ -5,16 +5,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.repository.AttackChainNodeRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateActivationInput;
-import io.veriguard.utils.fixtures.AttackChainNodeFixture;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.utils.fixtures.AttackChainFixture;
-import io.veriguard.utils.fixtures.composers.AttackChainNodeComposer;
+import io.veriguard.utils.fixtures.AttackChainNodeFixture;
 import io.veriguard.utils.fixtures.composers.AttackChainComposer;
+import io.veriguard.utils.fixtures.composers.AttackChainNodeComposer;
 import io.veriguard.utils.mockUser.WithMockUser;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,9 +40,11 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
   @BeforeEach
   void setUp() {
     AttackChainNodeComposer.Composer attackChainNodeComposerA =
-        attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode());
+        attackChainNodeComposer.forAttackChainNode(
+            AttackChainNodeFixture.getDefaultAttackChainNode());
     AttackChainNodeComposer.Composer attackChainNodeComposerB =
-        attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode());
+        attackChainNodeComposer.forAttackChainNode(
+            AttackChainNodeFixture.getDefaultAttackChainNode());
 
     attackChainComposer
         .forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain())
@@ -69,7 +71,8 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
     void given_attackChainNodeBelongsToScenario_should_returnAttackChainNode() {
       // -- ACT --
       AttackChainNode result =
-          attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(attackChainA.getId(), attackChainNodeInA.getId());
+          attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(
+              attackChainA.getId(), attackChainNodeInA.getId());
 
       // -- ASSERT --
       assertThat(result.getId()).isEqualTo(attackChainNodeInA.getId());
@@ -81,7 +84,8 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
       // -- ACT & ASSERT --
       assertThatThrownBy(
               () ->
-                  attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(attackChainA.getId(), attackChainNodeInB.getId()))
+                  attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(
+                      attackChainA.getId(), attackChainNodeInB.getId()))
           .isInstanceOf(ElementNotFoundException.class);
     }
   }
@@ -171,7 +175,8 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
     @WithMockUser(isAdmin = true)
     void given_attackChainNodeBelongsToScenario_should_deleteAttackChainNode() {
       // -- ACT --
-      attackChainAttackChainNodeService.deleteAttackChainNode(attackChainA.getId(), attackChainNodeInA.getId());
+      attackChainAttackChainNodeService.deleteAttackChainNode(
+          attackChainA.getId(), attackChainNodeInA.getId());
 
       // -- ASSERT --
       assertThat(attackChainNodeRepository.findById(attackChainNodeInA.getId())).isEmpty();
@@ -182,7 +187,9 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
     void given_attackChainNodeBelongsToAnotherScenario_should_throwElementNotFoundException() {
       // -- ACT & ASSERT --
       assertThatThrownBy(
-              () -> attackChainAttackChainNodeService.deleteAttackChainNode(attackChainA.getId(), attackChainNodeInB.getId()))
+              () ->
+                  attackChainAttackChainNodeService.deleteAttackChainNode(
+                      attackChainA.getId(), attackChainNodeInB.getId()))
           .isInstanceOf(ElementNotFoundException.class);
     }
   }

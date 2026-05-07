@@ -26,7 +26,8 @@ public interface AttackChainRunRepository
   @NotNull
   Optional<AttackChainRun> findById(@NotNull String id);
 
-  @Query(value = "select e from AttackChainRun e where e.status = 'SCHEDULED' and e.start <= :start")
+  @Query(
+      value = "select e from AttackChainRun e where e.status = 'SCHEDULED' and e.start <= :start")
   List<AttackChainRun> findAllShouldBeInRunningState(@Param("start") Instant start);
 
   @Override
@@ -238,7 +239,8 @@ public interface AttackChainRunRepository
               + "WHERE s.scenario_id IN (:scenarioIds) "
               + "GROUP BY ex.exercise_id ;",
       nativeQuery = true)
-  List<RawAttackChainRunSimple> rawAllByAttackChainIds(@Param("scenarioIds") List<String> attackChainIds);
+  List<RawAttackChainRunSimple> rawAllByAttackChainIds(
+      @Param("scenarioIds") List<String> attackChainIds);
 
   // -- TEAM --
 
@@ -249,7 +251,8 @@ public interface AttackChainRunRepository
       nativeQuery = true)
   @Transactional
   void removeTeams(
-      @Param("exerciseId") final String attackChainRunId, @Param("teamIds") final List<String> teamIds);
+      @Param("exerciseId") final String attackChainRunId,
+      @Param("teamIds") final List<String> teamIds);
 
   @Query(
       value =
@@ -265,8 +268,9 @@ public interface AttackChainRunRepository
               + "ORDER BY ex.exercise_end_date DESC "
               + "LIMIT 10 ;",
       nativeQuery = true)
-  List<RawFinishedAttackChainRunWithAttackChainNodes> rawLatestFinishedAttackChainRunsWithAttackChainNodesByAttackChainId(
-      @Param("scenarioId") String attackChainId);
+  List<RawFinishedAttackChainRunWithAttackChainNodes>
+      rawLatestFinishedAttackChainRunsWithAttackChainNodesByAttackChainId(
+          @Param("scenarioId") String attackChainId);
 
   @Query(
       value =

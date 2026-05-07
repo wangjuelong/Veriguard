@@ -36,8 +36,10 @@ public class ExecutionContextService {
       String queryParams = "?user=" + user.getId() + "&inject=" + injection.getId();
       String baseUrl = this.veriguardCOnfig.getBaseUrl();
       executionContext.put(PLAYER_URI, baseUrl + "/private/" + attackChainRunId + queryParams);
-      executionContext.put(CHALLENGES_URI, baseUrl + "/challenges/" + attackChainRunId + queryParams);
-      executionContext.put(SCOREBOARD_URI, baseUrl + "/scoreboard/" + attackChainRunId + queryParams);
+      executionContext.put(
+          CHALLENGES_URI, baseUrl + "/challenges/" + attackChainRunId + queryParams);
+      executionContext.put(
+          SCOREBOARD_URI, baseUrl + "/scoreboard/" + attackChainRunId + queryParams);
       executionContext.put(
           LESSONS_URI, baseUrl + "/lessons/simulation/" + attackChainRunId + queryParams);
       executionContext.put(EXERCISE, injection.getAttackChainRun());

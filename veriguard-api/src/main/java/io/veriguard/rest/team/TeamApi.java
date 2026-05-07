@@ -9,6 +9,12 @@ import static java.lang.Boolean.TRUE;
 import static java.time.Instant.now;
 import static org.springframework.util.StringUtils.hasText;
 
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.aop.UserRoleDescription;
@@ -29,12 +35,6 @@ import io.veriguard.service.UserService;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.InputFilterOptions;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -139,8 +139,10 @@ public class TeamApi extends RestBehavior {
     team.setOrganization(
         updateRelation(input.getOrganizationId(), team.getOrganization(), organizationRepository));
     team.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
-    team.setAttackChainRuns(fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
-    team.setAttackChains(fromIterable(attackChainRepository.findAllById(input.getAttackChainIds())));
+    team.setAttackChainRuns(
+        fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
+    team.setAttackChains(
+        fromIterable(attackChainRepository.findAllById(input.getAttackChainIds())));
     return teamRepository.save(team);
   }
 
@@ -172,8 +174,10 @@ public class TeamApi extends RestBehavior {
           updateRelation(
               input.getOrganizationId(), newTeam.getOrganization(), organizationRepository));
       newTeam.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
-      newTeam.setAttackChainRuns(fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
-      newTeam.setAttackChains(fromIterable(attackChainRepository.findAllById(input.getAttackChainIds())));
+      newTeam.setAttackChainRuns(
+          fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
+      newTeam.setAttackChains(
+          fromIterable(attackChainRepository.findAllById(input.getAttackChainIds())));
       return teamRepository.save(newTeam);
     }
   }

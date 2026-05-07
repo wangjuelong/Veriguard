@@ -42,8 +42,8 @@ public class LockAspect {
   }
 
   @Around("@annotation(lockAnnotation)")
-  public Object aroundLocked(ProceedingJoinPoint joinPoint, io.veriguard.aop.lock.Lock lockAnnotation)
-      throws Throwable {
+  public Object aroundLocked(
+      ProceedingJoinPoint joinPoint, io.veriguard.aop.lock.Lock lockAnnotation) throws Throwable {
     // If only one stripe, we just use the string as lock object
     Object lockKey = lockAnnotation.key();
     if (lockAnnotation.type().stripes() > 1) {

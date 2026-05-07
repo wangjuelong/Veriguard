@@ -18,8 +18,8 @@ import io.veriguard.database.specification.AttackChainNodeSpecification;
 import io.veriguard.database.specification.SpecificationUtils;
 import io.veriguard.injector_contract.fields.ContractFieldType;
 import io.veriguard.rest.atomic_testing.form.*;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.utils.mapper.AttackChainNodeMapper;
 import io.veriguard.utils.mapper.PayloadMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;
@@ -63,7 +63,8 @@ public class AtomicTestingService {
   // -- CRUD --
 
   public AttackChainNodeResultOverviewOutput findById(String attackChainNodeId) {
-    Optional<AttackChainNode> attackChainNode = attackChainNodeRepository.findWithStatusById(attackChainNodeId);
+    Optional<AttackChainNode> attackChainNode =
+        attackChainNodeRepository.findWithStatusById(attackChainNodeId);
 
     if (attackChainNode.isPresent()) {
       List<AssetGroup> computedAssetGroup =
@@ -79,12 +80,14 @@ public class AtomicTestingService {
   }
 
   public StatusPayloadOutput findPayloadOutputByAttackChainNodeId(String attackChainNodeId) {
-    Optional<AttackChainNode> attackChainNode = attackChainNodeRepository.findById(attackChainNodeId);
+    Optional<AttackChainNode> attackChainNode =
+        attackChainNodeRepository.findById(attackChainNodeId);
     return payloadMapper.getStatusPayloadOutputFromAttackChainNode(attackChainNode);
   }
 
   @Transactional
-  public AttackChainNodeResultOverviewOutput createOrUpdate(AtomicTestingInput input, String attackChainNodeId) {
+  public AttackChainNodeResultOverviewOutput createOrUpdate(
+      AtomicTestingInput input, String attackChainNodeId) {
     AttackChainNode attackChainNodeToSave = new AttackChainNode();
     if (attackChainNodeId != null) {
       attackChainNodeToSave = attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
@@ -114,7 +117,8 @@ public class AtomicTestingService {
     // Set dependencies
     attackChainNodeToSave.setTeams(fromIterable(teamRepository.findAllById(input.getTeams())));
     attackChainNodeToSave.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
-    attackChainNodeToSave.setAssets(fromIterable(this.assetRepository.findAllById(input.getAssets())));
+    attackChainNodeToSave.setAssets(
+        fromIterable(this.assetRepository.findAllById(input.getAssets())));
     attackChainNodeToSave.setAssetGroups(
         fromIterable(this.assetGroupRepository.findAllById(input.getAssetGroups())));
 
@@ -129,7 +133,9 @@ public class AtomicTestingService {
               attackChainNodeDocumentId.setAttackChainNodeId(finalAttackChainNodeToSave.getId());
               attackChainNodeDocumentId.setDocumentId(i.getDocumentId());
               AttackChainNodeDocument attackChainNodeDocument =
-                  attackChainNodeDocumentRepository.findById(attackChainNodeDocumentId).orElse(new AttackChainNodeDocument());
+                  attackChainNodeDocumentRepository
+                      .findById(attackChainNodeDocumentId)
+                      .orElse(new AttackChainNodeDocument());
               if (attackChainNodeDocument.getAttackChainNode() == null) {
                 attackChainNodeDocument.setCompositeId(attackChainNodeDocumentId);
                 attackChainNodeDocument.setAttackChainNode(finalAttackChainNodeToSave);
@@ -199,7 +205,8 @@ public class AtomicTestingService {
   public AttackChainNodeResultOverviewOutput updateAtomicTestingTags(
       String attackChainNodeId, AtomicTestingUpdateTagsInput input) {
 
-    AttackChainNode attackChainNode = attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
+    AttackChainNode attackChainNode =
+        attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
     attackChainNode.setTags(iterableToSet(this.tagRepository.findAllById(input.getTagIds())));
 
     AttackChainNode saved = attackChainNodeRepository.save(attackChainNode);
@@ -234,9 +241,9 @@ public class AtomicTestingService {
   // -- PAGINATION --
 
   /**
-   * Search atomic testings with pagination and filtering. Atomic testings are attackChainNodes that are not
-   * part of any attackChain or attackChainRun (both fields are null). The search only fetches data according
-   * to user permissions via the grant system.
+   * Search atomic testings with pagination and filtering. Atomic testings are attackChainNodes that
+   * are not part of any attackChain or attackChainRun (both fields are null). The search only
+   * fetches data according to user permissions via the grant system.
    *
    * @param searchPaginationInput Pagination and filtering parameters
    * @return A paginated list of atomic testing results
@@ -245,7 +252,8 @@ public class AtomicTestingService {
       @NotNull final SearchPaginationInput searchPaginationInput) {
     Map<String, Join<Base, Base>> joinMap = new HashMap<>();
 
-    // Atomic testings are attackChainNodes where attackChain and attackChainRun are null. They are also subject to
+    // Atomic testings are attackChainNodes where attackChain and attackChainRun are null. They are
+    // also subject to
     // the grant system.
     User currentUser = userService.currentUser();
 

@@ -44,13 +44,15 @@ public class AttackChainNodeTestHelper {
                 .withAgent(agentComposer.forAgent(AgentFixture.createDefaultAgentService()))
                 .withAgent(agentComposer.forAgent(AgentFixture.createDefaultAgentSession())))
         .withAttackChainNodeStatus(
-            attackChainNodeStatusComposer.forAttackChainNodeStatus(AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus()))
+            attackChainNodeStatusComposer.forAttackChainNodeStatus(
+                AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus()))
         .persist()
         .get();
   }
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public AttackChainNodeExpectation forceSaveAttackChainNodeExpectation(AttackChainNodeExpectation expectation) {
+  public AttackChainNodeExpectation forceSaveAttackChainNodeExpectation(
+      AttackChainNodeExpectation expectation) {
     return attackChainNodeExpectationRepository.save(expectation);
   }
 
@@ -100,9 +102,9 @@ public class AttackChainNodeTestHelper {
   }
 
   /**
-   * Queries findings for a given attackChainNode ID in a new independent transaction, so that findings
-   * committed by async processing threads are visible even when called from within an outer
-   * {@code @Transactional} test method.
+   * Queries findings for a given attackChainNode ID in a new independent transaction, so that
+   * findings committed by async processing threads are visible even when called from within an
+   * outer {@code @Transactional} test method.
    */
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public List<Finding> findFindingsByAttackChainNodeId(String attackChainNodeId) {
@@ -110,9 +112,9 @@ public class AttackChainNodeTestHelper {
   }
 
   /**
-   * Returns true if the attackChainNode has at least one execution trace, confirming async processing
-   * completed. Runs in a new independent transaction so results committed by async threads are
-   * visible from within an outer {@code @Transactional} test.
+   * Returns true if the attackChainNode has at least one execution trace, confirming async
+   * processing completed. Runs in a new independent transaction so results committed by async
+   * threads are visible from within an outer {@code @Transactional} test.
    */
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public boolean hasAttackChainNodeStatusTrace(String attackChainNodeId) {

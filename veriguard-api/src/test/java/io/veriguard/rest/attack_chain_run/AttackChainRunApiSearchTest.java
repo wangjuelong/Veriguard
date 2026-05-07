@@ -51,7 +51,8 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
     AttackChainRun attackChainRun1Saved = this.attackChainRunRepository.save(attackChainRun1);
     EXERCISE_IDS.add(attackChainRun1Saved.getId());
 
-    AttackChainRun attackChainRun2 = AttackChainRunFixture.createDefaultIncidentResponseAttackChainRun();
+    AttackChainRun attackChainRun2 =
+        AttackChainRunFixture.createDefaultIncidentResponseAttackChainRun();
     AttackChainRun attackChainRun2Saved = this.attackChainRunRepository.save(attackChainRun2);
     EXERCISE_IDS.add(attackChainRun2Saved.getId());
   }
@@ -83,7 +84,8 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
 
       @Test
       @DisplayName("Not retrieving first page of exercises by text search")
-      void given_not_working_search_input_should_return_a_page_of_attackChainRuns() throws Exception {
+      void given_not_working_search_input_should_return_a_page_of_attackChainRuns()
+          throws Exception {
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.getDefault().textSearch("wrong").build();
 
@@ -122,8 +124,9 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
 
       @Test
       @DisplayName("Sorting page of exercises by start date")
-      void given_sorting_input_by_start_date_should_return_a_page_of_attackChainRuns_sort_by_start_date()
-          throws Exception {
+      void
+          given_sorting_input_by_start_date_should_return_a_page_of_attackChainRuns_sort_by_start_date()
+              throws Exception {
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.getDefault()
                 .sorts(
@@ -218,7 +221,8 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
       @Test
       @DisplayName("Search exercises by ids as user non granted")
       @WithMockUser(isAdmin = false)
-      void given_list_of_ids_select_attackChainRuns_without_capabilities_no_grants() throws Exception {
+      void given_list_of_ids_select_attackChainRuns_without_capabilities_no_grants()
+          throws Exception {
         GetAttackChainRunsInput getAttackChainRunsInput = new GetAttackChainRunsInput();
         getAttackChainRunsInput.setAttackChainRunIds(EXERCISE_IDS);
 
@@ -235,7 +239,8 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
       @Test
       @DisplayName("Search exercises by ids as user granted on some exercises")
       @WithMockUser(isAdmin = false)
-      void given_list_of_ids_select_attackChainRuns_without_capabilities_with_grants() throws Exception {
+      void given_list_of_ids_select_attackChainRuns_without_capabilities_with_grants()
+          throws Exception {
         AttackChainRun attackChainRunGranted = AttackChainRunFixture.createDefaultAttackChainRun();
         User user = userRepository.findById(currentUser().getId()).get();
         Group group = new Group();

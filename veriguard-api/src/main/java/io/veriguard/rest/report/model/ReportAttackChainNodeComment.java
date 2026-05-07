@@ -3,9 +3,9 @@ package io.veriguard.rest.report.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.helper.MonoIdSerializer;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -14,7 +14,8 @@ import lombok.Data;
 @Entity
 @Table(name = "report_inject_comment")
 public class ReportAttackChainNodeComment {
-  @EmbeddedId @JsonIgnore private ReportAttackChainNodeCommentId compositeId = new ReportAttackChainNodeCommentId();
+  @EmbeddedId @JsonIgnore
+  private ReportAttackChainNodeCommentId compositeId = new ReportAttackChainNodeCommentId();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @MapsId("attackChainNodeId")
@@ -40,7 +41,9 @@ public class ReportAttackChainNodeComment {
 
   @JsonProperty("inject_id")
   public String getAttackChainNodeId() {
-    return attackChainNode != null ? attackChainNode.getId() : null; // Customize serialization to return ID
+    return attackChainNode != null
+        ? attackChainNode.getId()
+        : null; // Customize serialization to return ID
   }
 
   @JsonProperty("report_id")

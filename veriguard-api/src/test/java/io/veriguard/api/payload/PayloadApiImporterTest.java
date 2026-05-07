@@ -51,7 +51,10 @@ class PayloadApiImporterTest extends IntegrationTest {
   @Autowired private ZipJsonService<Payload> zipJsonService;
   @Autowired private PayloadRepository payloadRepository;
   @Autowired private NodeContractRepository nodeContractRepository;
-  @Autowired private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
+
+  @Autowired
+  private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
+
   @Autowired private CollectorRepository collectorRepository;
 
   // -- HELPERS --

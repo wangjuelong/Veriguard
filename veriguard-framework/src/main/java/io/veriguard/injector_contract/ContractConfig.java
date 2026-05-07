@@ -8,8 +8,8 @@ import lombok.Getter;
 /**
  * Configuration metadata for an nodeExecutor contract.
  *
- * <p>This class holds the display and identification properties used to present an nodeExecutor in the
- * user interface, including:
+ * <p>This class holds the display and identification properties used to present an nodeExecutor in
+ * the user interface, including:
  *
  * <ul>
  *   <li>Type identifier for the nodeExecutor

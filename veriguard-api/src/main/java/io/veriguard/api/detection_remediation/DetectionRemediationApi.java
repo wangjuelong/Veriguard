@@ -2,6 +2,9 @@ package io.veriguard.api.detection_remediation;
 
 import static io.veriguard.api.detection_remediation.DetectionRemediationApi.DETECTION_REMEDIATION_URI;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.api.detection_remediation.dto.DetectionRemediationAIOutput;
@@ -12,9 +15,6 @@ import io.veriguard.rest.payload.form.DetectionRemediationInput;
 import io.veriguard.rest.payload.form.DetectionRemediationOutput;
 import io.veriguard.service.detection_remediation.*;
 import io.veriguard.utils.mapper.PayloadMapper;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -143,7 +143,8 @@ public class DetectionRemediationApi {
   @PostMapping("rules/inject/{injectId}/collector/{collectorType}")
   public ResponseEntity<DetectionRemediationOutput>
       postRuleDetectionRemediationByAttackChainNodeIdAndCollectorType(
-          @PathVariable @NotBlank String attackChainNodeId, @PathVariable @NotBlank String collectorType) {
+          @PathVariable @NotBlank String attackChainNodeId,
+          @PathVariable @NotBlank String collectorType) {
 
     AttackChainNode attackChainNode = attackChainNodeService.attackChainNode(attackChainNodeId);
     Optional<Payload> payloadOptional = attackChainNode.getPayload();

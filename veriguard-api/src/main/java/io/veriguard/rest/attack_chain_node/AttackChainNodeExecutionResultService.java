@@ -8,8 +8,8 @@ import static java.util.stream.Collectors.toSet;
 import io.veriguard.api.inject_result.dto.AttackChainNodeResultPayloadExecutionOutput;
 import io.veriguard.api.inject_result.dto.AttackChainNodeResultPayloadExecutionOutput.AttackChainNodeResultPayloadExecutionOutputBuilder;
 import io.veriguard.database.model.Agent;
-import io.veriguard.database.model.ExecutionTrace;
 import io.veriguard.database.model.AttackChainNodeStatus;
+import io.veriguard.database.model.ExecutionTrace;
 import io.veriguard.database.model.StatusPayload;
 import io.veriguard.rest.atomic_testing.form.ExecutionTraceOutput;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
@@ -34,7 +34,9 @@ public class AttackChainNodeExecutionResultService {
       @NotBlank final String attackChainNodeId,
       @NotBlank final String targetId,
       @NotNull final TargetType targetType) {
-    AttackChainNodeStatus attackChainNodeStatus = this.attackChainNodeStatusService.findAttackChainNodeStatusByAttackChainNodeId(attackChainNodeId);
+    AttackChainNodeStatus attackChainNodeStatus =
+        this.attackChainNodeStatusService.findAttackChainNodeStatusByAttackChainNodeId(
+            attackChainNodeId);
     AttackChainNodeResultPayloadExecutionOutputBuilder output =
         AttackChainNodeResultPayloadExecutionOutput.builder()
             .payloadCommandBlocks(
@@ -45,7 +47,8 @@ public class AttackChainNodeExecutionResultService {
 
     // group traces by agent
     List<ExecutionTrace> traces =
-        attackChainNodeService.getAttackChainNodeTracesFromAttackChainNodeAndTarget(attackChainNodeId, targetId, targetType);
+        attackChainNodeService.getAttackChainNodeTracesFromAttackChainNodeAndTarget(
+            attackChainNodeId, targetId, targetType);
 
     Set<String> agentIds =
         traces.stream()

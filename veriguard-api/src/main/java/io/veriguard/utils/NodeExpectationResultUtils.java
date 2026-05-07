@@ -40,7 +40,8 @@ public class NodeExpectationResultUtils {
    * <p>Uses the provided score extraction function to calculate normalized scores for each
    * expectation type category (Prevention, Detection, Vulnerability, Human Response).
    *
-   * @param <T> the type of expectation objects (AttackChainNodeExpectation or RawAttackChainNodeExpectation)
+   * @param <T> the type of expectation objects (AttackChainNodeExpectation or
+   *     RawAttackChainNodeExpectation)
    * @param expectations the list of expectations to process
    * @param getScores function to extract normalized scores for given expectation types
    * @return a list of expectation results grouped by type with aggregated scores
@@ -165,13 +166,15 @@ public class NodeExpectationResultUtils {
                 return null;
               }
               if (attackChainNodeExpectation.getTeam() != null) {
-                if (attackChainNodeExpectation.getScore() >= attackChainNodeExpectation.getExpectedScore()) {
+                if (attackChainNodeExpectation.getScore()
+                    >= attackChainNodeExpectation.getExpectedScore()) {
                   return 1.0;
                 } else {
                   return 0.0;
                 }
               } else {
-                if (attackChainNodeExpectation.getScore() >= attackChainNodeExpectation.getExpectedScore()) {
+                if (attackChainNodeExpectation.getScore()
+                    >= attackChainNodeExpectation.getExpectedScore()) {
                   return 1.0;
                 }
                 if (attackChainNodeExpectation.getScore() == 0) {
@@ -199,7 +202,9 @@ public class NodeExpectationResultUtils {
     if (scores.isEmpty()) {
       return Optional.of(
           new ExpectationResultsByType(
-              type, AttackChainNodeExpectation.EXPECTATION_STATUS.UNKNOWN, Collections.emptyList()));
+              type,
+              AttackChainNodeExpectation.EXPECTATION_STATUS.UNKNOWN,
+              Collections.emptyList()));
     }
     OptionalDouble avgResponse = calculateAverageFromExpectations(scores);
     if (avgResponse.isPresent()) {
@@ -209,7 +214,9 @@ public class NodeExpectationResultUtils {
     }
     return Optional.of(
         new ExpectationResultsByType(
-            type, AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING, getResultDetail(type, scores)));
+            type,
+            AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING,
+            getResultDetail(type, scores)));
   }
 
   public static AttackChainNodeExpectation.EXPECTATION_STATUS getResult(final OptionalDouble avg) {

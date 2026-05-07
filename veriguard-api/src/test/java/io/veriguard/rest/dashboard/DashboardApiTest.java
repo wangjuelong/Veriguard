@@ -759,7 +759,8 @@ class DashboardApiTest extends IntegrationTest {
       assertThatJson(response).node("es_entities").isArray().size().isEqualTo(2);
     }
 
-    private AttackChainNode createAttackChainNodeWithDetectionExpectation(AttackPattern attackPattern) {
+    private AttackChainNode createAttackChainNodeWithDetectionExpectation(
+        AttackPattern attackPattern) {
       EndpointComposer.Composer endpointWrapper =
           endpointComposer.forEndpoint(EndpointFixture.createEndpoint()).persist();
       AttackChainNodeExpectation detection1 =
@@ -778,31 +779,41 @@ class DashboardApiTest extends IntegrationTest {
                   .forNodeContract(NodeContractFixture.createDefaultNodeContract())
                   .withAttackPattern(attackPatternComposer.forAttackPattern(attackPattern)))
           .withExpectation(
-              attackChainNodeExpectationComposer.forExpectation(detection1).withEndpoint(endpointWrapper))
+              attackChainNodeExpectationComposer
+                  .forExpectation(detection1)
+                  .withEndpoint(endpointWrapper))
           .withExpectation(
-              attackChainNodeExpectationComposer.forExpectation(detection2).withEndpoint(endpointWrapper))
+              attackChainNodeExpectationComposer
+                  .forExpectation(detection2)
+                  .withEndpoint(endpointWrapper))
           .persist()
           .get();
     }
 
     @Test
     @DisplayName("Given security coverage widget should return list of inject expectations")
-    void given_securityCoverageWidget_should_returnListOfAttackChainNodeExpectations() throws Exception {
+    void given_securityCoverageWidget_should_returnListOfAttackChainNodeExpectations()
+        throws Exception {
       AttackPattern attackPattern1 =
           attackPatternRepository.save(AttackPatternFixture.createDefaultAttackPattern());
       AttackPattern attackPattern2 =
           attackPatternRepository.save(AttackPatternFixture.createDefaultAttackPattern());
       AttackPattern attackPattern3 =
           attackPatternRepository.save(AttackPatternFixture.createDefaultAttackPattern());
-      AttackChainNode attackChainNode1 = createAttackChainNodeWithDetectionExpectation(attackPattern1);
-      AttackChainNode attackChainNode2 = createAttackChainNodeWithDetectionExpectation(attackPattern1);
-      AttackChainNode attackChainNode3 = createAttackChainNodeWithDetectionExpectation(attackPattern2);
+      AttackChainNode attackChainNode1 =
+          createAttackChainNodeWithDetectionExpectation(attackPattern1);
+      AttackChainNode attackChainNode2 =
+          createAttackChainNodeWithDetectionExpectation(attackPattern1);
+      AttackChainNode attackChainNode3 =
+          createAttackChainNodeWithDetectionExpectation(attackPattern2);
       createAttackChainNodeWithDetectionExpectation(attackPattern3);
       Widget widget =
           widgetComposer
               .forWidget(
                   WidgetFixture.createSecurityConverageWidget(
-                      ALL_TIME, "base_created_at", AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION))
+                      ALL_TIME,
+                      "base_created_at",
+                      AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION))
               .withCustomDashboard(
                   customDashboardComposer.forCustomDashboard(
                       CustomDashboardFixture.createCustomDashboardWithDefaultParams()))
@@ -848,7 +859,8 @@ class DashboardApiTest extends IntegrationTest {
           .isArray()
           .hasSize(6)
           .extracting("base_inject_side")
-          .containsOnly(attackChainNode1.getId(), attackChainNode2.getId(), attackChainNode3.getId());
+          .containsOnly(
+              attackChainNode1.getId(), attackChainNode2.getId(), attackChainNode3.getId());
     }
   }
 }

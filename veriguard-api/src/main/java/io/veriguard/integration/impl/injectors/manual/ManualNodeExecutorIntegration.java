@@ -52,7 +52,8 @@ public class ManualNodeExecutorIntegration extends IntegrationInMemory {
         null,
         false,
         List.of());
-    this.manualExecutor = new ManualExecutor(nodeExecutorContext, attackChainNodeExpectationService);
+    this.manualExecutor =
+        new ManualExecutor(nodeExecutorContext, attackChainNodeExpectationService);
   }
 
   @Override

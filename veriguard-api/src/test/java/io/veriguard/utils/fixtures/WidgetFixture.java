@@ -2,8 +2,8 @@ package io.veriguard.utils.fixtures;
 
 import static io.veriguard.engine.api.WidgetType.*;
 
-import io.veriguard.database.model.Filters;
 import io.veriguard.database.model.AttackChainNodeExpectation;
+import io.veriguard.database.model.Filters;
 import io.veriguard.database.model.Widget;
 import io.veriguard.database.model.WidgetLayout;
 import io.veriguard.engine.api.*;
@@ -74,7 +74,8 @@ public class WidgetFixture {
   }
 
   private static WidgetConfiguration.Series createSecurityCoverageSerie(
-      AttackChainNodeExpectation.EXPECTATION_TYPE type, AttackChainNodeExpectation.EXPECTATION_STATUS status) {
+      AttackChainNodeExpectation.EXPECTATION_TYPE type,
+      AttackChainNodeExpectation.EXPECTATION_STATUS status) {
     WidgetConfiguration.Series serie = new WidgetConfiguration.Series();
     Filters.FilterGroup filterGroup = new Filters.FilterGroup();
     filterGroup.setMode(Filters.FilterMode.and);

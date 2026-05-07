@@ -99,8 +99,8 @@ public class RbacMockMvcTest extends IntegrationTest {
 
   @ParameterizedTest(name = "[{index}] {0} - {1}")
   @MethodSource("endpointTestScenarios")
-  void endpointTestAttackChains(EndpointInfo endpoint, EndpointTestAttackChains endpointTestAttackChain)
-      throws Exception {
+  void endpointTestAttackChains(
+      EndpointInfo endpoint, EndpointTestAttackChains endpointTestAttackChain) throws Exception {
     // Arrange
     MockHttpServletRequestBuilder request = createRequestBuilder(endpoint);
     Authentication auth =

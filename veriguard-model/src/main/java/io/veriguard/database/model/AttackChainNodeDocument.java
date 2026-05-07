@@ -3,8 +3,8 @@ package io.veriguard.database.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.veriguard.helper.MonoIdSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.helper.MonoIdSerializer;
 import jakarta.persistence.*;
 import java.util.Objects;
 import lombok.Getter;
@@ -16,7 +16,8 @@ import lombok.Setter;
 @Table(name = "injects_documents")
 public class AttackChainNodeDocument {
 
-  @EmbeddedId @JsonIgnore private AttackChainNodeDocumentId compositeId = new AttackChainNodeDocumentId();
+  @EmbeddedId @JsonIgnore
+  private AttackChainNodeDocumentId compositeId = new AttackChainNodeDocumentId();
 
   @ManyToOne(fetch = FetchType.EAGER)
   @MapsId("attackChainNodeId")

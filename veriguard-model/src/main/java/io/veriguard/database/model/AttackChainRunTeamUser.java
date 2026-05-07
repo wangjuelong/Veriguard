@@ -3,16 +3,17 @@ package io.veriguard.database.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.raw.RawAttackChainRunTeamUser;
 import io.veriguard.helper.MonoIdSerializer;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "exercises_teams_users")
 public class AttackChainRunTeamUser {
-  @EmbeddedId @JsonIgnore private AttackChainRunTeamUserId compositeId = new AttackChainRunTeamUserId();
+  @EmbeddedId @JsonIgnore
+  private AttackChainRunTeamUserId compositeId = new AttackChainRunTeamUserId();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @MapsId("attackChainRunId")
@@ -83,7 +84,8 @@ public class AttackChainRunTeamUser {
     return Objects.hash(compositeId);
   }
 
-  public static AttackChainRunTeamUser fromRawAttackChainRunTeamUser(RawAttackChainRunTeamUser rawAttackChainRunTeamUser) {
+  public static AttackChainRunTeamUser fromRawAttackChainRunTeamUser(
+      RawAttackChainRunTeamUser rawAttackChainRunTeamUser) {
     AttackChainRunTeamUser attackChainRunTeamUser = new AttackChainRunTeamUser();
     attackChainRunTeamUser.setTeam(new Team());
     attackChainRunTeamUser.getTeam().setId(rawAttackChainRunTeamUser.getTeam_id());
@@ -92,7 +94,9 @@ public class AttackChainRunTeamUser {
     attackChainRunTeamUser.setUser(new User());
     attackChainRunTeamUser.getUser().setId(rawAttackChainRunTeamUser.getUser_id());
     attackChainRunTeamUser.setCompositeId(new AttackChainRunTeamUserId());
-    attackChainRunTeamUser.getCompositeId().setAttackChainRunId(rawAttackChainRunTeamUser.getExercise_id());
+    attackChainRunTeamUser
+        .getCompositeId()
+        .setAttackChainRunId(rawAttackChainRunTeamUser.getExercise_id());
     attackChainRunTeamUser.getCompositeId().setTeamId(rawAttackChainRunTeamUser.getTeam_id());
     attackChainRunTeamUser.getCompositeId().setUserId(rawAttackChainRunTeamUser.getUser_id());
     return attackChainRunTeamUser;

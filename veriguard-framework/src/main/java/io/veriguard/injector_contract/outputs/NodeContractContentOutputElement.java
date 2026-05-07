@@ -7,7 +7,8 @@ import lombok.Data;
 /**
  * Represents an output element defined in an nodeExecutor contract.
  *
- * <p>Output elements describe the data produced by an attackChainNode execution. This metadata is used to:
+ * <p>Output elements describe the data produced by an attackChainNode execution. This metadata is
+ * used to:
  *
  * <ul>
  *   <li>Define the structure of execution results

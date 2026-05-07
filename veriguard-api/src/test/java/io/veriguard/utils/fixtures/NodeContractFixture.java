@@ -18,8 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.database.model.Endpoint;
-import io.veriguard.database.model.NodeExecutor;
 import io.veriguard.database.model.NodeContract;
+import io.veriguard.database.model.NodeExecutor;
 import io.veriguard.database.model.Payload;
 import io.veriguard.database.repository.NodeContractRepository;
 import io.veriguard.injector_contract.ContractCardinality;
@@ -72,8 +72,7 @@ public class NodeContractFixture {
       Payload payloadCommand,
       List<ContractCardinalityElement> customFieldsContent)
       throws JsonProcessingException {
-    NodeContract nodeContract =
-        createPayloadNodeContractWithFieldsContent(customFieldsContent);
+    NodeContract nodeContract = createPayloadNodeContractWithFieldsContent(customFieldsContent);
     nodeContract.setNodeExecutor(nodeExecutor);
     nodeContract.setPayload(payloadCommand);
     return nodeContract;
@@ -103,8 +102,7 @@ public class NodeContractFixture {
     return nodeContract;
   }
 
-  public static NodeContract createNodeContractWithPlatforms(
-      Endpoint.PLATFORM_TYPE[] platforms) {
+  public static NodeContract createNodeContractWithPlatforms(Endpoint.PLATFORM_TYPE[] platforms) {
     NodeContract nodeContract = createDefaultNodeContract();
     nodeContract.setPlatforms(platforms);
     return nodeContract;
@@ -172,9 +170,7 @@ public class NodeContractFixture {
   // -- BUILDER --
 
   public static void addField(
-      NodeContract nodeContract,
-      ObjectMapper mapper,
-      List<ContractElement> contractElements)
+      NodeContract nodeContract, ObjectMapper mapper, List<ContractElement> contractElements)
       throws JsonProcessingException {
     ObjectNode content = mapper.readValue(nodeContract.getContent(), ObjectNode.class);
     List<ContractElement> elements =
@@ -241,9 +237,7 @@ public class NodeContractFixture {
   }
 
   public static void addTargetedAssetFields(
-      NodeContract nodeContract,
-      String key,
-      ContractTargetedProperty defaultTargetedProperty) {
+      NodeContract nodeContract, String key, ContractTargetedProperty defaultTargetedProperty) {
     ContractElement targetedAssetField = new ContractTargetedAsset(key, "label-" + key);
     ContractElement targetPropertySelector =
         selectFieldWithDefault(
@@ -269,8 +263,7 @@ public class NodeContractFixture {
   }
 
   public NodeContract getWellKnownSingleManualContract() {
-    Optional<NodeContract> nodeContract =
-        nodeContractRepository.findById(MANUAL_DEFAULT);
+    Optional<NodeContract> nodeContract = nodeContractRepository.findById(MANUAL_DEFAULT);
     if (nodeContract.isPresent()) {
       return nodeContract.get();
     }

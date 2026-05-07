@@ -1,7 +1,7 @@
 package io.veriguard.utils.fixtures;
 
-import io.veriguard.database.model.ExecutionStatus;
 import io.veriguard.database.model.AttackChainNodeTestStatus;
+import io.veriguard.database.model.ExecutionStatus;
 import java.time.Instant;
 
 public class AttackChainNodeTestStatusFixture {

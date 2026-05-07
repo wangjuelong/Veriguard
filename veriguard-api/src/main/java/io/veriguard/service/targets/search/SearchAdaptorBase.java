@@ -1,8 +1,8 @@
 package io.veriguard.service.targets.search;
 
-import io.veriguard.database.model.Filters;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeTarget;
+import io.veriguard.database.model.Filters;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import io.veriguard.utils.pagination.SortField;
@@ -17,14 +17,16 @@ import org.springframework.stereotype.Component;
 public abstract class SearchAdaptorBase {
   protected final Map<String, String> fieldTranslations = new HashMap<>();
 
-  public abstract Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode);
+  public abstract Page<AttackChainNodeTarget> search(
+      SearchPaginationInput input, AttackChainNode scopedAttackChainNode);
 
   public abstract List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(
       AttackChainNode scopedAttackChainNode, String textSearch);
 
   public abstract List<FilterUtilsJpa.Option> getOptionsByIds(List<String> ids);
 
-  protected SearchPaginationInput translate(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
+  protected SearchPaginationInput translate(
+      SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
     SearchPaginationInput newInput = new SearchPaginationInput();
 
     // swap the filters

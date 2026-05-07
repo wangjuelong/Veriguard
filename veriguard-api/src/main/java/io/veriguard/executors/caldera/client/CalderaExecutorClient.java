@@ -156,7 +156,8 @@ public class CalderaExecutorClient {
   public Ability createClearAbility(NodeExecutor nodeExecutor) {
     try {
       List<Map<String, String>> executors = new ArrayList<>();
-      Map<String, String> nodeExecutorExecutorClearCommands = nodeExecutor.getExecutorClearCommands();
+      Map<String, String> nodeExecutorExecutorClearCommands =
+          nodeExecutor.getExecutorClearCommands();
       if (nodeExecutorExecutorClearCommands.containsKey(
           Endpoint.PLATFORM_TYPE.Windows.name() + "." + Endpoint.PLATFORM_ARCH.x86_64)) {
         Map<String, String> executorWindows = new HashMap<>();

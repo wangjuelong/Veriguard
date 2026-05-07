@@ -12,14 +12,11 @@ import static io.veriguard.utils.StringUtils.duplicateString;
 import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationCriteriaBuilder;
 import static io.veriguard.utils.pagination.SortUtilsCriteriaBuilder.toSortCriteriaBuilder;
 import static java.time.Instant.now;
-import static java.util.Optional.ofNullable;
 import static org.springframework.util.StringUtils.hasText;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.veriguard.config.VeriguardConfig;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.*;
@@ -29,23 +26,23 @@ import io.veriguard.export.Mixins;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.healthcheck.utils.HealthCheckUtils;
 import io.veriguard.helper.ObjectMapperHelper;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.attack_chain_run.exports.AttackChainRunFileExport;
-import io.veriguard.rest.attack_chain_run.exports.VariableMixin;
-import io.veriguard.rest.attack_chain_run.exports.VariableWithValueMixin;
-import io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeDuplicateService;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
-import io.veriguard.rest.kill_chain_phase.response.KillChainPhaseOutput;
 import io.veriguard.rest.attack_chain.export.AttackChainFileExport;
 import io.veriguard.rest.attack_chain.form.AttackChainSimple;
 import io.veriguard.rest.attack_chain.response.AttackChainOutput;
 import io.veriguard.rest.attack_chain.response.AttackChainTeamUserOutput;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeDuplicateService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_run.exports.AttackChainRunFileExport;
+import io.veriguard.rest.attack_chain_run.exports.VariableMixin;
+import io.veriguard.rest.attack_chain_run.exports.VariableWithValueMixin;
+import io.veriguard.rest.attack_chain_run.form.AttackChainRunSimple;
+import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.rest.kill_chain_phase.response.KillChainPhaseOutput;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
 import io.veriguard.utils.TargetType;
-import io.veriguard.utils.mapper.AttackChainRunMapper;
 import io.veriguard.utils.mapper.AttackChainMapper;
+import io.veriguard.utils.mapper.AttackChainRunMapper;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
@@ -159,7 +156,8 @@ public class AttackChainService {
       attackChains = fromIterable(this.attackChainRepository.rawByAttackChainIds(attackChainIds));
     } else {
       attackChains =
-          this.attackChainRepository.rawGrantedByAttackChainIds(currentUser().getId(), attackChainIds);
+          this.attackChainRepository.rawGrantedByAttackChainIds(
+              currentUser().getId(), attackChainIds);
     }
     return attackChains.stream().map(AttackChainSimple::fromRawAttackChain).toList();
   }
@@ -174,15 +172,22 @@ public class AttackChainService {
 
     // Compute find all method
     TriFunction<
-            Specification<AttackChain>, Specification<AttackChain>, Pageable, Page<RawPaginationAttackChain>>
+            Specification<AttackChain>,
+            Specification<AttackChain>,
+            Pageable,
+            Page<RawPaginationAttackChain>>
         findAll = getFindAllFunction(deepFilterSpecification, joinMap);
 
     // Compute pagination from find all
-    return buildPaginationCriteriaBuilder(findAll, searchPaginationInput, AttackChain.class, joinMap);
+    return buildPaginationCriteriaBuilder(
+        findAll, searchPaginationInput, AttackChain.class, joinMap);
   }
 
   private TriFunction<
-          Specification<AttackChain>, Specification<AttackChain>, Pageable, Page<RawPaginationAttackChain>>
+          Specification<AttackChain>,
+          Specification<AttackChain>,
+          Pageable,
+          Page<RawPaginationAttackChain>>
       getFindAllFunction(
           UnaryOperator<Specification<AttackChain>> deepFilterSpecification,
           Map<String, Join<Base, Base>> joinMap) {
@@ -230,7 +235,8 @@ public class AttackChainService {
     // Join on INJECT and INJECTOR CONTRACT
     Join<Base, Base> attackChainNodesJoin = attackChainRoot.join("injects", JoinType.LEFT);
     joinMap.put("injects", attackChainNodesJoin);
-    Join<Base, Base> nodeExecutorsContractsJoin = attackChainNodesJoin.join("injectorContract", JoinType.LEFT);
+    Join<Base, Base> nodeExecutorsContractsJoin =
+        attackChainNodesJoin.join("injectorContract", JoinType.LEFT);
     joinMap.put("injects.injectorContract", nodeExecutorsContractsJoin);
     Expression<String[]> platformExpression =
         cb.function("array_union_agg", String[].class, nodeExecutorsContractsJoin.get("platforms"));
@@ -292,7 +298,9 @@ public class AttackChainService {
   }
 
   public void throwIfAttackChainNotLaunchable(AttackChain attackChain) {
-    attackChain.getAttackChainNodes().forEach(attackChainNodeService::throwIfAttackChainNodeNotLaunchable);
+    attackChain
+        .getAttackChainNodes()
+        .forEach(attackChainNodeService::throwIfAttackChainNodeNotLaunchable);
   }
 
   /** AttackChain is recurring AND end date is after now */
@@ -337,12 +345,14 @@ public class AttackChainService {
     if (rawAttackChain.getScenario_teams_users() != null) {
       try {
         attackChainTeamUsers =
-            objectMapper.readValue(rawAttackChain.getScenario_teams_users(), new TypeReference<>() {});
+            objectMapper.readValue(
+                rawAttackChain.getScenario_teams_users(), new TypeReference<>() {});
       } catch (JsonProcessingException e) {
         log.error("Error reading scenarioTeamUsers from scenario id {}", attackChainId, e);
       }
     }
-    return attackChainMapper.toAttackChainOutput(rawAttackChain, killChainPhases, attackChainTeamUsers);
+    return attackChainMapper.toAttackChainOutput(
+        rawAttackChain, killChainPhases, attackChainTeamUsers);
   }
 
   public AttackChain attackChainFromSimulationId(@NotBlank final String simulationId) {
@@ -391,7 +401,10 @@ public class AttackChainService {
 
       // Add the default asset groups to/from the attackChainNodes
       attackChain.getAttackChainNodes().stream()
-          .filter(attackChainNode -> this.attackChainNodeService.canApplyTargetType(attackChainNode, TargetType.ASSETS_GROUPS))
+          .filter(
+              attackChainNode ->
+                  this.attackChainNodeService.canApplyTargetType(
+                      attackChainNode, TargetType.ASSETS_GROUPS))
           .forEach(
               attackChainNode ->
                   attackChainNodeService.applyDefaultAssetGroupsToAttackChainNode(
@@ -505,7 +518,8 @@ public class AttackChainService {
               .toList());
       attackChainFileExport.setOrganizations(organizations);
       objectMapper.addMixIn(Organization.class, Mixins.Organization.class);
-      attackChainTags.addAll(organizations.stream().flatMap(org -> org.getTags().stream()).toList());
+      attackChainTags.addAll(
+          organizations.stream().flatMap(org -> org.getTags().stream()).toList());
     } else {
       objectMapper.addMixIn(AttackChainRunFileExport.class, Mixins.AttackChainWithoutPlayers.class);
     }
@@ -624,7 +638,8 @@ public class AttackChainService {
     removedTeamIds.removeAll(targetTeamIds);
     if (!removedTeamIds.isEmpty()) {
       List<String> removedTeamIdsList = new ArrayList<>(removedTeamIds);
-      this.attackChainTeamUserRepository.deleteByAttackChainIdAndTeamIds(attackChainId, removedTeamIdsList);
+      this.attackChainTeamUserRepository.deleteByAttackChainIdAndTeamIds(
+          attackChainId, removedTeamIdsList);
       this.attackChainNodeRepository.removeTeamsForAttackChain(attackChainId, removedTeamIdsList);
       this.lessonsCategoryRepository.removeTeamsForAttackChain(attackChainId, removedTeamIdsList);
     }
@@ -788,11 +803,13 @@ public class AttackChainService {
     attackChainDuplicate.setLessonsAnonymized(attackChain.isLessonsAnonymized());
     attackChainDuplicate.setDocuments(new ArrayList<>(attackChain.getDocuments()));
     attackChainDuplicate.setGrants(new ArrayList<>(attackChain.getGrants()));
-    attackChainDuplicate.setDependencies(cleanAttackChainDependencies(attackChain.getDependencies()));
+    attackChainDuplicate.setDependencies(
+        cleanAttackChainDependencies(attackChain.getDependencies()));
     return attackChainDuplicate;
   }
 
-  private AttackChain.Dependency[] cleanAttackChainDependencies(AttackChain.Dependency[] dependencies) {
+  private AttackChain.Dependency[] cleanAttackChainDependencies(
+      AttackChain.Dependency[] dependencies) {
     if (dependencies == null) {
       return new AttackChain.Dependency[0];
     }
@@ -806,7 +823,10 @@ public class AttackChainService {
       @NotNull AttackChain attackChain, @NotNull AttackChain attackChainOrigin) {
     Set<AttackChainNode> attackChainNodeListForAttackChain =
         attackChainOrigin.getAttackChainNodes().stream()
-            .map(attackChainNode -> attackChainNodeDuplicateService.duplicateAttackChainNodeForAttackChain(attackChain, attackChainNode))
+            .map(
+                attackChainNode ->
+                    attackChainNodeDuplicateService.duplicateAttackChainNodeForAttackChain(
+                        attackChain, attackChainNode))
             .collect(Collectors.toSet());
     attackChain.setAttackChainNodes(new HashSet<>(attackChainNodeListForAttackChain));
   }
@@ -831,7 +851,8 @@ public class AttackChainService {
     variableService.createVariables(variableList);
   }
 
-  private void getLessonsCategories(AttackChain duplicatedAttackChain, AttackChain originalAttackChain) {
+  private void getLessonsCategories(
+      AttackChain duplicatedAttackChain, AttackChain originalAttackChain) {
     List<LessonsCategory> duplicatedCategories = new ArrayList<>();
     for (LessonsCategory originalCategory : originalAttackChain.getLessonsCategories()) {
       LessonsCategory duplicatedCategory = new LessonsCategory();
@@ -907,7 +928,8 @@ public class AttackChainService {
 
     AttackChain attackChain = this.attackChain(attackChainId);
 
-    // get the healthcheck for each attackChainNodes, remove duplicate from attackChainNodes HealthCheck results and
+    // get the healthcheck for each attackChainNodes, remove duplicate from attackChainNodes
+    // HealthCheck results and
     // add them to the result
     List<HealthCheck> attackChainNodesHealthChecksNoDuplicate =
         attackChain.getAttackChainNodes().stream()

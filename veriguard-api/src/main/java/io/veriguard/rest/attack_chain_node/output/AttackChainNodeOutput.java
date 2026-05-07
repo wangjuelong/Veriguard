@@ -2,13 +2,13 @@ package io.veriguard.rest.attack_chain_node.output;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.veriguard.database.model.Domain;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.model.AttackChainEdge;
+import io.veriguard.database.model.Domain;
 import io.veriguard.database.model.NodeContract;
 import io.veriguard.healthcheck.dto.HealthCheck;
 import io.veriguard.helper.NodeModelHelper;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

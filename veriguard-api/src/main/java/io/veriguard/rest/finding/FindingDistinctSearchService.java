@@ -53,7 +53,8 @@ public class FindingDistinctSearchService {
             (Specification<Finding> specification, Pageable pageable) ->
                 this.findingRepository.findAll(
                     FindingSpecification.distinctTypeValueWithFilter(
-                        FindingSpecification.findFindingsForAttackChainNode(attackChainNodeId).and(specification)),
+                        FindingSpecification.findFindingsForAttackChainNode(attackChainNodeId)
+                            .and(specification)),
                     pageable),
             searchPaginationInput,
             Finding.class);

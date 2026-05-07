@@ -5,8 +5,9 @@ import java.time.Instant;
 /**
  * Spring Data projection interface for attackChainRun pause data.
  *
- * <p>This interface defines a projection for retrieving pause events during attackChainRun execution.
- * Pauses represent interruptions in attackChainRun flow, typically initiated by facilitators.
+ * <p>This interface defines a projection for retrieving pause events during attackChainRun
+ * execution. Pauses represent interruptions in attackChainRun flow, typically initiated by
+ * facilitators.
  *
  * @see io.veriguard.database.model.Pause
  */

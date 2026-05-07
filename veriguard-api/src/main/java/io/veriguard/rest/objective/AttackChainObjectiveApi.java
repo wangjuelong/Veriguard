@@ -6,9 +6,9 @@ import static java.time.Instant.now;
 
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
+import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.database.repository.EvaluationRepository;
 import io.veriguard.database.repository.ObjectiveRepository;
-import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.database.specification.EvaluationSpecification;
 import io.veriguard.database.specification.ObjectiveSpecification;
@@ -78,7 +78,8 @@ public class AttackChainObjectiveApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
-  public void deleteObjective(@PathVariable String attackChainId, @PathVariable String objectiveId) {
+  public void deleteObjective(
+      @PathVariable String attackChainId, @PathVariable String objectiveId) {
     objectiveRepository.deleteById(objectiveId);
   }
 
@@ -163,7 +164,8 @@ public class AttackChainObjectiveApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
-  public void deleteEvaluation(@PathVariable String attackChainId, @PathVariable String evaluationId) {
+  public void deleteEvaluation(
+      @PathVariable String attackChainId, @PathVariable String evaluationId) {
     evaluationRepository.deleteById(evaluationId);
   }
   // endregion

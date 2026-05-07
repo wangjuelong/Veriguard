@@ -6,6 +6,13 @@ import static io.veriguard.utils.AgentUtils.AVAILABLE_PLATFORMS;
 import static io.veriguard.utils.SecurityUtils.validateJFrogUri;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.ExecutorRepository;
@@ -20,13 +27,6 @@ import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.EndpointService;
 import io.veriguard.service.FileService;
 import io.veriguard.utils.AgentUtils;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -230,7 +230,8 @@ public class ExecutorApi extends RestBehavior {
       in = getClass().getResourceAsStream("/agents" + resourcePath + filename);
     } else if (agentBinaryOrigin.equals(
         "repository")) { // if we want a specific version from artifactory
-      filename = "veriguard-agent-" + agentBinaryVersion + (platform.equals("windows") ? ".exe" : "");
+      filename =
+          "veriguard-agent-" + agentBinaryVersion + (platform.equals("windows") ? ".exe" : "");
       in = new BufferedInputStream(validateJFrogUri(resourcePath, filename).toURL().openStream());
     }
     if (in != null) {

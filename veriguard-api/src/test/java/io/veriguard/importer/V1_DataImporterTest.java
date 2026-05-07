@@ -14,7 +14,6 @@ import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.constants.Constants;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,7 +98,8 @@ class V1_DataImporterTest extends IntegrationTest {
         this.importNode, Map.of(), null, null, null, null, Constants.IMPORTED_OBJECT_NAME_SUFFIX);
 
     // -- ASSERT --
-    Optional<AttackChainRun> attackChainRun = this.attackChainRunRepository.findOne(attackChainRunByName(EXERCISE_NAME));
+    Optional<AttackChainRun> attackChainRun =
+        this.attackChainRunRepository.findOne(attackChainRunByName(EXERCISE_NAME));
     assertTrue(attackChainRun.isPresent());
 
     Optional<Team> team = this.teamRepository.findByName(TEAM_NAME);

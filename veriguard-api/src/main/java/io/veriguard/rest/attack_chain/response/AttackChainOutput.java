@@ -1,9 +1,9 @@
 package io.veriguard.rest.attack_chain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.rest.kill_chain_phase.response.KillChainPhaseOutput;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.rest.kill_chain_phase.response.KillChainPhaseOutput;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

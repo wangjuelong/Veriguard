@@ -110,7 +110,8 @@ class NodeExpectationTraceServiceTest {
 
     // Assert
     assertEquals(expectedCount, result);
-    verify(nodeExpectationTraceRepository).countAlerts(attackChainNodeExpectationId, securityPlatformId);
+    verify(nodeExpectationTraceRepository)
+        .countAlerts(attackChainNodeExpectationId, securityPlatformId);
   }
 
   @Test
@@ -125,7 +126,8 @@ class NodeExpectationTraceServiceTest {
 
     // Assert
     assertEquals(0L, result);
-    verify(nodeExpectationTraceRepository).countAlerts(attackChainNodeExpectationId, securityPlatformId);
+    verify(nodeExpectationTraceRepository)
+        .countAlerts(attackChainNodeExpectationId, securityPlatformId);
   }
 
   @Test

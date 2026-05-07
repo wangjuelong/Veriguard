@@ -59,7 +59,8 @@ public class AttackChainNodeSearchService {
 
   // -- LIST INJECTOUTPUT --
 
-  public List<AttackChainNodeOutput> attackChainNodes(Specification<AttackChainNode> specification) {
+  public List<AttackChainNodeOutput> attackChainNodes(
+      Specification<AttackChainNode> specification) {
     CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
 
     CriteriaQuery<Tuple> cq = cb.createTupleQuery();
@@ -130,10 +131,12 @@ public class AttackChainNodeSearchService {
       Root<AttackChainNode> attackChainNodeRoot,
       Map<String, Join<Base, Base>> joinMap) {
     // Joins
-    Join<Base, Base> attackChainNodeAttackChainRunJoin = attackChainNodeRoot.join("exercise", JoinType.LEFT);
+    Join<Base, Base> attackChainNodeAttackChainRunJoin =
+        attackChainNodeRoot.join("exercise", JoinType.LEFT);
     joinMap.put("exercise", attackChainNodeAttackChainRunJoin);
 
-    Join<Base, Base> attackChainNodeAttackChainJoin = attackChainNodeRoot.join("scenario", JoinType.LEFT);
+    Join<Base, Base> attackChainNodeAttackChainJoin =
+        attackChainNodeRoot.join("scenario", JoinType.LEFT);
     joinMap.put("scenario", attackChainNodeAttackChainJoin);
 
     Join<Base, Base> nodeContractJoin = attackChainNodeRoot.join("injectorContract", JoinType.LEFT);
@@ -150,8 +153,10 @@ public class AttackChainNodeSearchService {
 
     // Array aggregations
     Expression<String[]> tagIdsExpression = createJoinArrayAggOnId(cb, attackChainNodeRoot, "tags");
-    Expression<String[]> teamIdsExpression = createJoinArrayAggOnId(cb, attackChainNodeRoot, "teams");
-    Expression<String[]> assetIdsExpression = createJoinArrayAggOnId(cb, attackChainNodeRoot, "assets");
+    Expression<String[]> teamIdsExpression =
+        createJoinArrayAggOnId(cb, attackChainNodeRoot, "teams");
+    Expression<String[]> assetIdsExpression =
+        createJoinArrayAggOnId(cb, attackChainNodeRoot, "assets");
     Expression<String[]> assetGroupIdsExpression =
         createJoinArrayAggOnId(cb, attackChainNodeRoot, "assetGroups");
     Expression<String[]> domainsPayloadIdExpression =
@@ -223,7 +228,8 @@ public class AttackChainNodeSearchService {
         Specification.where(
             (root, query, cb) -> {
               Predicate predicate = cb.conjunction();
-              predicate = cb.and(predicate, cb.equal(root.get("exercise").get("id"), attackChainRunId));
+              predicate =
+                  cb.and(predicate, cb.equal(root.get("exercise").get("id"), attackChainRunId));
               return predicate;
             });
 
@@ -249,7 +255,8 @@ public class AttackChainNodeSearchService {
 
     // Prepare query and execute
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-    List<AttackChainNodeResultOutput> attackChainNodes = executeAttackChainNodeQuery(cb, specification, pageable, joinMap);
+    List<AttackChainNodeResultOutput> attackChainNodes =
+        executeAttackChainNodeQuery(cb, specification, pageable, joinMap);
 
     // Fetch related data for attackChainNodes
     setComputedAttribute(attackChainNodes);
@@ -259,7 +266,8 @@ public class AttackChainNodeSearchService {
   }
 
   // -- LIST INJECTRESUTLOUTPUT --
-  public List<AttackChainNodeResultOutput> getListOfAttackChainNodeResults(String attackChainRunId) {
+  public List<AttackChainNodeResultOutput> getListOfAttackChainNodeResults(
+      String attackChainRunId) {
     // Create specification for filtering by attackChainRunId
     Specification<AttackChainNode> specification =
         Specification.where(
@@ -319,15 +327,19 @@ public class AttackChainNodeSearchService {
     if (!attackChainNodeIds.isEmpty()) {
       Map<String, List<Object[]>> teamMap = fetchRelatedTargets(attackChainNodeIds, "teams");
       Map<String, List<Object[]>> assetMap = fetchRelatedTargets(attackChainNodeIds, "assets");
-      Map<String, List<Object[]>> assetGroupMap = fetchRelatedTargets(attackChainNodeIds, "assetGroups");
-      Map<String, List<RawAttackChainNodeExpectation>> expectationMap = fetchExpectations(attackChainNodeIds);
+      Map<String, List<Object[]>> assetGroupMap =
+          fetchRelatedTargets(attackChainNodeIds, "assetGroups");
+      Map<String, List<RawAttackChainNodeExpectation>> expectationMap =
+          fetchExpectations(attackChainNodeIds);
 
       // Map results to AttackChainNodeResultOutput and set targets
-      mapResultsToAttackChainNodes(attackChainNodes, teamMap, assetMap, assetGroupMap, expectationMap);
+      mapResultsToAttackChainNodes(
+          attackChainNodes, teamMap, assetMap, assetGroupMap, expectationMap);
     }
   }
 
-  public Map<String, List<Object[]>> fetchRelatedTargets(Set<String> attackChainNodeIds, String targetType) {
+  public Map<String, List<Object[]>> fetchRelatedTargets(
+      Set<String> attackChainNodeIds, String targetType) {
     if (attackChainNodeIds == null || attackChainNodeIds.isEmpty()) {
       return new HashMap<>();
     }
@@ -356,12 +368,15 @@ public class AttackChainNodeSearchService {
         .collect(Collectors.groupingBy(row -> (String) row[0]));
   }
 
-  private Map<String, List<RawAttackChainNodeExpectation>> fetchExpectations(Set<String> attackChainNodeIds) {
+  private Map<String, List<RawAttackChainNodeExpectation>> fetchExpectations(
+      Set<String> attackChainNodeIds) {
     if (attackChainNodeIds == null || attackChainNodeIds.isEmpty()) {
       return new HashMap<>();
     }
 
-    return ofNullable(attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainNodeIds(attackChainNodeIds))
+    return ofNullable(
+            attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainNodeIds(
+                attackChainNodeIds))
         .orElse(emptyList())
         .stream()
         .filter(Objects::nonNull)
@@ -389,7 +404,8 @@ public class AttackChainNodeSearchService {
             Stream.concat(
                     attackChainNodeMapper
                         .toTargetSimple(
-                            teamMap.getOrDefault(attackChainNode.getId(), emptyList()), TargetType.TEAMS)
+                            teamMap.getOrDefault(attackChainNode.getId(), emptyList()),
+                            TargetType.TEAMS)
                         .stream(),
                     Stream.concat(
                         attackChainNodeMapper
@@ -431,8 +447,10 @@ public class AttackChainNodeSearchService {
     joinMap.put("status", statusJoin);
 
     // Array aggregations
-    Expression<String[]> teamIdsExpression = createJoinArrayAggOnId(cb, attackChainNodeRoot, "teams");
-    Expression<String[]> assetIdsExpression = createJoinArrayAggOnId(cb, attackChainNodeRoot, "assets");
+    Expression<String[]> teamIdsExpression =
+        createJoinArrayAggOnId(cb, attackChainNodeRoot, "teams");
+    Expression<String[]> assetIdsExpression =
+        createJoinArrayAggOnId(cb, attackChainNodeRoot, "assets");
     Expression<String[]> assetGroupIdsExpression =
         createJoinArrayAggOnId(cb, attackChainNodeRoot, "assetGroups");
     Expression<String[]> domainsPayloadIdExpression =
@@ -522,17 +540,21 @@ public class AttackChainNodeSearchService {
                         .build();
               }
 
-              AttackChainNodeResultOutput attackChainNodeResultOutput = new AttackChainNodeResultOutput();
+              AttackChainNodeResultOutput attackChainNodeResultOutput =
+                  new AttackChainNodeResultOutput();
               attackChainNodeResultOutput.setId(tuple.get("inject_id", String.class));
               attackChainNodeResultOutput.setTitle(tuple.get("inject_title", String.class));
               attackChainNodeResultOutput.setContent(tuple.get("inject_content", ObjectNode.class));
-              attackChainNodeResultOutput.setUpdatedAt(tuple.get("inject_updated_at", Instant.class));
-              attackChainNodeResultOutput.setAttackChainNodeType(tuple.get("inject_type", String.class));
+              attackChainNodeResultOutput.setUpdatedAt(
+                  tuple.get("inject_updated_at", Instant.class));
+              attackChainNodeResultOutput.setAttackChainNodeType(
+                  tuple.get("inject_type", String.class));
               attackChainNodeResultOutput.setNodeContract(nodeContractSimple);
               attackChainNodeResultOutput.setStatus(attackChainNodeStatus);
               attackChainNodeResultOutput.setTeamIds(tuple.get("inject_teams", String[].class));
               attackChainNodeResultOutput.setAssetIds(tuple.get("inject_assets", String[].class));
-              attackChainNodeResultOutput.setAssetGroupIds(tuple.get("inject_asset_groups", String[].class));
+              attackChainNodeResultOutput.setAssetGroupIds(
+                  tuple.get("inject_asset_groups", String[].class));
 
               return attackChainNodeResultOutput;
             })

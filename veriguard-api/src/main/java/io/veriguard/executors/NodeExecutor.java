@@ -41,7 +41,8 @@ public abstract class NodeExecutor {
         throw new UnsupportedOperationException("Inject is empty");
       }
       // If attackChainNode is too old, reject the execution
-      if (isScheduledAttackChainNode && !isInInjectableRange(executableAttackChainNode.getInjection())) {
+      if (isScheduledAttackChainNode
+          && !isInInjectableRange(executableAttackChainNode.getInjection())) {
         throw new UnsupportedOperationException(
             "Inject is now too old for execution: id "
                 + executableAttackChainNode.getInjection().getId()
@@ -68,8 +69,7 @@ public abstract class NodeExecutor {
   // region utils
 
   public <T> T contentConvert(
-      @NotNull final ExecutableNode injection, @NotNull final Class<T> converter)
-      throws Exception {
+      @NotNull final ExecutableNode injection, @NotNull final Class<T> converter) throws Exception {
     AttackChainNode attackChainNode = injection.getInjection().getAttackChainNode();
     ObjectNode content = attackChainNode.getContent();
     return this.context.getMapper().treeToValue(content, converter);

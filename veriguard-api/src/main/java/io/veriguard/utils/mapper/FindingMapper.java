@@ -52,7 +52,8 @@ public class FindingMapper {
             finding.getAssetGroups().stream()
                 .map(assetGroup -> assetGroupMapper.toAssetGroupSimple(assetGroup))
                 .collect(Collectors.toSet()))
-        .attackChainNode(attackChainNodeMapper.toAttackChainNodeSimple(finding.getAttackChainNode()))
+        .attackChainNode(
+            attackChainNodeMapper.toAttackChainNodeSimple(finding.getAttackChainNode()))
         .simulation(
             Optional.ofNullable(finding.getAttackChainNode().getAttackChainRun())
                 .map(attackChainRun -> attackChainRunMapper.toAttackChainRunSimple(attackChainRun))

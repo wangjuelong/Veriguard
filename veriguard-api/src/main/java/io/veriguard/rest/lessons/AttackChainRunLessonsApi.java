@@ -40,8 +40,10 @@ public class AttackChainRunLessonsApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
-  public Iterable<LessonsCategory> attackChainRunLessonsCategories(@PathVariable String attackChainRunId) {
-    return lessonsCategoryRepository.findAll(LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
+  public Iterable<LessonsCategory> attackChainRunLessonsCategories(
+      @PathVariable String attackChainRunId) {
+    return lessonsCategoryRepository.findAll(
+        LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
   }
 
   @PostMapping(EXERCISE_URL + "{exerciseId}/lessons_apply_template/{lessonsTemplateId}")
@@ -53,7 +55,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
   public Iterable<LessonsCategory> applyAttackChainRunLessonsTemplate(
       @PathVariable String attackChainRunId, @PathVariable String lessonsTemplateId) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     LessonsTemplate lessonsTemplate =
         lessonsTemplateRepository
             .findById(lessonsTemplateId)
@@ -81,7 +85,8 @@ public class AttackChainRunLessonsApi extends RestBehavior {
               .toList();
       lessonsQuestionRepository.saveAll(lessonsQuestions);
     }
-    return lessonsCategoryRepository.findAll(LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
+    return lessonsCategoryRepository.findAll(
+        LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
   }
 
   @PostMapping(EXERCISE_URL + "{exerciseId}/lessons_categories")
@@ -93,7 +98,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
   public LessonsCategory createAttackChainRunLessonsCategory(
       @PathVariable String attackChainRunId, @Valid @RequestBody LessonsCategoryCreateInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     LessonsCategory lessonsCategory = new LessonsCategory();
     lessonsCategory.setUpdateAttributes(input);
     lessonsCategory.setAttackChainRun(attackChainRun);
@@ -106,7 +113,8 @@ public class AttackChainRunLessonsApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public Iterable<LessonsCategory> resetAttackChainRunLessonsAnswers(@PathVariable String attackChainRunId) {
+  public Iterable<LessonsCategory> resetAttackChainRunLessonsAnswers(
+      @PathVariable String attackChainRunId) {
     List<LessonsAnswer> lessonsAnswers =
         lessonsCategoryRepository
             .findAll(LessonsCategorySpecification.fromAttackChainRun(attackChainRunId))
@@ -137,7 +145,8 @@ public class AttackChainRunLessonsApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
-  public Iterable<LessonsCategory> emptyAttackChainRunLessons(@PathVariable String attackChainRunId) {
+  public Iterable<LessonsCategory> emptyAttackChainRunLessons(
+      @PathVariable String attackChainRunId) {
     List<LessonsCategory> lessonsCategories =
         lessonsCategoryRepository
             .findAll(LessonsCategorySpecification.fromAttackChainRun(attackChainRunId))
@@ -206,7 +215,8 @@ public class AttackChainRunLessonsApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
-  public Iterable<LessonsQuestion> attackChainRunLessonsQuestions(@PathVariable String attackChainRunId) {
+  public Iterable<LessonsQuestion> attackChainRunLessonsQuestions(
+      @PathVariable String attackChainRunId) {
     return lessonsCategoryRepository
         .findAll(LessonsCategorySpecification.fromAttackChainRun(attackChainRunId))
         .stream()
@@ -292,7 +302,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
   public void sendAttackChainRunLessons(
       @PathVariable String attackChainRunId, @Valid @RequestBody LessonsSendInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     List<LessonsCategory> lessonsCategories =
         lessonsCategoryRepository
             .findAll(LessonsCategorySpecification.fromAttackChainRun(attackChainRunId))
@@ -338,7 +350,8 @@ public class AttackChainRunLessonsApi extends RestBehavior {
   public List<LessonsCategory> playerLessonsCategories(
       @PathVariable String attackChainRunId, @RequestParam Optional<String> userId) {
     impersonateUser(userRepository, userId); // Protection for ?
-    return lessonsCategoryRepository.findAll(LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
+    return lessonsCategoryRepository.findAll(
+        LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
   }
 
   @GetMapping("/api/player/lessons/exercise/{exerciseId}/lessons_questions")

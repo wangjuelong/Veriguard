@@ -5,14 +5,14 @@ import static java.time.Instant.now;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.helper.MultiIdListSerializer;
 import io.veriguard.helper.MultiIdSetSerializer;
 import io.veriguard.helper.MultiModelSerializer;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -173,9 +173,15 @@ public class Team implements Base {
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<AttackChainNode> getAttackChainRunsAttackChainNodes() {
     Predicate<AttackChainNode> selectedAttackChainNode =
-        attackChainNode -> attackChainNode.isAllTeams() || attackChainNode.getTeams().contains(this);
+        attackChainNode ->
+            attackChainNode.isAllTeams() || attackChainNode.getTeams().contains(this);
     return getAttackChainRuns().stream()
-        .map(attackChainRun -> attackChainRun.getAttackChainNodes().stream().filter(selectedAttackChainNode).distinct().toList())
+        .map(
+            attackChainRun ->
+                attackChainRun.getAttackChainNodes().stream()
+                    .filter(selectedAttackChainNode)
+                    .distinct()
+                    .toList())
         .flatMap(List::stream)
         .toList();
   }
@@ -195,9 +201,15 @@ public class Team implements Base {
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<AttackChainNode> getAttackChainsAttackChainNodes() {
     Predicate<AttackChainNode> selectedAttackChainNode =
-        attackChainNode -> attackChainNode.isAllTeams() || attackChainNode.getTeams().contains(this);
+        attackChainNode ->
+            attackChainNode.isAllTeams() || attackChainNode.getTeams().contains(this);
     return getAttackChains().stream()
-        .map(attackChain -> attackChain.getAttackChainNodes().stream().filter(selectedAttackChainNode).distinct().toList())
+        .map(
+            attackChain ->
+                attackChain.getAttackChainNodes().stream()
+                    .filter(selectedAttackChainNode)
+                    .distinct()
+                    .toList())
         .flatMap(List::stream)
         .toList();
   }
@@ -284,7 +296,9 @@ public class Team implements Base {
     return attackChainRunId == null
         ? 0
         : getAttackChainRunTeamUsers().stream()
-            .filter(attackChainRunTeamUser -> attackChainRunTeamUser.getAttackChainRun().getId().equals(attackChainRunId))
+            .filter(
+                attackChainRunTeamUser ->
+                    attackChainRunTeamUser.getAttackChainRun().getId().equals(attackChainRunId))
             .toList()
             .size();
   }

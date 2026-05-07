@@ -15,21 +15,21 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
 import io.veriguard.expectation.ExpectationType;
-import io.veriguard.rest.document.DocumentService;
-import io.veriguard.rest.attack_chain_run.form.AttackChainRunsGlobalScoresInput;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeDuplicateService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_run.form.AttackChainRunsGlobalScoresInput;
+import io.veriguard.rest.document.DocumentService;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.AttackChainRecurrenceService;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.TargetType;
 import io.veriguard.utils.fixtures.*;
-import io.veriguard.utils.fixtures.composers.AttackChainRunComposer;
 import io.veriguard.utils.fixtures.composers.AttackChainComposer;
-import io.veriguard.utils.mapper.AttackChainRunMapper;
+import io.veriguard.utils.fixtures.composers.AttackChainRunComposer;
 import io.veriguard.utils.mapper.AttackChainNodeExpectationMapper;
 import io.veriguard.utils.mapper.AttackChainNodeMapper;
+import io.veriguard.utils.mapper.AttackChainRunMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
@@ -132,11 +132,14 @@ class AttackChainRunServiceTest extends IntegrationTest {
     String attackChainNodeId3 = "0f728b68-ec1f-4a5d-a2e5-53d897c7a7fd";
     String attackChainNodeId4 = "bf05a17a-af6b-4238-9c3e-296db7f07d00";
 
-    Set<String> attackChainRun1AttackChainNodeIds = Set.of(attackChainNodeId1, attackChainNodeId2, attackChainNodeId3);
+    Set<String> attackChainRun1AttackChainNodeIds =
+        Set.of(attackChainNodeId1, attackChainNodeId2, attackChainNodeId3);
     Set<String> attackChainRun2AttackChainNodeIds = Set.of(attackChainNodeId4);
 
-    when(attackChainRunRepository.findAttackChainNodesByAttackChainRun(attackChainRunId1)).thenReturn(attackChainRun1AttackChainNodeIds);
-    when(attackChainRunRepository.findAttackChainNodesByAttackChainRun(attackChainRunId2)).thenReturn(attackChainRun2AttackChainNodeIds);
+    when(attackChainRunRepository.findAttackChainNodesByAttackChainRun(attackChainRunId1))
+        .thenReturn(attackChainRun1AttackChainNodeIds);
+    when(attackChainRunRepository.findAttackChainNodesByAttackChainRun(attackChainRunId2))
+        .thenReturn(attackChainRun2AttackChainNodeIds);
 
     when(resultUtils.computeGlobalExpectationResults(attackChainRun1AttackChainNodeIds))
         .thenReturn(ExpectationResultsByTypeFixture.attackChainRun1GlobalScores);
@@ -174,7 +177,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
     when(tagRuleService.getAssetGroupsFromTagIds(List.of(tag1.getId())))
         .thenReturn(assetGroupsToAdd);
     when(attackChainRunRepository.save(attackChainRun)).thenReturn(attackChainRun);
-    when(attackChainNodeService.canApplyTargetType(any(), eq(TargetType.ASSETS_GROUPS))).thenReturn(true);
+    when(attackChainNodeService.canApplyTargetType(any(), eq(TargetType.ASSETS_GROUPS)))
+        .thenReturn(true);
 
     mockedAttackChainRunService.updateExercice(attackChainRun, currentTags, true);
 
@@ -183,7 +187,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
         .forEach(
             attackChainNode ->
                 verify(attackChainNodeService)
-                    .applyDefaultAssetGroupsToAttackChainNode(attackChainNode.getId(), assetGroupsToAdd));
+                    .applyDefaultAssetGroupsToAttackChainNode(
+                        attackChainNode.getId(), assetGroupsToAdd));
     verify(attackChainRunRepository).save(attackChainRun);
   }
 
@@ -207,7 +212,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
     when(tagRuleService.getAssetGroupsFromTagIds(List.of(tag1.getId())))
         .thenReturn(assetGroupsToAdd);
     when(attackChainRunRepository.save(attackChainRun)).thenReturn(attackChainRun);
-    when(attackChainNodeService.canApplyTargetType(any(), eq(TargetType.ASSETS_GROUPS))).thenReturn(false);
+    when(attackChainNodeService.canApplyTargetType(any(), eq(TargetType.ASSETS_GROUPS)))
+        .thenReturn(false);
 
     mockedAttackChainRunService.updateExercice(attackChainRun, currentTags, true);
 
@@ -390,7 +396,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
           public void setup() {
             AttackChainRun consideredFixture = AttackChainRunFixture.createDefaultAttackChainRun();
             consideredFixture.setStart(consideredSimulationStartTime);
-            consideredSimulationWrapper = attackChainRunComposer.forAttackChainRun(consideredFixture);
+            consideredSimulationWrapper =
+                attackChainRunComposer.forAttackChainRun(consideredFixture);
           }
 
           @Test
@@ -405,7 +412,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
             attackChainRunComposer.generatedItems.forEach(e -> entityManager.refresh(e));
 
             Optional<Instant> latestValidity =
-                actualAttackChainRunService.getLatestValidityDate(consideredSimulationWrapper.get());
+                actualAttackChainRunService.getLatestValidityDate(
+                    consideredSimulationWrapper.get());
             assertThat(latestValidity).isPresent().get().isEqualTo(successorSimulationStartTime);
           }
         }
@@ -418,7 +426,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
           @BeforeEach
           public void setup() {
             AttackChainRun consideredFixture = AttackChainRunFixture.createDefaultAttackChainRun();
-            consideredSimulationWrapper = attackChainRunComposer.forAttackChainRun(consideredFixture);
+            consideredSimulationWrapper =
+                attackChainRunComposer.forAttackChainRun(consideredFixture);
           }
 
           @Test
@@ -433,7 +442,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
             attackChainRunComposer.generatedItems.forEach(e -> entityManager.refresh(e));
 
             Optional<Instant> latestValidity =
-                actualAttackChainRunService.getLatestValidityDate(consideredSimulationWrapper.get());
+                actualAttackChainRunService.getLatestValidityDate(
+                    consideredSimulationWrapper.get());
             assertThat(latestValidity).isEmpty();
           }
         }
@@ -453,7 +463,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
           public void setup() {
             AttackChainRun consideredFixture = AttackChainRunFixture.createDefaultAttackChainRun();
             consideredFixture.setStart(consideredSimulationStartTime);
-            consideredSimulationWrapper = attackChainRunComposer.forAttackChainRun(consideredFixture);
+            consideredSimulationWrapper =
+                attackChainRunComposer.forAttackChainRun(consideredFixture);
           }
 
           @Test
@@ -467,7 +478,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
             Instant expected = Instant.parse("2022-04-23T10:43:56Z");
 
             Optional<Instant> latestValidity =
-                actualAttackChainRunService.getLatestValidityDate(consideredSimulationWrapper.get());
+                actualAttackChainRunService.getLatestValidityDate(
+                    consideredSimulationWrapper.get());
             assertThat(latestValidity).isPresent().get().isEqualTo(expected);
           }
         }
@@ -480,7 +492,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
           @BeforeEach
           public void setup() {
             AttackChainRun consideredFixture = AttackChainRunFixture.createDefaultAttackChainRun();
-            consideredSimulationWrapper = attackChainRunComposer.forAttackChainRun(consideredFixture);
+            consideredSimulationWrapper =
+                attackChainRunComposer.forAttackChainRun(consideredFixture);
           }
 
           @Test
@@ -492,7 +505,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
             attackChainRunComposer.generatedItems.forEach(e -> entityManager.refresh(e));
 
             Optional<Instant> latestValidity =
-                actualAttackChainRunService.getLatestValidityDate(consideredSimulationWrapper.get());
+                actualAttackChainRunService.getLatestValidityDate(
+                    consideredSimulationWrapper.get());
             assertThat(latestValidity).isEmpty();
           }
         }
@@ -506,7 +520,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
 
       @BeforeEach
       public void setup() {
-        attackChainWrapper = attackChainComposer.forAttackChain(AttackChainFixture.getAttackChain());
+        attackChainWrapper =
+            attackChainComposer.forAttackChain(AttackChainFixture.getAttackChain());
       }
 
       @Nested
@@ -533,7 +548,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
           public void setup() {
             AttackChainRun consideredFixture = AttackChainRunFixture.createDefaultAttackChainRun();
             consideredFixture.setStart(consideredSimulationStartTime);
-            consideredSimulationWrapper = attackChainRunComposer.forAttackChainRun(consideredFixture);
+            consideredSimulationWrapper =
+                attackChainRunComposer.forAttackChainRun(consideredFixture);
           }
 
           @Test
@@ -548,7 +564,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
             attackChainRunComposer.generatedItems.forEach(e -> entityManager.refresh(e));
 
             Optional<Instant> latestValidity =
-                actualAttackChainRunService.getLatestValidityDate(consideredSimulationWrapper.get());
+                actualAttackChainRunService.getLatestValidityDate(
+                    consideredSimulationWrapper.get());
             assertThat(latestValidity).isPresent().get().isEqualTo(successorSimulationStartTime);
           }
         }
@@ -561,7 +578,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
           @BeforeEach
           public void setup() {
             AttackChainRun consideredFixture = AttackChainRunFixture.createDefaultAttackChainRun();
-            consideredSimulationWrapper = attackChainRunComposer.forAttackChainRun(consideredFixture);
+            consideredSimulationWrapper =
+                attackChainRunComposer.forAttackChainRun(consideredFixture);
           }
 
           @Test
@@ -576,7 +594,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
             attackChainRunComposer.generatedItems.forEach(e -> entityManager.refresh(e));
 
             Optional<Instant> latestValidity =
-                actualAttackChainRunService.getLatestValidityDate(consideredSimulationWrapper.get());
+                actualAttackChainRunService.getLatestValidityDate(
+                    consideredSimulationWrapper.get());
             assertThat(latestValidity).isEmpty();
           }
         }
@@ -596,7 +615,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
           public void setup() {
             AttackChainRun consideredFixture = AttackChainRunFixture.createDefaultAttackChainRun();
             consideredFixture.setStart(consideredSimulationStartTime);
-            consideredSimulationWrapper = attackChainRunComposer.forAttackChainRun(consideredFixture);
+            consideredSimulationWrapper =
+                attackChainRunComposer.forAttackChainRun(consideredFixture);
           }
 
           @Test
@@ -608,7 +628,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
             attackChainRunComposer.generatedItems.forEach(e -> entityManager.refresh(e));
 
             Optional<Instant> latestValidity =
-                actualAttackChainRunService.getLatestValidityDate(consideredSimulationWrapper.get());
+                actualAttackChainRunService.getLatestValidityDate(
+                    consideredSimulationWrapper.get());
             assertThat(latestValidity).isEmpty();
           }
         }
@@ -621,7 +642,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
           @BeforeEach
           public void setup() {
             AttackChainRun consideredFixture = AttackChainRunFixture.createDefaultAttackChainRun();
-            consideredSimulationWrapper = attackChainRunComposer.forAttackChainRun(consideredFixture);
+            consideredSimulationWrapper =
+                attackChainRunComposer.forAttackChainRun(consideredFixture);
           }
 
           @Test
@@ -633,7 +655,8 @@ class AttackChainRunServiceTest extends IntegrationTest {
             attackChainRunComposer.generatedItems.forEach(e -> entityManager.refresh(e));
 
             Optional<Instant> latestValidity =
-                actualAttackChainRunService.getLatestValidityDate(consideredSimulationWrapper.get());
+                actualAttackChainRunService.getLatestValidityDate(
+                    consideredSimulationWrapper.get());
             assertThat(latestValidity).isEmpty();
           }
         }

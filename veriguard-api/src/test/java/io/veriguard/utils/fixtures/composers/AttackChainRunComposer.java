@@ -20,7 +20,8 @@ public class AttackChainRunComposer extends ComposerBase<AttackChainRun> {
 
   public class Composer extends InnerComposerBase<AttackChainRun> {
     private final AttackChainRun attackChainRun;
-    private final List<AttackChainNodeComposer.Composer> attackChainNodeComposers = new ArrayList<>();
+    private final List<AttackChainNodeComposer.Composer> attackChainNodeComposers =
+        new ArrayList<>();
     private final List<LessonsCategoryComposer.Composer> categoryComposers = new ArrayList<>();
     private final List<TeamComposer.Composer> teamComposers = new ArrayList<>();
     private final List<ObjectiveComposer.Composer> objectiveComposers = new ArrayList<>();
@@ -52,7 +53,8 @@ public class AttackChainRunComposer extends ComposerBase<AttackChainRun> {
       return this;
     }
 
-    public Composer withAttackChainNodes(List<AttackChainNodeComposer.Composer> attackChainNodeComposers) {
+    public Composer withAttackChainNodes(
+        List<AttackChainNodeComposer.Composer> attackChainNodeComposers) {
       attackChainNodeComposers.forEach(this::withAttackChainNode);
       return this;
     }
@@ -100,7 +102,8 @@ public class AttackChainRunComposer extends ComposerBase<AttackChainRun> {
                   team.getUsers()
                       .forEach(
                           user -> {
-                            AttackChainRunTeamUser attackChainRunTeamUser = new AttackChainRunTeamUser();
+                            AttackChainRunTeamUser attackChainRunTeamUser =
+                                new AttackChainRunTeamUser();
                             attackChainRunTeamUser.setAttackChainRun(attackChainRun);
                             attackChainRunTeamUser.setUser(user);
                             attackChainRunTeamUser.setTeam(team);

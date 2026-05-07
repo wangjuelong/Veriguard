@@ -56,7 +56,8 @@ public class AssetGroupService {
 
   public List<AssetGroup> assetGroupsForSimulation(@NotBlank final String simulationId) {
     List<AssetGroup> assetGroups =
-        fromIterable(this.assetGroupRepository.findDistinctByAttackChainNodesSimulationId(simulationId));
+        fromIterable(
+            this.assetGroupRepository.findDistinctByAttackChainNodesSimulationId(simulationId));
     return computeDynamicAssets(assetGroups);
   }
 
@@ -73,7 +74,8 @@ public class AssetGroupService {
 
   public List<AssetGroup> assetGroupsForAttackChain(@NotBlank final String attackChainId) {
     List<AssetGroup> assetGroups =
-        fromIterable(this.assetGroupRepository.findDistinctByAttackChainNodesAttackChainId(attackChainId));
+        fromIterable(
+            this.assetGroupRepository.findDistinctByAttackChainNodesAttackChainId(attackChainId));
     return computeDynamicAssets(assetGroups);
   }
 

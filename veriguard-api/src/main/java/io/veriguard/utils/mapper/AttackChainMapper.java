@@ -2,11 +2,11 @@ package io.veriguard.utils.mapper;
 
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.RawAttackChain;
-import io.veriguard.rest.document.form.RelatedEntityOutput;
-import io.veriguard.rest.kill_chain_phase.response.KillChainPhaseOutput;
 import io.veriguard.rest.attack_chain.form.AttackChainSimple;
 import io.veriguard.rest.attack_chain.response.AttackChainOutput;
 import io.veriguard.rest.attack_chain.response.AttackChainTeamUserOutput;
+import io.veriguard.rest.document.form.RelatedEntityOutput;
+import io.veriguard.rest.kill_chain_phase.response.KillChainPhaseOutput;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,8 +45,8 @@ public class AttackChainMapper {
   /**
    * Converts raw attackChain data to a full output DTO.
    *
-   * <p>Assembles a comprehensive attackChain output from raw database results and pre-resolved related
-   * entities.
+   * <p>Assembles a comprehensive attackChain output from raw database results and pre-resolved
+   * related entities.
    *
    * @param rawAttackChain the raw attackChain data
    * @param killChainPhases the resolved kill chain phases
@@ -101,8 +101,11 @@ public class AttackChainMapper {
    * @param attackChainNodes the attackChainNodes to convert
    * @return set of related entity output DTOs including attackChain context
    */
-  public static Set<RelatedEntityOutput> toAttackChainAttackChainNodes(Set<AttackChainNode> attackChainNodes) {
-    return attackChainNodes.stream().map(attackChainNode -> toAttackChainAttackChainNode(attackChainNode)).collect(Collectors.toSet());
+  public static Set<RelatedEntityOutput> toAttackChainAttackChainNodes(
+      Set<AttackChainNode> attackChainNodes) {
+    return attackChainNodes.stream()
+        .map(attackChainNode -> toAttackChainAttackChainNode(attackChainNode))
+        .collect(Collectors.toSet());
   }
 
   private static RelatedEntityOutput toAttackChainAttackChainNode(AttackChainNode attackChainNode) {

@@ -4,11 +4,11 @@ import static io.veriguard.database.model.AttackChainRunStatus.valueOf;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.veriguard.database.model.AttackChain.SEVERITY;
 import io.veriguard.database.model.AttackChainRunStatus;
 import io.veriguard.database.model.AttackChainRunTeamUser;
 import io.veriguard.database.model.KillChainPhase;
 import io.veriguard.database.model.Objective;
-import io.veriguard.database.model.AttackChain.SEVERITY;
 import io.veriguard.database.raw.RawSimulation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -183,13 +183,17 @@ public class SimulationDetails {
       details
           .attackChainRunTeamUsers(new HashSet<>(attackChainRunTeamsUsers))
           .usersNumber(
-              attackChainRunTeamsUsers.stream().map(AttackChainRunTeamUser::getUser).distinct().count());
+              attackChainRunTeamsUsers.stream()
+                  .map(AttackChainRunTeamUser::getUser)
+                  .distinct()
+                  .count());
     }
     details
         .tags(new HashSet<>(attackChainRun.getExercise_tags()))
         .users(attackChainRun.getExercise_users())
         .objectives(objectives)
-        .lessonsAnswersNumber(attackChainRun.getLessons_answers().stream().distinct().toList().size())
+        .lessonsAnswersNumber(
+            attackChainRun.getLessons_answers().stream().distinct().toList().size())
         .allUsersNumber(attackChainRun.getExercise_users().stream().distinct().toList().size())
         .logsNumber(attackChainRun.getLogs().stream().distinct().toList().size());
 

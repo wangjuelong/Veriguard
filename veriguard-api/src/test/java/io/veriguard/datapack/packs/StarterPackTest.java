@@ -387,7 +387,8 @@ public class StarterPackTest extends IntegrationTest {
             .anyMatch(
                 attackChainNode ->
                     attackChainNode.getAssets() != null
-                        && "honey.scanme.sh".equals(attackChainNode.getAssets().getFirst().getName())));
+                        && "honey.scanme.sh"
+                            .equals(attackChainNode.getAssets().getFirst().getName())));
   }
 
   @Test
@@ -450,12 +451,12 @@ public class StarterPackTest extends IntegrationTest {
                 attackChainNode ->
                     attackChainNode.getAssetGroups() != null
                         && !attackChainNode.getAssetGroups().isEmpty()
-                        && "All endpoints".equals(attackChainNode.getAssetGroups().getFirst().getName())));
+                        && "All endpoints"
+                            .equals(attackChainNode.getAssetGroups().getFirst().getName())));
   }
 
   private void verifyNodeContracts() {
-    Iterable<NodeContract> nodeContractsIterable =
-        this.nodeContractRepository.findAll();
+    Iterable<NodeContract> nodeContractsIterable = this.nodeContractRepository.findAll();
     List<NodeContract> nodeContracts = Lists.newArrayList(nodeContractsIterable);
     assertEquals(15, nodeContracts.size());
 

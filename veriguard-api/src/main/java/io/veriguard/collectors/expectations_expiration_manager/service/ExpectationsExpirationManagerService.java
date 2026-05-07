@@ -6,11 +6,11 @@ import static io.veriguard.utils.ExpectationUtils.HUMAN_EXPECTATION;
 import static io.veriguard.utils.inject_expectation_result.ExpectationResultBuilder.expireEmptyResults;
 
 import io.veriguard.collectors.expectations_expiration_manager.config.ExpectationsExpirationManagerConfig;
-import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.AttackChainNodeExpectation;
+import io.veriguard.database.model.Collector;
 import io.veriguard.expectation.ExpectationType;
-import io.veriguard.rest.collector.service.CollectorService;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationUpdateInput;
+import io.veriguard.rest.collector.service.CollectorService;
 import io.veriguard.service.AttackChainNodeExpectationService;
 import io.veriguard.utils.ExpectationUtils;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +37,8 @@ public class ExpectationsExpirationManagerService {
   public void computeExpectations() {
     Collector collector = this.collectorService.collector(config.getId());
     // Get all the expectations we will update (max of 10k)
-    Page<AttackChainNodeExpectation> expectations = this.attackChainNodeExpectationService.expectationsNotFill();
+    Page<AttackChainNodeExpectation> expectations =
+        this.attackChainNodeExpectationService.expectationsNotFill();
     // We're making a loop on 10 calls max to avoid staying in an infinite loop
     for (int i = 1; i < 10 && expectations.getTotalElements() > 0; i++) {
       List<AttackChainNodeExpectation> updated = new ArrayList<>();
@@ -54,13 +55,15 @@ public class ExpectationsExpirationManagerService {
 
   // -- PRIVATE --
   private void processAgentExpectations(
-      @NotNull final List<AttackChainNodeExpectation> expectations, @NotNull final Collector collector) {
+      @NotNull final List<AttackChainNodeExpectation> expectations,
+      @NotNull final Collector collector) {
     List<AttackChainNodeExpectation> expectationAgents =
         expectations.stream().filter(ExpectationUtils::isAgentExpectation).toList();
     expectationAgents.forEach(
         expectation -> {
           if (isExpired(expectation)) {
-            AttackChainNodeExpectationUpdateInput input = new AttackChainNodeExpectationUpdateInput();
+            AttackChainNodeExpectationUpdateInput input =
+                new AttackChainNodeExpectationUpdateInput();
             if (ExpectationType.VULNERABILITY.toString().equals(expectation.getType().toString())) {
               input.setIsSuccess(true);
               input.setResult(computeSuccessMessage(expectation.getType()));
@@ -85,18 +88,21 @@ public class ExpectationsExpirationManagerService {
     remainingExpectations.forEach(
         expectation -> {
           if (isExpired(expectation)) {
-            AttackChainNodeExpectationUpdateInput input = new AttackChainNodeExpectationUpdateInput();
+            AttackChainNodeExpectationUpdateInput input =
+                new AttackChainNodeExpectationUpdateInput();
             input.setIsSuccess(false);
             input.setResult(computeFailedMessage(expectation.getType()));
             expireEmptyResults(expectation.getResults(), FAILED_SCORE_VALUE, EXPIRED);
             if (HUMAN_EXPECTATION.contains(expectation.getType())) {
               updated.add(
-                  attackChainNodeExpectationService.computeAttackChainNodeExpectationForHumanResponse(
-                      expectation, input, collector));
+                  attackChainNodeExpectationService
+                      .computeAttackChainNodeExpectationForHumanResponse(
+                          expectation, input, collector));
             } else {
               updated.add(
-                  attackChainNodeExpectationService.computeAttackChainNodeExpectationForAgentOrAssetAgentless(
-                      expectation, input, collector));
+                  attackChainNodeExpectationService
+                      .computeAttackChainNodeExpectationForAgentOrAssetAgentless(
+                          expectation, input, collector));
             }
           }
         });

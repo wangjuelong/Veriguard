@@ -2,12 +2,12 @@ package io.veriguard.rest.attack_chain.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.raw.RawAttackChainSimple;
 import io.veriguard.helper.MultiIdSetSerializer;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +38,8 @@ public class AttackChainSimple {
     return simple;
   }
 
-  public static AttackChainSimple fromRawAttackChain(@NotNull final RawAttackChainSimple attackChain) {
+  public static AttackChainSimple fromRawAttackChain(
+      @NotNull final RawAttackChainSimple attackChain) {
     AttackChainSimple simple = new AttackChainSimple();
     simple.setId(attackChain.getScenario_id());
     simple.setName(attackChain.getScenario_name());

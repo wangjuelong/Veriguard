@@ -49,7 +49,8 @@ public class EndpointTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, @NotNull AttackChainNode scopedAttackChainNode) {
+  public Page<AttackChainNodeTarget> search(
+      SearchPaginationInput input, @NotNull AttackChainNode scopedAttackChainNode) {
     Specification<Endpoint> overallSpec =
         searchSpecificationUtils.compileSpecificationForAssetGroupMembership(
             scopedAttackChainNode, input, joinPath);
@@ -83,11 +84,13 @@ public class EndpointTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(
+      AttackChainNode scopedAttackChainNode, String textSearch) {
     Specification<Endpoint> spec =
         includeMembersOfAssetGroupsSpecification
             .buildSpecification(
-                scopedAttackChainNode.getAssetGroups().stream().map(AssetGroup::getId).toList(), joinPath)
+                scopedAttackChainNode.getAssetGroups().stream().map(AssetGroup::getId).toList(),
+                joinPath)
             .or(
                 includeDirectEndpointTargetsSpecification.buildSpecification(
                     scopedAttackChainNode, joinPath));
@@ -108,7 +111,8 @@ public class EndpointTargetSearchAdaptor extends SearchAdaptorBase {
         .toList();
   }
 
-  private AttackChainNodeTarget convertFromEndpoint(Endpoint endpoint, AttackChainNode attackChainNode) {
+  private AttackChainNodeTarget convertFromEndpoint(
+      Endpoint endpoint, AttackChainNode attackChainNode) {
     return helperTargetSearchAdaptor.buildTargetWithExpectations(
         attackChainNode,
         () ->

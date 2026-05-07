@@ -17,7 +17,8 @@ public class AttackChainEdgeInput {
   private AttackChainEdgeConditions.AttackChainEdgeCondition conditions;
 
   public AttackChainEdge toAttackChainEdge(
-      @NotNull final AttackChainNode attackChainNode, @NotNull final AttackChainNode attackChainNodeParent) {
+      @NotNull final AttackChainNode attackChainNode,
+      @NotNull final AttackChainNode attackChainNodeParent) {
     AttackChainEdge dependency = new AttackChainEdge();
     dependency.setAttackChainEdgeCondition(this.getConditions());
     dependency.setCompositeId(new AttackChainEdgeId());

@@ -16,9 +16,9 @@ import io.veriguard.executors.ExecutorContextService;
 import io.veriguard.executors.utils.ExecutorUtils;
 import io.veriguard.integration.ComponentRequest;
 import io.veriguard.integration.ManagerFactory;
-import io.veriguard.rest.exception.AgentException;
 import io.veriguard.rest.attack_chain_node.output.AgentsAndAssetsAgentless;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.exception.AgentException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,7 +39,9 @@ public class ExecutionExecutorService {
 
   public void launchExecutorContext(AttackChainNode attackChainNode) {
     AttackChainNodeStatus attackChainNodeStatus =
-        attackChainNode.getStatus().orElseThrow(() -> new IllegalArgumentException("Status should exist"));
+        attackChainNode
+            .getStatus()
+            .orElseThrow(() -> new IllegalArgumentException("Status should exist"));
     // First, get the agents and the assets agentless of this attackChainNode
     AgentsAndAssetsAgentless agentsAndAssetsAgentless =
         this.attackChainNodeService.getAgentsAndAgentlessAssetsByAttackChainNode(attackChainNode);
@@ -72,16 +74,32 @@ public class ExecutionExecutorService {
     saveWithoutExecutorAgentsTraces(agentsWithoutExecutor, attackChainNodeStatus);
     // Manage Crowdstrike agents for batch execution
     launchBatchExecutorContextForAgent(
-        crowdstrikeAgents, CROWDSTRIKE_EXECUTOR_NAME, attackChainNode, attackChainNodeStatus, atLeastOneExecution);
+        crowdstrikeAgents,
+        CROWDSTRIKE_EXECUTOR_NAME,
+        attackChainNode,
+        attackChainNodeStatus,
+        atLeastOneExecution);
     // Manage Sentinelone agents for batch execution
     launchBatchExecutorContextForAgent(
-        sentineloneAgents, SENTINELONE_EXECUTOR_NAME, attackChainNode, attackChainNodeStatus, atLeastOneExecution);
+        sentineloneAgents,
+        SENTINELONE_EXECUTOR_NAME,
+        attackChainNode,
+        attackChainNodeStatus,
+        atLeastOneExecution);
     // Manage Tanium agents for batch execution
     launchBatchExecutorContextForAgent(
-        taniumAgents, TANIUM_EXECUTOR_NAME, attackChainNode, attackChainNodeStatus, atLeastOneExecution);
+        taniumAgents,
+        TANIUM_EXECUTOR_NAME,
+        attackChainNode,
+        attackChainNodeStatus,
+        atLeastOneExecution);
     // Manage Palo Alto Cortex agents for batch execution
     launchBatchExecutorContextForAgent(
-        cortexAgents, PALOALTOCORTEX_EXECUTOR_NAME, attackChainNode, attackChainNodeStatus, atLeastOneExecution);
+        cortexAgents,
+        PALOALTOCORTEX_EXECUTOR_NAME,
+        attackChainNode,
+        attackChainNodeStatus,
+        atLeastOneExecution);
     // Manage remaining agents
     agents.forEach(
         agent -> {
@@ -110,7 +128,8 @@ public class ExecutionExecutorService {
             managerFactory
                 .getManager()
                 .request(new ComponentRequest(executorName), ExecutorContextService.class);
-        executorContextService.launchBatchExecutorSubprocess(attackChainNode, agents, attackChainNodeStatus);
+        executorContextService.launchBatchExecutorSubprocess(
+            attackChainNode, agents, attackChainNodeStatus);
         atLeastOneExecution.set(true);
       } catch (Exception e) {
         log.error("{} launchBatchExecutorSubprocess error: {}", executorName, e.getMessage());
@@ -133,7 +152,8 @@ public class ExecutionExecutorService {
   }
 
   @VisibleForTesting
-  public void saveAgentsErrorTraces(Exception e, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
+  public void saveAgentsErrorTraces(
+      Exception e, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
     executionTraceRepository.saveAll(
         agents.stream()
             .map(
@@ -173,7 +193,8 @@ public class ExecutionExecutorService {
   }
 
   @VisibleForTesting
-  public void saveInactiveAgentsTraces(Set<Agent> inactiveAgents, AttackChainNodeStatus attackChainNodeStatus) {
+  public void saveInactiveAgentsTraces(
+      Set<Agent> inactiveAgents, AttackChainNodeStatus attackChainNodeStatus) {
     if (!inactiveAgents.isEmpty()) {
       executionTraceRepository.saveAll(
           inactiveAgents.stream()
@@ -195,7 +216,8 @@ public class ExecutionExecutorService {
   }
 
   @VisibleForTesting
-  public void saveAgentlessAssetsTraces(Set<Asset> assetsAgentless, AttackChainNodeStatus attackChainNodeStatus) {
+  public void saveAgentlessAssetsTraces(
+      Set<Asset> assetsAgentless, AttackChainNodeStatus attackChainNodeStatus) {
     if (!assetsAgentless.isEmpty()) {
       executionTraceRepository.saveAll(
           assetsAgentless.stream()
@@ -213,7 +235,8 @@ public class ExecutionExecutorService {
     }
   }
 
-  private void launchExecutorContextForAgent(AttackChainNode attackChainNode, Agent agent) throws AgentException {
+  private void launchExecutorContextForAgent(AttackChainNode attackChainNode, Agent agent)
+      throws AgentException {
     try {
       Endpoint assetEndpoint = (Endpoint) Hibernate.unproxy(agent.getAsset());
       ExecutorContextService executorContextService =

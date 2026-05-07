@@ -9,6 +9,8 @@ import static lombok.AccessLevel.NONE;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.database.model.Endpoint.PLATFORM_TYPE;
@@ -17,8 +19,6 @@ import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.helper.MultiIdListSerializer;
 import io.veriguard.helper.MultiIdSetSerializer;
 import io.veriguard.helper.MultiModelSerializer;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
@@ -45,9 +45,10 @@ import org.hibernate.annotations.*;
  *   <li>Recurrence settings for automated execution
  * </ul>
  *
- * <p>AttackChains can be instantiated into {@link AttackChainRun} instances for actual execution. They serve
- * as templates that can be reused across multiple attackChainRuns, supporting the planning and scheduling
- * of security assessments, tabletop attackChainRuns, and attack simulations.
+ * <p>AttackChains can be instantiated into {@link AttackChainRun} instances for actual execution.
+ * They serve as templates that can be reused across multiple attackChainRuns, supporting the
+ * planning and scheduling of security assessments, tabletop attackChainRuns, and attack
+ * simulations.
  *
  * <p>Key features:
  *
@@ -426,11 +427,15 @@ public class AttackChain implements GrantableBase {
 
   // -- PLATFORMS --
   @JsonProperty("scenario_platforms")
-  @Queryable(filterable = true, path = "attackChainNodes.nodeContract.platforms", clazz = String[].class)
+  @Queryable(
+      filterable = true,
+      path = "attackChainNodes.nodeContract.platforms",
+      clazz = String[].class)
   public List<PLATFORM_TYPE> getPlatforms() {
     return getAttackChainNodes().stream()
         .flatMap(
-            attackChainNode -> attackChainNode.getNodeContract().map(NodeContract::getPlatforms).stream())
+            attackChainNode ->
+                attackChainNode.getNodeContract().map(NodeContract::getPlatforms).stream())
         .flatMap(Arrays::stream)
         .filter(Objects::nonNull)
         .distinct()

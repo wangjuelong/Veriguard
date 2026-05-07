@@ -1,8 +1,8 @@
 package io.veriguard.service;
 
 import io.veriguard.database.model.NotificationRuleResourceType;
-import io.veriguard.notification.handler.NotificationEventHandler;
 import io.veriguard.notification.handler.AttackChainNotificationEventHandler;
+import io.veriguard.notification.handler.NotificationEventHandler;
 import io.veriguard.notification.model.NotificationEvent;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -34,7 +34,8 @@ public class NotificationEventService {
     this.appPublisher = appPublisher;
     this.attackChainNotificationEventHandler = attackChainNotificationEventHandler;
     this.taskScheduler = taskScheduler;
-    this.handlers = Map.of(NotificationRuleResourceType.SCENARIO, attackChainNotificationEventHandler);
+    this.handlers =
+        Map.of(NotificationRuleResourceType.SCENARIO, attackChainNotificationEventHandler);
   }
 
   public void sendNotificationEvent(@NotNull final NotificationEvent notificationEvent) {

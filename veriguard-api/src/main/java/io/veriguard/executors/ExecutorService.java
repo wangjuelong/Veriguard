@@ -191,14 +191,15 @@ public class ExecutorService extends AbstractConnectorService<Executor, Executor
   }
 
   /**
-   * Manage agents with no platform: set and save execution traces for the given attackChainNode and agents
-   * without platform
+   * Manage agents with no platform: set and save execution traces for the given attackChainNode and
+   * agents without platform
    *
    * @param agents to manage
    * @param attackChainNodeStatus to manage
    * @return the agents with platform
    */
-  public List<Agent> manageWithoutPlatformAgents(List<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
+  public List<Agent> manageWithoutPlatformAgents(
+      List<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
     List<Agent> withoutPlatformAgents =
         agents.stream()
             .filter(

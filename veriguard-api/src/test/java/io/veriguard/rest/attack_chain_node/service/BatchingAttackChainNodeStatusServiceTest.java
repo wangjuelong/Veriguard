@@ -4,15 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import io.veriguard.database.model.Agent;
-import io.veriguard.database.model.ExecutionStatus;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeStatus;
+import io.veriguard.database.model.ExecutionStatus;
 import io.veriguard.database.repository.AgentRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
-import io.veriguard.rest.helper.queue.BatchQueueService;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionAction;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionCallback;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionInput;
+import io.veriguard.rest.helper.queue.BatchQueueService;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -36,7 +36,8 @@ class BatchingAttackChainNodeStatusServiceTest {
   @Mock private StructuredOutputUtils structuredOutputUtils;
   @Mock private AttackChainNodeExecutionService attackChainNodeExecutionService;
 
-  @Mock private BatchQueueService<AttackChainNodeExecutionCallback> attackChainNodeTraceQueueService;
+  @Mock
+  private BatchQueueService<AttackChainNodeExecutionCallback> attackChainNodeTraceQueueService;
 
   @InjectMocks private BatchingAttackChainNodeStatusService service;
 
@@ -47,7 +48,8 @@ class BatchingAttackChainNodeStatusServiceTest {
   @BeforeEach
   void wireQueueService() {
     // @InjectMocks does not set non-final fields with @Setter; wire it explicitly for the tests
-    // that attackChainRun the requeue path. Tests that want to attackChainRun the null-guard branch can
+    // that attackChainRun the requeue path. Tests that want to attackChainRun the null-guard branch
+    // can
     // override this via service.setAttackChainNodeTraceQueueService(null).
     service.setAttackChainNodeTraceQueueService(attackChainNodeTraceQueueService);
   }
@@ -77,7 +79,10 @@ class BatchingAttackChainNodeStatusServiceTest {
   }
 
   private AttackChainNodeExecutionCallback createCallback(
-      String attackChainNodeId, String agentId, AttackChainNodeExecutionAction action, long emissionDate) {
+      String attackChainNodeId,
+      String agentId,
+      AttackChainNodeExecutionAction action,
+      long emissionDate) {
     AttackChainNodeExecutionInput input = new AttackChainNodeExecutionInput();
     input.setAction(action);
     input.setMessage("test message");
@@ -103,16 +108,20 @@ class BatchingAttackChainNodeStatusServiceTest {
       AttackChainNode attackChainNode = createAttackChainNodeWithPendingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       // Create callbacks out of order
       AttackChainNodeExecutionCallback late =
-          createCallback(INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 3000L);
+          createCallback(
+              INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 3000L);
       AttackChainNodeExecutionCallback early =
-          createCallback(INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
+          createCallback(
+              INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
       AttackChainNodeExecutionCallback middle =
-          createCallback(INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 2000L);
+          createCallback(
+              INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 2000L);
 
       service.handleAttackChainNodeExecutionCallback(List.of(late, early, middle));
 
@@ -121,15 +130,21 @@ class BatchingAttackChainNodeStatusServiceTest {
       inOrder
           .verify(attackChainNodeExecutionService)
           .processAttackChainNodeExecutionWithAgent(
-              eq(attackChainNode), eq(agent), argThat(input -> input == early.getAttackChainNodeExecutionInput()));
+              eq(attackChainNode),
+              eq(agent),
+              argThat(input -> input == early.getAttackChainNodeExecutionInput()));
       inOrder
           .verify(attackChainNodeExecutionService)
           .processAttackChainNodeExecutionWithAgent(
-              eq(attackChainNode), eq(agent), argThat(input -> input == middle.getAttackChainNodeExecutionInput()));
+              eq(attackChainNode),
+              eq(agent),
+              argThat(input -> input == middle.getAttackChainNodeExecutionInput()));
       inOrder
           .verify(attackChainNodeExecutionService)
           .processAttackChainNodeExecutionWithAgent(
-              eq(attackChainNode), eq(agent), argThat(input -> input == late.getAttackChainNodeExecutionInput()));
+              eq(attackChainNode),
+              eq(agent),
+              argThat(input -> input == late.getAttackChainNodeExecutionInput()));
     }
   }
 
@@ -149,14 +164,18 @@ class BatchingAttackChainNodeStatusServiceTest {
 
       AttackChainNodeExecutionCallback callback =
           createCallback(
-              "non-existent-inject", AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
+              "non-existent-inject",
+              AGENT_ID,
+              AttackChainNodeExecutionAction.command_execution,
+              1000L);
 
       List<AttackChainNodeExecutionCallback> result =
           service.handleAttackChainNodeExecutionCallback(List.of(callback));
 
       // Should be in success list because ElementNotFoundException is caught and handled
       assertEquals(1, result.size());
-      verify(attackChainNodeExecutionService).handleAttackChainNodeExecutionError(isNull(), any(Exception.class));
+      verify(attackChainNodeExecutionService)
+          .handleAttackChainNodeExecutionError(isNull(), any(Exception.class));
     }
 
     @Test
@@ -164,20 +183,25 @@ class BatchingAttackChainNodeStatusServiceTest {
     void shouldHandleMissingAgent() {
       AttackChainNode attackChainNode = createAttackChainNodeWithPendingStatus(INJECT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       // Return empty — no agent found
       when(agentRepository.findAllById(anyList())).thenReturn(List.of());
 
       AttackChainNodeExecutionCallback callback =
           createCallback(
-              INJECT_ID, "non-existent-agent", AttackChainNodeExecutionAction.command_execution, 1000L);
+              INJECT_ID,
+              "non-existent-agent",
+              AttackChainNodeExecutionAction.command_execution,
+              1000L);
 
       List<AttackChainNodeExecutionCallback> result =
           service.handleAttackChainNodeExecutionCallback(List.of(callback));
 
       // Missing agent throws ElementNotFoundException → caught → added to success
       assertEquals(1, result.size());
-      verify(attackChainNodeExecutionService).handleAttackChainNodeExecutionError(eq(attackChainNode), any(Exception.class));
+      verify(attackChainNodeExecutionService)
+          .handleAttackChainNodeExecutionError(eq(attackChainNode), any(Exception.class));
     }
   }
 
@@ -194,7 +218,8 @@ class BatchingAttackChainNodeStatusServiceTest {
       AttackChainNode attackChainNode = createAttackChainNodeWithPendingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       doThrow(new RuntimeException("Unexpected error"))
@@ -202,7 +227,8 @@ class BatchingAttackChainNodeStatusServiceTest {
           .processAttackChainNodeExecutionWithAgent(any(), any(), any());
 
       AttackChainNodeExecutionCallback callback =
-          createCallback(INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
+          createCallback(
+              INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
 
       List<AttackChainNodeExecutionCallback> result =
           service.handleAttackChainNodeExecutionCallback(List.of(callback));
@@ -226,7 +252,8 @@ class BatchingAttackChainNodeStatusServiceTest {
       AttackChainNode attackChainNode = createAttackChainNodeWithExecutingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       AttackChainNodeExecutionCallback callback =
@@ -238,8 +265,10 @@ class BatchingAttackChainNodeStatusServiceTest {
       // The callback is queued for retry → NOT added to the successfully-processed list,
       // and no execution processing happened.
       assertTrue(result.isEmpty());
-      verify(attackChainNodeExecutionService, never()).processAttackChainNodeExecutionWithAgent(any(), any(), any());
-      verify(attackChainNodeExecutionService, never()).processAttackChainNodeExecutionWithNodeExecutor(any(), any());
+      verify(attackChainNodeExecutionService, never())
+          .processAttackChainNodeExecutionWithAgent(any(), any(), any());
+      verify(attackChainNodeExecutionService, never())
+          .processAttackChainNodeExecutionWithNodeExecutor(any(), any());
       // retry counter is bumped on the callback instance
       assertEquals(1, callback.getRetryCount());
     }
@@ -250,7 +279,8 @@ class BatchingAttackChainNodeStatusServiceTest {
       AttackChainNode attackChainNode = createAttackChainNodeWithPendingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       AttackChainNodeExecutionCallback callback =
@@ -271,12 +301,14 @@ class BatchingAttackChainNodeStatusServiceTest {
       AttackChainNode attackChainNode = createAttackChainNodeWithExecutingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       // command_execution action should pass regardless of status
       AttackChainNodeExecutionCallback callback =
-          createCallback(INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
+          createCallback(
+              INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
 
       List<AttackChainNodeExecutionCallback> result =
           service.handleAttackChainNodeExecutionCallback(List.of(callback));
@@ -308,9 +340,11 @@ class BatchingAttackChainNodeStatusServiceTest {
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent1, agent2));
 
       AttackChainNodeExecutionCallback callback1 =
-          createCallback("inject-1", "agent-1", AttackChainNodeExecutionAction.command_execution, 1000L);
+          createCallback(
+              "inject-1", "agent-1", AttackChainNodeExecutionAction.command_execution, 1000L);
       AttackChainNodeExecutionCallback callback2 =
-          createCallback("inject-2", "agent-2", AttackChainNodeExecutionAction.command_execution, 2000L);
+          createCallback(
+              "inject-2", "agent-2", AttackChainNodeExecutionAction.command_execution, 2000L);
 
       service.handleAttackChainNodeExecutionCallback(List.of(callback1, callback2));
 
@@ -333,11 +367,13 @@ class BatchingAttackChainNodeStatusServiceTest {
       AttackChainNode attackChainNode = createAttackChainNodeWithPendingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       AttackChainNodeExecutionCallback callback =
-          createCallback(INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
+          createCallback(
+              INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.command_execution, 1000L);
 
       List<AttackChainNodeExecutionCallback> result =
           service.handleAttackChainNodeExecutionCallback(List.of(callback));
@@ -354,7 +390,8 @@ class BatchingAttackChainNodeStatusServiceTest {
     void shouldHandleNullAgentId() {
       AttackChainNode attackChainNode = createAttackChainNodeWithPendingStatus(INJECT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of());
 
       AttackChainNodeExecutionCallback callback =
@@ -365,7 +402,8 @@ class BatchingAttackChainNodeStatusServiceTest {
 
       assertEquals(1, result.size());
       verify(attackChainNodeExecutionService)
-          .processAttackChainNodeExecutionWithNodeExecutor(eq(attackChainNode), eq(callback.getAttackChainNodeExecutionInput()));
+          .processAttackChainNodeExecutionWithNodeExecutor(
+              eq(attackChainNode), eq(callback.getAttackChainNodeExecutionInput()));
     }
   }
 
@@ -382,11 +420,14 @@ class BatchingAttackChainNodeStatusServiceTest {
       when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of());
       when(agentRepository.findAllById(anyList())).thenReturn(List.of());
 
-      List<AttackChainNodeExecutionCallback> result = service.handleAttackChainNodeExecutionCallback(List.of());
+      List<AttackChainNodeExecutionCallback> result =
+          service.handleAttackChainNodeExecutionCallback(List.of());
 
       assertTrue(result.isEmpty());
-      verify(attackChainNodeExecutionService, never()).processAttackChainNodeExecutionWithAgent(any(), any(), any());
-      verify(attackChainNodeExecutionService, never()).processAttackChainNodeExecutionWithNodeExecutor(any(), any());
+      verify(attackChainNodeExecutionService, never())
+          .processAttackChainNodeExecutionWithAgent(any(), any(), any());
+      verify(attackChainNodeExecutionService, never())
+          .processAttackChainNodeExecutionWithNodeExecutor(any(), any());
     }
 
     // ------------------------------------------------------------------
@@ -400,12 +441,14 @@ class BatchingAttackChainNodeStatusServiceTest {
       AttackChainNode attackChainNode = createAttackChainNodeWithExecutingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       long originalEmissionDate = 1000L;
       AttackChainNodeExecutionCallback callback =
-          createCallback(INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.complete, originalEmissionDate);
+          createCallback(
+              INJECT_ID, AGENT_ID, AttackChainNodeExecutionAction.complete, originalEmissionDate);
       long beforeHandle = Instant.now().toEpochMilli();
       service.handleAttackChainNodeExecutionCallback(List.of(callback));
 
@@ -431,7 +474,8 @@ class BatchingAttackChainNodeStatusServiceTest {
             + "other callback normally")
     void shouldHandleMixedBatchOfRetryAndNormalCallbacks() {
       // attackChainNode-1 is in EXECUTING → complete callback must be queued for retry
-      AttackChainNode executingAttackChainNode = createAttackChainNodeWithExecutingStatus("inject-1");
+      AttackChainNode executingAttackChainNode =
+          createAttackChainNodeWithExecutingStatus("inject-1");
       // attackChainNode-2 is in PENDING → complete callback must be processed normally
       AttackChainNode pendingAttackChainNode = createAttackChainNodeWithPendingStatus("inject-2");
       Agent agent1 = createAgent("agent-1");
@@ -458,10 +502,14 @@ class BatchingAttackChainNodeStatusServiceTest {
       // Only the pending attackChainNode was processed, not the executing one.
       verify(attackChainNodeExecutionService)
           .processAttackChainNodeExecutionWithAgent(
-              eq(pendingAttackChainNode), eq(agent2), eq(normalCallback.getAttackChainNodeExecutionInput()));
+              eq(pendingAttackChainNode),
+              eq(agent2),
+              eq(normalCallback.getAttackChainNodeExecutionInput()));
       verify(attackChainNodeExecutionService, never())
           .processAttackChainNodeExecutionWithAgent(
-              eq(executingAttackChainNode), any(), eq(retryCallback.getAttackChainNodeExecutionInput()));
+              eq(executingAttackChainNode),
+              any(),
+              eq(retryCallback.getAttackChainNodeExecutionInput()));
     }
 
     @Test
@@ -471,7 +519,8 @@ class BatchingAttackChainNodeStatusServiceTest {
       AttackChainNode attackChainNode = createAttackChainNodeWithExecutingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       AttackChainNodeExecutionCallback callback =
@@ -500,7 +549,8 @@ class BatchingAttackChainNodeStatusServiceTest {
     void shouldPersistViaNodeExecutorPathAfterMaxRetriesWithNullAgent() throws IOException {
       AttackChainNode attackChainNode = createAttackChainNodeWithExecutingStatus(INJECT_ID);
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of());
 
       AttackChainNodeExecutionCallback callback =
@@ -517,8 +567,10 @@ class BatchingAttackChainNodeStatusServiceTest {
       assertSame(callback, result.getFirst());
       assertEquals(MAX_RETRIES, callback.getRetryCount());
       verify(attackChainNodeExecutionService)
-          .processAttackChainNodeExecutionWithNodeExecutor(eq(attackChainNode), eq(callback.getAttackChainNodeExecutionInput()));
-      verify(attackChainNodeExecutionService, never()).processAttackChainNodeExecutionWithAgent(any(), any(), any());
+          .processAttackChainNodeExecutionWithNodeExecutor(
+              eq(attackChainNode), eq(callback.getAttackChainNodeExecutionInput()));
+      verify(attackChainNodeExecutionService, never())
+          .processAttackChainNodeExecutionWithAgent(any(), any(), any());
       service.requeueCallbacks();
       verify(attackChainNodeTraceQueueService, never()).publish(any());
     }
@@ -531,7 +583,8 @@ class BatchingAttackChainNodeStatusServiceTest {
 
       AttackChainNode attackChainNode = createAttackChainNodeWithExecutingStatus(INJECT_ID);
       Agent agent = createAgent(AGENT_ID);
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent));
 
       AttackChainNodeExecutionCallback callback =
@@ -550,13 +603,16 @@ class BatchingAttackChainNodeStatusServiceTest {
       Agent agent1 = createAgent("agent-1");
       Agent agent2 = createAgent("agent-2");
 
-      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList())).thenReturn(List.of(attackChainNode));
+      when(attackChainNodeRepository.findAllByIdWithExpectations(anyList()))
+          .thenReturn(List.of(attackChainNode));
       when(agentRepository.findAllById(anyList())).thenReturn(List.of(agent1, agent2));
 
       AttackChainNodeExecutionCallback callback1 =
-          createCallback(INJECT_ID, "agent-1", AttackChainNodeExecutionAction.command_execution, 1000L);
+          createCallback(
+              INJECT_ID, "agent-1", AttackChainNodeExecutionAction.command_execution, 1000L);
       AttackChainNodeExecutionCallback callback2 =
-          createCallback(INJECT_ID, "agent-2", AttackChainNodeExecutionAction.command_execution, 2000L);
+          createCallback(
+              INJECT_ID, "agent-2", AttackChainNodeExecutionAction.command_execution, 2000L);
 
       List<AttackChainNodeExecutionCallback> result =
           service.handleAttackChainNodeExecutionCallback(List.of(callback1, callback2));

@@ -34,5 +34,7 @@ public interface AttackChainNodeDocumentRepository
   @Query(
       value = "UPDATE injects_documents SET inject_id = :injectId where inject_id = :oldInjectId",
       nativeQuery = true)
-  void updateAttackChainNodeId(@Param("injectId") String attackChainNodeId, @Param("oldInjectId") String oldAttackChainNodeId);
+  void updateAttackChainNodeId(
+      @Param("injectId") String attackChainNodeId,
+      @Param("oldInjectId") String oldAttackChainNodeId);
 }

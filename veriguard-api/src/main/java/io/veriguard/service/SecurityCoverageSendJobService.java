@@ -21,7 +21,8 @@ public class SecurityCoverageSendJobService {
   private final AttackChainRunService attackChainRunService;
   private final EntityManager entityManager;
 
-  public void createOrUpdateCoverageSendJobForSimulationsIfReady(List<AttackChainRun> attackChainRuns) {
+  public void createOrUpdateCoverageSendJobForSimulationsIfReady(
+      List<AttackChainRun> attackChainRuns) {
     List<SecurityCoverageSendJob> jobs = new ArrayList<>();
     for (AttackChainRun attackChainRun : new HashSet<>(attackChainRuns)) { // deduplicate
       createOrUpdateCoverageSendJobForSimulationIfReady(attackChainRun).ifPresent(jobs::add);

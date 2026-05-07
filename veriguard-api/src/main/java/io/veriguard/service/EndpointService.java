@@ -6,9 +6,9 @@ import static io.veriguard.database.specification.EndpointSpecification.*;
 import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.helper.StreamHelper.iterableToSet;
 import static io.veriguard.integration.impl.executors.crowdstrike.CrowdStrikeExecutorIntegration.CROWDSTRIKE_EXECUTOR_TYPE;
-import static io.veriguard.integration.impl.executors.veriguard.VeriguardExecutorIntegration.VERIGUARD_EXECUTOR_ID;
 import static io.veriguard.integration.impl.executors.paloaltocortex.PaloAltoCortexExecutorIntegration.PALOALTOCORTEX_EXECUTOR_TYPE;
 import static io.veriguard.integration.impl.executors.sentinelone.SentinelOneExecutorIntegration.SENTINELONE_EXECUTOR_TYPE;
+import static io.veriguard.integration.impl.executors.veriguard.VeriguardExecutorIntegration.VERIGUARD_EXECUTOR_ID;
 import static io.veriguard.utils.ArchitectureFilterUtils.handleEndpointFilter;
 import static io.veriguard.utils.FilterUtilsJpa.computeFilterGroupJpa;
 import static io.veriguard.utils.SecurityUtils.validateJFrogUri;
@@ -72,8 +72,10 @@ public class EndpointService {
   public static final String VERIGUARD_INSTALL_DIR_WINDOWS_SERVICE_USER = ".veriguard";
   public static final String VERIGUARD_INSTALL_DIR_WINDOWS_SESSION_USER = "$HOME\\.veriguard";
   public static final String VERIGUARD_INSTALL_DIR_UNIX_SERVICE = "/opt/veriguard-agent";
-  public static final String VERIGUARD_INSTALL_DIR_UNIX_SERVICE_USER = ".local/veriguard-agent-service";
-  public static final String VERIGUARD_INSTALL_DIR_UNIX_SESSION_USER = ".local/veriguard-agent-session";
+  public static final String VERIGUARD_INSTALL_DIR_UNIX_SERVICE_USER =
+      ".local/veriguard-agent-service";
+  public static final String VERIGUARD_INSTALL_DIR_UNIX_SESSION_USER =
+      ".local/veriguard-agent-session";
 
   public static final String VERIGUARD_SERVICE_NAME_WINDOWS_SERVICE = "OAEVAgentService";
   public static final String VERIGUARD_SERVICE_NAME_WINDOWS_SERVICE_USER = "OAEVAgent-Service";

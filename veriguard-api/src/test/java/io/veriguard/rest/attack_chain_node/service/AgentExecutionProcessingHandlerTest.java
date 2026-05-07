@@ -51,14 +51,16 @@ class AgentExecutionProcessingHandlerTest {
         buildInput(ExecutionTraceStatus.ERROR, AttackChainNodeExecutionAction.command_execution);
     assertTrue(
         handler
-            .processContext(new ExecutionProcessingContext(attackChainNode, agent, inputError, Map.of()))
+            .processContext(
+                new ExecutionProcessingContext(attackChainNode, agent, inputError, Map.of()))
             .isEmpty());
 
     AttackChainNodeExecutionInput inputComplete =
         buildInput(ExecutionTraceStatus.SUCCESS, AttackChainNodeExecutionAction.complete);
     assertTrue(
         handler
-            .processContext(new ExecutionProcessingContext(attackChainNode, agent, inputComplete, Map.of()))
+            .processContext(
+                new ExecutionProcessingContext(attackChainNode, agent, inputComplete, Map.of()))
             .isEmpty());
 
     verifyNoInteractions(structuredOutputUtils);

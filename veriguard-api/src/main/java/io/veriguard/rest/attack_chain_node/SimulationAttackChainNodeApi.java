@@ -6,6 +6,11 @@ import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
 import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationCriteriaBuilder;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
@@ -15,21 +20,16 @@ import io.veriguard.execution.ExecutionContext;
 import io.veriguard.execution.ExecutionContextService;
 import io.veriguard.executors.Executor;
 import io.veriguard.rest.atomic_testing.form.AttackChainNodeResultOutput;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.attack_chain_node.form.*;
 import io.veriguard.rest.attack_chain_node.output.AttackChainNodeOutput;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeDuplicateService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
 import io.veriguard.rest.attack_chain_node.service.SimulationAttackChainNodeService;
+import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.AttackChainNodeSearchService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.criteria.Join;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -119,7 +119,8 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
-  public Iterable<AttackChainNode> attackChainRunAttackChainNodes(@PathVariable @NotBlank final String attackChainRunId) {
+  public Iterable<AttackChainNode> attackChainRunAttackChainNodes(
+      @PathVariable @NotBlank final String attackChainRunId) {
     return attackChainNodeRepository.findByAttackChainRunId(attackChainRunId).stream()
         .sorted(AttackChainNode.executionComparator)
         .toList();
@@ -135,7 +136,8 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
   public Page<AttackChainNodeResultOutput> searchAttackChainRunAttackChainNodes(
       @PathVariable final String attackChainRunId,
       @RequestBody @Valid SearchPaginationInput searchPaginationInput) {
-    return attackChainNodeSearchService.getPageOfAttackChainNodeResults(attackChainRunId, searchPaginationInput);
+    return attackChainNodeSearchService.getPageOfAttackChainNodeResults(
+        attackChainRunId, searchPaginationInput);
   }
 
   @LogExecutionTime
@@ -145,28 +147,33 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(readOnly = true)
-  public List<AttackChainNodeResultOutput> attackChainRunAttackChainNodesResults(@PathVariable final String attackChainRunId) {
+  public List<AttackChainNodeResultOutput> attackChainRunAttackChainNodesResults(
+      @PathVariable final String attackChainRunId) {
     return attackChainNodeSearchService.getListOfAttackChainNodeResults(attackChainRunId);
   }
 
   @GetMapping(EXERCISE_URI + "/{exerciseId}/injects/{injectId}")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
-  public AttackChainNode attackChainRunAttackChainNode(@PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
-    return simulationAttackChainNodeService.findAttackChainNodeForSimulation(attackChainRunId, attackChainNodeId);
+  public AttackChainNode attackChainRunAttackChainNode(
+      @PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
+    return simulationAttackChainNodeService.findAttackChainNodeForSimulation(
+        attackChainRunId, attackChainNodeId);
   }
 
   @GetMapping(EXERCISE_URI + "/{exerciseId}/injects/{injectId}/teams")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
   public Iterable<Team> attackChainRunAttackChainNodeTeams(
       @PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
-    return simulationAttackChainNodeService.findAttackChainNodeTeamsForSimulation(attackChainRunId, attackChainNodeId);
+    return simulationAttackChainNodeService.findAttackChainNodeTeamsForSimulation(
+        attackChainRunId, attackChainNodeId);
   }
 
   @GetMapping(EXERCISE_URI + "/{exerciseId}/injects/{injectId}/communications")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
   public Iterable<Communication> attackChainRunAttackChainNodeCommunications(
       @PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
-    return simulationAttackChainNodeService.findAndAckCommunicationsForSimulation(attackChainRunId, attackChainNodeId);
+    return simulationAttackChainNodeService.findAndAckCommunicationsForSimulation(
+        attackChainRunId, attackChainNodeId);
   }
 
   // -- CREATE --
@@ -180,7 +187,9 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
   public AttackChainNode createAttackChainNodeForAttackChainRun(
       @PathVariable String attackChainRunId, @Valid @RequestBody AttackChainNodeInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     return this.attackChainNodeService.createAndSaveAttackChainNode(attackChainRun, null, input);
   }
 
@@ -191,10 +200,14 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
   public List<AttackChainNode> createAttackChainNodesForAttackChainRun(
-      @PathVariable String attackChainRunId, @Valid @RequestBody List<AttackChainNodeInput> inputs) {
+      @PathVariable String attackChainRunId,
+      @Valid @RequestBody List<AttackChainNodeInput> inputs) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
-    return this.attackChainNodeService.createAndSaveAttackChainNodeList(attackChainRun, null, inputs);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
+    return this.attackChainNodeService.createAndSaveAttackChainNodeList(
+        attackChainRun, null, inputs);
   }
 
   @PostMapping(EXERCISE_URI + "/{exerciseId}/injects/{injectId}")
@@ -205,8 +218,9 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
   public AttackChainNode duplicateAttackChainNodeForAttackChainRun(
       @PathVariable @NotBlank final String attackChainRunId,
       @PathVariable @NotBlank final String attackChainNodeId) {
-    return attackChainNodeDuplicateService.duplicateAttackChainNodeForAttackChainRunWithDuplicateWordInTitle(
-        attackChainRunId, attackChainNodeId);
+    return attackChainNodeDuplicateService
+        .duplicateAttackChainNodeForAttackChainRunWithDuplicateWordInTitle(
+            attackChainRunId, attackChainNodeId);
   }
 
   @Transactional(rollbackFor = Exception.class)
@@ -256,7 +270,8 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       return executor.directExecute(injection);
     } catch (Exception e) {
       log.warn(e.getMessage(), e);
-      return attackChainNodeStatusService.failAttackChainNodeStatus(attackChainNode.getId(), e.getMessage());
+      return attackChainNodeStatusService.failAttackChainNodeStatus(
+          attackChainNode.getId(), e.getMessage());
     }
   }
 
@@ -271,7 +286,8 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       @PathVariable String attackChainRunId,
       @PathVariable String attackChainNodeId,
       @Valid @RequestBody AttackChainNodeUpdateActivationInput input) {
-    return simulationAttackChainNodeService.updateAttackChainNodeActivationForSimulation(attackChainRunId, attackChainNodeId, input);
+    return simulationAttackChainNodeService.updateAttackChainNodeActivationForSimulation(
+        attackChainRunId, attackChainNodeId, input);
   }
 
   @PutMapping(EXERCISE_URI + "/{exerciseId}/injects/{injectId}/trigger")
@@ -281,7 +297,8 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       resourceType = ResourceType.INJECT)
   public AttackChainNode updateAttackChainNodeTrigger(
       @PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
-    return simulationAttackChainNodeService.triggerAttackChainNodeForSimulation(attackChainRunId, attackChainNodeId);
+    return simulationAttackChainNodeService.triggerAttackChainNodeForSimulation(
+        attackChainRunId, attackChainNodeId);
   }
 
   @Transactional(rollbackFor = Exception.class)
@@ -294,7 +311,8 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       @PathVariable String attackChainRunId,
       @PathVariable String attackChainNodeId,
       @Valid @RequestBody AttackChainNodeUpdateStatusInput input) {
-    return simulationAttackChainNodeService.setAttackChainNodeStatusForSimulation(attackChainRunId, attackChainNodeId, input);
+    return simulationAttackChainNodeService.setAttackChainNodeStatusForSimulation(
+        attackChainRunId, attackChainNodeId, input);
   }
 
   @PutMapping(EXERCISE_URI + "/{exerciseId}/injects/{injectId}/teams")
@@ -306,7 +324,8 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       @PathVariable String attackChainRunId,
       @PathVariable String attackChainNodeId,
       @Valid @RequestBody AttackChainNodeTeamsInput input) {
-    return simulationAttackChainNodeService.updateAttackChainNodeTeamsForSimulation(attackChainRunId, attackChainNodeId, input);
+    return simulationAttackChainNodeService.updateAttackChainNodeTeamsForSimulation(
+        attackChainRunId, attackChainNodeId, input);
   }
 
   // -- DELETE --
@@ -317,7 +336,9 @@ public class SimulationAttackChainNodeApi extends RestBehavior {
       resourceId = "#injectId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
-  public void deleteAttackChainNode(@PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
-    this.simulationAttackChainNodeService.deleteAttackChainNode(attackChainRunId, attackChainNodeId);
+  public void deleteAttackChainNode(
+      @PathVariable String attackChainRunId, @PathVariable String attackChainNodeId) {
+    this.simulationAttackChainNodeService.deleteAttackChainNode(
+        attackChainRunId, attackChainNodeId);
   }
 }

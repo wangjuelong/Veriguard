@@ -8,9 +8,9 @@ import io.veriguard.database.repository.AssetRepository;
 import io.veriguard.database.repository.FindingRepository;
 import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.database.repository.UserRepository;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.attack_chain_node.service.ContractOutputContext;
 import io.veriguard.rest.attack_chain_node.service.ExecutionProcessingContext;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -51,13 +51,16 @@ public class FindingService {
         .orElseThrow(() -> new EntityNotFoundException("Finding not found with id: " + id));
   }
 
-  public Finding createFinding(@NotNull final Finding finding, @NotBlank final String attackChainNodeId) {
-    AttackChainNode attackChainNode = this.attackChainNodeService.attackChainNode(attackChainNodeId);
+  public Finding createFinding(
+      @NotNull final Finding finding, @NotBlank final String attackChainNodeId) {
+    AttackChainNode attackChainNode =
+        this.attackChainNodeService.attackChainNode(attackChainNodeId);
     finding.setAttackChainNode(attackChainNode);
     return this.findingRepository.save(finding);
   }
 
-  public Finding updateFinding(@NotNull final Finding finding, @NotNull final String attackChainNodeId) {
+  public Finding updateFinding(
+      @NotNull final Finding finding, @NotNull final String attackChainNodeId) {
     if (!finding.getAttackChainNode().getId().equals(attackChainNodeId)) {
       throw new IllegalArgumentException("Inject id cannot be changed: " + attackChainNodeId);
     }
@@ -147,13 +150,19 @@ public class FindingService {
           .ifPresentOrElse(
               asset ->
                   saveAgentFinding(
-                      attackChainNode, asset, contractOutputContext, valueExtractor.apply(jsonNode)),
+                      attackChainNode,
+                      asset,
+                      contractOutputContext,
+                      valueExtractor.apply(jsonNode)),
               () -> log.warn("Finding dropped: No asset match for host in {}", jsonNode));
     }
   }
 
   public void saveAgentFinding(
-      AttackChainNode attackChainNode, Asset asset, ContractOutputContext contractOutputContext, String value) {
+      AttackChainNode attackChainNode,
+      Asset asset,
+      ContractOutputContext contractOutputContext,
+      String value) {
 
     findingRepository.saveCompleteFinding(
         contractOutputContext.key(),
@@ -211,8 +220,8 @@ public class FindingService {
    * Persists a list of findings in the database, associating them with a specific attackChainNode.
    *
    * @param findings The list of findings to be created and persisted.
-   * @param attackChainNodeId The identifier of to attackChainNode to which the findings will be associated. Must not
-   *     be blank.
+   * @param attackChainNodeId The identifier of to attackChainNode to which the findings will be
+   *     associated. Must not be blank.
    */
   public void createFindings(
       @NotNull final List<Finding> findings, @NotBlank final String attackChainNodeId) {

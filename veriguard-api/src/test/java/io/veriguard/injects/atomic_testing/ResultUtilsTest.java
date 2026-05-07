@@ -15,8 +15,8 @@ import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.raw.RawAttackChainNodeExpectation;
 import io.veriguard.database.repository.AttackChainNodeExpectationRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
-import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.AttackChainNodeUtils;
+import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.mapper.AttackChainNodeExpectationMapper;
 import java.util.List;
@@ -42,8 +42,10 @@ class ResultUtilsTest extends IntegrationTest {
   @BeforeEach
   void before() {
     attackChainNodeExpectationMapper =
-        new AttackChainNodeExpectationMapper(attackChainNodeRepository, objectMapper, attackChainNodeUtils);
-    resultUtils = new ResultUtils(attackChainNodeExpectationRepository, attackChainNodeExpectationMapper);
+        new AttackChainNodeExpectationMapper(
+            attackChainNodeRepository, objectMapper, attackChainNodeUtils);
+    resultUtils =
+        new ResultUtils(attackChainNodeExpectationRepository, attackChainNodeExpectationMapper);
   }
 
   @Test
@@ -80,7 +82,8 @@ class ResultUtilsTest extends IntegrationTest {
                 AttackChainNodeExpectation.EXPECTATION_TYPE.VULNERABILITY.toString(), 100.0, 100.0),
             createDefaultAttackChainNodeExpectation(
                 AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL.toString(), 0.0, 100.0));
-    when(attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainNodeIds(attackChainNodeIds))
+    when(attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainNodeIds(
+            attackChainNodeIds))
         .thenReturn(expectations);
 
     var result = resultUtils.computeGlobalExpectationResults(attackChainNodeIds);

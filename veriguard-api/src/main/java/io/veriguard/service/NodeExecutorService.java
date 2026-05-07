@@ -47,7 +47,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service("coreInjectorService")
 // TODO needs to be merged with integrations/NodeExecutorService
-public class NodeExecutorService extends AbstractConnectorService<NodeExecutor, NodeExecutorOutput> {
+public class NodeExecutorService
+    extends AbstractConnectorService<NodeExecutor, NodeExecutorOutput> {
   public static final String DUMMY_SUFFIX = "_dummy";
 
   @Resource private RabbitmqConfig rabbitmqConfig;
@@ -109,7 +110,8 @@ public class NodeExecutorService extends AbstractConnectorService<NodeExecutor, 
       CatalogConnector catalogConnector,
       ConnectorInstance instance,
       boolean existingNodeExecutor) {
-    return nodeExecutorMapper.toNodeExecutorOutput(nodeExecutor, catalogConnector, instance, existingNodeExecutor);
+    return nodeExecutorMapper.toNodeExecutorOutput(
+        nodeExecutor, catalogConnector, instance, existingNodeExecutor);
   }
 
   @Override
@@ -151,9 +153,9 @@ public class NodeExecutorService extends AbstractConnectorService<NodeExecutor, 
   }
 
   /**
-   * This method will check if the nodeExecutor type is a dummy if yes it will remove the dummy suffix
-   * if no it will return the parameter It is used to send the execution to the correct nodeExecutor
-   * even if the current one is just a dummy nodeExecutor
+   * This method will check if the nodeExecutor type is a dummy if yes it will remove the dummy
+   * suffix if no it will return the parameter It is used to send the execution to the correct
+   * nodeExecutor even if the current one is just a dummy nodeExecutor
    *
    * @param nodeExecutorType
    * @return
@@ -217,7 +219,8 @@ public class NodeExecutorService extends AbstractConnectorService<NodeExecutor, 
       // We need to support upsert for registration
       NodeExecutor nodeExecutor = nodeExecutorRepository.findById(input.getId()).orElse(null);
       if (nodeExecutor == null) {
-        NodeExecutor nodeExecutorChecking = nodeExecutorRepository.findByType(input.getType()).orElse(null);
+        NodeExecutor nodeExecutorChecking =
+            nodeExecutorRepository.findByType(input.getType()).orElse(null);
       }
       if (nodeExecutor != null) {
         updateExistingExternalNodeExecutor(
@@ -474,7 +477,8 @@ public class NodeExecutorService extends AbstractConnectorService<NodeExecutor, 
       throws NodeExecutorRegistrationException {
     NodeExecutor existingNodeExecutor = nodeExecutorRepository.findById(id).orElse(null);
     if (existingNodeExecutor == null) {
-      Optional<NodeExecutor> conflictingNodeExecutor = nodeExecutorRepository.findByType(contractor.getType());
+      Optional<NodeExecutor> conflictingNodeExecutor =
+          nodeExecutorRepository.findByType(contractor.getType());
       if (conflictingNodeExecutor.isPresent()) {
         throw new NodeExecutorRegistrationException(
             String.format(
@@ -549,7 +553,8 @@ public class NodeExecutorService extends AbstractConnectorService<NodeExecutor, 
   }
 
   private boolean shouldDeleteContract(NodeContract contractDB, NodeExecutor nodeExecutor) {
-    return !contractDB.getCustom() && (!nodeExecutor.isPayloads() || contractDB.getPayload() == null);
+    return !contractDB.getCustom()
+        && (!nodeExecutor.isPayloads() || contractDB.getPayload() == null);
   }
 
   private NodeExecutor createNewBuiltinNodeExecutor(

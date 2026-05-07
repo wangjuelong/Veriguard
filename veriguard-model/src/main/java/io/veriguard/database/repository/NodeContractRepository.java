@@ -1,7 +1,7 @@
 package io.veriguard.database.repository;
 
-import io.veriguard.database.model.NodeExecutor;
 import io.veriguard.database.model.NodeContract;
+import io.veriguard.database.model.NodeExecutor;
 import io.veriguard.database.model.Payload;
 import io.veriguard.database.raw.RawNodeExecutorsContracts;
 import jakarta.validation.constraints.NotNull;

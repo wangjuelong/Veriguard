@@ -9,9 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.repository.ImportMapperRepository;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.attack_chain.form.AttackChainNodesImportInput;
 import io.veriguard.rest.attack_chain.response.ImportTestSummary;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.service.AttackChainNodeImportService;
 import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utilstest.RabbitMQTestListener;
@@ -52,7 +52,8 @@ public class AttackChainImportApiTest extends IntegrationTest {
   public void setUp() {
     // Injecting mocks into the controller
     attackChainImportApi =
-        new AttackChainImportApi(attackChainNodeImportService, importMapperRepository, attackChainService);
+        new AttackChainImportApi(
+            attackChainNodeImportService, importMapperRepository, attackChainService);
 
     SCENARIO_ID = UUID.randomUUID().toString();
 

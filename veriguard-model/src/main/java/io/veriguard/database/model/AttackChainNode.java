@@ -9,16 +9,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.database.converter.ContentConverter;
-import io.veriguard.helper.NodeModelHelper;
 import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.helper.MultiIdListSerializer;
 import io.veriguard.helper.MultiIdSetSerializer;
 import io.veriguard.helper.MultiModelSerializer;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.helper.NodeModelHelper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -386,12 +386,14 @@ public class AttackChainNode implements GrantableBase, Injection {
 
   @JsonIgnore
   public Instant computeAttackChainNodeDate(Instant source, int speed) {
-    return NodeModelHelper.computeAttackChainNodeDate(source, speed, getDependsDuration(), getAttackChainRun());
+    return NodeModelHelper.computeAttackChainNodeDate(
+        source, speed, getDependsDuration(), getAttackChainRun());
   }
 
   @JsonProperty("inject_date")
   public Optional<Instant> getDate() {
-    // If a trigger now was executed for this attackChainNode linked to an attackChainRun, we ignore pauses and we
+    // If a trigger now was executed for this attackChainNode linked to an attackChainRun, we ignore
+    // pauses and we
     // set attackChainNode inside of a range of execution
     if (getAttackChainRun() != null && triggerNowDate != null) {
       Optional<Instant> attackChainRunStartOpt = getAttackChainRun().getStart();
@@ -433,7 +435,6 @@ public class AttackChainNode implements GrantableBase, Injection {
   public Optional<AttackChainNodeStatus> getStatus() {
     return ofNullable(this.status);
   }
-
 
   @JsonProperty("inject_communications_number")
   public long getCommunicationsNumber() {
@@ -487,9 +488,7 @@ public class AttackChainNode implements GrantableBase, Injection {
   @JsonProperty("inject_platforms")
   @Queryable(filterable = true, path = "nodeContract.platforms", clazz = String[].class)
   private Endpoint.PLATFORM_TYPE[] getPlatforms() {
-    return getNodeContract()
-        .map(NodeContract::getPlatforms)
-        .orElse(new Endpoint.PLATFORM_TYPE[0]);
+    return getNodeContract().map(NodeContract::getPlatforms).orElse(new Endpoint.PLATFORM_TYPE[0]);
   }
 
   @JsonProperty("inject_contract_domains")
@@ -515,9 +514,7 @@ public class AttackChainNode implements GrantableBase, Injection {
   @JsonIgnore
   public Optional<Payload> getPayload() {
     return Optional.ofNullable(
-        this.getNodeContract().isPresent()
-            ? this.getNodeContract().get().getPayload()
-            : null);
+        this.getNodeContract().isPresent() ? this.getNodeContract().get().getPayload() : null);
   }
 
   @Override

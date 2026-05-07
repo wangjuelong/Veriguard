@@ -53,7 +53,8 @@ public class AttackChainNodeTestStatusComposer extends ComposerBase<AttackChainN
     }
   }
 
-  public AttackChainNodeTestStatusComposer.Composer forAttackChainNodeTestStatus(AttackChainNodeTestStatus AttackChainNodeTestStatus) {
+  public AttackChainNodeTestStatusComposer.Composer forAttackChainNodeTestStatus(
+      AttackChainNodeTestStatus AttackChainNodeTestStatus) {
     generatedItems.add(AttackChainNodeTestStatus);
     return new AttackChainNodeTestStatusComposer.Composer(AttackChainNodeTestStatus);
   }

@@ -120,7 +120,10 @@ public class VeriguardNodeExecutorIntegration extends IntegrationInMemory {
         List.of());
     this.veriguardImplantExecutor =
         new VeriguardImplantExecutor(
-            nodeExecutorContext, assetGroupService, attackChainNodeExpectationService, attackChainNodeService);
+            nodeExecutorContext,
+            assetGroupService,
+            attackChainNodeExpectationService,
+            attackChainNodeService);
   }
 
   @Override

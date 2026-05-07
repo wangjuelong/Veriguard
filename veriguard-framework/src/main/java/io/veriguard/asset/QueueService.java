@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
  * <p>This service handles the connection management and message publishing to RabbitMQ exchanges.
  * It supports both SSL and non-SSL connections based on configuration.
  *
- * <p>Messages are published to a topic exchange with routing keys based on the attackChainNode type,
- * allowing subscribers to selectively consume messages for specific injection types.
+ * <p>Messages are published to a topic exchange with routing keys based on the attackChainNode
+ * type, allowing subscribers to selectively consume messages for specific injection types.
  *
  * <p><b>Thread Safety:</b> This service creates new connections for each publish operation, making
  * it safe for concurrent use. For high-throughput attackChains, consider implementing connection
@@ -81,7 +81,8 @@ public class QueueService {
           ex);
       throw ex;
     } catch (TimeoutException ex) {
-      log.error("Timeout while publishing to RabbitMQ for inject type '{}'", attackChainNodeType, ex);
+      log.error(
+          "Timeout while publishing to RabbitMQ for inject type '{}'", attackChainNodeType, ex);
       throw ex;
     }
   }

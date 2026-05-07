@@ -18,7 +18,10 @@ class ExecutionProcessingContextTest {
   void shouldIdentifyAgentExecutionContext() {
     ExecutionProcessingContext context =
         new ExecutionProcessingContext(
-            mock(AttackChainNode.class), mock(Agent.class), mock(AttackChainNodeExecutionInput.class), Map.of());
+            mock(AttackChainNode.class),
+            mock(Agent.class),
+            mock(AttackChainNodeExecutionInput.class),
+            Map.of());
     assertTrue(context.isAgentExecution());
     assertFalse(context.isNodeExecutorExecution());
   }

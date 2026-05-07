@@ -54,7 +54,9 @@ class PayloadApiTest extends IntegrationTest {
   @Autowired private NodeContractRepository nodeContractRepository;
   @Autowired private PayloadRepository payloadRepository;
   @Autowired private CollectorRepository collectorRepository;
-  @Autowired private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
+
+  @Autowired
+  private VeriguardNodeExecutorIntegrationFactory veriguardNodeExecutorIntegrationFactory;
 
   @Autowired private CollectorComposer collectorComposer;
   @Autowired private DomainComposer domainComposer;

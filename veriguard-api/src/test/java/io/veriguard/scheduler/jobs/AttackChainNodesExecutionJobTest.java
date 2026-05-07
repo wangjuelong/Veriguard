@@ -57,11 +57,13 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
 
   @DisplayName("Not start children injects at the same time as parent injects")
   @Test
-  void given_cron_in_one_minute_should_not_start_children_attackChainNodes() throws JobExecutionException {
+  void given_cron_in_one_minute_should_not_start_children_attackChainNodes()
+      throws JobExecutionException {
     // -- PREPARE --
     AttackChainRun attackChainRun = AttackChainRunFixture.getAttackChainRun();
     attackChainRun.setStart(Instant.now().minus(1, ChronoUnit.MINUTES));
-    AttackChainRun attackChainRunSaved = this.attackChainRunService.createAttackChainRun(attackChainRun);
+    AttackChainRun attackChainRunSaved =
+        this.attackChainRunService.createAttackChainRun(attackChainRun);
     AttackChainNode attackChainNodeParent =
         attackChainNodeComposer
             .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
@@ -95,10 +97,12 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
     attackChainNodeChildren.setAttackChainRun(attackChainRunSaved);
     attackChainNodeParent.setStatus(null);
     attackChainNodeChildren.setStatus(null);
-    attackChainRunSaved.setAttackChainNodes(new ArrayList<>(List.of(attackChainNodeParent, attackChainNodeChildren)));
+    attackChainRunSaved.setAttackChainNodes(
+        new ArrayList<>(List.of(attackChainNodeParent, attackChainNodeChildren)));
     String attackChainRunId = attackChainRunSaved.getId();
 
-    attackChainNodeRepository.saveAll(new ArrayList<>(List.of(attackChainNodeParent, attackChainNodeChildren)));
+    attackChainNodeRepository.saveAll(
+        new ArrayList<>(List.of(attackChainNodeParent, attackChainNodeChildren)));
     entityManager.flush();
     // -- EXECUTE --
     this.job.execute(null);
@@ -106,14 +110,17 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
     entityManager.clear();
 
     // -- ASSERT --
-    List<AttackChainNode> attackChainNodesSaved = attackChainNodeRepository.findByAttackChainRunId(attackChainRunId);
+    List<AttackChainNode> attackChainNodesSaved =
+        attackChainNodeRepository.findByAttackChainRunId(attackChainRunId);
     Optional<AttackChainNode> savedAttackChainNodeParent =
         attackChainNodesSaved.stream()
-            .filter(attackChainNode -> attackChainNode.getId().equals(attackChainNodeParent.getId()))
+            .filter(
+                attackChainNode -> attackChainNode.getId().equals(attackChainNodeParent.getId()))
             .findFirst();
     Optional<AttackChainNode> savedAttackChainNodeChildren =
         attackChainNodesSaved.stream()
-            .filter(attackChainNode -> attackChainNode.getId().equals(attackChainNodeChildren.getId()))
+            .filter(
+                attackChainNode -> attackChainNode.getId().equals(attackChainNodeChildren.getId()))
             .findFirst();
     // Checking that only the parent attackChainNode has a status
     assertTrue(savedAttackChainNodeParent.isPresent());
@@ -206,7 +213,10 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
       "When auto closing of NON stix-created simulation, DOES NOT trigger stix coverage job")
   public void shouldRaiseExceptionIfExpectationMalicious() {
     ReflectionTestUtils.setField(job, "injectDependenciesRepository", attackChainEdgesRepository);
-    AttackChainNode attackChainNode = attackChainNodeComposer.forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode()).get();
+    AttackChainNode attackChainNode =
+        attackChainNodeComposer
+            .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
+            .get();
     attackChainNode.setId(UUID.randomUUID().toString());
     AttackChainEdge attackChainEdge = new AttackChainEdge();
     attackChainEdge
@@ -216,7 +226,9 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
                 NodeContractFixture.createDefaultNodeContract(),
                 "parent",
                 "T(java.lang.Runtime).getRuntime().exec('gedit');"));
-    attackChainEdge.getCompositeId().setAttackChainNodeChildren(AttackChainNodeFixture.getDefaultAttackChainNode());
+    attackChainEdge
+        .getCompositeId()
+        .setAttackChainNodeChildren(AttackChainNodeFixture.getDefaultAttackChainNode());
     attackChainEdge.setAttackChainEdgeCondition(
         new AttackChainEdgeConditions.AttackChainEdgeCondition());
     AttackChainEdgeConditions.Condition condition = new AttackChainEdgeConditions.Condition();
@@ -243,12 +255,14 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
     @DisplayName("given pending inject without traces should mark status as error with timeout")
     void given_pendingAttackChainNodeWithoutTraces_should_markStatusAsMaybePrevented() {
       // Arrange
-      AttackChainNodeStatus statusToSave = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+      AttackChainNodeStatus statusToSave =
+          AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
       statusToSave.setTrackingSentDate(Instant.now().minus(20, ChronoUnit.MINUTES));
       AttackChainNode attackChainNode =
           attackChainNodeComposer
               .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
-              .withAttackChainNodeStatus(attackChainNodeStatusComposer.forAttackChainNodeStatus(statusToSave))
+              .withAttackChainNodeStatus(
+                  attackChainNodeStatusComposer.forAttackChainNodeStatus(statusToSave))
               .persist()
               .get();
       entityManager.flush();
@@ -259,7 +273,8 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
       entityManager.clear();
 
       // Assert
-      AttackChainNode savedAttackChainNode = attackChainNodeRepository.findById(attackChainNode.getId()).orElseThrow();
+      AttackChainNode savedAttackChainNode =
+          attackChainNodeRepository.findById(attackChainNode.getId()).orElseThrow();
       AttackChainNodeStatus savedStatus = savedAttackChainNode.getStatus().orElseThrow();
       assertEquals(ExecutionStatus.ERROR, savedStatus.getName());
     }
@@ -271,7 +286,8 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
       // Arrange
       AgentComposer.Composer agentComposerRef =
           agentComposer.forAgent(AgentFixture.createDefaultAgentService());
-      AttackChainNodeStatus statusToSave = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+      AttackChainNodeStatus statusToSave =
+          AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
       statusToSave.setTrackingSentDate(Instant.now().minus(20, ChronoUnit.MINUTES));
       AttackChainNodeStatusComposer.Composer statusComposer =
           attackChainNodeStatusComposer
@@ -299,7 +315,8 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
       entityManager.clear();
 
       // Assert
-      AttackChainNode savedAttackChainNode = attackChainNodeRepository.findById(attackChainNode.getId()).orElseThrow();
+      AttackChainNode savedAttackChainNode =
+          attackChainNodeRepository.findById(attackChainNode.getId()).orElseThrow();
       AttackChainNodeStatus savedStatus = savedAttackChainNode.getStatus().orElseThrow();
       assertEquals(ExecutionStatus.ERROR, savedStatus.getName());
       assertTrue(
@@ -316,7 +333,8 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
       // Arrange
       AgentComposer.Composer agentComposerRef =
           agentComposer.forAgent(AgentFixture.createDefaultAgentService());
-      AttackChainNodeStatus statusToSave = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+      AttackChainNodeStatus statusToSave =
+          AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
       statusToSave.setTrackingSentDate(Instant.now().minus(20, ChronoUnit.MINUTES));
       AttackChainNodeStatusComposer.Composer statusComposer =
           attackChainNodeStatusComposer
@@ -345,7 +363,8 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
       entityManager.clear();
 
       // Assert
-      AttackChainNode savedAttackChainNode = attackChainNodeRepository.findById(attackChainNode.getId()).orElseThrow();
+      AttackChainNode savedAttackChainNode =
+          attackChainNodeRepository.findById(attackChainNode.getId()).orElseThrow();
       AttackChainNodeStatus savedStatus = savedAttackChainNode.getStatus().orElseThrow();
       assertEquals(ExecutionStatus.SUCCESS, savedStatus.getName());
       assertTrue(

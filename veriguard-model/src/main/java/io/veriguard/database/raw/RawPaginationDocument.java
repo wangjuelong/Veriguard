@@ -1,8 +1,8 @@
 package io.veriguard.database.raw;
 
-import io.veriguard.database.model.Document;
-import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.Document;
 import io.veriguard.database.model.Tag;
 import java.util.List;
 import lombok.Data;
@@ -23,8 +23,10 @@ public class RawPaginationDocument {
     this.document_id = document.getId();
     this.document_name = document.getName();
     this.document_description = document.getDescription();
-    this.document_attackChainRuns = document.getAttackChainRuns().stream().map(AttackChainRun::getId).toList();
-    this.document_attackChains = document.getAttackChains().stream().map(AttackChain::getId).toList();
+    this.document_attackChainRuns =
+        document.getAttackChainRuns().stream().map(AttackChainRun::getId).toList();
+    this.document_attackChains =
+        document.getAttackChains().stream().map(AttackChain::getId).toList();
     this.document_type = document.getType();
     this.document_tags = document.getTags().stream().map(Tag::getId).toList();
   }

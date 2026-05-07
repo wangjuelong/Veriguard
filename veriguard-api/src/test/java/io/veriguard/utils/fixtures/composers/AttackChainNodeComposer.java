@@ -20,13 +20,15 @@ public class AttackChainNodeComposer extends ComposerBase<AttackChainNode> {
     private Optional<NodeContractComposer.Composer> nodeContractComposer = Optional.empty();
     private final List<TagComposer.Composer> tagComposers = new ArrayList<>();
     private final List<EndpointComposer.Composer> endpointComposers = new ArrayList<>();
-    private Optional<AttackChainNodeStatusComposer.Composer> attackChainNodeStatusComposers = Optional.empty();
-    private Optional<AttackChainNodeTestStatusComposer.Composer> attackChainNodeTestStatusComposers =
+    private Optional<AttackChainNodeStatusComposer.Composer> attackChainNodeStatusComposers =
         Optional.empty();
+    private Optional<AttackChainNodeTestStatusComposer.Composer>
+        attackChainNodeTestStatusComposers = Optional.empty();
     private final List<DocumentComposer.Composer> documentComposers = new ArrayList<>();
     private final List<TeamComposer.Composer> teamComposers = new ArrayList<>();
     private final List<AssetGroupComposer.Composer> assetGroupComposers = new ArrayList<>();
-    private final List<AttackChainNodeExpectationComposer.Composer> expectationComposers = new ArrayList<>();
+    private final List<AttackChainNodeExpectationComposer.Composer> expectationComposers =
+        new ArrayList<>();
     private final List<FindingComposer.Composer> findingComposers = new ArrayList<>();
 
     public Composer(AttackChainNode attackChainNode) {
@@ -41,8 +43,7 @@ public class AttackChainNodeComposer extends ComposerBase<AttackChainNode> {
       return this;
     }
 
-    public Composer withNodeContract(
-        NodeContractComposer.Composer nodeContractComposer) {
+    public Composer withNodeContract(NodeContractComposer.Composer nodeContractComposer) {
       this.nodeContractComposer = Optional.of(nodeContractComposer);
       this.attackChainNode.setNodeContract(nodeContractComposer.get());
       return this;
@@ -72,14 +73,16 @@ public class AttackChainNodeComposer extends ComposerBase<AttackChainNode> {
       return this;
     }
 
-    public Composer withAttackChainNodeStatus(AttackChainNodeStatusComposer.Composer attackChainNodeStatus) {
+    public Composer withAttackChainNodeStatus(
+        AttackChainNodeStatusComposer.Composer attackChainNodeStatus) {
       attackChainNodeStatusComposers = Optional.of(attackChainNodeStatus);
       attackChainNodeStatus.get().setAttackChainNode(this.attackChainNode);
       this.attackChainNode.setStatus(attackChainNodeStatus.get());
       return this;
     }
 
-    public Composer withAttackChainNodeTestStatus(AttackChainNodeTestStatusComposer.Composer attackChainNodeTestStatus) {
+    public Composer withAttackChainNodeTestStatus(
+        AttackChainNodeTestStatusComposer.Composer attackChainNodeTestStatus) {
       attackChainNodeTestStatusComposers = Optional.of(attackChainNodeTestStatus);
       attackChainNodeTestStatus.get().setAttackChainNode(this.attackChainNode);
       return this;
@@ -101,7 +104,8 @@ public class AttackChainNodeComposer extends ComposerBase<AttackChainNode> {
       return this;
     }
 
-    public Composer withExpectation(AttackChainNodeExpectationComposer.Composer expectationComposer) {
+    public Composer withExpectation(
+        AttackChainNodeExpectationComposer.Composer expectationComposer) {
       expectationComposers.add(expectationComposer);
       List<AttackChainNodeExpectation> tempExpectations = this.attackChainNode.getExpectations();
       tempExpectations.add(expectationComposer.get());

@@ -43,11 +43,13 @@ class SimulationTest extends IntegrationTest {
     entityManager.flush();
     entityManager.clear();
 
-    AttackChainRun dbAttackChainRun = attackChainRunRepository.findById(expected.getId()).orElseThrow();
+    AttackChainRun dbAttackChainRun =
+        attackChainRunRepository.findById(expected.getId()).orElseThrow();
 
     Assertions.assertTrue(
         expected.getCurrentPause().isPresent(),
         "Current pause should be present for expected exercise");
-    Assertions.assertEquals(expected.getCurrentPause().get(), dbAttackChainRun.getCurrentPause().get());
+    Assertions.assertEquals(
+        expected.getCurrentPause().get(), dbAttackChainRun.getCurrentPause().get());
   }
 }

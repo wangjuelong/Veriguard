@@ -14,11 +14,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.rest.exception.BadRequestException;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain.response.ImportMessage;
 import io.veriguard.rest.attack_chain.response.ImportPostSummary;
 import io.veriguard.rest.attack_chain.response.ImportTestSummary;
+import io.veriguard.rest.exception.BadRequestException;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.utils.AttackChainNodeImportUtils;
 import io.veriguard.utils.AttackChainNodeUtils;
 import java.io.IOException;
@@ -150,7 +150,8 @@ public class AttackChainNodeImportService {
       String sheetName,
       int timezoneOffset,
       boolean saveAll) {
-    // We call the attackChainNode service to get the attackChainNodes to create as well as messages on how things
+    // We call the attackChainNode service to get the attackChainNodes to create as well as messages
+    // on how things
     // went
     ImportTestSummary importTestSummary =
         importXls(importId, attackChain, attackChainRun, importMapper, sheetName, timezoneOffset);
@@ -160,7 +161,8 @@ public class AttackChainNodeImportService {
                 importMessage ->
                     importMessage.getMessageLevel() == ImportMessage.MessageLevel.CRITICAL)
             .findAny();
-    importTestSummary.setTotalNumberOfAttackChainNodes(importTestSummary.getAttackChainNodes().size());
+    importTestSummary.setTotalNumberOfAttackChainNodes(
+        importTestSummary.getAttackChainNodes().size());
     if (hasCritical.isPresent()) {
       // If there are critical errors, we do not save and we
       // empty the list of attackChainNodes, we just keep the messages
@@ -178,7 +180,8 @@ public class AttackChainNodeImportService {
                     return attackChainNode;
                   })
               .toList());
-      Iterable<AttackChainNode> newAttackChainNodes = attackChainNodeRepository.saveAll(importTestSummary.getAttackChainNodes());
+      Iterable<AttackChainNode> newAttackChainNodes =
+          attackChainNodeRepository.saveAll(importTestSummary.getAttackChainNodes());
       if (attackChainRun != null) {
         computeAttackChainNodeInAttackChainRun(attackChainRun, newAttackChainNodes);
       } else if (attackChain != null) {
@@ -189,14 +192,16 @@ public class AttackChainNodeImportService {
       }
       importTestSummary.setAttackChainNodes(new ArrayList<>());
     } else {
-      importTestSummary.setAttackChainNodes(importTestSummary.getAttackChainNodes().stream().limit(5).toList());
+      importTestSummary.setAttackChainNodes(
+          importTestSummary.getAttackChainNodes().stream().limit(5).toList());
     }
 
     return importTestSummary;
   }
 
   private void computeAttackChainNodeInAttackChainRun(
-      @NotNull AttackChainRun attackChainRun, @NotNull Iterable<AttackChainNode> newAttackChainNodes) {
+      @NotNull AttackChainRun attackChainRun,
+      @NotNull Iterable<AttackChainNode> newAttackChainNodes) {
     newAttackChainNodes.forEach(
         attackChainNode -> {
           attackChainRun.getAttackChainNodes().add(attackChainNode);
@@ -219,20 +224,25 @@ public class AttackChainNodeImportService {
                                     .map(AttackChainRunTeamUser::getUser)
                                     .toList()
                                     .contains(user)) {
-                                  AttackChainRunTeamUserId compositeId = new AttackChainRunTeamUserId();
+                                  AttackChainRunTeamUserId compositeId =
+                                      new AttackChainRunTeamUserId();
                                   compositeId.setAttackChainRunId(attackChainRun.getId());
                                   compositeId.setTeamId(team.getId());
                                   compositeId.setUserId(user.getId());
                                   boolean exists =
-                                      attackChainRunTeamUserRepository.findById(compositeId).isPresent();
+                                      attackChainRunTeamUserRepository
+                                          .findById(compositeId)
+                                          .isPresent();
 
                                   if (!exists) {
-                                    AttackChainRunTeamUser attackChainRunTeamUser = new AttackChainRunTeamUser();
+                                    AttackChainRunTeamUser attackChainRunTeamUser =
+                                        new AttackChainRunTeamUser();
                                     attackChainRunTeamUser.setAttackChainRun(attackChainRun);
                                     attackChainRunTeamUser.setTeam(team);
                                     attackChainRunTeamUser.setUser(user);
                                     attackChainRunTeamUser =
-                                        attackChainRunTeamUserRepository.save(attackChainRunTeamUser);
+                                        attackChainRunTeamUserRepository.save(
+                                            attackChainRunTeamUser);
                                     attackChainRun.getTeamUsers().add(attackChainRunTeamUser);
                                   }
                                 }
@@ -269,10 +279,13 @@ public class AttackChainNodeImportService {
                                   compositeId.setTeamId(team.getId());
                                   compositeId.setUserId(user.getId());
                                   boolean exists =
-                                      attackChainTeamUserRepository.findById(compositeId).isPresent();
+                                      attackChainTeamUserRepository
+                                          .findById(compositeId)
+                                          .isPresent();
 
                                   if (!exists) {
-                                    AttackChainTeamUser attackChainTeamUser = new AttackChainTeamUser();
+                                    AttackChainTeamUser attackChainTeamUser =
+                                        new AttackChainTeamUser();
                                     attackChainTeamUser.setAttackChain(attackChain);
                                     attackChainTeamUser.setTeam(team);
                                     attackChainTeamUser.setUser(user);
@@ -323,11 +336,13 @@ public class AttackChainNodeImportService {
               .collect(
                   Collectors.toMap(
                       AttackChainNodeImporter::getId,
-                      attackChainNodeImporter -> Pattern.compile(attackChainNodeImporter.getImportTypeValue())));
+                      attackChainNodeImporter ->
+                          Pattern.compile(attackChainNodeImporter.getImportTypeValue())));
 
       Map<String, Pattern> mapPatternByAllTeams =
           importMapper.getAttackChainNodeImporters().stream()
-              .flatMap(attackChainNodeImporter -> attackChainNodeImporter.getRuleAttributes().stream())
+              .flatMap(
+                  attackChainNodeImporter -> attackChainNodeImporter.getRuleAttributes().stream())
               .filter(ruleAttribute -> Objects.equals(ruleAttribute.getName(), "teams"))
               .filter(
                   ruleAttribute ->
@@ -475,7 +490,8 @@ public class AttackChainNodeImportService {
       AtomicInteger count) {
     ImportRow importTestSummary = new ImportRow();
     // The column that differenciate the importer is the same for all so we get it right now
-    int colTypeIdx = CellReference.convertColStringToIndex(importMapper.getAttackChainNodeTypeColumn());
+    int colTypeIdx =
+        CellReference.convertColStringToIndex(importMapper.getAttackChainNodeTypeColumn());
     if (colTypeIdx < 0) {
       // If there are no values, we add an info message so they know there is a potential issue here
       importTestSummary
@@ -569,7 +585,8 @@ public class AttackChainNodeImportService {
       return importTestSummary;
     }
 
-    AttackChainNodeImporter matchingAttackChainNodeImporter = matchingAttackChainNodeImporters.get(0);
+    AttackChainNodeImporter matchingAttackChainNodeImporter =
+        matchingAttackChainNodeImporters.get(0);
     NodeContract nodeContract = matchingAttackChainNodeImporter.getNodeContract();
 
     // Creating the attackChainNode
@@ -577,7 +594,8 @@ public class AttackChainNodeImportService {
     attackChainNode.setDependsDuration(0L);
 
     // Adding the description
-    setAttributeValue(row, matchingAttackChainNodeImporter, "description", attackChainNode::setDescription);
+    setAttributeValue(
+        row, matchingAttackChainNodeImporter, "description", attackChainNode::setDescription);
 
     // Adding the title
     setAttributeValue(row, matchingAttackChainNodeImporter, "title", attackChainNode::setTitle);
@@ -599,7 +617,9 @@ public class AttackChainNodeImportService {
     if (triggerTimeRuleAttribute.getColumns() != null) {
       dateAsString =
           Arrays.stream(triggerTimeRuleAttribute.getColumns().split("\\+"))
-              .map(column -> AttackChainNodeImportUtils.getDateAsStringFromCell(row, column, timePattern))
+              .map(
+                  column ->
+                      AttackChainNodeImportUtils.getDateAsStringFromCell(row, column, timePattern))
               .collect(Collectors.joining());
     }
     if (dateAsString.isBlank()) {
@@ -618,7 +638,8 @@ public class AttackChainNodeImportService {
     attackChainNodeTime.setUnformattedDate(dateAsString);
     attackChainNodeTime.setLinkedAttackChainNode(attackChainNode);
 
-    Temporal dateTime = AttackChainNodeImportUtils.getAttackChainNodeDate(attackChainNodeTime, timePattern);
+    Temporal dateTime =
+        AttackChainNodeImportUtils.getAttackChainNodeDate(attackChainNodeTime, timePattern);
 
     if (dateTime == null) {
       attackChainNodeTime.setRelativeDay(relativeDays);
@@ -648,7 +669,8 @@ public class AttackChainNodeImportService {
           && relativeMinuteMatcher.groupCount() > 0
           && !relativeMinuteMatcher.group(1).isBlank()) {
         try {
-          attackChainNodeTime.setRelativeMinuteNumber(Integer.parseInt(relativeMinuteMatcher.group(1)));
+          attackChainNodeTime.setRelativeMinuteNumber(
+              Integer.parseInt(relativeMinuteMatcher.group(1)));
         } catch (NumberFormatException ex) {
           log.warn(
               String.format("Can't format %s into an integer", relativeMinuteMatcher.group(1)), ex);
@@ -661,7 +683,9 @@ public class AttackChainNodeImportService {
           && !relativeDayMatcher.group(2).isBlank()) {
         Temporal date = null;
         try {
-          date = LocalTime.parse(relativeDayMatcher.group(2).trim(), attackChainNodeTime.getFormatter());
+          date =
+              LocalTime.parse(
+                  relativeDayMatcher.group(2).trim(), attackChainNodeTime.getFormatter());
         } catch (DateTimeParseException firstException) {
           try {
             date = LocalTime.parse(relativeDayMatcher.group(2).trim(), DateTimeFormatter.ISO_TIME);
@@ -806,7 +830,8 @@ public class AttackChainNodeImportService {
       if (valueCell == null) {
         setter.accept(ruleAttribute.getDefaultValue());
       } else {
-        String cellValue = AttackChainNodeImportUtils.getValueAsString(row, ruleAttribute.getColumns());
+        String cellValue =
+            AttackChainNodeImportUtils.getValueAsString(row, ruleAttribute.getColumns());
         setter.accept(cellValue.isBlank() ? ruleAttribute.getDefaultValue() : cellValue);
       }
     }
@@ -1024,7 +1049,8 @@ public class AttackChainNodeImportService {
     return emptyList();
   }
 
-  private List<ImportMessage> updateAttackChainNodeDates(Map<Integer, AttackChainNodeTime> mapInstantByRowIndex) {
+  private List<ImportMessage> updateAttackChainNodeDates(
+      Map<Integer, AttackChainNodeTime> mapInstantByRowIndex) {
     List<ImportMessage> importMessages = new ArrayList<>();
     // First of all, are there any absolute date
     boolean allDatesAreAbsolute =
@@ -1058,7 +1084,8 @@ public class AttackChainNodeImportService {
               .orElse(0);
       int earliestHourOfThatDay =
           mapInstantByRowIndex.values().stream()
-              .filter(attackChainNodeTime -> attackChainNodeTime.getRelativeDayNumber() == earliestDay)
+              .filter(
+                  attackChainNodeTime -> attackChainNodeTime.getRelativeDayNumber() == earliestDay)
               .min(Comparator.comparing(AttackChainNodeTime::getRelativeHourNumber))
               .map(AttackChainNodeTime::getRelativeHourNumber)
               .orElse(0);
@@ -1088,7 +1115,9 @@ public class AttackChainNodeImportService {
                             * 60)
                         + attackChainNodeTime.getRelativeMinuteNumber()
                         + offsetAsMinutes;
-                attackChainNodeTime.getLinkedAttackChainNode().setDependsDuration(attackChainNodeTimeAsMinutes * 60);
+                attackChainNodeTime
+                    .getLinkedAttackChainNode()
+                    .setDependsDuration(attackChainNodeTimeAsMinutes * 60);
               });
     } else {
       // Worst case attackChain : there is a mix of relative and absolute dates
@@ -1105,7 +1134,8 @@ public class AttackChainNodeImportService {
           .sorted(Map.Entry.comparingByKey())
           .forEachOrdered(
               integerAttackChainNodeTimeEntry -> {
-                AttackChainNodeTime attackChainNodeTime = integerAttackChainNodeTimeEntry.getValue();
+                AttackChainNodeTime attackChainNodeTime =
+                    integerAttackChainNodeTimeEntry.getValue();
 
                 if (attackChainNodeTime.getDate() != null) {
                   // Special case : we have an absolute time but a relative day
@@ -1123,7 +1153,8 @@ public class AttackChainNodeImportService {
                     attackChainNodeTime
                         .getLinkedAttackChainNode()
                         .setDependsDuration(
-                            attackChainNodeTime.getDate().getEpochSecond() - firstDate.getEpochSecond());
+                            attackChainNodeTime.getDate().getEpochSecond()
+                                - firstDate.getEpochSecond());
                   }
                 } else {
                   // We don't have an absolute date so we need to deduce it from another row
@@ -1151,13 +1182,17 @@ public class AttackChainNodeImportService {
                               .getDate()
                               .plus(attackChainNodeTime.getRelativeDayNumber(), ChronoUnit.DAYS)
                               .plus(attackChainNodeTime.getRelativeHourNumber(), ChronoUnit.HOURS)
-                              .plus(attackChainNodeTime.getRelativeMinuteNumber(), ChronoUnit.MINUTES));
+                              .plus(
+                                  attackChainNodeTime.getRelativeMinuteNumber(),
+                                  ChronoUnit.MINUTES));
                     } else {
                       importMessages.add(
                           new ImportMessage(
                               ImportMessage.MessageLevel.ERROR,
                               ImportMessage.ErrorCode.DATE_SET_IN_PAST,
-                              Map.of("row_num", String.valueOf(integerAttackChainNodeTimeEntry.getKey()))));
+                              Map.of(
+                                  "row_num",
+                                  String.valueOf(integerAttackChainNodeTimeEntry.getKey()))));
                     }
                   } else {
                     // We are in the future, so we need to explore the past to find an absolute date
@@ -1177,13 +1212,17 @@ public class AttackChainNodeImportService {
                               .getDate()
                               .plus(attackChainNodeTime.getRelativeDayNumber(), ChronoUnit.DAYS)
                               .plus(attackChainNodeTime.getRelativeHourNumber(), ChronoUnit.HOURS)
-                              .plus(attackChainNodeTime.getRelativeMinuteNumber(), ChronoUnit.MINUTES));
+                              .plus(
+                                  attackChainNodeTime.getRelativeMinuteNumber(),
+                                  ChronoUnit.MINUTES));
                     } else {
                       importMessages.add(
                           new ImportMessage(
                               ImportMessage.MessageLevel.ERROR,
                               ImportMessage.ErrorCode.DATE_SET_IN_FUTURE,
-                              Map.of("row_num", String.valueOf(integerAttackChainNodeTimeEntry.getKey()))));
+                              Map.of(
+                                  "row_num",
+                                  String.valueOf(integerAttackChainNodeTimeEntry.getKey()))));
                     }
                   }
                 }
@@ -1216,14 +1255,16 @@ public class AttackChainNodeImportService {
                                     - earliestInstant.getEpochSecond())));
   }
 
-  public void importAttackChainNodesForAttackChain(MultipartFile file, String attackChainId) throws Exception {
+  public void importAttackChainNodesForAttackChain(MultipartFile file, String attackChainId)
+      throws Exception {
     AttackChain targetAttackChain =
         attackChainRepository.findById(attackChainId).orElseThrow(ElementNotFoundException::new);
 
     this.importService.handleFileImport(file, null, targetAttackChain);
   }
 
-  public void importAttackChainNodesForSimulation(MultipartFile file, String simulationId) throws Exception {
+  public void importAttackChainNodesForSimulation(MultipartFile file, String simulationId)
+      throws Exception {
     AttackChainRun targetSimulation =
         attackChainRunRepository.findById(simulationId).orElseThrow(ElementNotFoundException::new);
 

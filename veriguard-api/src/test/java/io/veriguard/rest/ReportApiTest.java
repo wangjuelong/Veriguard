@@ -13,11 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.Capability;
-import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.AttackChainNode;
-import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
+import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.Capability;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.rest.mapper.MapperApi;
 import io.veriguard.rest.report.ReportApi;
 import io.veriguard.rest.report.form.ReportAttackChainNodeCommentInput;
@@ -64,7 +64,8 @@ public class ReportApiTest extends IntegrationTest {
 
   @BeforeEach
   void before() throws IllegalAccessException, NoSuchFieldException {
-    ReportApi reportApi = new ReportApi(attackChainRunService, reportService, attackChainNodeService);
+    ReportApi reportApi =
+        new ReportApi(attackChainRunService, reportService, attackChainNodeService);
     Field sessionContextField = MapperApi.class.getSuperclass().getDeclaredField("mapper");
     sessionContextField.setAccessible(true);
     sessionContextField.set(reportApi, objectMapper);
@@ -94,7 +95,8 @@ public class ReportApiTest extends IntegrationTest {
       // -- EXECUTE --
       String response =
           mvc.perform(
-                  MockMvcRequestBuilders.post("/api/attack_chain_runs/" + attackChainRun.getId() + "/reports")
+                  MockMvcRequestBuilders.post(
+                          "/api/attack_chain_runs/" + attackChainRun.getId() + "/reports")
                       .content(asJsonString(reportInput))
                       .contentType(MediaType.APPLICATION_JSON)
                       .accept(MediaType.APPLICATION_JSON)
@@ -147,7 +149,10 @@ public class ReportApiTest extends IntegrationTest {
       String response =
           mvc.perform(
                   MockMvcRequestBuilders.put(
-                          "/api/attack_chain_runs/" + attackChainRun.getId() + "/reports/" + report.getId())
+                          "/api/attack_chain_runs/"
+                              + attackChainRun.getId()
+                              + "/reports/"
+                              + report.getId())
                       .content(asJsonString(reportInput))
                       .contentType(MediaType.APPLICATION_JSON)
                       .accept(MediaType.APPLICATION_JSON)
@@ -174,14 +179,17 @@ public class ReportApiTest extends IntegrationTest {
       attackChainNode.setId(UUID.randomUUID().toString());
       attackChainNode.setAttackChainRun(attackChainRun);
       report.setAttackChainRun(attackChainRun);
-      ReportAttackChainNodeCommentInput attackChainNodeCommentInput = new ReportAttackChainNodeCommentInput();
+      ReportAttackChainNodeCommentInput attackChainNodeCommentInput =
+          new ReportAttackChainNodeCommentInput();
       attackChainNodeCommentInput.setAttackChainNodeId(attackChainNode.getId());
       attackChainNodeCommentInput.setComment("Comment test");
 
       when(reportService.report(any())).thenReturn(report);
       when(attackChainNodeService.attackChainNode(any())).thenReturn(attackChainNode);
       when(reportService.updateReportAttackChainNodeComment(
-              any(Report.class), any(AttackChainNode.class), any(ReportAttackChainNodeCommentInput.class)))
+              any(Report.class),
+              any(AttackChainNode.class),
+              any(ReportAttackChainNodeCommentInput.class)))
           .thenReturn(null);
 
       // -- EXECUTE --
@@ -205,7 +213,8 @@ public class ReportApiTest extends IntegrationTest {
       // -- ASSERT --
       verify(reportService).report(UUID.fromString(report.getId()));
       verify(attackChainNodeService).attackChainNode(attackChainNode.getId());
-      verify(reportService).updateReportAttackChainNodeComment(report, attackChainNode, attackChainNodeCommentInput);
+      verify(reportService)
+          .updateReportAttackChainNodeComment(report, attackChainNode, attackChainNodeCommentInput);
       assertNotNull(response);
     }
 
@@ -219,7 +228,10 @@ public class ReportApiTest extends IntegrationTest {
       // -- EXECUTE --
       mvc.perform(
               MockMvcRequestBuilders.delete(
-                      "/api/attack_chain_runs/" + attackChainRun.getId() + "/reports/" + report.getId())
+                      "/api/attack_chain_runs/"
+                          + attackChainRun.getId()
+                          + "/reports/"
+                          + report.getId())
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(asJsonString(PaginationFixture.getDefault().textSearch("").build()))
                   .with(csrf()))

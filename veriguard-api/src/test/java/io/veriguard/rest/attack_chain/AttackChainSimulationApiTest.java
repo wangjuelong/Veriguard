@@ -10,16 +10,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import io.veriguard.IntegrationTest;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.Filters;
-import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.Tag;
-import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.AttackChainRepository;
+import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.TagRepository;
+import io.veriguard.utils.fixtures.AttackChainFixture;
 import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.PaginationFixture;
-import io.veriguard.utils.fixtures.AttackChainFixture;
 import io.veriguard.utils.fixtures.TagFixture;
 import io.veriguard.utils.mockUser.WithMockUser;
 import io.veriguard.utils.pagination.SearchPaginationInput;
@@ -62,7 +62,8 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
     AttackChainRun attackChainRun1 = AttackChainRunFixture.createDefaultCrisisAttackChainRun();
     attackChainRun1.setAttackChain(attackChain);
     attackChainRun1FromAttackChain = this.attackChainRunRepository.save(attackChainRun1);
-    AttackChainRun attackChainRun2 = AttackChainRunFixture.createDefaultIncidentResponseAttackChainRun();
+    AttackChainRun attackChainRun2 =
+        AttackChainRunFixture.createDefaultIncidentResponseAttackChainRun();
     attackChainRun2.setAttackChain(attackChain);
     attackChainRun2FromAttackChain = this.attackChainRunRepository.save(attackChainRun2);
 
@@ -123,7 +124,8 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.numberOfElements").value(1))
-            .andExpect(jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()));
+            .andExpect(
+                jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()));
         attackChainRun2FromAttackChain.setTags(null);
         attackChainRunRepository.save(attackChainRun2FromAttackChain);
         mvc.perform(
@@ -141,11 +143,13 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
     class SortingPageOfAttackChainRuns {
       @Test
       @DisplayName("Sorting page of exercises by updated at date")
-      void given_sorting_input_by_updateDate_should_return_a_page_of_attackChainRuns_sort_by_updateDate()
-          throws Exception {
+      void
+          given_sorting_input_by_updateDate_should_return_a_page_of_attackChainRuns_sort_by_updateDate()
+              throws Exception {
         attackChainRun2FromAttackChain.setUpdatedAt(Instant.now());
         attackChainRun1FromAttackChain.setUpdatedAt(Instant.now().minusSeconds(60));
-        attackChainRunRepository.saveAll(Arrays.asList(attackChainRun1FromAttackChain, attackChainRun2FromAttackChain));
+        attackChainRunRepository.saveAll(
+            Arrays.asList(attackChainRun1FromAttackChain, attackChainRun2FromAttackChain));
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.getDefault()
                 .sorts(
@@ -162,8 +166,10 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.numberOfElements").value(2))
-            .andExpect(jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()))
-            .andExpect(jsonPath("$.content[1].exercise_id").value(attackChainRun1FromAttackChain.getId()));
+            .andExpect(
+                jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()))
+            .andExpect(
+                jsonPath("$.content[1].exercise_id").value(attackChainRun1FromAttackChain.getId()));
       }
 
       @Test
@@ -184,7 +190,10 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
         attackChainRun1FromAttackChain.setUpdatedAt(now);
 
         attackChainRunRepository.saveAll(
-            Arrays.asList(attackChainRun1FromAttackChain, attackChainRun2FromAttackChain, attackChainRun3NotFromAttackChain));
+            Arrays.asList(
+                attackChainRun1FromAttackChain,
+                attackChainRun2FromAttackChain,
+                attackChainRun3NotFromAttackChain));
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.getDefault()
                 .sorts(
@@ -206,9 +215,13 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.numberOfElements").value(3))
-            .andExpect(jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()))
-            .andExpect(jsonPath("$.content[1].exercise_id").value(attackChainRun3NotFromAttackChain.getId()))
-            .andExpect(jsonPath("$.content[2].exercise_id").value(attackChainRun1FromAttackChain.getId()));
+            .andExpect(
+                jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()))
+            .andExpect(
+                jsonPath("$.content[1].exercise_id")
+                    .value(attackChainRun3NotFromAttackChain.getId()))
+            .andExpect(
+                jsonPath("$.content[2].exercise_id").value(attackChainRun1FromAttackChain.getId()));
       }
     }
 
@@ -227,12 +240,14 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.numberOfElements").value(1))
-            .andExpect(jsonPath("$.content[0].exercise_id").value(attackChainRun1FromAttackChain.getId()));
+            .andExpect(
+                jsonPath("$.content[0].exercise_id").value(attackChainRun1FromAttackChain.getId()));
       }
 
       @Test
       @DisplayName("Not retrieving first page of exercises by text search")
-      void given_notworking_search_input_should_notreturn_a_page_of_attackChainRuns() throws Exception {
+      void given_notworking_search_input_should_notreturn_a_page_of_attackChainRuns()
+          throws Exception {
         String searchText = "wrong";
         attackChainRun3NotFromAttackChain.setName(searchText);
         SearchPaginationInput searchPaginationInput =

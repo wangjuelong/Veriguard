@@ -1,8 +1,8 @@
 package io.veriguard.rest.attack_chain;
 
 import static io.veriguard.config.SessionHelper.currentUser;
-import static io.veriguard.database.model.Filters.FilterOperator.contains;
 import static io.veriguard.database.model.AttackChain.SEVERITY.critical;
+import static io.veriguard.database.model.Filters.FilterOperator.contains;
 import static io.veriguard.rest.attack_chain.AttackChainApi.SCENARIO_URI;
 import static io.veriguard.utils.JsonTestUtils.asJsonString;
 import static java.lang.String.valueOf;
@@ -14,9 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
+import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.database.repository.GrantRepository;
 import io.veriguard.database.repository.GroupRepository;
-import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.rest.attack_chain.form.GetAttackChainsInput;
 import io.veriguard.utils.fixtures.*;
@@ -254,8 +254,10 @@ public class AttackChainApiSearchTest extends IntegrationTest {
       @Test
       @DisplayName("Search scenarios by ids as user granted on some scenario")
       @WithMockUser(isAdmin = false)
-      void given_list_of_ids_select_attackChains_without_capabilities_with_grants() throws Exception {
-        AttackChain attackChainGranted = AttackChainFixture.createDefaultIncidentResponseAttackChain();
+      void given_list_of_ids_select_attackChains_without_capabilities_with_grants()
+          throws Exception {
+        AttackChain attackChainGranted =
+            AttackChainFixture.createDefaultIncidentResponseAttackChain();
         User user = userRepository.findById(currentUser().getId()).get();
         Group group = new Group();
         group.setName("test");

@@ -82,7 +82,8 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
     savedAttackChainNode = attackChainNodeRepository.save(i);
 
     AttackChainNodeExpectation ie =
-        AttackChainNodeExpectationFixture.createDetectionAttackChainNodeExpectation(savedAttackChainNode, null);
+        AttackChainNodeExpectationFixture.createDetectionAttackChainNodeExpectation(
+            savedAttackChainNode, null);
     ie.setAsset(savedAsset);
     savedAttackChainNodeExpectation = attackChainNodeExpectationRepository.save(ie);
 
@@ -166,10 +167,8 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
             .getContentAsString();
 
     // --ASSERT--
-    String savedNodeExpectationTrace1Json =
-        mapper.writeValueAsString(savedNodeExpectationTrace1);
-    String savedNodeExpectationTrace2Json =
-        mapper.writeValueAsString(savedNodeExpectationTrace2);
+    String savedNodeExpectationTrace1Json = mapper.writeValueAsString(savedNodeExpectationTrace1);
+    String savedNodeExpectationTrace2Json = mapper.writeValueAsString(savedNodeExpectationTrace2);
     String savedNodeExpectationTrace3DupeJson =
         mapper.writeValueAsString(savedNodeExpectationTrace3Dupe);
     assertThatJson(response)
@@ -367,7 +366,8 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
     input2.setAlertName("Test Alert Bulk 2");
 
     NodeExpectationTraceInput input3 = new NodeExpectationTraceInput();
-    input3.setAttackChainNodeExpectationId(savedNodeExpectationTrace3Dupe.getAttackChainNodeExpectation().getId());
+    input3.setAttackChainNodeExpectationId(
+        savedNodeExpectationTrace3Dupe.getAttackChainNodeExpectation().getId());
     input3.setAlertDate(savedNodeExpectationTrace3Dupe.getAlertDate());
     input3.setAlertLink(savedNodeExpectationTrace3Dupe.getAlertLink());
     input3.setSourceId(savedNodeExpectationTrace3Dupe.getSecurityPlatform().getId());

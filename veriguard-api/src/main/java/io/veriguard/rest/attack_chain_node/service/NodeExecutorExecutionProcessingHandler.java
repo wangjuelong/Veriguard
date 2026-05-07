@@ -69,8 +69,7 @@ public class NodeExecutorExecutionProcessingHandler extends AbstractExecutionPro
       return Optional.empty();
     }
 
-    NodeContract nodeContract =
-        executionContext.attackChainNode().getNodeContract().orElseThrow();
+    NodeContract nodeContract = executionContext.attackChainNode().getNodeContract().orElseThrow();
 
     List<ContractOutputContext> contractOutputContexts =
         getAllContractOutputs(nodeContract).stream().map(ContractOutputContext::from).toList();
@@ -85,8 +84,7 @@ public class NodeExecutorExecutionProcessingHandler extends AbstractExecutionPro
    * @param nodeContract the nodeExecutor contract to inspect
    * @return list of contract output elements
    */
-  private List<NodeContractContentOutputElement> getAllContractOutputs(
-      NodeContract nodeContract) {
+  private List<NodeContractContentOutputElement> getAllContractOutputs(NodeContract nodeContract) {
     return nodeContractContentUtils
         .getContractOutputs(nodeContract.getConvertedContent(), mapper)
         .stream()

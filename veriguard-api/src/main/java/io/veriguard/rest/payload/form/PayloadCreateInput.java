@@ -3,14 +3,14 @@ package io.veriguard.rest.payload.form;
 import static io.veriguard.config.AppConfig.MANDATORY_MESSAGE;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.model.*;
-import io.veriguard.database.model.Endpoint.PLATFORM_TYPE;
 import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
+import io.veriguard.database.model.Endpoint.PLATFORM_TYPE;
 import io.veriguard.database.model.Payload.PAYLOAD_SOURCE;
 import io.veriguard.database.model.Payload.PAYLOAD_STATUS;
 import io.veriguard.rest.payload.output_parser.OutputParserInput;
-import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

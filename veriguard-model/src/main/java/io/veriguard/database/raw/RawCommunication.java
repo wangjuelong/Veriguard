@@ -6,8 +6,9 @@ import java.util.Set;
 /**
  * Spring Data projection interface for communication data.
  *
- * <p>This interface defines a projection for retrieving communication messages sent during attackChainRun
- * execution. Communications include emails, SMS, and other messages sent to attackChainRun participants.
+ * <p>This interface defines a projection for retrieving communication messages sent during
+ * attackChainRun execution. Communications include emails, SMS, and other messages sent to
+ * attackChainRun participants.
  *
  * @see io.veriguard.database.model.Communication
  */

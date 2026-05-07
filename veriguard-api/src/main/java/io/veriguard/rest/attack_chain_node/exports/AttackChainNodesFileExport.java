@@ -29,7 +29,10 @@ public class AttackChainNodesFileExport extends FileExportBase {
 
     documents.addAll(
         attackChainNodes.stream()
-            .flatMap(attackChainNode -> attackChainNode.getDocuments().stream().map(AttackChainNodeDocument::getDocument))
+            .flatMap(
+                attackChainNode ->
+                    attackChainNode.getDocuments().stream()
+                        .map(AttackChainNodeDocument::getDocument))
             .toList());
     documents.addAll(
         attackChainNodes.stream()
@@ -85,7 +88,9 @@ public class AttackChainNodesFileExport extends FileExportBase {
   @JsonProperty("inject_teams")
   private List<Team> getTeams() {
     return ExportOptions.has(ExportOptions.WITH_TEAMS, this.exportOptionsMask)
-        ? attackChainNodes.stream().flatMap(attackChainNode -> attackChainNode.getTeams().stream()).toList()
+        ? attackChainNodes.stream()
+            .flatMap(attackChainNode -> attackChainNode.getTeams().stream())
+            .toList()
         : List.of();
   }
 
@@ -117,12 +122,14 @@ public class AttackChainNodesFileExport extends FileExportBase {
     return new ArrayList<>(this.getDocuments().stream().map(Document::getId).toList());
   }
 
-  private AttackChainNodesFileExport(List<AttackChainNode> attackChainNodes, ObjectMapper objectMapper) {
+  private AttackChainNodesFileExport(
+      List<AttackChainNode> attackChainNodes, ObjectMapper objectMapper) {
     super(objectMapper);
     this.attackChainNodes = attackChainNodes;
   }
 
-  public static AttackChainNodesFileExport fromAttackChainNodes(List<AttackChainNode> attackChainNodes, ObjectMapper objectMapper) {
+  public static AttackChainNodesFileExport fromAttackChainNodes(
+      List<AttackChainNode> attackChainNodes, ObjectMapper objectMapper) {
     return new AttackChainNodesFileExport(attackChainNodes, objectMapper);
   }
 

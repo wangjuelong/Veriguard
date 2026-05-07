@@ -2,6 +2,9 @@ package io.veriguard.rest.attack_chain_run;
 
 import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.CustomDashboard;
@@ -14,9 +17,6 @@ import io.veriguard.engine.query.EsSeries;
 import io.veriguard.rest.custom_dashboard.CustomDashboardService;
 import io.veriguard.rest.dashboard.model.WidgetToEntitiesInput;
 import io.veriguard.rest.dashboard.model.WidgetToEntitiesOutput;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;

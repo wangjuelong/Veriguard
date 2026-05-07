@@ -17,16 +17,23 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AttackChainNodeExpectationRepository
-    extends CrudRepository<AttackChainNodeExpectation, String>, JpaSpecificationExecutor<AttackChainNodeExpectation> {
+    extends CrudRepository<AttackChainNodeExpectation, String>,
+        JpaSpecificationExecutor<AttackChainNodeExpectation> {
 
   @NotNull
   Optional<AttackChainNodeExpectation> findById(@NotNull String id);
 
-  @Query(value = "select i from AttackChainNodeExpectation i where i.attackChainRun.id = :attackChainRunId")
-  List<AttackChainNodeExpectation> findAllForAttackChainRun(@Param("exerciseId") String attackChainRunId);
+  @Query(
+      value =
+          "select i from AttackChainNodeExpectation i where i.attackChainRun.id = :attackChainRunId")
+  List<AttackChainNodeExpectation> findAllForAttackChainRun(
+      @Param("exerciseId") String attackChainRunId);
 
-  @Query(value = "select i from AttackChainNodeExpectation i where i.attackChainNode.id = :attackChainNodeId")
-  List<AttackChainNodeExpectation> findAllByAttackChainNodeId(@Param("injectId") @NotBlank final String attackChainNodeId);
+  @Query(
+      value =
+          "select i from AttackChainNodeExpectation i where i.attackChainNode.id = :attackChainNodeId")
+  List<AttackChainNodeExpectation> findAllByAttackChainNodeId(
+      @Param("injectId") @NotBlank final String attackChainNodeId);
 
   @Query(
       value =
@@ -74,8 +81,9 @@ public interface AttackChainNodeExpectationRepository
           + "and ie.team.id = :teamId "
           + "and ie.name = :expectationName "
           + "and ie.user is not null")
-  List<AttackChainNodeExpectation> findAllByAttackChainNodeAndTeamAndExpectationNameAndUserIsNotNull(
-      final String attackChainNodeId, final String teamId, final String expectationName);
+  List<AttackChainNodeExpectation>
+      findAllByAttackChainNodeAndTeamAndExpectationNameAndUserIsNotNull(
+          final String attackChainNodeId, final String teamId, final String expectationName);
 
   // -- RETRIEVE EXPECTATIONS FOR TEAM AND NOT FOR PLAYERS
   @Query(
@@ -94,7 +102,8 @@ public interface AttackChainNodeExpectationRepository
               + "AND i.agent.id = :agentId "
               + "ORDER BY i.type, i.createdAt")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeAndAgent(
-      @Param("injectId") @NotBlank String attackChainNodeId, @Param("agentId") @NotBlank String agentId);
+      @Param("injectId") @NotBlank String attackChainNodeId,
+      @Param("agentId") @NotBlank String agentId);
 
   @Query(
       value =
@@ -104,7 +113,8 @@ public interface AttackChainNodeExpectationRepository
               + "AND i.agent IS NULL "
               + "ORDER BY i.type, i.createdAt")
   List<AttackChainNodeExpectation> findAllByAttackChainNodeAndAsset(
-      @Param("injectId") @NotBlank String attackChainNodeId, @Param("assetId") @NotBlank String assetId);
+      @Param("injectId") @NotBlank String attackChainNodeId,
+      @Param("assetId") @NotBlank String assetId);
 
   @Query(
       value =
@@ -117,7 +127,8 @@ public interface AttackChainNodeExpectationRepository
   List<AttackChainNodeExpectation> findAllWithAgentsByAttackChainNodeAndAsset(
       @Param("injectId") @NotBlank String attackChainNodeId,
       @Param("assetId") @NotBlank String assetId,
-      @Param("expectationType") @NotBlank AttackChainNodeExpectation.EXPECTATION_TYPE expectationType);
+      @Param("expectationType") @NotBlank
+          AttackChainNodeExpectation.EXPECTATION_TYPE expectationType);
 
   @Query(
       value =
@@ -182,7 +193,8 @@ public interface AttackChainNodeExpectationRepository
   @Query(
       value =
           "select i from AttackChainNodeExpectation i where i.attackChainNode.id in :attackChainNodeIds and i.agent is null and i.user is null")
-  List<AttackChainNodeExpectation> findAllForGlobalScoreByAttackChainNodes(@Param("injectIds") Set<String> attackChainNodeIds);
+  List<AttackChainNodeExpectation> findAllForGlobalScoreByAttackChainNodes(
+      @Param("injectIds") Set<String> attackChainNodeIds);
 
   @Modifying
   @Query(

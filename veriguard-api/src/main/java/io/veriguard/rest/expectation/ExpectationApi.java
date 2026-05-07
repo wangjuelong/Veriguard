@@ -1,17 +1,17 @@
 package io.veriguard.rest.expectation;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.ResourceType;
 import io.veriguard.model.inject.form.Expectation;
-import io.veriguard.rest.attack_chain_run.form.ExpectationUpdateInput;
-import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationBulkUpdateInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationUpdateInput;
-import io.veriguard.service.ExpectationService;
+import io.veriguard.rest.attack_chain_run.form.ExpectationUpdateInput;
+import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.AttackChainNodeExpectationService;
-import io.swagger.v3.oas.annotations.Operation;
+import io.veriguard.service.ExpectationService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -67,9 +67,12 @@ public class ExpectationApi extends RestBehavior {
     }
 
     return Stream.of(
-            attackChainNodeExpectationService.manualExpectationsNotFillAndNotExpired(expirationTime),
-            attackChainNodeExpectationService.preventionExpectationsNotFillAndNotExpired(expirationTime),
-            attackChainNodeExpectationService.detectionExpectationsNotFillAndNotExpired(expirationTime))
+            attackChainNodeExpectationService.manualExpectationsNotFillAndNotExpired(
+                expirationTime),
+            attackChainNodeExpectationService.preventionExpectationsNotFillAndNotExpired(
+                expirationTime),
+            attackChainNodeExpectationService.detectionExpectationsNotFillAndNotExpired(
+                expirationTime))
         .flatMap(List::stream)
         .toList();
   }
@@ -96,9 +99,10 @@ public class ExpectationApi extends RestBehavior {
           "Retrieves inject expectations of agents installed on an asset for a given source ID.")
   @GetMapping(INJECTS_EXPECTATIONS_URI + "/assets/{sourceId}")
   @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.SIMULATION)
-  public List<AttackChainNodeExpectation> getAttackChainNodeExpectationsAssetsNotFilledAndNotExpiredForSource(
-      @PathVariable String sourceId,
-      @RequestParam(required = false, name = "expiration_time") final Integer expirationTime) {
+  public List<AttackChainNodeExpectation>
+      getAttackChainNodeExpectationsAssetsNotFilledAndNotExpiredForSource(
+          @PathVariable String sourceId,
+          @RequestParam(required = false, name = "expiration_time") final Integer expirationTime) {
     if (expirationTime == null) {
       return Stream.concat(
               attackChainNodeExpectationService.preventionExpectationsNotFill(sourceId).stream(),
@@ -127,9 +131,10 @@ public class ExpectationApi extends RestBehavior {
           "Retrieves inject expectations of agents installed on an asset for a given source ID and type Prevention.")
   @GetMapping(INJECTS_EXPECTATIONS_URI + "/prevention/{sourceId}")
   @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.SIMULATION)
-  public List<AttackChainNodeExpectation> getAttackChainNodePreventionExpectationsNotFilledForSource(
-      @PathVariable String sourceId) {
-    return attackChainNodeExpectationService.preventionExpectationsNotFill(sourceId).stream().toList();
+  public List<AttackChainNodeExpectation>
+      getAttackChainNodePreventionExpectationsNotFilledForSource(@PathVariable String sourceId) {
+    return attackChainNodeExpectationService.preventionExpectationsNotFill(sourceId).stream()
+        .toList();
   }
 
   @GetMapping(INJECTS_EXPECTATIONS_URI + "/detection")
@@ -146,7 +151,8 @@ public class ExpectationApi extends RestBehavior {
   @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.SIMULATION)
   public List<AttackChainNodeExpectation> getAttackChainNodeDetectionExpectationsNotFilledForSource(
       @PathVariable String sourceId) {
-    return attackChainNodeExpectationService.detectionExpectationsNotFill(sourceId).stream().toList();
+    return attackChainNodeExpectationService.detectionExpectationsNotFill(sourceId).stream()
+        .toList();
   }
 
   @Operation(

@@ -40,7 +40,8 @@ public class SecurityExpressionHandler extends DefaultMethodSecurityExpressionHa
   }
 
   public SecurityExpressionHandler(
-      final UserRepository userRepository, final AttackChainRunRepository attackChainRunRepository) {
+      final UserRepository userRepository,
+      final AttackChainRunRepository attackChainRunRepository) {
     this.userRepository = userRepository;
     this.attackChainRunRepository = attackChainRunRepository;
   }

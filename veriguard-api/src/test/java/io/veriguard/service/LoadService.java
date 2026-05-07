@@ -16,7 +16,8 @@ public class LoadService {
 
   @Transactional
   public AttackChainRun attackChainRun(@NotBlank final String attackChainRunId) {
-    AttackChainRun attackChainRun = this.attackChainRunRepository.findById(attackChainRunId).orElseThrow();
+    AttackChainRun attackChainRun =
+        this.attackChainRunRepository.findById(attackChainRunId).orElseThrow();
     Hibernate.initialize(attackChainRun.getTeams());
     Hibernate.initialize(attackChainRun.getTeamUsers());
     Hibernate.initialize(attackChainRun.getTags());

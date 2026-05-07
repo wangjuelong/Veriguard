@@ -13,12 +13,12 @@ import com.jayway.jsonpath.JsonPath;
 import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.repository.ImportMapperRepository;
+import io.veriguard.rest.attack_chain.form.AttackChainNodesImportTestInput;
+import io.veriguard.rest.attack_chain.response.ImportTestSummary;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.mapper.MapperApi;
 import io.veriguard.rest.mapper.form.ImportMapperAddInput;
 import io.veriguard.rest.mapper.form.ImportMapperUpdateInput;
-import io.veriguard.rest.attack_chain.form.AttackChainNodesImportTestInput;
-import io.veriguard.rest.attack_chain.response.ImportTestSummary;
 import io.veriguard.service.AttackChainNodeImportService;
 import io.veriguard.service.MapperService;
 import io.veriguard.utils.fixtures.PaginationFixture;
@@ -259,7 +259,8 @@ public class MapperApiTest extends IntegrationTest {
   @Test
   void testTestingXls() throws Exception {
     // -- PREPARE --
-    AttackChainNodesImportTestInput attackChainNodesImportInput = new AttackChainNodesImportTestInput();
+    AttackChainNodesImportTestInput attackChainNodesImportInput =
+        new AttackChainNodesImportTestInput();
     attackChainNodesImportInput.setImportMapper(new ImportMapperAddInput());
     attackChainNodesImportInput.setName("TEST");
     attackChainNodesImportInput.setTimezoneOffset(120);

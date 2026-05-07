@@ -8,9 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.IntegrationTest;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.Base;
 import io.veriguard.database.model.Domain;
-import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.Tag;
 import io.veriguard.export.Mixins;
 import io.veriguard.utils.ZipUtils;
@@ -75,9 +75,9 @@ public class AttackChainExportTest extends IntegrationTest {
                     .withTag(tagComposer.forTag(TagFixture.getTagWithText("inject tag")))
                     .withNodeContract(
                         nodeContractComposer
-                            .forNodeContract(
-                                NodeContractFixture.createDefaultNodeContract())
-                            .withNodeExecutor(nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())
+                            .forNodeContract(NodeContractFixture.createDefaultNodeContract())
+                            .withNodeExecutor(
+                                nodeExecutorFixture.getWellKnownOaevImplantNodeExecutor())
                             .withPayload(
                                 payloadComposer
                                     .forPayload(PayloadFixture.createDefaultCommand(domains))

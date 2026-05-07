@@ -3,20 +3,20 @@ package io.veriguard.rest.inject_test_status;
 import static io.veriguard.database.specification.AttackChainNodeSpecification.testable;
 import static io.veriguard.rest.attack_chain.AttackChainApi.SCENARIO_URI;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
-import io.veriguard.database.model.Grant;
 import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.Grant;
 import io.veriguard.database.model.ResourceType;
-import io.veriguard.rest.exception.BadRequestException;
-import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeBulkProcessingInput;
 import io.veriguard.rest.attack_chain_node.output.AttackChainNodeTestStatusOutput;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.exception.BadRequestException;
+import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.AttackChainNodeTestStatusService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -49,7 +49,8 @@ public class AttackChainAttackChainNodeTestApi extends RestBehavior {
   @Transactional(rollbackFor = Exception.class)
   @GetMapping(SCENARIO_URI + "/injects/test/{testId}")
   @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.SCENARIO)
-  public AttackChainNodeTestStatusOutput findAttackChainNodeTestStatus(@PathVariable @NotBlank String testId) {
+  public AttackChainNodeTestStatusOutput findAttackChainNodeTestStatus(
+      @PathVariable @NotBlank String testId) {
     return attackChainNodeTestStatusService.findAttackChainNodeTestStatusById(testId);
   }
 
@@ -60,7 +61,8 @@ public class AttackChainAttackChainNodeTestApi extends RestBehavior {
       actionPerformed = Action.LAUNCH,
       resourceType = ResourceType.SCENARIO)
   public AttackChainNodeTestStatusOutput testAttackChainNode(
-      @PathVariable @NotBlank final String attackChainId, @PathVariable @NotBlank String attackChainNodeId)
+      @PathVariable @NotBlank final String attackChainId,
+      @PathVariable @NotBlank String attackChainNodeId)
       throws Exception {
     return attackChainNodeTestStatusService.testAttackChainNode(attackChainNodeId);
   }
@@ -102,7 +104,9 @@ public class AttackChainAttackChainNodeTestApi extends RestBehavior {
 
     // Specification building
     Specification<AttackChainNode> filterSpecifications =
-        this.attackChainNodeService.getAttackChainNodeSpecification(input, Grant.GRANT_TYPE.PLANNER).and(testable());
+        this.attackChainNodeService
+            .getAttackChainNodeSpecification(input, Grant.GRANT_TYPE.PLANNER)
+            .and(testable());
 
     // Services calls
     // Bulk test

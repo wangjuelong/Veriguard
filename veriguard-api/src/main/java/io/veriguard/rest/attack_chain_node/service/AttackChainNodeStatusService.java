@@ -12,13 +12,13 @@ import io.veriguard.database.repository.AgentRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.AttackChainNodeStatusRepository;
 import io.veriguard.integration.ManagerFactory;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionAction;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateStatusInput;
-import io.veriguard.utils.ExecutionTraceUtils;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.utils.AttackChainNodeStatusUtils;
 import io.veriguard.utils.AttackChainNodeUtils;
+import io.veriguard.utils.ExecutionTraceUtils;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -46,23 +46,28 @@ public class AttackChainNodeStatusService {
   private final EntityManager entityManager;
   private final ManagerFactory managerFactory;
 
-  public List<AttackChainNodeStatus> findPendingAttackChainNodeStatusByType(String attackChainNodeType) {
+  public List<AttackChainNodeStatus> findPendingAttackChainNodeStatusByType(
+      String attackChainNodeType) {
     return this.attackChainNodeStatusRepository.pendingForAttackChainNodeType(attackChainNodeType);
   }
 
-  public AttackChainNodeStatus findAttackChainNodeStatusByAttackChainNodeId(final String attackChainNodeId) {
+  public AttackChainNodeStatus findAttackChainNodeStatusByAttackChainNodeId(
+      final String attackChainNodeId) {
     if (!hasText(attackChainNodeId)) {
       throw new IllegalArgumentException("InjectId should not be null");
     }
     return this.attackChainNodeStatusRepository
         .findByAttackChainNodeId(attackChainNodeId)
         .orElseThrow(
-            () -> new ElementNotFoundException("Inject status not found for :" + attackChainNodeId));
+            () ->
+                new ElementNotFoundException("Inject status not found for :" + attackChainNodeId));
   }
 
   @Transactional(rollbackOn = Exception.class)
-  public AttackChainNode updateAttackChainNodeStatus(String attackChainNodeId, AttackChainNodeUpdateStatusInput input) {
-    AttackChainNode attackChainNode = attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
+  public AttackChainNode updateAttackChainNodeStatus(
+      String attackChainNodeId, AttackChainNodeUpdateStatusInput input) {
+    AttackChainNode attackChainNode =
+        attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
     // build status
     AttackChainNodeStatus attackChainNodeStatus = new AttackChainNodeStatus();
     attackChainNodeStatus.setAttackChainNode(attackChainNode);
@@ -75,7 +80,9 @@ public class AttackChainNodeStatusService {
   public void addStartImplantExecutionTraceByAttackChainNode(
       String attackChainNodeId, String agentId, String message, Instant startTime) {
     AttackChainNodeStatus attackChainNodeStatus =
-        attackChainNodeStatusRepository.findByAttackChainNodeId(attackChainNodeId).orElseThrow(ElementNotFoundException::new);
+        attackChainNodeStatusRepository
+            .findByAttackChainNodeId(attackChainNodeId)
+            .orElseThrow(ElementNotFoundException::new);
     Agent agent = agentRepository.findById(agentId).orElseThrow(ElementNotFoundException::new);
     ExecutionTrace trace =
         new ExecutionTrace(
@@ -99,9 +106,11 @@ public class AttackChainNodeStatusService {
       return;
     }
     List<AttackChainNodeStatus> statuses =
-        attackChainNodeStatusRepository.findAllByAttackChainNodeIdIn(jobsByAttackChainNodeId.keySet());
+        attackChainNodeStatusRepository.findAllByAttackChainNodeIdIn(
+            jobsByAttackChainNodeId.keySet());
     for (AttackChainNodeStatus status : statuses) {
-      for (AssetAgentJob job : jobsByAttackChainNodeId.getOrDefault(status.getAttackChainNode().getId(), List.of())) {
+      for (AssetAgentJob job :
+          jobsByAttackChainNodeId.getOrDefault(status.getAttackChainNode().getId(), List.of())) {
         ExecutionTraceUtils.addJobRetrievalTrace(status, job.getAgent());
       }
     }
@@ -191,8 +200,12 @@ public class AttackChainNodeStatusService {
   }
 
   public void updateAttackChainNodeStatus(
-      AttackChainNode attackChainNode, Agent agent, AttackChainNodeExecutionInput input, ObjectNode structuredOutput) {
-    AttackChainNodeStatus attackChainNodeStatus = attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new);
+      AttackChainNode attackChainNode,
+      Agent agent,
+      AttackChainNodeExecutionInput input,
+      ObjectNode structuredOutput) {
+    AttackChainNodeStatus attackChainNodeStatus =
+        attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new);
 
     // Creating the Execution Trace
     ExecutionTrace executionTrace =
@@ -211,9 +224,12 @@ public class AttackChainNodeStatusService {
       // We update the status of the attackChainNode
       updateFinalAttackChainNodeStatus(attackChainNodeStatus);
       executionTraceRepositoryHelper.updateAttackChainNodeUpdateDate(
-          attackChainNodeStatus.getAttackChainNode().getId(), attackChainNodeStatus.getAttackChainNode().getUpdatedAt());
+          attackChainNodeStatus.getAttackChainNode().getId(),
+          attackChainNodeStatus.getAttackChainNode().getUpdatedAt());
       executionTraceRepositoryHelper.updateAttackChainNodeStatus(
-          attackChainNodeStatus.getId(), attackChainNodeStatus.getName().name(), attackChainNodeStatus.getTrackingEndDate());
+          attackChainNodeStatus.getId(),
+          attackChainNodeStatus.getName().name(),
+          attackChainNodeStatus.getTrackingEndDate());
       log.debug("Successfully updated inject final status: {}", attackChainNode.getId());
     }
 
@@ -246,10 +262,13 @@ public class AttackChainNodeStatusService {
     }
   }
 
-  public AttackChainNodeStatus fromExecution(Execution execution, AttackChainNodeStatus attackChainNodeStatus) {
+  public AttackChainNodeStatus fromExecution(
+      Execution execution, AttackChainNodeStatus attackChainNodeStatus) {
     if (!execution.getTraces().isEmpty()) {
       List<ExecutionTrace> traces =
-          execution.getTraces().stream().peek(t -> t.setAttackChainNodeStatus(attackChainNodeStatus)).toList();
+          execution.getTraces().stream()
+              .peek(t -> t.setAttackChainNodeStatus(attackChainNodeStatus))
+              .toList();
       attackChainNodeStatus.getTraces().addAll(traces);
     }
     if (execution.isAsync() && ExecutionStatus.EXECUTING.equals(attackChainNodeStatus.getName())) {
@@ -260,7 +279,8 @@ public class AttackChainNodeStatusService {
     return attackChainNodeStatus;
   }
 
-  private AttackChainNodeStatus getOrInitializeAttackChainNodeStatus(AttackChainNode attackChainNode) {
+  private AttackChainNodeStatus getOrInitializeAttackChainNodeStatus(
+      AttackChainNode attackChainNode) {
     return attackChainNode
         .getStatus()
         .orElseGet(
@@ -276,9 +296,12 @@ public class AttackChainNodeStatusService {
     return attackChainNodeUtils.getStatusPayloadFromAttackChainNode(attackChainNode);
   }
 
-  public AttackChainNodeStatus failAttackChainNodeStatus(@NotNull String attackChainNodeId, @Nullable String message) {
-    AttackChainNode attackChainNode = this.attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
-    AttackChainNodeStatus attackChainNodeStatus = getOrInitializeAttackChainNodeStatus(attackChainNode);
+  public AttackChainNodeStatus failAttackChainNodeStatus(
+      @NotNull String attackChainNodeId, @Nullable String message) {
+    AttackChainNode attackChainNode =
+        this.attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
+    AttackChainNodeStatus attackChainNodeStatus =
+        getOrInitializeAttackChainNodeStatus(attackChainNode);
     if (message != null) {
       attackChainNodeStatus.addErrorTrace(message, ExecutionTraceAction.COMPLETE);
     }
@@ -291,15 +314,18 @@ public class AttackChainNodeStatusService {
   @Transactional
   public AttackChainNodeStatus initializeAttackChainNodeStatus(
       @NotNull String attackChainNodeId, @NotNull ExecutionStatus status) {
-    AttackChainNode attackChainNode = this.attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
-    AttackChainNodeStatus attackChainNodeStatus = getOrInitializeAttackChainNodeStatus(attackChainNode);
+    AttackChainNode attackChainNode =
+        this.attackChainNodeRepository.findById(attackChainNodeId).orElseThrow();
+    AttackChainNodeStatus attackChainNodeStatus =
+        getOrInitializeAttackChainNodeStatus(attackChainNode);
     attackChainNodeStatus.setName(status);
     attackChainNodeStatus.setTrackingSentDate(Instant.now());
     attackChainNodeStatus.setPayloadOutput(getPayloadOutput(attackChainNode));
     return attackChainNodeStatusRepository.save(attackChainNodeStatus);
   }
 
-  public Iterable<AttackChainNodeStatus> saveAll(@NotNull List<AttackChainNodeStatus> attackChainNodeStatuses) {
+  public Iterable<AttackChainNodeStatus> saveAll(
+      @NotNull List<AttackChainNodeStatus> attackChainNodeStatuses) {
     return this.attackChainNodeStatusRepository.saveAll(attackChainNodeStatuses);
   }
 
@@ -309,20 +335,27 @@ public class AttackChainNodeStatusService {
 
   @Lock(type = LockResourceType.INJECT, key = "#injectId")
   public void setImplantErrorTrace(String attackChainNodeId, String agentId, String message) {
-    if (attackChainNodeId != null && !attackChainNodeId.isBlank() && agentId != null && !agentId.isBlank()) {
+    if (attackChainNodeId != null
+        && !attackChainNodeId.isBlank()
+        && agentId != null
+        && !agentId.isBlank()) {
       // Create execution traces to inform that the architecture or platform are not compatible with
       // the Veriguard implant
       AttackChainNode attackChainNode =
           attackChainNodeRepository
               .findById(attackChainNodeId)
-              .orElseThrow(() -> new ElementNotFoundException("Inject not found: " + attackChainNodeId));
+              .orElseThrow(
+                  () -> new ElementNotFoundException("Inject not found: " + attackChainNodeId));
       Agent agent =
           agentRepository
               .findById(agentId)
               .orElseThrow(() -> new ElementNotFoundException("Agent not found: " + agentId));
       AttackChainNodeStatus attackChainNodeStatus =
-          attackChainNode.getStatus().orElseThrow(() -> new IllegalArgumentException("Status should exist"));
-      attackChainNodeStatus.addTrace(ExecutionTraceStatus.ERROR, message, ExecutionTraceAction.START, agent);
+          attackChainNode
+              .getStatus()
+              .orElseThrow(() -> new IllegalArgumentException("Status should exist"));
+      attackChainNodeStatus.addTrace(
+          ExecutionTraceStatus.ERROR, message, ExecutionTraceAction.START, agent);
       attackChainNodeStatusRepository.save(attackChainNodeStatus);
       AttackChainNodeExecutionInput input = new AttackChainNodeExecutionInput();
       input.setMessage("Execution done");
@@ -338,7 +371,8 @@ public class AttackChainNodeStatusService {
    *
    * @param attackChainNodes the list of attackChainNodes
    */
-  public void deleteAllAttackChainNodeStatusByAttackChainNodes(List<AttackChainNode> attackChainNodes) {
+  public void deleteAllAttackChainNodeStatusByAttackChainNodes(
+      List<AttackChainNode> attackChainNodes) {
     List<String> attackChainNodeStatusIds =
         attackChainNodes.stream()
             .map(AttackChainNode::getStatus)

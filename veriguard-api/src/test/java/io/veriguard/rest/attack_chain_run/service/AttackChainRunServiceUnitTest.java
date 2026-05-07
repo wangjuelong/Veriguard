@@ -12,9 +12,9 @@ import static org.mockito.Mockito.when;
 import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.Team;
 import io.veriguard.database.model.User;
+import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.AttackChainRunTeamUserRepository;
-import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.LessonsCategoryRepository;
 import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.database.repository.UserRepository;
@@ -73,7 +73,8 @@ class AttackChainRunServiceUnitTest {
       attackChainRun.setId(attackChainRunId);
       attackChainRun.setTeams(new ArrayList<>(List.of(existingTeam1, existingTeam2)));
 
-      when(attackChainRunRepository.findById(attackChainRunId)).thenReturn(Optional.of(attackChainRun));
+      when(attackChainRunRepository.findById(attackChainRunId))
+          .thenReturn(Optional.of(attackChainRun));
       when(teamRepository.findAllById(any()))
           .thenAnswer(
               invocation -> {
@@ -95,7 +96,8 @@ class AttackChainRunServiceUnitTest {
           .thenReturn(false);
       when(teamService.find(any())).thenReturn(List.of());
 
-      mockedAttackChainRunService.replaceTeams(attackChainRunId, List.of("team-2", "team-3", "team-3"));
+      mockedAttackChainRunService.replaceTeams(
+          attackChainRunId, List.of("team-2", "team-3", "team-3"));
 
       verify(attackChainRunTeamUserRepository)
           .deleteByAttackChainRunIdAndTeamIds(
@@ -113,8 +115,10 @@ class AttackChainRunServiceUnitTest {
           .existsByAttackChainRunIdAndTeamIdAndUserId(attackChainRunId, "team-2", "user-1");
 
       assertEquals(2, attackChainRun.getTeams().size());
-      assertTrue(attackChainRun.getTeams().stream().anyMatch(team -> "team-2".equals(team.getId())));
-      assertTrue(attackChainRun.getTeams().stream().anyMatch(team -> "team-3".equals(team.getId())));
+      assertTrue(
+          attackChainRun.getTeams().stream().anyMatch(team -> "team-2".equals(team.getId())));
+      assertTrue(
+          attackChainRun.getTeams().stream().anyMatch(team -> "team-3".equals(team.getId())));
     }
 
     @Test
@@ -129,13 +133,15 @@ class AttackChainRunServiceUnitTest {
       attackChainRun.setId(attackChainRunId);
       attackChainRun.setTeams(new ArrayList<>(List.of(existingTeam)));
 
-      when(attackChainRunRepository.findById(attackChainRunId)).thenReturn(Optional.of(attackChainRun));
+      when(attackChainRunRepository.findById(attackChainRunId))
+          .thenReturn(Optional.of(attackChainRun));
       when(teamRepository.findAllById(any())).thenReturn(List.of(existingTeam));
       when(teamService.find(any())).thenReturn(List.of());
 
       mockedAttackChainRunService.replaceTeams(attackChainRunId, List.of("team-1"));
 
-      verify(attackChainRunTeamUserRepository, never()).deleteByAttackChainRunIdAndTeamIds(any(), any());
+      verify(attackChainRunTeamUserRepository, never())
+          .deleteByAttackChainRunIdAndTeamIds(any(), any());
       verify(attackChainNodeRepository, never()).removeTeamsForAttackChainRun(any(), any());
       verify(lessonsCategoryRepository, never()).removeTeamsForAttackChainRun(any(), any());
     }

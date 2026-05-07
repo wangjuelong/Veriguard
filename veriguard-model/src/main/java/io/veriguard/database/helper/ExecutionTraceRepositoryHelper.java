@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository helper for low-level database operations on execution traces and attackChainNode statuses.
+ * Repository helper for low-level database operations on execution traces and attackChainNode
+ * statuses.
  *
  * <p>This helper provides optimized JDBC-based operations for performance-critical database
  * updates, bypassing JPA overhead when direct SQL execution is more efficient. It is particularly
@@ -122,15 +123,17 @@ public class ExecutionTraceRepositoryHelper {
   /**
    * Updates an attackChainNode status with a new status name and end date using direct JDBC.
    *
-   * <p>This method is used to efficiently update the status of an attackChainNode execution without loading
-   * the full entity through JPA.
+   * <p>This method is used to efficiently update the status of an attackChainNode execution without
+   * loading the full entity through JPA.
    *
    * @param attackChainNodeStatusId the ID of the attackChainNode status to update
    * @param name the new status name (e.g., "SUCCESS", "ERROR", "PENDING")
-   * @param endDate the end timestamp for the attackChainNode execution, or {@code null} if not yet completed
+   * @param endDate the end timestamp for the attackChainNode execution, or {@code null} if not yet
+   *     completed
    * @throws RuntimeException if the database update fails
    */
-  public void updateAttackChainNodeStatus(String attackChainNodeStatusId, String name, Instant endDate) {
+  public void updateAttackChainNodeStatus(
+      String attackChainNodeStatusId, String name, Instant endDate) {
     String sql =
         "UPDATE injects_statuses SET status_name = ?, tracking_end_date = ? WHERE status_id = ?";
 

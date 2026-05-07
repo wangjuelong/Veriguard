@@ -93,7 +93,13 @@ public class NodeModelHelper {
       if (jsonField.get(CONTRACT_ELEMENT_CONTENT_MANDATORY).asBoolean()) {
         isReady =
             isFieldSet(
-                allTeams, teams, assets, assetGroups, jsonField, content, attackChainNodeContractFields);
+                allTeams,
+                teams,
+                assets,
+                assetGroups,
+                jsonField,
+                content,
+                attackChainNodeContractFields);
       }
 
       // If field is mandatory group
@@ -300,9 +306,11 @@ public class NodeModelHelper {
    * <p>Behavior varies based on context:
    *
    * <ul>
-   *   <li>Standalone attackChainNode (no attackChainRun/attackChain): Returns 30 seconds ago for immediate execution
+   *   <li>Standalone attackChainNode (no attackChainRun/attackChain): Returns 30 seconds ago for
+   *       immediate execution
    *   <li>AttackChain attackChainNode: Returns empty (attackChains don't have fixed dates)
-   *   <li>AttackChainRun attackChainNode: Computes date based on attackChainRun start time and attackChainNode offset
+   *   <li>AttackChainRun attackChainNode: Computes date based on attackChainRun start time and
+   *       attackChainNode offset
    *   <li>Cancelled attackChainRun: Returns empty
    * </ul>
    *
@@ -321,7 +329,8 @@ public class NodeModelHelper {
       return Optional.empty();
     }
 
-    // At this point attackChainRun cannot be null (if both were null, we returned at first condition;
+    // At this point attackChainRun cannot be null (if both were null, we returned at first
+    // condition;
     // if only attackChain was not null, we returned above)
     assert attackChainRun != null;
     if (attackChainRun.getStatus().equals(AttackChainRunStatus.CANCELED)) {
@@ -329,7 +338,10 @@ public class NodeModelHelper {
     }
     return attackChainRun
         .getStart()
-        .map(source -> computeAttackChainNodeDate(source, SPEED_STANDARD, dependsDuration, attackChainRun));
+        .map(
+            source ->
+                computeAttackChainNodeDate(
+                    source, SPEED_STANDARD, dependsDuration, attackChainRun));
   }
 
   /**
@@ -412,7 +424,8 @@ public class NodeModelHelper {
             && node.get("expectation_type") != null
             && !node.get("expectation_type").isNull()) {
           AttackChainNodeExpectation.EXPECTATION_TYPE type =
-              AttackChainNodeExpectation.EXPECTATION_TYPE.valueOf(node.get("expectation_type").asText());
+              AttackChainNodeExpectation.EXPECTATION_TYPE.valueOf(
+                  node.get("expectation_type").asText());
           if (AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION.equals(type)
               || AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION.equals(type)) {
             return true;

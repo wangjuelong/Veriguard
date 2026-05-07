@@ -8,10 +8,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
 public interface AttackChainNodeTestStatusRepository
-    extends CrudRepository<AttackChainNodeTestStatus, String>, JpaSpecificationExecutor<AttackChainNodeTestStatus> {
+    extends CrudRepository<AttackChainNodeTestStatus, String>,
+        JpaSpecificationExecutor<AttackChainNodeTestStatus> {
 
   @NotNull
   Optional<AttackChainNodeTestStatus> findById(@NotNull String id);
 
-  Optional<AttackChainNodeTestStatus> findByAttackChainNode(@NotNull AttackChainNode attackChainNode);
+  Optional<AttackChainNodeTestStatus> findByAttackChainNode(
+      @NotNull AttackChainNode attackChainNode);
 }

@@ -20,12 +20,15 @@ public class HelperTargetSearchAdaptor {
   private final AttackChainNodeExpectationMapper attackChainNodeExpectationMapper;
 
   public AttackChainNodeTarget buildTargetWithExpectations(
-      AttackChainNode attackChainNode, Supplier<AttackChainNodeTarget> targetSupplier, boolean allowVulnerability) {
+      AttackChainNode attackChainNode,
+      Supplier<AttackChainNodeTarget> targetSupplier,
+      boolean allowVulnerability) {
     AttackChainNodeTarget target = targetSupplier.get();
 
     List<AttackChainNodeExpectation> mergedExpectationsByAttackChainNodeAndTargetAndTargetType =
-        attackChainNodeExpectationService.findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
-            attackChainNode.getId(), target.getId(), target.getTargetType());
+        attackChainNodeExpectationService
+            .findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
+                attackChainNode.getId(), target.getId(), target.getTargetType());
 
     List<ExpectationResultsByType> results =
         attackChainNodeExpectationMapper.extractExpectationResults(

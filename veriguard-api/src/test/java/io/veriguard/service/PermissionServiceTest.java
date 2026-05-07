@@ -305,7 +305,9 @@ public class PermissionServiceTest extends IntegrationTest {
     when(grantService.hasWriteGrant(RESOURCE_ID, user)).thenReturn(true);
     RBACAspect.HttpMappingInfo mappingInfo =
         new RBACAspect.HttpMappingInfo(
-            RequestMethod.GET, new String[] {"api/injector/options"}, Map.of("sourceId", attackChainNodeId));
+            RequestMethod.GET,
+            new String[] {"api/injector/options"},
+            Map.of("sourceId", attackChainNodeId));
     assertTrue(
         permissionService.hasPermission(
             user, Optional.of(mappingInfo), null, ResourceType.INJECTOR, Action.SEARCH));

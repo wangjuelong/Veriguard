@@ -1,7 +1,7 @@
 package io.veriguard.database.specification;
 
-import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.Team;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.criteria.Join;
@@ -37,7 +37,8 @@ public class TeamSpecification {
     return (root, query, cb) -> {
       Join<Team, AttackChainRun> attackChainRunsJoin = root.join("exercises", JoinType.LEFT);
       return cb.and(
-          cb.isNotNull(attackChainRunsJoin.get("id")), cb.equal(attackChainRunsJoin.get("id"), attackChainRunId));
+          cb.isNotNull(attackChainRunsJoin.get("id")),
+          cb.equal(attackChainRunsJoin.get("id"), attackChainRunId));
     };
   }
 
@@ -45,7 +46,8 @@ public class TeamSpecification {
     return (root, query, cb) -> {
       Join<Team, AttackChain> attackChainsJoin = root.join("scenarios", JoinType.LEFT);
       return cb.and(
-          cb.isNotNull(attackChainsJoin.get("id")), cb.equal(attackChainsJoin.get("id"), attackChainId));
+          cb.isNotNull(attackChainsJoin.get("id")),
+          cb.equal(attackChainsJoin.get("id"), attackChainId));
     };
   }
 

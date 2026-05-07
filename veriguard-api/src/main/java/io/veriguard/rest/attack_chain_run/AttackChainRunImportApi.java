@@ -2,20 +2,20 @@ package io.veriguard.rest.attack_chain_run;
 
 import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.model.ResourceType;
 import io.veriguard.database.repository.ImportMapperRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.exception.UnprocessableContentException;
-import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
-import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.attack_chain.form.AttackChainNodesImportInput;
 import io.veriguard.rest.attack_chain.response.ImportTestSummary;
+import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
+import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.rest.exception.UnprocessableContentException;
+import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.AttackChainNodeImportService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -92,7 +92,12 @@ public class AttackChainRunImportApi extends RestBehavior {
 
     ImportTestSummary importTestSummary =
         attackChainNodeImportService.importAttackChainNodeIntoAttackChainRunFromXLS(
-            attackChainRun, importMapper, importId, input.getName(), input.getTimezoneOffset(), true);
+            attackChainRun,
+            importMapper,
+            importId,
+            input.getName(),
+            input.getTimezoneOffset(),
+            true);
     this.attackChainRunService.updateAttackChainRun(attackChainRun);
     return importTestSummary;
   }

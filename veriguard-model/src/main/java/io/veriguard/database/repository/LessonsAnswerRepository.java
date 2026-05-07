@@ -21,7 +21,7 @@ public interface LessonsAnswerRepository
 
   @Modifying(clearAutomatically = true)
   @Query(
-      """
+"""
     delete from LessonsAnswer la
     where la.question.category.attackChainRun.id = :attackChainRunId
 """)

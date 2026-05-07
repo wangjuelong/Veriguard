@@ -7,9 +7,9 @@ import static java.lang.Boolean.parseBoolean;
 import static java.util.Optional.ofNullable;
 
 import io.veriguard.config.EngineConfig;
+import io.veriguard.config.RabbitmqConfig;
 import io.veriguard.config.VeriguardConfig;
 import io.veriguard.config.VeriguardPrincipal;
-import io.veriguard.config.RabbitmqConfig;
 import io.veriguard.database.model.BannerMessage;
 import io.veriguard.database.model.Setting;
 import io.veriguard.database.model.SettingKeys;
@@ -391,7 +391,10 @@ public class PlatformSettingsService {
     addSettingIfExists(
         settingsToSave, dbSettings, DEFAULT_HOME_DASHBOARD.key(), input.getHomeDashboard());
     addSettingIfExists(
-        settingsToSave, dbSettings, DEFAULT_SCENARIO_DASHBOARD.key(), input.getAttackChainDashboard());
+        settingsToSave,
+        dbSettings,
+        DEFAULT_SCENARIO_DASHBOARD.key(),
+        input.getAttackChainDashboard());
     addSettingIfExists(
         settingsToSave,
         dbSettings,

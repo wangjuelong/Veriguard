@@ -7,8 +7,8 @@ import java.util.List;
  * Spring Data projection interface for organization data.
  *
  * <p>This interface defines a projection for retrieving organization information including
- * metadata, associated tags, and attackChainNode statistics. Organizations represent logical groupings of
- * users and teams within the platform.
+ * metadata, associated tags, and attackChainNode statistics. Organizations represent logical
+ * groupings of users and teams within the platform.
  *
  * @see io.veriguard.database.model.Organization
  */

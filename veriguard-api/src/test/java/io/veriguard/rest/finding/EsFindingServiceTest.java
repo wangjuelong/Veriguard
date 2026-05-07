@@ -1,15 +1,15 @@
 package io.veriguard.rest.finding;
 
-import static io.veriguard.utils.fixtures.FindingFixture.*;
 import static io.veriguard.utils.fixtures.AttackChainNodeFixture.getDefaultAttackChainNode;
+import static io.veriguard.utils.fixtures.FindingFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.database.model.Finding;
 import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.Finding;
 import io.veriguard.database.repository.AttackChainNodeRepository;
-import io.veriguard.utils.fixtures.composers.FindingComposer;
 import io.veriguard.utils.fixtures.composers.AttackChainNodeComposer;
+import io.veriguard.utils.fixtures.composers.FindingComposer;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -32,7 +32,8 @@ class EsFindingServiceTest extends IntegrationTest {
   FindingComposer.Composer createFindingComposer() {
     return this.findingComposer
         .forFinding(createDefaultTextFinding())
-        .withAttackChainNode(attackChainNodeComposer.forAttackChainNode(getDefaultAttackChainNode()))
+        .withAttackChainNode(
+            attackChainNodeComposer.forAttackChainNode(getDefaultAttackChainNode()))
         .persist();
   }
 

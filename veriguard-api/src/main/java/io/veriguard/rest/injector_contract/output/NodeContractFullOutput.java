@@ -1,9 +1,9 @@
 package io.veriguard.rest.injector_contract.output;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.database.model.*;
 import io.veriguard.database.model.Endpoint.PLATFORM_TYPE;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.Instant;
@@ -111,7 +111,9 @@ public class NodeContractFullOutput extends NodeContractBaseOutput {
   private static List<String> resolveEffectiveDomains(
       String[] nodeExecutorDomains, String[] payloadDomains) {
     String[] effectiveDomains =
-        (payloadDomains != null && payloadDomains.length > 0) ? payloadDomains : nodeExecutorDomains;
+        (payloadDomains != null && payloadDomains.length > 0)
+            ? payloadDomains
+            : nodeExecutorDomains;
     if (effectiveDomains == null) {
       return List.of();
     }

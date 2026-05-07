@@ -92,8 +92,7 @@ public class NodeContractApi extends RestBehavior {
    */
   @PostMapping(INJECTOR_CONTRACT_URL)
   @RBAC(actionPerformed = Action.CREATE, resourceType = ResourceType.INJECTOR_CONTRACT)
-  public NodeContract createNodeContract(
-      @Valid @RequestBody NodeContractAddInput input) {
+  public NodeContract createNodeContract(@Valid @RequestBody NodeContractAddInput input) {
     return nodeContractService.createNewNodeContract(input);
   }
 
@@ -110,8 +109,7 @@ public class NodeContractApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECTOR_CONTRACT)
   public NodeContract updateNodeContract(
-      @PathVariable String nodeContractId,
-      @Valid @RequestBody NodeContractUpdateInput input) {
+      @PathVariable String nodeContractId, @Valid @RequestBody NodeContractUpdateInput input) {
     return nodeContractService.updateNodeContract(nodeContractId, input);
   }
 

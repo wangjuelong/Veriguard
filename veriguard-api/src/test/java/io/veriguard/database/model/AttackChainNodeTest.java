@@ -3,11 +3,11 @@ package io.veriguard.database.model;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import io.veriguard.IntegrationTest;
-import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.AttackChainNodeFixture;
+import io.veriguard.utils.fixtures.AttackChainRunFixture;
 import io.veriguard.utils.fixtures.PauseFixture;
-import io.veriguard.utils.fixtures.composers.AttackChainRunComposer;
 import io.veriguard.utils.fixtures.composers.AttackChainNodeComposer;
+import io.veriguard.utils.fixtures.composers.AttackChainRunComposer;
 import io.veriguard.utils.fixtures.composers.PauseComposer;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import java.time.Instant;
@@ -37,10 +37,12 @@ public class AttackChainNodeTest extends IntegrationTest {
 
     public AttackChainRunComposer.Composer getAttackChainRunComposer() {
       return attackChainRunComposer
-          .forAttackChainRun(AttackChainRunFixture.createRunningAttackAttackChainRun(attackChainRunStartTime))
+          .forAttackChainRun(
+              AttackChainRunFixture.createRunningAttackAttackChainRun(attackChainRunStartTime))
           .withAttackChainNode(
               attackChainNodeComposer.forAttackChainNode(
-                  AttackChainNodeFixture.getDefaultAttackChainNodeWithDuration(600L))); // run time 04:10
+                  AttackChainNodeFixture.getDefaultAttackChainNodeWithDuration(
+                      600L))); // run time 04:10
     }
 
     @Nested
@@ -53,7 +55,8 @@ public class AttackChainNodeTest extends IntegrationTest {
       @Test
       @DisplayName(
           "When the inject was affected by both pauses its starting date should account for both pauses")
-      public void WhenAttackChainNodeEffectivelyWasPausedTwice_AttackChainNodeDateAccountsForBothPauses() {
+      public void
+          WhenAttackChainNodeEffectivelyWasPausedTwice_AttackChainNodeDateAccountsForBothPauses() {
         AttackChainRun attackChainRun =
             getAttackChainRunComposer()
                 .withPause(
@@ -76,12 +79,14 @@ public class AttackChainNodeTest extends IntegrationTest {
       @Test
       @DisplayName(
           "When the inject was affected by first pause only its starting date should account for first pause only")
-      public void WhenAttackChainNodeEffectivelyWasPausedOnce_AttackChainNodeDateAccountsForSinglePause() {
+      public void
+          WhenAttackChainNodeEffectivelyWasPausedOnce_AttackChainNodeDateAccountsForSinglePause() {
         AttackChainRun attackChainRun =
             getAttackChainRunComposer()
                 .withPause(
                     pauseComposer.forPause(
-                        // first pause is short enough so that attackChainNode runs before second pause
+                        // first pause is short enough so that attackChainNode runs before second
+                        // pause
                         // the pause will effectively delay attackChainNode by a single minute
                         PauseFixture.createPause(
                             firstPauseStartTime, 15L))) // wakeup 04:02:15, effective 04:03:00

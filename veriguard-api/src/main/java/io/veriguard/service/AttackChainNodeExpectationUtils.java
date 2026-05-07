@@ -60,7 +60,10 @@ public class AttackChainNodeExpectationUtils {
       ExpectationPropertiesConfig expectationPropertiesConfig) {
     AttackChainNodeExpectation attackChainNodeExpectation = new AttackChainNodeExpectation();
     return expectationConverter(
-        attackChainNodeExpectation, executableAttackChainNode, expectation, expectationPropertiesConfig);
+        attackChainNodeExpectation,
+        executableAttackChainNode,
+        expectation,
+        expectationPropertiesConfig);
   }
 
   public static AttackChainNodeExpectation expectationConverter(
@@ -71,7 +74,10 @@ public class AttackChainNodeExpectationUtils {
     AttackChainNodeExpectation attackChainNodeExpectation = new AttackChainNodeExpectation();
     attackChainNodeExpectation.setTeam(team);
     return expectationConverter(
-        attackChainNodeExpectation, executableAttackChainNode, expectation, expectationPropertiesConfig);
+        attackChainNodeExpectation,
+        executableAttackChainNode,
+        expectation,
+        expectationPropertiesConfig);
   }
 
   public static AttackChainNodeExpectation expectationConverter(
@@ -84,7 +90,10 @@ public class AttackChainNodeExpectationUtils {
     attackChainNodeExpectation.setTeam(team);
     attackChainNodeExpectation.setUser(user);
     return expectationConverter(
-        attackChainNodeExpectation, executableAttackChainNode, expectation, expectationPropertiesConfig);
+        attackChainNodeExpectation,
+        executableAttackChainNode,
+        expectation,
+        expectationPropertiesConfig);
   }
 
   private static AttackChainNodeExpectation expectationConverter(
@@ -93,8 +102,10 @@ public class AttackChainNodeExpectationUtils {
       @NotNull final Expectation expectation,
       ExpectationPropertiesConfig expectationPropertiesConfig) {
 
-    attackChainNodeExpectation.setAttackChainRun(executableAttackChainNode.getInjection().getAttackChainRun());
-    attackChainNodeExpectation.setAttackChainNode(executableAttackChainNode.getInjection().getAttackChainNode());
+    attackChainNodeExpectation.setAttackChainRun(
+        executableAttackChainNode.getInjection().getAttackChainRun());
+    attackChainNodeExpectation.setAttackChainNode(
+        executableAttackChainNode.getInjection().getAttackChainNode());
     attackChainNodeExpectation.setExpectedScore(expectation.getScore());
     attackChainNodeExpectation.setExpectationGroup(expectation.isExpectationGroup());
     attackChainNodeExpectation.setName(expectation.getName());
@@ -179,11 +190,11 @@ public class AttackChainNodeExpectationUtils {
                     .filter(result -> newResultToAdd.getSourceId().equals(result.getSourceId()))
                     .findFirst();
             existingResult.ifPresent(
-                nodeExpectationResult ->
-                    expectation.getResults().remove(nodeExpectationResult));
+                nodeExpectationResult -> expectation.getResults().remove(nodeExpectationResult));
             expectation.getResults().add(newResultToAdd);
 
-            // IF RESULT TO ADD IS EXPIRATION MANAGER => SO I EXPIRE ALL the attackChainNode expectation with
+            // IF RESULT TO ADD IS EXPIRATION MANAGER => SO I EXPIRE ALL the attackChainNode
+            // expectation with
             // no result to expired
             if (ExpectationsExpirationManagerConfig.COLLECTOR_ID.equals(
                 newResultToAdd.getSourceId())) {
@@ -212,7 +223,9 @@ public class AttackChainNodeExpectationUtils {
     if (expectations == null || expectations.isEmpty()) {
       return true;
     }
-    return expectations.stream().map(AttackChainNodeExpectation::getScore).allMatch(Objects::isNull);
+    return expectations.stream()
+        .map(AttackChainNodeExpectation::getScore)
+        .allMatch(Objects::isNull);
   }
 
   private static boolean allExpectationsMatch(

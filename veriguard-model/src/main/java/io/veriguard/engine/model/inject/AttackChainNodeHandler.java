@@ -30,7 +30,8 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
   @Override
   public List<EsAttackChainNode> fetch(Instant from) {
     Instant queryFrom = from != null ? from : Instant.ofEpochMilli(0);
-    List<RawAttackChainNodeIndexing> forIndexing = attackChainNodeRepository.findForIndexing(queryFrom);
+    List<RawAttackChainNodeIndexing> forIndexing =
+        attackChainNodeRepository.findForIndexing(queryFrom);
     return forIndexing.stream()
         .map(
             attackChainNode -> {
@@ -44,12 +45,15 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
                   && attackChainNode
                       .getInjector_contract_updated_at()
                       .isAfter(attackChainNode.getInject_updated_at())) {
-                esAttackChainNode.setBase_updated_at(attackChainNode.getInjector_contract_updated_at());
+                esAttackChainNode.setBase_updated_at(
+                    attackChainNode.getInjector_contract_updated_at());
               } else {
                 esAttackChainNode.setBase_updated_at(attackChainNode.getInject_updated_at());
               }
               esAttackChainNode.setBase_restrictions(
-                  buildRestrictions(attackChainNode.getInject_attackChain(), attackChainNode.getInject_AttackChainRun()));
+                  buildRestrictions(
+                      attackChainNode.getInject_attackChain(),
+                      attackChainNode.getInject_AttackChainRun()));
               // Specific
               esAttackChainNode.setInject_title(attackChainNode.getInject_title());
               esAttackChainNode.setInject_status(
@@ -57,7 +61,8 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
                           && !attackChainNode.getInject_status_name().isBlank()
                       ? attackChainNode.getInject_status_name()
                       : ExecutionStatus.DRAFT.name());
-              esAttackChainNode.setBase_platforms_side_denormalized(attackChainNode.getInject_platforms());
+              esAttackChainNode.setBase_platforms_side_denormalized(
+                  attackChainNode.getInject_platforms());
               esAttackChainNode.setExecution_date(attackChainNode.getTracking_sent_date());
               // Dependencies (see base_dependencies in EsBase)
               List<String> dependencies = new ArrayList<>();
@@ -69,17 +74,20 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
               }
               if (hasText(attackChainNode.getInject_AttackChainRun())) {
                 dependencies.add(attackChainNode.getInject_AttackChainRun());
-                esAttackChainNode.setBase_simulation_side(attackChainNode.getInject_AttackChainRun());
+                esAttackChainNode.setBase_simulation_side(
+                    attackChainNode.getInject_AttackChainRun());
               } else {
                 esAttackChainNode.setBase_simulation_side(null);
               }
               if (!isEmpty(attackChainNode.getInject_attack_patterns())) {
-                esAttackChainNode.setBase_attack_patterns_side(attackChainNode.getInject_attack_patterns());
+                esAttackChainNode.setBase_attack_patterns_side(
+                    attackChainNode.getInject_attack_patterns());
               } else {
                 esAttackChainNode.setBase_attack_patterns_side(Set.of());
               }
               if (!isEmpty(attackChainNode.getInject_children())) {
-                esAttackChainNode.setBase_inject_children_side(attackChainNode.getInject_children());
+                esAttackChainNode.setBase_inject_children_side(
+                    attackChainNode.getInject_children());
               } else {
                 esAttackChainNode.setBase_inject_children_side(Set.of());
               }
@@ -90,12 +98,14 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
                 esAttackChainNode.setBase_attack_patterns_children_side(Set.of());
               }
               if (!isEmpty(attackChainNode.getInject_kill_chain_phases())) {
-                esAttackChainNode.setBase_kill_chain_phases_side(attackChainNode.getInject_kill_chain_phases());
+                esAttackChainNode.setBase_kill_chain_phases_side(
+                    attackChainNode.getInject_kill_chain_phases());
               } else {
                 esAttackChainNode.setBase_kill_chain_phases_side(Set.of());
               }
               if (hasText(attackChainNode.getInject_injector_contract())) {
-                esAttackChainNode.setBase_inject_contract_side(attackChainNode.getInject_injector_contract());
+                esAttackChainNode.setBase_inject_contract_side(
+                    attackChainNode.getInject_injector_contract());
               } else {
                 esAttackChainNode.setBase_inject_contract_side(null);
               }
@@ -110,7 +120,8 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
                 esAttackChainNode.setBase_assets_side(Set.of());
               }
               if (!isEmpty(attackChainNode.getInject_asset_groups())) {
-                esAttackChainNode.setBase_asset_groups_side(attackChainNode.getInject_asset_groups());
+                esAttackChainNode.setBase_asset_groups_side(
+                    attackChainNode.getInject_asset_groups());
               } else {
                 esAttackChainNode.setBase_asset_groups_side(Set.of());
               }

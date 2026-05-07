@@ -14,9 +14,9 @@ import io.veriguard.database.specification.AssetAgentJobSpecification;
 import io.veriguard.database.specification.EndpointSpecification;
 import io.veriguard.rest.asset.endpoint.form.*;
 import io.veriguard.rest.asset.endpoint.output.EndpointTargetOutput;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
 import io.veriguard.rest.exception.BadRequestException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeStatusService;
 import io.veriguard.service.EndpointService;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.HttpReqRespUtils;
@@ -215,7 +215,9 @@ public class EndpointApi extends RestBehavior {
       case ALL_INJECTS:
         {
           options =
-              endpointRepository.findAllEndpointsForAtomicTestingsSimulationsAndAttackChains().stream()
+              endpointRepository
+                  .findAllEndpointsForAtomicTestingsSimulationsAndAttackChains()
+                  .stream()
                   .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
                   .toList();
           break;

@@ -107,8 +107,10 @@ public class CrowdstrikeExecutorServiceTest {
     attackChainNode.setId("1234567890");
     List<Agent> agents =
         List.of(AgentFixture.createAgent(EndpointFixture.createEndpoint(), "12345"));
-    AttackChainNodeStatus attackChainNodeStatus = AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
-    when(executorService.manageWithoutPlatformAgents(agents, attackChainNodeStatus)).thenReturn(agents);
+    AttackChainNodeStatus attackChainNodeStatus =
+        AttackChainNodeStatusFixture.createPendingAttackChainNodeStatus();
+    when(executorService.manageWithoutPlatformAgents(agents, attackChainNodeStatus))
+        .thenReturn(agents);
     // Run method to test
     crowdStrikeExecutorContextService.launchBatchExecutorSubprocess(
         attackChainNode, new HashSet<>(agents), attackChainNodeStatus);

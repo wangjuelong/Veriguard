@@ -47,11 +47,13 @@ public class VeriguardImplantExecutor extends NodeExecutor {
   }
 
   @Override
-  public ExecutionProcess process(Execution execution, ExecutableNode injection)
-      throws Exception {
-    AttackChainNode attackChainNode = this.attackChainNodeService.attackChainNode(injection.getInjection().getAttackChainNode().getId());
+  public ExecutionProcess process(Execution execution, ExecutableNode injection) throws Exception {
+    AttackChainNode attackChainNode =
+        this.attackChainNodeService.attackChainNode(
+            injection.getInjection().getAttackChainNode().getId());
 
-    List<AssetToExecute> assetToExecutes = this.attackChainNodeService.resolveAllAssetsToExecute(attackChainNode);
+    List<AssetToExecute> assetToExecutes =
+        this.attackChainNodeService.resolveAllAssetsToExecute(attackChainNode);
 
     // Check assetToExecutes target
     if (assetToExecutes.isEmpty()) {
@@ -69,13 +71,15 @@ public class VeriguardImplantExecutor extends NodeExecutor {
 
     assetToExecutes.forEach(
         assetToExecute ->
-            computeExpectationsForAssetAndAgents(expectations, content, assetToExecute, attackChainNode));
+            computeExpectationsForAssetAndAgents(
+                expectations, content, assetToExecute, attackChainNode));
 
     List<AssetGroup> assetGroups = injection.getAssetGroups();
     assetGroups.forEach(
         (assetGroup -> computeExpectationsForAssetGroup(expectations, content, assetGroup)));
 
-    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(injection, expectations);
+    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+        injection, expectations);
 
     return new ExecutionProcess(true);
   }
@@ -91,7 +95,8 @@ public class VeriguardImplantExecutor extends NodeExecutor {
 
     if (!content.getExpectations().isEmpty()) {
 
-      Map<String, Endpoint> valueTargetedAssetsMap = attackChainNodeService.getValueTargetedAssetMap(attackChainNode);
+      Map<String, Endpoint> valueTargetedAssetsMap =
+          attackChainNodeService.getValueTargetedAssetMap(attackChainNode);
 
       expectations.addAll(
           content.getExpectations().stream()
@@ -162,7 +167,8 @@ public class VeriguardImplantExecutor extends NodeExecutor {
                                       expectations.stream()
                                           .filter(
                                               prevExpectation ->
-                                                  AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION
+                                                  AttackChainNodeExpectation.EXPECTATION_TYPE
+                                                          .PREVENTION
                                                       == prevExpectation.type())
                                           .anyMatch(
                                               prevExpectation ->
@@ -194,7 +200,8 @@ public class VeriguardImplantExecutor extends NodeExecutor {
                                       expectations.stream()
                                           .filter(
                                               detExpectation ->
-                                                  AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION
+                                                  AttackChainNodeExpectation.EXPECTATION_TYPE
+                                                          .DETECTION
                                                       == detExpectation.type())
                                           .anyMatch(
                                               detExpectation ->
@@ -225,7 +232,8 @@ public class VeriguardImplantExecutor extends NodeExecutor {
                                       expectations.stream()
                                           .filter(
                                               vulExpectation ->
-                                                  AttackChainNodeExpectation.EXPECTATION_TYPE.VULNERABILITY
+                                                  AttackChainNodeExpectation.EXPECTATION_TYPE
+                                                          .VULNERABILITY
                                                       == vulExpectation.type())
                                           .anyMatch(
                                               vulExpectation ->

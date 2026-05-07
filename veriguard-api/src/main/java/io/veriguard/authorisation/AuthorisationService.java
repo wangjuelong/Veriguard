@@ -17,6 +17,8 @@ public class AuthorisationService {
 
   public SecurityExpression getSecurityExpression() {
     return new SecurityExpression(
-        SecurityContextHolder.getContext().getAuthentication(), userRepository, attackChainRunRepository);
+        SecurityContextHolder.getContext().getAuthentication(),
+        userRepository,
+        attackChainRunRepository);
   }
 }

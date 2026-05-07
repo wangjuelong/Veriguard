@@ -4,8 +4,8 @@ import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.database.repository.UserRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_run.response.PublicAttackChainRun;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,9 @@ public class AttackChainRunPlayerApi extends RestBehavior {
       @PathVariable String attackChainRunId, @RequestParam Optional<String> userId) {
     impersonateUser(this.userRepository, userId);
     AttackChainRun attackChainRun =
-        this.attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        this.attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     return new PublicAttackChainRun(attackChainRun);
   }
 }

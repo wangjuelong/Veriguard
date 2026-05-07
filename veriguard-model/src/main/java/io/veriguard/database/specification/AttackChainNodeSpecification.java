@@ -2,9 +2,9 @@ package io.veriguard.database.specification;
 
 import static io.veriguard.database.model.AttackChainRunStatus.RUNNING;
 
+import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.CollectExecutionStatus;
 import io.veriguard.database.model.ExecutionStatus;
-import io.veriguard.database.model.AttackChainNode;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.validation.constraints.NotBlank;
@@ -41,7 +41,8 @@ public class AttackChainNodeSpecification {
    * @param attackChainOrSimulationId the id of the attackChain or the simulation
    * @return the constructed specification
    */
-  public static Specification<AttackChainNode> fromAttackChainOrSimulation(String attackChainOrSimulationId) {
+  public static Specification<AttackChainNode> fromAttackChainOrSimulation(
+      String attackChainOrSimulationId) {
     if (StringUtils.isBlank(attackChainOrSimulationId)) {
       // Return an empty specification
       return Specification.where(null);
@@ -83,7 +84,8 @@ public class AttackChainNodeSpecification {
                 cb.notEqual(root.get("status").get("name"), ExecutionStatus.PENDING));
   }
 
-  public static Specification<AttackChainNode> pendingAttackChainNodeWithThresholdMinutes(int thresholdMinutes) {
+  public static Specification<AttackChainNode> pendingAttackChainNodeWithThresholdMinutes(
+      int thresholdMinutes) {
     return (root, query, cb) -> {
       Instant thresholdInstant = Instant.now().minus(Duration.ofMinutes(thresholdMinutes));
       return cb.and(
@@ -96,7 +98,8 @@ public class AttackChainNodeSpecification {
     return (root, query, cb) -> root.get("status").get("name").in(statuses);
   }
 
-  public static Specification<AttackChainNode> hasCollectingStatus(List<CollectExecutionStatus> statuses) {
+  public static Specification<AttackChainNode> hasCollectingStatus(
+      List<CollectExecutionStatus> statuses) {
     return (root, query, cb) -> root.get("collectExecutionStatus").in(statuses);
   }
 

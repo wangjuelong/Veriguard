@@ -1,10 +1,10 @@
 package io.veriguard.utils.mapper;
 
+import static io.veriguard.utils.mapper.AttackChainMapper.toAttackChainAttackChainNodes;
+import static io.veriguard.utils.mapper.AttackChainNodeMapper.toRelatedEntityOutputs;
 import static io.veriguard.utils.mapper.AttackChainRunMapper.toRelatedEntityOutputs;
 import static io.veriguard.utils.mapper.AttackChainRunMapper.toSimulationAttackChainNodes;
-import static io.veriguard.utils.mapper.AttackChainNodeMapper.toRelatedEntityOutputs;
 import static io.veriguard.utils.mapper.PayloadMapper.toRelatedEntityOutputs;
-import static io.veriguard.utils.mapper.AttackChainMapper.toAttackChainAttackChainNodes;
 import static io.veriguard.utils.mapper.SecurityPlatformMapper.toRelatedEntityOutputs;
 
 import io.veriguard.database.model.*;
@@ -27,14 +27,21 @@ public class DocumentMapper {
 
     Set<AttackChainNode> atomics =
         attackChainNodes.stream()
-            .filter(attackChainNode -> attackChainNode.getAttackChain() == null && attackChainNode.getAttackChainRun() == null)
+            .filter(
+                attackChainNode ->
+                    attackChainNode.getAttackChain() == null
+                        && attackChainNode.getAttackChainRun() == null)
             .collect(Collectors.toSet());
 
     Set<AttackChainNode> attackChainAttackChainNodes =
-        attackChainNodes.stream().filter(attackChainNode -> attackChainNode.getAttackChain() != null).collect(Collectors.toSet());
+        attackChainNodes.stream()
+            .filter(attackChainNode -> attackChainNode.getAttackChain() != null)
+            .collect(Collectors.toSet());
 
     Set<AttackChainNode> simulationAttackChainNodes =
-        attackChainNodes.stream().filter(attackChainNode -> attackChainNode.getAttackChainRun() != null).collect(Collectors.toSet());
+        attackChainNodes.stream()
+            .filter(attackChainNode -> attackChainNode.getAttackChainRun() != null)
+            .collect(Collectors.toSet());
 
     Set<AttackChainRun> simulations =
         Stream.concat(

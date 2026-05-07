@@ -1,11 +1,11 @@
 package io.veriguard.rest.attack_chain_node.service;
 
-import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.repository.AttackChainNodeRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateActivationInput;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.service.scenario.AttackChainService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -34,7 +34,10 @@ public class AttackChainAttackChainNodeService {
         .orElseThrow(
             () ->
                 new ElementNotFoundException(
-                    "Inject not found with id: " + attackChainNodeId + " in scenario: " + attackChainId));
+                    "Inject not found with id: "
+                        + attackChainNodeId
+                        + " in scenario: "
+                        + attackChainId));
   }
 
   // -- UPDATE --
@@ -46,9 +49,11 @@ public class AttackChainAttackChainNodeService {
       @NotNull AttackChainNodeInput input) {
     checkAttackChainNodeForAttackChain(attackChainId, attackChainNodeId);
     AttackChain attackChain = this.attackChainService.attackChain(attackChainId);
-    AttackChainNode attackChainNode = attackChainNodeService.updateAttackChainNode(attackChainNodeId, input);
+    AttackChainNode attackChainNode =
+        attackChainNodeService.updateAttackChainNode(attackChainNodeId, input);
 
-    // It should not be possible to add EE executor on attackChainNode when the attackChain is already
+    // It should not be possible to add EE executor on attackChainNode when the attackChain is
+    // already
     // scheduled.
     if (attackChain.getRecurrenceStart() != null) {
       this.attackChainNodeService.throwIfAttackChainNodeNotLaunchable(attackChainNode);
@@ -79,7 +84,8 @@ public class AttackChainAttackChainNodeService {
   // -- DELETE --
 
   /** Deletes an attackChainNode that belongs to the given attackChain. */
-  public void deleteAttackChainNode(@NotBlank final String attackChainId, @NotBlank final String attackChainNodeId) {
+  public void deleteAttackChainNode(
+      @NotBlank final String attackChainId, @NotBlank final String attackChainNodeId) {
     checkAttackChainNodeForAttackChain(attackChainId, attackChainNodeId);
     AttackChain attackChain = this.attackChainService.attackChain(attackChainId);
     this.attackChainNodeService.delete(attackChainNodeId);

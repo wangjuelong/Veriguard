@@ -16,18 +16,14 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.*;
-import io.veriguard.rest.attack_chain_node.form.AttackChainNodeInput;
-import io.veriguard.rest.attack_chain.form.CheckAttackChainRulesInput;
 import io.veriguard.rest.attack_chain.form.AttackChainInput;
-import io.veriguard.rest.attack_chain.form.AttackChainRecurrenceInput;
 import io.veriguard.rest.attack_chain.form.AttackChainUpdateTeamsInput;
+import io.veriguard.rest.attack_chain.form.CheckAttackChainRulesInput;
 import io.veriguard.service.AssetGroupService;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.fixtures.composers.*;
 import io.veriguard.utils.mockUser.WithMockUser;
-import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -158,7 +154,8 @@ public class AttackChainApiTest extends IntegrationTest {
 
     // -- ASSERT --
     String newAttackChainId = JsonPath.read(response, "$.scenario_id");
-    AttackChain newAttackChain = this.attackChainRepository.findById(newAttackChainId).orElseThrow();
+    AttackChain newAttackChain =
+        this.attackChainRepository.findById(newAttackChainId).orElseThrow();
     assertEquals(customDashboardSaved.getId(), newAttackChain.getCustomDashboard().getId());
   }
 
@@ -167,7 +164,10 @@ public class AttackChainApiTest extends IntegrationTest {
   @WithMockUser(withCapabilities = {Capability.ACCESS_ASSESSMENT})
   void retrieveAttackChainsTest() throws Exception {
     // -- PREPARE --
-    attackChainComposer.forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain()).persist().get();
+    attackChainComposer
+        .forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain())
+        .persist()
+        .get();
 
     // -- EXECUTE --
     String response =
@@ -189,7 +189,10 @@ public class AttackChainApiTest extends IntegrationTest {
   void retrieveAttackChainTest() throws Exception {
     // -- PREPARE --
     AttackChain testAttackChain =
-        attackChainComposer.forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain()).persist().get();
+        attackChainComposer
+            .forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain())
+            .persist()
+            .get();
 
     // -- EXECUTE --
     String response =
@@ -224,7 +227,10 @@ public class AttackChainApiTest extends IntegrationTest {
   void updateAttackChainTest() throws Exception {
     // -- PREPARE --
     AttackChain testAttackChain =
-        attackChainComposer.forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain()).persist().get();
+        attackChainComposer
+            .forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain())
+            .persist()
+            .get();
 
     AttackChainInput attackChainInput = new AttackChainInput();
     String subtitle = "A subtitle";
@@ -257,7 +263,10 @@ public class AttackChainApiTest extends IntegrationTest {
   void deleteAttackChainTest() throws Exception {
     // -- PREPARE --
     AttackChain testAttackChain =
-        attackChainComposer.forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain()).persist().get();
+        attackChainComposer
+            .forAttackChain(AttackChainFixture.createDefaultCrisisAttackChain())
+            .persist()
+            .get();
 
     // -- EXECUTE 1 ASSERT --
     this.mvc

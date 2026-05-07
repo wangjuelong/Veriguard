@@ -2,8 +2,8 @@ package io.veriguard.database.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.veriguard.helper.MonoIdSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.helper.MonoIdSerializer;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -41,7 +41,8 @@ public class AttackChainEdgeId implements Serializable {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     AttackChainEdgeId that = (AttackChainEdgeId) o;
-    return attackChainNodeParent.equals(that.attackChainNodeParent) && attackChainNodeChildren.equals(that.attackChainNodeChildren);
+    return attackChainNodeParent.equals(that.attackChainNodeParent)
+        && attackChainNodeChildren.equals(that.attackChainNodeChildren);
   }
 
   @Override

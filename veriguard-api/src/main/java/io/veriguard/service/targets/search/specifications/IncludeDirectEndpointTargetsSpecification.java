@@ -15,7 +15,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class IncludeDirectEndpointTargetsSpecification<T> {
 
-  public Specification<T> buildSpecification(AttackChainNode scopedAttackChainNode, List<String> joinPath) {
+  public Specification<T> buildSpecification(
+      AttackChainNode scopedAttackChainNode, List<String> joinPath) {
     return getDirectTargetingSpecification(scopedAttackChainNode, joinPath);
   }
 

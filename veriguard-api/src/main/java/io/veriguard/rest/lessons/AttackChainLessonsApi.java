@@ -36,8 +36,10 @@ public class AttackChainLessonsApi extends RestBehavior {
       resourceId = "#scenarioId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
-  public Iterable<LessonsCategory> attackChainLessonsCategories(@PathVariable String attackChainId) {
-    return lessonsCategoryRepository.findAll(LessonsCategorySpecification.fromAttackChain(attackChainId));
+  public Iterable<LessonsCategory> attackChainLessonsCategories(
+      @PathVariable String attackChainId) {
+    return lessonsCategoryRepository.findAll(
+        LessonsCategorySpecification.fromAttackChain(attackChainId));
   }
 
   @PostMapping(SCENARIO_URI + "{scenarioId}/lessons_apply_template/{lessonsTemplateId}")
@@ -77,7 +79,8 @@ public class AttackChainLessonsApi extends RestBehavior {
               .toList();
       lessonsQuestionRepository.saveAll(lessonsQuestions);
     }
-    return lessonsCategoryRepository.findAll(LessonsCategorySpecification.fromAttackChain(attackChainId));
+    return lessonsCategoryRepository.findAll(
+        LessonsCategorySpecification.fromAttackChain(attackChainId));
   }
 
   @PostMapping(SCENARIO_URI + "{scenarioId}/lessons_categories")

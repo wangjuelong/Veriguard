@@ -120,7 +120,8 @@ public final class AttackChainNodeImportUtils {
    * @param timePattern a pattern to use to find out what value it is
    * @return the date
    */
-  public static Temporal getAttackChainNodeDate(AttackChainNodeTime attackChainNodeTime, String timePattern) {
+  public static Temporal getAttackChainNodeDate(
+      AttackChainNodeTime attackChainNodeTime, String timePattern) {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
     if (timePattern != null && !timePattern.isEmpty()) {
       dateTimeFormatter = DateTimeFormatter.ofPattern(timePattern);

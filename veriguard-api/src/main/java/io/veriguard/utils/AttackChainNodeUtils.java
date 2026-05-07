@@ -32,9 +32,9 @@ import org.springframework.stereotype.Component;
 /**
  * Component providing utility methods for attackChainNode operations.
  *
- * <p>Handles payload extraction, expectation filtering, row validation for imports, and attackChainNode
- * duplication. This component is central to attackChainNode processing workflows including execution,
- * import, and cloning operations.
+ * <p>Handles payload extraction, expectation filtering, row validation for imports, and
+ * attackChainNode duplication. This component is central to attackChainNode processing workflows
+ * including execution, import, and cloning operations.
  *
  * @see io.veriguard.database.model.AttackChainNode
  * @see io.veriguard.database.model.StatusPayload
@@ -47,8 +47,8 @@ public class AttackChainNodeUtils {
   /**
    * Extracts the payload information from an attackChainNode.
    *
-   * <p>Determines the appropriate payload based on the attackChainNode's execution status or nodeExecutor
-   * contract. Supports multiple payload types including:
+   * <p>Determines the appropriate payload based on the attackChainNode's execution status or
+   * nodeExecutor contract. Supports multiple payload types including:
    *
    * <ul>
    *   <li>Command payloads (shell commands)
@@ -58,8 +58,8 @@ public class AttackChainNodeUtils {
    *   <li>Network traffic payloads (network operations)
    * </ul>
    *
-   * <p>If the attackChainNode has been executed, returns the saved payload output. Otherwise, constructs the
-   * payload from the nodeExecutor contract configuration.
+   * <p>If the attackChainNode has been executed, returns the saved payload output. Otherwise,
+   * constructs the payload from the nodeExecutor contract configuration.
    *
    * @param attackChainNode the attackChainNode to extract payload from
    * @return the status payload, or {@code null} if no payload can be determined
@@ -69,7 +69,8 @@ public class AttackChainNodeUtils {
       return null;
     }
 
-    if (attackChainNode.getStatus().isPresent() && attackChainNode.getStatus().get().getPayloadOutput() != null) {
+    if (attackChainNode.getStatus().isPresent()
+        && attackChainNode.getStatus().get().getPayloadOutput() != null) {
       // Commands lines saved because attackChainNode has been executed
       return attackChainNode.getStatus().get().getPayloadOutput();
     }
@@ -199,9 +200,9 @@ public class AttackChainNodeUtils {
   /**
    * Retrieves the primary expectations from an attackChainNode.
    *
-   * <p>Primary expectations are those directly associated with the attackChainNode's targets (teams, assets,
-   * or asset groups). This filters out derived or secondary expectations that may exist for
-   * sub-targets.
+   * <p>Primary expectations are those directly associated with the attackChainNode's targets
+   * (teams, assets, or asset groups). This filters out derived or secondary expectations that may
+   * exist for sub-targets.
    *
    * @param attackChainNode the attackChainNode to get expectations from
    * @return a list of expectations matching the attackChainNode's direct targets
@@ -268,18 +269,19 @@ public class AttackChainNodeUtils {
   /**
    * Creates a deep copy of an attackChainNode.
    *
-   * <p>Duplicates all properties of the source attackChainNode including content, teams, assets, asset
-   * groups, tags, and dependencies. The content is deep-copied to ensure modifications to the
+   * <p>Duplicates all properties of the source attackChainNode including content, teams, assets,
+   * asset groups, tags, and dependencies. The content is deep-copied to ensure modifications to the
    * duplicate don't affect the original.
    *
-   * <p>The duplicated attackChainNode maintains references to the same attackChainRun/attackChain and nodeExecutor
-   * contract as the original.
+   * <p>The duplicated attackChainNode maintains references to the same attackChainRun/attackChain
+   * and nodeExecutor contract as the original.
    *
    * @param attackChainNodeOrigin the attackChainNode to duplicate (must not be null)
    * @return a new attackChainNode instance with copied properties
    * @throws RuntimeException if the content cannot be serialized/deserialized
    */
-  public static AttackChainNode duplicateAttackChainNode(@NotNull AttackChainNode attackChainNodeOrigin) {
+  public static AttackChainNode duplicateAttackChainNode(
+      @NotNull AttackChainNode attackChainNodeOrigin) {
     AttackChainNode duplicatedAttackChainNode = new AttackChainNode();
     duplicatedAttackChainNode.setUser(attackChainNodeOrigin.getUser());
     duplicatedAttackChainNode.setTitle(attackChainNodeOrigin.getTitle());
@@ -287,7 +289,8 @@ public class AttackChainNodeUtils {
     try {
       ObjectNode content =
           STATIC_MAPPER.readValue(
-              STATIC_MAPPER.writeValueAsString(attackChainNodeOrigin.getContent()), ObjectNode.class);
+              STATIC_MAPPER.writeValueAsString(attackChainNodeOrigin.getContent()),
+              ObjectNode.class);
       duplicatedAttackChainNode.setContent(content);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
@@ -302,9 +305,11 @@ public class AttackChainNodeUtils {
     duplicatedAttackChainNode.setCountry(attackChainNodeOrigin.getCountry());
     duplicatedAttackChainNode.setCity(attackChainNodeOrigin.getCity());
     duplicatedAttackChainNode.setNodeContract(attackChainNodeOrigin.getNodeContract().orElse(null));
-    duplicatedAttackChainNode.setAssetGroups(new ArrayList<>(attackChainNodeOrigin.getAssetGroups()));
+    duplicatedAttackChainNode.setAssetGroups(
+        new ArrayList<>(attackChainNodeOrigin.getAssetGroups()));
     duplicatedAttackChainNode.setAssets(new ArrayList<>(attackChainNodeOrigin.getAssets()));
-    duplicatedAttackChainNode.setCommunications(new ArrayList<>(attackChainNodeOrigin.getCommunications()));
+    duplicatedAttackChainNode.setCommunications(
+        new ArrayList<>(attackChainNodeOrigin.getCommunications()));
     duplicatedAttackChainNode.setTags(new HashSet<>(attackChainNodeOrigin.getTags()));
 
     duplicatedAttackChainNode.setAttackChainRun(attackChainNodeOrigin.getAttackChainRun());
@@ -318,8 +323,10 @@ public class AttackChainNodeUtils {
    * @param attackChainNodes to retrive all attackChainNode expectations
    * @return a stream of all retrieve attackChainNode expectations
    */
-  public static Stream<AttackChainNodeExpectation> extractAttackChainNodeExpectationsFromAttackChainNodes(
-      List<AttackChainNode> attackChainNodes) {
-    return attackChainNodes.stream().flatMap(attackChainNode -> attackChainNode.getExpectations().stream());
+  public static Stream<AttackChainNodeExpectation>
+      extractAttackChainNodeExpectationsFromAttackChainNodes(
+          List<AttackChainNode> attackChainNodes) {
+    return attackChainNodes.stream()
+        .flatMap(attackChainNode -> attackChainNode.getExpectations().stream());
   }
 }

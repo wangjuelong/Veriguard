@@ -1,10 +1,10 @@
 package io.veriguard.utils;
 
 import io.veriguard.database.model.Agent;
+import io.veriguard.database.model.AttackChainNodeStatus;
 import io.veriguard.database.model.ExecutionTrace;
 import io.veriguard.database.model.ExecutionTraceAction;
 import io.veriguard.database.model.ExecutionTraceStatus;
-import io.veriguard.database.model.AttackChainNodeStatus;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExecutionAction;
 import java.util.List;
 import java.util.Set;
@@ -57,10 +57,11 @@ public class ExecutionTraceUtils {
   // -- TRACE BUILDERS --
 
   /**
-   * Adds a COMPLETE/TIMEOUT trace to the given attackChainNode status for an agent that did not respond
-   * within the configured threshold.
+   * Adds a COMPLETE/TIMEOUT trace to the given attackChainNode status for an agent that did not
+   * respond within the configured threshold.
    */
-  public static void addTimeoutTrace(AttackChainNodeStatus status, Agent agent, int thresholdMinutes) {
+  public static void addTimeoutTrace(
+      AttackChainNodeStatus status, Agent agent, int thresholdMinutes) {
     status.addTrace(
         ExecutionTraceStatus.TIMEOUT,
         "Agent "
@@ -73,8 +74,8 @@ public class ExecutionTraceUtils {
   }
 
   /**
-   * Adds a START/INFO trace to the given attackChainNode status indicating that an implant was spawned by
-   * the agent.
+   * Adds a START/INFO trace to the given attackChainNode status indicating that an implant was
+   * spawned by the agent.
    */
   public static void addJobRetrievalTrace(AttackChainNodeStatus status, Agent agent) {
     status.addTrace(

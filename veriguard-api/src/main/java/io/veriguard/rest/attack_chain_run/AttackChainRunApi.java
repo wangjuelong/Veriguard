@@ -10,37 +10,37 @@ import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationCrite
 import static java.time.Instant.now;
 import static org.springframework.util.StringUtils.hasText;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
 import io.veriguard.database.raw.*;
 import io.veriguard.database.repository.*;
-import io.veriguard.database.specification.ComcheckSpecification;
 import io.veriguard.database.specification.AttackChainRunLogSpecification;
+import io.veriguard.database.specification.ComcheckSpecification;
 import io.veriguard.rest.asset.endpoint.form.EndpointOutput;
 import io.veriguard.rest.asset_group.form.AssetGroupOutput;
-import io.veriguard.rest.custom_dashboard.CustomDashboardService;
-import io.veriguard.rest.document.DocumentService;
-import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.rest.exception.InputValidationException;
+import io.veriguard.rest.attack_chain_node.form.NodeExpectationResultsByAttackPattern;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.attack_chain_run.exports.ExportOptions;
 import io.veriguard.rest.attack_chain_run.form.*;
 import io.veriguard.rest.attack_chain_run.response.AttackChainRunsGlobalScoresOutput;
 import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.rest.attack_chain_run.service.ExportService;
+import io.veriguard.rest.custom_dashboard.CustomDashboardService;
+import io.veriguard.rest.document.DocumentService;
+import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.rest.exception.InputValidationException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.attack_chain_node.form.NodeExpectationResultsByAttackPattern;
-import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
 import io.veriguard.service.scenario.AttackChainService;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.criteria.Join;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -110,7 +110,8 @@ public class AttackChainRunApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public Iterable<Log> logs(@PathVariable String attackChainRun) {
-    return attackChainRunLogRepository.findAll(AttackChainRunLogSpecification.fromAttackChainRun(attackChainRun));
+    return attackChainRunLogRepository.findAll(
+        AttackChainRunLogSpecification.fromAttackChainRun(attackChainRun));
   }
 
   @PostMapping(EXERCISE_URI + "/{exerciseId}/logs")
@@ -119,9 +120,12 @@ public class AttackChainRunApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
-  public Log createLog(@PathVariable String attackChainRunId, @Valid @RequestBody LogCreateInput input) {
+  public Log createLog(
+      @PathVariable String attackChainRunId, @Valid @RequestBody LogCreateInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     Log log = new Log();
     log.setUpdateAttributes(input);
     log.setAttackChainRun(attackChainRun);
@@ -178,7 +182,8 @@ public class AttackChainRunApi extends RestBehavior {
       resourceType = ResourceType.SIMULATION)
   public Comcheck comcheck(@PathVariable String attackChainRun, @PathVariable String comcheck) {
     Specification<Comcheck> filters =
-        ComcheckSpecification.fromAttackChainRun(attackChainRun).and(ComcheckSpecification.id(comcheck));
+        ComcheckSpecification.fromAttackChainRun(attackChainRun)
+            .and(ComcheckSpecification.id(comcheck));
     return comcheckRepository.findOne(filters).orElseThrow(ElementNotFoundException::new);
   }
 
@@ -212,7 +217,8 @@ public class AttackChainRunApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public Iterable<TeamOutput> removeAttackChainRunTeams(
-      @PathVariable String attackChainRunId, @Valid @RequestBody AttackChainRunUpdateTeamsInput input) {
+      @PathVariable String attackChainRunId,
+      @Valid @RequestBody AttackChainRunUpdateTeamsInput input) {
     return this.attackChainRunService.removeTeams(attackChainRunId, input.getTeamIds());
   }
 
@@ -223,7 +229,8 @@ public class AttackChainRunApi extends RestBehavior {
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public Iterable<TeamOutput> replaceAttackChainRunTeams(
-      @PathVariable String attackChainRunId, @Valid @RequestBody AttackChainRunUpdateTeamsInput input) {
+      @PathVariable String attackChainRunId,
+      @Valid @RequestBody AttackChainRunUpdateTeamsInput input) {
     return this.attackChainRunService.replaceTeams(attackChainRunId, input.getTeamIds());
   }
 
@@ -270,7 +277,9 @@ public class AttackChainRunApi extends RestBehavior {
               attackChainRunTeamUserId.setUserId(playerId);
               attackChainRunTeamUserRepository.deleteById(attackChainRunTeamUserId);
             });
-    return attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+    return attackChainRunRepository
+        .findById(attackChainRunId)
+        .orElseThrow(ElementNotFoundException::new);
   }
 
   @Transactional(rollbackFor = Exception.class)
@@ -314,7 +323,9 @@ public class AttackChainRunApi extends RestBehavior {
               attackChainRunTeamUserId.setUserId(playerId);
               attackChainRunTeamUserRepository.deleteById(attackChainRunTeamUserId);
             });
-    return attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+    return attackChainRunRepository
+        .findById(attackChainRunId)
+        .orElseThrow(ElementNotFoundException::new);
   }
 
   // endregion
@@ -350,7 +361,8 @@ public class AttackChainRunApi extends RestBehavior {
       actionPerformed = Action.DUPLICATE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
-  public AttackChainRun duplicateAttackChainRun(@PathVariable @NotBlank final String attackChainRunId) {
+  public AttackChainRun duplicateAttackChainRun(
+      @PathVariable @NotBlank final String attackChainRunId) {
     return attackChainRunService.getDuplicateAttackChainRun(attackChainRunId);
   }
 
@@ -363,7 +375,9 @@ public class AttackChainRunApi extends RestBehavior {
   public AttackChainRun updateAttackChainRunInformation(
       @PathVariable String attackChainRunId, @Valid @RequestBody UpdateAttackChainRunInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     Set<Tag> currentTagList = attackChainRun.getTags();
     attackChainRun.setTags(iterableToSet(this.tagRepository.findAllById(input.getTagIds())));
     attackChainRun.setUpdateAttributes(input);
@@ -373,7 +387,8 @@ public class AttackChainRunApi extends RestBehavior {
     } else {
       attackChainRun.setCustomDashboard(null);
     }
-    return attackChainRunService.updateExercice(attackChainRun, currentTagList, input.isApplyTagRule());
+    return attackChainRunService.updateExercice(
+        attackChainRun, currentTagList, input.isApplyTagRule());
   }
 
   @PutMapping(EXERCISE_URI + "/{exerciseId}/start_date")
@@ -384,7 +399,8 @@ public class AttackChainRunApi extends RestBehavior {
   @Transactional(rollbackFor = Exception.class)
   @Deprecated(since = "1.16.0")
   public AttackChainRun deprecatedUpdateAttackChainRunStart(
-      @PathVariable String attackChainRunId, @Valid @RequestBody AttackChainRunUpdateStartDateInput input)
+      @PathVariable String attackChainRunId,
+      @Valid @RequestBody AttackChainRunUpdateStartDateInput input)
       throws InputValidationException {
     return this.updateAttackChainRunStart(attackChainRunId, input);
   }
@@ -396,10 +412,13 @@ public class AttackChainRunApi extends RestBehavior {
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
   public AttackChainRun updateAttackChainRunStart(
-      @PathVariable String attackChainRunId, @Valid @RequestBody AttackChainRunUpdateStartDateInput input)
+      @PathVariable String attackChainRunId,
+      @Valid @RequestBody AttackChainRunUpdateStartDateInput input)
       throws InputValidationException {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     if (!attackChainRun.getStatus().equals(AttackChainRunStatus.SCHEDULED)) {
       String message = "Change date is only possible in scheduling state";
       throw new InputValidationException("exercise_start_date", message);
@@ -416,12 +435,16 @@ public class AttackChainRunApi extends RestBehavior {
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
   public AttackChainRun updateAttackChainRunTags(
-      @PathVariable String attackChainRunId, @Valid @RequestBody AttackChainRunUpdateTagsInput input) {
+      @PathVariable String attackChainRunId,
+      @Valid @RequestBody AttackChainRunUpdateTagsInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     Set<Tag> currentTagList = attackChainRun.getTags();
     attackChainRun.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
-    return attackChainRunService.updateExercice(attackChainRun, currentTagList, input.isApplyTagRule());
+    return attackChainRunService.updateExercice(
+        attackChainRun, currentTagList, input.isApplyTagRule());
   }
 
   @PutMapping(EXERCISE_URI + "/{exerciseId}/logos")
@@ -431,9 +454,12 @@ public class AttackChainRunApi extends RestBehavior {
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
   public AttackChainRun updateAttackChainRunLogos(
-      @PathVariable String attackChainRunId, @Valid @RequestBody AttackChainRunUpdateLogoInput input) {
+      @PathVariable String attackChainRunId,
+      @Valid @RequestBody AttackChainRunUpdateLogoInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     attackChainRun.setLogoDark(documentRepository.findById(input.getLogoDark()).orElse(null));
     attackChainRun.setLogoLight(documentRepository.findById(input.getLogoLight()).orElse(null));
     return attackChainRunRepository.save(attackChainRun);
@@ -468,7 +494,9 @@ public class AttackChainRunApi extends RestBehavior {
   public AttackChainRun updateAttackChainRunLessons(
       @PathVariable String attackChainRunId, @Valid @RequestBody LessonsInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     attackChainRun.setLessonsAnonymized(input.isLessonsAnonymized());
     return attackChainRunRepository.save(attackChainRun);
   }
@@ -494,12 +522,14 @@ public class AttackChainRunApi extends RestBehavior {
     RawSimulation rawSimulation = attackChainRunService.rawSimulation(attackChainRunId);
     // We get the attackChainNodes linked to this attackChainRun
     List<RawAttackChainNode> rawAttackChainNodes =
-        attackChainNodeRepository.findRawByIds(rawSimulation.getInject_ids().stream().distinct().toList());
+        attackChainNodeRepository.findRawByIds(
+            rawSimulation.getInject_ids().stream().distinct().toList());
     // We get the tuple attackChainRun/team/user
     List<RawAttackChainRunTeamUser> listRawAttackChainRunTeamUsers =
         attackChainRunTeamUserRepository.rawByAttackChainRunIds(List.of(attackChainRunId));
     // We get the objectives of this attackChainRun
-    List<RawObjective> rawObjectives = objectiveRepository.rawByAttackChainRunIds(List.of(attackChainRunId));
+    List<RawObjective> rawObjectives =
+        objectiveRepository.rawByAttackChainRunIds(List.of(attackChainRunId));
     // We make a map of the Evaluations by objective
     Map<String, List<RawEvaluation>> mapEvaluationsByObjective =
         evaluationRepository
@@ -516,7 +546,9 @@ public class AttackChainRunApi extends RestBehavior {
                 killChainPhaseRepository
                     .findAllById(
                         rawAttackChainNodes.stream()
-                            .flatMap(rawAttackChainNode -> rawAttackChainNode.getInject_kill_chain_phases().stream())
+                            .flatMap(
+                                rawAttackChainNode ->
+                                    rawAttackChainNode.getInject_kill_chain_phases().stream())
                             .toList())
                     .spliterator(),
                 false)
@@ -545,10 +577,13 @@ public class AttackChainRunApi extends RestBehavior {
             .toList();
 
     List<AttackChainRunTeamUser> listAttackChainRunTeamUsers =
-        listRawAttackChainRunTeamUsers.stream().map(AttackChainRunTeamUser::fromRawAttackChainRunTeamUser).toList();
+        listRawAttackChainRunTeamUsers.stream()
+            .map(AttackChainRunTeamUser::fromRawAttackChainRunTeamUser)
+            .toList();
 
     // We create an AttackChainRunDetails object and populate it
-    SimulationDetails detail = fromRawAttackChainRun(rawSimulation, listAttackChainRunTeamUsers, objectives);
+    SimulationDetails detail =
+        fromRawAttackChainRun(rawSimulation, listAttackChainRunTeamUsers, objectives);
     detail.setPlatforms(
         rawAttackChainNodes.stream()
             .flatMap(attackChainNode -> attackChainNode.getInject_platforms().stream())
@@ -581,7 +616,8 @@ public class AttackChainRunApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
-  public List<ExpectationResultsByType> globalResults(@NotBlank @PathVariable String attackChainRunId) {
+  public List<ExpectationResultsByType> globalResults(
+      @NotBlank @PathVariable String attackChainRunId) {
     return attackChainRunService.getGlobalResults(attackChainRunId);
   }
 
@@ -610,9 +646,12 @@ public class AttackChainRunApi extends RestBehavior {
       actionPerformed = Action.DELETE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
-  public AttackChainRun deleteDocument(@PathVariable String attackChainRunId, @PathVariable String documentId) {
+  public AttackChainRun deleteDocument(
+      @PathVariable String attackChainRunId, @PathVariable String documentId) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     attackChainRun.setUpdatedAt(now());
     Document doc =
         documentRepository.findById(documentId).orElseThrow(ElementNotFoundException::new);
@@ -640,7 +679,8 @@ public class AttackChainRunApi extends RestBehavior {
       actionPerformed = Action.LAUNCH,
       resourceType = ResourceType.SIMULATION)
   public AttackChainRun changeAttackChainRunStatus(
-      @PathVariable String attackChainRunId, @Valid @RequestBody AttackChainRunUpdateStatusInput input) {
+      @PathVariable String attackChainRunId,
+      @Valid @RequestBody AttackChainRunUpdateStatusInput input) {
     AttackChainRunStatus status = input.getStatus();
     return attackChainRunService.changeAttackChainRunStatus(status, attackChainRunId);
   }
@@ -676,7 +716,8 @@ public class AttackChainRunApi extends RestBehavior {
           (Specification<AttackChainRun> specification,
               Specification<AttackChainRun> specificationCount,
               Pageable pageable) ->
-              this.attackChainRunService.attackChainRuns(specification, specificationCount, pageable, joinMap),
+              this.attackChainRunService.attackChainRuns(
+                  specification, specificationCount, pageable, joinMap),
           searchPaginationInput,
           AttackChainRun.class,
           joinMap);
@@ -705,13 +746,17 @@ public class AttackChainRunApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
-  public Iterable<Communication> attackChainRunCommunications(@PathVariable String attackChainRunId) {
+  public Iterable<Communication> attackChainRunCommunications(
+      @PathVariable String attackChainRunId) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     List<Communication> communications = new ArrayList<>();
     attackChainRun
         .getAttackChainNodes()
-        .forEach(attackChainNodeDoc -> communications.addAll(attackChainNodeDoc.getCommunications()));
+        .forEach(
+            attackChainNodeDoc -> communications.addAll(attackChainNodeDoc.getCommunications()));
     return communications;
   }
 
@@ -745,10 +790,13 @@ public class AttackChainRunApi extends RestBehavior {
       HttpServletResponse response)
       throws IOException {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     int exportOptionsMask = ExportOptions.mask(isWithPlayers, isWithTeams, isWithVariableValues);
 
-    byte[] zippedExport = exportService.exportAttackChainRunToZip(attackChainRun, exportOptionsMask);
+    byte[] zippedExport =
+        exportService.exportAttackChainRunToZip(attackChainRun, exportOptionsMask);
     String zipName = exportService.getZipFileName(attackChainRun, exportOptionsMask);
 
     response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipName);
@@ -782,7 +830,8 @@ public class AttackChainRunApi extends RestBehavior {
       @Valid @RequestBody final CheckAttackChainRunRulesInput input) {
     AttackChainRun attackChainRun = this.attackChainRunService.attackChainRun(attackChainRunId);
     return CheckAttackChainRunRulesOutput.builder()
-        .rulesFound(this.attackChainRunService.checkIfTagRulesApplies(attackChainRun, input.getNewTags()))
+        .rulesFound(
+            this.attackChainRunService.checkIfTagRulesApplies(attackChainRun, input.getNewTags()))
         .build();
   }
 

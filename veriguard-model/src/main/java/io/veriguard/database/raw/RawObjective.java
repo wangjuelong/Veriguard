@@ -4,7 +4,8 @@ package io.veriguard.database.raw;
  * Spring Data projection interface for objective data.
  *
  * <p>This interface defines a lightweight projection for retrieving objective identifiers and their
- * attackChainRun associations. Objectives represent goals to be achieved during attackChainRun execution.
+ * attackChainRun associations. Objectives represent goals to be achieved during attackChainRun
+ * execution.
  *
  * @see io.veriguard.database.model.Objective
  */

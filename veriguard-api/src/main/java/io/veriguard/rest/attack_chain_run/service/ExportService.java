@@ -5,12 +5,12 @@ import static io.veriguard.service.ImportService.EXPORT_ENTRY_EXERCISE;
 import static java.time.Instant.now;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.veriguard.database.model.Document;
 import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.Document;
 import io.veriguard.database.repository.DocumentRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_run.exports.AttackChainRunFileExport;
 import io.veriguard.rest.attack_chain_run.exports.ExportOptions;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.service.FileService;
 import jakarta.annotation.Resource;
 import java.io.ByteArrayOutputStream;
@@ -47,11 +47,13 @@ public class ExportService {
     return (attackChainRun.getName() + "_" + now().toString()) + "_" + infos + ".zip";
   }
 
-  public byte[] exportAttackChainRunToZip(AttackChainRun attackChainRun, int exportOptionsMask) throws IOException {
+  public byte[] exportAttackChainRunToZip(AttackChainRun attackChainRun, int exportOptionsMask)
+      throws IOException {
     ObjectMapper objectMapper = mapper.copy();
 
     AttackChainRunFileExport importExport =
-        AttackChainRunFileExport.fromAttackChainRun(attackChainRun, objectMapper).withOptions(exportOptionsMask);
+        AttackChainRunFileExport.fromAttackChainRun(attackChainRun, objectMapper)
+            .withOptions(exportOptionsMask);
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     ZipOutputStream zipExport = new ZipOutputStream(outputStream);

@@ -18,7 +18,8 @@ import org.springframework.validation.annotation.Validated;
 public class AttackChainRecurrenceService {
   private final List<PeriodExpressionHandler> periodExpressionHandlers;
 
-  public Optional<Instant> getNextExecutionTime(@NotNull AttackChain attackChain, Instant currentTime) {
+  public Optional<Instant> getNextExecutionTime(
+      @NotNull AttackChain attackChain, Instant currentTime) {
     Optional<PeriodExpressionHandler> handler =
         periodExpressionHandlers.stream()
             .filter(h -> h.canHandleExpression(attackChain.getRecurrence()))
@@ -33,6 +34,7 @@ public class AttackChainRecurrenceService {
     }
     return handler
         .get()
-        .getNextOccurrence(attackChain.getRecurrenceStart(), currentTime, attackChain.getRecurrence());
+        .getNextOccurrence(
+            attackChain.getRecurrenceStart(), currentTime, attackChain.getRecurrence());
   }
 }

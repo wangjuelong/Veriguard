@@ -1,10 +1,12 @@
 package io.veriguard.utils;
 
 /**
- * Enumeration representing the different types of targets that can be used for attackChainNode execution.
+ * Enumeration representing the different types of targets that can be used for attackChainNode
+ * execution.
  *
- * <p>Targets determine who or what receives the attackChainNode during simulation attackChainRuns or atomic
- * testing. Each target type represents a specific category of entities in the Veriguard platform.
+ * <p>Targets determine who or what receives the attackChainNode during simulation attackChainRuns
+ * or atomic testing. Each target type represents a specific category of entities in the Veriguard
+ * platform.
  *
  * @see io.veriguard.database.model.AttackChainNode
  * @see io.veriguard.database.model.NodeContract

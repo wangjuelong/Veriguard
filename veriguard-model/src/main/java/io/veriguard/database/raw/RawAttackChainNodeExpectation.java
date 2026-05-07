@@ -6,9 +6,9 @@ import java.util.Set;
 /**
  * Spring Data projection interface for attackChainNode expectation data.
  *
- * <p>This interface defines a projection for retrieving attackChainNode expectation information including
- * scoring, target assignments, and evaluation results. Expectations define what outcomes are
- * expected from attackChainNode execution and track whether those outcomes were achieved.
+ * <p>This interface defines a projection for retrieving attackChainNode expectation information
+ * including scoring, target assignments, and evaluation results. Expectations define what outcomes
+ * are expected from attackChainNode execution and track whether those outcomes were achieved.
  *
  * @see io.veriguard.database.model.AttackChainNodeExpectation
  */

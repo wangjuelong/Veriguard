@@ -1,7 +1,7 @@
 package io.veriguard.database.specification;
 
-import io.veriguard.database.model.ContractOutputType;
 import io.veriguard.database.model.AttackChainRunStatus;
+import io.veriguard.database.model.ContractOutputType;
 import io.veriguard.database.model.Finding;
 import jakarta.persistence.criteria.*;
 import java.util.List;
@@ -12,7 +12,8 @@ public class FindingSpecification {
 
   private FindingSpecification() {}
 
-  public static Specification<Finding> findFindingsForAttackChainNode(@NotNull final String attackChainNodeId) {
+  public static Specification<Finding> findFindingsForAttackChainNode(
+      @NotNull final String attackChainNodeId) {
     return (root, query, cb) -> cb.equal(root.get("inject").get("id"), attackChainNodeId);
   }
 
@@ -22,7 +23,8 @@ public class FindingSpecification {
         cb.equal(root.get("inject").get("exercise").get("id"), simulationId);
   }
 
-  public static Specification<Finding> findFindingsForAttackChain(@NotNull final String attackChainId) {
+  public static Specification<Finding> findFindingsForAttackChain(
+      @NotNull final String attackChainId) {
     return (root, query, cb) ->
         cb.equal(root.get("inject").get("exercise").get("scenario").get("id"), attackChainId);
   }
@@ -41,7 +43,8 @@ public class FindingSpecification {
       attackChainRunJoin2.on(
           cb.and(
               cb.equal(
-                  attackChainRunJoin1.get("scenario").get("id"), attackChainRunJoin2.get("scenario").get("id")),
+                  attackChainRunJoin1.get("scenario").get("id"),
+                  attackChainRunJoin2.get("scenario").get("id")),
               // check this column is not null for joining
               cb.isNotNull(attackChainRunJoin1.get("launchOrder")),
               cb.isNotNull(attackChainRunJoin2.get("launchOrder")),
@@ -49,7 +52,8 @@ public class FindingSpecification {
               cb.equal(attackChainRunJoin1.get("status"), AttackChainRunStatus.FINISHED),
               cb.equal(attackChainRunJoin2.get("status"), AttackChainRunStatus.FINISHED),
               // trim to "latest" simulation
-              cb.lessThan(attackChainRunJoin1.get("launchOrder"), attackChainRunJoin2.get("launchOrder"))));
+              cb.lessThan(
+                  attackChainRunJoin1.get("launchOrder"), attackChainRunJoin2.get("launchOrder"))));
 
       return cb.and(
           cb.isNull(attackChainRunJoin2.get("id")),

@@ -4,6 +4,7 @@ import static io.veriguard.database.specification.TeamSpecification.contextual;
 import static io.veriguard.database.specification.TeamSpecification.fromAttackChainRun;
 import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
@@ -13,7 +14,6 @@ import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.TeamService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;

@@ -99,7 +99,8 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
   }
 
   private AttackChainRunComposer.Composer getAttackChainRunComposerWithName() {
-    return attackChainRunComposer.forAttackChainRun(AttackChainRunFixture.createDefaultAttackChainRun());
+    return attackChainRunComposer.forAttackChainRun(
+        AttackChainRunFixture.createDefaultAttackChainRun());
   }
 
   private UserComposer.Composer getPlayerComposerWithName(
@@ -182,7 +183,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    get(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/options")
+                    get(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/options")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk())
@@ -325,7 +331,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -454,7 +465,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -470,8 +486,10 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
                 Set.of(),
                 agent1Wrapper.get().getAsset().getId(),
                 agent1Wrapper.get().getExecutor().getType());
-        expectedTarget1.setTargetDetectionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
-        expectedTarget1.setTargetPreventionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL);
+        expectedTarget1.setTargetDetectionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+        expectedTarget1.setTargetPreventionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL);
         AgentTarget expectedTarget2 =
             new AgentTarget(
                 agent2Wrapper.get().getId(),
@@ -479,8 +497,10 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
                 Set.of(),
                 agent2Wrapper.get().getAsset().getId(),
                 agent2Wrapper.get().getExecutor().getType());
-        expectedTarget2.setTargetDetectionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
-        expectedTarget2.setTargetPreventionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL);
+        expectedTarget2.setTargetDetectionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+        expectedTarget2.setTargetPreventionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL);
         // expect two out of three endpoints in the resultset, i.e. not the extra one
         List<AgentTarget> expected = List.of(expectedTarget1, expectedTarget2);
 
@@ -546,7 +566,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -637,7 +662,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -743,7 +773,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -824,7 +859,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -893,7 +933,8 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
         endpointComposer.forEndpoint(ep3).withAgent(agent3Wrapper).persist();
 
         assetGroupWrappers.forEach(attackChainNodeWrapper::withAssetGroup);
-        AttackChainNode attackChainNode = attackChainNodeWrapper.withEndpoint(ep2Wrapper).persist().get();
+        AttackChainNode attackChainNode =
+            attackChainNodeWrapper.withEndpoint(ep2Wrapper).persist().get();
 
         entityManager.flush();
         entityManager.clear();
@@ -906,7 +947,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -992,7 +1038,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -1080,7 +1131,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
           String response =
               mvc.perform(
-                      post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                      post(INJECT_URI
+                              + "/"
+                              + attackChainNode.getId()
+                              + "/targets/"
+                              + targetType
+                              + "/search")
                           .contentType(MediaType.APPLICATION_JSON)
                           .content(mapper.writeValueAsString(search))
                           .with(csrf()))
@@ -1165,7 +1221,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
           String response =
               mvc.perform(
-                      post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                      post(INJECT_URI
+                              + "/"
+                              + attackChainNode.getId()
+                              + "/targets/"
+                              + targetType
+                              + "/search")
                           .contentType(MediaType.APPLICATION_JSON)
                           .content(mapper.writeValueAsString(search))
                           .with(csrf()))
@@ -1249,7 +1310,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
           String response =
               mvc.perform(
-                      post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                      post(INJECT_URI
+                              + "/"
+                              + attackChainNode.getId()
+                              + "/targets/"
+                              + targetType
+                              + "/search")
                           .contentType(MediaType.APPLICATION_JSON)
                           .content(mapper.writeValueAsString(search))
                           .with(csrf()))
@@ -1334,7 +1400,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
           String response =
               mvc.perform(
-                      post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                      post(INJECT_URI
+                              + "/"
+                              + attackChainNode.getId()
+                              + "/targets/"
+                              + targetType
+                              + "/search")
                           .contentType(MediaType.APPLICATION_JSON)
                           .content(mapper.writeValueAsString(search))
                           .with(csrf()))
@@ -1408,7 +1479,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    get(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/options")
+                    get(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/options")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk())
@@ -1466,7 +1542,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    get(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/options")
+                    get(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/options")
                         .queryParam("searchText", "search this")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
@@ -1607,7 +1688,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -1719,7 +1805,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -1734,16 +1825,20 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
                 ep1Wrapper.get().getName(),
                 ep1Wrapper.get().getTags().stream().map(Tag::getId).collect(Collectors.toSet()),
                 ep1Wrapper.get().getPlatform().name());
-        expectedTarget1.setTargetDetectionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
-        expectedTarget1.setTargetPreventionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL);
+        expectedTarget1.setTargetDetectionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+        expectedTarget1.setTargetPreventionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL);
         EndpointTarget expectedTarget2 =
             new EndpointTarget(
                 ep2Wrapper.get().getId(),
                 ep2Wrapper.get().getName(),
                 ep2Wrapper.get().getTags().stream().map(Tag::getId).collect(Collectors.toSet()),
                 ep2Wrapper.get().getPlatform().name());
-        expectedTarget2.setTargetDetectionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
-        expectedTarget2.setTargetPreventionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL);
+        expectedTarget2.setTargetDetectionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+        expectedTarget2.setTargetPreventionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL);
         // expect two out of three endpoints in the resultset, i.e. not the extra one
         List<EndpointTarget> expected = List.of(expectedTarget1, expectedTarget2);
 
@@ -1795,7 +1890,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -1863,7 +1963,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -1942,7 +2047,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -2007,7 +2117,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -2059,7 +2174,8 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
         endpointComposer.forEndpoint(ep3).persist();
 
         assetGroupWrappers.forEach(attackChainNodeWrapper::withAssetGroup);
-        AttackChainNode attackChainNode = attackChainNodeWrapper.withEndpoint(ep2Wrapper).persist().get();
+        AttackChainNode attackChainNode =
+            attackChainNodeWrapper.withEndpoint(ep2Wrapper).persist().get();
 
         entityManager.flush();
         entityManager.clear();
@@ -2072,7 +2188,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -2140,7 +2261,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/search")
+                    post(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(search))
                         .with(csrf()))
@@ -2205,7 +2331,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    get(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/options")
+                    get(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/options")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk())
@@ -2258,7 +2389,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    get(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/options")
+                    get(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/options")
                         // keep lower case for case-insensitive search
                         .queryParam("searchText", "returnthis")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -2463,7 +2599,8 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
     @DisplayName("With actual results")
     public class WithActualResults {
       private AttackChainNodeExpectationComposer.Composer getExpectationWrapperWithResult(
-          AttackChainNodeExpectation.EXPECTATION_TYPE type, AttackChainNodeExpectation.EXPECTATION_STATUS status) {
+          AttackChainNodeExpectation.EXPECTATION_TYPE type,
+          AttackChainNodeExpectation.EXPECTATION_STATUS status) {
         return attackChainNodeExpectationComposer.forExpectation(
             AttackChainNodeExpectationFixture.createExpectationWithTypeAndStatus(type, status));
       }
@@ -2523,8 +2660,10 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
                 assetGroupWrapper.get().getTags().stream()
                     .map(Tag::getId)
                     .collect(Collectors.toSet()));
-        expectedAssetGroup.setTargetDetectionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
-        expectedAssetGroup.setTargetPreventionStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED);
+        expectedAssetGroup.setTargetDetectionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+        expectedAssetGroup.setTargetPreventionStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED);
         expectedAssetGroup.setTargetHumanResponseStatus(
             AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING);
         List<AssetGroupTarget> expected = List.of(expectedAssetGroup);
@@ -2564,7 +2703,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    get(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/options")
+                    get(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/options")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk())
@@ -2636,8 +2780,9 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
       @Test
       @DisplayName(
           "When teams are targets, options should return all possible targets for exercise with inject with 1 team")
-      public void whenTeamsAreTargets_returnAllPossibleTargetsForAttackChainRunWithAttackChainNodeWith1Team()
-          throws Exception {
+      public void
+          whenTeamsAreTargets_returnAllPossibleTargetsForAttackChainRunWithAttackChainNodeWith1Team()
+              throws Exception {
         String searchTerm1 = "player target 1";
         String searchTerm2 = "player target 2";
         TeamComposer.Composer teamWrapper1 = getTeamComposerWithName(searchTerm1);
@@ -2700,7 +2845,12 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    get(INJECT_URI + "/" + attackChainNode.getId() + "/targets/" + targetType + "/options")
+                    get(INJECT_URI
+                            + "/"
+                            + attackChainNode.getId()
+                            + "/targets/"
+                            + targetType
+                            + "/options")
                         .queryParam("searchText", "Other")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
@@ -2882,8 +3032,9 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
     @Test
     @DisplayName(
         "With some teams targets, return matching items for exercises with inject all teams")
-    public void withSomeTeamsTargets_returnMatchingItemsForAttackChainRunsWithAttackChainNodeAllTeams()
-        throws Exception {
+    public void
+        withSomeTeamsTargets_returnMatchingItemsForAttackChainRunsWithAttackChainNodeAllTeams()
+            throws Exception {
       String searchTerm1 = "team target 1";
       String searchTerm2 = "team target 2";
       TeamComposer.Composer teamWrapper1 = getTeamComposerWithName(searchTerm1);
@@ -2940,7 +3091,8 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
     @DisplayName("With actual results")
     public class WithActualResults {
       private AttackChainNodeExpectationComposer.Composer getExpectationWrapperWithResult(
-          AttackChainNodeExpectation.EXPECTATION_TYPE type, AttackChainNodeExpectation.EXPECTATION_STATUS status) {
+          AttackChainNodeExpectation.EXPECTATION_TYPE type,
+          AttackChainNodeExpectation.EXPECTATION_STATUS status) {
         return attackChainNodeExpectationComposer.forExpectation(
             AttackChainNodeExpectationFixture.createExpectationWithTypeAndStatus(type, status));
       }
@@ -2986,7 +3138,8 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
                 teamWrapper.get().getId(),
                 teamWrapper.get().getName(),
                 teamWrapper.get().getTags().stream().map(Tag::getId).collect(Collectors.toSet()));
-        expectedTeam.setTargetHumanResponseStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING);
+        expectedTeam.setTargetHumanResponseStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING);
         List<TeamTarget> expected = List.of(expectedTeam);
 
         assertThatJson(response).node("content").isEqualTo(mapper.writeValueAsString(expected));
@@ -3149,8 +3302,9 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
     @Test
     @DisplayName(
         "With some players targets, return matching items for exercises with inject all teams")
-    public void withSomePlayersTargets_returnMatchingItemsForAttackChainRunsWithAttackChainNodeAllTeams()
-        throws Exception {
+    public void
+        withSomePlayersTargets_returnMatchingItemsForAttackChainRunsWithAttackChainNodeAllTeams()
+            throws Exception {
       String searchTerm1 = "player target 1";
       String searchTerm2 = "player target 2";
       TeamComposer.Composer teamWrapper1 = getTeamComposerWithName(searchTerm1);
@@ -3209,8 +3363,9 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
     @Test
     @DisplayName(
         "With some players targets, return matching items for exercises with inject with 1 team")
-    public void withSomePlayersTargets_returnMatchingItemsForAttackChainRunsWithAttackChainNodeWith1Team()
-        throws Exception {
+    public void
+        withSomePlayersTargets_returnMatchingItemsForAttackChainRunsWithAttackChainNodeWith1Team()
+            throws Exception {
       String searchTerm1 = "player target 1";
       String searchTerm2 = "player target 2";
       TeamComposer.Composer teamWrapper1 = getTeamComposerWithName(searchTerm1);
@@ -3270,7 +3425,8 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
     @DisplayName("With actual results")
     public class WithActualResults {
       private AttackChainNodeExpectationComposer.Composer getExpectationWrapperWithResult(
-          AttackChainNodeExpectation.EXPECTATION_TYPE type, AttackChainNodeExpectation.EXPECTATION_STATUS status) {
+          AttackChainNodeExpectation.EXPECTATION_TYPE type,
+          AttackChainNodeExpectation.EXPECTATION_STATUS status) {
         return attackChainNodeExpectationComposer.forExpectation(
             AttackChainNodeExpectationFixture.createExpectationWithTypeAndStatus(type, status));
       }
@@ -3320,7 +3476,8 @@ public class AttackChainNodeTargetSearchTest extends IntegrationTest {
                 userWrapper.get().getName(),
                 userWrapper.get().getTags().stream().map(Tag::getId).collect(Collectors.toSet()),
                 Set.of(teamWrapper.get().getId()));
-        expectedPlayer.setTargetHumanResponseStatus(AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING);
+        expectedPlayer.setTargetHumanResponseStatus(
+            AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING);
         List<PlayerTarget> expected = List.of(expectedPlayer);
 
         assertThatJson(response).node("content").isEqualTo(mapper.writeValueAsString(expected));

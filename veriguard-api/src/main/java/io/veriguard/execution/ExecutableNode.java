@@ -35,7 +35,8 @@ public class ExecutableNode {
       List<AssetGroup> assetGroups,
       List<ExecutionContext> users) {
     this.injection = injection;
-    this.attackChainRunId = ofNullable(injection.getAttackChainRun()).map(AttackChainRun::getId).orElse(null);
+    this.attackChainRunId =
+        ofNullable(injection.getAttackChainRun()).map(AttackChainRun::getId).orElse(null);
     this.runtime = runtime;
     this.direct = direct;
     this.users = users;

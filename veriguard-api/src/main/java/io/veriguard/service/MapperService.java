@@ -104,7 +104,8 @@ public class MapperService {
               AttackChainNodeImporter attackChainNodeImporter = new AttackChainNodeImporter();
               attackChainNodeImporter.setNodeContract(
                   mapNodeContracts.get(attackChainNodeImporterInput.getNodeContractId()));
-              attackChainNodeImporter.setImportTypeValue(attackChainNodeImporterInput.getAttackChainNodeTypeValue());
+              attackChainNodeImporter.setImportTypeValue(
+                  attackChainNodeImporterInput.getAttackChainNodeTypeValue());
 
               attackChainNodeImporter.setRuleAttributes(new ArrayList<>());
               attackChainNodeImporterInput
@@ -148,7 +149,8 @@ public class MapperService {
   private List<AttackChainNodeImporter> getAttackChainNodeImportersDuplicated(
       List<AttackChainNodeImporter> attackChainNodeImportersOrigin) {
     List<AttackChainNodeImporter> attackChainNodeImporters =
-        CopyObjectListUtils.copyWithoutIds(attackChainNodeImportersOrigin, AttackChainNodeImporter.class);
+        CopyObjectListUtils.copyWithoutIds(
+            attackChainNodeImportersOrigin, AttackChainNodeImporter.class);
     attackChainNodeImporters.forEach(
         attackChainNodeImport -> {
           List<RuleAttribute> ruleAttributes =
@@ -266,12 +268,15 @@ public class MapperService {
               attackChainNodeImportersInput.stream()
                   .filter(
                       attackChainNodeImporterUpdateInput ->
-                          attackChainNodeImporter.getId().equals(attackChainNodeImporterUpdateInput.getId()))
+                          attackChainNodeImporter
+                              .getId()
+                              .equals(attackChainNodeImporterUpdateInput.getId()))
                   .findFirst()
                   .orElseThrow(ElementNotFoundException::new);
           attackChainNodeImporter.setUpdateAttributes(attackChainNodeImporterInput);
           updateRuleAttributes(
-              attackChainNodeImporterInput.getRuleAttributes(), attackChainNodeImporter.getRuleAttributes());
+              attackChainNodeImporterInput.getRuleAttributes(),
+              attackChainNodeImporter.getRuleAttributes());
         });
 
     // Then we add the new ones
@@ -282,7 +287,8 @@ public class MapperService {
             AttackChainNodeImporter attackChainNodeImporter = new AttackChainNodeImporter();
             attackChainNodeImporter.setNodeContract(
                 mapNodeContracts.get(attackChainNodeImporterUpdateInput.getNodeContractId()));
-            attackChainNodeImporter.setImportTypeValue(attackChainNodeImporterUpdateInput.getAttackChainNodeTypeValue());
+            attackChainNodeImporter.setImportTypeValue(
+                attackChainNodeImporterUpdateInput.getAttackChainNodeTypeValue());
             attackChainNodeImporter.setRuleAttributes(new ArrayList<>());
             attackChainNodeImporterUpdateInput
                 .getRuleAttributes()
@@ -312,7 +318,8 @@ public class MapperService {
             .toList();
 
     objectMapper.addMixIn(ImportMapper.class, MapperExportMixins.ImportMapper.class);
-    objectMapper.addMixIn(AttackChainNodeImporter.class, MapperExportMixins.AttackChainNodeImporter.class);
+    objectMapper.addMixIn(
+        AttackChainNodeImporter.class, MapperExportMixins.AttackChainNodeImporter.class);
     objectMapper.addMixIn(RuleAttribute.class, MapperExportMixins.RuleAttribute.class);
 
     return objectMapper.writeValueAsString(mappersList);

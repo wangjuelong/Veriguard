@@ -1,10 +1,13 @@
 package io.veriguard.rest.atomic_testing;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
-import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.AttackChainNodeExpectation;
+import io.veriguard.database.model.Collector;
 import io.veriguard.database.model.ResourceType;
 import io.veriguard.rest.atomic_testing.form.*;
 import io.veriguard.rest.collector.service.CollectorService;
@@ -14,9 +17,6 @@ import io.veriguard.service.AtomicTestingService;
 import io.veriguard.service.AttackChainNodeExpectationService;
 import io.veriguard.service.AttackChainNodeImportService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -50,12 +50,14 @@ public class AtomicTestingApi extends RestBehavior {
     return atomicTestingService.searchAtomicTestingsForCurrentUser(searchPaginationInput);
   }
 
-  // some api use attackChainNode as resource type because they are actually used to retrieve attackChainNode data for
+  // some api use attackChainNode as resource type because they are actually used to retrieve
+  // attackChainNode data for
   // simulation and AT
   @LogExecutionTime
   @GetMapping("/{injectId}")
   @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
-  public AttackChainNodeResultOverviewOutput findAtomicTesting(@PathVariable String attackChainNodeId) {
+  public AttackChainNodeResultOverviewOutput findAtomicTesting(
+      @PathVariable String attackChainNodeId) {
     return atomicTestingService.findById(attackChainNodeId);
   }
 
@@ -132,8 +134,9 @@ public class AtomicTestingApi extends RestBehavior {
       @PathVariable String targetId,
       @PathVariable String targetType,
       @RequestParam(required = false) String parentTargetId) {
-    return attackChainNodeExpectationService.findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
-        attackChainNodeId, targetId, parentTargetId, targetType);
+    return attackChainNodeExpectationService
+        .findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
+            attackChainNodeId, targetId, parentTargetId, targetType);
   }
 
   @GetMapping("/{injectId}/target_results/{targetId}/asset_with_agents")
@@ -150,13 +153,14 @@ public class AtomicTestingApi extends RestBehavior {
       @PathVariable String attackChainNodeId,
       @PathVariable String targetId,
       @RequestParam @NotBlank String expectationType) {
-    return attackChainNodeExpectationService.findMergedExpectationsWithAgentsByAttackChainNodeAndAsset(
-        attackChainNodeId, targetId, expectationType);
+    return attackChainNodeExpectationService
+        .findMergedExpectationsWithAgentsByAttackChainNodeAndAsset(
+            attackChainNodeId, targetId, expectationType);
   }
 
   /**
-   * Returns expectations for attackChainNode target with results merged across all expectations of the same
-   * type
+   * Returns expectations for attackChainNode target with results merged across all expectations of
+   * the same type
    *
    * @param attackChainNodeId ID of the attackChainNode owning the targets
    * @param targetId ID of the specific target
@@ -179,7 +183,8 @@ public class AtomicTestingApi extends RestBehavior {
       @PathVariable String targetId,
       @PathVariable String targetType) {
     return attackChainNodeExpectationService
-        .findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(attackChainNodeId, targetId, targetType)
+        .findMergedExpectationsByAttackChainNodeAndTargetAndTargetType(
+            attackChainNodeId, targetId, targetType)
         .stream()
         .sorted(Comparator.comparing(AttackChainNodeExpectation::getType))
         .toList();

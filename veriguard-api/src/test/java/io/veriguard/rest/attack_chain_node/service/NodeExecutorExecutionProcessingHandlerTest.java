@@ -6,9 +6,9 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.ContractOutputType;
 import io.veriguard.database.model.ExecutionTraceStatus;
-import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.NodeContract;
 import io.veriguard.injector_contract.outputs.NodeContractContentOutputElement;
 import io.veriguard.output_processor.OutputProcessor;
@@ -57,14 +57,16 @@ class NodeExecutorExecutionProcessingHandlerTest {
         buildInput(ExecutionTraceStatus.ERROR, AttackChainNodeExecutionAction.complete, "{}");
     assertTrue(
         handler
-            .processContext(new ExecutionProcessingContext(attackChainNode, null, inputError, Map.of()))
+            .processContext(
+                new ExecutionProcessingContext(attackChainNode, null, inputError, Map.of()))
             .isEmpty());
 
     verifyNoInteractions(outputProcessorFactory);
 
     // Case 2: Action is NOT complete
     AttackChainNodeExecutionInput inputWrongAction =
-        buildInput(ExecutionTraceStatus.SUCCESS, AttackChainNodeExecutionAction.command_execution, "{}");
+        buildInput(
+            ExecutionTraceStatus.SUCCESS, AttackChainNodeExecutionAction.command_execution, "{}");
     assertTrue(
         handler
             .processContext(
@@ -117,8 +119,7 @@ class NodeExecutorExecutionProcessingHandlerTest {
     element.setFindingCompatible(true);
 
     when(nodeContract.getConvertedContent()).thenReturn(mapper.createObjectNode());
-    when(nodeContractContentUtils.getContractOutputs(any(), any()))
-        .thenReturn(List.of(element));
+    when(nodeContractContentUtils.getContractOutputs(any(), any())).thenReturn(List.of(element));
 
     handler.processContext(ctx);
 
@@ -151,8 +152,7 @@ class NodeExecutorExecutionProcessingHandlerTest {
     element.setFindingCompatible(true);
 
     when(nodeContract.getConvertedContent()).thenReturn(mapper.createObjectNode());
-    when(nodeContractContentUtils.getContractOutputs(any(), any()))
-        .thenReturn(List.of(element));
+    when(nodeContractContentUtils.getContractOutputs(any(), any())).thenReturn(List.of(element));
     when(outputProcessorFactory.getProcessor(ContractOutputType.CVE)).thenReturn(Optional.empty());
 
     Optional<ObjectNode> result = handler.processContext(ctx);
@@ -173,8 +173,7 @@ class NodeExecutorExecutionProcessingHandlerTest {
     element.setFindingCompatible(true);
 
     when(nodeContract.getConvertedContent()).thenReturn(mapper.createObjectNode());
-    when(nodeContractContentUtils.getContractOutputs(any(), any()))
-        .thenReturn(List.of(element));
+    when(nodeContractContentUtils.getContractOutputs(any(), any())).thenReturn(List.of(element));
     when(outputProcessorFactory.getProcessor(ContractOutputType.CVE))
         .thenReturn(Optional.of(mockProcessor));
 

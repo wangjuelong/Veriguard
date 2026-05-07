@@ -30,7 +30,8 @@ public interface LessonsCategoryRepository
       nativeQuery = true)
   @Transactional
   void removeTeamsForAttackChainRun(
-      @Param("exerciseId") final String attackChainRunId, @Param("teamIds") final List<String> teamIds);
+      @Param("exerciseId") final String attackChainRunId,
+      @Param("teamIds") final List<String> teamIds);
 
   @Modifying
   @Query(
@@ -41,5 +42,6 @@ public interface LessonsCategoryRepository
       nativeQuery = true)
   @Transactional
   void removeTeamsForAttackChain(
-      @Param("scenarioId") final String attackChainId, @Param("teamIds") final List<String> teamIds);
+      @Param("scenarioId") final String attackChainId,
+      @Param("teamIds") final List<String> teamIds);
 }

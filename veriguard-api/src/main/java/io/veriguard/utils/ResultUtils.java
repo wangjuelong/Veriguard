@@ -19,7 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * Component for computing and aggregating expectation results across attackChainRuns and attackChains.
+ * Component for computing and aggregating expectation results across attackChainRuns and
+ * attackChains.
  *
  * <p>Provides methods to calculate global expectation results, filter by security platform, and
  * group results by attack patterns. This component is essential for generating reports and
@@ -42,18 +43,22 @@ public class ResultUtils {
    * Response) for the given set of attackChainNode IDs using optimized raw database queries.
    *
    * @param attackChainNodeIds the set of attackChainNode IDs to compute results for
-   * @return a list of aggregated results by expectation type, or empty list if no attackChainNodes provided
+   * @return a list of aggregated results by expectation type, or empty list if no attackChainNodes
+   *     provided
    */
-  public List<ExpectationResultsByType> computeGlobalExpectationResults(Set<String> attackChainNodeIds) {
+  public List<ExpectationResultsByType> computeGlobalExpectationResults(
+      Set<String> attackChainNodeIds) {
 
     if (attackChainNodeIds == null || attackChainNodeIds.isEmpty()) {
       return emptyList();
     }
 
     List<RawAttackChainNodeExpectation> expectations =
-        attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainNodeIds(attackChainNodeIds);
+        attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainNodeIds(
+            attackChainNodeIds);
 
-    return attackChainNodeExpectationMapper.extractExpectationResultByTypesFromRaw(attackChainNodeIds, expectations);
+    return attackChainNodeExpectationMapper.extractExpectationResultByTypesFromRaw(
+        attackChainNodeIds, expectations);
   }
 
   /**
@@ -75,7 +80,9 @@ public class ResultUtils {
     }
 
     List<AttackChainNodeExpectation> expectations =
-        attackChainNodeExpectationRepository.findAllForGlobalScoreByAttackChainNodes(attackChainNodeIds).stream()
+        attackChainNodeExpectationRepository
+            .findAllForGlobalScoreByAttackChainNodes(attackChainNodeIds)
+            .stream()
             .map(AttackChainNodeExpectation::clone)
             .toList();
     expectations.forEach(
@@ -92,15 +99,17 @@ public class ResultUtils {
                   .orElse(null));
         });
 
-    return attackChainNodeExpectationMapper.extractExpectationResultByTypes(attackChainNodeIds, expectations);
+    return attackChainNodeExpectationMapper.extractExpectationResultByTypes(
+        attackChainNodeIds, expectations);
   }
 
   /**
    * Computes attackChainNode expectation results grouped by attack pattern.
    *
-   * <p>Organizes the expectations from the provided attackChainNodes by their associated attack patterns.
-   * Each attackChainNode may be linked to multiple attack patterns through its nodeExecutor contract, resulting
-   * in grouped results suitable for MITRE ATT&CK matrix visualization.
+   * <p>Organizes the expectations from the provided attackChainNodes by their associated attack
+   * patterns. Each attackChainNode may be linked to multiple attack patterns through its
+   * nodeExecutor contract, resulting in grouped results suitable for MITRE ATT&CK matrix
+   * visualization.
    *
    * @param attackChainNodes the list of attackChainNodes to process (must not be null)
    * @return a list of expectation results grouped by attack pattern
@@ -117,7 +126,8 @@ public class ResultUtils {
                         .map(
                             contract ->
                                 contract.getAttackPatterns().stream()
-                                    .map(attackPattern -> Map.entry(attackPattern, attackChainNode)))
+                                    .map(
+                                        attackPattern -> Map.entry(attackPattern, attackChainNode)))
                         .orElseGet(Stream::empty))
             .collect(
                 Collectors.groupingBy(

@@ -161,8 +161,8 @@ public class TagRuleService {
   }
 
   /**
-   * Apply the rule to add the default asset groups to the input asset groups during AttackChainNodes
-   * creation
+   * Apply the rule to add the default asset groups to the input asset groups during
+   * AttackChainNodes creation
    *
    * @param tagIds list of Asset Groups of the AttackChainNode before applying the rules
    * @param inputAssetGroups list of Asset Groups of the AttackChainNode before applying the rules

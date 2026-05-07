@@ -4,8 +4,8 @@ import static java.lang.Integer.parseInt;
 import static java.time.Instant.now;
 
 import io.veriguard.database.model.*;
-import io.veriguard.database.repository.CommunicationRepository;
 import io.veriguard.database.repository.AttackChainNodeRepository;
+import io.veriguard.database.repository.CommunicationRepository;
 import io.veriguard.database.repository.SettingRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.service.FileService;

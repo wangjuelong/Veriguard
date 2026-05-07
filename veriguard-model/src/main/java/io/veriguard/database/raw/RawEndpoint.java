@@ -7,8 +7,8 @@ import java.util.Set;
  * Spring Data projection interface for endpoint asset data.
  *
  * <p>This interface extends {@link RawAsset} with endpoint-specific fields including network
- * information, platform details, and attackChainRun/attackChain associations. Used for queries that need
- * detailed endpoint information without full entity loading.
+ * information, platform details, and attackChainRun/attackChain associations. Used for queries that
+ * need detailed endpoint information without full entity loading.
  *
  * @see io.veriguard.database.model.Endpoint
  * @see RawAsset

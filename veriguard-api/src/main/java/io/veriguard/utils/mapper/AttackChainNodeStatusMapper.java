@@ -15,7 +15,8 @@ public class AttackChainNodeStatusMapper {
 
   private final AgentMapper agentMapper;
 
-  public AttackChainNodeStatusOutput toAttackChainNodeStatusOutput(Optional<AttackChainNodeStatus> attackChainNodeStatus) {
+  public AttackChainNodeStatusOutput toAttackChainNodeStatusOutput(
+      Optional<AttackChainNodeStatus> attackChainNodeStatus) {
     return attackChainNodeStatus
         .map(
             status ->
@@ -24,9 +25,11 @@ public class AttackChainNodeStatusMapper {
         .orElseGet(() -> AttackChainNodeStatusOutput.builder().build());
   }
 
-  public AttackChainNodeTestStatusOutput toAttackChainNodeTestStatusOutput(AttackChainNodeTestStatus attackChainNodeTestStatus) {
+  public AttackChainNodeTestStatusOutput toAttackChainNodeTestStatusOutput(
+      AttackChainNodeTestStatus attackChainNodeTestStatus) {
     AttackChainNodeTestStatusOutput output = AttackChainNodeTestStatusOutput.builder().build();
-    buildAttackChainNodeStatusOutput(output, attackChainNodeTestStatus, attackChainNodeTestStatus.getTraces());
+    buildAttackChainNodeStatusOutput(
+        output, attackChainNodeTestStatus, attackChainNodeTestStatus.getTraces());
 
     output.setAttackChainNodeId(attackChainNodeTestStatus.getAttackChainNode().getId());
     output.setAttackChainNodeType(
@@ -55,7 +58,8 @@ public class AttackChainNodeStatusMapper {
     return output;
   }
 
-  public AttackChainNodeStatusSimple toAttackChainNodeStatusSimple(Optional<AttackChainNodeStatus> attackChainNodeStatus) {
+  public AttackChainNodeStatusSimple toAttackChainNodeStatusSimple(
+      Optional<AttackChainNodeStatus> attackChainNodeStatus) {
     return attackChainNodeStatus
         .map(
             status ->

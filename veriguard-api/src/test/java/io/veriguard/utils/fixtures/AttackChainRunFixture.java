@@ -49,7 +49,8 @@ public class AttackChainRunFixture {
   }
 
   public static AttackChainRun createDefaultIncidentResponseAttackChainRun(Instant startTime) {
-    AttackChainRun attackChainRun = createDefaultAttackChainRunWithName("Incident response exercise");
+    AttackChainRun attackChainRun =
+        createDefaultAttackChainRunWithName("Incident response exercise");
     attackChainRun.setDescription("An incident response exercise for my enterprise");
     attackChainRun.setSubtitle("An incident response exercise");
     attackChainRun.setFrom("exercise@mail.fr");
@@ -60,7 +61,8 @@ public class AttackChainRunFixture {
   }
 
   public static AttackChainRun createDefaultAttackAttackChainRun(Instant startTime) {
-    AttackChainRun attackChainRun = createDefaultAttackChainRunWithName("Draft incident response exercise");
+    AttackChainRun attackChainRun =
+        createDefaultAttackChainRunWithName("Draft incident response exercise");
     attackChainRun.setDescription("An incident response exercise for my enterprise");
     attackChainRun.setSubtitle("An incident response exercise");
     attackChainRun.setFrom("exercise@mail.fr");
@@ -76,7 +78,8 @@ public class AttackChainRunFixture {
   }
 
   public static AttackChainRun createRunningAttackAttackChainRun(Instant startTime) {
-    AttackChainRun attackChainRun = createDefaultAttackChainRunWithName("Draft incident response exercise");
+    AttackChainRun attackChainRun =
+        createDefaultAttackChainRunWithName("Draft incident response exercise");
     attackChainRun.setDescription("An incident response exercise for my enterprise");
     attackChainRun.setSubtitle("An incident response exercise");
     attackChainRun.setFrom("exercise@mail.fr");
@@ -88,7 +91,8 @@ public class AttackChainRunFixture {
   }
 
   public static AttackChainRun createCanceledAttackAttackChainRun(Instant startTime) {
-    AttackChainRun attackChainRun = createDefaultAttackChainRunWithName("Draft incident response exercise");
+    AttackChainRun attackChainRun =
+        createDefaultAttackChainRunWithName("Draft incident response exercise");
     attackChainRun.setDescription("An incident response exercise for my enterprise");
     attackChainRun.setSubtitle("An incident response exercise");
     attackChainRun.setFrom("exercise@mail.fr");
@@ -104,7 +108,8 @@ public class AttackChainRunFixture {
   }
 
   public static AttackChainRun createFinishedAttackAttackChainRun(Instant startTime) {
-    AttackChainRun attackChainRun = createDefaultAttackChainRunWithName("Draft incident response exercise");
+    AttackChainRun attackChainRun =
+        createDefaultAttackChainRunWithName("Draft incident response exercise");
     attackChainRun.setDescription("An incident response exercise for my enterprise");
     attackChainRun.setSubtitle("An incident response exercise");
     attackChainRun.setFrom("exercise@mail.fr");
@@ -116,7 +121,8 @@ public class AttackChainRunFixture {
   }
 
   public static AttackChainRun createPausedAttackAttackChainRun(Instant startTime) {
-    AttackChainRun attackChainRun = createDefaultAttackChainRunWithName("Draft incident response exercise");
+    AttackChainRun attackChainRun =
+        createDefaultAttackChainRunWithName("Draft incident response exercise");
     attackChainRun.setCurrentPause(startTime.truncatedTo(MINUTES).minus(1, MINUTES));
     attackChainRun.setDescription("An incident response exercise for my enterprise");
     attackChainRun.setSubtitle("An incident response exercise");

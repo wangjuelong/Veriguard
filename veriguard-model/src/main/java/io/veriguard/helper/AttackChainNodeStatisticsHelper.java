@@ -9,8 +9,8 @@ import java.util.Map;
 /**
  * Helper class for computing attackChainNode execution statistics.
  *
- * <p>This utility provides aggregated statistics for a collection of attackChainNodes, useful for dashboard
- * displays and progress tracking during attackChainRuns and simulations.
+ * <p>This utility provides aggregated statistics for a collection of attackChainNodes, useful for
+ * dashboard displays and progress tracking during attackChainRuns and simulations.
  *
  * @see AttackChainNode
  */
@@ -37,15 +37,25 @@ public class AttackChainNodeStatisticsHelper {
    * @param attackChainNodes the list of attackChainNodes to analyze (must not be null)
    * @return a map containing the computed statistics
    */
-  public static Map<String, Long> getAttackChainNodeStatistics(@NotNull final List<AttackChainNode> attackChainNodes) {
+  public static Map<String, Long> getAttackChainNodeStatistics(
+      @NotNull final List<AttackChainNode> attackChainNodes) {
     Map<String, Long> stats = new HashMap<>();
     long total = attackChainNodes.size();
     stats.put("total_count", total);
-    long executed = attackChainNodes.stream().filter(attackChainNode -> attackChainNode.getStatus().isPresent()).count();
+    long executed =
+        attackChainNodes.stream()
+            .filter(attackChainNode -> attackChainNode.getStatus().isPresent())
+            .count();
     stats.put("total_executed", executed);
-    stats.put("total_remaining", attackChainNodes.stream().filter(AttackChainNode::isNotExecuted).count());
-    stats.put("total_past", attackChainNodes.stream().filter(AttackChainNode::isPastAttackChainNode).count());
-    stats.put("total_future", attackChainNodes.stream().filter(AttackChainNode::isFutureAttackChainNode).count());
+    stats.put(
+        "total_remaining",
+        attackChainNodes.stream().filter(AttackChainNode::isNotExecuted).count());
+    stats.put(
+        "total_past",
+        attackChainNodes.stream().filter(AttackChainNode::isPastAttackChainNode).count());
+    stats.put(
+        "total_future",
+        attackChainNodes.stream().filter(AttackChainNode::isFutureAttackChainNode).count());
     stats.put("total_progress", total > 0 ? (executed * 100 / total) : 0);
     return stats;
   }

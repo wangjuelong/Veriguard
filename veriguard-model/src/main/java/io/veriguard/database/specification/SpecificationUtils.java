@@ -125,7 +125,8 @@ public class SpecificationUtils {
               grantTable.get("grantResourceType").in(resourceTypes),
               grantTable.get("name").in(allowedGrantTypes)));
 
-      // Special handling for AttackChainNode: check its own id OR its attackChain.id OR its attackChainRun.id
+      // Special handling for AttackChainNode: check its own id OR its attackChain.id OR its
+      // attackChainRun.id
       if (AttackChainNode.class.isAssignableFrom(entityClass)) {
         Predicate byAttackChainNodeId = root.get("id").in(accessibleResources);
         Predicate byAttackChainId = root.get("scenario").get("id").in(accessibleResources);
@@ -140,8 +141,8 @@ public class SpecificationUtils {
 
   /**
    * Creates a subquery that returns all resource IDs of a specific type that the user has access to
-   * through grants. Can be used to get attackChainNodes belonging to a attackChain or simulation where the user
-   * is granted, for example.
+   * through grants. Can be used to get attackChainNodes belonging to a attackChain or simulation
+   * where the user is granted, for example.
    *
    * @param query The parent criteria query used to create the subquery
    * @param cb The criteria builder for constructing query predicates

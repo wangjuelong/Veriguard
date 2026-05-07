@@ -2,20 +2,20 @@ package io.veriguard.rest.attack_chain;
 
 import static io.veriguard.rest.attack_chain.AttackChainApi.SCENARIO_URI;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
+import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.ImportMapper;
 import io.veriguard.database.model.ResourceType;
-import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.repository.ImportMapperRepository;
+import io.veriguard.rest.attack_chain.form.AttackChainNodesImportInput;
+import io.veriguard.rest.attack_chain.response.ImportTestSummary;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.exception.UnprocessableContentException;
 import io.veriguard.rest.helper.RestBehavior;
-import io.veriguard.rest.attack_chain.form.AttackChainNodesImportInput;
-import io.veriguard.rest.attack_chain.response.ImportTestSummary;
 import io.veriguard.service.AttackChainNodeImportService;
 import io.veriguard.service.scenario.AttackChainService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

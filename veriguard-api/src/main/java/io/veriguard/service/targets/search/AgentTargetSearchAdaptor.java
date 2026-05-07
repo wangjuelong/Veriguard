@@ -40,7 +40,8 @@ public class AgentTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
+  public Page<AttackChainNodeTarget> search(
+      SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
 
     Specification<Agent> memberOfAssetGroupSpec =
         specificationUtils.compileSpecificationForAssetGroupMembership(
@@ -85,7 +86,8 @@ public class AgentTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(
+      AttackChainNode scopedAttackChainNode, String textSearch) {
     log.info(
         "AgentTargetSearchAdaptor.getOptionsForInject: this method is stubbed, as there are no current filters on agent options.");
     return List.of();

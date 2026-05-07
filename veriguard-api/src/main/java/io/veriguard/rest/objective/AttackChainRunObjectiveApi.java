@@ -6,8 +6,8 @@ import static java.time.Instant.now;
 
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.*;
-import io.veriguard.database.repository.EvaluationRepository;
 import io.veriguard.database.repository.AttackChainRunRepository;
+import io.veriguard.database.repository.EvaluationRepository;
 import io.veriguard.database.repository.ObjectiveRepository;
 import io.veriguard.database.repository.UserRepository;
 import io.veriguard.database.specification.EvaluationSpecification;
@@ -51,7 +51,9 @@ public class AttackChainRunObjectiveApi extends RestBehavior {
   public Objective createObjective(
       @PathVariable String attackChainRunId, @Valid @RequestBody ObjectiveInput input) {
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     Objective objective = new Objective();
     objective.setUpdateAttributes(input);
     objective.setAttackChainRun(attackChainRun);
@@ -78,7 +80,8 @@ public class AttackChainRunObjectiveApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
-  public void deleteObjective(@PathVariable String attackChainRunId, @PathVariable String objectiveId) {
+  public void deleteObjective(
+      @PathVariable String attackChainRunId, @PathVariable String objectiveId) {
     objectiveRepository.deleteById(objectiveId);
   }
 
@@ -127,7 +130,9 @@ public class AttackChainRunObjectiveApi extends RestBehavior {
     objective.setUpdatedAt(now());
     objectiveRepository.save(objective);
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     attackChainRun.setUpdatedAt(now());
     attackChainRunRepository.save(attackChainRun);
     return result;
@@ -152,7 +157,9 @@ public class AttackChainRunObjectiveApi extends RestBehavior {
     objective.setUpdatedAt(now());
     objectiveRepository.save(objective);
     AttackChainRun attackChainRun =
-        attackChainRunRepository.findById(attackChainRunId).orElseThrow(ElementNotFoundException::new);
+        attackChainRunRepository
+            .findById(attackChainRunId)
+            .orElseThrow(ElementNotFoundException::new);
     attackChainRun.setUpdatedAt(now());
     attackChainRunRepository.save(attackChainRun);
     return result;
@@ -163,7 +170,8 @@ public class AttackChainRunObjectiveApi extends RestBehavior {
       resourceId = "#exerciseId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
-  public void deleteEvaluation(@PathVariable String attackChainRunId, @PathVariable String evaluationId) {
+  public void deleteEvaluation(
+      @PathVariable String attackChainRunId, @PathVariable String evaluationId) {
     evaluationRepository.deleteById(evaluationId);
   }
   // endregion

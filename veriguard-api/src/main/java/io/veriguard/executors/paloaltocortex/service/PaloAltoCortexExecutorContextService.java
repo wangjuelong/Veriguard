@@ -47,7 +47,9 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
 
   @Override
   public List<Agent> launchBatchExecutorSubprocess(
-      AttackChainNode attackChainNode, Set<Agent> agents, AttackChainNodeStatus attackChainNodeStatus) {
+      AttackChainNode attackChainNode,
+      Set<Agent> agents,
+      AttackChainNodeStatus attackChainNodeStatus) {
 
     List<Agent> paloAltoCortexAgents = new ArrayList<>(agents);
 
@@ -136,7 +138,8 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
               + "."
               + Endpoint.PLATFORM_ARCH.x86_64.name();
       String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
-      // The default command to download the veriguard implant and execute the attack is modified for
+      // The default command to download the veriguard implant and execute the attack is modified
+      // for
       // Cortex
       // - WINDOWS_ARCH: Cortex doesn't know the endpoint architecture so we include it to get the
       // architecture before downloading the implant and we replace the default x86_64 put before
@@ -146,7 +149,8 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
                   Endpoint.PLATFORM_ARCH.x86_64.name(),
                   ARCH_VARIABLE
                       + "`"); // Specific for Windows to escape the ? right after in the URL
-      command = replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, attackChainNodeId, agent.getId());
+      command =
+          replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, attackChainNodeId, agent.getId());
       command =
           command.replaceFirst(
               "\\$?x=.+location=.+;\\[Environment]::CurrentDirectory",
@@ -165,7 +169,10 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
   }
 
   private List<PaloAltoCortexAction> getUnixActions(
-      List<Agent> agents, NodeExecutor nodeExecutor, String attackChainNodeId, Endpoint.PLATFORM_TYPE platform) {
+      List<Agent> agents,
+      NodeExecutor nodeExecutor,
+      String attackChainNodeId,
+      Endpoint.PLATFORM_TYPE platform) {
     List<PaloAltoCortexAction> actions = new ArrayList<>();
     for (Agent agent : agents) {
       PaloAltoCortexAction actionUnix = new PaloAltoCortexAction();
@@ -180,7 +187,8 @@ public class PaloAltoCortexExecutorContextService extends ExecutorContextService
       // (we update this when the download implant script is launched on the endpoint)
       String executorCommandKey = platform.name() + "." + Endpoint.PLATFORM_ARCH.x86_64.name();
       String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
-      // The default command to download the veriguard implant and execute the attack is modified for
+      // The default command to download the veriguard implant and execute the attack is modified
+      // for
       // Cortex
       // - UNIX_ARCH: Cortex doesn't know the endpoint architecture so we include it to get the
       // architecture before downloading the implant and we replace the default x86_64 put before

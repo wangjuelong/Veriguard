@@ -3,8 +3,8 @@ package io.veriguard.rest.attack_chain.utils;
 import static io.veriguard.utils.CustomFilterUtils.computeMode;
 import static java.util.Optional.ofNullable;
 
-import io.veriguard.database.model.Filters;
 import io.veriguard.database.model.AttackChain;
+import io.veriguard.database.model.Filters;
 import io.veriguard.database.specification.AttackChainSpecification;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import java.util.Optional;

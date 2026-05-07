@@ -13,7 +13,8 @@ public class AttackChainNodeExpectationFixture {
   static Double EXPECTED_SCORE = 100.0;
 
   public static AttackChainNodeExpectation createExpectationWithTypeAndStatus(
-      AttackChainNodeExpectation.EXPECTATION_TYPE type, AttackChainNodeExpectation.EXPECTATION_STATUS status) {
+      AttackChainNodeExpectation.EXPECTATION_TYPE type,
+      AttackChainNodeExpectation.EXPECTATION_STATUS status) {
     AttackChainNodeExpectation expectation = new AttackChainNodeExpectation();
     expectation.setExpirationTime(EXPIRATION_TIME_SIX_HOURS);
     expectation.setType(type);
@@ -41,7 +42,8 @@ public class AttackChainNodeExpectationFixture {
 
   public static AttackChainNodeExpectation createDetectionAttackChainNodeExpectation(
       AttackChainNode attackChainNode, @Nullable Agent agent) {
-    AttackChainNodeExpectation attackChainNodeExpectation = createDefaultDetectionAttackChainNodeExpectation();
+    AttackChainNodeExpectation attackChainNodeExpectation =
+        createDefaultDetectionAttackChainNodeExpectation();
     attackChainNodeExpectation.setAttackChainNode(attackChainNode);
     attackChainNodeExpectation.setAgent(agent);
     return attackChainNodeExpectation;
@@ -58,7 +60,8 @@ public class AttackChainNodeExpectationFixture {
     return attackChainNodeExpectation;
   }
 
-  public static AttackChainNodeExpectation createManualAttackChainNodeExpectation(Team team, AttackChainNode attackChainNode) {
+  public static AttackChainNodeExpectation createManualAttackChainNodeExpectation(
+      Team team, AttackChainNode attackChainNode) {
     AttackChainNodeExpectation attackChainNodeExpectation = new AttackChainNodeExpectation();
     attackChainNodeExpectation.setAttackChainNode(attackChainNode);
     attackChainNodeExpectation.setType(AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL);
@@ -68,7 +71,8 @@ public class AttackChainNodeExpectationFixture {
     return attackChainNodeExpectation;
   }
 
-  public static AttackChainNodeExpectation createArticleAttackChainNodeExpectation(Team team, AttackChainNode attackChainNode) {
+  public static AttackChainNodeExpectation createArticleAttackChainNodeExpectation(
+      Team team, AttackChainNode attackChainNode) {
     AttackChainNodeExpectation attackChainNodeExpectation = new AttackChainNodeExpectation();
     attackChainNodeExpectation.setAttackChainNode(attackChainNode);
     attackChainNodeExpectation.setType(AttackChainNodeExpectation.EXPECTATION_TYPE.ARTICLE);
@@ -79,7 +83,10 @@ public class AttackChainNodeExpectationFixture {
   }
 
   public static AttackChainNodeExpectation createManualAttackChainNodeExpectationWithAttackChainRun(
-      Team team, AttackChainNode attackChainNode, AttackChainRun attackChainRun, String expectationName) {
+      Team team,
+      AttackChainNode attackChainNode,
+      AttackChainRun attackChainRun,
+      String expectationName) {
     AttackChainNodeExpectation attackChainNodeExpectation = new AttackChainNodeExpectation();
     attackChainNodeExpectation.setAttackChainNode(attackChainNode);
     attackChainNodeExpectation.setType(AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL);

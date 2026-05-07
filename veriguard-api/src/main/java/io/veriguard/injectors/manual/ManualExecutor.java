@@ -20,7 +20,8 @@ public class ManualExecutor extends NodeExecutor {
   private final AttackChainNodeExpectationService attackChainNodeExpectationService;
 
   public ManualExecutor(
-      NodeExecutorContext context, final AttackChainNodeExpectationService attackChainNodeExpectationService) {
+      NodeExecutorContext context,
+      final AttackChainNodeExpectationService attackChainNodeExpectationService) {
     super(context);
     this.attackChainNodeExpectationService = attackChainNodeExpectationService;
   }
@@ -42,7 +43,8 @@ public class ManualExecutor extends NodeExecutor {
                     })
             .toList();
 
-    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(injection, expectations);
+    attackChainNodeExpectationService.buildAndSaveAttackChainNodeExpectations(
+        injection, expectations);
     execution.addTrace(
         ExecutionTrace.getNewSuccessTrace(
             "Manual inject execution", ExecutionTraceAction.COMPLETE));

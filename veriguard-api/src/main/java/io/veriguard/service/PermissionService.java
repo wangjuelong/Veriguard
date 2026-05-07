@@ -4,8 +4,8 @@ import io.veriguard.aop.RBACAspect;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.EvaluationRepository;
 import io.veriguard.database.repository.ObjectiveRepository;
-import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.injector_contract.NodeContractService;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -87,7 +87,8 @@ public class PermissionService {
     if (RESOURCES_USING_PARENT_PERMISSION.contains(resourceType) && Action.SEARCH.equals(action)) {
       return true;
     }
-    // for attackChainNode/article the permission will be based on the parent's (attackChain/simulation/test)
+    // for attackChainNode/article the permission will be based on the parent's
+    // (attackChain/simulation/test)
     // permission
     if (RESOURCES_USING_PARENT_PERMISSION.contains(resourceType)) {
       Target parentTarget = resolveTarget(resourceId, resourceType, action);
@@ -181,7 +182,10 @@ public class PermissionService {
       AttackChainNode attackChainNode = attackChainNodeService.attackChainNode(resourceId);
       // parent action rule: anything non-READ becomes WRITE on the parent
       Action parentAction = (action == Action.READ) ? Action.READ : Action.WRITE;
-      return new Target(attackChainNode.getParentResourceId(), attackChainNode.getParentResourceType(), parentAction);
+      return new Target(
+          attackChainNode.getParentResourceId(),
+          attackChainNode.getParentResourceType(),
+          parentAction);
     } else if (resourceType == ResourceType.NOTIFICATION_RULE) {
       NotificationRule notificationRule =
           notificationRuleService

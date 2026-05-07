@@ -33,7 +33,8 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
     this.fieldTranslations.put("target_teams", "user_teams");
   }
 
-  private static Specification<User> playersSpecificationFromAttackChainNode(AttackChainNode scopedAttackChainNode) {
+  private static Specification<User> playersSpecificationFromAttackChainNode(
+      AttackChainNode scopedAttackChainNode) {
     return (root, query, builder) -> {
       if (scopedAttackChainNode.isAtomicTesting()) {
         Path<Object> attackChainNodePath = root.join("teams").join("injects").get("id");
@@ -42,24 +43,28 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
         if (scopedAttackChainNode.isAllTeams()) {
           Path<Object> attackChainRunTeamUsersPath =
               root.get("exerciseTeamUsers").get("exercise").get("id");
-          Path<Object> attackChainNodePath = root.join("teams").join("exercises").get("injects").get("id");
+          Path<Object> attackChainNodePath =
+              root.join("teams").join("exercises").get("injects").get("id");
           return builder.and(
               builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
-              builder.equal(attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
+              builder.equal(
+                  attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
         } else {
           Path<Object> attackChainRunTeamUsersPath =
               root.get("exerciseTeamUsers").get("exercise").get("id");
           Path<Object> attackChainNodePath = root.join("teams").join("injects").get("id");
           return builder.and(
               builder.equal(attackChainNodePath, scopedAttackChainNode.getId()),
-              builder.equal(attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
+              builder.equal(
+                  attackChainRunTeamUsersPath, scopedAttackChainNode.getAttackChainRun().getId()));
         }
       }
     };
   }
 
   @Override
-  public Page<AttackChainNodeTarget> search(SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
+  public Page<AttackChainNodeTarget> search(
+      SearchPaginationInput input, AttackChainNode scopedAttackChainNode) {
     SearchPaginationInput translatedInput = this.translate(input, scopedAttackChainNode);
 
     // mind the specific sorts "email" because no name for players
@@ -70,7 +75,9 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
         buildPaginationJPA(
             (Specification<User> specification, Pageable pageable) ->
                 this.userRepository.findAll(
-                    playersSpecificationFromAttackChainNode(scopedAttackChainNode).and(specification), pageable),
+                    playersSpecificationFromAttackChainNode(scopedAttackChainNode)
+                        .and(specification),
+                    pageable),
             translatedInput,
             User.class);
 
@@ -83,7 +90,8 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
   }
 
   @Override
-  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(AttackChainNode scopedAttackChainNode, String textSearch) {
+  public List<FilterUtilsJpa.Option> getOptionsForAttackChainNode(
+      AttackChainNode scopedAttackChainNode, String textSearch) {
     throw new NotImplementedException("Implement when needed");
   }
 
@@ -92,7 +100,8 @@ public class PlayerTargetSearchAdaptor extends SearchAdaptorBase {
     throw new NotImplementedException("Implement when needed");
   }
 
-  private AttackChainNodeTarget convertFromPlayerOutput(User player, AttackChainNode attackChainNode) {
+  private AttackChainNodeTarget convertFromPlayerOutput(
+      User player, AttackChainNode attackChainNode) {
     return helperTargetSearchAdaptor.buildTargetWithExpectations(
         attackChainNode,
         () ->
