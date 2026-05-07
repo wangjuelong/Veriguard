@@ -140,7 +140,7 @@ public class DetectionRemediationApi {
       })
   @LogExecutionTime
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PAYLOAD)
-  @PostMapping("rules/inject/{injectId}/collector/{collectorType}")
+  @PostMapping("rules/inject/{attackChainNodeId}/collector/{collectorType}")
   public ResponseEntity<DetectionRemediationOutput>
       postRuleDetectionRemediationByAttackChainNodeIdAndCollectorType(
           @PathVariable @NotBlank String attackChainNodeId,

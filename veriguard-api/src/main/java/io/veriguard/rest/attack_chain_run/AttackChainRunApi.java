@@ -114,9 +114,9 @@ public class AttackChainRunApi extends RestBehavior {
         AttackChainRunLogSpecification.fromAttackChainRun(attackChainRun));
   }
 
-  @PostMapping(EXERCISE_URI + "/{exerciseId}/logs")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}/logs")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -137,9 +137,9 @@ public class AttackChainRunApi extends RestBehavior {
     return attackChainRunLogRepository.save(log);
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/logs/{logId}")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/logs/{logId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -153,9 +153,9 @@ public class AttackChainRunApi extends RestBehavior {
     return logRepository.save(log);
   }
 
-  @DeleteMapping(EXERCISE_URI + "/{exerciseId}/logs/{logId}")
+  @DeleteMapping(EXERCISE_URI + "/{attackChainRunId}/logs/{logId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.DELETE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -201,9 +201,9 @@ public class AttackChainRunApi extends RestBehavior {
 
   // region teams
   @LogExecutionTime
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/teams")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/teams")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public List<TeamOutput> getAttackChainRunTeams(@PathVariable String attackChainRunId) {
@@ -211,9 +211,9 @@ public class AttackChainRunApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/teams/remove")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/teams/remove")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public Iterable<TeamOutput> removeAttackChainRunTeams(
@@ -223,9 +223,9 @@ public class AttackChainRunApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/teams/replace")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/teams/replace")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public Iterable<TeamOutput> replaceAttackChainRunTeams(
@@ -234,9 +234,9 @@ public class AttackChainRunApi extends RestBehavior {
     return this.attackChainRunService.replaceTeams(attackChainRunId, input.getTeamIds());
   }
 
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/players")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/players")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public Iterable<RawPlayer> getPlayersByAttackChainRun(@PathVariable String attackChainRunId) {
@@ -244,9 +244,9 @@ public class AttackChainRunApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/teams/{teamId}/players/enable")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/teams/{teamId}/players/enable")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public AttackChainRun enableAttackChainRunTeamPlayers(
@@ -258,9 +258,9 @@ public class AttackChainRunApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/teams/{teamId}/players/disable")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/teams/{teamId}/players/disable")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public AttackChainRun disableAttackChainRunTeamPlayers(
@@ -283,9 +283,9 @@ public class AttackChainRunApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/teams/{teamId}/players/add")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/teams/{teamId}/players/add")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public AttackChainRun addAttackChainRunTeamPlayers(
@@ -299,9 +299,9 @@ public class AttackChainRunApi extends RestBehavior {
     return attackChainRunService.enablePlayers(attackChainRunId, team, input.getPlayersIds());
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/teams/{teamId}/players/remove")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/teams/{teamId}/players/remove")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -355,9 +355,9 @@ public class AttackChainRunApi extends RestBehavior {
     return this.attackChainRunService.createAttackChainRun(attackChainRun);
   }
 
-  @PostMapping(EXERCISE_URI + "/{exerciseId}")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.DUPLICATE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -366,9 +366,9 @@ public class AttackChainRunApi extends RestBehavior {
     return attackChainRunService.getDuplicateAttackChainRun(attackChainRunId);
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -391,9 +391,9 @@ public class AttackChainRunApi extends RestBehavior {
         attackChainRun, currentTagList, input.isApplyTagRule());
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/start_date")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/start_date")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -405,9 +405,9 @@ public class AttackChainRunApi extends RestBehavior {
     return this.updateAttackChainRunStart(attackChainRunId, input);
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/start-date")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/start-date")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -428,9 +428,9 @@ public class AttackChainRunApi extends RestBehavior {
     return attackChainRunRepository.save(attackChainRun);
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/tags")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/tags")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -447,9 +447,9 @@ public class AttackChainRunApi extends RestBehavior {
         attackChainRun, currentTagList, input.isApplyTagRule());
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/logos")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/logos")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -485,9 +485,9 @@ public class AttackChainRunApi extends RestBehavior {
         .toList();
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/lessons")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/lessons")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -501,9 +501,9 @@ public class AttackChainRunApi extends RestBehavior {
     return attackChainRunRepository.save(attackChainRun);
   }
 
-  @DeleteMapping(EXERCISE_URI + "/{exerciseId}")
+  @DeleteMapping(EXERCISE_URI + "/{attackChainRunId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.DELETE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -511,9 +511,9 @@ public class AttackChainRunApi extends RestBehavior {
     attackChainRunRepository.deleteById(attackChainRunId);
   }
 
-  @GetMapping(EXERCISE_URI + "/{exerciseId}")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(readOnly = true)
@@ -611,9 +611,9 @@ public class AttackChainRunApi extends RestBehavior {
   }
 
   @LogExecutionTime
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/results")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/results")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public List<ExpectationResultsByType> globalResults(
@@ -630,9 +630,9 @@ public class AttackChainRunApi extends RestBehavior {
   }
 
   @LogExecutionTime
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/injects/results-by-attack-patterns")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/injects/results-by-attack-patterns")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public List<NodeExpectationResultsByAttackPattern> attackChainNodeResults(
@@ -640,9 +640,9 @@ public class AttackChainRunApi extends RestBehavior {
     return attackChainRunService.extractExpectationResultsByAttackPattern(attackChainRunId);
   }
 
-  @DeleteMapping(EXERCISE_URI + "/{exerciseId}/{documentId}")
+  @DeleteMapping(EXERCISE_URI + "/{attackChainRunId}/{documentId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.DELETE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackFor = Exception.class)
@@ -673,9 +673,9 @@ public class AttackChainRunApi extends RestBehavior {
     return attackChainRunRepository.save(attackChainRun);
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/status")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/status")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.LAUNCH,
       resourceType = ResourceType.SIMULATION)
   public AttackChainRun changeAttackChainRunStatus(
@@ -741,9 +741,9 @@ public class AttackChainRunApi extends RestBehavior {
   // endregion
 
   // region communication
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/communications")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/communications")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public Iterable<Communication> attackChainRunCommunications(
@@ -777,9 +777,9 @@ public class AttackChainRunApi extends RestBehavior {
   // endregion
 
   // region import/export
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/export")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/export")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public void attackChainRunExport(
@@ -813,9 +813,9 @@ public class AttackChainRunApi extends RestBehavior {
     importService.handleFileImport(file, null, null);
   }
 
-  @PostMapping(EXERCISE_URI + "/{exerciseId}/check-rules")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}/check-rules")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @ApiResponses(
@@ -838,9 +838,9 @@ public class AttackChainRunApi extends RestBehavior {
   // endregion
 
   // region asset groups, endpoints, documents and channels
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/asset-groups")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/asset-groups")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Operation(
@@ -851,9 +851,9 @@ public class AttackChainRunApi extends RestBehavior {
     return this.assetGroupService.assetGroupsForSimulation(attackChainRunId);
   }
 
-  @PostMapping(EXERCISE_URI + "/{exerciseId}/asset-groups/find")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}/asset-groups/find")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Operation(
@@ -866,9 +866,9 @@ public class AttackChainRunApi extends RestBehavior {
     return this.assetGroupService.assetGroupsByIdsForSimulation(attackChainRunId, assetGroupIds);
   }
 
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/endpoints")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/endpoints")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Operation(
@@ -878,9 +878,9 @@ public class AttackChainRunApi extends RestBehavior {
     return this.endpointService.endpointsForSimulation(attackChainRunId);
   }
 
-  @PostMapping(EXERCISE_URI + "/{exerciseId}/endpoints/find")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}/endpoints/find")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Operation(
@@ -893,9 +893,9 @@ public class AttackChainRunApi extends RestBehavior {
     return this.endpointService.endpointsByIdsForSimulation(attackChainRunId, endpointIds);
   }
 
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/documents")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/documents")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Operation(

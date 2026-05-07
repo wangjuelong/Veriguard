@@ -26,9 +26,9 @@ public class AttackChainTeamApi extends RestBehavior {
 
   private final TeamService teamService;
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/teams/search")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/teams/search")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   @Transactional(readOnly = true)

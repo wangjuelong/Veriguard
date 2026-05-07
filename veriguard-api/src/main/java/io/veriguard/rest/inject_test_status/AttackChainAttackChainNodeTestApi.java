@@ -34,9 +34,9 @@ public class AttackChainAttackChainNodeTestApi extends RestBehavior {
   private final AttackChainNodeTestStatusService attackChainNodeTestStatusService;
   private final AttackChainNodeService attackChainNodeService;
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/injects/test/search")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/test/search")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Page<AttackChainNodeTestStatusOutput> findAllAttackChainAttackChainNodeTests(
@@ -55,9 +55,9 @@ public class AttackChainAttackChainNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/injects/{injectId}/test")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}/test")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.LAUNCH,
       resourceType = ResourceType.SCENARIO)
   public AttackChainNodeTestStatusOutput testAttackChainNode(
@@ -68,9 +68,9 @@ public class AttackChainAttackChainNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @DeleteMapping(SCENARIO_URI + "/{scenarioId}/injects/test/{testId}")
+  @DeleteMapping(SCENARIO_URI + "/{attackChainId}/injects/test/{testId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public void deleteAttackChainNodeTest(
@@ -82,9 +82,9 @@ public class AttackChainAttackChainNodeTestApi extends RestBehavior {
       description = "Bulk tests of injects",
       tags = {"Injects", "Tests"})
   @Transactional(rollbackFor = Exception.class)
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/injects/test")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/test")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @LogExecutionTime

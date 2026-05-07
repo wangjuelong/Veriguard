@@ -70,9 +70,9 @@ public class ComcheckApi extends RestBehavior {
     return status;
   }
 
-  @DeleteMapping("/api/attack_chain_runs/{exerciseId}/comchecks/{comcheckId}")
+  @DeleteMapping("/api/attack_chain_runs/{attackChainRunId}/comchecks/{comcheckId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -81,9 +81,9 @@ public class ComcheckApi extends RestBehavior {
     comcheckRepository.deleteById(comcheckId);
   }
 
-  @PostMapping("/api/attack_chain_runs/{exerciseId}/comchecks")
+  @PostMapping("/api/attack_chain_runs/{attackChainRunId}/comchecks")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)

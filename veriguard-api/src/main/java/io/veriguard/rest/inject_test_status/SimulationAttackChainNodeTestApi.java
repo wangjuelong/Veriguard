@@ -63,7 +63,7 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @GetMapping(EXERCISE_URI + "/{simulationId}/injects/{injectId}/test")
+  @GetMapping(EXERCISE_URI + "/{simulationId}/injects/{attackChainNodeId}/test")
   @RBAC(
       resourceId = "#simulationId",
       actionPerformed = Action.READ,

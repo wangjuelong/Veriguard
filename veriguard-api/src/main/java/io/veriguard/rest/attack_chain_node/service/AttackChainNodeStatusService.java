@@ -333,7 +333,7 @@ public class AttackChainNodeStatusService {
     return this.attackChainNodeStatusRepository.save(attackChainNodeStatus);
   }
 
-  @Lock(type = LockResourceType.INJECT, key = "#injectId")
+  @Lock(type = LockResourceType.INJECT, key = "#attackChainNodeId")
   public void setImplantErrorTrace(String attackChainNodeId, String agentId, String message) {
     if (attackChainNodeId != null
         && !attackChainNodeId.isBlank()

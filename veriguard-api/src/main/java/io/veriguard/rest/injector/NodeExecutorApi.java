@@ -89,9 +89,9 @@ public class NodeExecutorApi extends RestBehavior {
     return nodeExecutorService.nodeExecutorsOutput(includeNext);
   }
 
-  @GetMapping(INJECT0R_URI + "/{injectorId}/injector_contracts")
+  @GetMapping(INJECT0R_URI + "/{nodeExecutorId}/injector_contracts")
   @RBAC(
-      resourceId = "#injectorId",
+      resourceId = "#nodeExecutorId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.INJECTOR)
   public Collection<JsonNode> nodeExecutorAttackChainNodeTypes(
@@ -111,9 +111,9 @@ public class NodeExecutorApi extends RestBehavior {
         .toList();
   }
 
-  @PutMapping(INJECT0R_URI + "/{injectorId}")
+  @PutMapping(INJECT0R_URI + "/{nodeExecutorId}")
   @RBAC(
-      resourceId = "#injectorId",
+      resourceId = "#nodeExecutorId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECTOR)
   public NodeExecutor updateNodeExecutor(
@@ -132,9 +132,9 @@ public class NodeExecutorApi extends RestBehavior {
         input.getPayloads());
   }
 
-  @GetMapping(INJECT0R_URI + "/{injectorId}")
+  @GetMapping(INJECT0R_URI + "/{nodeExecutorId}")
   @RBAC(
-      resourceId = "#injectorId",
+      resourceId = "#nodeExecutorId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.INJECTOR)
   public NodeExecutor nodeExecutor(@PathVariable String nodeExecutorId) {
@@ -143,9 +143,9 @@ public class NodeExecutorApi extends RestBehavior {
         .orElseThrow(ElementNotFoundException::new);
   }
 
-  @GetMapping(INJECT0R_URI + "/{injectorId}/related-ids")
+  @GetMapping(INJECT0R_URI + "/{nodeExecutorId}/related-ids")
   @RBAC(
-      resourceId = "#injectorId",
+      resourceId = "#nodeExecutorId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.INJECTOR)
   @Operation(summary = "Retrieve injector related ids")

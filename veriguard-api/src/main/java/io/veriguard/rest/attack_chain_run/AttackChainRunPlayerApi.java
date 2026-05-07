@@ -23,7 +23,7 @@ public class AttackChainRunPlayerApi extends RestBehavior {
   private final UserRepository userRepository;
   private final AttackChainRunRepository attackChainRunRepository;
 
-  @GetMapping(EXERCISE_URI + "/{exerciseId}")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}")
   @RBAC(skipRBAC = true)
   public PublicAttackChainRun playerAttackChainRun(
       @PathVariable String attackChainRunId, @RequestParam Optional<String> userId) {

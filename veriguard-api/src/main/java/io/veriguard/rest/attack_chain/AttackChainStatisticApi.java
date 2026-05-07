@@ -22,9 +22,9 @@ public class AttackChainStatisticApi extends RestBehavior {
 
   private final AttackChainStatisticService attackChainStatisticService;
 
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/statistics")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/statistics")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)

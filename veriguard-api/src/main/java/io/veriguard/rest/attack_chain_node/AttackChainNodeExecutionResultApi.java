@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AttackChainNodeExecutionResultApi extends RestBehavior {
 
-  public static final String INJECT_EXECUTION_URI = "/api/attack_chain_nodes/{injectId}";
+  public static final String INJECT_EXECUTION_URI = "/api/attack_chain_nodes/{attackChainNodeId}";
 
   private final AttackChainNodeExecutionResultService attackChainNodeExecutionService;
 
   @GetMapping(INJECT_EXECUTION_URI + "/execution-result")
-  @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
   public AttackChainNodeResultPayloadExecutionOutput attackChainNodeExecutionResultPayload(
       @PathVariable @NotBlank final String attackChainNodeId,
       @RequestParam @NotBlank final String targetId,

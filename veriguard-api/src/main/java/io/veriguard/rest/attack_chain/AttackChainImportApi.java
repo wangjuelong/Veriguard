@@ -36,9 +36,9 @@ public class AttackChainImportApi extends RestBehavior {
   private final ImportMapperRepository importMapperRepository;
   private final AttackChainService attackChainService;
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/xls/{importId}/dry")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/xls/{importId}/dry")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -63,9 +63,9 @@ public class AttackChainImportApi extends RestBehavior {
         attackChain, importMapper, importId, input.getName(), input.getTimezoneOffset(), false);
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/xls/{importId}/import")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/xls/{importId}/import")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -98,10 +98,10 @@ public class AttackChainImportApi extends RestBehavior {
   }
 
   @PostMapping(
-      path = SCENARIO_URI + "/{scenarioId}/injects/import",
+      path = SCENARIO_URI + "/{attackChainId}/injects/import",
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public void attackChainNodesImport(

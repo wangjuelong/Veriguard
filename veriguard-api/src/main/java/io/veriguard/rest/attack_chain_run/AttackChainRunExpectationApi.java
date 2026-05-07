@@ -21,9 +21,9 @@ public class AttackChainRunExpectationApi extends RestBehavior {
   private final AttackChainRunExpectationService attackChainRunExpectationService;
 
   @LogExecutionTime
-  @GetMapping(value = "/api/attack_chain_runs/{exerciseId}/expectations")
+  @GetMapping(value = "/api/attack_chain_runs/{attackChainRunId}/expectations")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public List<AttackChainNodeExpectation> attackChainRunAttackChainNodeExpectations(

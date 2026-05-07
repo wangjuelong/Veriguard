@@ -33,18 +33,18 @@ public class AttackChainObjectiveApi extends RestBehavior {
   private final UserRepository userRepository;
 
   // region objectives
-  @GetMapping(SCENARIO_URI + "{scenarioId}/objectives")
+  @GetMapping(SCENARIO_URI + "{attackChainId}/objectives")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<Objective> getMainObjectives(@PathVariable String attackChainId) {
     return objectiveRepository.findAll(ObjectiveSpecification.fromAttackChain(attackChainId));
   }
 
-  @PostMapping(SCENARIO_URI + "{scenarioId}/objectives")
+  @PostMapping(SCENARIO_URI + "{attackChainId}/objectives")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -58,9 +58,9 @@ public class AttackChainObjectiveApi extends RestBehavior {
     return objectiveRepository.save(objective);
   }
 
-  @PutMapping(SCENARIO_URI + "{scenarioId}/objectives/{objectiveId}")
+  @PutMapping(SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public Objective updateObjective(
@@ -73,9 +73,9 @@ public class AttackChainObjectiveApi extends RestBehavior {
     return objectiveRepository.save(objective);
   }
 
-  @DeleteMapping(SCENARIO_URI + "{scenarioId}/objectives/{objectiveId}")
+  @DeleteMapping(SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public void deleteObjective(
@@ -86,9 +86,9 @@ public class AttackChainObjectiveApi extends RestBehavior {
   // endregion
 
   // region evaluations
-  @GetMapping(SCENARIO_URI + "{scenarioId}/objectives/{objectiveId}/evaluations/{evaluationId}")
+  @GetMapping(SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}/evaluations/{evaluationId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Evaluation getEvaluation(
@@ -96,9 +96,9 @@ public class AttackChainObjectiveApi extends RestBehavior {
     return evaluationRepository.findById(evaluationId).orElseThrow(ElementNotFoundException::new);
   }
 
-  @GetMapping(SCENARIO_URI + "{scenarioId}/objectives/{objectiveId}/evaluations")
+  @GetMapping(SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}/evaluations")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<Evaluation> getEvaluations(
@@ -106,9 +106,9 @@ public class AttackChainObjectiveApi extends RestBehavior {
     return evaluationRepository.findAll(EvaluationSpecification.fromObjective(objectiveId));
   }
 
-  @PostMapping(SCENARIO_URI + "{scenarioId}/objectives/{objectiveId}/evaluations")
+  @PostMapping(SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}/evaluations")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -134,9 +134,9 @@ public class AttackChainObjectiveApi extends RestBehavior {
     return result;
   }
 
-  @PutMapping(SCENARIO_URI + "{scenarioId}/objectives/{objectiveId}/evaluations/{evaluationId}")
+  @PutMapping(SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}/evaluations/{evaluationId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public Evaluation updateEvaluation(
@@ -159,9 +159,9 @@ public class AttackChainObjectiveApi extends RestBehavior {
     return result;
   }
 
-  @DeleteMapping(SCENARIO_URI + "{scenarioId}/objectives/{objectiveId}/evaluations/{evaluationId}")
+  @DeleteMapping(SCENARIO_URI + "{attackChainId}/objectives/{objectiveId}/evaluations/{evaluationId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public void deleteEvaluation(

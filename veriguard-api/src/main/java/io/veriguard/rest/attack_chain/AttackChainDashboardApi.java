@@ -37,9 +37,9 @@ public class AttackChainDashboardApi {
         @ApiResponse(responseCode = "200", description = "The dashboard"),
         @ApiResponse(responseCode = "404", description = "The Scenario doesn't exist")
       })
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/dashboard")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/dashboard")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public ResponseEntity<CustomDashboard> dashboard(@PathVariable final String attackChainId) {
@@ -47,9 +47,9 @@ public class AttackChainDashboardApi {
         this.customDashboardService.findCustomDashboardByResourceId(attackChainId));
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/dashboard/count/{widgetId}")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/dashboard/count/{widgetId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public EsCountInterval dashboardCount(
@@ -60,9 +60,9 @@ public class AttackChainDashboardApi {
         attackChainId, widgetId, parameters);
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/dashboard/average/{widgetId}")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/dashboard/average/{widgetId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public EsAvgs dashboardAverage(
@@ -73,9 +73,9 @@ public class AttackChainDashboardApi {
         attackChainId, widgetId, parameters);
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/dashboard/series/{widgetId}")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/dashboard/series/{widgetId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public List<EsSeries> dashboardSeries(
@@ -86,9 +86,9 @@ public class AttackChainDashboardApi {
         attackChainId, widgetId, parameters);
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/dashboard/entities/{widgetId}")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/dashboard/entities/{widgetId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public List<EsBase> dashboardEntities(
@@ -99,9 +99,9 @@ public class AttackChainDashboardApi {
         attackChainId, widgetId, parameters);
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/dashboard/entities-runtime/{widgetId}")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/dashboard/entities-runtime/{widgetId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public WidgetToEntitiesOutput widgetToEntitiesRuntime(
@@ -112,9 +112,9 @@ public class AttackChainDashboardApi {
         attackChainId, widgetId, input);
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/dashboard/attack-paths/{widgetId}")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/dashboard/attack-paths/{widgetId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   @Operation(summary = "Search TagRules")

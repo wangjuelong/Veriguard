@@ -28,9 +28,9 @@ public class VariableApi extends RestBehavior {
 
   // -- EXERCISES --
 
-  @PostMapping(EXERCISE_URI + "/{exerciseId}/variables")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}/variables")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public Variable createVariableForAttackChainRun(
@@ -46,9 +46,9 @@ public class VariableApi extends RestBehavior {
     return this.variableService.createVariable(variable);
   }
 
-  @GetMapping(EXERCISE_URI + "/{exerciseId}/variables")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/variables")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public Iterable<Variable> variablesFromAttackChainRun(
@@ -56,9 +56,9 @@ public class VariableApi extends RestBehavior {
     return this.variableService.variablesFromAttackChainRun(attackChainRunId);
   }
 
-  @PutMapping(EXERCISE_URI + "/{exerciseId}/variables/{variableId}")
+  @PutMapping(EXERCISE_URI + "/{attackChainRunId}/variables/{variableId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public Variable updateVariableForAttackChainRun(
@@ -71,9 +71,9 @@ public class VariableApi extends RestBehavior {
     return this.variableService.updateVariable(variable);
   }
 
-  @DeleteMapping(EXERCISE_URI + "/{exerciseId}/variables/{variableId}")
+  @DeleteMapping(EXERCISE_URI + "/{attackChainRunId}/variables/{variableId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public void deleteVariableForAttackChainRun(
@@ -86,9 +86,9 @@ public class VariableApi extends RestBehavior {
 
   // -- SCENARIOS --
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/variables")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/variables")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public Variable createVariableForAttackChain(
@@ -101,9 +101,9 @@ public class VariableApi extends RestBehavior {
     return this.variableService.createVariable(variable);
   }
 
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/variables")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/variables")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<Variable> variablesFromAttackChain(
@@ -111,9 +111,9 @@ public class VariableApi extends RestBehavior {
     return this.variableService.variablesFromAttackChain(attackChainId);
   }
 
-  @PutMapping(SCENARIO_URI + "/{scenarioId}/variables/{variableId}")
+  @PutMapping(SCENARIO_URI + "/{attackChainId}/variables/{variableId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public Variable updateVariableForAttackChain(
@@ -126,9 +126,9 @@ public class VariableApi extends RestBehavior {
     return this.variableService.updateVariable(variable);
   }
 
-  @DeleteMapping(SCENARIO_URI + "/{scenarioId}/variables/{variableId}")
+  @DeleteMapping(SCENARIO_URI + "/{attackChainId}/variables/{variableId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public void deleteVariableForAttackChain(

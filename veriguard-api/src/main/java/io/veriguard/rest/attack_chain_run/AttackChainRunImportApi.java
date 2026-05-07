@@ -36,9 +36,9 @@ public class AttackChainRunImportApi extends RestBehavior {
   private final ImportMapperRepository importMapperRepository;
   private final AttackChainRunService attackChainRunService;
 
-  @PostMapping(EXERCISE_URI + "/{exerciseId}/xls/{importId}/dry")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}/xls/{importId}/dry")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -63,9 +63,9 @@ public class AttackChainRunImportApi extends RestBehavior {
         attackChainRun, importMapper, importId, input.getName(), input.getTimezoneOffset(), false);
   }
 
-  @PostMapping(EXERCISE_URI + "/{exerciseId}/xls/{importId}/import")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}/xls/{importId}/import")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)

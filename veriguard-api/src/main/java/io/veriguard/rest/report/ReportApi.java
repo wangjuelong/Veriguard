@@ -53,18 +53,18 @@ public class ReportApi extends RestBehavior {
     return this.reportService.reportFromSimulation(simulationId, UUID.fromString(reportId));
   }
 
-  @GetMapping("/api/attack_chain_runs/{exerciseId}/reports")
+  @GetMapping("/api/attack_chain_runs/{attackChainRunId}/reports")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public Iterable<Report> attackChainRunReports(@PathVariable String attackChainRunId) {
     return this.reportService.reportsFromAttackChainRun(attackChainRunId);
   }
 
-  @PostMapping("/api/attack_chain_runs/{exerciseId}/reports")
+  @PostMapping("/api/attack_chain_runs/{attackChainRunId}/reports")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -76,9 +76,9 @@ public class ReportApi extends RestBehavior {
     return this.reportService.updateReport(report, input);
   }
 
-  @PutMapping("/api/attack_chain_runs/{exerciseId}/reports/{reportId}/inject-comments")
+  @PutMapping("/api/attack_chain_runs/{attackChainRunId}/reports/{reportId}/inject-comments")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -94,9 +94,9 @@ public class ReportApi extends RestBehavior {
     return this.reportService.updateReportAttackChainNodeComment(report, attackChainNode, input);
   }
 
-  @PutMapping("/api/attack_chain_runs/{exerciseId}/reports/{reportId}")
+  @PutMapping("/api/attack_chain_runs/{attackChainRunId}/reports/{reportId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -109,9 +109,9 @@ public class ReportApi extends RestBehavior {
     return this.reportService.updateReport(report, input);
   }
 
-  @DeleteMapping("/api/attack_chain_runs/{exerciseId}/reports/{reportId}")
+  @DeleteMapping("/api/attack_chain_runs/{attackChainRunId}/reports/{reportId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)

@@ -31,9 +31,9 @@ public class AttackChainLessonsApi extends RestBehavior {
   private final LessonsAnswerRepository lessonsAnswerRepository;
   private final UserRepository userRepository;
 
-  @GetMapping(SCENARIO_URI + "{scenarioId}/lessons_categories")
+  @GetMapping(SCENARIO_URI + "{attackChainId}/lessons_categories")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<LessonsCategory> attackChainLessonsCategories(
@@ -42,9 +42,9 @@ public class AttackChainLessonsApi extends RestBehavior {
         LessonsCategorySpecification.fromAttackChain(attackChainId));
   }
 
-  @PostMapping(SCENARIO_URI + "{scenarioId}/lessons_apply_template/{lessonsTemplateId}")
+  @PostMapping(SCENARIO_URI + "{attackChainId}/lessons_apply_template/{lessonsTemplateId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -83,9 +83,9 @@ public class AttackChainLessonsApi extends RestBehavior {
         LessonsCategorySpecification.fromAttackChain(attackChainId));
   }
 
-  @PostMapping(SCENARIO_URI + "{scenarioId}/lessons_categories")
+  @PostMapping(SCENARIO_URI + "{attackChainId}/lessons_categories")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -99,9 +99,9 @@ public class AttackChainLessonsApi extends RestBehavior {
     return lessonsCategoryRepository.save(lessonsCategory);
   }
 
-  @PostMapping(SCENARIO_URI + "{scenarioId}/lessons_empty")
+  @PostMapping(SCENARIO_URI + "{attackChainId}/lessons_empty")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -120,9 +120,9 @@ public class AttackChainLessonsApi extends RestBehavior {
     return lessonsCategories;
   }
 
-  @PutMapping(SCENARIO_URI + "{scenarioId}/lessons_categories/{lessonsCategoryId}")
+  @PutMapping(SCENARIO_URI + "{attackChainId}/lessons_categories/{lessonsCategoryId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -139,9 +139,9 @@ public class AttackChainLessonsApi extends RestBehavior {
     return lessonsCategoryRepository.save(lessonsTemplateCategory);
   }
 
-  @DeleteMapping(SCENARIO_URI + "{scenarioId}/lessons_categories/{lessonsCategoryId}")
+  @DeleteMapping(SCENARIO_URI + "{attackChainId}/lessons_categories/{lessonsCategoryId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -150,9 +150,9 @@ public class AttackChainLessonsApi extends RestBehavior {
     lessonsCategoryRepository.deleteById(lessonsCategoryId);
   }
 
-  @PutMapping(SCENARIO_URI + "{scenarioId}/lessons_categories/{lessonsCategoryId}/teams")
+  @PutMapping(SCENARIO_URI + "{attackChainId}/lessons_categories/{lessonsCategoryId}/teams")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)
@@ -169,9 +169,9 @@ public class AttackChainLessonsApi extends RestBehavior {
     return lessonsCategoryRepository.save(lessonsCategory);
   }
 
-  @GetMapping(SCENARIO_URI + "{scenarioId}/lessons_questions")
+  @GetMapping(SCENARIO_URI + "{attackChainId}/lessons_questions")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<LessonsQuestion> attackChainLessonsQuestions(@PathVariable String attackChainId) {
@@ -187,9 +187,9 @@ public class AttackChainLessonsApi extends RestBehavior {
   }
 
   @GetMapping(
-      SCENARIO_URI + "{scenarioId}/lessons_categories/{lessonsCategoryId}/lessons_questions")
+      SCENARIO_URI + "{attackChainId}/lessons_categories/{lessonsCategoryId}/lessons_questions")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<LessonsQuestion> attackChainLessonsCategoryQuestions(
@@ -199,9 +199,9 @@ public class AttackChainLessonsApi extends RestBehavior {
   }
 
   @PostMapping(
-      SCENARIO_URI + "{scenarioId}/lessons_categories/{lessonsCategoryId}/lessons_questions")
+      SCENARIO_URI + "{attackChainId}/lessons_categories/{lessonsCategoryId}/lessons_questions")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public LessonsQuestion createAttackChainLessonsQuestion(
@@ -220,9 +220,9 @@ public class AttackChainLessonsApi extends RestBehavior {
 
   @PutMapping(
       SCENARIO_URI
-          + "{scenarioId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}")
+          + "{attackChainId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   public LessonsQuestion updateAttackChainLessonsQuestion(
@@ -240,9 +240,9 @@ public class AttackChainLessonsApi extends RestBehavior {
 
   @DeleteMapping(
       SCENARIO_URI
-          + "{scenarioId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}")
+          + "{attackChainId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackOn = Exception.class)

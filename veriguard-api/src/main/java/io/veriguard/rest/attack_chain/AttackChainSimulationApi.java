@@ -32,9 +32,9 @@ public class AttackChainSimulationApi {
   private final AttackChainRunService attackChainRunService;
 
   @LogExecutionTime
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/exercises")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/exercises")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<AttackChainRunSimple> attackChainAttackChainRuns(
@@ -43,9 +43,9 @@ public class AttackChainSimulationApi {
   }
 
   @LogExecutionTime
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/exercises/search")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/exercises/search")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<AttackChainRunSimple> attackChainAttackChainRuns(
@@ -68,7 +68,7 @@ public class AttackChainSimulationApi {
 
   // -- OPTION --
 
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/simulations/options")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/simulations/options")
   public List<FilterUtilsJpa.Option> optionsByName(
       @PathVariable @NotBlank final String attackChainId,
       @RequestParam(required = false) final String searchText) {

@@ -41,9 +41,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
 
   // -- READ --
 
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/injects/simple")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/injects/simple")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   @Transactional(readOnly = true)
@@ -52,9 +52,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
     return attackChainNodeSearchService.attackChainNodes(fromAttackChain(attackChainId));
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/injects/simple")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/simple")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   @Transactional(readOnly = true)
@@ -76,9 +76,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
         joinMap);
   }
 
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/injects")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/injects")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   public Iterable<AttackChainNode> attackChainAttackChainNodes(
@@ -88,8 +88,8 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
         .toList();
   }
 
-  @GetMapping(SCENARIO_URI + "/{scenarioId}/injects/{injectId}")
-  @RBAC(resourceId = "#injectId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}")
+  @RBAC(resourceId = "#attackChainNodeId", actionPerformed = Action.READ, resourceType = ResourceType.INJECT)
   public AttackChainNode attackChainAttackChainNode(
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId) {
@@ -99,9 +99,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
 
   // -- CREATE --
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/injects")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackFor = Exception.class)
@@ -112,9 +112,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
     return this.attackChainNodeService.createAndSaveAttackChainNode(null, attackChain, input);
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/injects/bulk")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/bulk")
   @RBAC(
-      resourceId = "#scenarioId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SCENARIO)
   @Transactional(rollbackFor = Exception.class)
@@ -125,9 +125,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
     return this.attackChainNodeService.createAndSaveAttackChainNodeList(null, attackChain, inputs);
   }
 
-  @PostMapping(SCENARIO_URI + "/{scenarioId}/injects/{injectId}")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}")
   @RBAC(
-      resourceId = "#injectId",
+      resourceId = "#attackChainNodeId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
   public AttackChainNode duplicateAttackChainNodeForAttackChain(
@@ -141,9 +141,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
   // -- UPDATE --
 
   @Transactional(rollbackFor = Exception.class)
-  @PutMapping(SCENARIO_URI + "/{scenarioId}/injects/{injectId}")
+  @PutMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}")
   @RBAC(
-      resourceId = "#injectId",
+      resourceId = "#attackChainNodeId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
   public AttackChainNode updateAttackChainNodeForAttackChain(
@@ -154,9 +154,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
         attackChainId, attackChainNodeId, input);
   }
 
-  @PutMapping(SCENARIO_URI + "/{scenarioId}/injects/{injectId}/activation")
+  @PutMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}/activation")
   @RBAC(
-      resourceId = "#injectId",
+      resourceId = "#attackChainNodeId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
   public AttackChainNode updateAttackChainNodeActivationForAttackChain(
@@ -170,9 +170,9 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
   // -- DELETE --
 
   @Transactional(rollbackFor = Exception.class)
-  @DeleteMapping(SCENARIO_URI + "/{scenarioId}/injects/{injectId}")
+  @DeleteMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}")
   @RBAC(
-      resourceId = "#injectId",
+      resourceId = "#attackChainNodeId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.INJECT)
   public void deleteAttackChainNodeForAttackChain(

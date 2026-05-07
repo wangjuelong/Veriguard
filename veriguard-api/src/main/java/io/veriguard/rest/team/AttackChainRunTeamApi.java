@@ -29,9 +29,9 @@ public class AttackChainRunTeamApi extends RestBehavior {
   private final TeamService teamService;
 
   @LogExecutionTime
-  @PostMapping(EXERCISE_URI + "/{exerciseId}/teams/search")
+  @PostMapping(EXERCISE_URI + "/{attackChainRunId}/teams/search")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   @Transactional(readOnly = true)

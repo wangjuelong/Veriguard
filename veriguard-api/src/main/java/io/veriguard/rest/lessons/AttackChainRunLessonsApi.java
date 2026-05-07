@@ -35,9 +35,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
   private final UserRepository userRepository;
   private final MailingService mailingService;
 
-  @GetMapping(EXERCISE_URL + "{exerciseId}/lessons_categories")
+  @GetMapping(EXERCISE_URL + "{attackChainRunId}/lessons_categories")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public Iterable<LessonsCategory> attackChainRunLessonsCategories(
@@ -46,9 +46,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
         LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
   }
 
-  @PostMapping(EXERCISE_URL + "{exerciseId}/lessons_apply_template/{lessonsTemplateId}")
+  @PostMapping(EXERCISE_URL + "{attackChainRunId}/lessons_apply_template/{lessonsTemplateId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -89,9 +89,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
         LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
   }
 
-  @PostMapping(EXERCISE_URL + "{exerciseId}/lessons_categories")
+  @PostMapping(EXERCISE_URL + "{attackChainRunId}/lessons_categories")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -107,9 +107,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
     return lessonsCategoryRepository.save(lessonsCategory);
   }
 
-  @PostMapping(EXERCISE_URL + "{exerciseId}/lessons_answers_reset")
+  @PostMapping(EXERCISE_URL + "{attackChainRunId}/lessons_answers_reset")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -139,9 +139,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
         .toList();
   }
 
-  @PostMapping(EXERCISE_URL + "{exerciseId}/lessons_empty")
+  @PostMapping(EXERCISE_URL + "{attackChainRunId}/lessons_empty")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -161,9 +161,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
     return lessonsCategories;
   }
 
-  @PutMapping(EXERCISE_URL + "{exerciseId}/lessons_categories/{lessonsCategoryId}")
+  @PutMapping(EXERCISE_URL + "{attackChainRunId}/lessons_categories/{lessonsCategoryId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -180,9 +180,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
     return lessonsCategoryRepository.save(lessonsTemplateCategory);
   }
 
-  @DeleteMapping(EXERCISE_URL + "{exerciseId}/lessons_categories/{lessonsCategoryId}")
+  @DeleteMapping(EXERCISE_URL + "{attackChainRunId}/lessons_categories/{lessonsCategoryId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -191,9 +191,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
     lessonsCategoryRepository.deleteById(lessonsCategoryId);
   }
 
-  @PutMapping(EXERCISE_URL + "{exerciseId}/lessons_categories/{lessonsCategoryId}/teams")
+  @PutMapping(EXERCISE_URL + "{attackChainRunId}/lessons_categories/{lessonsCategoryId}/teams")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -210,9 +210,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
     return lessonsCategoryRepository.save(lessonsCategory);
   }
 
-  @GetMapping(EXERCISE_URL + "{exerciseId}/lessons_questions")
+  @GetMapping(EXERCISE_URL + "{attackChainRunId}/lessons_questions")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public Iterable<LessonsQuestion> attackChainRunLessonsQuestions(
@@ -229,9 +229,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
   }
 
   @GetMapping(
-      EXERCISE_URL + "{exerciseId}/lessons_categories/{lessonsCategoryId}/lessons_questions")
+      EXERCISE_URL + "{attackChainRunId}/lessons_categories/{lessonsCategoryId}/lessons_questions")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public Iterable<LessonsQuestion> attackChainRunLessonsCategoryQuestions(
@@ -241,9 +241,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
   }
 
   @PostMapping(
-      EXERCISE_URL + "{exerciseId}/lessons_categories/{lessonsCategoryId}/lessons_questions")
+      EXERCISE_URL + "{attackChainRunId}/lessons_categories/{lessonsCategoryId}/lessons_questions")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public LessonsQuestion createAttackChainRunLessonsQuestion(
@@ -262,9 +262,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
 
   @PutMapping(
       EXERCISE_URL
-          + "{exerciseId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}")
+          + "{attackChainRunId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   public LessonsQuestion updateAttackChainRunLessonsQuestion(
@@ -282,9 +282,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
 
   @DeleteMapping(
       EXERCISE_URL
-          + "{exerciseId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}")
+          + "{attackChainRunId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -293,9 +293,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
     lessonsQuestionRepository.deleteById(lessonsQuestionId);
   }
 
-  @PostMapping(EXERCISE_URL + "{exerciseId}/lessons_send")
+  @PostMapping(EXERCISE_URL + "{attackChainRunId}/lessons_send")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.WRITE,
       resourceType = ResourceType.SIMULATION)
   @Transactional(rollbackOn = Exception.class)
@@ -320,9 +320,9 @@ public class AttackChainRunLessonsApi extends RestBehavior {
     mailingService.sendEmail(input.getSubject(), input.getBody(), users);
   }
 
-  @GetMapping(EXERCISE_URL + "{exerciseId}/lessons_answers")
+  @GetMapping(EXERCISE_URL + "{attackChainRunId}/lessons_answers")
   @RBAC(
-      resourceId = "#exerciseId",
+      resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION)
   public List<LessonsAnswer> attackChainRunLessonsAnswers(
@@ -345,7 +345,7 @@ public class AttackChainRunLessonsApi extends RestBehavior {
         .toList();
   }
 
-  @GetMapping("/api/player/lessons/exercise/{exerciseId}/lessons_categories")
+  @GetMapping("/api/player/lessons/exercise/{attackChainRunId}/lessons_categories")
   @RBAC(skipRBAC = true)
   public List<LessonsCategory> playerLessonsCategories(
       @PathVariable String attackChainRunId, @RequestParam Optional<String> userId) {
@@ -354,7 +354,7 @@ public class AttackChainRunLessonsApi extends RestBehavior {
         LessonsCategorySpecification.fromAttackChainRun(attackChainRunId));
   }
 
-  @GetMapping("/api/player/lessons/exercise/{exerciseId}/lessons_questions")
+  @GetMapping("/api/player/lessons/exercise/{attackChainRunId}/lessons_questions")
   @RBAC(skipRBAC = true)
   public List<LessonsQuestion> playerLessonsQuestions(
       @PathVariable String attackChainRunId, @RequestParam Optional<String> userId) {
@@ -370,7 +370,7 @@ public class AttackChainRunLessonsApi extends RestBehavior {
         .toList();
   }
 
-  @GetMapping("/api/player/lessons/exercise/{exerciseId}/lessons_answers")
+  @GetMapping("/api/player/lessons/exercise/{attackChainRunId}/lessons_answers")
   @RBAC(skipRBAC = true)
   public List<LessonsAnswer> playerLessonsAnswers(
       @PathVariable String attackChainRunId, @RequestParam Optional<String> userId) {
@@ -394,7 +394,7 @@ public class AttackChainRunLessonsApi extends RestBehavior {
   }
 
   @PostMapping(
-      "/api/player/lessons/exercise/{exerciseId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}/lessons_answers")
+      "/api/player/lessons/exercise/{attackChainRunId}/lessons_categories/{lessonsCategoryId}/lessons_questions/{lessonsQuestionId}/lessons_answers")
   @RBAC(skipRBAC = true)
   public LessonsAnswer createAttackChainRunLessonsQuestion(
       @PathVariable String attackChainRunId,
