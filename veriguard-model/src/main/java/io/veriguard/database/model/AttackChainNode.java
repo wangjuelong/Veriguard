@@ -36,14 +36,14 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Setter
 @Entity
-@Table(name = "injects")
+@Table(name = "attack_chain_nodes")
 @EntityListeners(ModelBaseListener.class)
 @Slf4j
 @Grantable(Grant.GRANT_RESOURCE_TYPE.ATOMIC_TESTING)
 public class AttackChainNode implements GrantableBase, Injection {
 
   public static final int SPEED_STANDARD = 1; // Standard speed define by the user.
-  public static final String ID_COLUMN_NAME = "inject_id";
+  public static final String ID_COLUMN_NAME = "node_id";
   public static final String ID_FIELD_NAME = "id";
 
   public static final Comparator<AttackChainNode> executionComparator =
@@ -68,51 +68,51 @@ public class AttackChainNode implements GrantableBase, Injection {
 
   @Getter
   @Queryable(filterable = true, searchable = true, sortable = true)
-  @Column(name = "inject_title")
+  @Column(name = "node_title")
   @JsonProperty("inject_title")
   @NotBlank
   private String title;
 
   @Getter
-  @Column(name = "inject_description")
+  @Column(name = "node_description")
   @JsonProperty("inject_description")
   private String description;
 
   @Getter
-  @Column(name = "inject_country")
+  @Column(name = "node_country")
   @JsonProperty("inject_country")
   private String country;
 
   @Getter
-  @Column(name = "inject_city")
+  @Column(name = "node_city")
   @JsonProperty("inject_city")
   private String city;
 
   @Getter
-  @Column(name = "inject_enabled")
+  @Column(name = "node_enabled")
   @JsonProperty("inject_enabled")
   private boolean enabled = true;
 
   @Getter
-  @Column(name = "inject_trigger_now_date")
+  @Column(name = "node_trigger_now_date")
   @JsonProperty("inject_trigger_now_date")
   private Instant triggerNowDate;
 
   @Getter
-  @Column(name = "inject_content")
+  @Column(name = "node_content")
   @Convert(converter = ContentConverter.class)
   @JsonProperty("inject_content")
   private ObjectNode content;
 
   @Getter
-  @Column(name = "inject_created_at")
+  @Column(name = "node_created_at")
   @JsonProperty("inject_created_at")
   @NotNull
   @CreationTimestamp
   private Instant createdAt = now();
 
   @Getter
-  @Column(name = "inject_updated_at")
+  @Column(name = "node_updated_at")
   @Queryable(filterable = true, sortable = true)
   @JsonProperty("inject_updated_at")
   @NotNull
@@ -120,13 +120,13 @@ public class AttackChainNode implements GrantableBase, Injection {
   private Instant updatedAt = now();
 
   @Getter
-  @Column(name = "inject_all_teams")
+  @Column(name = "node_all_teams")
   @JsonProperty("inject_all_teams")
   private boolean allTeams;
 
   @Getter
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "inject_exercise")
+  @JoinColumn(name = "node_attack_chain_run_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("inject_exercise")
   @Schema(type = "string")
@@ -134,7 +134,7 @@ public class AttackChainNode implements GrantableBase, Injection {
 
   @Getter
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "inject_scenario")
+  @JoinColumn(name = "node_attack_chain_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("inject_scenario")
   @Schema(type = "string")
@@ -142,7 +142,7 @@ public class AttackChainNode implements GrantableBase, Injection {
 
   @Getter
   @OneToMany(
-      mappedBy = "compositeId.attackChainNodeChildren",
+      mappedBy = "attackChainNodeChildren",
       fetch = FetchType.EAGER,
       orphanRemoval = true,
       cascade = CascadeType.ALL)
@@ -156,7 +156,7 @@ public class AttackChainNode implements GrantableBase, Injection {
   }
 
   @Getter
-  @Column(name = "inject_depends_duration")
+  @Column(name = "node_depends_duration")
   @JsonProperty("inject_depends_duration")
   @NotNull
   @Min(value = 0L, message = "The value must be positive")
@@ -164,14 +164,14 @@ public class AttackChainNode implements GrantableBase, Injection {
   private Long dependsDuration;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "inject_injector_contract")
+  @JoinColumn(name = "node_contract_id")
   @JsonProperty("inject_injector_contract")
   @Queryable(filterable = true, dynamicValues = true, path = "nodeContract.nodeExecutor.id")
   private NodeContract nodeContract;
 
   @Getter
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "inject_user")
+  @JoinColumn(name = "node_user")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("inject_user")
   @Schema(type = "string")
@@ -183,11 +183,42 @@ public class AttackChainNode implements GrantableBase, Injection {
   @Queryable(filterable = true, sortable = true)
   private AttackChainNodeStatus status;
 
-  @Column(name = "inject_collect_status", nullable = false)
+  @Column(name = "node_collect_status", nullable = false)
   @Enumerated(EnumType.STRING)
   @JsonProperty("inject_collect_status")
   @Getter
   private CollectExecutionStatus collectExecutionStatus = COLLECTING;
+
+  // -- 攻击编排（PRD §2.4 二开新增）--
+
+  @Getter
+  @Column(name = "repeat_count", nullable = false)
+  @JsonProperty("inject_repeat_count")
+  @Min(value = 1L)
+  private int repeatCount = 1;
+
+  @Getter
+  @Column(name = "repeat_interval_seconds", nullable = false)
+  @JsonProperty("inject_repeat_interval_seconds")
+  @Min(value = 0L)
+  private long repeatIntervalSeconds = 0L;
+
+  @Getter
+  @Column(name = "validation_parameter_set_id")
+  @JsonProperty("inject_validation_parameter_set_id")
+  private UUID validationParameterSetId;
+
+  @Getter
+  @Column(name = "node_state")
+  @Enumerated(EnumType.STRING)
+  @JsonProperty("inject_node_state")
+  private NodeState nodeState;
+
+  @Getter
+  @Column(name = "current_iteration", nullable = false)
+  @JsonProperty("inject_current_iteration")
+  @Min(value = 0L)
+  private int currentIteration = 0;
 
   // UpdatedAt now used to sync with linked object
   public void setStatus(AttackChainNodeStatus status) {
@@ -199,8 +230,8 @@ public class AttackChainNode implements GrantableBase, Injection {
   @Getter
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "injects_tags",
-      joinColumns = @JoinColumn(name = "inject_id"),
+      name = "attack_chain_nodes_tags",
+      joinColumns = @JoinColumn(name = "node_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
   @JsonProperty("inject_tags")
@@ -217,8 +248,8 @@ public class AttackChainNode implements GrantableBase, Injection {
   @Getter
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
-      name = "injects_teams",
-      joinColumns = @JoinColumn(name = "inject_id"),
+      name = "attack_chain_nodes_teams",
+      joinColumns = @JoinColumn(name = "node_id"),
       inverseJoinColumns = @JoinColumn(name = "team_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("inject_teams")
@@ -235,8 +266,8 @@ public class AttackChainNode implements GrantableBase, Injection {
   @Getter
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
-      name = "injects_assets",
-      joinColumns = @JoinColumn(name = "inject_id"),
+      name = "attack_chain_nodes_assets",
+      joinColumns = @JoinColumn(name = "node_id"),
       inverseJoinColumns = @JoinColumn(name = "asset_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("inject_assets")
@@ -253,8 +284,8 @@ public class AttackChainNode implements GrantableBase, Injection {
   @Getter
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
-      name = "injects_asset_groups",
-      joinColumns = @JoinColumn(name = "inject_id"),
+      name = "attack_chain_nodes_asset_groups",
+      joinColumns = @JoinColumn(name = "node_id"),
       inverseJoinColumns = @JoinColumn(name = "asset_group_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("inject_asset_groups")
@@ -318,7 +349,7 @@ public class AttackChainNode implements GrantableBase, Injection {
   @OneToMany
   @JoinColumn(
       name = "grant_resource",
-      referencedColumnName = "inject_id",
+      referencedColumnName = "node_id",
       insertable = false,
       updatable = false)
   @SQLRestriction(

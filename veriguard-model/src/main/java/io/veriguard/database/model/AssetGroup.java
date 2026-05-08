@@ -106,9 +106,9 @@ public class AssetGroup implements Base {
   @ArraySchema(schema = @Schema(type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "injects_asset_groups",
+      name = "attack_chain_nodes_asset_groups",
       joinColumns = @JoinColumn(name = "asset_group_id"),
-      inverseJoinColumns = @JoinColumn(name = "inject_id"))
+      inverseJoinColumns = @JoinColumn(name = "node_id"))
   @JsonProperty("asset_group_injects")
   @JsonIgnore
   @Queryable(filterable = true, dynamicValues = true, path = "attackChainNodes.id")

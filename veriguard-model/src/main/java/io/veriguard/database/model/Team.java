@@ -105,9 +105,9 @@ public class Team implements Base {
       schema = @Schema(description = "IDs of the simulations linked to the team", type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "exercises_teams",
+      name = "attack_chain_runs_teams",
       joinColumns = @JoinColumn(name = "team_id"),
-      inverseJoinColumns = @JoinColumn(name = "exercise_id"))
+      inverseJoinColumns = @JoinColumn(name = "run_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("team_exercises")
   private List<AttackChainRun> attackChainRuns = new ArrayList<>();
@@ -116,9 +116,9 @@ public class Team implements Base {
       schema = @Schema(description = "IDs of the scenarios linked to the team", type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "scenarios_teams",
+      name = "attack_chains_teams",
       joinColumns = @JoinColumn(name = "team_id"),
-      inverseJoinColumns = @JoinColumn(name = "scenario_id"))
+      inverseJoinColumns = @JoinColumn(name = "attack_chain_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("team_scenarios")
   private List<AttackChain> attackChains = new ArrayList<>();
@@ -126,9 +126,9 @@ public class Team implements Base {
   @ArraySchema(schema = @Schema(type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "injects_teams",
+      name = "attack_chain_nodes_teams",
       joinColumns = @JoinColumn(name = "team_id"),
-      inverseJoinColumns = @JoinColumn(name = "inject_id"))
+      inverseJoinColumns = @JoinColumn(name = "node_id"))
   @JsonProperty("team_injects")
   @JsonIgnore
   @Queryable(filterable = true, dynamicValues = true, path = "attackChainNodes.id")

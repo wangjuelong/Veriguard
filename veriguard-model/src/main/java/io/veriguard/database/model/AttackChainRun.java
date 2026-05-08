@@ -37,14 +37,14 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Setter
 @Entity
-@Table(name = "exercises")
+@Table(name = "attack_chain_runs")
 @EntityListeners(ModelBaseListener.class)
 @Grantable(Grant.GRANT_RESOURCE_TYPE.SIMULATION)
 public class AttackChainRun implements GrantableBase {
 
   @Getter
   @Id
-  @Column(name = "exercise_id")
+  @Column(name = "run_id")
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
   @JsonProperty("exercise_id")
@@ -52,19 +52,19 @@ public class AttackChainRun implements GrantableBase {
   private String id;
 
   @Getter
-  @Column(name = "exercise_name")
+  @Column(name = "run_name")
   @JsonProperty("exercise_name")
   @Queryable(filterable = true, searchable = true, sortable = true)
   @NotBlank
   private String name;
 
   @Getter
-  @Column(name = "exercise_description")
+  @Column(name = "run_description")
   @JsonProperty("exercise_description")
   private String description;
 
   @Getter
-  @Column(name = "exercise_status")
+  @Column(name = "run_status")
   @JsonProperty("exercise_status")
   @Enumerated(EnumType.STRING)
   @Queryable(filterable = true, sortable = true)
@@ -72,90 +72,63 @@ public class AttackChainRun implements GrantableBase {
   private AttackChainRunStatus status = AttackChainRunStatus.SCHEDULED;
 
   @Getter
-  @Column(name = "exercise_subtitle")
+  @Column(name = "run_subtitle")
   @JsonProperty("exercise_subtitle")
   private String subtitle;
 
   @Getter
-  @Column(name = "exercise_category")
+  @Column(name = "run_category")
   @JsonProperty("exercise_category")
   private String category;
 
   @Getter
-  @Column(name = "exercise_main_focus")
+  @Column(name = "run_main_focus")
   @JsonProperty("exercise_main_focus")
   private String mainFocus;
 
   @Getter
-  @Column(name = "exercise_severity")
+  @Column(name = "run_severity")
   @Enumerated(EnumType.STRING)
   @JsonProperty("exercise_severity")
   private SEVERITY severity;
 
-  @Column(name = "exercise_pause_date")
+  @Column(name = "run_pause_date")
   @JsonIgnore
   private Instant currentPause;
 
-  @Column(name = "exercise_start_date")
+  @Column(name = "run_start_date")
   @JsonProperty("exercise_start_date")
   @Queryable(filterable = true, sortable = true)
   private Instant start;
 
-  @Column(name = "exercise_launch_order", insertable = false, updatable = false)
+  @Column(name = "run_launch_order", insertable = false, updatable = false)
   @JsonIgnore
   @Getter
   @Setter(NONE)
   private Long launchOrder;
 
-  @Column(name = "exercise_end_date")
+  @Column(name = "run_end_date")
   @JsonProperty("exercise_end_date")
   @Queryable(filterable = true, sortable = true)
   private Instant end;
 
-  @Getter
-  @Column(name = "exercise_message_header")
-  @JsonProperty("exercise_message_header")
-  private String header = "SIMULATION HEADER";
+  // -- 邮件演练遗留字段（V3 已 drop DB 列；Java 字段保留为 @Transient 维持 API 兼容）--
+  // TODO Phase 2+: 彻底删除 + 移除 AttackChainRunFactory / V1_DataImporter / NotificationRule 等引用
+
+  @Transient @JsonIgnore @Getter private String header = "SIMULATION HEADER";
+
+  @Transient @JsonIgnore @Getter private String footer = "SIMULATION FOOTER";
+
+  @Transient @JsonIgnore @Getter private String from;
+
+  @Transient @JsonIgnore @Getter private List<String> replyTos = new ArrayList<>();
+
+  @Transient @JsonIgnore @Getter private Document logoDark;
+
+  @Transient @JsonIgnore @Getter private Document logoLight;
 
   @Getter
-  @Column(name = "exercise_message_footer")
-  @JsonProperty("exercise_message_footer")
-  private String footer = "SIMULATION FOOTER";
-
-  @Getter
-  @Column(name = "exercise_mail_from")
-  @JsonProperty("exercise_mail_from")
-  @Email
-  @NotBlank
-  private String from;
-
-  @Getter
-  @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(
-      name = "exercise_mails_reply_to",
-      joinColumns = @JoinColumn(name = "exercise_id"))
-  @Column(name = "exercise_reply_to", nullable = false)
-  @JsonProperty("exercise_mails_reply_to")
-  private List<String> replyTos = new ArrayList<>();
-
-  @Getter
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "exercise_logo_dark")
-  @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("exercise_logo_dark")
-  @Schema(type = "string")
-  private Document logoDark;
-
-  @Getter
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "exercise_logo_light")
-  @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("exercise_logo_light")
-  @Schema(type = "string")
-  private Document logoLight;
-
-  @Getter
-  @Column(name = "exercise_lessons_anonymized")
+  @Column(name = "run_lessons_anonymized")
   @JsonProperty("exercise_lessons_anonymized")
   private boolean lessonsAnonymized = false;
 
@@ -164,9 +137,9 @@ public class AttackChainRun implements GrantableBase {
   @Getter
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "scenarios_exercises",
-      joinColumns = @JoinColumn(name = "exercise_id"),
-      inverseJoinColumns = @JoinColumn(name = "scenario_id"))
+      name = "attack_chains_runs",
+      joinColumns = @JoinColumn(name = "run_id"),
+      inverseJoinColumns = @JoinColumn(name = "attack_chain_id"))
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("exercise_scenario")
   @Queryable(filterable = true, dynamicValues = true)
@@ -183,32 +156,51 @@ public class AttackChainRun implements GrantableBase {
   // STIX
   @Getter
   @ManyToOne
-  @JoinColumn(name = "exercise_security_coverage")
+  @JoinColumn(name = "run_security_coverage")
   @JsonIgnore
   private SecurityCoverage securityCoverage;
 
   // -- AUDIT --
 
   @Getter
-  @Column(name = "exercise_created_at")
+  @Column(name = "run_created_at")
   @JsonProperty("exercise_created_at")
   @NotNull
   @CreationTimestamp
   private Instant createdAt = now();
 
   @Getter
-  @Column(name = "exercise_updated_at")
+  @Column(name = "run_updated_at")
   @JsonProperty("exercise_updated_at")
   @NotNull
   @Queryable(filterable = true, sortable = true)
   @UpdateTimestamp
   private Instant updatedAt = now();
 
+  // -- 攻击编排（PRD §2.4 二开新增 verdict）--
+
+  @Getter
+  @Column(name = "verdict_prevention")
+  @Enumerated(EnumType.STRING)
+  @JsonProperty("exercise_verdict_prevention")
+  private LinkVerdict verdictPrevention;
+
+  @Getter
+  @Column(name = "verdict_detection")
+  @Enumerated(EnumType.STRING)
+  @JsonProperty("exercise_verdict_detection")
+  private LinkVerdict verdictDetection;
+
+  @Getter
+  @Column(name = "verdict_computed_at")
+  @JsonProperty("exercise_verdict_computed_at")
+  private Instant verdictComputedAt;
+
   // -- RELATION --
 
   @Getter
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "exercise_custom_dashboard")
+  @JoinColumn(name = "run_custom_dashboard")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("exercise_custom_dashboard")
   @Schema(type = "string")
@@ -218,7 +210,7 @@ public class AttackChainRun implements GrantableBase {
   @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(
       name = "grant_resource",
-      referencedColumnName = "exercise_id",
+      referencedColumnName = "run_id",
       insertable = false,
       updatable = false)
   @SQLRestriction(
@@ -241,8 +233,8 @@ public class AttackChainRun implements GrantableBase {
   @Getter
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "exercises_teams",
-      joinColumns = @JoinColumn(name = "exercise_id"),
+      name = "attack_chain_runs_teams",
+      joinColumns = @JoinColumn(name = "run_id"),
       inverseJoinColumns = @JoinColumn(name = "team_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("exercise_teams")
@@ -286,8 +278,8 @@ public class AttackChainRun implements GrantableBase {
   @Getter
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "exercises_tags",
-      joinColumns = @JoinColumn(name = "exercise_id"),
+      name = "attack_chain_runs_tags",
+      joinColumns = @JoinColumn(name = "run_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
   @JsonProperty("exercise_tags")
@@ -304,8 +296,8 @@ public class AttackChainRun implements GrantableBase {
   @Getter
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "exercises_documents",
-      joinColumns = @JoinColumn(name = "exercise_id"),
+      name = "attack_chain_runs_documents",
+      joinColumns = @JoinColumn(name = "run_id"),
       inverseJoinColumns = @JoinColumn(name = "document_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
   @JsonProperty("exercise_documents")

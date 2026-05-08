@@ -10,14 +10,14 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "scenarios_teams_users")
+@Table(name = "attack_chains_teams_users")
 public class AttackChainTeamUser {
 
   @EmbeddedId @JsonIgnore private AttackChainTeamUserId compositeId = new AttackChainTeamUserId();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @MapsId("attackChainId")
-  @JoinColumn(name = "scenario_id")
+  @JoinColumn(name = "attack_chain_id")
   @JsonProperty("scenario_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")

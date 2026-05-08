@@ -177,9 +177,9 @@ public class Endpoint extends Asset {
   @Setter(AccessLevel.NONE)
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "injects_assets",
+      name = "attack_chain_nodes_assets",
       joinColumns = @JoinColumn(name = "asset_id"),
-      inverseJoinColumns = @JoinColumn(name = "inject_id"))
+      inverseJoinColumns = @JoinColumn(name = "node_id"))
   @JsonIgnore
   private List<AttackChainNode> attackChainNodes = new ArrayList<>();
 

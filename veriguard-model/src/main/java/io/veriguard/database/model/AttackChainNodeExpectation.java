@@ -26,7 +26,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Getter
 @Entity
-@Table(name = "injects_expectations")
+@Table(name = "attack_chain_node_expectations")
 @EntityListeners(ModelBaseListener.class)
 public class AttackChainNodeExpectation implements Base, Cloneable {
 
@@ -81,7 +81,7 @@ public class AttackChainNodeExpectation implements Base, Cloneable {
 
   @Queryable(filterable = true, label = "inject expectation type")
   @Setter
-  @Column(name = "inject_expectation_type")
+  @Column(name = "node_expectation_type")
   @JsonProperty("inject_expectation_type")
   @Enumerated(EnumType.STRING)
   @NotNull
@@ -93,34 +93,34 @@ public class AttackChainNodeExpectation implements Base, Cloneable {
   @Setter
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  @Column(name = "inject_expectation_id")
+  @Column(name = "node_expectation_id")
   @JsonProperty("inject_expectation_id")
   private String id;
 
   @Setter
-  @Column(name = "inject_expectation_name")
+  @Column(name = "node_expectation_name")
   @JsonProperty("inject_expectation_name")
   private String name;
 
   @Setter
-  @Column(name = "inject_expectation_description")
+  @Column(name = "node_expectation_description")
   @JsonProperty("inject_expectation_description")
   private String description;
 
   @Setter
   @Type(JsonType.class)
-  @Column(name = "inject_expectation_signatures")
+  @Column(name = "node_expectation_signatures")
   @JsonProperty("inject_expectation_signatures")
   private List<NodeExpectationSignature> signatures = new ArrayList<>();
 
   @Setter
   @Type(JsonType.class)
-  @Column(name = "inject_expectation_results")
+  @Column(name = "node_expectation_results")
   @JsonProperty("inject_expectation_results")
   private List<NodeExpectationResult> results = new ArrayList<>();
 
   @Setter
-  @Column(name = "inject_expectation_score")
+  @Column(name = "node_expectation_score")
   @JsonProperty("inject_expectation_score")
   private Double score;
 
@@ -130,34 +130,34 @@ public class AttackChainNodeExpectation implements Base, Cloneable {
   }
 
   @Setter
-  @Column(name = "inject_expectation_expected_score")
+  @Column(name = "node_expectation_expected_score")
   @JsonProperty("inject_expectation_expected_score")
   @NotNull
   private Double expectedScore;
 
   /** Expiration time in seconds */
   @Setter
-  @Column(name = "inject_expiration_time")
+  @Column(name = "node_expectation_expiration_time")
   @JsonProperty("inject_expiration_time")
   @NotNull
   private Long expirationTime;
 
   @Queryable(filterable = true, label = "created at")
   @Setter
-  @Column(name = "inject_expectation_created_at")
+  @Column(name = "node_expectation_created_at")
   @JsonProperty("inject_expectation_created_at")
   @CreationTimestamp
   private Instant createdAt = now();
 
   @Queryable(filterable = true, label = "updated at")
   @Setter
-  @Column(name = "inject_expectation_updated_at")
+  @Column(name = "node_expectation_updated_at")
   @JsonProperty("inject_expectation_updated_at")
   @UpdateTimestamp
   private Instant updatedAt = now();
 
   @Setter
-  @Column(name = "inject_expectation_group")
+  @Column(name = "node_expectation_group")
   @JsonProperty("inject_expectation_group")
   private boolean expectationGroup;
 
@@ -166,7 +166,7 @@ public class AttackChainNodeExpectation implements Base, Cloneable {
   // region contextual relations
   @Setter
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "exercise_id")
+  @JoinColumn(name = "run_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("inject_expectation_exercise")
   @Schema(type = "string")
@@ -174,7 +174,7 @@ public class AttackChainNodeExpectation implements Base, Cloneable {
 
   @Setter
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "inject_id")
+  @JoinColumn(name = "node_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @JsonProperty("inject_expectation_inject")
   @Schema(type = "string")

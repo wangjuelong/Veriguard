@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "injects_documents")
+@Table(name = "attack_chain_nodes_documents")
 public class AttackChainNodeDocument {
 
   @EmbeddedId @JsonIgnore
@@ -21,7 +21,7 @@ public class AttackChainNodeDocument {
 
   @ManyToOne(fetch = FetchType.EAGER)
   @MapsId("attackChainNodeId")
-  @JoinColumn(name = "inject_id")
+  @JoinColumn(name = "node_id")
   @JsonProperty("inject_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")

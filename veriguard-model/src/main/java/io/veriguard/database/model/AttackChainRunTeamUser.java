@@ -10,14 +10,14 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "exercises_teams_users")
+@Table(name = "attack_chain_runs_teams_users")
 public class AttackChainRunTeamUser {
   @EmbeddedId @JsonIgnore
   private AttackChainRunTeamUserId compositeId = new AttackChainRunTeamUserId();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @MapsId("attackChainRunId")
-  @JoinColumn(name = "exercise_id")
+  @JoinColumn(name = "run_id")
   @JsonProperty("exercise_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")

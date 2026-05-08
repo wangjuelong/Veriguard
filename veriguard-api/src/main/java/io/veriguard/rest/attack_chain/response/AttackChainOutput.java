@@ -106,7 +106,7 @@ public class AttackChainOutput {
   @ArraySchema(schema = @Schema(description = "Exercises ids of the scenario"))
   private Set<String> attackChainRuns;
 
-  @Column(name = "scenario_lessons_anonymized")
+  @Column(name = "attack_chain_lessons_anonymized")
   @Schema(description = "Lesson anonymized state of the scenario")
   private boolean lessonsAnonymized;
 

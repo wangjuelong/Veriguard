@@ -76,9 +76,9 @@ public class Document implements Base {
   @ArraySchema(schema = @Schema(type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "exercises_documents",
+      name = "attack_chain_runs_documents",
       joinColumns = @JoinColumn(name = "document_id"),
-      inverseJoinColumns = @JoinColumn(name = "exercise_id"))
+      inverseJoinColumns = @JoinColumn(name = "run_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
   @JsonProperty("document_exercises")
   private Set<AttackChainRun> attackChainRuns = new HashSet<>();
@@ -86,9 +86,9 @@ public class Document implements Base {
   @ArraySchema(schema = @Schema(type = "string"))
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "scenarios_documents",
+      name = "attack_chains_documents",
       joinColumns = @JoinColumn(name = "document_id"),
-      inverseJoinColumns = @JoinColumn(name = "scenario_id"))
+      inverseJoinColumns = @JoinColumn(name = "attack_chain_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
   @JsonProperty("document_scenarios")
   private Set<AttackChain> attackChains = new HashSet<>();
