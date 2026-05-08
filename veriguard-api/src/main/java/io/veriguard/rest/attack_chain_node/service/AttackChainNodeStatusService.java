@@ -6,6 +6,7 @@ import static org.springframework.util.StringUtils.hasText;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.aop.lock.Lock;
 import io.veriguard.aop.lock.LockResourceType;
+import io.veriguard.attackchain.execution.NodeRepeatService;
 import io.veriguard.database.helper.ExecutionTraceRepositoryHelper;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AgentRepository;
@@ -45,6 +46,7 @@ public class AttackChainNodeStatusService {
 
   private final EntityManager entityManager;
   private final ManagerFactory managerFactory;
+  private final NodeRepeatService nodeRepeatService;
 
   public List<AttackChainNodeStatus> findPendingAttackChainNodeStatusByType(
       String attackChainNodeType) {
@@ -139,6 +141,9 @@ public class AttackChainNodeStatusService {
     attackChainNodeStatus.setTrackingEndDate(Instant.now());
     attackChainNodeStatus.setName(finalStatus);
     attackChainNodeStatus.getAttackChainNode().setUpdatedAt(Instant.now());
+    // Phase 4.5：节点结算后让 NodeRepeatPlanner 决定 REPEAT / FINALIZE / FINALIZE_BLOCKED；
+    // REPEAT 路径会 orphan-remove 当前 status，让下个调度 tick 重新拉起本节点的下一次迭代。
+    nodeRepeatService.handleSettled(attackChainNodeStatus.getAttackChainNode());
   }
 
   /**

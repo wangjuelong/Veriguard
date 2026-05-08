@@ -176,11 +176,13 @@ public class AttackChainNodesExecutionJob implements Job {
       attackChainNodeStatusService.updateFinalAttackChainNodeStatus(status);
     }
 
+    // Phase 4.5：updateFinalAttackChainNodeStatus 可能触发 REPEAT，把 status orphan-remove；
+    // 已被移除的节点 getStatus() 为 empty，过滤掉避免 orElseThrow 误报。
     attackChainNodeStatusService.saveAll(
         pendingAttackChainNodes.stream()
-            .map(
-                attackChainNode ->
-                    attackChainNode.getStatus().orElseThrow(ElementNotFoundException::new))
+            .map(AttackChainNode::getStatus)
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
             .collect(Collectors.toList()));
   }
 
