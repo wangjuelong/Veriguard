@@ -30,6 +30,7 @@ ALTER TABLE scenarios DROP COLUMN IF EXISTS scenario_mail_from;
 ALTER TABLE exercises DROP COLUMN IF EXISTS exercise_message_header;
 ALTER TABLE exercises DROP COLUMN IF EXISTS exercise_message_footer;
 ALTER TABLE exercises DROP COLUMN IF EXISTS exercise_mail_from;
+-- 注：exercise_logo_dark / exercise_logo_light 保留（Document.simulationsByLogoDark/Light 仍在）
 
 DROP TABLE IF EXISTS scenario_mails_reply_to CASCADE;
 DROP TABLE IF EXISTS exercise_mails_reply_to CASCADE;

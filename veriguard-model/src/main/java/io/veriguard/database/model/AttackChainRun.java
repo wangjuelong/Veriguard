@@ -123,9 +123,21 @@ public class AttackChainRun implements GrantableBase {
 
   @Transient @JsonIgnore @Getter private List<String> replyTos = new ArrayList<>();
 
-  @Transient @JsonIgnore @Getter private Document logoDark;
+  @Getter
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "run_logo_dark")
+  @JsonSerialize(using = MonoIdSerializer.class)
+  @JsonProperty("exercise_logo_dark")
+  @Schema(type = "string")
+  private Document logoDark;
 
-  @Transient @JsonIgnore @Getter private Document logoLight;
+  @Getter
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "run_logo_light")
+  @JsonSerialize(using = MonoIdSerializer.class)
+  @JsonProperty("exercise_logo_light")
+  @Schema(type = "string")
+  private Document logoLight;
 
   @Getter
   @Column(name = "run_lessons_anonymized")
