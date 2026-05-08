@@ -1,5 +1,5 @@
 ---
-applyTo: "openaev-front/**/*.ts,openaev-front/**/*.tsx,openaev-front/**/*.js,openaev-front/**/*.jsx"
+applyTo: "veriguard-front/**/*.ts,veriguard-front/**/*.tsx,veriguard-front/**/*.js,veriguard-front/**/*.jsx"
 description: "Frontend React/TypeScript conventions: components, MUI, forms, permissions, i18n, Redux"
 ---
 

@@ -9,13 +9,13 @@
         <version>3.3.7</version>
     </parent>
 
-    <groupId>io.openaev</groupId>
-    <artifactId>openaev-platform</artifactId>
+    <groupId>io.veriguard</groupId>
+    <artifactId>veriguard-platform</artifactId>
     <version>2.3.3</version>
     <packaging>pom</packaging>
 
-    <name>OpenAEV platform</name>
-    <description>OpenAEV platform</description>
+    <name>Veriguard platform</name>
+    <description>Veriguard platform</description>
 
     <properties>
         <java.version>21</java.version>
@@ -27,7 +27,7 @@
         <commons-validator.version>1.10.0</commons-validator.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <jacoco-plugin.version>0.8.14</jacoco-plugin.version>
-        <pyroscope.version>2.5.2</pyroscope.version>
+        <lombok.version>1.18.46</lombok.version>
         <spring-security-crypto.version>6.5.9</spring-security-crypto.version>
     </properties>
 
@@ -44,6 +44,17 @@
 
     <repositories>
         <repository>
+            <id>maven-central-direct</id>
+            <name>Maven Central Direct</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>ossrh-snapshots</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
@@ -59,6 +70,20 @@
             <url>https://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-central-plugins-direct</id>
+            <name>Maven Central Plugins Direct</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
         <dependency>
@@ -90,11 +115,6 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>io.pyroscope</groupId>
-            <artifactId>agent</artifactId>
-            <version>${pyroscope.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
             <version>${spring-security-crypto.version}</version>
@@ -118,6 +138,7 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                    <proc>full</proc>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -132,6 +153,7 @@
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
+                    <ratchetFrom>main</ratchetFrom>
                     <java>
                         <includes>
                             <include>src/main/java/**/*.java</include>
@@ -140,7 +162,7 @@
                         <importOrder/>
                         <removeUnusedImports/>
                         <googleJavaFormat>
-                            <version>1.24.0</version>
+                            <version>1.27.0</version>
                             <style>GOOGLE</style>
                         </googleJavaFormat>
                     </java>
@@ -150,8 +172,8 @@
     </build>
 
     <modules>
-        <module>openaev-model</module>
-        <module>openaev-framework</module>
-        <module>openaev-api</module>
+        <module>veriguard-model</module>
+        <module>veriguard-framework</module>
+        <module>veriguard-api</module>
     </modules>
 </project>

@@ -1,7 +1,7 @@
 ---
 name: review-security
 description: >-
-  Security review checklist for OpenAEV code: RBAC, tenant isolation, data exposure,
+  Security review checklist for Veriguard code: RBAC, tenant isolation, data exposure,
   authentication. Use when reviewing PRs or auditing security of a feature.
 ---
 
@@ -21,7 +21,7 @@ description: >-
 - All `TenantBase` entities must have `@Filter(name = "tenantFilter")`
 - Search for any native `@Query` — they bypass the filter:
   ```bash
-  grep -rn "nativeQuery = true" openaev-model/ openaev-api/
+  grep -rn "nativeQuery = true" veriguard-model/ veriguard-api/
   ```
 - Each native query MUST include `WHERE tenant_id = :tenantId` or join via tenant
 - Tenant relation must be `@JsonIgnore` — never in API output

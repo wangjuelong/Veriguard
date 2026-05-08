@@ -1,0 +1,29 @@
+// ADMIN ROUTES
+
+export const ADMIN_BASE_URL = '/admin';
+
+export const DASHBOARD_BASE_URL = '/admin/workspaces/custom_dashboards';
+
+export const ATTACK_CHAIN_BASE_URL = '/admin/attack_chains';
+export const ATTACK_CHAIN_RUN_BASE_URL = '/admin/attack_chain_runs';
+export const ATOMIC_BASE_URL = '/admin/atomic_testings';
+
+// Assets
+export const ENDPOINT_BASE_URL = '/admin/assets/endpoints';
+export const SECURITY_PLATFORM_BASE_URL = '/admin/assets/security_platforms';
+
+// Peoples
+export const PLAYER_BASE_URL = '/admin/teams/players';
+export const TEAM_BASE_URL = '/admin/teams/teams';
+
+// Components — 二开移除 channel/challenge
+
+export const PAYLOAD_BASE_URL = '/admin/payloads';
+export const FINDING_BASE_URL = '/admin/findings';
+
+// Integrations
+export const COLLECTOR_BASE_URL = '/admin/integrations/collectors';
+
+// Settings
+export const GROUP_BASE_URL = '/admin/settings/security/groups';
+export const ASSET_RULES_BASE_URL = '/admin/settings/asset_rules';

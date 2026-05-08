@@ -1,0 +1,237 @@
+package io.veriguard.service;
+
+import io.veriguard.aop.RBACAspect;
+import io.veriguard.database.model.*;
+import io.veriguard.database.repository.EvaluationRepository;
+import io.veriguard.database.repository.ObjectiveRepository;
+import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
+import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.rest.injector_contract.NodeContractService;
+import jakarta.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Optional;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@RequiredArgsConstructor
+@Service
+public class PermissionService {
+
+  // TODO: today settings are necessary to login -> review that
+  private static final EnumSet<ResourceType> RESOURCES_OPEN =
+      EnumSet.of(
+          ResourceType.PLAYER,
+          ResourceType.TEAM,
+          ResourceType.PLATFORM_SETTING,
+          ResourceType.VULNERABILITY,
+          ResourceType.TAG,
+          ResourceType.ATTACK_PATTERN,
+          ResourceType.KILL_CHAIN_PHASE,
+          ResourceType.ORGANIZATION,
+          // INJECTOR_CONTRACT is present here AND in the RESOURCES_USING_PARENT_PERMISSION list
+          // because it's a resource that's fully OPEN except if it's linked to a payload.
+          // In the code, w check parent permission before checking open resources, so if the IC is
+          // linked to a payload, the resource type will change to PAYLOAD and the permission will
+          // be checked against that payload.
+          ResourceType.INJECTOR_CONTRACT); // TODO review open apis see issue/3789
+
+  private static final EnumSet<ResourceType> RESOURCES_MANAGED_BY_GRANTS =
+      EnumSet.of(
+          ResourceType.SCENARIO,
+          ResourceType.SIMULATION,
+          ResourceType.SIMULATION_OR_SCENARIO,
+          ResourceType.PAYLOAD,
+          ResourceType.ATOMIC_TESTING);
+
+  private static final EnumSet<ResourceType> RESOURCES_USING_PARENT_PERMISSION =
+      EnumSet.of(
+          ResourceType.INJECT,
+          ResourceType.NOTIFICATION_RULE,
+          ResourceType.INJECTOR_CONTRACT,
+          ResourceType.OBJECTIVE,
+          ResourceType.EVALUATION);
+
+  private final GrantService grantService;
+  private final AttackChainNodeService attackChainNodeService;
+  private final NotificationRuleService notificationRuleService;
+  private final NodeContractService nodeContractService;
+  private final ObjectiveRepository objectiveRepository;
+  private final EvaluationRepository evaluationRepository;
+
+  @Transactional
+  public boolean hasPermission(
+      @NotNull final User user,
+      Optional<RBACAspect.HttpMappingInfo> httpMappingInfo,
+      String resourceId,
+      ResourceType resourceType,
+      Action action) {
+
+    Set<Capability> userCapabilities = user.getCapabilities();
+
+    // admin user or capa bypass
+    if (user.isAdminOrBypass()) {
+      return true;
+    }
+
+    // if for some reason we are not able to identify the resource we only allow admin
+    if (ResourceType.UNKNOWN.equals(resourceType)) {
+      return user.isAdmin();
+    }
+
+    // If we are searching for resources with parent permission, the search function must handle the
+    // permission computation itself.
+    // Example: export of attackChainNodes
+    if (RESOURCES_USING_PARENT_PERMISSION.contains(resourceType) && Action.SEARCH.equals(action)) {
+      return true;
+    }
+    // for attackChainNode/article the permission will be based on the parent's
+    // (attackChain/simulation/test)
+    // permission
+    if (RESOURCES_USING_PARENT_PERMISSION.contains(resourceType)) {
+      Target parentTarget = resolveTarget(resourceId, resourceType, action);
+      resourceId = parentTarget.resourceId;
+      resourceType = parentTarget.resourceType;
+      action = parentTarget.action;
+    }
+
+    // if resource is grantable then the search api is open as it will be filtered in the code
+    if (RESOURCES_MANAGED_BY_GRANTS.contains(resourceType) && Action.SEARCH.equals(action)) {
+      return true;
+    }
+
+    // check if the user has the capa first
+    boolean hasPermission = hasCapaPermission(user, resourceType, action);
+
+    // check if the user
+    if (hasPermission) {
+      return true;
+    }
+    // if the user doesn't have the capa check if the user has a grant
+    if (RESOURCES_MANAGED_BY_GRANTS.contains(resourceType)) {
+      return hasGrantPermission(user, resourceId, resourceType, action);
+    }
+
+    // Specific case: /options endpoints are used to filter tables.
+    // In the context of a grantable resource, they  should be accessible if the sourceId associated
+    // with the request is a resource on which the user is granted
+    if (httpMappingInfo.isEmpty()) {
+      return false;
+    }
+    RBACAspect.HttpMappingInfo mappingInfo = httpMappingInfo.get();
+    boolean endsWithOptions =
+        Arrays.stream(mappingInfo.paths()).anyMatch(path -> path.endsWith("/options"));
+    if (endsWithOptions) {
+      // Retrieve the request param to check if a source ID is provided
+      if (mappingInfo.args().containsKey("sourceId")) {
+        String sourceId = mappingInfo.args().get("sourceId").toString();
+        return hasGrantPermission(user, sourceId, resourceType, action);
+      }
+    }
+    return false;
+  }
+
+  private boolean hasGrantPermission(
+      @NotNull final User user,
+      final String resourceId,
+      @NotNull final ResourceType resourceType,
+      @NotNull final Action action) {
+    // user can access search apis but the result will be filtered
+    if (Action.SEARCH.equals(action)) {
+      return true;
+    }
+
+    switch (action) {
+      case READ:
+        return grantService.hasReadGrant(resourceId, user);
+      case WRITE, DELETE:
+        return grantService.hasWriteGrant(resourceId, user);
+      case LAUNCH:
+        return grantService.hasLaunchGrant(resourceId, user);
+      default:
+        return false;
+    }
+  }
+
+  boolean hasCapaPermission(
+      @NotNull final User user,
+      @NotNull final ResourceType resourceType,
+      @NotNull final Action action) {
+    Set<Capability> userCapabilities = user.getCapabilities();
+
+    if (userCapabilities.contains(Capability.BYPASS)) {
+      return true;
+    }
+
+    if (isOpenResource(resourceType, action)) {
+      return true;
+    }
+
+    Capability requiredCapability = Capability.of(resourceType, action).orElse(Capability.BYPASS);
+
+    return userCapabilities.contains(requiredCapability);
+  }
+
+  private Target resolveTarget(
+      @NotNull final String resourceId,
+      @NotNull final ResourceType resourceType,
+      @NotNull final Action action) {
+    if (resourceType == ResourceType.INJECT) {
+      AttackChainNode attackChainNode = attackChainNodeService.attackChainNode(resourceId);
+      // parent action rule: anything non-READ becomes WRITE on the parent
+      Action parentAction = (action == Action.READ) ? Action.READ : Action.WRITE;
+      return new Target(
+          attackChainNode.getParentResourceId(),
+          attackChainNode.getParentResourceType(),
+          parentAction);
+    } else if (resourceType == ResourceType.NOTIFICATION_RULE) {
+      NotificationRule notificationRule =
+          notificationRuleService
+              .findById(resourceId)
+              .orElseThrow(
+                  () ->
+                      new ElementNotFoundException(
+                          "NotificationRule not found with id:" + resourceId));
+      Action parentAction = Action.READ; // FIXME permission should be linked to userid
+      return new Target(notificationRule.getResourceId(), ResourceType.SCENARIO, parentAction);
+    } else if (resourceType == ResourceType.INJECTOR_CONTRACT) {
+      NodeContract ic = nodeContractService.nodeContract(resourceId);
+      if (ic.getPayload() != null) {
+        return new Target(ic.getPayload().getId(), ResourceType.PAYLOAD, action);
+      }
+      return new Target(ic.getId(), ResourceType.INJECTOR_CONTRACT, action);
+    } else if (resourceType == ResourceType.OBJECTIVE) {
+      Objective objective =
+          objectiveRepository
+              .findById(resourceId)
+              .orElseThrow(
+                  () -> new ElementNotFoundException("Objective not found with id: " + resourceId));
+      // parent action rule: anything non-READ becomes WRITE on the parent
+      Action parentAction = (action == Action.READ) ? Action.READ : Action.WRITE;
+      return new Target(
+          objective.getParentResourceId(), objective.getParentResourceType(), parentAction);
+    } else if (resourceType == ResourceType.EVALUATION) {
+      Evaluation evaluation =
+          evaluationRepository
+              .findById(resourceId)
+              .orElseThrow(
+                  () ->
+                      new ElementNotFoundException("Evaluation not found with id: " + resourceId));
+      // parent action rule: anything non-READ becomes WRITE on the parent
+      Action parentAction = (action == Action.READ) ? Action.READ : Action.WRITE;
+      return new Target(
+          evaluation.getParentResourceId(), evaluation.getParentResourceType(), parentAction);
+    }
+    return new Target(resourceId, resourceType, action);
+  }
+
+  /** Used to return Parent resource information */
+  private record Target(String resourceId, ResourceType resourceType, Action action) {}
+
+  public static boolean isOpenResource(ResourceType resourceType, Action action) {
+    return RESOURCES_OPEN.contains(resourceType)
+        && (Action.READ.equals(action) || Action.SEARCH.equals(action));
+  }
+}

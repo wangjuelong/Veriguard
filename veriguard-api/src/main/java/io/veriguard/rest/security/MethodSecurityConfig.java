@@ -1,0 +1,23 @@
+package io.veriguard.rest.security;
+
+import io.veriguard.database.repository.AttackChainRunRepository;
+import io.veriguard.database.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
+@Configuration
+@EnableMethodSecurity(securedEnabled = true)
+@RequiredArgsConstructor
+public class MethodSecurityConfig {
+
+  private final UserRepository userRepository;
+  private final AttackChainRunRepository attackChainRunRepository;
+
+  @Bean
+  MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
+    return new SecurityExpressionHandler(this.userRepository, this.attackChainRunRepository);
+  }
+}

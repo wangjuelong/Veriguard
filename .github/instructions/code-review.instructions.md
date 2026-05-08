@@ -21,13 +21,13 @@ Key checks: N+1 queries, `@Fetch(FetchMode.SUBSELECT)` on collections, `FetchTyp
 
 > Full rules: [backend.instructions.md](backend.instructions.md)
 
-Key checks: layering (Controller → Service → Repository, never skip), JPA entities never returned from controllers (use DTOs), `@Transactional` self-call (Spring proxy bypass), no new code in `openaev-framework` (deprecated).
+Key checks: layering (Controller → Service → Repository, never skip), JPA entities never returned from controllers (use DTOs), `@Transactional` self-call (Spring proxy bypass), no new code in `veriguard-framework` (deprecated).
 
 ## Test Quality
 
 > Full rules: [testing.instructions.md](testing.instructions.md)
 
-Key checks: `@Nested` + `@DisplayName` grouping, `given_X_should_Y` naming, AAA comments, OpenAEV's `@WithMockUser` (not Spring's), Fixture + Composer (no inline data).
+Key checks: `@Nested` + `@DisplayName` grouping, `given_X_should_Y` naming, AAA comments, Veriguard's `@WithMockUser` (not Spring's), Fixture + Composer (no inline data).
 
 ## Frontend
 

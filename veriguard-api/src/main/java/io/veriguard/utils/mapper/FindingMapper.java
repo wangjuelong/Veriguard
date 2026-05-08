@@ -1,0 +1,69 @@
+package io.veriguard.utils.mapper;
+
+import io.veriguard.database.model.*;
+import io.veriguard.database.repository.FindingRepository;
+import io.veriguard.rest.finding.form.AggregatedFindingOutput;
+import io.veriguard.rest.finding.form.RelatedFindingOutput;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+@RequiredArgsConstructor
+@Component
+@Slf4j
+public class FindingMapper {
+
+  private final FindingRepository findingRepository;
+  private final EndpointMapper endpointMapper;
+  private final AssetGroupMapper assetGroupMapper;
+  private final AttackChainRunMapper attackChainRunMapper;
+  private final AttackChainMapper attackChainMapper;
+  private final AttackChainNodeMapper attackChainNodeMapper;
+
+  public AggregatedFindingOutput toAggregatedFindingOutput(
+      Finding finding, List<Asset> relatedAssets) {
+    return AggregatedFindingOutput.builder()
+        .id(finding.getId())
+        .value(finding.getValue())
+        .type(finding.getType())
+        .creationDate(finding.getCreationDate())
+        .endpoints(
+            relatedAssets.stream()
+                .filter(asset -> asset instanceof Endpoint)
+                .map(endpointMapper::toEndpointSimple)
+                .collect(Collectors.toSet()))
+        .build();
+  }
+
+  public RelatedFindingOutput toRelatedFindingOutput(Finding finding) {
+    return RelatedFindingOutput.builder()
+        .id(finding.getId())
+        .value(finding.getValue())
+        .type(finding.getType())
+        .endpoints(
+            finding.getAssets().stream()
+                .filter(asset -> asset instanceof Endpoint)
+                .map(asset -> endpointMapper.toEndpointSimple(asset))
+                .collect(Collectors.toSet()))
+        .assetGroups(
+            finding.getAssetGroups().stream()
+                .map(assetGroup -> assetGroupMapper.toAssetGroupSimple(assetGroup))
+                .collect(Collectors.toSet()))
+        .attackChainNode(
+            attackChainNodeMapper.toAttackChainNodeSimple(finding.getAttackChainNode()))
+        .simulation(
+            Optional.ofNullable(finding.getAttackChainNode().getAttackChainRun())
+                .map(attackChainRun -> attackChainRunMapper.toAttackChainRunSimple(attackChainRun))
+                .orElse(null))
+        .attackChain(
+            Optional.ofNullable(finding.getAttackChainNode().getAttackChainRun())
+                .map(AttackChainRun::getAttackChain)
+                .map(attackChain -> attackChainMapper.toAttackChainSimple(attackChain))
+                .orElse(null))
+        .creationDate(finding.getCreationDate())
+        .build();
+  }
+}

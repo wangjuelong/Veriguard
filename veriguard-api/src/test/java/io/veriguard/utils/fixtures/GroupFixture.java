@@ -1,0 +1,27 @@
+package io.veriguard.utils.fixtures;
+
+import io.veriguard.database.model.Grant;
+import io.veriguard.database.model.Group;
+import io.veriguard.database.model.Role;
+import java.util.List;
+
+public class GroupFixture {
+
+  public static Group createGroup() {
+    return createGroupWithName("Group");
+  }
+
+  public static Group createGroupWithName(String name) {
+    Group group = new Group();
+    group.setName(name);
+    group.setDescription("Group Description");
+    return group;
+  }
+
+  public static Group createGroup(List<Role> roles, List<Grant> grants) {
+    Group group = createGroup();
+    group.setRoles(roles);
+    group.setGrants(grants);
+    return group;
+  }
+}

@@ -1,0 +1,199 @@
+package io.veriguard.rest.settings;
+
+import io.veriguard.aop.RBAC;
+import io.veriguard.aop.UserRoleDescription;
+import io.veriguard.database.model.Action;
+import io.veriguard.database.model.CustomDashboard;
+import io.veriguard.database.model.ResourceType;
+import io.veriguard.engine.model.EsBase;
+import io.veriguard.engine.query.EsAttackPath;
+import io.veriguard.engine.query.EsAvgs;
+import io.veriguard.engine.query.EsCountInterval;
+import io.veriguard.engine.query.EsSeries;
+import io.veriguard.rest.custom_dashboard.CustomDashboardService;
+import io.veriguard.rest.dashboard.model.WidgetToEntitiesInput;
+import io.veriguard.rest.dashboard.model.WidgetToEntitiesOutput;
+import io.veriguard.rest.helper.RestBehavior;
+import io.veriguard.rest.settings.form.*;
+import io.veriguard.rest.settings.response.CalderaSettings;
+import io.veriguard.rest.settings.response.PlatformSettings;
+import io.veriguard.rest.settings.response.PublicPlatformSettings;
+import io.veriguard.service.CalderaSettingsService;
+import io.veriguard.service.PlatformSettingsService;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RequestMapping("/api/settings")
+@RestController
+@UserRoleDescription
+@Tag(
+    name = "Settings management",
+    description = "Endpoints to manage settings",
+    externalDocs =
+        @ExternalDocumentation(
+            description = "Documentation about settings",
+            url = "https://docs.veriguard.io/latest/administration/parameters/"))
+@RequiredArgsConstructor
+public class PlatformSettingsApi extends RestBehavior {
+
+  private final PlatformSettingsService platformSettingsService;
+  private final CalderaSettingsService calderaSettingsService;
+  private final CustomDashboardService customDashboardService;
+
+  // -- READ --
+
+  @GetMapping("/public")
+  @RBAC(skipRBAC = true)
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Non-sensitive settings for login page and initial rendering")
+      })
+  @Operation(
+      summary = "List public settings",
+      description =
+          "Return only non-sensitive settings (auth providers, theme, language, policies)")
+  public PublicPlatformSettings publicSettings() {
+    return platformSettingsService.findPublicSettings();
+  }
+
+  @GetMapping()
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The list of settings")})
+  @Operation(
+      summary = "List settings",
+      description = "Return the full settings (authenticated users only)")
+  public PlatformSettings settings() {
+    return platformSettingsService.findSettings();
+  }
+
+  @GetMapping("/caldera")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The list of the first caldera instance settings")
+      })
+  @Operation(summary = "List caldera settings", description = "Return the settings")
+  @Deprecated
+  public List<CalderaSettings> getCalderaSettings() {
+    return calderaSettingsService.getCalderaSettings();
+  }
+
+  @GetMapping("/version")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The platform version")})
+  @Operation(summary = "Get platform version", description = "Return the platform version")
+  public String platformVersion() {
+    return platformSettingsService.getPlatformVersion();
+  }
+
+  @PutMapping()
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The updated settings")})
+  @Operation(summary = "Update settings", description = "Update the settings")
+  public PlatformSettings updateBasicConfigurationSettings(
+      @Valid @RequestBody SettingsUpdateInput input) {
+    return platformSettingsService.updateBasicConfigurationSettings(input);
+  }
+
+  @PutMapping("/platform_whitemark")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The updated settings")})
+  @Operation(summary = "Update Whitemark settings", description = "Update the whitemark settings")
+  public PlatformSettings updateSettingsPlatformWhitemark(
+      @Valid @RequestBody SettingsPlatformWhitemarkUpdateInput input) {
+    return platformSettingsService.updateSettingsPlatformWhitemark(input);
+  }
+
+  @PutMapping("/theme/light")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The updated settings")})
+  @Operation(
+      summary = "Update light theme settings",
+      description = "Update the light theme settings")
+  public PlatformSettings updateThemeLight(@Valid @RequestBody ThemeInput input) {
+    return platformSettingsService.updateThemeLight(input);
+  }
+
+  @PutMapping("/theme/dark")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The updated settings")})
+  @Operation(summary = "Update dark theme settings", description = "Update the dark theme settings")
+  public PlatformSettings updateThemeDark(@Valid @RequestBody ThemeInput input) {
+    return platformSettingsService.updateThemeDark(input);
+  }
+
+  @PutMapping("/policies")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The updated settings")})
+  @Operation(summary = "Update policies settings", description = "Update the policies settings")
+  public PlatformSettings updateSettingsPolicies(@Valid @RequestBody PolicyInput input) {
+    return platformSettingsService.updateSettingsPolicies(input);
+  }
+
+  @GetMapping("/home-dashboard")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public ResponseEntity<CustomDashboard> homeDashboard() {
+    return ResponseEntity.ok(customDashboardService.findHomeDashboard().orElse(null));
+  }
+
+  @PostMapping("/home-dashboard/count/{widgetId}")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public EsCountInterval homeDashboardCount(
+      @PathVariable final String widgetId,
+      @RequestBody(required = false) Map<String, String> parameters) {
+    return customDashboardService.homeDashboardCount(widgetId, parameters);
+  }
+
+  @PostMapping("/home-dashboard/average/{widgetId}")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public EsAvgs homeDashboardAverage(
+      @PathVariable final String widgetId,
+      @RequestBody(required = false) Map<String, String> parameters) {
+    return customDashboardService.homeDashboardAverage(widgetId, parameters);
+  }
+
+  @PostMapping("/home-dashboard/series/{widgetId}")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public List<EsSeries> homeDashboardSeries(
+      @PathVariable final String widgetId,
+      @RequestBody(required = false) Map<String, String> parameters) {
+    return customDashboardService.homeDashboardSeries(widgetId, parameters);
+  }
+
+  @PostMapping("/home-dashboard/entities/{widgetId}")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public List<EsBase> homeDashboardEntities(
+      @PathVariable final String widgetId,
+      @RequestBody(required = false) Map<String, String> parameters) {
+    return customDashboardService.homeDashboardEntities(widgetId, parameters);
+  }
+
+  @PostMapping("/home-dashboard/entities-runtime/{widgetId}")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public WidgetToEntitiesOutput homeWidgetToEntitiesRuntime(
+      @PathVariable final String widgetId, @Valid @RequestBody WidgetToEntitiesInput input) {
+    return customDashboardService.homeWidgetToEntitiesRuntimeOnResourceId(widgetId, input);
+  }
+
+  @PostMapping("/home-dashboard/attack-paths/{widgetId}")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public List<EsAttackPath> homeDashboardAttackPaths(
+      @PathVariable final String widgetId,
+      @RequestBody(required = false) Map<String, String> parameters)
+      throws ExecutionException, InterruptedException {
+    return customDashboardService.homeDashboardAttackPaths(widgetId, parameters);
+  }
+}

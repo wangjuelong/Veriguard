@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: openaev-tests
+name: veriguard-tests
 
 steps:
   - name: Runner information
@@ -11,7 +11,7 @@ steps:
   - name: api-tests
     image: maven:3.9.9-eclipse-temurin-22
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://pgsql:5432/openaev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://pgsql:5432/veriguard
       MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
       ENGINE_URL: http://elastic:9200
@@ -20,18 +20,18 @@ steps:
       - mvn spotless:check
       - sleep 60
       - mvn clean install -q -DskipTests
-      - cd openaev-api
+      - cd veriguard-api
       - mvn test
       - echo "Running coverage validation..."
       - mvn jacoco:check || echo "⚠️ Coverage threshold check ⚠️"
-      - cd ../openaev-framework
+      - cd ../veriguard-framework
       - mvn test
 
   - name: frontend-tests
     image: node:22.22.2-alpine
     commands:
       - npm install -g corepack
-      - cd openaev-front
+      - cd veriguard-front
       - yarn install
       - yarn build
       - yarn check-ts
@@ -43,19 +43,19 @@ steps:
     image: maven:3.9.9-eclipse-temurin-22
     detach: true
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://pgsql-e2e:5432/openaev
-      SPRING_DATASOURCE_USERNAME: openaev
-      SPRING_DATASOURCE_PASSWORD: openaev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://pgsql-e2e:5432/veriguard
+      SPRING_DATASOURCE_USERNAME: veriguard
+      SPRING_DATASOURCE_PASSWORD: veriguard
       MINIO_ENDPOINT: minio-e2e
       MINIO_PORT: 9000
       ENGINE_URL: http://elastic:9200
       MINIO_ACCESS_KEY: minioadmin
       MINIO_ACCESS_SECRET: minioadmin
-      OPENAEV_ADMIN_EMAIL: admin@openaev.io
-      OPENAEV_ADMIN_PASSWORD: admin
-      OPENAEV_ADMIN_TOKEN: 0d17ce9a-f3a8-4c6d-9721-c98dc3dc023f
-      OPENAEV_ADMIN_ENCRYPTION_KEY: ThisIsMyUltraSecureEncryptionKey
-      OPENAEV_ADMIN_ENCRYPTION_SALT: ilikesaltyfoodnomnom
+      VERIGUARD_ADMIN_EMAIL: admin@veriguard.io
+      VERIGUARD_ADMIN_PASSWORD: admin
+      VERIGUARD_ADMIN_TOKEN: 0d17ce9a-f3a8-4c6d-9721-c98dc3dc023f
+      VERIGUARD_ADMIN_ENCRYPTION_KEY: ThisIsMyUltraSecureEncryptionKey
+      VERIGUARD_ADMIN_ENCRYPTION_SALT: ilikesaltyfoodnomnom
       SPRING_PROFILES_ACTIVE: ci
       OPENBAS_RABBITMQ_HOSTNAME: rabbitmq-e2e
     commands:
@@ -63,12 +63,12 @@ steps:
       - curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
       - apt update && apt install -y nodejs
       - npm install -g corepack
-      - cd openaev-front
+      - cd veriguard-front
       - yarn install
       - yarn build
       - cd ..
       - mvn install -DskipTests=true
-      - java -jar openaev-api/target/openaev-api.jar
+      - java -jar veriguard-api/target/veriguard-api.jar
     depends_on:
       - api-tests
       - frontend-tests
@@ -80,7 +80,7 @@ steps:
       - apt -y install netcat-traditional
       - while ! nc -z app-e2e 8080 ; do sleep 1 ; done
       - npm install -g corepack
-      - cd openaev-front
+      - cd veriguard-front
       - yarn install
       - yarn playwright install --with-deps chromium
       - APP_URL=http://app-e2e:8080 yarn test:e2e
@@ -91,13 +91,13 @@ steps:
     image: node:22.22.2
     volumes:
       - name: cache-node-frontend-api-types
-        path: /drone/src/openaev-front/node_modules
+        path: /drone/src/veriguard-front/node_modules
     commands:
       - apt update
       - apt -y install netcat-traditional
       - while ! nc -z app-e2e 8080 ; do sleep 1 ; done
       - npm install -g corepack
-      - cd openaev-front
+      - cd veriguard-front
       - yarn install
       - API_URL=http://app-e2e:8080 yarn generate-types-from-api
       - |
@@ -113,15 +113,15 @@ steps:
       token:
         from_secret: codecov_token
       files:
-        - openaev-api/target/site/jacoco/jacoco.xml
-        - openaev-framework/target/site/jacoco/jacoco.xml
+        - veriguard-api/target/site/jacoco/jacoco.xml
+        - veriguard-framework/target/site/jacoco/jacoco.xml
     depends_on:
       - api-tests
 
   - name: build-circleci
     image: curlimages/curl
     commands:
-      - curl -X POST --data "branch=$DRONE_COMMIT_BRANCH" https://circleci.com/api/v1.1/project/github/OpenAEV-Platform/openaev/build?circle-token=$CIRCLECI_TOKEN
+      - curl -X POST --data "branch=$DRONE_COMMIT_BRANCH" https://circleci.com/api/v1.1/project/github/Veriguard-Platform/veriguard/build?circle-token=$CIRCLECI_TOKEN
     environment:
       CIRCLECI_TOKEN:
         from_secret: circleci_token
@@ -141,7 +141,7 @@ steps:
   - name: build-circleci-release
     image: curlimages/curl
     commands:
-      - curl -X POST --data "tag=$DRONE_TAG" https://circleci.com/api/v1.1/project/github/OpenAEV-Platform/openaev/build?circle-token=$CIRCLECI_TOKEN
+      - curl -X POST --data "tag=$DRONE_TAG" https://circleci.com/api/v1.1/project/github/Veriguard-Platform/veriguard/build?circle-token=$CIRCLECI_TOKEN
     environment:
       CIRCLECI_TOKEN:
         from_secret: circleci_token
@@ -177,9 +177,9 @@ services:
   - name: pgsql
     image: postgres:17-alpine
     environment:
-      POSTGRES_USER: openaev
-      POSTGRES_PASSWORD: openaev
-      POSTGRES_DB: openaev
+      POSTGRES_USER: veriguard
+      POSTGRES_PASSWORD: veriguard
+      POSTGRES_DB: veriguard
     commands: 
       - docker-entrypoint.sh -c 'max_connections=500'
   - name: rabbitmq
@@ -196,9 +196,9 @@ services:
   - name: pgsql-e2e
     image: postgres:17-alpine
     environment:
-      POSTGRES_USER: openaev
-      POSTGRES_PASSWORD: openaev
-      POSTGRES_DB: openaev
+      POSTGRES_USER: veriguard
+      POSTGRES_PASSWORD: veriguard
+      POSTGRES_DB: veriguard
     commands: 
       - docker-entrypoint.sh -c 'max_connections=500'
   - name: rabbitmq-e2e

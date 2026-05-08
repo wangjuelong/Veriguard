@@ -1,5 +1,5 @@
 ---
-applyTo: "openaev-api/src/main/java/**/*.java,openaev-model/src/main/java/**/*.java,openaev-front/src/**/*.ts,openaev-front/src/**/*.tsx"
+applyTo: "veriguard-api/src/main/java/**/*.java,veriguard-model/src/main/java/**/*.java,veriguard-front/src/**/*.ts,veriguard-front/src/**/*.tsx"
 description: "Security conventions: RBAC, @AccessControl, permission chain, security rules, tenant isolation"
 ---
 
@@ -7,7 +7,7 @@ description: "Security conventions: RBAC, @AccessControl, permission chain, secu
 
 ## @AccessControl (AOP aspect)
 
-Every REST endpoint must have `@AccessControl`. See the annotation in `io.openaev.aop.AccessControl` for the full definition.
+Every REST endpoint must have `@AccessControl`. See the annotation in `io.veriguard.aop.AccessControl` for the full definition.
 
 ## Adding a new resource type
 
