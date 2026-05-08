@@ -1,5 +1,5 @@
 ---
-applyTo: "openaev-api/src/main/java/**/*.java,openaev-model/src/main/java/**/*.java,openaev-framework/src/main/java/**/*.java"
+applyTo: "veriguard-api/src/main/java/**/*.java,veriguard-model/src/main/java/**/*.java,veriguard-framework/src/main/java/**/*.java"
 description: "Backend Java/Spring conventions: entities, services, controllers, Hibernate, transactions"
 ---
 
@@ -7,7 +7,7 @@ description: "Backend Java/Spring conventions: entities, services, controllers, 
 
 ## ⚠️ Module Rule
 
-> `openaev-framework` is deprecated — see [copilot-instructions.md](../copilot-instructions.md) for details. Never add new code there.
+> `veriguard-framework` is deprecated — see [copilot-instructions.md](../copilot-instructions.md) for details. Never add new code there.
 
 ## Layering
 
@@ -16,7 +16,7 @@ description: "Backend Java/Spring conventions: entities, services, controllers, 
 - Repository → data access only, never called from controllers or utils
 - Utils → static methods only, no state
 
-## New Controllers (package `io.openaev.api.*`)
+## New Controllers (package `io.veriguard.api.*`)
 
 - `@RestController @RequestMapping("/api/{entities}") @RequiredArgsConstructor`
 - Every endpoint: `@AccessControl` + `@LogExecutionTime` + `@Operation`
@@ -27,7 +27,7 @@ description: "Backend Java/Spring conventions: entities, services, controllers, 
 
 ## API DTOs, Mappers & Sub-resources
 
-For each entity exposed via REST, create three files in the same `io.openaev.api.*` package:
+For each entity exposed via REST, create three files in the same `io.veriguard.api.*` package:
 
 - **`{Entity}Input.java`** — Java `record` for request body (`@JsonProperty`, `@NotBlank`, etc.)
 - **`{Entity}Output.java`** — Java `record` for response body (all fields the client needs)
@@ -51,7 +51,7 @@ public class {Entity}Mapper {
 }
 
 // Usage in controller (static import):
-import static io.openaev.api.feature.{Entity}Mapper.toOutput;
+import static io.veriguard.api.feature.{Entity}Mapper.toOutput;
 public {Entity}Output findById(...) { return toOutput(service.findById(id)); }
 public Page<{Entity}Output> search(...) { return service.search(input).map({Entity}Mapper::toOutput); }
 ```

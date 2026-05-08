@@ -10,13 +10,13 @@
 *__generated__*
 
 # Frontend
-openaev-front/config/development.json
-openaev-front/.DS_Store
-openaev-front/.env.local
-openaev-front/.env.development.local
-openaev-front/.env.test.local
-openaev-front/.env.production.local
+veriguard-front/config/development.json
+veriguard-front/.DS_Store
+veriguard-front/.env.local
+veriguard-front/.env.development.local
+veriguard-front/.env.test.local
+veriguard-front/.env.production.local
 
 # API
-openaev-api/coverage
-openaev-api/logs
+veriguard-api/coverage
+veriguard-api/logs

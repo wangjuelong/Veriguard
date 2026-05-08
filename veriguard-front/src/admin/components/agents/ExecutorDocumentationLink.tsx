@@ -1,0 +1,38 @@
+import { Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { type FunctionComponent } from 'react';
+
+import { useFormatter } from '../../../components/i18n';
+import { type ExecutorOutput } from '../../../utils/api-types';
+
+interface Props { executor: ExecutorOutput }
+
+const ExecutorDocumentationLink: FunctionComponent<Props> = ({ executor }) => {
+  const { t } = useFormatter();
+  const theme = useTheme();
+
+  return (
+    <div style={{
+      display: 'grid',
+      gap: theme.spacing(2),
+    }}
+    >
+      {executor.executor_doc && (
+        <Typography variant="body1">
+          {t('To install the agent please follow the ')}
+          <a target="_blank" href={executor.executor_doc} rel="noreferrer">
+            {t('{executor_name} documentation', { executor_name: executor.executor_name })}
+          </a>
+          .
+        </Typography>
+      )}
+      {!executor.executor_doc && (
+        <Typography variant="body1">
+          {t('No documentation available')}
+        </Typography>
+      )}
+    </div>
+  );
+};
+
+export default ExecutorDocumentationLink;

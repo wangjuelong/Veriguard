@@ -1,0 +1,72 @@
+package io.veriguard.database.repository;
+
+import io.veriguard.database.model.AttackChainRunTeamUser;
+import io.veriguard.database.model.AttackChainRunTeamUserId;
+import io.veriguard.database.raw.RawAttackChainRunTeamUser;
+import jakarta.validation.constraints.NotNull;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+@Repository
+public interface AttackChainRunTeamUserRepository
+    extends JpaRepository<AttackChainRunTeamUser, AttackChainRunTeamUserId>,
+        CrudRepository<AttackChainRunTeamUser, AttackChainRunTeamUserId>,
+        JpaSpecificationExecutor<AttackChainRunTeamUser> {
+
+  @NotNull
+  Optional<AttackChainRunTeamUser> findById(@NotNull AttackChainRunTeamUserId id);
+
+  @Modifying
+  @Query(
+      value = "delete from exercises_teams_users i where i.user_id = :userId",
+      nativeQuery = true)
+  void deleteUserFromAllReferences(@Param("userId") String userId);
+
+  @Modifying
+  @Query(
+      value = "delete from exercises_teams_users i where i.team_id in :teamIds",
+      nativeQuery = true)
+  @Transactional
+  void deleteTeamsFromAllReferences(@Param("teamIds") List<String> teamIds);
+
+  @Modifying
+  @Query(
+      value =
+          "insert into exercises_teams_users (exercise_id, team_id, user_id) "
+              + "values (:attackChainRunId, :teamId, :userId)",
+      nativeQuery = true)
+  void addAttackChainRunTeamUser(
+      @Param("attackChainRunId") String attackChainRunId,
+      @Param("teamId") String teamId,
+      @Param("userId") String userId);
+
+  @Query(value = "SELECT * FROM exercises_teams_users WHERE team_id IN :ids ;", nativeQuery = true)
+  List<RawAttackChainRunTeamUser> rawByTeamIds(@Param("ids") List<String> ids);
+
+  @Query(
+      value = "SELECT * FROM exercises_teams_users WHERE exercise_id IN :ids ;",
+      nativeQuery = true)
+  List<RawAttackChainRunTeamUser> rawByAttackChainRunIds(@Param("ids") List<String> ids);
+
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query(
+      value =
+          "delete from exercises_teams_users "
+              + "where exercise_id = :attackChainRunId and team_id in :teamIds",
+      nativeQuery = true)
+  @Transactional
+  void deleteByAttackChainRunIdAndTeamIds(
+      @Param("attackChainRunId") String attackChainRunId, @Param("teamIds") Collection<String> teamIds);
+
+  boolean existsByAttackChainRunIdAndTeamIdAndUserId(
+      String attackChainRunId, String teamId, String userId);
+}

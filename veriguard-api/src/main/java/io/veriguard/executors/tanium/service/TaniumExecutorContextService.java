@@ -1,0 +1,177 @@
+package io.veriguard.executors.tanium.service;
+
+import static io.veriguard.executors.ExecutorHelper.replaceArgs;
+import static io.veriguard.executors.utils.ExecutorUtils.getAgentsFromOSAndArch;
+import static io.veriguard.integration.impl.executors.tanium.TaniumExecutorIntegration.TANIUM_EXECUTOR_NAME;
+
+import io.veriguard.database.model.*;
+import io.veriguard.executors.ExecutorContextService;
+import io.veriguard.executors.ExecutorHelper;
+import io.veriguard.executors.ExecutorService;
+import io.veriguard.executors.tanium.client.TaniumExecutorClient;
+import io.veriguard.executors.tanium.config.TaniumExecutorConfig;
+import io.veriguard.executors.tanium.model.TaniumAction;
+import jakarta.validation.constraints.NotNull;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service(TaniumExecutorContextService.SERVICE_NAME)
+@RequiredArgsConstructor
+public class TaniumExecutorContextService extends ExecutorContextService {
+
+  private final TaniumExecutorConfig taniumExecutorConfig;
+  private final TaniumExecutorClient taniumExecutorClient;
+  private final ExecutorService executorService;
+  public static final String SERVICE_NAME = TANIUM_EXECUTOR_NAME;
+
+  ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+
+  @Override
+  public void launchExecutorSubprocess(
+      @NotNull final AttackChainNode attackChainNode,
+      @NotNull final Endpoint assetEndpoint,
+      @NotNull final Agent agent) {
+    // launchBatchExecutorSubprocess is used here for better performances
+  }
+
+  @Override
+  public List<Agent> launchBatchExecutorSubprocess(
+      AttackChainNode attackChainNode,
+      Set<Agent> agents,
+      AttackChainNodeStatus attackChainNodeStatus) {
+
+    List<Agent> taniumAgents = new ArrayList<>(agents);
+
+    // Sometimes, assets from agents aren't fetched even with the EAGER property from Hibernate
+    taniumAgents.forEach(agent -> agent.setAsset((Asset) Hibernate.unproxy(agent.getAsset())));
+
+    NodeExecutor nodeExecutor =
+        attackChainNode
+            .getNodeContract()
+            .map(NodeContract::getNodeExecutor)
+            .orElseThrow(
+                () -> new UnsupportedOperationException("Inject does not have a contract"));
+
+    taniumAgents = executorService.manageWithoutPlatformAgents(taniumAgents, attackChainNodeStatus);
+
+    List<TaniumAction> actions = new ArrayList<>();
+    // Set implant script for each agent
+    for (Endpoint.PLATFORM_TYPE platform : Endpoint.PLATFORM_TYPE.values()) {
+      for (Endpoint.PLATFORM_ARCH arch : Endpoint.PLATFORM_ARCH.values()) {
+        switch (platform) {
+          case Windows ->
+              actions.addAll(
+                  getWindowsActions(
+                      getAgentsFromOSAndArch(taniumAgents, platform, arch),
+                      nodeExecutor,
+                      attackChainNode.getId(),
+                      arch));
+          case Linux, MacOS ->
+              actions.addAll(
+                  getUnixActions(
+                      getAgentsFromOSAndArch(taniumAgents, platform, arch),
+                      nodeExecutor,
+                      attackChainNode.getId(),
+                      platform,
+                      arch));
+          default -> { // No need, only Mac, Windows and Linux for now
+          }
+        }
+      }
+    }
+    // Launch payloads with Tanium API
+    executeActions(actions);
+    return taniumAgents;
+  }
+
+  public void executeActions(List<TaniumAction> actions) {
+    int paginationLimit = this.taniumExecutorConfig.getApiBatchExecutionActionPagination();
+    int paginationCount = (int) Math.ceil(actions.size() / (double) paginationLimit);
+
+    for (int batchIndex = 0; batchIndex < paginationCount; batchIndex++) {
+      int fromIndex = (batchIndex * paginationLimit);
+      int toIndex = Math.min(fromIndex + paginationLimit, actions.size());
+      List<TaniumAction> batchActions = actions.subList(fromIndex, toIndex);
+      // Pagination of XXX calls (paginationLimit) per batch with 5s waiting
+      // because each action will call the Tanium API to execute the implant
+      // and each implant will call Veriguard API to set traces
+      scheduledExecutorService.schedule(
+          () ->
+              batchActions.forEach(
+                  action ->
+                      this.taniumExecutorClient.executeAction(
+                          action.getAgentExternalReference(),
+                          action.getScriptId(),
+                          action.getCommandEncoded())),
+          batchIndex * 5L,
+          TimeUnit.SECONDS);
+    }
+  }
+
+  private List<TaniumAction> getWindowsActions(
+      List<Agent> agents,
+      NodeExecutor nodeExecutor,
+      String attackChainNodeId,
+      Endpoint.PLATFORM_ARCH arch) {
+    List<TaniumAction> actions = new ArrayList<>();
+    for (Agent agent : agents) {
+      TaniumAction actionWindows = new TaniumAction();
+      actionWindows.setScriptId(this.taniumExecutorConfig.getWindowsPackageId());
+      String implantLocation =
+          "$location="
+              + ExecutorHelper.IMPLANT_LOCATION_WINDOWS
+              + ExecutorHelper.IMPLANT_BASE_NAME
+              + UUID.randomUUID()
+              + "\";md $location -ea 0;[Environment]::CurrentDirectory";
+      String executorCommandKey = Endpoint.PLATFORM_TYPE.Windows.name() + "." + arch.name();
+      String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
+      command =
+          replaceArgs(Endpoint.PLATFORM_TYPE.Windows, command, attackChainNodeId, agent.getId());
+      command =
+          command.replaceFirst(
+              "\\$?x=.+location=.+;\\[Environment]::CurrentDirectory",
+              Matcher.quoteReplacement(implantLocation));
+      actionWindows.setCommandEncoded(Base64.getEncoder().encodeToString(command.getBytes()));
+      actionWindows.setAgentExternalReference(agent.getExternalReference());
+      actions.add(actionWindows);
+    }
+    return actions;
+  }
+
+  private List<TaniumAction> getUnixActions(
+      List<Agent> agents,
+      NodeExecutor nodeExecutor,
+      String attackChainNodeId,
+      Endpoint.PLATFORM_TYPE platform,
+      Endpoint.PLATFORM_ARCH arch) {
+    List<TaniumAction> actions = new ArrayList<>();
+    for (Agent agent : agents) {
+      TaniumAction actionUnix = new TaniumAction();
+      actionUnix.setScriptId(this.taniumExecutorConfig.getUnixPackageId());
+      String implantLocation =
+          "location="
+              + ExecutorHelper.IMPLANT_LOCATION_UNIX
+              + ExecutorHelper.IMPLANT_BASE_NAME
+              + UUID.randomUUID()
+              + ";mkdir -p $location;filename=";
+      String executorCommandKey = platform.name() + "." + arch.name();
+      String command = nodeExecutor.getExecutorCommands().get(executorCommandKey);
+      command = replaceArgs(platform, command, attackChainNodeId, agent.getId());
+      command =
+          command.replaceFirst(
+              "\\$?x=.+location=.+;filename=", Matcher.quoteReplacement(implantLocation));
+      actionUnix.setCommandEncoded(Base64.getEncoder().encodeToString(command.getBytes()));
+      actionUnix.setAgentExternalReference(agent.getExternalReference());
+      actions.add(actionUnix);
+    }
+    return actions;
+  }
+}

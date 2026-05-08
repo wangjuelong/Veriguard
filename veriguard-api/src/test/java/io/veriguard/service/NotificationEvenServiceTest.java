@@ -1,0 +1,65 @@
+package io.veriguard.service;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+
+import io.veriguard.IntegrationTest;
+import io.veriguard.database.model.NotificationRuleResourceType;
+import io.veriguard.notification.handler.AttackChainNotificationEventHandler;
+import io.veriguard.notification.model.NotificationEvent;
+import io.veriguard.notification.model.NotificationEventType;
+import io.veriguard.utilstest.RabbitMQTestListener;
+import java.time.Instant;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.test.context.TestExecutionListeners;
+
+@SpringBootTest
+@TestExecutionListeners(
+    value = {RabbitMQTestListener.class},
+    mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
+public class NotificationEvenServiceTest extends IntegrationTest {
+
+  @Mock private ApplicationEventPublisher appPublisher;
+  @Mock private AttackChainNotificationEventHandler attackChainNotificationEventHandler;
+  @Mock private ThreadPoolTaskScheduler taskScheduler;
+
+  private NotificationEventService notificationEventService;
+
+  @BeforeEach
+  public void setUp() {
+    notificationEventService =
+        new NotificationEventService(
+            appPublisher, attackChainNotificationEventHandler, taskScheduler);
+  }
+
+  @Test
+  public void test_handleEvent() {
+    NotificationEvent notificationEvent =
+        NotificationEvent.builder()
+            .eventType(NotificationEventType.SIMULATION_COMPLETED)
+            .resourceType(NotificationRuleResourceType.SCENARIO)
+            .timestamp(Instant.now())
+            .resourceId("id")
+            .build();
+    notificationEventService.handleNotificationEvent(notificationEvent);
+    verify(attackChainNotificationEventHandler).handle(notificationEvent);
+  }
+
+  @Test
+  public void test_send_event() {
+    NotificationEvent notificationEvent =
+        NotificationEvent.builder()
+            .eventType(NotificationEventType.SIMULATION_COMPLETED)
+            .resourceType(NotificationRuleResourceType.SCENARIO)
+            .timestamp(Instant.now())
+            .resourceId("id")
+            .build();
+    notificationEventService.sendNotificationEvent(notificationEvent);
+    verify(appPublisher).publishEvent(notificationEvent);
+  }
+}

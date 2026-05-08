@@ -1,7 +1,7 @@
 ---
 name: add-test
 description: >-
-  Creates tests for an existing feature following OpenAEV patterns: fixture class,
+  Creates tests for an existing feature following Veriguard patterns: fixture class,
   composer, integration test with @Nested groups, and optionally unit tests.
   Use when asked to add tests or improve test coverage.
 ---
@@ -17,7 +17,7 @@ description: >-
 
 ### Step 1 — Create or update the Fixture
 
-Location: `openaev-api/src/test/java/io/openaev/utils/fixtures/files/`
+Location: `veriguard-api/src/test/java/io/veriguard/utils/fixtures/files/`
 
 ```java
 public class {Entity}Fixture {
@@ -32,14 +32,14 @@ public class {Entity}Fixture {
 
 ### Step 2 — Create or update the Composer
 
-Location: `openaev-api/src/test/java/io/openaev/utils/fixtures/composers/`
+Location: `veriguard-api/src/test/java/io/veriguard/utils/fixtures/composers/`
 
 - Extend `ComposerBase<{Entity}>`
 - Inner `Composer` with `persist()`, `delete()`, `get()`, `withId()`
 
 ### Step 3 — Create the Integration Test
 
-Location: `openaev-api/src/test/java/io/openaev/rest/` or `api/`
+Location: `veriguard-api/src/test/java/io/veriguard/rest/` or `api/`
 
 Structure:
 ```java
@@ -82,7 +82,7 @@ class {Feature}ServiceUnitTest {
 ### Step 5 — Verify
 
 ```bash
-mvn test -pl openaev-api -Dtest="{Feature}ApiTest"
+mvn test -pl veriguard-api -Dtest="{Feature}ApiTest"
 mvn jacoco:check
 ```
 

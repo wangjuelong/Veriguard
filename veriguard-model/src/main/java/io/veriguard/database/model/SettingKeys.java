@@ -1,0 +1,51 @@
+package io.veriguard.database.model;
+
+public enum SettingKeys {
+  DEFAULT_THEME("platform_theme", "dark"),
+  DEFAULT_LANG("platform_lang", "auto"),
+  DEFAULT_HOME_DASHBOARD("platform_home_dashboard", ""),
+  DEFAULT_SCENARIO_DASHBOARD("platform_scenario_dashboard", ""),
+  DEFAULT_SIMULATION_DASHBOARD("platform_simulation_dashboard", ""),
+  PLATFORM_CONSENT_MESSAGE("platform_consent_message", ""),
+  PLATFORM_CONSENT_CONFIRM_TEXT("platform_consent_confirm_text", ""),
+  PLATFORM_ENTERPRISE_LICENSE("platform_enterprise_license", ""),
+  PLATFORM_LOGIN_MESSAGE(
+      "platform_login_message",
+      "This platform is dedicated to Veriguard team testing. **Sandbox running the latest rolling release.**"),
+  PLATFORM_WHITEMARK("platform_whitemark", "false"),
+  PLATFORM_NAME("platform_name", "Veriguard - Open Adversarial Exposure Validation Platform"),
+  PLATFORM_BANNER("platform_banner", ""),
+  PLATFORM_INSTANCE("instance_id", ""),
+  PLATFORM_INSTANCE_CREATION("instance_creation_date", ""),
+
+  XTM_COMPOSER_ID("xtm_composer_id", ""),
+  XTM_COMPOSER_NAME("xtm_composer_name", ""),
+  XTM_COMPOSER_VERSION("xtm_composer_version", ""),
+  XTM_COMPOSER_PUBLIC_KEY("xtm_composer_public_key", ""),
+  XTM_COMPOSER_LAST_CONNECTIVITY_CHECK("xtm_composer_last_connectivity_check", ""),
+
+  SMTP_SERVICE_AVAILABLE("smtp_service_available", "false"),
+  IMAP_SERVICE_AVAILABLE("imap_service_available", "false"),
+
+  USER_EVENTS_RETENTION_ENABLED("user-events.retention.enabled", "true"),
+  USER_EVENTS_RETENTION_DEFAULT_DAYS("user-events.retention.default-days", "90"),
+  USER_EVENTS_RETENTION_LOGIN_SUCCESS_DAYS("user-events.retention.login-success.days", "90"),
+  USER_EVENTS_RETENTION_LOGIN_FAILED_DAYS("user-events.retention.login-failed.days", "90"),
+  USER_EVENTS_RETENTION_USER_CREATED_DAYS("user-events.retention.user-created.days", "90");
+
+  private final String key;
+  private final String defaultValue;
+
+  SettingKeys(String key, String defaultValue) {
+    this.key = key;
+    this.defaultValue = defaultValue;
+  }
+
+  public String key() {
+    return key;
+  }
+
+  public String defaultValue() {
+    return defaultValue;
+  }
+}

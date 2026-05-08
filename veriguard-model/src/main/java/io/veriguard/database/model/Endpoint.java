@@ -1,0 +1,196 @@
+package io.veriguard.database.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.hypersistence.utils.hibernate.type.array.StringArrayType;
+import io.veriguard.annotation.Ipv4OrIpv6Constraint;
+import io.veriguard.annotation.Queryable;
+import io.veriguard.database.audit.ModelBaseListener;
+import io.veriguard.helper.MultiModelSerializer;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import java.util.*;
+import java.util.stream.StreamSupport;
+import lombok.*;
+import org.hibernate.annotations.Type;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Entity
+@DiscriminatorValue(AssetType.Values.ENDPOINT_TYPE)
+@EntityListeners(ModelBaseListener.class)
+public class Endpoint extends Asset {
+
+  public static final Set<String> BAD_MAC_ADDRESS =
+      new HashSet<>(Arrays.asList("ffffffffffff", "000000000000", "0180c2000000"));
+  public static final Set<String> BAD_IP_ADDRESSES =
+      new HashSet<>(Arrays.asList("127.0.0.1", "::1", "169.254.0.0"));
+  public static final String REGEX_MAC_ADDRESS = "[^a-z0-9]";
+
+  public enum PLATFORM_ARCH {
+    @JsonProperty("x86_64")
+    x86_64,
+    @JsonProperty("arm64")
+    arm64,
+    @JsonProperty("Unknown")
+    Unknown;
+
+    /**
+     * Returns the PLATFORM_ARCH enum constant corresponding to the given string value. If the value
+     * is null or does not match any known architecture, returns Unknown.
+     *
+     * @param value the string representation of the platform architecture
+     * @return the corresponding PLATFORM_ARCH, or Unknown if not recognized
+     */
+    public static PLATFORM_ARCH fromString(String value) {
+      if (value == null) return Unknown;
+      return switch (value.toLowerCase()) {
+        case "x86_64" -> x86_64;
+        case "arm64", "aarch64" -> arm64;
+        default -> Unknown;
+      };
+    }
+  }
+
+  public enum PLATFORM_TYPE {
+    @JsonProperty("Linux")
+    Linux,
+    @JsonProperty("Windows")
+    Windows,
+    @JsonProperty("MacOS")
+    MacOS,
+    @JsonProperty("Container")
+    Container,
+    @JsonProperty("Service")
+    Service,
+    @JsonProperty("Generic")
+    Generic,
+    @JsonProperty("Internal")
+    Internal,
+    @JsonProperty("Unknown")
+    Unknown;
+
+    /** Returns all enum constant names as strings. */
+    public static List<String> getAllNamesAsStrings() {
+      return Arrays.stream(values()).map(Enum::name).toList();
+    }
+
+    /**
+     * Returns the PLATFORM_TYPE enum constant corresponding to the given string value. If the value
+     * is null or does not match any known type, returns Unknown.
+     *
+     * @param value the string representation of the platform type
+     * @return the corresponding PLATFORM_TYPE, or Unknown if not recognized
+     */
+    public static PLATFORM_TYPE fromString(String value) {
+      if (value == null) return Unknown;
+      try {
+        return PLATFORM_TYPE.valueOf(value);
+      } catch (IllegalArgumentException e) {
+        return Unknown;
+      }
+    }
+
+    /**
+     * Convert and return all enum from a list of String
+     *
+     * @param node to convert
+     * @return converted list
+     */
+    public static PLATFORM_TYPE[] fromJsonNode(JsonNode node) {
+      if (node == null || !node.isArray()) {
+        return new PLATFORM_TYPE[] {Unknown};
+      }
+      PLATFORM_TYPE[] result =
+          StreamSupport.stream(node.spliterator(), false)
+              .map(JsonNode::asText)
+              .map(
+                  value -> {
+                    try {
+                      return PLATFORM_TYPE.valueOf(value);
+                    } catch (IllegalArgumentException e) {
+                      return null;
+                    }
+                  })
+              .filter(Objects::nonNull)
+              .toArray(PLATFORM_TYPE[]::new);
+
+      return result.length == 0 ? new PLATFORM_TYPE[] {Unknown} : result;
+    }
+  }
+
+  @Queryable(filterable = true)
+  @Ipv4OrIpv6Constraint
+  @Type(StringArrayType.class)
+  @Column(name = "endpoint_ips", columnDefinition = "text[]")
+  @JsonProperty("endpoint_ips")
+  private String[] ips;
+
+  @Queryable(filterable = true, sortable = true)
+  @Column(name = "endpoint_seen_ip")
+  @JsonProperty("endpoint_seen_ip")
+  private String seenIp;
+
+  @Queryable(filterable = true, sortable = true)
+  @Column(name = "endpoint_hostname")
+  @JsonProperty("endpoint_hostname")
+  private String hostname;
+
+  @Queryable(filterable = true, sortable = true)
+  @Column(name = "endpoint_platform")
+  @JsonProperty("endpoint_platform")
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private PLATFORM_TYPE platform;
+
+  @Queryable(filterable = true, sortable = true)
+  @Column(name = "endpoint_arch")
+  @JsonProperty("endpoint_arch")
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private PLATFORM_ARCH arch;
+
+  @Type(StringArrayType.class)
+  @Column(name = "endpoint_mac_addresses")
+  @JsonProperty("endpoint_mac_addresses")
+  private String[] macAddresses;
+
+  @Column(name = "endpoint_is_eol")
+  @JsonProperty("endpoint_is_eol")
+  private boolean isEoL;
+
+  @OneToMany(
+      mappedBy = "asset",
+      fetch = FetchType.EAGER,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  // method
+  @JsonProperty("asset_agents")
+  @JsonSerialize(using = MultiModelSerializer.class)
+  private List<Agent> agents = new ArrayList<>();
+
+  // -- INJECT --
+
+  @Getter
+  @Setter(AccessLevel.NONE)
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "injects_assets",
+      joinColumns = @JoinColumn(name = "asset_id"),
+      inverseJoinColumns = @JoinColumn(name = "inject_id"))
+  @JsonIgnore
+  private List<AttackChainNode> attackChainNodes = new ArrayList<>();
+
+  public void setHostname(String hostname) {
+    this.hostname = hostname.toLowerCase();
+  }
+
+  public Endpoint() {}
+
+  public Endpoint(String id, String type, String name, PLATFORM_TYPE platform) {
+    super(id, type, name);
+    this.platform = platform;
+  }
+}

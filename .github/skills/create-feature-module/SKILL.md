@@ -19,7 +19,7 @@ description: >-
 
 ### Step 1 — Create the JPA Entity
 
-Location: `openaev-model/src/main/java/io/openaev/database/model/`
+Location: `veriguard-model/src/main/java/io/veriguard/database/model/`
 
 Follow `Group.java` (tenant-scoped) or `Tenant.java` (platform-level):
 - `@ControlledUuidGeneration` for ID
@@ -30,7 +30,7 @@ Follow `Group.java` (tenant-scoped) or `Tenant.java` (platform-level):
 
 ### Step 2 — Create the Repository
 
-Location: `openaev-model/src/main/java/io/openaev/database/repository/`
+Location: `veriguard-model/src/main/java/io/veriguard/database/repository/`
 
 ```java
 public interface {Entity}Repository extends JpaRepository<{Entity}, String>,
@@ -44,7 +44,7 @@ public interface {Entity}Repository extends JpaRepository<{Entity}, String>,
 
 ### Step 4 — Create the Service
 
-Location: `openaev-api/src/main/java/io/openaev/service/`
+Location: `veriguard-api/src/main/java/io/veriguard/service/`
 
 - `@Service @RequiredArgsConstructor @Transactional(rollbackFor = Exception.class)`
 - CRUD + search with pagination
@@ -52,35 +52,35 @@ Location: `openaev-api/src/main/java/io/openaev/service/`
 
 ### Step 5 — Create DTOs + Mapper
 
-Location: `openaev-api/src/main/java/io/openaev/api/{feature}/`
+Location: `veriguard-api/src/main/java/io/veriguard/api/{feature}/`
 
 - `{Entity}Input` and `{Entity}Output` as Java `record`
 - `{Entity}Mapper` with static `fromInput()` + `toOutput()`
 
 ### Step 6 — Create the Controller
 
-Location: `openaev-api/src/main/java/io/openaev/api/{feature}/`
+Location: `veriguard-api/src/main/java/io/veriguard/api/{feature}/`
 
 - `@AccessControl` + `@LogExecutionTime` + `@Operation` on every endpoint
 - CRUD + search endpoints
 
 ### Step 7 — Create the Migration
 
-Location: `openaev-api/src/main/java/io/openaev/migration/`
+Location: `veriguard-api/src/main/java/io/veriguard/migration/`
 
 - Find next version number in existing migrations
 - `CREATE TABLE`, FK constraints, indexes
 
 ### Step 8 — Create Test Fixtures + Composer
 
-Location: `openaev-api/src/test/java/io/openaev/utils/fixtures/`
+Location: `veriguard-api/src/test/java/io/veriguard/utils/fixtures/`
 
 - Fixture: `createDefault{Entity}()` with random names
 - Composer: extends `ComposerBase`, inner `Composer` class
 
 ### Step 9 — Create Integration Test
 
-Location: `openaev-api/src/test/java/io/openaev/rest/` or `api/`
+Location: `veriguard-api/src/test/java/io/veriguard/rest/` or `api/`
 
 - `@Nested @DisplayName` groups, `@WithMockUser`, `assertThatJson`
 
@@ -88,7 +88,7 @@ Location: `openaev-api/src/test/java/io/openaev/rest/` or `api/`
 
 > Follow templates and conventions from [frontend.instructions.md](../../instructions/frontend.instructions.md).
 
-Location: `openaev-front/src/actions/{feature}/` and `src/admin/components/`
+Location: `veriguard-front/src/actions/{feature}/` and `src/admin/components/`
 
 - `{feature}-action.ts` — API calls (CRUD + search)
 - `{feature}-helper.d.ts` — TypeScript types (or use auto-generated `api-types.d.ts`)
@@ -102,5 +102,5 @@ Location: `openaev-front/src/actions/{feature}/` and `src/admin/components/`
 ```bash
 mvn spotless:apply
 mvn test
-cd openaev-front && yarn lint && yarn check-ts && yarn test
+cd veriguard-front && yarn lint && yarn check-ts && yarn test
 ```

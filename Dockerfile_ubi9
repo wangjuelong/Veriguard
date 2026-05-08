@@ -2,8 +2,8 @@ FROM registry.access.redhat.com/ubi9/nodejs-22 AS front-builder
 
 USER root
 
-WORKDIR /opt/openaev-build/openaev-front
-COPY openaev-front ./
+WORKDIR /opt/veriguard-build/veriguard-front
+COPY veriguard-front ./
 RUN set -eux; \
     npm install -g corepack; \
     yarn install; \
@@ -19,12 +19,12 @@ RUN set -eux; \
     microdnf clean all; \
     mvn --version;
 
-WORKDIR /opt/openaev-build/openaev
-COPY openaev-model ./openaev-model
-COPY openaev-framework ./openaev-framework
-COPY openaev-api ./openaev-api
+WORKDIR /opt/veriguard-build/veriguard
+COPY veriguard-model ./veriguard-model
+COPY veriguard-framework ./veriguard-framework
+COPY veriguard-api ./veriguard-api
 COPY pom.xml ./pom.xml
-COPY --from=front-builder /opt/openaev-build/openaev-front/builder/prod/build ./openaev-front/builder/prod/build
+COPY --from=front-builder /opt/veriguard-build/veriguard-front/builder/prod/build ./veriguard-front/builder/prod/build
 RUN mvn install -DskipTests -Pdev
 
 
@@ -37,8 +37,8 @@ RUN set -eux; \
     echo "93dcc18adc78c65a028a84799ecf8ad40c936fdfc5f2a57b1acda5a8117fa82c /usr/bin/tini" | sha256sum -c -; \
     chmod +x /usr/bin/tini;
 
-WORKDIR /opt/openaev
-COPY --from=api-builder /opt/openaev-build/openaev/openaev-api/target/openaev-api.jar ./
+WORKDIR /opt/veriguard
+COPY --from=api-builder /opt/veriguard-build/veriguard/veriguard-api/target/veriguard-api.jar ./
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["java", "-jar", "openaev-api.jar"]
+CMD ["java", "-jar", "veriguard-api.jar"]

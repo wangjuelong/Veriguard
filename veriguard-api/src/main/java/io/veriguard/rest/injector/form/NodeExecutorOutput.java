@@ -1,0 +1,34 @@
+package io.veriguard.rest.injector.form;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.rest.connector.dto.ConnectorOutput;
+import jakarta.validation.constraints.NotBlank;
+import java.time.Instant;
+import lombok.experimental.SuperBuilder;
+
+@SuperBuilder
+@Schema(description = "Injector output")
+public class NodeExecutorOutput extends ConnectorOutput {
+  @Schema(description = "Injector id")
+  @JsonProperty("injector_id")
+  @NotBlank
+  private String id;
+
+  @JsonProperty("injector_name")
+  @NotBlank
+  private String name;
+
+  @JsonProperty("injector_type")
+  @NotBlank
+  private String type;
+
+  @JsonProperty("injector_external")
+  private boolean external = false;
+
+  @JsonProperty("existing_injector")
+  private boolean existing;
+
+  @JsonProperty("injector_updated_at")
+  private Instant updatedAt;
+}

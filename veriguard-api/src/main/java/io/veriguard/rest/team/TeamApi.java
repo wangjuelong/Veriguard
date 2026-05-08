@@ -1,0 +1,325 @@
+package io.veriguard.rest.team;
+
+import static io.veriguard.database.specification.TeamSpecification.*;
+import static io.veriguard.helper.DatabaseHelper.updateRelation;
+import static io.veriguard.helper.StreamHelper.fromIterable;
+import static io.veriguard.helper.StreamHelper.iterableToSet;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static java.time.Instant.now;
+import static org.springframework.util.StringUtils.hasText;
+
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.veriguard.aop.LogExecutionTime;
+import io.veriguard.aop.RBAC;
+import io.veriguard.aop.UserRoleDescription;
+import io.veriguard.database.model.*;
+import io.veriguard.database.raw.RawTeam;
+import io.veriguard.database.repository.*;
+import io.veriguard.rest.exception.AlreadyExistingException;
+import io.veriguard.rest.exception.BadRequestException;
+import io.veriguard.rest.exception.ElementNotFoundException;
+import io.veriguard.rest.helper.RestBehavior;
+import io.veriguard.rest.helper.TeamHelper;
+import io.veriguard.rest.team.form.TeamCreateInput;
+import io.veriguard.rest.team.form.TeamUpdateInput;
+import io.veriguard.rest.team.form.UpdateUsersTeamInput;
+import io.veriguard.rest.team.output.TeamOutput;
+import io.veriguard.service.TeamService;
+import io.veriguard.service.UserService;
+import io.veriguard.utils.FilterUtilsJpa;
+import io.veriguard.utils.InputFilterOptions;
+import io.veriguard.utils.pagination.SearchPaginationInput;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@UserRoleDescription
+@Slf4j
+@Tag(
+    name = "Teams management",
+    description = "Endpoints to manage teams",
+    externalDocs =
+        @ExternalDocumentation(
+            description = "Documentation about teams",
+            url =
+                "https://docs.veriguard.io/latest/usage/teams_and_players_and_organizations/#teams"))
+public class TeamApi extends RestBehavior {
+
+  public static final String TEAM_URI = "/api/teams";
+
+  private final AttackChainRunRepository attackChainRunRepository;
+  private final AttackChainRepository attackChainRepository;
+  private final TeamRepository teamRepository;
+  private final UserRepository userRepository;
+  private final OrganizationRepository organizationRepository;
+  private final TagRepository tagRepository;
+  private final TeamService teamService;
+  private final UserService userService;
+
+  @LogExecutionTime
+  @GetMapping(TEAM_URI)
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.TEAM)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The list of teams")})
+  @Operation(summary = "List teams", description = "Return the teams")
+  public Iterable<TeamSimple> getTeams() {
+    List<RawTeam> teams;
+    // We get all the teams as raw
+    teams = fromIterable(teamRepository.rawTeams());
+
+    return TeamHelper.rawAllTeamToSimplerAllTeam(teams);
+  }
+
+  @LogExecutionTime
+  @PostMapping("/api/teams/search")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.TEAM)
+  @Transactional(readOnly = true)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The list of teams")})
+  @Operation(
+      summary = "Search teams",
+      description = "Search the teams corresponding to the criteria")
+  public Page<TeamOutput> searchTeams(
+      @RequestBody @Valid SearchPaginationInput searchPaginationInput) {
+    final Specification<Team> teamSpecification = contextual(false);
+    return this.teamService.teamPagination(searchPaginationInput, teamSpecification);
+  }
+
+  @LogExecutionTime
+  @PostMapping("/api/teams/find")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.TEAM)
+  @Transactional(readOnly = true)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The list of teams")})
+  @Operation(description = "Find a list of teams based on their ids", summary = "Find teams")
+  public List<TeamOutput> findTeams(@RequestBody @Valid @NotNull final List<String> teamIds) {
+    return this.teamService.find(fromIds(teamIds));
+  }
+
+  @GetMapping("/api/teams/{teamId}")
+  @RBAC(resourceId = "#teamId", actionPerformed = Action.READ, resourceType = ResourceType.TEAM)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The team")})
+  @Operation(description = "Get a team", summary = "Get team")
+  public Team getTeam(@PathVariable @Schema(description = "ID of the team") String teamId) {
+    return teamRepository.findById(teamId).orElseThrow(ElementNotFoundException::new);
+  }
+
+  @GetMapping("/api/teams/{teamId}/players")
+  @RBAC(resourceId = "#teamId", actionPerformed = Action.READ, resourceType = ResourceType.TEAM)
+  @ApiResponses(
+      value = {@ApiResponse(responseCode = "200", description = "The list of players of the team")})
+  @Operation(description = "Get the list of players of a team", summary = "Get team's players")
+  public Iterable<User> getTeamPlayers(
+      @PathVariable @Schema(description = "ID of the team") String teamId) {
+    return teamRepository.findById(teamId).orElseThrow(ElementNotFoundException::new).getUsers();
+  }
+
+  @PostMapping(TEAM_URI)
+  @RBAC(actionPerformed = Action.CREATE, resourceType = ResourceType.TEAM)
+  @Transactional(rollbackFor = Exception.class)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The created team")})
+  @Operation(description = "Create a new team", summary = "Create team")
+  public Team createTeam(@Valid @RequestBody TeamCreateInput input) {
+    isTeamAlreadyExists(input);
+    Team team = new Team();
+    team.setUpdateAttributes(input);
+    team.setOrganization(
+        updateRelation(input.getOrganizationId(), team.getOrganization(), organizationRepository));
+    team.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+    team.setAttackChainRuns(
+        fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
+    team.setAttackChains(
+        fromIterable(attackChainRepository.findAllById(input.getAttackChainIds())));
+    return teamRepository.save(team);
+  }
+
+  @PostMapping("/api/teams/upsert")
+  @RBAC(actionPerformed = Action.CREATE, resourceType = ResourceType.TEAM)
+  @Transactional(rollbackFor = Exception.class)
+  @ApiResponses(
+      value = {@ApiResponse(responseCode = "200", description = "The created/updated team")})
+  @Operation(description = "Create a new team or update an existing team", summary = "Upsert team")
+  public Team upsertTeam(@Valid @RequestBody TeamCreateInput input) {
+    if (input.getContextual() && input.getAttackChainRunIds().toArray().length > 1) {
+      throw new UnsupportedOperationException(
+          "Contextual team can only be associated to one exercise");
+    }
+    Optional<Team> team = teamRepository.findByName(input.getName());
+    if (team.isPresent()) {
+      Team existingTeam = team.get();
+      existingTeam.setUpdateAttributes(input);
+      existingTeam.setUpdatedAt(now());
+      existingTeam.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+      existingTeam.setOrganization(
+          updateRelation(
+              input.getOrganizationId(), existingTeam.getOrganization(), organizationRepository));
+      return teamRepository.save(existingTeam);
+    } else {
+      Team newTeam = new Team();
+      newTeam.setUpdateAttributes(input);
+      newTeam.setOrganization(
+          updateRelation(
+              input.getOrganizationId(), newTeam.getOrganization(), organizationRepository));
+      newTeam.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+      newTeam.setAttackChainRuns(
+          fromIterable(attackChainRunRepository.findAllById(input.getAttackChainRunIds())));
+      newTeam.setAttackChains(
+          fromIterable(attackChainRepository.findAllById(input.getAttackChainIds())));
+      return teamRepository.save(newTeam);
+    }
+  }
+
+  @DeleteMapping("/api/teams/{teamId}")
+  @RBAC(resourceId = "#teamId", actionPerformed = Action.DELETE, resourceType = ResourceType.TEAM)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200")})
+  @Operation(description = "Delete an existing team", summary = "Delete team")
+  public void deleteTeam(@PathVariable @Schema(description = "ID of the team") String teamId) {
+    teamRepository.deleteById(teamId);
+  }
+
+  @PutMapping("/api/teams/{teamId}")
+  @RBAC(resourceId = "#teamId", actionPerformed = Action.WRITE, resourceType = ResourceType.TEAM)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The updated team")})
+  @Operation(description = "Update an existing team", summary = "Update team")
+  public Team updateTeam(
+      @PathVariable @Schema(description = "ID of the team") String teamId,
+      @Valid @RequestBody TeamUpdateInput input) {
+    Team team = teamRepository.findById(teamId).orElseThrow(ElementNotFoundException::new);
+    team.setUpdateAttributes(input);
+    team.setUpdatedAt(now());
+    team.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+    team.setOrganization(
+        updateRelation(input.getOrganizationId(), team.getOrganization(), organizationRepository));
+    return teamRepository.save(team);
+  }
+
+  @PutMapping("/api/teams/{teamId}/players")
+  @RBAC(resourceId = "#teamId", actionPerformed = Action.WRITE, resourceType = ResourceType.TEAM)
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The updated team")})
+  @Operation(
+      description = "Update the list of users of a team team",
+      summary = "Update team players")
+  public Team updateTeamUsers(
+      @PathVariable @Schema(description = "ID of the team") String teamId,
+      @Valid @RequestBody UpdateUsersTeamInput input) {
+    Team team = teamRepository.findById(teamId).orElseThrow(ElementNotFoundException::new);
+    Iterable<User> teamUsers = userRepository.findAllById(input.getUserIds());
+    team.setUsers(fromIterable(teamUsers));
+    return teamRepository.save(team);
+  }
+
+  // -- OPTION --
+  @GetMapping(TEAM_URI + "/options")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.TEAM)
+  public List<FilterUtilsJpa.Option> optionsByName(
+      @RequestParam(required = false) final String searchText,
+      @RequestParam(required = false) final String sourceId,
+      @RequestParam(required = false) final String inputFilterOption) {
+    List<FilterUtilsJpa.Option> options = List.of();
+    InputFilterOptions attackChainNodeFilterOptionEnum;
+    try {
+      attackChainNodeFilterOptionEnum = InputFilterOptions.valueOf(inputFilterOption);
+    } catch (Exception e) {
+      if (StringUtils.isEmpty(inputFilterOption)) {
+        log.warn("InputFilterOption is null, fall back to backwards compatible case");
+        if (StringUtils.isNotEmpty(sourceId)) {
+          attackChainNodeFilterOptionEnum = InputFilterOptions.SIMULATION_OR_SCENARIO;
+        } else {
+          attackChainNodeFilterOptionEnum = InputFilterOptions.ATOMIC_TESTING;
+        }
+      } else {
+        throw new BadRequestException(
+            String.format("Invalid input filter option %s", inputFilterOption));
+      }
+    }
+    switch (attackChainNodeFilterOptionEnum) {
+      case ALL_INJECTS:
+        {
+          options =
+              teamRepository.findAllTeamsForAtomicTestingsSimulationsAndAttackChains().stream()
+                  .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
+                  .toList();
+          break;
+        }
+      case SIMULATION_OR_SCENARIO:
+        {
+          if (StringUtils.isEmpty(sourceId)) {
+            throw new BadRequestException("Missing simulation or scenario id");
+          }
+          // fall through intentional
+        }
+      case ATOMIC_TESTING:
+        {
+          options =
+              teamRepository
+                  .findAllBySimulationOrAttackChainIdAndName(
+                      StringUtils.trimToNull(sourceId), StringUtils.trimToNull(searchText))
+                  .stream()
+                  .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
+                  .toList();
+          break;
+        }
+    }
+    return options;
+  }
+
+  @PostMapping(TEAM_URI + "/options")
+  @RBAC(actionPerformed = Action.SEARCH, resourceType = ResourceType.TEAM)
+  public List<FilterUtilsJpa.Option> optionsById(@RequestBody final List<String> ids) {
+    return fromIterable(this.teamRepository.findAllById(ids)).stream()
+        .map(i -> new FilterUtilsJpa.Option(i.getId(), i.getName()))
+        .toList();
+  }
+
+  // -- PRIVATE --
+
+  private void isTeamAlreadyExists(@NotNull final TeamCreateInput input) {
+    List<Team> teams = this.teamRepository.findAllByNameIgnoreCase(input.getName());
+    if (teams.isEmpty()) {
+      return;
+    }
+
+    if (FALSE.equals(input.getContextual())
+        && teams.stream().anyMatch(t -> FALSE.equals(t.getContextual()))) {
+      throw new AlreadyExistingException(
+          "Global teams (non contextual) cannot have the same name (already exists)");
+    }
+    if (TRUE.equals(input.getContextual())) {
+      String attackChainRunId = input.getAttackChainRunIds().stream().findFirst().orElse(null);
+      if (hasText(attackChainRunId)
+          && teams.stream()
+              .anyMatch(
+                  t ->
+                      TRUE.equals(t.getContextual())
+                          && t.getAttackChainRuns().stream()
+                              .anyMatch((e) -> attackChainRunId.equals(e.getId())))) {
+        throw new AlreadyExistingException(
+            "A contextual team with the same name already exists on this simulation");
+      }
+      String attackChainId = input.getAttackChainIds().stream().findFirst().orElse(null);
+      if (hasText(attackChainId)
+          && teams.stream()
+              .anyMatch(
+                  t ->
+                      TRUE.equals(t.getContextual())
+                          && t.getAttackChains().stream()
+                              .anyMatch((e) -> attackChainId.equals(e.getId())))) {
+        throw new AlreadyExistingException(
+            "A contextual team with the same name already exists on this scenario");
+      }
+    }
+  }
+}

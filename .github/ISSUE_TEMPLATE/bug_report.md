@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a bug report to help us improve OpenAEV
+about: Create a bug report to help us improve Veriguard
 title: ''
 labels: bug, needs triage
 assignees: ''
@@ -13,9 +13,9 @@ assignees: ''
 
 ## Environment
 
-1. OS (where OpenAEV server runs): { e.g. Mac OS 10, Windows 10, Ubuntu 16.4, etc. }
-2. OpenAEV version: { e.g. OpenAEV 1.0.2 }
-3. OpenAEV client: { e.g. frontend or python }
+1. OS (where Veriguard server runs): { e.g. Mac OS 10, Windows 10, Ubuntu 16.4, etc. }
+2. Veriguard version: { e.g. Veriguard 1.0.2 }
+3. Veriguard client: { e.g. frontend or python }
 4. Other environment details:
 
 ## Reproducible Steps

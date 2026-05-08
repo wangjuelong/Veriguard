@@ -33,11 +33,11 @@ new_version = args.new_version
 branch_platform = args.branch_platform
 github_token = args.github_token
 
-os.environ["DRONE_COMMIT_AUTHOR"] = "Filigran-Automation"
-os.environ["GIT_AUTHOR_NAME"] = "Filigran Automation"
-os.environ["GIT_AUTHOR_EMAIL"] = "automation@filigran.io"
-os.environ["GIT_COMMITTER_NAME"] = "Filigran Automation"
-os.environ["GIT_COMMITTER_EMAIL"] = "automation@filigran.io"
+os.environ["DRONE_COMMIT_AUTHOR"] = "Veriguard-Automation"
+os.environ["GIT_AUTHOR_NAME"] = "Veriguard Automation"
+os.environ["GIT_AUTHOR_EMAIL"] = "automation@veriguard.local"
+os.environ["GIT_COMMITTER_NAME"] = "Veriguard Automation"
+os.environ["GIT_COMMITTER_EMAIL"] = "automation@veriguard.local"
 
 # Platform
 logging.info("[platform] Starting the release")
@@ -49,10 +49,10 @@ with open(
 ) as file:
     filedata = file.read()
 filedata = re.sub(
-    r"<groupId>io.openaev</groupId>(\s+)<artifactId>(.*)</artifactId>(\s+)<version>"
+    r"<groupId>io.veriguard</groupId>(\s+)<artifactId>(.*)</artifactId>(\s+)<version>"
     + previous_version
     + "</version>",
-    r"<groupId>io.openaev</groupId>\1<artifactId>\2</artifactId>\3<version>"
+    r"<groupId>io.veriguard</groupId>\1<artifactId>\2</artifactId>\3<version>"
     + new_version
     + "</version>",
     filedata,
@@ -63,70 +63,70 @@ with open(
 ) as file:
     file.write(filedata)
 with open(
-    "./openaev-api/pom.xml",
+    "./veriguard-api/pom.xml",
     "r",
 ) as file:
     filedata = file.read()
 filedata = re.sub(
-    r"<groupId>io.openaev</groupId>(\s+)<artifactId>(.*)</artifactId>(\s+)<version>"
+    r"<groupId>io.veriguard</groupId>(\s+)<artifactId>(.*)</artifactId>(\s+)<version>"
     + previous_version
     + "</version>",
-    r"<groupId>io.openaev</groupId>\1<artifactId>\2</artifactId>\3<version>"
+    r"<groupId>io.veriguard</groupId>\1<artifactId>\2</artifactId>\3<version>"
     + new_version
     + "</version>",
     filedata,
 )
 with open(
-    "./openaev-api/pom.xml",
+    "./veriguard-api/pom.xml",
     "w",
 ) as file:
     file.write(filedata)
 with open(
-    "./openaev-framework/pom.xml",
+    "./veriguard-framework/pom.xml",
     "r",
 ) as file:
     filedata = file.read()
 filedata = re.sub(
-    r"<groupId>io.openaev</groupId>(\s+)<artifactId>(.*)</artifactId>(\s+)<version>"
+    r"<groupId>io.veriguard</groupId>(\s+)<artifactId>(.*)</artifactId>(\s+)<version>"
     + previous_version
     + "</version>",
-    r"<groupId>io.openaev</groupId>\1<artifactId>\2</artifactId>\3<version>"
+    r"<groupId>io.veriguard</groupId>\1<artifactId>\2</artifactId>\3<version>"
     + new_version
     + "</version>",
     filedata,
 )
 with open(
-    "./openaev-framework/pom.xml",
+    "./veriguard-framework/pom.xml",
     "w",
 ) as file:
     file.write(filedata)
 with open(
-    "./openaev-model/pom.xml",
+    "./veriguard-model/pom.xml",
     "r",
 ) as file:
     filedata = file.read()
 filedata = re.sub(
-    r"<groupId>io.openaev</groupId>(\s+)<artifactId>(.*)</artifactId>(\s+)<version>"
+    r"<groupId>io.veriguard</groupId>(\s+)<artifactId>(.*)</artifactId>(\s+)<version>"
     + previous_version
     + "</version>",
-    r"<groupId>io.openaev</groupId>\1<artifactId>\2</artifactId>\3<version>"
+    r"<groupId>io.veriguard</groupId>\1<artifactId>\2</artifactId>\3<version>"
     + new_version
     + "</version>",
     filedata,
 )
 with open(
-    "./openaev-model/pom.xml",
+    "./veriguard-model/pom.xml",
     "w",
 ) as file:
     file.write(filedata)
 
 # Package.json
-with open("./openaev-front/package.json", "r") as file:
+with open("./veriguard-front/package.json", "r") as file:
     filedata = file.read()
 filedata = filedata.replace(
     '"version": "' + previous_version + '"', '"version": "' + new_version + '"'
 )
-with open("./openaev-front/package.json", "w") as file:
+with open("./veriguard-front/package.json", "w") as file:
     file.write(filedata)
 
 logging.info("[platform] Pushing to " + branch_platform)
@@ -146,7 +146,7 @@ logging.info(
 )
 
 check_release(
-    "https://hub.docker.com/v2/repositories/openaev/platform/tags?page_size=1000",
+    "https://hub.docker.com/v2/repositories/veriguard/platform/tags?page_size=1000",
     new_version,
 )
 
@@ -156,7 +156,7 @@ os.system("gren release > /dev/null 2>&1")
 # Modify the release note
 logging.info("[platform] Getting the current release note")
 release = requests.get(
-    "https://api.github.com/repos/OpenAEV-Platform/openaev/releases/latest",
+    "https://api.github.com/repos/Veriguard-Platform/veriguard/releases/latest",
     headers={
         "Accept": "application/vnd.github+json",
         "Authorization": "Bearer " + github_token,
@@ -168,7 +168,7 @@ release_body = release_data["body"]
 
 logging.info("[platform] Generating the new release note")
 github_release_note = requests.post(
-    "https://api.github.com/repos/OpenAEV-Platform/openaev/releases/generate-notes",
+    "https://api.github.com/repos/Veriguard-Platform/veriguard/releases/generate-notes",
     headers={
         "Accept": "application/vnd.github+json",
         "Authorization": "Bearer " + github_token,
@@ -191,7 +191,7 @@ else:
 
 logging.info("[platform] Updating the release")
 requests.patch(
-    "https://api.github.com/repos/OpenAEV-Platform/openaev/releases/"
+    "https://api.github.com/repos/Veriguard-Platform/veriguard/releases/"
     + str(release_data["id"]),
     headers={
         "Accept": "application/vnd.github+json",
@@ -206,24 +206,26 @@ logging.info("[platform] Uploading release artifacts...")
 logging.info("[platform] Downloading latest builds")
 today = date.today()
 timestamp = str(today.year) + "{:02d}".format(today.month) + "{:02d}".format(today.day)
-download_url(
-    "https://filigran.jfrog.io/artifactory/openaev/openaev-" + timestamp + ".tar.gz",
-    save_path="openaev-release-" + new_version + ".tar.gz",
+artifactory_base_url = os.environ.get(
+    "VERIGUARD_ARTIFACTORY_BASE_URL",
+    "https://artifactory.veriguard.local/artifactory",
 )
 download_url(
-    "https://filigran.jfrog.io/artifactory/openaev/openaev-"
-    + timestamp
-    + "_musl.tar.gz",
-    save_path="openaev-release-" + new_version + "_musl.tar.gz",
+    artifactory_base_url + "/veriguard/veriguard-" + timestamp + ".tar.gz",
+    save_path="veriguard-release-" + new_version + ".tar.gz",
+)
+download_url(
+    artifactory_base_url + "/veriguard/veriguard-" + timestamp + "_musl.tar.gz",
+    save_path="veriguard-release-" + new_version + "_musl.tar.gz",
 )
 
 logging.info("[platform] Updating the release")
-with open("openaev-release-" + new_version + ".tar.gz", "rb") as f:
+with open("veriguard-release-" + new_version + ".tar.gz", "rb") as f:
     data = f.read()
 requests.post(
-    "https://uploads.github.com/repos/OpenAEV-Platform/openaev/releases/"
+    "https://uploads.github.com/repos/Veriguard-Platform/veriguard/releases/"
     + str(release_data["id"])
-    + "/assets?name=openaev-release-"
+    + "/assets?name=veriguard-release-"
     + new_version
     + ".tar.gz",
     headers={
@@ -234,12 +236,12 @@ requests.post(
     },
     data=data,
 )
-with open("openaev-release-" + new_version + "_musl.tar.gz", "rb") as f:
+with open("veriguard-release-" + new_version + "_musl.tar.gz", "rb") as f:
     data = f.read()
 requests.post(
-    "https://uploads.github.com/repos/OpenAEV-Platform/openaev/releases/"
+    "https://uploads.github.com/repos/Veriguard-Platform/veriguard/releases/"
     + str(release_data["id"])
-    + "/assets?name=openaev-release-"
+    + "/assets?name=veriguard-release-"
     + new_version
     + "_musl.tar.gz",
     headers={
@@ -252,7 +254,7 @@ requests.post(
 )
 
 closeRelease(
-    "https://api.github.com/repos/OpenAEV-Platform/openaev", new_version, github_token
+    "https://api.github.com/repos/Veriguard-Platform/veriguard", new_version, github_token
 )
 
 logging.info("[platform] Release done!")
