@@ -18,7 +18,7 @@ import io.veriguard.database.repository.AttackChainTeamUserRepository;
 import io.veriguard.database.repository.LessonsCategoryRepository;
 import io.veriguard.database.repository.TeamRepository;
 import io.veriguard.database.repository.UserRepository;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

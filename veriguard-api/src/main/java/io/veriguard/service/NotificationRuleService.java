@@ -5,7 +5,7 @@ import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationJPA;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.NotificationRuleRepository;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utils.ImageUtils;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import jakarta.transaction.Transactional;

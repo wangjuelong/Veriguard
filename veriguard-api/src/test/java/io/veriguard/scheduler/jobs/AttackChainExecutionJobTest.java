@@ -11,7 +11,7 @@ import io.veriguard.IntegrationTest;
 import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.repository.AttackChainRunRepository;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utils.fixtures.AttackChainFixture;
 import io.veriguard.utils.fixtures.composers.AttackChainComposer;
 import io.veriguard.utilstest.RabbitMQTestListener;

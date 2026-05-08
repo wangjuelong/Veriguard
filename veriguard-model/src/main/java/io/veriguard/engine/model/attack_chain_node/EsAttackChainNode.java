@@ -1,4 +1,4 @@
-package io.veriguard.engine.model.inject;
+package io.veriguard.engine.model.attack_chain_node;
 
 import io.veriguard.annotation.EsQueryable;
 import io.veriguard.annotation.Indexable;

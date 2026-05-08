@@ -8,7 +8,7 @@ import io.veriguard.notification.model.NotificationEventType;
 import io.veriguard.rest.attack_chain.service.AttackChainStatisticService;
 import io.veriguard.rest.attack_chain_run.service.AttackChainRunService;
 import io.veriguard.service.NotificationRuleService;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZoneId;

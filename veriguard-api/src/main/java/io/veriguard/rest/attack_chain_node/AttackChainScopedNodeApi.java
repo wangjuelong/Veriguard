@@ -15,7 +15,7 @@ import io.veriguard.rest.attack_chain_node.service.AttackChainNodeDuplicateServi
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.*;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import jakarta.persistence.criteria.Join;
 import jakarta.validation.Valid;

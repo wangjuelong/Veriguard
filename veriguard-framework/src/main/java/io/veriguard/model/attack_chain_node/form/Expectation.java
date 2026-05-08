@@ -1,4 +1,4 @@
-package io.veriguard.model.inject.form;
+package io.veriguard.model.attack_chain_node.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.veriguard.database.model.AttackChainNodeExpectation;

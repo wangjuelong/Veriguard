@@ -1,4 +1,4 @@
-package io.veriguard.service.scenario;
+package io.veriguard.service.attack_chain;
 
 import io.veriguard.database.model.AttackChain;
 import io.veriguard.service.period.PeriodExpressionHandler;

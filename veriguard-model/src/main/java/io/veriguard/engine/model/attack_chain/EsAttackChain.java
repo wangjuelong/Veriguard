@@ -1,4 +1,4 @@
-package io.veriguard.engine.model.scenario;
+package io.veriguard.engine.model.attack_chain;
 
 import io.veriguard.annotation.EsQueryable;
 import io.veriguard.annotation.Indexable;

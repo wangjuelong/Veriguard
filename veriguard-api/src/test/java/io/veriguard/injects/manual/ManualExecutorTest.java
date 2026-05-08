@@ -14,7 +14,7 @@ import io.veriguard.executors.NodeExecutorContext;
 import io.veriguard.injectors.manual.ManualExecutor;
 import io.veriguard.injectors.manual.model.ManualContent;
 import io.veriguard.model.expectation.ManualExpectation;
-import io.veriguard.model.inject.form.Expectation;
+import io.veriguard.model.attack_chain_node.form.Expectation;
 import io.veriguard.service.AttackChainNodeExpectationService;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import java.time.Instant;

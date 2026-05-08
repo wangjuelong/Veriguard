@@ -31,7 +31,7 @@ import io.veriguard.rest.payload.service.PayloadCreationService;
 import io.veriguard.service.FileService;
 import io.veriguard.service.ImportEntry;
 import io.veriguard.service.NodeExecutorService;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import jakarta.activation.MimetypesFileTypeMap;
 import jakarta.annotation.Resource;
 import java.time.Instant;

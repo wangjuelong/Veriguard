@@ -5,7 +5,7 @@ import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.ResourceType;
-import io.veriguard.model.inject.form.Expectation;
+import io.veriguard.model.attack_chain_node.form.Expectation;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationBulkUpdateInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeExpectationUpdateInput;
 import io.veriguard.rest.attack_chain_run.form.ExpectationUpdateInput;

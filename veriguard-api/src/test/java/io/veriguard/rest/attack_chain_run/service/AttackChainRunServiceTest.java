@@ -20,7 +20,7 @@ import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.attack_chain_run.form.AttackChainRunsGlobalScoresInput;
 import io.veriguard.rest.document.DocumentService;
 import io.veriguard.service.*;
-import io.veriguard.service.scenario.AttackChainRecurrenceService;
+import io.veriguard.service.attack_chain.AttackChainRecurrenceService;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;
 import io.veriguard.utils.TargetType;

@@ -36,7 +36,7 @@ import io.veriguard.injector_contract.ContractDef;
 import io.veriguard.injector_contract.ContractTargetedProperty;
 import io.veriguard.injector_contract.fields.*;
 import io.veriguard.injectors.veriguard.util.VeriguardObfuscationMap;
-import io.veriguard.model.inject.form.Expectation;
+import io.veriguard.model.attack_chain_node.form.Expectation;
 import io.veriguard.rest.domain.DomainService;
 import io.veriguard.rest.domain.enums.PresetDomain;
 import io.veriguard.rest.payload.PayloadUtils;

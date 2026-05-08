@@ -1,4 +1,4 @@
-package io.veriguard.engine.model.injectexpectation;
+package io.veriguard.engine.model.attack_chain_nodeexpectation;
 
 import io.veriguard.annotation.EsQueryable;
 import io.veriguard.annotation.Indexable;

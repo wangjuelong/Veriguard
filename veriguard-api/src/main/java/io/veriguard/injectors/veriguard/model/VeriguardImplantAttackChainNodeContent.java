@@ -1,7 +1,7 @@
 package io.veriguard.injectors.veriguard.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.model.inject.form.Expectation;
+import io.veriguard.model.attack_chain_node.form.Expectation;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;

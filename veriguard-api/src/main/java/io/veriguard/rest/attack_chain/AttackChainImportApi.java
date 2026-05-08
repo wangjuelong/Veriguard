@@ -15,7 +15,7 @@ import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.exception.UnprocessableContentException;
 import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.service.AttackChainNodeImportService;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

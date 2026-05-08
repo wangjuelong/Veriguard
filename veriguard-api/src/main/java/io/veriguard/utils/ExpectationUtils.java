@@ -216,7 +216,7 @@ public class ExpectationUtils {
       String implantType,
       AssetToExecute assetToExecute,
       List<io.veriguard.database.model.Agent> executedAgents,
-      io.veriguard.model.inject.form.Expectation expectation,
+      io.veriguard.model.attack_chain_node.form.Expectation expectation,
       Map<String, Endpoint> valueTargetedAssetsMap,
       String attackChainNodeId) {
     return getExpectations(
@@ -266,7 +266,7 @@ public class ExpectationUtils {
       String implantType,
       AssetToExecute assetToExecute,
       List<io.veriguard.database.model.Agent> executedAgents,
-      io.veriguard.model.inject.form.Expectation expectation,
+      io.veriguard.model.attack_chain_node.form.Expectation expectation,
       Map<String, Endpoint> valueTargetedAssetsMap,
       String attackChainNodeId) {
     return getExpectations(
@@ -314,7 +314,7 @@ public class ExpectationUtils {
       String implantType,
       AssetToExecute assetToExecute,
       List<io.veriguard.database.model.Agent> executedAgents,
-      io.veriguard.model.inject.form.Expectation expectation) {
+      io.veriguard.model.attack_chain_node.form.Expectation expectation) {
     return getExpectations(
         assetToExecute,
         executedAgents,
@@ -351,7 +351,7 @@ public class ExpectationUtils {
       String implantType,
       AssetToExecute assetToExecute,
       List<io.veriguard.database.model.Agent> executedAgents,
-      io.veriguard.model.inject.form.Expectation expectation,
+      io.veriguard.model.attack_chain_node.form.Expectation expectation,
       Map<String, Endpoint> valueTargetedAssetsMap,
       @Nullable String attackChainNodeId) {
     return getExpectations(

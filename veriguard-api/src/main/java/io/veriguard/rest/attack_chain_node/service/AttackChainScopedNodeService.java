@@ -6,7 +6,7 @@ import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateActivationInput;
 import io.veriguard.rest.exception.ElementNotFoundException;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

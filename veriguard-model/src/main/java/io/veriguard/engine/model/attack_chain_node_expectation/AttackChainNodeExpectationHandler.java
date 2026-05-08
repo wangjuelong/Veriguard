@@ -1,4 +1,4 @@
-package io.veriguard.engine.model.injectexpectation;
+package io.veriguard.engine.model.attack_chain_nodeexpectation;
 
 import static io.veriguard.engine.EsUtils.buildRestrictions;
 import static io.veriguard.helper.AttackChainNodeExpectationHelper.computeStatus;

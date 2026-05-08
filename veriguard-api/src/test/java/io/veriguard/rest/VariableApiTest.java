@@ -16,7 +16,7 @@ import io.veriguard.database.model.AttackChain;
 import io.veriguard.database.model.Variable;
 import io.veriguard.database.repository.AttackChainRepository;
 import io.veriguard.database.repository.VariableRepository;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utils.mockUser.WithMockUser;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import org.junit.jupiter.api.*;

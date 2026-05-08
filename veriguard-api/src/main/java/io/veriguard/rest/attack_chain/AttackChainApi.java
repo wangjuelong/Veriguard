@@ -30,7 +30,7 @@ import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.helper.RestBehavior;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.pagination.SearchPaginationInput;
 import jakarta.servlet.http.HttpServletResponse;

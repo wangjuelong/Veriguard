@@ -2,7 +2,7 @@ package io.veriguard.utils.fixtures.composers;
 
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AttackChainRepository;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

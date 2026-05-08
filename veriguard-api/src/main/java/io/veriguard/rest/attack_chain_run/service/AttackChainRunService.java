@@ -33,7 +33,7 @@ import io.veriguard.rest.document.DocumentService;
 import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.rest.team.output.TeamOutput;
 import io.veriguard.service.*;
-import io.veriguard.service.scenario.AttackChainRecurrenceService;
+import io.veriguard.service.attack_chain.AttackChainRecurrenceService;
 import io.veriguard.utils.FilterUtilsJpa;
 import io.veriguard.utils.NodeExpectationResultUtils.ExpectationResultsByType;
 import io.veriguard.utils.ResultUtils;

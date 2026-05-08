@@ -3,7 +3,7 @@ package io.veriguard.injector_contract.fields;
 import static io.veriguard.database.model.NodeContract.CONTRACT_ELEMENT_CONTENT_KEY_EXPECTATIONS;
 import static io.veriguard.injector_contract.ContractCardinality.Multiple;
 
-import io.veriguard.model.inject.form.Expectation;
+import io.veriguard.model.attack_chain_node.form.Expectation;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;

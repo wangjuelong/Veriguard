@@ -13,7 +13,7 @@ import io.veriguard.rest.attack_chain.form.AttackChainNodesImportInput;
 import io.veriguard.rest.attack_chain.response.ImportTestSummary;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.service.AttackChainNodeImportService;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utilstest.RabbitMQTestListener;
 import java.util.Optional;
 import java.util.UUID;

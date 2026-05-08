@@ -10,7 +10,7 @@ import io.veriguard.database.model.*;
 import io.veriguard.database.model.Tag;
 import io.veriguard.database.repository.*;
 import io.veriguard.rest.domain.enums.PresetDomain;
-import io.veriguard.service.scenario.AttackChainService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utils.constants.Constants;
 import java.io.IOException;
 import java.nio.file.Files;

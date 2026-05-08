@@ -16,7 +16,7 @@ import io.veriguard.injectors.veriguard.VeriguardImplantContract;
 import io.veriguard.injectors.veriguard.model.VeriguardImplantAttackChainNodeContent;
 import io.veriguard.integration.Manager;
 import io.veriguard.integration.impl.injectors.veriguard.VeriguardNodeExecutorIntegrationFactory;
-import io.veriguard.model.inject.form.Expectation;
+import io.veriguard.model.attack_chain_node.form.Expectation;
 import io.veriguard.utils.fixtures.*;
 import io.veriguard.utils.fixtures.composers.*;
 import io.veriguard.utilstest.RabbitMQTestListener;

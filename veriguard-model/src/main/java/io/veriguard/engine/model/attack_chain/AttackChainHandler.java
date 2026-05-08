@@ -1,4 +1,4 @@
-package io.veriguard.engine.model.scenario;
+package io.veriguard.engine.model.attack_chain;
 
 import static io.veriguard.engine.EsUtils.buildRestrictions;
 import static org.springframework.util.CollectionUtils.isEmpty;

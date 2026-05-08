@@ -78,7 +78,7 @@ public class ManualExpectation implements Expectation {
    *
    * @param expectation the form expectation containing configuration
    */
-  public ManualExpectation(io.veriguard.model.inject.form.Expectation expectation) {
+  public ManualExpectation(io.veriguard.model.attack_chain_node.form.Expectation expectation) {
     this(expectation.getScore());
     this.name = expectation.getName();
     this.description = expectation.getDescription();

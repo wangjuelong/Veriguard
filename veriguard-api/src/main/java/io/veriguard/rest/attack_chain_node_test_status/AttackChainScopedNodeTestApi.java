@@ -1,7 +1,7 @@
-package io.veriguard.rest.inject_test_status;
+package io.veriguard.rest.attack_chain_node_test_status;
 
 import static io.veriguard.database.specification.AttackChainNodeSpecification.testable;
-import static io.veriguard.rest.attack_chain_run.AttackChainRunApi.EXERCISE_URI;
+import static io.veriguard.rest.attack_chain.AttackChainApi.SCENARIO_URI;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.LogExecutionTime;
@@ -29,70 +29,52 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class SimulationAttackChainNodeTestApi extends RestBehavior {
+public class AttackChainScopedNodeTestApi extends RestBehavior {
 
   private final AttackChainNodeTestStatusService attackChainNodeTestStatusService;
   private final AttackChainNodeService attackChainNodeService;
 
-  /**
-   * @deprecated since 1.16.0, forRemoval = true
-   * @see #findAttackChainRunPageAttackChainNodeTests
-   */
-  @PostMapping("/api/exercise/{simulationId}/injects/test")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/test/search")
   @RBAC(
+      resourceId = "#attackChainId",
       actionPerformed = Action.READ,
-      resourceType = ResourceType.SIMULATION,
-      resourceId = "#simulationId")
-  public Page<AttackChainNodeTestStatusOutput> findAllAttackChainRunAttackChainNodeTests(
-      @PathVariable @NotBlank String simulationId,
+      resourceType = ResourceType.SCENARIO)
+  public Page<AttackChainNodeTestStatusOutput> findAllAttackChainScopedNodeTests(
+      @PathVariable @NotBlank String attackChainId,
       @RequestBody @Valid SearchPaginationInput searchPaginationInput) {
-    return attackChainNodeTestStatusService.findAllAttackChainNodeTestsByAttackChainRunId(
-        simulationId, searchPaginationInput);
-  }
-
-  @PostMapping(EXERCISE_URI + "/{simulationId}/injects/test/search")
-  @RBAC(
-      actionPerformed = Action.READ,
-      resourceType = ResourceType.SIMULATION,
-      resourceId = "#simulationId")
-  public Page<AttackChainNodeTestStatusOutput> findAttackChainRunPageAttackChainNodeTests(
-      @PathVariable @NotBlank String simulationId,
-      @RequestBody @Valid SearchPaginationInput searchPaginationInput) {
-    return attackChainNodeTestStatusService.findAllAttackChainNodeTestsByAttackChainRunId(
-        simulationId, searchPaginationInput);
+    return attackChainNodeTestStatusService.findAllAttackChainNodeTestsByAttackChainId(
+        attackChainId, searchPaginationInput);
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @GetMapping(EXERCISE_URI + "/{simulationId}/injects/{attackChainNodeId}/test")
-  @RBAC(
-      resourceId = "#simulationId",
-      actionPerformed = Action.READ,
-      resourceType = ResourceType.SIMULATION)
-  public AttackChainNodeTestStatusOutput testAttackChainNode(
-      @PathVariable @NotBlank String simulationId, @PathVariable @NotBlank String attackChainNodeId)
-      throws Exception {
-    return attackChainNodeTestStatusService.testAttackChainNode(attackChainNodeId);
-  }
-
-  @Transactional(rollbackFor = Exception.class)
-  @GetMapping(EXERCISE_URI + "/injects/test/{testId}")
-  @RBAC(
-      actionPerformed = Action.SEARCH,
-      resourceType =
-          ResourceType.SIMULATION) // fixme : should use action search on resourceType simulation
+  @GetMapping(SCENARIO_URI + "/injects/test/{testId}")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.SCENARIO)
   public AttackChainNodeTestStatusOutput findAttackChainNodeTestStatus(
       @PathVariable @NotBlank String testId) {
     return attackChainNodeTestStatusService.findAttackChainNodeTestStatusById(testId);
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @DeleteMapping(EXERCISE_URI + "/{simulationId}/injects/test/{testId}")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}/test")
   @RBAC(
-      resourceId = "#simulationId",
+      resourceId = "#attackChainId",
+      actionPerformed = Action.LAUNCH,
+      resourceType = ResourceType.SCENARIO)
+  public AttackChainNodeTestStatusOutput testAttackChainNode(
+      @PathVariable @NotBlank final String attackChainId,
+      @PathVariable @NotBlank String attackChainNodeId)
+      throws Exception {
+    return attackChainNodeTestStatusService.testAttackChainNode(attackChainNodeId);
+  }
+
+  @Transactional(rollbackFor = Exception.class)
+  @DeleteMapping(SCENARIO_URI + "/{attackChainId}/injects/test/{testId}")
+  @RBAC(
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
-      resourceType = ResourceType.SIMULATION)
+      resourceType = ResourceType.SCENARIO)
   public void deleteAttackChainNodeTest(
-      @PathVariable @NotBlank String simulationId, @PathVariable String testId) {
+      @PathVariable @NotBlank final String attackChainId, @PathVariable String testId) {
     attackChainNodeTestStatusService.deleteAttackChainNodeTest(testId);
   }
 
@@ -100,20 +82,19 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
       description = "Bulk tests of injects",
       tags = {"Injects", "Tests"})
   @Transactional(rollbackFor = Exception.class)
-  @PostMapping(EXERCISE_URI + "/{simulationId}/injects/test")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/test")
   @RBAC(
-      resourceId = "#simulationId",
+      resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
-      resourceType = ResourceType.SIMULATION)
+      resourceType = ResourceType.SCENARIO)
   @LogExecutionTime
   public List<AttackChainNodeTestStatusOutput> bulkTestAttackChainNode(
-      @PathVariable @NotBlank String simulationId,
+      @PathVariable @NotBlank final String attackChainId,
       @RequestBody @Valid final AttackChainNodeBulkProcessingInput input) {
 
     // Control and format inputs
-    if (!simulationId.equals(input.getSimulationOrAttackChainId())) {
-      throw new BadRequestException(
-          "Provided simulation ID does not match the input simulation ID");
+    if (!attackChainId.equals(input.getSimulationOrAttackChainId())) {
+      throw new BadRequestException("Provided scenario ID does not match the input scenario ID");
     }
     if (CollectionUtils.isEmpty(input.getAttackChainNodeIDsToProcess())
         && input.getSearchPaginationInput() == null) {

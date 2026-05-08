@@ -9,7 +9,7 @@ import io.veriguard.engine.api.ListConfiguration;
 import io.veriguard.engine.api.ListRuntime;
 import io.veriguard.engine.api.StructuralHistogramRuntime;
 import io.veriguard.engine.api.StructuralHistogramWidget;
-import io.veriguard.engine.model.inject.EsAttackChainNode;
+import io.veriguard.engine.model.attack_chain_node.EsAttackChainNode;
 import io.veriguard.engine.query.EsAttackPath;
 import io.veriguard.engine.query.EsSeries;
 import io.veriguard.engine.query.EsSeriesData;

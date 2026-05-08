@@ -1,4 +1,4 @@
-package io.veriguard.service.scenario;
+package io.veriguard.service.attack_chain;
 
 import static io.veriguard.config.SessionHelper.currentUser;
 import static io.veriguard.database.criteria.GenericCriteria.countQuery;
