@@ -21,9 +21,8 @@ public class AttackChainEdgeInput {
       @NotNull final AttackChainNode attackChainNodeParent) {
     AttackChainEdge dependency = new AttackChainEdge();
     dependency.setAttackChainEdgeCondition(this.getConditions());
-    dependency.setCompositeId(new AttackChainEdgeId());
-    dependency.getCompositeId().setAttackChainNodeChildren(attackChainNode);
-    dependency.getCompositeId().setAttackChainNodeParent(attackChainNodeParent);
+    dependency.setAttackChainNodeChildren(attackChainNode);
+    dependency.setAttackChainNodeParent(attackChainNodeParent);
     return dependency;
   }
 }

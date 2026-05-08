@@ -36,9 +36,9 @@ public interface NodeExpectationTraceRepository
   @Modifying
   @Query(
       value =
-          "INSERT INTO injects_expectations_traces (inject_expectation_trace_id, inject_expectation_trace_expectation, inject_expectation_trace_source_id, inject_expectation_trace_alert_link, inject_expectation_trace_alert_name, inject_expectation_trace_date, inject_expectation_trace_created_at, inject_expectation_trace_updated_at) "
+          "INSERT INTO node_expectation_traces (trace_id, trace_expectation_id, trace_source_id, trace_alert_link, trace_alert_name, trace_date, trace_created_at, trace_updated_at) "
               + "VALUES (:id, :expectationId, :securityPlatformId, :alertLink, :alertName, :alertDate, :createdAtDate, :updatedAtDate) "
-              + "ON CONFLICT (inject_expectation_trace_expectation, inject_expectation_trace_source_id, inject_expectation_trace_alert_name, inject_expectation_trace_alert_link) DO NOTHING",
+              + "ON CONFLICT (trace_expectation_id, trace_source_id, trace_alert_name, trace_alert_link) DO NOTHING",
       nativeQuery = true)
   void insertIfNotExists(
       @Param("id") String id,

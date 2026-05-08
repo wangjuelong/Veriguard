@@ -700,13 +700,11 @@ public class AttackChainNodeService {
                       .setMode(entry.getConditions().getMode());
                 } else {
                   AttackChainEdge attackChainEdge = new AttackChainEdge();
-                  attackChainEdge.getCompositeId().setAttackChainNodeChildren(attackChainNode);
-                  attackChainEdge
-                      .getCompositeId()
-                      .setAttackChainNodeParent(
-                          attackChainNodeRepository
-                              .findById(entry.getRelationship().getAttackChainNodeParentId())
-                              .orElse(null));
+                  attackChainEdge.setAttackChainNodeChildren(attackChainNode);
+                  attackChainEdge.setAttackChainNodeParent(
+                      attackChainNodeRepository
+                          .findById(entry.getRelationship().getAttackChainNodeParentId())
+                          .orElse(null));
                   attackChainEdge.setAttackChainEdgeCondition(
                       new AttackChainEdgeConditions.AttackChainEdgeCondition());
                   attackChainEdge

@@ -1023,12 +1023,8 @@ public class V1_DataImporter implements Importer {
 
               if (attackChainNodeParent.isPresent() && attackChainNodeChildren.isPresent()) {
                 AttackChainEdge attackChainEdge = new AttackChainEdge();
-                attackChainEdge
-                    .getCompositeId()
-                    .setAttackChainNodeParent(attackChainNodeParent.get());
-                attackChainEdge
-                    .getCompositeId()
-                    .setAttackChainNodeChildren(attackChainNodeChildren.get());
+                attackChainEdge.setAttackChainNodeParent(attackChainNodeParent.get());
+                attackChainEdge.setAttackChainNodeChildren(attackChainNodeChildren.get());
                 attackChainEdge.setAttackChainEdgeCondition(dependency.getConditions());
                 attackChainEdgesRepository.save(attackChainEdge);
               }
