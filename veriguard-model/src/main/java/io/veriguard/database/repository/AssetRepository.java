@@ -49,9 +49,10 @@ public interface AssetRepository
               + "FROM assets a "
               + "INNER JOIN attack_chain_nodes_assets ia ON a.asset_id = ia.asset_id "
               + "INNER JOIN attack_chain_nodes i ON ia.node_id = i.node_id "
-              + "WHERE i.node_attack_chain_run_id in :attackChainRunIds",
+              + "WHERE i.node_attack_chain_run_id in (:attackChainRunIds)",
       nativeQuery = true)
-  List<Object[]> assetsByAttackChainRunIds(Set<String> attackChainRunIds);
+  List<Object[]> assetsByAttackChainRunIds(
+      @Param("attackChainRunIds") java.util.Collection<String> attackChainRunIds);
 
   @Query(
       value =
