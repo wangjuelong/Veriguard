@@ -164,9 +164,10 @@ public interface AssetGroupRepository
               + "FROM asset_groups ag "
               + "INNER JOIN attack_chain_nodes_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
               + "INNER JOIN attack_chain_nodes i ON iag.node_id = i.node_id "
-              + "WHERE i.node_attack_chain_run_id in :attackChainRunIds",
+              + "WHERE i.node_attack_chain_run_id in (:attackChainRunIds)",
       nativeQuery = true)
-  List<Object[]> assetGroupsByAttackChainRunIds(Set<String> attackChainRunIds);
+  List<Object[]> assetGroupsByAttackChainRunIds(
+      @Param("attackChainRunIds") java.util.Collection<String> attackChainRunIds);
 
   @Query(
       value =

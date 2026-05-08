@@ -74,7 +74,15 @@ public interface AttackChainNodeRepository
 
   @Query(
       value =
-          "SELECT f.node_id, f.node_title, f.node_attack_chain_id, f.node_attack_chain_run_id, f.node_created_at, f.node_updated_at, f.node_contract_id, ic.injector_contract_updated_at, ins.tracking_sent_date, "
+          "SELECT f.node_id AS inject_id, "
+              + "f.node_title AS inject_title, "
+              + "f.node_attack_chain_id AS inject_attackChain, "
+              + "f.node_attack_chain_run_id AS inject_AttackChainRun, "
+              + "f.node_created_at AS inject_created_at, "
+              + "f.node_updated_at AS inject_updated_at, "
+              + "f.node_contract_id AS inject_injector_contract, "
+              + "ic.injector_contract_updated_at, "
+              + "ins.tracking_sent_date, "
               + "array_union_agg(ic.injector_contract_platforms) FILTER ( WHERE ic.injector_contract_platforms IS NOT NULL ) as inject_platforms, "
               + "array_agg(icap.attack_pattern_id) FILTER ( WHERE icap.attack_pattern_id IS NOT NULL ) as inject_attack_patterns, "
               + "array_agg(ap.phase_id) FILTER ( WHERE ap.phase_id IS NOT NULL ) as inject_kill_chain_phases, "
