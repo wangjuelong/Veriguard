@@ -73,6 +73,7 @@ public class AttackChainNodesExecutionJob implements Job {
   private final io.veriguard.executors.Executor executor;
   private final NotificationEventService notificationEventService;
   private final SecurityCoverageSendJobService securityCoverageSendJobService;
+  private final io.veriguard.attackchain.execution.LinkVerdictCalculator linkVerdictCalculator;
 
   private final List<ExecutionStatus> executionStatusesNotReady =
       List.of(
@@ -122,6 +123,12 @@ public class AttackChainNodesExecutionJob implements Job {
                       attackChainRun.setStatus(AttackChainRunStatus.FINISHED);
                       attackChainRun.setEnd(now());
                       attackChainRun.setUpdatedAt(now());
+                      // Phase 5: 链路终态时计算并写入两维 verdict
+                      io.veriguard.attackchain.execution.LinkVerdictCalculator.LinkVerdictResult
+                          verdict = linkVerdictCalculator.compute(attackChainRun);
+                      attackChainRun.setVerdictPrevention(verdict.prevention());
+                      attackChainRun.setVerdictDetection(verdict.detection());
+                      attackChainRun.setVerdictComputedAt(now());
                     })
                 .toList());
 
