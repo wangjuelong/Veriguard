@@ -159,13 +159,9 @@ public interface AssetGroupRepository
   Page<AssetGroup> findAll(@NotNull Specification<AssetGroup> spec, @NotNull Pageable pageable);
 
   @Query(
-      value =
-          "SELECT DISTINCT i.node_attack_chain_run_id, ag.asset_group_id, ag.asset_group_name "
-              + "FROM asset_groups ag "
-              + "INNER JOIN attack_chain_nodes_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
-              + "INNER JOIN attack_chain_nodes i ON iag.node_id = i.node_id "
-              + "WHERE i.node_attack_chain_run_id in (:attackChainRunIds)",
-      nativeQuery = true)
+      "SELECT DISTINCT n.attackChainRun.id, ag.id, ag.name "
+          + "FROM AttackChainNode n JOIN n.assetGroups ag "
+          + "WHERE n.attackChainRun.id IN :attackChainRunIds")
   List<Object[]> assetGroupsByAttackChainRunIds(
       @Param("attackChainRunIds") java.util.Collection<String> attackChainRunIds);
 

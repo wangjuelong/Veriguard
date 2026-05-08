@@ -158,12 +158,13 @@ public class AttackChainRunService {
   public List<AttackChainRunSimple> attackChainRuns(final List<String> attackChainRunIds) {
 
     User currentUser = userService.currentUser();
+    String[] attackChainRunIdsArray = attackChainRunIds.toArray(new String[0]);
     List<RawAttackChainRunSimple> attackChainRuns =
         currentUser.isAdminOrBypass()
                 || currentUser.getCapabilities().contains(Capability.ACCESS_ASSESSMENT)
-            ? attackChainRunRepository.rawByAttackChainRunIds(attackChainRunIds)
+            ? attackChainRunRepository.rawByAttackChainRunIds(attackChainRunIdsArray)
             : attackChainRunRepository.rawGrantedByAttackChainRunIds(
-                currentUser().getId(), attackChainRunIds);
+                currentUser().getId(), attackChainRunIdsArray);
     return attackChainRunMapper.getAttackChainRunSimples(attackChainRuns);
   }
 
@@ -756,7 +757,7 @@ public class AttackChainRunService {
       Set<String> attackChainRunIds) {
     return ofNullable(
             attackChainNodeExpectationRepository.rawForComputeGlobalByAttackChainRunIds(
-                attackChainRunIds))
+                attackChainRunIds.toArray(new String[0])))
         .orElse(emptyList())
         .stream()
         .filter(Objects::nonNull)
