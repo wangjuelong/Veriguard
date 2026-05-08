@@ -61,6 +61,7 @@ public class AttackChainNodeExpectationService {
   private final CollectorService collectorService;
   @Resource private ExpectationPropertiesConfig expectationPropertiesConfig;
   private final SecurityCoverageSendJobService securityCoverageSendJobService;
+  private final io.veriguard.attackchain.execution.StopOnBlockHandler stopOnBlockHandler;
 
   @Resource protected ObjectMapper mapper;
 
@@ -107,6 +108,7 @@ public class AttackChainNodeExpectationService {
             e -> computeAttackChainNodeExpectationForAgentOrAssetAgentless(e, input));
         this.attackChainNodeExpectationRepository.saveAll(expectationsForAgents);
         propagateTechnicalExpectation(attackChainNodeExpectation, isAgentless, null);
+        triggerStopOnBlockIfNeeded(attackChainNodeExpectation);
         return attackChainNodeExpectation;
         // Computation on agent or asset agentless
       } else {
@@ -115,10 +117,22 @@ public class AttackChainNodeExpectationService {
         AttackChainNodeExpectation updated =
             this.attackChainNodeExpectationRepository.save(attackChainNodeExpectation);
         propagateTechnicalExpectation(updated, isAgentless, null);
+        triggerStopOnBlockIfNeeded(updated);
         return updated;
       }
     }
     return attackChainNodeExpectation;
+  }
+
+  /**
+   * Stop-on-block 钩子（PRD §2.4 拦截后停止）—— 仅 PREVENTION + SUCCESS 才会引发链路截停；其他维度
+   * 或非阻断状态在 handler 内部短路返回。
+   */
+  private void triggerStopOnBlockIfNeeded(AttackChainNodeExpectation expectation) {
+    if (expectation == null || expectation.getAttackChainNode() == null) {
+      return;
+    }
+    stopOnBlockHandler.handlePotentialBlock(expectation.getAttackChainNode(), expectation);
   }
 
   // -- DELETE RESULT FROM UI --
