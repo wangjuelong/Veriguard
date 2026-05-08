@@ -89,7 +89,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
 
         String response =
             mvc.perform(
-                    post(SCENARIO_URI + "/" + attackChain.getId() + "/exercises/search")
+                    post(SCENARIO_URI + "/" + attackChain.getId() + "/attack_chain_runs/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(searchPaginationInput))
                         .with(csrf()))
@@ -118,7 +118,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
             PaginationFixture.simpleSearchWithAndOperator(
                 "exercise_tags", tag.getId(), Filters.FilterOperator.eq);
         mvc.perform(
-                post(SCENARIO_URI + "/" + attackChain.getId() + "/exercises/search")
+                post(SCENARIO_URI + "/" + attackChain.getId() + "/attack_chain_runs/search")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(searchPaginationInput))
                     .with(csrf()))
@@ -129,7 +129,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
         attackChainRun2FromAttackChain.setTags(null);
         attackChainRunRepository.save(attackChainRun2FromAttackChain);
         mvc.perform(
-                post(SCENARIO_URI + "/" + attackChain.getId() + "/exercises/search")
+                post(SCENARIO_URI + "/" + attackChain.getId() + "/attack_chain_runs/search")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(searchPaginationInput))
                     .with(csrf()))
@@ -160,7 +160,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                             .build()))
                 .build();
         mvc.perform(
-                post(SCENARIO_URI + "/" + attackChain.getId() + "/exercises/search")
+                post(SCENARIO_URI + "/" + attackChain.getId() + "/attack_chain_runs/search")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(searchPaginationInput))
                     .with(csrf()))
@@ -209,7 +209,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                             .build()))
                 .build();
         mvc.perform(
-                post(SCENARIO_URI + "/" + attackChain.getId() + "/exercises/search")
+                post(SCENARIO_URI + "/" + attackChain.getId() + "/attack_chain_runs/search")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(searchPaginationInput))
                     .with(csrf()))
@@ -234,7 +234,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.getDefault().textSearch("Crisis").build();
         mvc.perform(
-                post(SCENARIO_URI + "/" + attackChain.getId() + "/exercises/search")
+                post(SCENARIO_URI + "/" + attackChain.getId() + "/attack_chain_runs/search")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(searchPaginationInput))
                     .with(csrf()))
@@ -253,7 +253,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.getDefault().textSearch(searchText).build();
         mvc.perform(
-                post(SCENARIO_URI + "/" + attackChain.getId() + "/exercises/search")
+                post(SCENARIO_URI + "/" + attackChain.getId() + "/attack_chain_runs/search")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(searchPaginationInput))
                     .with(csrf()))

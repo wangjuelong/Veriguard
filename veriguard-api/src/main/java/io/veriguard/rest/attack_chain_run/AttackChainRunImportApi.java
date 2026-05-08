@@ -103,7 +103,7 @@ public class AttackChainRunImportApi extends RestBehavior {
   }
 
   @PostMapping(
-      path = EXERCISE_URI + "/{simulationId}/injects/import",
+      path = EXERCISE_URI + "/{simulationId}/attack_chain_nodes/import",
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   @RBAC(
       resourceId = "#simulationId",

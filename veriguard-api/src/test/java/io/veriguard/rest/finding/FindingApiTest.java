@@ -384,7 +384,7 @@ class FindingApiTest extends IntegrationTest {
         entityManager.clear();
 
         String response =
-            performCallbackRequest(FINDING_URI + "/exercises/" + ex.getId() + "/search", input)
+            performCallbackRequest(FINDING_URI + "/attack_chain_runs/" + ex.getId() + "/search", input)
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -440,7 +440,7 @@ class FindingApiTest extends IntegrationTest {
 
         String response =
             performCallbackRequest(
-                    FINDING_URI + "/injects/" + attackChainNode.getId() + "/search", input)
+                    FINDING_URI + "/attack_chain_nodes/" + attackChainNode.getId() + "/search", input)
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -789,7 +789,7 @@ class FindingApiTest extends IntegrationTest {
               ContractOutputType.IPv6, savedFinding, savedSimulation, null, savedEndpoint, null);
 
       performCallbackRequest(
-              FINDING_URI + "/exercises/" + savedSimulation.getId() + "/search", input)
+              FINDING_URI + "/attack_chain_runs/" + savedSimulation.getId() + "/search", input)
           .andExpect(
               jsonPath("$.content.[0].finding_type").value(savedFinding.getType().getLabel()))
           .andExpect(

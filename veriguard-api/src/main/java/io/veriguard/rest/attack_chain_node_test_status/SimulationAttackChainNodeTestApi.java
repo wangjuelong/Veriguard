@@ -38,7 +38,7 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
    * @deprecated since 1.16.0, forRemoval = true
    * @see #findAttackChainRunPageAttackChainNodeTests
    */
-  @PostMapping("/api/exercise/{simulationId}/injects/test")
+  @PostMapping("/api/attack_chain_runs/{simulationId}/attack_chain_nodes/test")
   @RBAC(
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION,
@@ -50,7 +50,7 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
         simulationId, searchPaginationInput);
   }
 
-  @PostMapping(EXERCISE_URI + "/{simulationId}/injects/test/search")
+  @PostMapping(EXERCISE_URI + "/{simulationId}/attack_chain_nodes/test/search")
   @RBAC(
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION,
@@ -63,7 +63,7 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @GetMapping(EXERCISE_URI + "/{simulationId}/injects/{attackChainNodeId}/test")
+  @GetMapping(EXERCISE_URI + "/{simulationId}/attack_chain_nodes/{attackChainNodeId}/test")
   @RBAC(
       resourceId = "#simulationId",
       actionPerformed = Action.READ,
@@ -75,7 +75,7 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @GetMapping(EXERCISE_URI + "/injects/test/{testId}")
+  @GetMapping(EXERCISE_URI + "/attack_chain_nodes/test/{testId}")
   @RBAC(
       actionPerformed = Action.SEARCH,
       resourceType =
@@ -86,7 +86,7 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @DeleteMapping(EXERCISE_URI + "/{simulationId}/injects/test/{testId}")
+  @DeleteMapping(EXERCISE_URI + "/{simulationId}/attack_chain_nodes/test/{testId}")
   @RBAC(
       resourceId = "#simulationId",
       actionPerformed = Action.WRITE,
@@ -100,7 +100,7 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
       description = "Bulk tests of injects",
       tags = {"Injects", "Tests"})
   @Transactional(rollbackFor = Exception.class)
-  @PostMapping(EXERCISE_URI + "/{simulationId}/injects/test")
+  @PostMapping(EXERCISE_URI + "/{simulationId}/attack_chain_nodes/test")
   @RBAC(
       resourceId = "#simulationId",
       actionPerformed = Action.WRITE,

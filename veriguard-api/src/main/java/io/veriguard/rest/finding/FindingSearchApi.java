@@ -63,7 +63,7 @@ public class FindingSearchApi extends RestBehavior {
   }
 
   @LogExecutionTime
-  @PostMapping("/injects/{attackChainNodeId}/search")
+  @PostMapping("/attack_chain_nodes/{attackChainNodeId}/search")
   @RBAC(
       resourceId = "#attackChainNodeId",
       actionPerformed = Action.READ,
@@ -96,7 +96,7 @@ public class FindingSearchApi extends RestBehavior {
   }
 
   @LogExecutionTime
-  @PostMapping("/exercises/{simulationId}/search")
+  @PostMapping("/attack_chain_runs/{simulationId}/search")
   @RBAC(
       resourceId = "#simulationId",
       actionPerformed = Action.READ,

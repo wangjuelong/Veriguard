@@ -32,7 +32,7 @@ public class AttackChainSimulationApi {
   private final AttackChainRunService attackChainRunService;
 
   @LogExecutionTime
-  @GetMapping(SCENARIO_URI + "/{attackChainId}/exercises")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/attack_chain_runs")
   @RBAC(
       resourceId = "#attackChainId",
       actionPerformed = Action.READ,
@@ -43,7 +43,7 @@ public class AttackChainSimulationApi {
   }
 
   @LogExecutionTime
-  @PostMapping(SCENARIO_URI + "/{attackChainId}/exercises/search")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/attack_chain_runs/search")
   @RBAC(
       resourceId = "#attackChainId",
       actionPerformed = Action.READ,

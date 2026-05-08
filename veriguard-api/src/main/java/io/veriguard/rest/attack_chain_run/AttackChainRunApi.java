@@ -630,7 +630,7 @@ public class AttackChainRunApi extends RestBehavior {
   }
 
   @LogExecutionTime
-  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/injects/results-by-attack-patterns")
+  @GetMapping(EXERCISE_URI + "/{attackChainRunId}/attack_chain_nodes/results-by-attack-patterns")
   @RBAC(
       resourceId = "#attackChainRunId",
       actionPerformed = Action.READ,

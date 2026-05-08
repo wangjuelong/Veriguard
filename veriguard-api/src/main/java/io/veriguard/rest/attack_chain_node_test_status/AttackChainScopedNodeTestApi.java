@@ -34,7 +34,7 @@ public class AttackChainScopedNodeTestApi extends RestBehavior {
   private final AttackChainNodeTestStatusService attackChainNodeTestStatusService;
   private final AttackChainNodeService attackChainNodeService;
 
-  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/test/search")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/attack_chain_nodes/test/search")
   @RBAC(
       resourceId = "#attackChainId",
       actionPerformed = Action.READ,
@@ -47,7 +47,7 @@ public class AttackChainScopedNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @GetMapping(SCENARIO_URI + "/injects/test/{testId}")
+  @GetMapping(SCENARIO_URI + "/attack_chain_nodes/test/{testId}")
   @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.SCENARIO)
   public AttackChainNodeTestStatusOutput findAttackChainNodeTestStatus(
       @PathVariable @NotBlank String testId) {
@@ -55,7 +55,7 @@ public class AttackChainScopedNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @GetMapping(SCENARIO_URI + "/{attackChainId}/injects/{attackChainNodeId}/test")
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/attack_chain_nodes/{attackChainNodeId}/test")
   @RBAC(
       resourceId = "#attackChainId",
       actionPerformed = Action.LAUNCH,
@@ -68,7 +68,7 @@ public class AttackChainScopedNodeTestApi extends RestBehavior {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @DeleteMapping(SCENARIO_URI + "/{attackChainId}/injects/test/{testId}")
+  @DeleteMapping(SCENARIO_URI + "/{attackChainId}/attack_chain_nodes/test/{testId}")
   @RBAC(
       resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
@@ -82,7 +82,7 @@ public class AttackChainScopedNodeTestApi extends RestBehavior {
       description = "Bulk tests of injects",
       tags = {"Injects", "Tests"})
   @Transactional(rollbackFor = Exception.class)
-  @PostMapping(SCENARIO_URI + "/{attackChainId}/injects/test")
+  @PostMapping(SCENARIO_URI + "/{attackChainId}/attack_chain_nodes/test")
   @RBAC(
       resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
