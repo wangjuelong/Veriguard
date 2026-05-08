@@ -43,6 +43,9 @@ public enum ResourceType {
   EVALUATION,
   CATALOG,
   CONNECTOR_INSTANCE_LOG,
+  VALIDATION_PARAMETER_SET,
+  ATTACK_CHAIN,
+  ATTACK_CHAIN_RUN,
   // Special resource types
   UNKNOWN,
   SIMULATION_OR_SCENARIO, // Used to represent either a simulation or a attackChain.
