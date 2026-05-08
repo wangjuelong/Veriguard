@@ -38,7 +38,10 @@ public class SimulationAttackChainNodeTestApi extends RestBehavior {
    * @deprecated since 1.16.0, forRemoval = true
    * @see #findAttackChainRunPageAttackChainNodeTests
    */
-  @PostMapping("/api/attack_chain_runs/{simulationId}/attack_chain_nodes/test")
+  // Legacy 1.16-era path: kept as singular /api/exercise to stay distinct from
+  // POST /api/attack_chain_runs/{id}/attack_chain_nodes/test (= bulkTestAttackChainNode).
+  // Will be removed when @deprecated annotation is honored.
+  @PostMapping("/api/exercise/{simulationId}/injects/test")
   @RBAC(
       actionPerformed = Action.READ,
       resourceType = ResourceType.SIMULATION,
