@@ -44,12 +44,12 @@ public interface DocumentRepository
       value =
           "select d.*, "
               + "array_remove(array_agg(tg.tag_id), NULL) as document_tags, "
-              + "array_remove(array_agg(ex.exercise_id), NULL) as document_exercises, "
-              + "array_remove(array_agg(sc.scenario_id), NULL) as document_scenarios "
-              + "from documents d left join exercises_documents exdoc on d.document_id = exdoc.document_id "
-              + "left join exercises ex on ex.exercise_id = exdoc.exercise_id "
-              + "left join scenarios_documents scdoc on d.document_id = scdoc.document_id "
-              + "left join scenarios sc on sc.scenario_id = scdoc.scenario_id "
+              + "array_remove(array_agg(ex.run_id), NULL) as document_exercises, "
+              + "array_remove(array_agg(sc.attack_chain_id), NULL) as document_scenarios "
+              + "from documents d left join attack_chain_runs_documents exdoc on d.document_id = exdoc.document_id "
+              + "left join attack_chain_runs ex on ex.run_id = exdoc.run_id "
+              + "left join attack_chains_documents scdoc on d.document_id = scdoc.document_id "
+              + "left join attack_chains sc on sc.attack_chain_id = scdoc.attack_chain_id "
               + "left join documents_tags tagdoc on d.document_id = tagdoc.document_id "
               + "left join tags tg on tg.tag_id = tagdoc.tag_id "
               + "group by d.document_id "
@@ -62,13 +62,13 @@ public interface DocumentRepository
           """
                 select d.*,
                        array_remove(array_agg(tg.tag_id), NULL) as document_tags,
-                       array_remove(array_agg(ex.exercise_id), NULL) as document_exercises,
-                       array_remove(array_agg(sc.scenario_id), NULL) as document_scenarios
+                       array_remove(array_agg(ex.run_id), NULL) as document_exercises,
+                       array_remove(array_agg(sc.attack_chain_id), NULL) as document_scenarios
                 from documents d
-                left join exercises_documents exdoc on d.document_id = exdoc.document_id
-                left join exercises ex on ex.exercise_id = exdoc.exercise_id
-                left join scenarios_documents scdoc on d.document_id = scdoc.document_id
-                left join scenarios sc on sc.scenario_id = scdoc.scenario_id
+                left join attack_chain_runs_documents exdoc on d.document_id = exdoc.document_id
+                left join attack_chain_runs ex on ex.run_id = exdoc.run_id
+                left join attack_chains_documents scdoc on d.document_id = scdoc.document_id
+                left join attack_chains sc on sc.attack_chain_id = scdoc.attack_chain_id
                 left join documents_tags tagdoc on d.document_id = tagdoc.document_id
                 left join tags tg on tg.tag_id = tagdoc.tag_id
                 left join assets sp_light on d.document_id = sp_light.security_platform_logo_light
@@ -87,13 +87,13 @@ public interface DocumentRepository
           """
                                 select d.*,
                                        array_remove(array_agg(tg.tag_id), NULL) as document_tags,
-                                       array_remove(array_agg(ex.exercise_id), NULL) as document_exercises,
-                                       array_remove(array_agg(sc.scenario_id), NULL) as document_scenarios
+                                       array_remove(array_agg(ex.run_id), NULL) as document_exercises,
+                                       array_remove(array_agg(sc.attack_chain_id), NULL) as document_scenarios
                                 from documents d
-                                left join exercises_documents exdoc on d.document_id = exdoc.document_id
-                                left join exercises ex on ex.exercise_id = exdoc.exercise_id
-                                left join scenarios_documents scdoc on d.document_id = scdoc.document_id
-                                left join scenarios sc on sc.scenario_id = scdoc.scenario_id
+                                left join attack_chain_runs_documents exdoc on d.document_id = exdoc.document_id
+                                left join attack_chain_runs ex on ex.run_id = exdoc.run_id
+                                left join attack_chains_documents scdoc on d.document_id = scdoc.document_id
+                                left join attack_chains sc on sc.attack_chain_id = scdoc.attack_chain_id
                                 left join documents_tags tagdoc on d.document_id = tagdoc.document_id
                                 left join tags tg on tg.tag_id = tagdoc.tag_id
                                 left join payloads pa on (d.document_id = pa.file_drop_file or d.document_id = pa.executable_file)
@@ -108,15 +108,15 @@ public interface DocumentRepository
       value =
           "select d.*, "
               + "array_remove(array_agg(tg.tag_id), NULL) as document_tags, "
-              + "array_remove(array_agg(ex.exercise_id), NULL) as document_exercises, "
-              + "array_remove(array_agg(sc.scenario_id), NULL) as document_scenarios "
-              + "from documents d left join exercises_documents exdoc on d.document_id = exdoc.document_id "
-              + "left join exercises ex on ex.exercise_id = exdoc.exercise_id "
-              + "left join scenarios_documents scdoc on d.document_id = scdoc.document_id "
-              + "left join scenarios sc on sc.scenario_id = scdoc.scenario_id "
+              + "array_remove(array_agg(ex.run_id), NULL) as document_exercises, "
+              + "array_remove(array_agg(sc.attack_chain_id), NULL) as document_scenarios "
+              + "from documents d left join attack_chain_runs_documents exdoc on d.document_id = exdoc.document_id "
+              + "left join attack_chain_runs ex on ex.run_id = exdoc.run_id "
+              + "left join attack_chains_documents scdoc on d.document_id = scdoc.document_id "
+              + "left join attack_chains sc on sc.attack_chain_id = scdoc.attack_chain_id "
               + "left join documents_tags tagdoc on d.document_id = tagdoc.document_id "
               + "left join tags tg on tg.tag_id = tagdoc.tag_id "
-              + "left join grants grt ON grt.grant_resource = exdoc.exercise_id AND grt.grant_resource_type = 'SIMULATION' "
+              + "left join grants grt ON grt.grant_resource = exdoc.run_id AND grt.grant_resource_type = 'SIMULATION' "
               + "left join groups grp on grt.grant_group = grp.group_id "
               + "left join users_groups usgrp on grp.group_id = usgrp.group_id "
               + "left outer join users u on usgrp.user_id = u.user_id "
@@ -134,13 +134,15 @@ public interface DocumentRepository
 
   // Phase 11.5 删除 Channel/Challenge/Article 后，文档与场景/模拟的关联仅
   // 通过 attackChainNode 暴露：取该场景/模拟下所有 attackChainNode 关联的 documents 即可。
+  // V3 后表/列改名：injects → attack_chain_nodes，inject_scenario → node_attack_chain_id，
+  // inject_exercise → node_attack_chain_run_id。
   @Query(
       value =
           "SELECT DISTINCT d.* FROM documents d "
               + "WHERE d.document_id IN ("
-              + "  SELECT id.document_id FROM injects_documents id "
-              + "  JOIN injects i ON i.inject_id = id.inject_id "
-              + "  WHERE i.inject_scenario = :attackChainId "
+              + "  SELECT id.document_id FROM attack_chain_nodes_documents id "
+              + "  JOIN attack_chain_nodes i ON i.node_id = id.node_id "
+              + "  WHERE i.node_attack_chain_id = :attackChainId "
               + ")",
       nativeQuery = true)
   List<Document> findAllDistinctByAttackChainId(@Param("attackChainId") String attackChainId);
@@ -149,9 +151,9 @@ public interface DocumentRepository
       value =
           "SELECT DISTINCT d.* FROM documents d "
               + "WHERE d.document_id IN ("
-              + "  SELECT id.document_id FROM injects_documents id "
-              + "  JOIN injects i ON i.inject_id = id.inject_id "
-              + "  WHERE i.inject_exercise = :simulationId "
+              + "  SELECT id.document_id FROM attack_chain_nodes_documents id "
+              + "  JOIN attack_chain_nodes i ON i.node_id = id.node_id "
+              + "  WHERE i.node_attack_chain_run_id = :simulationId "
               + ")",
       nativeQuery = true)
   List<Document> findAllDistinctBySimulationId(@Param("simulationId") String simulationId);
