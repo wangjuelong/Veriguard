@@ -41,16 +41,13 @@ public interface AssetRepository
               + "WHERE a.asset_id IN (:assetIds) OR ia.node_id IN (:attackChainNodeIds) ;",
       nativeQuery = true)
   List<RawAsset> rawByIdsOrAttackChainNodeIds(
-      @Param("assetIds") Set<String> assetIds, @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
+      @Param("assetIds") Set<String> assetIds,
+      @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
 
   @Query(
-      value =
-          "SELECT DISTINCT i.node_attack_chain_run_id, a.asset_id, a.asset_name "
-              + "FROM assets a "
-              + "INNER JOIN attack_chain_nodes_assets ia ON a.asset_id = ia.asset_id "
-              + "INNER JOIN attack_chain_nodes i ON ia.node_id = i.node_id "
-              + "WHERE i.node_attack_chain_run_id in (:attackChainRunIds)",
-      nativeQuery = true)
+      "SELECT DISTINCT n.attackChainRun.id, a.id, a.name "
+          + "FROM AttackChainNode n JOIN n.assets a "
+          + "WHERE n.attackChainRun.id IN :attackChainRunIds")
   List<Object[]> assetsByAttackChainRunIds(
       @Param("attackChainRunIds") java.util.Collection<String> attackChainRunIds);
 

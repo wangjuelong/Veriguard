@@ -125,7 +125,7 @@ public class AttackChainRunMapper {
 
     Map<String, List<RawAttackChainNodeExpectation>> expectationMap =
         attackChainNodeExpectationRepository
-            .rawForComputeGlobalByAttackChainRunIds(attackChainRunIds)
+            .rawForComputeGlobalByAttackChainRunIds(attackChainRunIds.toArray(new String[0]))
             .stream()
             .collect(Collectors.groupingBy(RawAttackChainNodeExpectation::getExercise_id));
 

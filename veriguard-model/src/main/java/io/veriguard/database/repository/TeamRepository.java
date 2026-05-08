@@ -114,13 +114,9 @@ public interface TeamRepository
   Page<Team> findAll(@NotNull Specification<Team> spec, @NotNull Pageable pageable);
 
   @Query(
-      value =
-          "SELECT DISTINCT i.node_attack_chain_run_id, t.team_id, t.team_name "
-              + "FROM teams t "
-              + "INNER JOIN attack_chain_nodes_teams it ON t.team_id = it.team_id "
-              + "INNER JOIN attack_chain_nodes i ON it.node_id = i.node_id "
-              + "WHERE i.node_attack_chain_run_id in (:attackChainRunIds)",
-      nativeQuery = true)
+      "SELECT DISTINCT n.attackChainRun.id, t.id, t.name "
+          + "FROM AttackChainNode n JOIN n.teams t "
+          + "WHERE n.attackChainRun.id IN :attackChainRunIds")
   List<Object[]> teamsByAttackChainRunIds(
       @Param("attackChainRunIds") java.util.Collection<String> attackChainRunIds);
 

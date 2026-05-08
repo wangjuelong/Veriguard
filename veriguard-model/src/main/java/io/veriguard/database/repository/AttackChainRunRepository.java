@@ -70,16 +70,16 @@ public interface AttackChainRunRepository
    */
   @Query(
       value =
-          " SELECT ex.run_id, "
-              + "ex.run_status, "
-              + "ex.run_start_date, "
-              + "ex.run_updated_at, "
-              + "ex.run_end_date, "
-              + "ex.run_name, "
-              + "ex.run_category, "
-              + "ex.run_subtitle, "
+          " SELECT ex.run_id AS exercise_id, "
+              + "ex.run_status AS exercise_status, "
+              + "ex.run_start_date AS exercise_start_date, "
+              + "ex.run_updated_at AS exercise_updated_at, "
+              + "ex.run_end_date AS exercise_end_date, "
+              + "ex.run_name AS exercise_name, "
+              + "ex.run_category AS exercise_category, "
+              + "ex.run_subtitle AS exercise_subtitle, "
               + " array_agg(distinct ie.node_id) FILTER ( WHERE ie.node_id IS NOT NULL ) as inject_ids, "
-              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags "
+              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags "
               + "FROM attack_chain_runs ex "
               + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
               + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
@@ -93,25 +93,28 @@ public interface AttackChainRunRepository
    * @param attackChainRunIds the list of attackChainRun ids
    * @return the list of attackChainRuns
    */
+  // Hibernate 6 does not expand a Collection IN parameter inside a native query, so we use
+  // PostgreSQL `= ANY(:array)` with a String[] argument.
   @Query(
       value =
-          " SELECT ex.run_id, "
-              + "ex.run_status, "
-              + "ex.run_start_date, "
-              + "ex.run_updated_at, "
-              + "ex.run_end_date, "
-              + "ex.run_name, "
-              + "ex.run_category, "
-              + "ex.run_subtitle, "
+          " SELECT ex.run_id AS exercise_id, "
+              + "ex.run_status AS exercise_status, "
+              + "ex.run_start_date AS exercise_start_date, "
+              + "ex.run_updated_at AS exercise_updated_at, "
+              + "ex.run_end_date AS exercise_end_date, "
+              + "ex.run_name AS exercise_name, "
+              + "ex.run_category AS exercise_category, "
+              + "ex.run_subtitle AS exercise_subtitle, "
               + " array_agg(distinct ie.node_id) FILTER ( WHERE ie.node_id IS NOT NULL ) as inject_ids, "
-              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags "
+              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags "
               + "FROM attack_chain_runs ex "
               + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
               + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
-              + "WHERE ex.run_id IN (:attackChainRunIds) "
+              + "WHERE ex.run_id = ANY(:attackChainRunIds) "
               + "GROUP BY ex.run_id ;",
       nativeQuery = true)
-  List<RawAttackChainRunSimple> rawByAttackChainRunIds(List<String> attackChainRunIds);
+  List<RawAttackChainRunSimple> rawByAttackChainRunIds(
+      @Param("attackChainRunIds") String[] attackChainRunIds);
 
   /**
    * Get the raw version of the attackChainRuns a user can see
@@ -121,15 +124,15 @@ public interface AttackChainRunRepository
    */
   @Query(
       value =
-          " SELECT ex.run_id, "
-              + "ex.run_status, "
-              + "ex.run_start_date, "
-              + "ex.run_updated_at, "
-              + "ex.run_end_date, "
-              + "ex.run_name, "
-              + "ex.run_category, "
-              + "ex.run_subtitle, "
-              + " array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags, "
+          " SELECT ex.run_id AS exercise_id, "
+              + "ex.run_status AS exercise_status, "
+              + "ex.run_start_date AS exercise_start_date, "
+              + "ex.run_updated_at AS exercise_updated_at, "
+              + "ex.run_end_date AS exercise_end_date, "
+              + "ex.run_name AS exercise_name, "
+              + "ex.run_category AS exercise_category, "
+              + "ex.run_subtitle AS exercise_subtitle, "
+              + " array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags, "
               + " array_agg(attack_chain_nodes.node_id) FILTER ( WHERE attack_chain_nodes.node_id IS NOT NULL ) as inject_ids "
               + "FROM attack_chain_runs ex "
               + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
@@ -150,17 +153,19 @@ public interface AttackChainRunRepository
    * @param attackChainRunIds the list of attackChainRun ids
    * @return the list of attackChainRuns
    */
+  // Hibernate 6 does not expand a Collection IN parameter inside a native query, so we use
+  // PostgreSQL `= ANY(:array)` with a String[] argument.
   @Query(
       value =
-          " SELECT ex.run_id, "
-              + "ex.run_status, "
-              + "ex.run_start_date, "
-              + "ex.run_updated_at, "
-              + "ex.run_end_date, "
-              + "ex.run_name, "
-              + "ex.run_category, "
-              + "ex.run_subtitle, "
-              + " array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags, "
+          " SELECT ex.run_id AS exercise_id, "
+              + "ex.run_status AS exercise_status, "
+              + "ex.run_start_date AS exercise_start_date, "
+              + "ex.run_updated_at AS exercise_updated_at, "
+              + "ex.run_end_date AS exercise_end_date, "
+              + "ex.run_name AS exercise_name, "
+              + "ex.run_category AS exercise_category, "
+              + "ex.run_subtitle AS exercise_subtitle, "
+              + " array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags, "
               + " array_agg(attack_chain_nodes.node_id) FILTER ( WHERE attack_chain_nodes.node_id IS NOT NULL ) as inject_ids "
               + "FROM attack_chain_runs ex "
               + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
@@ -170,11 +175,11 @@ public interface AttackChainRunRepository
               + "INNER JOIN groups ON grants.grant_group = groups.group_id "
               + "INNER JOIN users_groups ON groups.group_id = users_groups.group_id "
               + "WHERE users_groups.user_id = :userId "
-              + "AND ex.run_id IN (:attackChainRunIds) "
+              + "AND ex.run_id = ANY(:attackChainRunIds) "
               + "GROUP BY ex.run_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawGrantedByAttackChainRunIds(
-      @Param("userId") String userId, @Param("attackChainRunIds") List<String> attackChainRunIds);
+      @Param("userId") String userId, @Param("attackChainRunIds") String[] attackChainRunIds);
 
   /**
    * Get the raw version of the attackChainRuns a user can see
@@ -218,7 +223,8 @@ public interface AttackChainRunRepository
               + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
               + "WHERE ex.run_id = :attackChainRunId AND ie.node_id IS NOT NULL;",
       nativeQuery = true)
-  Set<String> findAttackChainNodesByAttackChainRun(@Param("attackChainRunId") String attackChainRunId);
+  Set<String> findAttackChainNodesByAttackChainRun(
+      @Param("attackChainRunId") String attackChainRunId);
 
   @Query(
       value =
