@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
-public class AttackChainAttackChainNodeService {
+public class AttackChainScopedNodeService {
 
   private final AttackChainService attackChainService;
   private final AttackChainNodeService attackChainNodeService;

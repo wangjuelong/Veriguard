@@ -766,11 +766,11 @@ public class AttackChainService {
             });
     attackChain.setTeams(new ArrayList<>(attackChainTeams));
 
-    List<AttackChainNode> attackChainAttackChainNodes = attackChain.getAttackChainNodes();
-    attackChainAttackChainNodes.forEach(
-        attackChainAttackChainNode -> {
+    List<AttackChainNode> chainNodes = attackChain.getAttackChainNodes();
+    chainNodes.forEach(
+        chainNode -> {
           List<Team> teams = new ArrayList<>();
-          attackChainAttackChainNode
+          chainNode
               .getTeams()
               .forEach(
                   team -> {
@@ -780,7 +780,7 @@ public class AttackChainService {
                       teams.add(team);
                     }
                   });
-          attackChainAttackChainNode.setTeams(teams);
+          chainNode.setTeams(teams);
         });
   }
 

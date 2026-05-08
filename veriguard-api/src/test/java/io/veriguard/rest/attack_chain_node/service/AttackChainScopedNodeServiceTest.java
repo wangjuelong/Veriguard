@@ -25,9 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @TestInstance(PER_CLASS)
 @Transactional
-class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
+class AttackChainScopedNodeServiceTest extends IntegrationTest {
 
-  @Autowired private AttackChainAttackChainNodeService attackChainAttackChainNodeService;
+  @Autowired private AttackChainScopedNodeService attackChainScopedNodeService;
   @Autowired private AttackChainNodeRepository attackChainNodeRepository;
   @Autowired private AttackChainComposer attackChainComposer;
   @Autowired private AttackChainNodeComposer attackChainNodeComposer;
@@ -71,7 +71,7 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
     void given_attackChainNodeBelongsToScenario_should_returnAttackChainNode() {
       // -- ACT --
       AttackChainNode result =
-          attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(
+          attackChainScopedNodeService.findAttackChainNodeForAttackChain(
               attackChainA.getId(), attackChainNodeInA.getId());
 
       // -- ASSERT --
@@ -84,7 +84,7 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
       // -- ACT & ASSERT --
       assertThatThrownBy(
               () ->
-                  attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(
+                  attackChainScopedNodeService.findAttackChainNodeForAttackChain(
                       attackChainA.getId(), attackChainNodeInB.getId()))
           .isInstanceOf(ElementNotFoundException.class);
     }
@@ -105,7 +105,7 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
 
       // -- ACT --
       AttackChainNode result =
-          attackChainAttackChainNodeService.updateAttackChainNodeForAttackChain(
+          attackChainScopedNodeService.updateAttackChainNodeForAttackChain(
               attackChainA.getId(), attackChainNodeInA.getId(), input);
 
       // -- ASSERT --
@@ -124,7 +124,7 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
       // -- ACT & ASSERT --
       assertThatThrownBy(
               () ->
-                  attackChainAttackChainNodeService.updateAttackChainNodeForAttackChain(
+                  attackChainScopedNodeService.updateAttackChainNodeForAttackChain(
                       attackChainA.getId(), attackChainNodeInB.getId(), input))
           .isInstanceOf(ElementNotFoundException.class);
     }
@@ -142,7 +142,7 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
 
       // -- ACT --
       AttackChainNode result =
-          attackChainAttackChainNodeService.updateAttackChainNodeActivationForAttackChain(
+          attackChainScopedNodeService.updateAttackChainNodeActivationForAttackChain(
               attackChainA.getId(), attackChainNodeInA.getId(), input);
 
       // -- ASSERT --
@@ -160,7 +160,7 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
       // -- ACT & ASSERT --
       assertThatThrownBy(
               () ->
-                  attackChainAttackChainNodeService.updateAttackChainNodeActivationForAttackChain(
+                  attackChainScopedNodeService.updateAttackChainNodeActivationForAttackChain(
                       attackChainA.getId(), attackChainNodeInB.getId(), input))
           .isInstanceOf(ElementNotFoundException.class);
     }
@@ -175,7 +175,7 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
     @WithMockUser(isAdmin = true)
     void given_attackChainNodeBelongsToScenario_should_deleteAttackChainNode() {
       // -- ACT --
-      attackChainAttackChainNodeService.deleteAttackChainNode(
+      attackChainScopedNodeService.deleteAttackChainNode(
           attackChainA.getId(), attackChainNodeInA.getId());
 
       // -- ASSERT --
@@ -188,7 +188,7 @@ class AttackChainAttackChainNodeServiceTest extends IntegrationTest {
       // -- ACT & ASSERT --
       assertThatThrownBy(
               () ->
-                  attackChainAttackChainNodeService.deleteAttackChainNode(
+                  attackChainScopedNodeService.deleteAttackChainNode(
                       attackChainA.getId(), attackChainNodeInB.getId()))
           .isInstanceOf(ElementNotFoundException.class);
     }

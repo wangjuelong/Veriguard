@@ -10,7 +10,7 @@ import io.veriguard.database.repository.*;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeInput;
 import io.veriguard.rest.attack_chain_node.form.AttackChainNodeUpdateActivationInput;
 import io.veriguard.rest.attack_chain_node.output.AttackChainNodeOutput;
-import io.veriguard.rest.attack_chain_node.service.AttackChainAttackChainNodeService;
+import io.veriguard.rest.attack_chain_node.service.AttackChainScopedNodeService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeDuplicateService;
 import io.veriguard.rest.attack_chain_node.service.AttackChainNodeService;
 import io.veriguard.rest.helper.RestBehavior;
@@ -30,14 +30,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class AttackChainAttackChainNodeApi extends RestBehavior {
+public class AttackChainScopedNodeApi extends RestBehavior {
 
   private final AttackChainNodeSearchService attackChainNodeSearchService;
   private final AttackChainNodeRepository attackChainNodeRepository;
   private final AttackChainService attackChainService;
   private final AttackChainNodeService attackChainNodeService;
   private final AttackChainNodeDuplicateService attackChainNodeDuplicateService;
-  private final AttackChainAttackChainNodeService attackChainAttackChainNodeService;
+  private final AttackChainScopedNodeService attackChainScopedNodeService;
 
   // -- READ --
 
@@ -47,7 +47,7 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   @Transactional(readOnly = true)
-  public Iterable<AttackChainNodeOutput> attackChainAttackChainNodesSimple(
+  public Iterable<AttackChainNodeOutput> attackChainScopedNodesSimple(
       @PathVariable @NotBlank final String attackChainId) {
     return attackChainNodeSearchService.attackChainNodes(fromAttackChain(attackChainId));
   }
@@ -58,7 +58,7 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
   @Transactional(readOnly = true)
-  public Iterable<AttackChainNodeOutput> attackChainAttackChainNodesSimple(
+  public Iterable<AttackChainNodeOutput> attackChainScopedNodesSimple(
       @PathVariable @NotBlank final String attackChainId,
       @RequestBody @Valid final SearchPaginationInput searchPaginationInput) {
     Map<String, Join<Base, Base>> joinMap = new HashMap<>();
@@ -81,7 +81,7 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
-  public Iterable<AttackChainNode> attackChainAttackChainNodes(
+  public Iterable<AttackChainNode> attackChainScopedNodes(
       @PathVariable @NotBlank final String attackChainId) {
     return this.attackChainNodeRepository.findByAttackChainId(attackChainId).stream()
         .sorted(AttackChainNode.executionComparator)
@@ -93,10 +93,10 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       resourceId = "#attackChainNodeId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.INJECT)
-  public AttackChainNode attackChainAttackChainNode(
+  public AttackChainNode attackChainScopedNode(
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId) {
-    return attackChainAttackChainNodeService.findAttackChainNodeForAttackChain(
+    return attackChainScopedNodeService.findAttackChainNodeForAttackChain(
         attackChainId, attackChainNodeId);
   }
 
@@ -153,7 +153,7 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId,
       @Valid @RequestBody @NotNull AttackChainNodeInput input) {
-    return attackChainAttackChainNodeService.updateAttackChainNodeForAttackChain(
+    return attackChainScopedNodeService.updateAttackChainNodeForAttackChain(
         attackChainId, attackChainNodeId, input);
   }
 
@@ -166,7 +166,7 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId,
       @Valid @RequestBody AttackChainNodeUpdateActivationInput input) {
-    return attackChainAttackChainNodeService.updateAttackChainNodeActivationForAttackChain(
+    return attackChainScopedNodeService.updateAttackChainNodeActivationForAttackChain(
         attackChainId, attackChainNodeId, input);
   }
 
@@ -181,6 +181,6 @@ public class AttackChainAttackChainNodeApi extends RestBehavior {
   public void deleteAttackChainNodeForAttackChain(
       @PathVariable @NotBlank final String attackChainId,
       @PathVariable @NotBlank final String attackChainNodeId) {
-    this.attackChainAttackChainNodeService.deleteAttackChainNode(attackChainId, attackChainNodeId);
+    this.attackChainScopedNodeService.deleteAttackChainNode(attackChainId, attackChainNodeId);
   }
 }

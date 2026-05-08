@@ -101,14 +101,14 @@ public class AttackChainMapper {
    * @param attackChainNodes the attackChainNodes to convert
    * @return set of related entity output DTOs including attackChain context
    */
-  public static Set<RelatedEntityOutput> toAttackChainAttackChainNodes(
+  public static Set<RelatedEntityOutput> toRelatedEntityOutputsForChain(
       Set<AttackChainNode> attackChainNodes) {
     return attackChainNodes.stream()
-        .map(attackChainNode -> toAttackChainAttackChainNode(attackChainNode))
+        .map(attackChainNode -> toRelatedEntityOutputForChain(attackChainNode))
         .collect(Collectors.toSet());
   }
 
-  private static RelatedEntityOutput toAttackChainAttackChainNode(AttackChainNode attackChainNode) {
+  private static RelatedEntityOutput toRelatedEntityOutputForChain(AttackChainNode attackChainNode) {
     return RelatedEntityOutput.builder()
         .id(attackChainNode.getId())
         .name(attackChainNode.getTitle())

@@ -185,54 +185,54 @@ public class AttackChainRunFactory {
         });
 
     // AttackChainNodes
-    List<AttackChainNode> attackChainAttackChainNodes = attackChain.getAttackChainNodes();
-    Map<String, AttackChainNode> mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode =
+    List<AttackChainNode> chainNodes = attackChain.getAttackChainNodes();
+    Map<String, AttackChainNode> mapAttackChainRunAttackChainNodesByChainNode =
         new HashMap<>();
-    attackChainAttackChainNodes.forEach(
-        attackChainAttackChainNode -> {
+    chainNodes.forEach(
+        chainNode -> {
           AttackChainNode attackChainRunAttackChainNode = new AttackChainNode();
-          attackChainRunAttackChainNode.setTitle(attackChainAttackChainNode.getTitle());
-          attackChainRunAttackChainNode.setDescription(attackChainAttackChainNode.getDescription());
+          attackChainRunAttackChainNode.setTitle(chainNode.getTitle());
+          attackChainRunAttackChainNode.setDescription(chainNode.getDescription());
           attackChainRunAttackChainNode.setNodeContract(
-              attackChainAttackChainNode.getNodeContract().orElse(null));
-          attackChainRunAttackChainNode.setCountry(attackChainAttackChainNode.getCountry());
-          attackChainRunAttackChainNode.setCity(attackChainAttackChainNode.getCity());
-          attackChainRunAttackChainNode.setEnabled(attackChainAttackChainNode.isEnabled());
-          attackChainRunAttackChainNode.setAllTeams(attackChainAttackChainNode.isAllTeams());
+              chainNode.getNodeContract().orElse(null));
+          attackChainRunAttackChainNode.setCountry(chainNode.getCountry());
+          attackChainRunAttackChainNode.setCity(chainNode.getCity());
+          attackChainRunAttackChainNode.setEnabled(chainNode.isEnabled());
+          attackChainRunAttackChainNode.setAllTeams(chainNode.isAllTeams());
           attackChainRunAttackChainNode.setAttackChainRun(attackChainRunSaved);
           attackChainRunAttackChainNode.setDependsDuration(
-              attackChainAttackChainNode.getDependsDuration());
-          attackChainRunAttackChainNode.setUser(attackChainAttackChainNode.getUser());
+              chainNode.getDependsDuration());
+          attackChainRunAttackChainNode.setUser(chainNode.getUser());
           attackChainRunAttackChainNode.setStatus(
-              attackChainAttackChainNode.getStatus().orElse(null));
+              chainNode.getStatus().orElse(null));
           attackChainRunAttackChainNode.setTags(
-              CopyObjectListUtils.copy(attackChainAttackChainNode.getTags(), Tag.class));
-          attackChainRunAttackChainNode.setContent(attackChainAttackChainNode.getContent());
+              CopyObjectListUtils.copy(chainNode.getTags(), Tag.class));
+          attackChainRunAttackChainNode.setContent(chainNode.getContent());
 
           // 二开移除 Channel nodeExecutor — no contract-specific content remapping.
 
           // Teams
           List<Team> teams = new ArrayList<>();
-          attackChainAttackChainNode
+          chainNode
               .getTeams()
               .forEach(team -> teams.add(computeTeam(team, contextualTeams)));
           attackChainRunAttackChainNode.setTeams(teams);
 
           // Assets & Asset Groups
           attackChainRunAttackChainNode.setAssets(
-              CopyObjectListUtils.copy(attackChainAttackChainNode.getAssets(), Asset.class));
+              CopyObjectListUtils.copy(chainNode.getAssets(), Asset.class));
           attackChainRunAttackChainNode.setAssetGroups(
               CopyObjectListUtils.copy(
-                  attackChainAttackChainNode.getAssetGroups(), AssetGroup.class));
+                  chainNode.getAssetGroups(), AssetGroup.class));
           AttackChainNode attackChainNodeSaved =
               this.attackChainNodeRepository.save(attackChainRunAttackChainNode);
 
-          mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode.put(
-              attackChainAttackChainNode.getId(), attackChainNodeSaved);
+          mapAttackChainRunAttackChainNodesByChainNode.put(
+              chainNode.getId(), attackChainNodeSaved);
 
           // Documents
           List<AttackChainNodeDocument> attackChainRunAttackChainNodeDocuments = new ArrayList<>();
-          attackChainAttackChainNode
+          chainNode
               .getDocuments()
               .forEach(
                   attackChainNodeDocument -> {
@@ -250,17 +250,17 @@ public class AttackChainRunFactory {
         });
 
     // Second pass to add the correct links
-    attackChainAttackChainNodes.forEach(
-        attackChainAttackChainNode -> {
-          if (attackChainAttackChainNode.getDependsOn() != null) {
+    chainNodes.forEach(
+        chainNode -> {
+          if (chainNode.getDependsOn() != null) {
             AttackChainNode attackChainNodeToUpdate =
-                mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode.get(
-                    attackChainAttackChainNode.getId());
+                mapAttackChainRunAttackChainNodesByChainNode.get(
+                    chainNode.getId());
             attackChainNodeToUpdate.getDependsOn().clear();
             attackChainNodeToUpdate
                 .getDependsOn()
                 .addAll(
-                    attackChainAttackChainNode.getDependsOn().stream()
+                    chainNode.getDependsOn().stream()
                         .map(
                             (attackChainEdge -> {
                               AttackChainEdge dep = new AttackChainEdge();
@@ -269,7 +269,7 @@ public class AttackChainRunFactory {
                                   attackChainEdge.getAttackChainEdgeCondition());
                               dep.getCompositeId()
                                   .setAttackChainNodeParent(
-                                      mapAttackChainRunAttackChainNodesByAttackChainAttackChainNode
+                                      mapAttackChainRunAttackChainNodesByChainNode
                                           .get(
                                               dep.getCompositeId()
                                                   .getAttackChainNodeParent()

@@ -377,10 +377,10 @@ public class AttackChainNodeService {
 
   public void cleanAttackChainNodesDocAttackChain(String attackChainId, String documentId) {
     // Delete document from all attackChain attackChainNodes
-    List<AttackChainNode> attackChainAttackChainNodes =
+    List<AttackChainNode> chainNodes =
         attackChainNodeRepository.findAllForAttackChainAndDoc(attackChainId, documentId);
     List<AttackChainNodeDocument> updatedAttackChainNodes =
-        attackChainAttackChainNodes.stream()
+        chainNodes.stream()
             .flatMap(
                 attackChainNode -> {
                   @SuppressWarnings("UnnecessaryLocalVariable")

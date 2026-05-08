@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class AttackChainAttackChainNodeTestApi extends RestBehavior {
+public class AttackChainScopedNodeTestApi extends RestBehavior {
 
   private final AttackChainNodeTestStatusService attackChainNodeTestStatusService;
   private final AttackChainNodeService attackChainNodeService;
@@ -39,7 +39,7 @@ public class AttackChainAttackChainNodeTestApi extends RestBehavior {
       resourceId = "#attackChainId",
       actionPerformed = Action.READ,
       resourceType = ResourceType.SCENARIO)
-  public Page<AttackChainNodeTestStatusOutput> findAllAttackChainAttackChainNodeTests(
+  public Page<AttackChainNodeTestStatusOutput> findAllAttackChainScopedNodeTests(
       @PathVariable @NotBlank String attackChainId,
       @RequestBody @Valid SearchPaginationInput searchPaginationInput) {
     return attackChainNodeTestStatusService.findAllAttackChainNodeTestsByAttackChainId(

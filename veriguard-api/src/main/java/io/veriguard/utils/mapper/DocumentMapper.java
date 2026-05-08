@@ -1,6 +1,6 @@
 package io.veriguard.utils.mapper;
 
-import static io.veriguard.utils.mapper.AttackChainMapper.toAttackChainAttackChainNodes;
+import static io.veriguard.utils.mapper.AttackChainMapper.toRelatedEntityOutputsForChain;
 import static io.veriguard.utils.mapper.AttackChainNodeMapper.toRelatedEntityOutputs;
 import static io.veriguard.utils.mapper.AttackChainRunMapper.toRelatedEntityOutputs;
 import static io.veriguard.utils.mapper.AttackChainRunMapper.toSimulationAttackChainNodes;
@@ -33,7 +33,7 @@ public class DocumentMapper {
                         && attackChainNode.getAttackChainRun() == null)
             .collect(Collectors.toSet());
 
-    Set<AttackChainNode> attackChainAttackChainNodes =
+    Set<AttackChainNode> chainNodes =
         attackChainNodes.stream()
             .filter(attackChainNode -> attackChainNode.getAttackChain() != null)
             .collect(Collectors.toSet());
@@ -66,7 +66,7 @@ public class DocumentMapper {
         .securityPlatforms(toRelatedEntityOutputs(securityPlatforms))
         .payloads(toRelatedEntityOutputs(payloads))
         .atomicTestings(toRelatedEntityOutputs(atomics))
-        .attackChainAttackChainNodes(toAttackChainAttackChainNodes(attackChainAttackChainNodes))
+        .chainNodes(toRelatedEntityOutputsForChain(chainNodes))
         .simulationAttackChainNodes(toSimulationAttackChainNodes(simulationAttackChainNodes))
         .build();
   }

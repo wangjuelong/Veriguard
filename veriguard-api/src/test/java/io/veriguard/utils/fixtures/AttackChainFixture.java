@@ -30,7 +30,7 @@ public class AttackChainFixture {
   }
 
   public static AttackChain getAttackChain(
-      List<Team> attackChainTeams, Set<AttackChainNode> attackChainAttackChainNodes) {
+      List<Team> attackChainTeams, Set<AttackChainNode> chainNodes) {
     AttackChain attackChain = new AttackChain();
     attackChain.setName("Crisis simulation");
     attackChain.setDescription("A crisis simulation for my enterprise");
@@ -39,8 +39,8 @@ public class AttackChainFixture {
     if (attackChainTeams != null) {
       attackChain.setTeams(attackChainTeams);
     }
-    if (attackChainAttackChainNodes != null) {
-      attackChain.setAttackChainNodes(attackChainAttackChainNodes);
+    if (chainNodes != null) {
+      attackChain.setAttackChainNodes(chainNodes);
     }
     attackChain.setAttackChainRuns(new ArrayList<>());
     return attackChain;
