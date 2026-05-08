@@ -27,13 +27,13 @@ public interface AttackChainRunTeamUserRepository
 
   @Modifying
   @Query(
-      value = "delete from exercises_teams_users i where i.user_id = :userId",
+      value = "delete from attack_chain_runs_teams_users i where i.user_id = :userId",
       nativeQuery = true)
   void deleteUserFromAllReferences(@Param("userId") String userId);
 
   @Modifying
   @Query(
-      value = "delete from exercises_teams_users i where i.team_id in :teamIds",
+      value = "delete from attack_chain_runs_teams_users i where i.team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void deleteTeamsFromAllReferences(@Param("teamIds") List<String> teamIds);
@@ -41,7 +41,7 @@ public interface AttackChainRunTeamUserRepository
   @Modifying
   @Query(
       value =
-          "insert into exercises_teams_users (exercise_id, team_id, user_id) "
+          "insert into attack_chain_runs_teams_users (run_id, team_id, user_id) "
               + "values (:attackChainRunId, :teamId, :userId)",
       nativeQuery = true)
   void addAttackChainRunTeamUser(
@@ -49,19 +49,19 @@ public interface AttackChainRunTeamUserRepository
       @Param("teamId") String teamId,
       @Param("userId") String userId);
 
-  @Query(value = "SELECT * FROM exercises_teams_users WHERE team_id IN :ids ;", nativeQuery = true)
+  @Query(value = "SELECT * FROM attack_chain_runs_teams_users WHERE team_id IN :ids ;", nativeQuery = true)
   List<RawAttackChainRunTeamUser> rawByTeamIds(@Param("ids") List<String> ids);
 
   @Query(
-      value = "SELECT * FROM exercises_teams_users WHERE exercise_id IN :ids ;",
+      value = "SELECT * FROM attack_chain_runs_teams_users WHERE run_id IN :ids ;",
       nativeQuery = true)
   List<RawAttackChainRunTeamUser> rawByAttackChainRunIds(@Param("ids") List<String> ids);
 
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query(
       value =
-          "delete from exercises_teams_users "
-              + "where exercise_id = :attackChainRunId and team_id in :teamIds",
+          "delete from attack_chain_runs_teams_users "
+              + "where run_id = :attackChainRunId and team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void deleteByAttackChainRunIdAndTeamIds(

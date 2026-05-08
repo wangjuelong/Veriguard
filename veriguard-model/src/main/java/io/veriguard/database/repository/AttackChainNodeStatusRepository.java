@@ -34,12 +34,12 @@ public interface AttackChainNodeStatusRepository
       value =
           "SELECT ins.*, t.*"
               + " FROM injects_statuses ins"
-              + " INNER JOIN injects i ON ins.status_inject = i.inject_id"
+              + " INNER JOIN attack_chain_nodes i ON ins.status_inject = i.node_id"
               + " LEFT JOIN execution_traces t"
               + "  ON t.execution_inject_status_id = ins.status_id"
               + "  AND t.execution_agent_id IS NULL"
               + "  AND cardinality(t.execution_context_identifiers) = 0"
-              + " WHERE i.inject_id = :attackChainNodeId",
+              + " WHERE i.node_id = :attackChainNodeId",
       nativeQuery = true)
   Optional<AttackChainNodeStatus> findAttackChainNodeStatusWithGlobalExecutionTraces(
       String attackChainNodeId);

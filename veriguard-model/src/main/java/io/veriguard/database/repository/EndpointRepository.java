@@ -82,7 +82,7 @@ public interface EndpointRepository
       value =
           "SELECT DISTINCT e.* "
               + "FROM assets e "
-              + "INNER JOIN injects_assets ia ON e.asset_id = ia.asset_id",
+              + "INNER JOIN attack_chain_nodes_assets ia ON e.asset_id = ia.asset_id",
       nativeQuery = true)
   List<Endpoint> findAllEndpointsForAtomicTestingsSimulationsAndAttackChains();
 
@@ -110,13 +110,13 @@ public interface EndpointRepository
                   FROM findings_assets fa1
                   INNER JOIN findings f ON f.finding_id = fa1.finding_id
                   INNER JOIN findings_assets fa2 ON f.finding_id = fa2.finding_id
-                  INNER JOIN injects i ON f.finding_inject_id = i.inject_id
-                  LEFT JOIN scenarios_exercises se ON se.exercise_id = i.inject_exercise
+                  INNER JOIN attack_chain_nodes i ON f.finding_inject_id = i.node_id
+                  LEFT JOIN attack_chains_runs se ON se.run_id = i.node_attack_chain_run_id
                   WHERE (
                       fa1.asset_id = :sourceId
-                      OR i.inject_id = :sourceId
-                      OR i.inject_exercise = :sourceId
-                      OR se.scenario_id = :sourceId
+                      OR i.node_id = :sourceId
+                      OR i.node_attack_chain_run_id = :sourceId
+                      OR se.attack_chain_id = :sourceId
                   )
                   AND fa2.asset_id != :sourceId
               )
@@ -132,19 +132,19 @@ public interface EndpointRepository
               + "SELECT a.asset_id, a.asset_type, a.asset_name, a.asset_external_reference, "
               + "a.endpoint_ips, a.endpoint_hostname, a.endpoint_platform, a.endpoint_arch, "
               + "a.endpoint_mac_addresses, a.endpoint_seen_ip, a.asset_created_at, a.endpoint_is_eol, a.asset_description, "
-              + "GREATEST(a.asset_updated_at, max(i.inject_updated_at), max(e.exercise_updated_at), max(s.scenario_updated_at), max(f.finding_updated_at)) as endpoint_updated_at, "
+              + "GREATEST(a.asset_updated_at, max(i.node_updated_at), max(e.run_updated_at), max(s.attack_chain_updated_at), max(f.finding_updated_at)) as endpoint_updated_at, "
               + "array_agg(DISTINCT fa.finding_id) FILTER ( WHERE fa.finding_id IS NOT NULL ) as asset_findings, "
               + "array_agg(DISTINCT at.tag_id) FILTER ( WHERE at.tag_id IS NOT NULL ) as asset_tags, "
-              + "array_agg(DISTINCT i.inject_exercise) FILTER ( WHERE i.inject_exercise IS NOT NULL ) as endpoint_exercises, "
-              + "array_agg(DISTINCT i.inject_scenario) FILTER ( WHERE i.inject_scenario IS NOT NULL ) as endpoint_scenarios "
+              + "array_agg(DISTINCT i.node_attack_chain_run_id) FILTER ( WHERE i.node_attack_chain_run_id IS NOT NULL ) as endpoint_exercises, "
+              + "array_agg(DISTINCT i.node_attack_chain_id) FILTER ( WHERE i.node_attack_chain_id IS NOT NULL ) as endpoint_scenarios "
               + "FROM assets a "
               + "LEFT JOIN findings_assets fa ON a.asset_id = fa.asset_id "
               + "LEFT JOIN findings f ON fa.finding_id = f.finding_id "
               + "LEFT JOIN assets_tags at ON a.asset_id = at.asset_id "
-              + "LEFT JOIN injects_assets ia ON a.asset_id = ia.asset_id "
-              + "LEFT JOIN injects i ON ia.inject_id = i.inject_id "
-              + "LEFT JOIN exercises e ON i.inject_exercise = e.exercise_id "
-              + "LEFT JOIN scenarios s ON i.inject_scenario = s.scenario_id "
+              + "LEFT JOIN attack_chain_nodes_assets ia ON a.asset_id = ia.asset_id "
+              + "LEFT JOIN attack_chain_nodes i ON ia.node_id = i.node_id "
+              + "LEFT JOIN attack_chain_runs e ON i.node_attack_chain_run_id = e.run_id "
+              + "LEFT JOIN attack_chains s ON i.node_attack_chain_id = s.attack_chain_id "
               + "WHERE a.asset_type = '"
               + AssetType.Values.ENDPOINT_TYPE
               + "' "

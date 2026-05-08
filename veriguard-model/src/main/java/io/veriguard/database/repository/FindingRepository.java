@@ -37,10 +37,10 @@ public interface FindingRepository
   @Query(
       value =
           "SELECT f.finding_id, f.finding_value, f.finding_type, f.finding_field,"
-              + " f.finding_inject_id, i.inject_exercise, se.scenario_id, fa.asset_id, f.finding_created_at, f.finding_updated_at "
+              + " f.finding_inject_id, i.node_attack_chain_run_id, se.attack_chain_id, fa.asset_id, f.finding_created_at, f.finding_updated_at "
               + "FROM findings f "
-              + "LEFT JOIN injects i ON i.inject_id = f.finding_inject_id "
-              + "LEFT JOIN scenarios_exercises se ON i.inject_exercise = se.exercise_id "
+              + "LEFT JOIN attack_chain_nodes i ON i.node_id = f.finding_inject_id "
+              + "LEFT JOIN attack_chains_runs se ON i.node_attack_chain_run_id = se.run_id "
               + "LEFT JOIN findings_assets fa ON f.finding_id = fa.finding_id "
               + "WHERE f.finding_updated_at > :from ORDER BY f.finding_updated_at LIMIT "
               + Constants.INDEXING_RECORD_SET_SIZE

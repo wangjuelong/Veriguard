@@ -16,9 +16,9 @@ public interface ExecutionTraceRepository
       value =
           "SELECT t.* FROM execution_traces t "
               + "INNER JOIN injects_statuses ins ON t.execution_inject_status_id = ins.status_id "
-              + "INNER JOIN injects i ON ins.status_inject = i.inject_id "
+              + "INNER JOIN attack_chain_nodes i ON ins.status_inject = i.node_id "
               + "INNER JOIN Agents a ON t.execution_agent_id = a.agent_id "
-              + "WHERE i.inject_id = :attackChainNodeId AND t.execution_agent_id = :targetId",
+              + "WHERE i.node_id = :attackChainNodeId AND t.execution_agent_id = :targetId",
       nativeQuery = true)
   List<ExecutionTrace> findByAttackChainNodeIdAndAgentId(
       @Param("attackChainNodeId") String attackChainNodeId, @Param("targetId") String targetId);
@@ -27,9 +27,9 @@ public interface ExecutionTraceRepository
       value =
           "SELECT t.* FROM execution_traces t "
               + "INNER JOIN injects_statuses ins ON t.execution_inject_status_id = ins.status_id "
-              + "INNER JOIN injects i ON ins.status_inject = i.inject_id "
+              + "INNER JOIN attack_chain_nodes i ON ins.status_inject = i.node_id "
               + "LEFT JOIN Agents a ON t.execution_agent_id = a.agent_id "
-              + "WHERE i.inject_id = :attackChainNodeId AND (a.agent_asset = :targetId OR :targetId = ANY(t.execution_context_identifiers))",
+              + "WHERE i.node_id = :attackChainNodeId AND (a.agent_asset = :targetId OR :targetId = ANY(t.execution_context_identifiers))",
       nativeQuery = true)
   List<ExecutionTrace> findByAttackChainNodeIdAndAssetId(
       @Param("attackChainNodeId") String attackChainNodeId, @Param("targetId") String targetId);
@@ -38,9 +38,9 @@ public interface ExecutionTraceRepository
       value =
           "SELECT t.* FROM execution_traces t "
               + "INNER JOIN injects_statuses ins ON t.execution_inject_status_id = ins.status_id "
-              + "INNER JOIN injects i ON ins.status_inject = i.inject_id "
+              + "INNER JOIN attack_chain_nodes i ON ins.status_inject = i.node_id "
               + "INNER JOIN users_teams ut ON ut.user_id = ANY(t.execution_context_identifiers) "
-              + "WHERE i.inject_id = :attackChainNodeId AND ut.team_id = :targetId",
+              + "WHERE i.node_id = :attackChainNodeId AND ut.team_id = :targetId",
       nativeQuery = true)
   List<ExecutionTrace> findByAttackChainNodeIdAndTeamId(
       @Param("attackChainNodeId") String attackChainNodeId, @Param("targetId") String targetId);
@@ -49,8 +49,8 @@ public interface ExecutionTraceRepository
       value =
           "SELECT t.* FROM execution_traces t "
               + "INNER JOIN injects_statuses ins ON t.execution_inject_status_id = ins.status_id "
-              + "INNER JOIN injects i ON ins.status_inject = i.inject_id "
-              + "WHERE i.inject_id = :attackChainNodeId AND :targetId = ANY(t.execution_context_identifiers)",
+              + "INNER JOIN attack_chain_nodes i ON ins.status_inject = i.node_id "
+              + "WHERE i.node_id = :attackChainNodeId AND :targetId = ANY(t.execution_context_identifiers)",
       nativeQuery = true)
   List<ExecutionTrace> findByAttackChainNodeIdAndPlayerId(
       @Param("attackChainNodeId") String attackChainNodeId, @Param("targetId") String targetId);

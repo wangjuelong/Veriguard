@@ -28,13 +28,13 @@ public interface CommunicationRepository
 
   @Query(
       value =
-          "SELECT c.*, injects.inject_exercise as communication_exercise, "
+          "SELECT c.*, attack_chain_nodes.node_attack_chain_run_id as communication_exercise, "
               + "coalesce(array_agg(DISTINCT cu.user_id) FILTER ( WHERE cu.user_id IS NOT NULL ), '{}') as communication_users "
               + "FROM communications c "
               + "LEFT JOIN communications_users cu ON cu.communication_id = c.communication_id "
-              + "LEFT JOIN injects ON injects.inject_id = c.communication_inject "
+              + "LEFT JOIN attack_chain_nodes ON attack_chain_nodes.node_id = c.communication_inject "
               + "WHERE c.communication_id IN :ids "
-              + "GROUP BY c.communication_id, injects.inject_exercise ;",
+              + "GROUP BY c.communication_id, attack_chain_nodes.node_attack_chain_run_id ;",
       nativeQuery = true)
   List<RawCommunication> rawByIds(@Param("ids") List<String> ids);
 }

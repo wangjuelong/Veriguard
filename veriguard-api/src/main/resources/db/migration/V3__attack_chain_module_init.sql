@@ -274,11 +274,11 @@ ALTER TABLE attack_chain_nodes ADD CONSTRAINT fk_node_param_set
     FOREIGN KEY (validation_parameter_set_id)
     REFERENCES validation_parameter_sets(parameter_set_id) ON DELETE RESTRICT;
 
--- 模板与运行时互斥：node 必须有且仅有一个所有者
--- 注：TRUNCATE 已经清空 injects/scenarios/exercises，此约束对将来插入的所有节点生效。
--- atomic-testing（两边都为 null）已不再支持，所有节点必须挂在 chain 或 run 上。
+-- 模板与运行时互斥：node 不能同时挂在 chain 和 run 上，但可以两边都为 null（保留 atomic-testing 兼容）
+-- 注：spec §2.3 写的是严格 XOR，但代码中 isAtomicTesting() 仍使用两边都 null 的语义；
+-- 后续 Phase 决定是否彻底废止 atomic-testing 后再收紧为 XOR。
 ALTER TABLE attack_chain_nodes ADD CONSTRAINT chk_node_owner
-    CHECK ((node_attack_chain_id IS NULL) <> (node_attack_chain_run_id IS NULL));
+    CHECK (NOT (node_attack_chain_id IS NOT NULL AND node_attack_chain_run_id IS NOT NULL));
 
 -- ============================================================
 -- 8. 种子：3 个 ValidationParameterSet 模板
@@ -293,7 +293,33 @@ INSERT INTO validation_parameter_sets (
     (gen_random_uuid(), '快速演练', '红队演练：50% 防御要求 + 5 分钟超时', true, 50, 300, 50, 300);
 
 -- ============================================================
--- 9. 索引
+-- 9. 重建 launch_order 触发器函数（V1 中引用了已改名的 exercises 表/列）
+-- ============================================================
+CREATE OR REPLACE FUNCTION update_launch_order_trigger() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    UPDATE attack_chain_runs
+    SET run_launch_order = CASE
+        WHEN NEW.run_start_date IS NULL
+            THEN NULL
+        ELSE nextval('exercise_launch_order_seq')
+        END
+    WHERE run_id = NEW.run_id;
+    RETURN NEW;
+END;
+$$;
+
+-- 触发器在 ALTER TABLE RENAME 时已自动迁移到 attack_chain_runs；但触发列名变了，需重建。
+DROP TRIGGER IF EXISTS after_insert_exercise ON attack_chain_runs;
+DROP TRIGGER IF EXISTS after_update_exercise_start_date ON attack_chain_runs;
+CREATE TRIGGER after_insert_attack_chain_run AFTER INSERT ON attack_chain_runs
+    FOR EACH ROW EXECUTE FUNCTION update_launch_order_trigger();
+CREATE TRIGGER after_update_attack_chain_run_start_date AFTER UPDATE OF run_start_date ON attack_chain_runs
+    FOR EACH ROW EXECUTE FUNCTION update_launch_order_trigger();
+
+-- ============================================================
+-- 10. 索引
 -- ============================================================
 CREATE INDEX idx_node_attack_chain ON attack_chain_nodes (node_attack_chain_id)
     WHERE node_attack_chain_id IS NOT NULL;

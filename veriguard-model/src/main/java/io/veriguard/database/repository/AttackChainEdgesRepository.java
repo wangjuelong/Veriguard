@@ -18,13 +18,13 @@ public interface AttackChainEdgesRepository
   @Query(
       value =
           "SELECT "
-              + "inject_parent_id, "
-              + "inject_children_id, "
-              + "dependency_condition, "
-              + "dependency_created_at, "
-              + "dependency_updated_at "
-              + "FROM injects_dependencies "
-              + "WHERE inject_children_id IN :childrens",
+              + "parent_node_id, "
+              + "child_node_id, "
+              + "edge_condition, "
+              + "edge_created_at, "
+              + "edge_updated_at "
+              + "FROM attack_chain_edges "
+              + "WHERE child_node_id IN :childrens",
       nativeQuery = true)
   List<AttackChainEdge> findParents(@NotNull List<String> childrens);
 }

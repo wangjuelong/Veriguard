@@ -144,21 +144,21 @@ public interface AttackChainNodeExpectationRepository
   @Query(
       value =
           "SELECT "
-              + "i.inject_expectation_id AS inject_expectation_id, "
-              + "i.inject_id AS inject_id, "
-              + "i.exercise_id AS exercise_id, "
+              + "i.node_expectation_id AS node_expectation_id, "
+              + "i.node_id AS node_id, "
+              + "i.run_id AS run_id, "
               + "i.team_id AS team_id, "
               + "i.agent_id AS agent_id, "
               + "i.asset_id AS asset_id, "
               + "i.asset_group_id AS asset_group_id, "
-              + "i.inject_expectation_type AS inject_expectation_type, "
+              + "i.node_expectation_type AS node_expectation_type, "
               + "i.user_id AS user_id, "
-              + "i.inject_expectation_score AS inject_expectation_score, "
-              + "i.inject_expectation_results AS inject_expectation_results, "
-              + "i.inject_expectation_expected_score AS inject_expectation_expected_score, "
-              + "i.inject_expectation_group AS inject_expectation_group "
-              + "FROM injects_expectations i "
-              + "WHERE i.inject_id IN (:attackChainNodeIds) "
+              + "i.node_expectation_score AS node_expectation_score, "
+              + "i.node_expectation_results AS node_expectation_results, "
+              + "i.node_expectation_expected_score AS node_expectation_expected_score, "
+              + "i.node_expectation_group AS node_expectation_group "
+              + "FROM attack_chain_node_expectations i "
+              + "WHERE i.node_id IN (:attackChainNodeIds) "
               + "AND i.user_id is null "
               + "AND i.agent_id is null ;",
       nativeQuery = true)
@@ -169,20 +169,20 @@ public interface AttackChainNodeExpectationRepository
   @Query(
       value =
           "SELECT "
-              + "i.inject_expectation_id AS inject_expectation_id, "
-              + "i.inject_id AS inject_id, "
-              + "i.exercise_id AS exercise_id, "
+              + "i.node_expectation_id AS node_expectation_id, "
+              + "i.node_id AS node_id, "
+              + "i.run_id AS run_id, "
               + "i.team_id AS team_id, "
               + "i.agent_id AS agent_id, "
               + "i.asset_id AS asset_id, "
               + "i.asset_group_id AS asset_group_id, "
-              + "i.inject_expectation_type AS inject_expectation_type, "
+              + "i.node_expectation_type AS node_expectation_type, "
               + "i.user_id AS user_id, "
-              + "i.inject_expectation_score AS inject_expectation_score, "
-              + "i.inject_expectation_expected_score AS inject_expectation_expected_score, "
-              + "i.inject_expectation_group AS inject_expectation_group "
-              + "FROM injects_expectations i "
-              + "WHERE i.exercise_id IN (:attackChainRunIds) "
+              + "i.node_expectation_score AS node_expectation_score, "
+              + "i.node_expectation_expected_score AS node_expectation_expected_score, "
+              + "i.node_expectation_group AS node_expectation_group "
+              + "FROM attack_chain_node_expectations i "
+              + "WHERE i.run_id IN (:attackChainRunIds) "
               + "AND i.user_id is null "
               + "AND i.agent_id is null ;",
       nativeQuery = true)
@@ -200,11 +200,11 @@ public interface AttackChainNodeExpectationRepository
   @Query(
       value =
           """
-                UPDATE injects_expectations
-                SET inject_expectation_signatures =
-                    COALESCE(inject_expectation_signatures, '[]'::jsonb) ||
+                UPDATE attack_chain_node_expectations
+                SET node_expectation_signatures =
+                    COALESCE(node_expectation_signatures, '[]'::jsonb) ||
                     jsonb_build_array(jsonb_build_object('type', :sigType, 'value', :sigValue))
-                WHERE inject_id = :attackChainNodeId AND agent_id = :agentId
+                WHERE node_id = :attackChainNodeId AND agent_id = :agentId
                 """,
       nativeQuery = true)
   void insertSignature(
@@ -220,36 +220,36 @@ public interface AttackChainNodeExpectationRepository
           """
     WITH inject_expectation_data AS (
       SELECT
-      ie.inject_expectation_id,
-      ie.inject_expectation_name,
-      ie.inject_expectation_description,
-      ie.inject_expectation_type,
-      ie.inject_expectation_results,
-      ie.inject_expectation_score,
-      ie.inject_expectation_expected_score,
-      ie.inject_expiration_time,
-      ie.inject_expectation_group,
-      ie.inject_expectation_created_at,
-      GREATEST(ie.inject_expectation_updated_at, max(i.inject_updated_at), max(ic.injector_contract_updated_at)) as inject_expectation_updated_at,
-      ie.exercise_id,
-      ie.inject_id,
+      ie.node_expectation_id,
+      ie.node_expectation_name,
+      ie.node_expectation_description,
+      ie.node_expectation_type,
+      ie.node_expectation_results,
+      ie.node_expectation_score,
+      ie.node_expectation_expected_score,
+      ie.node_expectation_expiration_time,
+      ie.node_expectation_group,
+      ie.node_expectation_created_at,
+      GREATEST(ie.node_expectation_updated_at, max(i.node_updated_at), max(ic.injector_contract_updated_at)) as node_expectation_updated_at,
+      ie.run_id,
+      ie.node_id,
       ie.user_id,
       ie.team_id,
       ie.agent_id,
       ie.asset_id,
       ie.asset_group_id,
-      i.inject_title as inject_title,
+      i.node_title as node_title,
       MAX(ins.tracking_sent_date) AS tracking_sent_date,
       array_agg(DISTINCT ap.attack_pattern_id) FILTER ( WHERE ap.attack_pattern_id IS NOT NULL ) AS attack_pattern_ids,
       coalesce(array_agg(DISTINCT p_d.domain_id) FILTER (WHERE p_d.domain_id IS NOT NULL ),array_agg(DISTINCT ic_d.domain_id) FILTER (WHERE ic_d.domain_id IS NOT NULL )) domain_ids,
-      MAX(se.scenario_id) AS scenario_id,
+      MAX(se.attack_chain_id) AS attack_chain_id,
       array_agg(DISTINCT c.collector_security_platform) FILTER ( WHERE c.collector_security_platform IS NOT NULL ) ||
       array_agg(DISTINCT a.asset_id) FILTER ( WHERE a.asset_id IS NOT NULL ) AS security_platform_ids
-    FROM injects_expectations ie
-    LEFT JOIN exercises ex ON ex.exercise_id = ie.exercise_id
-    LEFT JOIN injects i ON i.inject_id = ie.inject_id
-    LEFT JOIN injects_statuses ins ON ins.status_inject = i.inject_id
-    LEFT JOIN injectors_contracts ic ON ic.injector_contract_id = i.inject_injector_contract
+    FROM attack_chain_node_expectations ie
+    LEFT JOIN attack_chain_runs ex ON ex.run_id = ie.run_id
+    LEFT JOIN attack_chain_nodes i ON i.node_id = ie.node_id
+    LEFT JOIN injects_statuses ins ON ins.status_inject = i.node_id
+    LEFT JOIN injectors_contracts ic ON ic.injector_contract_id = i.node_contract_id
     LEFT JOIN injectors_contracts_attack_patterns ic_ap ON ic_ap.injector_contract_id = ic.injector_contract_id
     LEFT JOIN attack_patterns ap ON ap.attack_pattern_id = ic_ap.attack_pattern_id
     LEFT JOIN injectors_contracts_domains ic_d ON ic_d.injector_contract_id = ic.injector_contract_id
@@ -258,18 +258,18 @@ public interface AttackChainNodeExpectationRepository
     LEFT JOIN teams t ON t.team_id = ie.team_id
     LEFT JOIN assets asset ON asset.asset_id = ie.asset_id
     LEFT JOIN asset_groups ag ON ag.asset_group_id = ie.asset_group_id
-    LEFT JOIN scenarios_exercises se ON se.exercise_id = ie.exercise_id
-    LEFT JOIN LATERAL jsonb_array_elements(ie.inject_expectation_results::jsonb) AS r(elem) ON true
+    LEFT JOIN attack_chains_runs se ON se.run_id = ie.run_id
+    LEFT JOIN LATERAL jsonb_array_elements(ie.node_expectation_results::jsonb) AS r(elem) ON true
     LEFT JOIN collectors c ON r.elem->>'sourceId' = c.collector_id::text
     LEFT JOIN assets a ON r.elem->>'sourceId' = a.asset_id::text
     GROUP BY
-      ie.inject_expectation_id,
+      ie.node_expectation_id,
       ic.injector_contract_id,
-      i.inject_title
+      i.node_title
     )
     SELECT * FROM inject_expectation_data ied
-    WHERE ied.inject_expectation_updated_at > :from AND ied.agent_id IS NULL
-    ORDER BY ied.inject_expectation_updated_at ASC
+    WHERE ied.node_expectation_updated_at > :from AND ied.agent_id IS NULL
+    ORDER BY ied.node_expectation_updated_at ASC
     LIMIT 500
     """,
       nativeQuery = true)

@@ -24,14 +24,14 @@ public interface OrganizationRepository
       value =
           "SELECT org.*, "
               + "array_agg(DISTINCT org_tags.tag_id) FILTER (WHERE org_tags.tag_id IS NOT NULL) AS organization_tags, "
-              + "array_agg(DISTINCT injects.inject_id) FILTER (WHERE injects.inject_id IS NOT NULL) AS organization_injects, "
-              + "coalesce(array_length(array_agg(DISTINCT injects.inject_id) FILTER (WHERE injects.inject_id IS NOT NULL), 1), 0) AS organization_injects_number "
+              + "array_agg(DISTINCT attack_chain_nodes.node_id) FILTER (WHERE attack_chain_nodes.node_id IS NOT NULL) AS organization_injects, "
+              + "coalesce(array_length(array_agg(DISTINCT attack_chain_nodes.node_id) FILTER (WHERE attack_chain_nodes.node_id IS NOT NULL), 1), 0) AS organization_injects_number "
               + "FROM organizations org "
               + "LEFT JOIN organizations_tags org_tags ON org.organization_id = org_tags.organization_id "
               + "LEFT JOIN users ON users.user_organization = org.organization_id "
               + "LEFT JOIN users_teams ON users.user_id = users_teams.user_id "
-              + "LEFT JOIN injects_teams ON injects_teams.team_id = users_teams.team_id "
-              + "LEFT JOIN injects ON injects.inject_id = injects_teams.inject_id OR injects.inject_all_teams "
+              + "LEFT JOIN attack_chain_nodes_teams ON attack_chain_nodes_teams.team_id = users_teams.team_id "
+              + "LEFT JOIN attack_chain_nodes ON attack_chain_nodes.node_id = attack_chain_nodes_teams.node_id OR attack_chain_nodes.node_all_teams "
               + "GROUP BY org.organization_id",
       nativeQuery = true)
   List<RawOrganization> rawAll();

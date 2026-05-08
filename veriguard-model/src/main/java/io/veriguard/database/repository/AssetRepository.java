@@ -37,28 +37,28 @@ public interface AssetRepository
           "SELECT DISTINCT a.asset_id, a.asset_name, a.asset_type, a.asset_external_reference, a.endpoint_platform, "
               + "a.asset_created_at, a.asset_updated_at "
               + "FROM assets a "
-              + "LEFT JOIN injects_assets ia ON a.asset_id = ia.asset_id "
-              + "WHERE a.asset_id IN (:assetIds) OR ia.inject_id IN (:attackChainNodeIds) ;",
+              + "LEFT JOIN attack_chain_nodes_assets ia ON a.asset_id = ia.asset_id "
+              + "WHERE a.asset_id IN (:assetIds) OR ia.node_id IN (:attackChainNodeIds) ;",
       nativeQuery = true)
   List<RawAsset> rawByIdsOrAttackChainNodeIds(
       @Param("assetIds") Set<String> assetIds, @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
 
   @Query(
       value =
-          "SELECT DISTINCT i.inject_exercise, a.asset_id, a.asset_name "
+          "SELECT DISTINCT i.node_attack_chain_run_id, a.asset_id, a.asset_name "
               + "FROM assets a "
-              + "INNER JOIN injects_assets ia ON a.asset_id = ia.asset_id "
-              + "INNER JOIN injects i ON ia.inject_id = i.inject_id "
-              + "WHERE i.inject_exercise in :attackChainRunIds",
+              + "INNER JOIN attack_chain_nodes_assets ia ON a.asset_id = ia.asset_id "
+              + "INNER JOIN attack_chain_nodes i ON ia.node_id = i.node_id "
+              + "WHERE i.node_attack_chain_run_id in :attackChainRunIds",
       nativeQuery = true)
   List<Object[]> assetsByAttackChainRunIds(Set<String> attackChainRunIds);
 
   @Query(
       value =
-          "SELECT DISTINCT ia.inject_id, a.asset_id, a.asset_name "
+          "SELECT DISTINCT ia.node_id, a.asset_id, a.asset_name "
               + "FROM assets a "
-              + "INNER JOIN injects_assets ia ON a.asset_id = ia.asset_id "
-              + "WHERE ia.inject_id in :attackChainNodeIds",
+              + "INNER JOIN attack_chain_nodes_assets ia ON a.asset_id = ia.asset_id "
+              + "WHERE ia.node_id in :attackChainNodeIds",
       nativeQuery = true)
   List<Object[]> assetsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 }

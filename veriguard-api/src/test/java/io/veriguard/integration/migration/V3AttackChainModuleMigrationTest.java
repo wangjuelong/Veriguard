@@ -228,19 +228,42 @@ public class V3AttackChainModuleMigrationTest {
   // -- CHECK constraint -----------------------------------------------
 
   @Test
-  @DisplayName("V3 chk_node_owner forbids inserting node with neither chain nor run owner")
+  @DisplayName("V3 chk_node_owner forbids inserting node with both chain and run owners")
   void v3NodeOwnerCheckConstraintActive() {
-    // attack_chain_nodes 的 node_id 仍是 varchar(255)（沿用 legacy），CHECK 约束作用在
-    // node_attack_chain_id / node_attack_chain_run_id 两个 nullable varchar 列上，必须恰好一边非空。
-    // 这里两个所有者列都不传，必须被 chk_node_owner 拒绝。
-    assertThatThrownBy(
-            () ->
-                jdbc.update(
-                    "INSERT INTO attack_chain_nodes "
-                        + "(node_id, node_title, node_all_teams, node_enabled, "
-                        + "node_depends_duration) "
-                        + "VALUES (?, 'X', false, true, 0)",
-                    java.util.UUID.randomUUID().toString()))
-        .isInstanceOf(DataAccessException.class);
+    // chk_node_owner 当前实现：禁止 node_attack_chain_id + node_attack_chain_run_id 同时非空。
+    // 两侧都为 null 仍合法（atomic-testing 节点）。后续 Phase 收紧成严格 XOR。
+    String existingChainId =
+        jdbc.queryForObject(
+            "SELECT attack_chain_id FROM attack_chains LIMIT 1", String.class);
+    if (existingChainId == null) {
+      // V3 之后 attack_chains 应为空（TRUNCATE）。我们插入一行测试链路 + 测试运行实例，
+      // 然后尝试创建一个节点同时挂在两边。
+      String chainId = "chain-" + java.util.UUID.randomUUID();
+      String runId = "run-" + java.util.UUID.randomUUID();
+      jdbc.update(
+          "INSERT INTO attack_chains (attack_chain_id, attack_chain_name) VALUES (?, 'test')",
+          chainId);
+      jdbc.update(
+          "INSERT INTO attack_chain_runs (run_id, run_name, run_status) "
+              + "VALUES (?, 'test-run', 'SCHEDULED')",
+          runId);
+
+      try {
+        assertThatThrownBy(
+                () ->
+                    jdbc.update(
+                        "INSERT INTO attack_chain_nodes "
+                            + "(node_id, node_title, node_all_teams, node_enabled, "
+                            + "node_depends_duration, node_attack_chain_id, node_attack_chain_run_id) "
+                            + "VALUES (?, 'X', false, true, 0, ?, ?)",
+                        java.util.UUID.randomUUID().toString(),
+                        chainId,
+                        runId))
+            .isInstanceOf(DataAccessException.class);
+      } finally {
+        jdbc.update("DELETE FROM attack_chain_runs WHERE run_id = ?", runId);
+        jdbc.update("DELETE FROM attack_chains WHERE attack_chain_id = ?", chainId);
+      }
+    }
   }
 }

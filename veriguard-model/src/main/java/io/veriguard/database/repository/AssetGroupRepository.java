@@ -92,9 +92,9 @@ public interface AssetGroupRepository
           "SELECT ag.asset_group_id, ag.asset_group_name, CAST(ag.asset_group_dynamic_filter as text), "
               + "coalesce(array_agg(aga.asset_id) FILTER ( WHERE aga.asset_id IS NOT NULL ), '{}') asset_ids "
               + "FROM asset_groups ag "
-              + "LEFT JOIN injects_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
+              + "LEFT JOIN attack_chain_nodes_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
               + "LEFT JOIN asset_groups_assets aga ON aga.asset_group_id = ag.asset_group_id "
-              + "WHERE iat.asset_group_id IN (:assetGroupIds) OR iat.inject_id IN (:attackChainNodeIds) "
+              + "WHERE iat.asset_group_id IN (:assetGroupIds) OR iat.node_id IN (:attackChainNodeIds) "
               + "GROUP BY ag.asset_group_id, ag.asset_group_name, CAST(ag.asset_group_dynamic_filter as text) ;",
       nativeQuery = true)
   Set<RawAssetGroup> rawByIdsOrAttackChainNodeIds(
@@ -108,8 +108,8 @@ public interface AssetGroupRepository
           "SELECT ag.asset_group_id as asset_group_id, "
               + "CAST(asset_group_dynamic_filter as text) as asset_group_dynamic_filter "
               + "FROM asset_groups ag "
-              + "JOIN injects_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
-              + "WHERE iat.inject_id = :attackChainNodeId "
+              + "JOIN attack_chain_nodes_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
+              + "WHERE iat.node_id = :attackChainNodeId "
               + "AND ag.asset_group_dynamic_filter IS NOT NULL;",
       nativeQuery = true)
   List<RawAssetGroupDynamicFilter> rawDynamicFiltersByAttackChainNodeId(
@@ -120,8 +120,8 @@ public interface AssetGroupRepository
           "SELECT ag.asset_group_id as asset_group_id, "
               + "CAST(asset_group_dynamic_filter as text) as asset_group_dynamic_filter "
               + "FROM asset_groups ag "
-              + "JOIN injects_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
-              + "WHERE iat.inject_id = :attackChainNodeId "
+              + "JOIN attack_chain_nodes_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
+              + "WHERE iat.node_id = :attackChainNodeId "
               + "AND ag.asset_group_dynamic_filter IS NOT NULL "
               + "AND ag.asset_group_id IN :assetGroupIds ;",
       nativeQuery = true)
@@ -145,8 +145,8 @@ public interface AssetGroupRepository
           "SELECT ag.asset_group_id as asset_group_id, "
               + "CAST(asset_group_dynamic_filter as text) as asset_group_dynamic_filter "
               + "FROM asset_groups ag "
-              + "JOIN injects_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
-              + "WHERE iat.inject_id = :attackChainNodeId "
+              + "JOIN attack_chain_nodes_asset_groups iat ON ag.asset_group_id = iat.asset_group_id "
+              + "WHERE iat.node_id = :attackChainNodeId "
               + "AND ag.asset_group_dynamic_filter IS NOT NULL "
               + "AND ag.asset_group_id NOT IN :assetGroupIds ;",
       nativeQuery = true)
@@ -160,20 +160,20 @@ public interface AssetGroupRepository
 
   @Query(
       value =
-          "SELECT DISTINCT i.inject_exercise, ag.asset_group_id, ag.asset_group_name "
+          "SELECT DISTINCT i.node_attack_chain_run_id, ag.asset_group_id, ag.asset_group_name "
               + "FROM asset_groups ag "
-              + "INNER JOIN injects_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
-              + "INNER JOIN injects i ON iag.inject_id = i.inject_id "
-              + "WHERE i.inject_exercise in :attackChainRunIds",
+              + "INNER JOIN attack_chain_nodes_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
+              + "INNER JOIN attack_chain_nodes i ON iag.node_id = i.node_id "
+              + "WHERE i.node_attack_chain_run_id in :attackChainRunIds",
       nativeQuery = true)
   List<Object[]> assetGroupsByAttackChainRunIds(Set<String> attackChainRunIds);
 
   @Query(
       value =
-          "SELECT DISTINCT iag.inject_id, ag.asset_group_id, ag.asset_group_name "
+          "SELECT DISTINCT iag.node_id, ag.asset_group_id, ag.asset_group_name "
               + "FROM asset_groups ag "
-              + "INNER JOIN injects_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
-              + "WHERE iag.inject_id in :attackChainNodeIds",
+              + "INNER JOIN attack_chain_nodes_asset_groups iag ON ag.asset_group_id = iag.asset_group_id "
+              + "WHERE iag.node_id in :attackChainNodeIds",
       nativeQuery = true)
   List<Object[]> assetGroupsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 
@@ -192,7 +192,7 @@ public interface AssetGroupRepository
       value =
           "SELECT ag.* "
               + "FROM asset_groups ag "
-              + "INNER JOIN injects_asset_groups iag ON ag.asset_group_id = iag.asset_group_id",
+              + "INNER JOIN attack_chain_nodes_asset_groups iag ON ag.asset_group_id = iag.asset_group_id",
       nativeQuery = true)
   List<AssetGroup> findAllAssetGroupsForAtomicTestingsSimulationsAndAttackChains();
 
@@ -203,9 +203,9 @@ public interface AssetGroupRepository
     FROM asset_groups ag
     WHERE ag.asset_group_id IN (
         SELECT DISTINCT iag.asset_group_id
-        FROM injects i
-        INNER JOIN findings f ON f.finding_inject_id = i.inject_id
-        INNER JOIN injects_asset_groups iag ON iag.inject_id = i.inject_id
+        FROM attack_chain_nodes i
+        INNER JOIN findings f ON f.finding_inject_id = i.node_id
+        INNER JOIN attack_chain_nodes_asset_groups iag ON iag.node_id = i.node_id
     ) AND (:name IS NULL OR LOWER(ag.asset_group_name) LIKE LOWER(CONCAT('%', COALESCE(:name, ''), '%')));
     """,
       nativeQuery = true)
@@ -218,12 +218,12 @@ public interface AssetGroupRepository
     FROM asset_groups ag
     WHERE ag.asset_group_id IN (
         SELECT DISTINCT iag.asset_group_id
-        FROM injects i
-        INNER JOIN findings f ON f.finding_inject_id = i.inject_id
+        FROM attack_chain_nodes i
+        INNER JOIN findings f ON f.finding_inject_id = i.node_id
         LEFT JOIN findings_assets fa ON fa.finding_id = f.finding_id
-        LEFT JOIN injects_asset_groups iag ON iag.inject_id = i.inject_id
-        LEFT JOIN scenarios_exercises se ON se.exercise_id = i.inject_exercise
-        WHERE i.inject_id = :sourceId OR i.inject_exercise = :sourceId OR se.scenario_id = :sourceId OR fa.asset_id = :sourceId
+        LEFT JOIN attack_chain_nodes_asset_groups iag ON iag.node_id = i.node_id
+        LEFT JOIN attack_chains_runs se ON se.run_id = i.node_attack_chain_run_id
+        WHERE i.node_id = :sourceId OR i.node_attack_chain_run_id = :sourceId OR se.attack_chain_id = :sourceId OR fa.asset_id = :sourceId
     ) AND (:name IS NULL OR LOWER(ag.asset_group_name) LIKE LOWER(CONCAT('%', COALESCE(:name, ''), '%')));
     """,
       nativeQuery = true)

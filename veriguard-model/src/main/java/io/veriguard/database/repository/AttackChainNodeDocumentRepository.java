@@ -22,7 +22,7 @@ public interface AttackChainNodeDocumentRepository
   @Modifying
   @Query(
       value =
-          "insert into injects_documents (inject_id, document_id, document_attached) "
+          "insert into attack_chain_nodes_documents (node_id, document_id, document_attached) "
               + "values (:attackChainNodeId, :documentId, :documentAttached)",
       nativeQuery = true)
   void addAttackChainNodeDoc(
@@ -32,7 +32,7 @@ public interface AttackChainNodeDocumentRepository
 
   @Modifying
   @Query(
-      value = "UPDATE injects_documents SET inject_id = :attackChainNodeId where inject_id = :oldAttackChainNodeId",
+      value = "UPDATE attack_chain_nodes_documents SET node_id = :attackChainNodeId where node_id = :oldAttackChainNodeId",
       nativeQuery = true)
   void updateAttackChainNodeId(
       @Param("attackChainNodeId") String attackChainNodeId,

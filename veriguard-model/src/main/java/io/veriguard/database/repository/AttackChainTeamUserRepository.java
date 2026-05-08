@@ -26,7 +26,7 @@ public interface AttackChainTeamUserRepository
 
   @Modifying
   @Query(
-      value = "delete from scenarios_teams_users i where i.team_id in :teamIds",
+      value = "delete from attack_chains_teams_users i where i.team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void deleteTeamFromAllReferences(@Param("teamIds") List<String> teamIds);
@@ -34,8 +34,8 @@ public interface AttackChainTeamUserRepository
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query(
       value =
-          "delete from scenarios_teams_users "
-              + "where scenario_id = :attackChainId and team_id in :teamIds",
+          "delete from attack_chains_teams_users "
+              + "where attack_chain_id = :attackChainId and team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void deleteByAttackChainIdAndTeamIds(

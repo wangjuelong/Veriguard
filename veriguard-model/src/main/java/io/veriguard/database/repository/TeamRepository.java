@@ -63,8 +63,8 @@ public interface TeamRepository
       value =
           "SELECT DISTINCT t.team_id AS team_id, t.team_name AS team_name "
               + "FROM teams t "
-              + "LEFT JOIN injects_teams it ON t.team_id = it.team_id "
-              + "WHERE t.team_id IN (:ids) OR it.inject_id IN (:attackChainNodeIds) ;",
+              + "LEFT JOIN attack_chain_nodes_teams it ON t.team_id = it.team_id "
+              + "WHERE t.team_id IN (:ids) OR it.node_id IN (:attackChainNodeIds) ;",
       nativeQuery = true)
   Set<RawTeam> rawByIdsOrAttackChainNodeIds(
       @Param("ids") Set<String> ids, @Param("attackChainNodeIds") Set<String> attackChainNodeIds);
@@ -88,21 +88,21 @@ public interface TeamRepository
               + "       team_contextual, "
               + "       coalesce(array_agg(DISTINCT teams_tags.tag_id) FILTER ( WHERE teams_tags.tag_id IS NOT NULL ), '{}') as team_tags, "
               + "       coalesce(array_agg(DISTINCT users_teams.user_id) FILTER ( WHERE users_teams.user_id IS NOT NULL ), '{}') as team_users, "
-              + "       coalesce(array_agg(DISTINCT exercises_teams.exercise_id) FILTER ( WHERE exercises_teams.exercise_id IS NOT NULL ), '{}') as team_exercises, "
-              + "       coalesce(array_agg(DISTINCT scenarios_teams.scenario_id) FILTER ( WHERE scenarios_teams.scenario_id IS NOT NULL ), '{}') as team_scenarios, "
-              + "       coalesce(array_agg(DISTINCT injects_expectations.inject_expectation_id) FILTER ( WHERE injects_expectations.inject_expectation_id IS NOT NULL), '{}') as team_expectations, "
-              + "       coalesce(array_agg(DISTINCT injects.inject_id) FILTER ( WHERE injects.inject_id IS NOT NULL), '{}') as team_exercise_injects, "
+              + "       coalesce(array_agg(DISTINCT attack_chain_runs_teams.run_id) FILTER ( WHERE attack_chain_runs_teams.run_id IS NOT NULL ), '{}') as team_exercises, "
+              + "       coalesce(array_agg(DISTINCT attack_chains_teams.attack_chain_id) FILTER ( WHERE attack_chains_teams.attack_chain_id IS NOT NULL ), '{}') as team_scenarios, "
+              + "       coalesce(array_agg(DISTINCT attack_chain_node_expectations.node_expectation_id) FILTER ( WHERE attack_chain_node_expectations.node_expectation_id IS NOT NULL), '{}') as team_expectations, "
+              + "       coalesce(array_agg(DISTINCT attack_chain_nodes.node_id) FILTER ( WHERE attack_chain_nodes.node_id IS NOT NULL), '{}') as team_exercise_injects, "
               + "       coalesce(array_agg(DISTINCT communications.communication_id) FILTER ( WHERE communications.communication_id IS NOT NULL), '{}') as team_communications "
               + "FROM teams "
               + "LEFT JOIN teams_tags ON teams_tags.team_id = teams.team_id "
               + "LEFT JOIN users_teams ON users_teams.team_id = teams.team_id "
-              + "LEFT JOIN exercises_teams ON exercises_teams.team_id = teams.team_id "
-              + "LEFT JOIN scenarios_teams ON scenarios_teams.team_id = teams.team_id "
-              + "LEFT JOIN injects_expectations ON injects_expectations.team_id = teams.team_id "
-              + "LEFT JOIN exercises ON exercises_teams.exercise_id = exercises.exercise_id "
-              + "LEFT JOIN exercises_teams_users ON exercises_teams_users.team_id = teams.team_id "
-              + "LEFT JOIN injects ON injects.inject_exercise = exercises.exercise_id "
-              + "LEFT JOIN communications ON communications.communication_inject = injects.inject_id "
+              + "LEFT JOIN attack_chain_runs_teams ON attack_chain_runs_teams.team_id = teams.team_id "
+              + "LEFT JOIN attack_chains_teams ON attack_chains_teams.team_id = teams.team_id "
+              + "LEFT JOIN attack_chain_node_expectations ON attack_chain_node_expectations.team_id = teams.team_id "
+              + "LEFT JOIN attack_chain_runs ON attack_chain_runs_teams.run_id = attack_chain_runs.run_id "
+              + "LEFT JOIN attack_chain_runs_teams_users ON attack_chain_runs_teams_users.team_id = teams.team_id "
+              + "LEFT JOIN attack_chain_nodes ON attack_chain_nodes.node_attack_chain_run_id = attack_chain_runs.run_id "
+              + "LEFT JOIN communications ON communications.communication_inject = attack_chain_nodes.node_id "
               + "WHERE teams.team_organization IS NULL OR teams.team_organization IN :organizationIds "
               + "GROUP BY teams.team_id ;",
       nativeQuery = true)
@@ -115,20 +115,20 @@ public interface TeamRepository
 
   @Query(
       value =
-          "SELECT DISTINCT i.inject_exercise, t.team_id, t.team_name "
+          "SELECT DISTINCT i.node_attack_chain_run_id, t.team_id, t.team_name "
               + "FROM teams t "
-              + "INNER JOIN injects_teams it ON t.team_id = it.team_id "
-              + "INNER JOIN injects i ON it.inject_id = i.inject_id "
-              + "WHERE i.inject_exercise in :attackChainRunIds",
+              + "INNER JOIN attack_chain_nodes_teams it ON t.team_id = it.team_id "
+              + "INNER JOIN attack_chain_nodes i ON it.node_id = i.node_id "
+              + "WHERE i.node_attack_chain_run_id in :attackChainRunIds",
       nativeQuery = true)
   List<Object[]> teamsByAttackChainRunIds(Set<String> attackChainRunIds);
 
   @Query(
       value =
-          "SELECT DISTINCT it.inject_id, t.team_id, t.team_name "
+          "SELECT DISTINCT it.node_id, t.team_id, t.team_name "
               + "FROM teams t "
-              + "INNER JOIN injects_teams it ON t.team_id = it.team_id "
-              + "WHERE it.inject_id in :attackChainNodeIds",
+              + "INNER JOIN attack_chain_nodes_teams it ON t.team_id = it.team_id "
+              + "WHERE it.node_id in :attackChainNodeIds",
       nativeQuery = true)
   List<Object[]> teamsByAttackChainNodeIds(Set<String> attackChainNodeIds);
 
@@ -147,9 +147,9 @@ public interface TeamRepository
       value =
           "SELECT DISTINCT t.team_id, t.team_name, t.team_description, t.team_created_at, t.team_updated_at, t.team_organization, t.team_contextual "
               + "FROM teams t "
-              + "WHERE EXISTS (SELECT 1 FROM injects_teams it WHERE it.team_id = t.team_id) "
-              + "OR EXISTS (SELECT 1 FROM exercises_teams et WHERE et.team_id = t.team_id) "
-              + "OR EXISTS (SELECT 1 FROM scenarios_teams st WHERE st.team_id = t.team_id);",
+              + "WHERE EXISTS (SELECT 1 FROM attack_chain_nodes_teams it WHERE it.team_id = t.team_id) "
+              + "OR EXISTS (SELECT 1 FROM attack_chain_runs_teams et WHERE et.team_id = t.team_id) "
+              + "OR EXISTS (SELECT 1 FROM attack_chains_teams st WHERE st.team_id = t.team_id);",
       nativeQuery = true)
   List<Team> findAllTeamsForAtomicTestingsSimulationsAndAttackChains();
 

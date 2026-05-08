@@ -44,12 +44,12 @@ public interface AttackChainRunRepository
 
   @Query(
       value =
-          "select e.*, se.scenario_id from exercises e "
-              + "left join injects as inject on e.exercise_id = inject.inject_exercise and inject.inject_enabled = 'true' "
-              + "left join injects_statuses as status on inject.inject_id = status.status_inject and status.status_name not in ('DRAFT', 'PENDING', 'QUEUING', 'EXECUTING')"
-              + "left join scenarios_exercises as se on e.exercise_id = se.exercise_id "
-              + "where e.exercise_status = 'RUNNING' group by e.exercise_id, se.scenario_id having count(status) = count(inject) "
-              + "and count(inject) filter (where inject.inject_collect_status = 'COMPLETED' and status.status_name <> 'ERROR') = count(inject) filter (where status.status_name <> 'ERROR');",
+          "select e.*, se.attack_chain_id from attack_chain_runs e "
+              + "left join attack_chain_nodes as inject on e.run_id = inject.node_attack_chain_run_id and inject.node_enabled = 'true' "
+              + "left join injects_statuses as status on inject.node_id = status.status_inject and status.status_name not in ('DRAFT', 'PENDING', 'QUEUING', 'EXECUTING')"
+              + "left join attack_chains_runs as se on e.run_id = se.run_id "
+              + "where e.run_status = 'RUNNING' group by e.run_id, se.attack_chain_id having count(status) = count(inject) "
+              + "and count(inject) filter (where inject.node_collect_status = 'COMPLETED' and status.status_name <> 'ERROR') = count(inject) filter (where status.status_name <> 'ERROR');",
       nativeQuery = true)
   List<AttackChainRun> thatMustBeFinished();
 
@@ -70,20 +70,20 @@ public interface AttackChainRunRepository
    */
   @Query(
       value =
-          " SELECT ex.exercise_id, "
-              + "ex.exercise_status, "
-              + "ex.exercise_start_date, "
-              + "ex.exercise_updated_at, "
-              + "ex.exercise_end_date, "
-              + "ex.exercise_name, "
-              + "ex.exercise_category, "
-              + "ex.exercise_subtitle, "
-              + " array_agg(distinct ie.inject_id) FILTER ( WHERE ie.inject_id IS NOT NULL ) as inject_ids, "
-              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags "
-              + "FROM exercises ex "
-              + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
-              + "GROUP BY ex.exercise_id ;",
+          " SELECT ex.run_id, "
+              + "ex.run_status, "
+              + "ex.run_start_date, "
+              + "ex.run_updated_at, "
+              + "ex.run_end_date, "
+              + "ex.run_name, "
+              + "ex.run_category, "
+              + "ex.run_subtitle, "
+              + " array_agg(distinct ie.node_id) FILTER ( WHERE ie.node_id IS NOT NULL ) as inject_ids, "
+              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags "
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
+              + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
+              + "GROUP BY ex.run_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawAll();
 
@@ -95,21 +95,21 @@ public interface AttackChainRunRepository
    */
   @Query(
       value =
-          " SELECT ex.exercise_id, "
-              + "ex.exercise_status, "
-              + "ex.exercise_start_date, "
-              + "ex.exercise_updated_at, "
-              + "ex.exercise_end_date, "
-              + "ex.exercise_name, "
-              + "ex.exercise_category, "
-              + "ex.exercise_subtitle, "
-              + " array_agg(distinct ie.inject_id) FILTER ( WHERE ie.inject_id IS NOT NULL ) as inject_ids, "
-              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags "
-              + "FROM exercises ex "
-              + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
-              + "WHERE ex.exercise_id IN (:attackChainRunIds) "
-              + "GROUP BY ex.exercise_id ;",
+          " SELECT ex.run_id, "
+              + "ex.run_status, "
+              + "ex.run_start_date, "
+              + "ex.run_updated_at, "
+              + "ex.run_end_date, "
+              + "ex.run_name, "
+              + "ex.run_category, "
+              + "ex.run_subtitle, "
+              + " array_agg(distinct ie.node_id) FILTER ( WHERE ie.node_id IS NOT NULL ) as inject_ids, "
+              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags "
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
+              + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
+              + "WHERE ex.run_id IN (:attackChainRunIds) "
+              + "GROUP BY ex.run_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawByAttackChainRunIds(List<String> attackChainRunIds);
 
@@ -121,25 +121,25 @@ public interface AttackChainRunRepository
    */
   @Query(
       value =
-          " SELECT ex.exercise_id, "
-              + "ex.exercise_status, "
-              + "ex.exercise_start_date, "
-              + "ex.exercise_updated_at, "
-              + "ex.exercise_end_date, "
-              + "ex.exercise_name, "
-              + "ex.exercise_category, "
-              + "ex.exercise_subtitle, "
-              + " array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags, "
-              + " array_agg(injects.inject_id) FILTER ( WHERE injects.inject_id IS NOT NULL ) as inject_ids "
-              + "FROM exercises ex "
-              + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "LEFT JOIN injects ON ie.inject_id = injects.inject_id "
-              + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
-              + "INNER JOIN grants ON grants.grant_resource = ex.exercise_id AND grants.grant_resource_type = 'SIMULATION' "
+          " SELECT ex.run_id, "
+              + "ex.run_status, "
+              + "ex.run_start_date, "
+              + "ex.run_updated_at, "
+              + "ex.run_end_date, "
+              + "ex.run_name, "
+              + "ex.run_category, "
+              + "ex.run_subtitle, "
+              + " array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags, "
+              + " array_agg(attack_chain_nodes.node_id) FILTER ( WHERE attack_chain_nodes.node_id IS NOT NULL ) as inject_ids "
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
+              + "LEFT JOIN attack_chain_nodes ON ie.node_id = attack_chain_nodes.node_id "
+              + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
+              + "INNER JOIN grants ON grants.grant_resource = ex.run_id AND grants.grant_resource_type = 'SIMULATION' "
               + "INNER JOIN groups ON grants.grant_group = groups.group_id "
               + "INNER JOIN users_groups ON groups.group_id = users_groups.group_id "
               + "WHERE users_groups.user_id = :userId "
-              + "GROUP BY ex.exercise_id ;",
+              + "GROUP BY ex.run_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawAllGranted(@Param("userId") String userId);
 
@@ -152,26 +152,26 @@ public interface AttackChainRunRepository
    */
   @Query(
       value =
-          " SELECT ex.exercise_id, "
-              + "ex.exercise_status, "
-              + "ex.exercise_start_date, "
-              + "ex.exercise_updated_at, "
-              + "ex.exercise_end_date, "
-              + "ex.exercise_name, "
-              + "ex.exercise_category, "
-              + "ex.exercise_subtitle, "
-              + " array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags, "
-              + " array_agg(injects.inject_id) FILTER ( WHERE injects.inject_id IS NOT NULL ) as inject_ids "
-              + "FROM exercises ex "
-              + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "LEFT JOIN injects ON ie.inject_id = injects.inject_id "
-              + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
-              + "INNER JOIN grants ON grants.grant_resource = ex.exercise_id AND grants.grant_resource_type = 'SIMULATION' "
+          " SELECT ex.run_id, "
+              + "ex.run_status, "
+              + "ex.run_start_date, "
+              + "ex.run_updated_at, "
+              + "ex.run_end_date, "
+              + "ex.run_name, "
+              + "ex.run_category, "
+              + "ex.run_subtitle, "
+              + " array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags, "
+              + " array_agg(attack_chain_nodes.node_id) FILTER ( WHERE attack_chain_nodes.node_id IS NOT NULL ) as inject_ids "
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
+              + "LEFT JOIN attack_chain_nodes ON ie.node_id = attack_chain_nodes.node_id "
+              + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
+              + "INNER JOIN grants ON grants.grant_resource = ex.run_id AND grants.grant_resource_type = 'SIMULATION' "
               + "INNER JOIN groups ON grants.grant_group = groups.group_id "
               + "INNER JOIN users_groups ON groups.group_id = users_groups.group_id "
               + "WHERE users_groups.user_id = :userId "
-              + "AND ex.exercise_id IN (:attackChainRunIds) "
-              + "GROUP BY ex.exercise_id ;",
+              + "AND ex.run_id IN (:attackChainRunIds) "
+              + "GROUP BY ex.run_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawGrantedByAttackChainRunIds(
       @Param("userId") String userId, @Param("attackChainRunIds") List<String> attackChainRunIds);
@@ -184,60 +184,60 @@ public interface AttackChainRunRepository
    */
   @Query(
       value =
-          " SELECT ex.exercise_id, ex.exercise_name, ex.exercise_description, ex.exercise_status, ex.exercise_subtitle, "
-              + "ex.exercise_category, ex.exercise_main_focus, ex.exercise_severity, ex.exercise_start_date, "
-              + "ex.exercise_end_date, ex.exercise_message_header, ex.exercise_message_footer, ex.exercise_mail_from, "
-              + "ex.exercise_lessons_anonymized, ex.exercise_custom_dashboard, ex.exercise_created_at, ex.exercise_updated_at, "
-              + "se.scenario_id, inj.inject_scenario, "
+          " SELECT ex.run_id, ex.run_name, ex.run_description, ex.run_status, ex.run_subtitle, "
+              + "ex.run_category, ex.run_main_focus, ex.run_severity, ex.run_start_date, "
+              + "ex.run_end_date, ex.exercise_message_header, ex.exercise_message_footer, ex.exercise_mail_from, "
+              + "ex.run_lessons_anonymized, ex.run_custom_dashboard, ex.run_created_at, ex.run_updated_at, "
+              + "se.attack_chain_id, inj.node_attack_chain_id, "
               + " coalesce(array_agg(emrt.exercise_reply_to) FILTER ( WHERE emrt.exercise_reply_to IS NOT NULL ), '{}') as exercise_reply_to, "
-              + " coalesce(array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ), '{}') as exercise_tags, "
+              + " coalesce(array_agg(et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ), '{}') as run_tags, "
               + " coalesce(array_agg(ut.user_id) FILTER ( WHERE ut.user_id IS NOT NULL ), '{}') as exercise_users, "
               + " coalesce(array_agg(la.lessons_answer_id) FILTER ( WHERE la.lessons_answer_id IS NOT NULL ), '{}') as lessons_answers, "
               + " coalesce(array_agg(logs.log_id) FILTER ( WHERE logs.log_id IS NOT NULL ), '{}') as logs, "
-              + " coalesce(array_agg(inj.inject_id) FILTER ( WHERE inj.inject_id IS NOT NULL ), '{}') as inject_ids "
-              + "FROM exercises ex "
-              + "LEFT JOIN scenarios_exercises se ON se.exercise_id = ex.exercise_id "
-              + "LEFT JOIN exercise_mails_reply_to emrt ON emrt.exercise_id = ex.exercise_id "
-              + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
-              + "LEFT JOIN exercises_teams ext ON ext.exercise_id = ex.exercise_id "
+              + " coalesce(array_agg(inj.node_id) FILTER ( WHERE inj.node_id IS NOT NULL ), '{}') as inject_ids "
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chains_runs se ON se.run_id = ex.run_id "
+              + "LEFT JOIN exercise_mails_reply_to emrt ON emrt.run_id = ex.run_id "
+              + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
+              + "LEFT JOIN attack_chain_runs_teams ext ON ext.run_id = ex.run_id "
               + "LEFT JOIN users_teams ut ON ext.team_id = ut.team_id "
-              + "LEFT JOIN lessons_categories lc ON lc.lessons_category_exercise = ex.exercise_id "
+              + "LEFT JOIN lessons_categories lc ON lc.lessons_category_exercise = ex.run_id "
               + "LEFT JOIN lessons_questions lq ON lq.lessons_question_category = lc.lessons_category_id "
               + "LEFT JOIN lessons_answers la ON la.lessons_answer_question = lq.lessons_question_id "
-              + "LEFT JOIN logs ON logs.log_exercise = ex.exercise_id "
-              + "LEFT JOIN injects inj ON ex.exercise_id = inj.inject_exercise "
-              + "WHERE ex.exercise_id = :attackChainRunId "
-              + "GROUP BY ex.exercise_id, inj.inject_scenario, se.scenario_id ;",
+              + "LEFT JOIN logs ON logs.log_exercise = ex.run_id "
+              + "LEFT JOIN attack_chain_nodes inj ON ex.run_id = inj.node_attack_chain_run_id "
+              + "WHERE ex.run_id = :attackChainRunId "
+              + "GROUP BY ex.run_id, inj.node_attack_chain_id, se.attack_chain_id ;",
       nativeQuery = true)
   RawSimulation rawDetailsById(@Param("attackChainRunId") String attackChainRunId);
 
   @Query(
       value =
-          " SELECT DISTINCT (ie.inject_id) "
-              + "FROM exercises ex "
-              + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "WHERE ex.exercise_id = :attackChainRunId AND ie.inject_id IS NOT NULL;",
+          " SELECT DISTINCT (ie.node_id) "
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
+              + "WHERE ex.run_id = :attackChainRunId AND ie.node_id IS NOT NULL;",
       nativeQuery = true)
   Set<String> findAttackChainNodesByAttackChainRun(@Param("attackChainRunId") String attackChainRunId);
 
   @Query(
       value =
-          " SELECT ex.exercise_id, "
-              + "ex.exercise_status, "
-              + "ex.exercise_start_date, "
-              + "ex.exercise_updated_at, "
-              + "ex.exercise_end_date, "
-              + "ex.exercise_name, "
-              + "ex.exercise_category, "
-              + "ex.exercise_subtitle, "
-              + " array_agg(distinct ie.inject_id) FILTER ( WHERE ie.inject_id IS NOT NULL ) as inject_ids, "
-              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags "
-              + "FROM exercises ex "
-              + "LEFT JOIN scenarios_exercises s ON s.exercise_id = ex.exercise_id "
-              + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
-              + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "WHERE s.scenario_id IN (:attackChainIds) "
-              + "GROUP BY ex.exercise_id ;",
+          " SELECT ex.run_id, "
+              + "ex.run_status, "
+              + "ex.run_start_date, "
+              + "ex.run_updated_at, "
+              + "ex.run_end_date, "
+              + "ex.run_name, "
+              + "ex.run_category, "
+              + "ex.run_subtitle, "
+              + " array_agg(distinct ie.node_id) FILTER ( WHERE ie.node_id IS NOT NULL ) as inject_ids, "
+              + " array_agg(distinct et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags "
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chains_runs s ON s.run_id = ex.run_id "
+              + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
+              + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
+              + "WHERE s.attack_chain_id IN (:attackChainIds) "
+              + "GROUP BY ex.run_id ;",
       nativeQuery = true)
   List<RawAttackChainRunSimple> rawAllByAttackChainIds(
       @Param("attackChainIds") List<String> attackChainIds);
@@ -247,7 +247,7 @@ public interface AttackChainRunRepository
   @Modifying
   @Query(
       value =
-          "DELETE FROM exercises_teams et WHERE et.exercise_id = :attackChainRunId AND et.team_id in :teamIds",
+          "DELETE FROM attack_chain_runs_teams et WHERE et.run_id = :attackChainRunId AND et.team_id in :teamIds",
       nativeQuery = true)
   @Transactional
   void removeTeams(
@@ -256,16 +256,16 @@ public interface AttackChainRunRepository
 
   @Query(
       value =
-          " SELECT ex.exercise_id, ex.exercise_end_date, "
-              + " array_agg(distinct ie.inject_id) FILTER ( WHERE ie.inject_id IS NOT NULL ) as inject_ids "
-              + "FROM exercises ex "
-              + "LEFT JOIN scenarios_exercises s ON s.exercise_id = ex.exercise_id "
-              + "LEFT JOIN injects_expectations ie ON ex.exercise_id = ie.exercise_id "
-              + "WHERE s.scenario_id = :attackChainId "
-              + "AND ex.exercise_status = 'FINISHED' "
-              + "AND ex.exercise_end_date IS NOT NULL "
-              + "GROUP BY ex.exercise_id, ex.exercise_end_date "
-              + "ORDER BY ex.exercise_end_date DESC "
+          " SELECT ex.run_id, ex.run_end_date, "
+              + " array_agg(distinct ie.node_id) FILTER ( WHERE ie.node_id IS NOT NULL ) as inject_ids "
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chains_runs s ON s.run_id = ex.run_id "
+              + "LEFT JOIN attack_chain_node_expectations ie ON ex.run_id = ie.run_id "
+              + "WHERE s.attack_chain_id = :attackChainId "
+              + "AND ex.run_status = 'FINISHED' "
+              + "AND ex.run_end_date IS NOT NULL "
+              + "GROUP BY ex.run_id, ex.run_end_date "
+              + "ORDER BY ex.run_end_date DESC "
               + "LIMIT 10 ;",
       nativeQuery = true)
   List<RawFinishedAttackChainRunWithAttackChainNodes>
@@ -275,12 +275,12 @@ public interface AttackChainRunRepository
   @Query(
       value =
           """
-        SELECT DISTINCT e.exercise_id AS id, e.exercise_name AS label, e.exercise_created_at
-        FROM injects i
-        INNER JOIN findings f ON f.finding_inject_id = i.inject_id
-        INNER JOIN exercises e ON i.inject_exercise = e.exercise_id
-        WHERE (:name IS NULL OR LOWER(e.exercise_name) LIKE LOWER(CONCAT('%', COALESCE(:name, ''), '%')))
-        ORDER BY e.exercise_created_at DESC;
+        SELECT DISTINCT e.run_id AS id, e.run_name AS label, e.run_created_at
+        FROM attack_chain_nodes i
+        INNER JOIN findings f ON f.finding_inject_id = i.node_id
+        INNER JOIN attack_chain_runs e ON i.node_attack_chain_run_id = e.run_id
+        WHERE (:name IS NULL OR LOWER(e.run_name) LIKE LOWER(CONCAT('%', COALESCE(:name, ''), '%')))
+        ORDER BY e.run_created_at DESC;
     """,
       nativeQuery = true)
   List<Object[]> findAllOptionByNameLinkedToFindings(@Param("name") String name, Pageable pageable);
@@ -288,15 +288,15 @@ public interface AttackChainRunRepository
   @Query(
       value =
           """
-        SELECT DISTINCT e.exercise_id AS id, e.exercise_name AS label, e.exercise_created_at
-        FROM injects i
-        INNER JOIN findings f ON f.finding_inject_id = i.inject_id
+        SELECT DISTINCT e.run_id AS id, e.run_name AS label, e.run_created_at
+        FROM attack_chain_nodes i
+        INNER JOIN findings f ON f.finding_inject_id = i.node_id
         LEFT JOIN findings_assets fa ON fa.finding_id = f.finding_id
-        LEFT JOIN exercises e ON i.inject_exercise = e.exercise_id
-        LEFT JOIN scenarios_exercises se ON se.exercise_id = e.exercise_id
-        WHERE (se.scenario_id = :sourceId OR fa.asset_id = :sourceId)
-        AND (:name IS NULL OR LOWER(e.exercise_name) LIKE LOWER(CONCAT('%', COALESCE(:name, ''), '%')))
-        ORDER BY e.exercise_created_at DESC;
+        LEFT JOIN attack_chain_runs e ON i.node_attack_chain_run_id = e.run_id
+        LEFT JOIN attack_chains_runs se ON se.run_id = e.run_id
+        WHERE (se.attack_chain_id = :sourceId OR fa.asset_id = :sourceId)
+        AND (:name IS NULL OR LOWER(e.run_name) LIKE LOWER(CONCAT('%', COALESCE(:name, ''), '%')))
+        ORDER BY e.run_created_at DESC;
     """,
       nativeQuery = true)
   List<Object[]> findAllOptionByNameLinkedToFindingsWithContext(
@@ -307,22 +307,22 @@ public interface AttackChainRunRepository
   @Query(
       value =
           "WITH exercise_data AS ("
-              + "SELECT ex.exercise_id, ex.exercise_name, ex.exercise_status, ex.exercise_start_date, ex.exercise_created_at, MAX(se.scenario_id) AS scenario_id, " // MAX here is used to get 1 element and not a list because we know that 1 attackChainRun is linked to only 1 attackChain
-              + "GREATEST(ex.exercise_updated_at, max(inj.inject_updated_at), max(ic.injector_contract_updated_at)) as exercise_injects_updated_at, "
-              + "array_agg(DISTINCT et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as exercise_tags, "
+              + "SELECT ex.run_id, ex.run_name, ex.run_status, ex.run_start_date, ex.run_created_at, MAX(se.attack_chain_id) AS attack_chain_id, " // MAX here is used to get 1 element and not a list because we know that 1 attackChainRun is linked to only 1 attackChain
+              + "GREATEST(ex.run_updated_at, max(inj.node_updated_at), max(ic.injector_contract_updated_at)) as exercise_injects_updated_at, "
+              + "array_agg(DISTINCT et.tag_id) FILTER ( WHERE et.tag_id IS NOT NULL ) as run_tags, "
               + "array_agg(DISTINCT ete.team_id) FILTER ( WHERE ete.team_id IS NOT NULL ) as exercise_teams, "
               + "array_agg(DISTINCT ia.asset_id) FILTER ( WHERE ia.asset_id IS NOT NULL ) as exercise_assets, "
               + "array_agg(DISTINCT iag.asset_group_id) FILTER ( WHERE iag.asset_group_id IS NOT NULL ) as exercise_asset_groups, "
               + "array_union_agg(ic.injector_contract_platforms) FILTER ( WHERE ic.injector_contract_platforms IS NOT NULL ) as exercise_platforms "
-              + "FROM exercises ex "
-              + "LEFT JOIN exercises_tags et ON et.exercise_id = ex.exercise_id "
-              + "LEFT JOIN exercises_teams ete ON ete.exercise_id = ex.exercise_id "
-              + "LEFT JOIN injects inj ON ex.exercise_id = inj.inject_exercise "
-              + "LEFT JOIN injects_assets ia ON ia.inject_id = inj.inject_id "
-              + "LEFT JOIN injects_asset_groups iag ON iag.inject_id = inj.inject_id "
-              + "LEFT JOIN scenarios_exercises se ON ex.exercise_id = se.exercise_id "
-              + "LEFT JOIN injectors_contracts ic ON ic.injector_contract_id = inj.inject_injector_contract "
-              + "GROUP BY ex.exercise_id, ex.exercise_name, ex.exercise_created_at, ex.exercise_updated_at"
+              + "FROM attack_chain_runs ex "
+              + "LEFT JOIN attack_chain_runs_tags et ON et.run_id = ex.run_id "
+              + "LEFT JOIN attack_chain_runs_teams ete ON ete.run_id = ex.run_id "
+              + "LEFT JOIN attack_chain_nodes inj ON ex.run_id = inj.node_attack_chain_run_id "
+              + "LEFT JOIN attack_chain_nodes_assets ia ON ia.node_id = inj.node_id "
+              + "LEFT JOIN attack_chain_nodes_asset_groups iag ON iag.node_id = inj.node_id "
+              + "LEFT JOIN attack_chains_runs se ON ex.run_id = se.run_id "
+              + "LEFT JOIN injectors_contracts ic ON ic.injector_contract_id = inj.node_contract_id "
+              + "GROUP BY ex.run_id, ex.run_name, ex.run_created_at, ex.run_updated_at"
               + ") "
               + "SELECT * FROM exercise_data ed "
               + "WHERE ed.exercise_injects_updated_at > :from "
