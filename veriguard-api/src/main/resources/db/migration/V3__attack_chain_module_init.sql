@@ -319,6 +319,66 @@ CREATE TRIGGER after_update_attack_chain_run_start_date AFTER UPDATE OF run_star
     FOR EACH ROW EXECUTE FUNCTION update_launch_order_trigger();
 
 -- ============================================================
+-- 9b. 重建引用旧列名的 PL/pgSQL 触发器函数
+-- ============================================================
+-- V1 中的几个触发器函数硬编码了 OLD.scenario_id / OLD.exercise_id / OLD.inject_id
+-- 等列名 + 旧表名。Phase 1 重命名后需 CREATE OR REPLACE 让函数体引用新名。
+CREATE OR REPLACE FUNCTION public.delete_notification_rules_for_scenario() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        DELETE FROM notification_rules
+        WHERE notification_resource_type = 'SCENARIO'
+            AND notification_resource_id = OLD.attack_chain_id;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION public.update_exercise_updated_at_after_delete_team() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        UPDATE attack_chain_runs
+        SET run_updated_at = now()
+        WHERE run_id = OLD.run_id;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION public.update_inject_updated_at_after_delete_inject_child() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        UPDATE attack_chain_nodes
+        SET node_updated_at = now()
+        WHERE node_id = OLD.parent_node_id;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION public.update_inject_updated_at_after_delete_team() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        UPDATE attack_chain_nodes
+        SET node_updated_at = now()
+        WHERE node_id = OLD.node_id;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION public.update_scenario_updated_at_after_delete_team() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        UPDATE attack_chains
+        SET attack_chain_updated_at = now()
+        WHERE attack_chain_id = OLD.attack_chain_id;
+        RETURN OLD;
+    END;
+    $$;
+
+-- ============================================================
 -- 10. 索引
 -- ============================================================
 CREATE INDEX idx_node_attack_chain ON attack_chain_nodes (node_attack_chain_id)

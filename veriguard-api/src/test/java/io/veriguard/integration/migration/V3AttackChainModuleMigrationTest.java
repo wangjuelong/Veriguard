@@ -232,9 +232,9 @@ public class V3AttackChainModuleMigrationTest {
   void v3NodeOwnerCheckConstraintActive() {
     // chk_node_owner 当前实现：禁止 node_attack_chain_id + node_attack_chain_run_id 同时非空。
     // 两侧都为 null 仍合法（atomic-testing 节点）。后续 Phase 收紧成严格 XOR。
-    String existingChainId =
-        jdbc.queryForObject(
-            "SELECT attack_chain_id FROM attack_chains LIMIT 1", String.class);
+    var existing =
+        jdbc.queryForList("SELECT attack_chain_id FROM attack_chains LIMIT 1", String.class);
+    String existingChainId = existing.isEmpty() ? null : existing.get(0);
     if (existingChainId == null) {
       // V3 之后 attack_chains 应为空（TRUNCATE）。我们插入一行测试链路 + 测试运行实例，
       // 然后尝试创建一个节点同时挂在两边。
