@@ -117,13 +117,13 @@ public class AttackChainRunApiTest extends IntegrationTest {
                     .accept(MediaType.APPLICATION_JSON)
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.exercise_name").value(name))
+            .andExpect(jsonPath("$.attack_chain_run_name").value(name))
             .andReturn()
             .getResponse()
             .getContentAsString();
 
     // -- ASSERT --
-    String newAttackChainRunId = JsonPath.read(response, "$.exercise_id");
+    String newAttackChainRunId = JsonPath.read(response, "$.attack_chain_run_id");
     AttackChainRun newAttackChainRun =
         this.attackChainRunRepository.findById(newAttackChainRunId).orElseThrow();
     assertEquals(customDashboardSaved.getId(), newAttackChainRun.getCustomDashboard().getId());
@@ -234,7 +234,7 @@ public class AttackChainRunApiTest extends IntegrationTest {
             .getResponse()
             .getContentAsString();
 
-    assertEquals(attackChainSaved.getId(), JsonPath.read(response, "$.scenario_id"));
+    assertEquals(attackChainSaved.getId(), JsonPath.read(response, "$.attack_chain_id"));
   }
 
   @DisplayName("Check if a rule applies when a rule is found")

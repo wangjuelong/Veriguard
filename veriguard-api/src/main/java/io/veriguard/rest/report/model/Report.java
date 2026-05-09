@@ -68,7 +68,7 @@ public class Report implements Base {
       name = "reports_exercises",
       joinColumns = @JoinColumn(name = "report_id"),
       inverseJoinColumns = @JoinColumn(name = "exercise_id"))
-  @JsonProperty("report_exercise")
+  @JsonProperty("report_attack_chain_run")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   private AttackChainRun attackChainRun;

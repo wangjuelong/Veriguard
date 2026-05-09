@@ -100,14 +100,14 @@ public class AttackChainApiTest extends IntegrationTest {
                     .accept(MediaType.APPLICATION_JSON)
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.scenario_name").value(name))
+            .andExpect(jsonPath("$.attack_chain_name").value(name))
             .andReturn()
             .getResponse()
             .getContentAsString();
 
     // -- ASSERT --
     assertNotNull(response);
-    String attackChainId = JsonPath.read(response, "$.scenario_id");
+    String attackChainId = JsonPath.read(response, "$.attack_chain_id");
     assertFalse(attackChainId.isEmpty());
   }
 
@@ -147,13 +147,13 @@ public class AttackChainApiTest extends IntegrationTest {
                     .accept(MediaType.APPLICATION_JSON)
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.scenario_name").value(name))
+            .andExpect(jsonPath("$.attack_chain_name").value(name))
             .andReturn()
             .getResponse()
             .getContentAsString();
 
     // -- ASSERT --
-    String newAttackChainId = JsonPath.read(response, "$.scenario_id");
+    String newAttackChainId = JsonPath.read(response, "$.attack_chain_id");
     AttackChain newAttackChain =
         this.attackChainRepository.findById(newAttackChainId).orElseThrow();
     assertEquals(customDashboardSaved.getId(), newAttackChain.getCustomDashboard().getId());
@@ -254,7 +254,7 @@ public class AttackChainApiTest extends IntegrationTest {
 
     // -- ASSERT --
     assertNotNull(response);
-    assertEquals(subtitle, JsonPath.read(response, "$.scenario_subtitle"));
+    assertEquals(subtitle, JsonPath.read(response, "$.attack_chain_subtitle"));
   }
 
   @DisplayName("Delete scenario")

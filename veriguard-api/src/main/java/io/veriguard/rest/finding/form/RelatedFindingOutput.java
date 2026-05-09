@@ -18,15 +18,15 @@ import lombok.experimental.SuperBuilder;
 public class RelatedFindingOutput extends AggregatedFindingOutput {
 
   @Schema(description = "Inject linked to finding")
-  @JsonProperty("finding_inject")
+  @JsonProperty("finding_node")
   @NotBlank
   private AttackChainNodeSimple attackChainNode;
 
   @Schema(description = "Simulation linked to inject")
-  @JsonProperty("finding_simulation")
+  @JsonProperty("finding_attack_chain_run")
   private AttackChainRunSimple simulation;
 
   @Schema(description = "Scenario linked to inject")
-  @JsonProperty("finding_scenario")
+  @JsonProperty("finding_attack_chain")
   private AttackChainSimple attackChain;
 }

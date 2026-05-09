@@ -39,7 +39,7 @@ public class ReportAttackChainNodeComment {
   @JsonProperty("report_inject_comment")
   private String comment;
 
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   public String getAttackChainNodeId() {
     return attackChainNode != null
         ? attackChainNode.getId()

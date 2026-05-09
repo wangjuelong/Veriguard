@@ -24,7 +24,7 @@ public class ImportTestSummary {
 
   @JsonIgnore private List<AttackChainNode> attackChainNodes = new ArrayList<>();
 
-  @JsonProperty("injects")
+  @JsonProperty("nodes")
   @Deprecated
   public List<AttackChainNodeOutput> getAttackChainNodeResults() {
     return attackChainNodes.stream()

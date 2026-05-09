@@ -47,25 +47,25 @@ public class AttackChainRun implements GrantableBase {
   @Column(name = "run_id")
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  @JsonProperty("exercise_id")
+  @JsonProperty("attack_chain_run_id")
   @NotBlank
   private String id;
 
   @Getter
   @Column(name = "run_name")
-  @JsonProperty("exercise_name")
+  @JsonProperty("attack_chain_run_name")
   @Queryable(filterable = true, searchable = true, sortable = true)
   @NotBlank
   private String name;
 
   @Getter
   @Column(name = "run_description")
-  @JsonProperty("exercise_description")
+  @JsonProperty("attack_chain_run_description")
   private String description;
 
   @Getter
   @Column(name = "run_status")
-  @JsonProperty("exercise_status")
+  @JsonProperty("attack_chain_run_status")
   @Enumerated(EnumType.STRING)
   @Queryable(filterable = true, sortable = true)
   @NotNull
@@ -73,23 +73,23 @@ public class AttackChainRun implements GrantableBase {
 
   @Getter
   @Column(name = "run_subtitle")
-  @JsonProperty("exercise_subtitle")
+  @JsonProperty("attack_chain_run_subtitle")
   private String subtitle;
 
   @Getter
   @Column(name = "run_category")
-  @JsonProperty("exercise_category")
+  @JsonProperty("attack_chain_run_category")
   private String category;
 
   @Getter
   @Column(name = "run_main_focus")
-  @JsonProperty("exercise_main_focus")
+  @JsonProperty("attack_chain_run_main_focus")
   private String mainFocus;
 
   @Getter
   @Column(name = "run_severity")
   @Enumerated(EnumType.STRING)
-  @JsonProperty("exercise_severity")
+  @JsonProperty("attack_chain_run_severity")
   private SEVERITY severity;
 
   @Column(name = "run_pause_date")
@@ -97,7 +97,7 @@ public class AttackChainRun implements GrantableBase {
   private Instant currentPause;
 
   @Column(name = "run_start_date")
-  @JsonProperty("exercise_start_date")
+  @JsonProperty("attack_chain_run_start_date")
   @Queryable(filterable = true, sortable = true)
   private Instant start;
 
@@ -108,7 +108,7 @@ public class AttackChainRun implements GrantableBase {
   private Long launchOrder;
 
   @Column(name = "run_end_date")
-  @JsonProperty("exercise_end_date")
+  @JsonProperty("attack_chain_run_end_date")
   @Queryable(filterable = true, sortable = true)
   private Instant end;
 
@@ -127,7 +127,7 @@ public class AttackChainRun implements GrantableBase {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "run_logo_dark")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("exercise_logo_dark")
+  @JsonProperty("attack_chain_run_logo_dark")
   @Schema(type = "string")
   private Document logoDark;
 
@@ -135,13 +135,13 @@ public class AttackChainRun implements GrantableBase {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "run_logo_light")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("exercise_logo_light")
+  @JsonProperty("attack_chain_run_logo_light")
   @Schema(type = "string")
   private Document logoLight;
 
   @Getter
   @Column(name = "run_lessons_anonymized")
-  @JsonProperty("exercise_lessons_anonymized")
+  @JsonProperty("attack_chain_run_lessons_anonymized")
   private boolean lessonsAnonymized = false;
 
   // -- SCENARIO --
@@ -153,7 +153,7 @@ public class AttackChainRun implements GrantableBase {
       joinColumns = @JoinColumn(name = "run_id"),
       inverseJoinColumns = @JoinColumn(name = "attack_chain_id"))
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("exercise_scenario")
+  @JsonProperty("attack_chain_run_attack_chain")
   @Queryable(filterable = true, dynamicValues = true)
   @Schema(type = "string")
   @Setter(NONE)
@@ -176,14 +176,14 @@ public class AttackChainRun implements GrantableBase {
 
   @Getter
   @Column(name = "run_created_at")
-  @JsonProperty("exercise_created_at")
+  @JsonProperty("attack_chain_run_created_at")
   @NotNull
   @CreationTimestamp
   private Instant createdAt = now();
 
   @Getter
   @Column(name = "run_updated_at")
-  @JsonProperty("exercise_updated_at")
+  @JsonProperty("attack_chain_run_updated_at")
   @NotNull
   @Queryable(filterable = true, sortable = true)
   @UpdateTimestamp
@@ -194,18 +194,18 @@ public class AttackChainRun implements GrantableBase {
   @Getter
   @Column(name = "verdict_prevention")
   @Enumerated(EnumType.STRING)
-  @JsonProperty("exercise_verdict_prevention")
+  @JsonProperty("attack_chain_run_verdict_prevention")
   private LinkVerdict verdictPrevention;
 
   @Getter
   @Column(name = "verdict_detection")
   @Enumerated(EnumType.STRING)
-  @JsonProperty("exercise_verdict_detection")
+  @JsonProperty("attack_chain_run_verdict_detection")
   private LinkVerdict verdictDetection;
 
   @Getter
   @Column(name = "verdict_computed_at")
-  @JsonProperty("exercise_verdict_computed_at")
+  @JsonProperty("attack_chain_run_verdict_computed_at")
   private Instant verdictComputedAt;
 
   // -- RELATION --
@@ -214,7 +214,7 @@ public class AttackChainRun implements GrantableBase {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "run_custom_dashboard")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("exercise_custom_dashboard")
+  @JsonProperty("attack_chain_run_custom_dashboard")
   @Schema(type = "string")
   private CustomDashboard customDashboard;
 
@@ -232,7 +232,7 @@ public class AttackChainRun implements GrantableBase {
 
   @ArraySchema(schema = @Schema(type = "string"))
   @OneToMany(mappedBy = "attackChainRun", fetch = FetchType.LAZY)
-  @JsonProperty("exercise_injects")
+  @JsonProperty("attack_chain_run_nodes")
   @JsonSerialize(using = MultiIdListSerializer.class)
   private List<AttackChainNode> attackChainNodes = new ArrayList<>();
 
@@ -249,7 +249,7 @@ public class AttackChainRun implements GrantableBase {
       joinColumns = @JoinColumn(name = "run_id"),
       inverseJoinColumns = @JoinColumn(name = "team_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("exercise_teams")
+  @JsonProperty("attack_chain_run_teams")
   @ArraySchema(schema = @Schema(type = "string"))
   private List<Team> teams = new ArrayList<>();
 
@@ -265,7 +265,7 @@ public class AttackChainRun implements GrantableBase {
       fetch = FetchType.LAZY,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  @JsonProperty("exercise_teams_users")
+  @JsonProperty("attack_chain_run_teams_users")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<AttackChainRunTeamUser> teamUsers = new ArrayList<>();
 
@@ -282,7 +282,7 @@ public class AttackChainRun implements GrantableBase {
   @ArraySchema(schema = @Schema(type = "string"))
   @Getter
   @OneToMany(mappedBy = "attackChainRun", fetch = FetchType.LAZY)
-  @JsonProperty("exercise_pauses")
+  @JsonProperty("attack_chain_run_pauses")
   @JsonSerialize(using = MultiIdListSerializer.class)
   private List<Pause> pauses = new ArrayList<>();
 
@@ -294,7 +294,7 @@ public class AttackChainRun implements GrantableBase {
       joinColumns = @JoinColumn(name = "run_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
-  @JsonProperty("exercise_tags")
+  @JsonProperty("attack_chain_run_tags")
   @Queryable(filterable = true, dynamicValues = true, path = "tags.id")
   private Set<Tag> tags = new HashSet<>();
 
@@ -312,21 +312,21 @@ public class AttackChainRun implements GrantableBase {
       joinColumns = @JoinColumn(name = "run_id"),
       inverseJoinColumns = @JoinColumn(name = "document_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("exercise_documents")
+  @JsonProperty("attack_chain_run_documents")
   private List<Document> documents = new ArrayList<>();
 
   @ArraySchema(schema = @Schema(type = "string"))
   @Getter
   @OneToMany(mappedBy = "attackChainRun", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("exercise_lessons_categories")
+  @JsonProperty("attack_chain_run_lessons_categories")
   private List<LessonsCategory> lessonsCategories = new ArrayList<>();
 
   @ArraySchema(schema = @Schema(type = "string"))
   @Getter
   @OneToMany(mappedBy = "attackChainRun", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("exercise_variables")
+  @JsonProperty("attack_chain_run_variables")
   private List<Variable> variables = new ArrayList<>();
 
   @Getter(onMethod_ = @JsonIgnore)
@@ -334,12 +334,12 @@ public class AttackChainRun implements GrantableBase {
   private final ResourceType resourceType = ResourceType.SIMULATION;
 
   // region transient
-  @JsonProperty("exercise_injects_statistics")
+  @JsonProperty("attack_chain_run_nodes_statistics")
   public Map<String, Long> getAttackChainNodeStatistics() {
     return AttackChainNodeStatisticsHelper.getAttackChainNodeStatistics(this.getAttackChainNodes());
   }
 
-  @JsonProperty("exercise_lessons_answers_number")
+  @JsonProperty("attack_chain_run_lessons_answers_number")
   public Long getLessonsAnswersNumbers() {
     return getLessonsCategories().stream()
         .flatMap(
@@ -350,20 +350,20 @@ public class AttackChainRun implements GrantableBase {
   }
 
   @ArraySchema(schema = @Schema(type = "string"))
-  @JsonProperty("exercise_planners")
+  @JsonProperty("attack_chain_run_planners")
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<User> getPlanners() {
     return getUsersByType(this.getGrants(), PLANNER);
   }
 
   @ArraySchema(schema = @Schema(type = "string"))
-  @JsonProperty("exercise_observers")
+  @JsonProperty("attack_chain_run_observers")
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<User> getObservers() {
     return getUsersByType(this.getGrants(), PLANNER, OBSERVER);
   }
 
-  @JsonProperty("exercise_next_inject_date")
+  @JsonProperty("attack_chain_run_next_node_date")
   public Optional<Instant> getNextAttackChainNodeExecution() {
     return getAttackChainNodes().stream()
         .filter(attackChainNode -> attackChainNode.getStatus().isEmpty())
@@ -379,42 +379,42 @@ public class AttackChainRun implements GrantableBase {
     return user.isAdmin() || getObservers().contains(user);
   }
 
-  @JsonProperty("exercise_all_users_number")
+  @JsonProperty("attack_chain_run_all_users_number")
   public long usersAllNumber() {
     return getTeams().stream().mapToLong(Team::getUsersNumber).sum();
   }
 
-  @JsonProperty("exercise_users_number")
+  @JsonProperty("attack_chain_run_users_number")
   public long usersNumber() {
     return getTeamUsers().stream().map(AttackChainRunTeamUser::getUser).distinct().count();
   }
 
   @ArraySchema(schema = @Schema(type = "string"))
-  @JsonProperty("exercise_users")
+  @JsonProperty("attack_chain_run_users")
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<User> getUsers() {
     return getTeamUsers().stream().map(AttackChainRunTeamUser::getUser).distinct().toList();
   }
 
-  @JsonProperty("exercise_score")
+  @JsonProperty("attack_chain_run_score")
   public Double getEvaluationAverage() {
     double evaluationAverage =
         getObjectives().stream().mapToDouble(Objective::getEvaluationAverage).average().orElse(0D);
     return Math.round(evaluationAverage * 100.0) / 100.0;
   }
 
-  @JsonProperty("exercise_logs_number")
+  @JsonProperty("attack_chain_run_logs_number")
   public long getLogsNumber() {
     return getLogs().size();
   }
 
-  @JsonProperty("exercise_communications_number")
+  @JsonProperty("attack_chain_run_communications_number")
   public long getCommunicationsNumber() {
     return getAttackChainNodes().stream().mapToLong(AttackChainNode::getCommunicationsNumber).sum();
   }
 
   // -- PLATFORMS --
-  @JsonProperty("exercise_platforms")
+  @JsonProperty("attack_chain_run_platforms")
   public List<PLATFORM_TYPE> getPlatforms() {
     return getAttackChainNodes().stream()
         .flatMap(
@@ -426,7 +426,7 @@ public class AttackChainRun implements GrantableBase {
   }
 
   // -- KILL CHAIN PHASES --
-  @JsonProperty("exercise_kill_chain_phases")
+  @JsonProperty("attack_chain_run_kill_chain_phases")
   @Queryable(
       filterable = true,
       dynamicValues = true,
@@ -442,7 +442,7 @@ public class AttackChainRun implements GrantableBase {
         .toList();
   }
 
-  @JsonProperty("exercise_next_possible_status")
+  @JsonProperty("attack_chain_run_next_possible_status")
   public List<AttackChainRunStatus> nextPossibleStatus() {
     if (AttackChainRunStatus.CANCELED.equals(status)) {
       return List.of(AttackChainRunStatus.SCHEDULED); // Via reset

@@ -39,14 +39,14 @@ public class Objective implements Base {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "objective_exercise")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("objective_exercise")
+  @JsonProperty("objective_attack_chain_run")
   @Schema(type = "string")
   private AttackChainRun attackChainRun;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "objective_scenario")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("objective_scenario")
+  @JsonProperty("objective_attack_chain")
   @Schema(type = "string")
   private AttackChain attackChain;
 

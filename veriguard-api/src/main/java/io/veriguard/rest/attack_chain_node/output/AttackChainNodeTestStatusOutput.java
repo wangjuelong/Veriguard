@@ -12,14 +12,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AttackChainNodeTestStatusOutput extends AttackChainNodeStatusOutput {
 
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   @NotNull
   private String attackChainNodeId;
 
-  @JsonProperty("inject_title")
+  @JsonProperty("node_title")
   @NotNull
   private String attackChainNodeTitle;
 
-  @JsonProperty("inject_type")
+  @JsonProperty("node_type")
   private String attackChainNodeType;
 }

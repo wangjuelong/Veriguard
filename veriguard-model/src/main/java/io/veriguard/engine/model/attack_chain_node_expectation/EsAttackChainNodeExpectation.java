@@ -62,15 +62,15 @@ public class EsAttackChainNodeExpectation extends EsBase {
 
   // -- SIDE --
 
-  @Queryable(label = "simulation", filterable = true, dynamicValues = true)
+  @Queryable(label = "attack_chain_run", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
   private String base_simulation_side; // Must finish by _side
 
-  @Queryable(label = "scenario", filterable = true, dynamicValues = true)
+  @Queryable(label = "attack_chain", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
   private String base_scenario_side; // Must finish by _side
 
-  @Queryable(label = "inject")
+  @Queryable(label = "node")
   @EsQueryable(keyword = true)
   private String base_inject_side; // Must finish by _side
 

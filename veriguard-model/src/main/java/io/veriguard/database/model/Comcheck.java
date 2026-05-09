@@ -69,7 +69,7 @@ public class Comcheck implements Base {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "comcheck_exercise")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("comcheck_exercise")
+  @JsonProperty("comcheck_attack_chain_run")
   @Schema(type = "string")
   private AttackChainRun attackChainRun;
 

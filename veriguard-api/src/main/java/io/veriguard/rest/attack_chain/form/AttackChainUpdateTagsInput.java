@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 public class AttackChainUpdateTagsInput {
 
-  @JsonProperty("scenario_tags")
+  @JsonProperty("attack_chain_tags")
   private List<String> tagIds = new ArrayList<>();
 
   @JsonProperty("apply_tag_rule")

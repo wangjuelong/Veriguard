@@ -149,7 +149,7 @@ public class Finding implements Base {
   @Transient
   private final ResourceType resourceType = ResourceType.SIMULATION;
 
-  @JsonProperty("finding_simulation")
+  @JsonProperty("finding_attack_chain_run")
   @Queryable(filterable = true, dynamicValues = true, path = "attackChainNode.attackChainRun.id")
   public AttackChainRun getSimulation() {
     if (getAttackChainNode() == null) {
@@ -158,7 +158,7 @@ public class Finding implements Base {
     return getAttackChainNode().getAttackChainRun();
   }
 
-  @JsonProperty("finding_scenario")
+  @JsonProperty("finding_attack_chain")
   @Queryable(
       filterable = true,
       dynamicValues = true,

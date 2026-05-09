@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class ReportAttackChainNodeCommentInput {
   @NotBlank(message = MANDATORY_MESSAGE)
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   private String attackChainNodeId;
 
   @JsonProperty("report_inject_comment")

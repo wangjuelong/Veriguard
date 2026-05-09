@@ -18,30 +18,30 @@ import lombok.Setter;
 public class AttackChainNodeResultOutput {
 
   @Schema(description = "Id of inject")
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   @NotBlank
   private String id;
 
   @Schema(description = "Title of inject")
-  @JsonProperty("inject_title")
+  @JsonProperty("node_title")
   @NotBlank
   private String title;
 
   @Schema(description = "Timestamp when the inject was last updated")
-  @JsonProperty("inject_updated_at")
+  @JsonProperty("node_updated_at")
   @NotNull
   private Instant updatedAt;
 
   @Schema(description = "Type of inject")
-  @JsonProperty("inject_type")
+  @JsonProperty("node_type")
   private String attackChainNodeType;
 
   @Schema(description = "Injector contract")
-  @JsonProperty("inject_injector_contract")
+  @JsonProperty("node_injector_contract")
   private NodeContractSimple nodeContract;
 
   @Schema(description = "Status")
-  @JsonProperty("inject_status")
+  @JsonProperty("node_status")
   private AttackChainNodeStatusSimple status;
 
   @JsonIgnore private ObjectNode content;
@@ -52,14 +52,14 @@ public class AttackChainNodeResultOutput {
   // -- COMPUTED ATTRIBUTES --
 
   @Schema(description = "Result of expectations")
-  @JsonProperty("inject_expectation_results")
+  @JsonProperty("node_expectation_results")
   @NotNull
   private List<ExpectationResultsByType> expectationResultByTypes = new ArrayList<>();
 
-  @JsonProperty("inject_targets")
+  @JsonProperty("node_targets")
   private List<TargetSimple> targets = new ArrayList<>();
 
-  @JsonProperty("inject_contract_domains")
+  @JsonProperty("node_contract_domains")
   @Schema(description = "Domain of the inject")
   public String[] getDomains() {
     return nodeContract != null ? nodeContract.getDomains() : new String[] {};

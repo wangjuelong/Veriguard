@@ -30,7 +30,7 @@ public class AssetAgentJob implements Base {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "asset_agent_inject")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("asset_agent_inject")
+  @JsonProperty("asset_agent_node")
   @Schema(type = "string")
   private AttackChainNode attackChainNode;
 

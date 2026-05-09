@@ -12,13 +12,13 @@ import lombok.Data;
 public class AttackChainNodeImporterAddInput {
 
   @NotBlank(message = MANDATORY_MESSAGE)
-  @JsonProperty("inject_importer_type_value")
+  @JsonProperty("node_importer_type_value")
   private String attackChainNodeTypeValue;
 
   @NotBlank(message = MANDATORY_MESSAGE)
-  @JsonProperty("inject_importer_injector_contract")
+  @JsonProperty("node_importer_injector_contract")
   private String nodeContractId;
 
-  @JsonProperty("inject_importer_rule_attributes")
+  @JsonProperty("node_importer_rule_attributes")
   private List<RuleAttributeAddInput> ruleAttributes = new ArrayList<>();
 }

@@ -16,49 +16,49 @@ import lombok.Setter;
 public class AttackChainNodeInput {
 
   @NotBlank
-  @JsonProperty("inject_title")
+  @JsonProperty("node_title")
   private String title;
 
-  @JsonProperty("inject_description")
+  @JsonProperty("node_description")
   private String description;
 
-  @JsonProperty("inject_injector_contract")
+  @JsonProperty("node_injector_contract")
   private String nodeContract;
 
-  @JsonProperty("inject_content")
+  @JsonProperty("node_content")
   private ObjectNode content;
 
-  @JsonProperty("inject_depends_on")
+  @JsonProperty("node_depends_on")
   private List<AttackChainEdgeInput> dependsOn = new ArrayList<>();
 
-  @JsonProperty("inject_depends_duration")
+  @JsonProperty("node_depends_duration")
   private Long dependsDuration;
 
-  @JsonProperty("inject_teams")
+  @JsonProperty("node_teams")
   private List<String> teams = new ArrayList<>();
 
-  @JsonProperty("inject_assets")
+  @JsonProperty("node_assets")
   private List<String> assets = new ArrayList<>();
 
-  @JsonProperty("inject_asset_groups")
+  @JsonProperty("node_asset_groups")
   private List<String> assetGroups = new ArrayList<>();
 
-  @JsonProperty("inject_documents")
+  @JsonProperty("node_documents")
   private List<AttackChainNodeDocumentInput> documents = new ArrayList<>();
 
-  @JsonProperty("inject_all_teams")
+  @JsonProperty("node_all_teams")
   private boolean allTeams = false;
 
-  @JsonProperty("inject_country")
+  @JsonProperty("node_country")
   private String country;
 
-  @JsonProperty("inject_city")
+  @JsonProperty("node_city")
   private String city;
 
-  @JsonProperty("inject_tags")
+  @JsonProperty("node_tags")
   private List<String> tagIds = new ArrayList<>();
 
-  @JsonProperty("inject_enabled")
+  @JsonProperty("node_enabled")
   private boolean enabled = true;
 
   public AttackChainNode toAttackChainNode(@NotNull final NodeContract nodeContract) {

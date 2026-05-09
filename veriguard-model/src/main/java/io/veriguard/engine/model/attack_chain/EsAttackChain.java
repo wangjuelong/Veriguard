@@ -12,17 +12,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Indexable(index = "scenario", label = "Scenario")
+@Indexable(index = "attack_chains", label = "AttackChain")
 public class EsAttackChain extends EsBase {
   /* Every attribute must be uniq, so prefixed with the entity type! */
   /* Except relationships, they should have same name on every model! */
 
-  @Queryable(label = "scenario name", filterable = true)
+  @Queryable(label = "attack_chain name", filterable = true)
   @EsQueryable(keyword = true)
   private String name;
 
   @Queryable(
-      label = "scenario status",
+      label = "attack_chain status",
       filterable = true,
       refEnumClazz = AttackChain.RECURRENCE_STATUS.class)
   @EsQueryable(keyword = true)

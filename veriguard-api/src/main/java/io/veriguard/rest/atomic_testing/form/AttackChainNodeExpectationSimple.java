@@ -11,10 +11,10 @@ import lombok.Setter;
 @Builder
 public class AttackChainNodeExpectationSimple {
 
-  @JsonProperty("inject_expectation_id")
+  @JsonProperty("node_expectation_id")
   @NotBlank
   private String id;
 
-  @JsonProperty("inject_expectation_name")
+  @JsonProperty("node_expectation_name")
   private String name;
 }

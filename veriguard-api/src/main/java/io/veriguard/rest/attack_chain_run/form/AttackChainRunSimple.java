@@ -28,48 +28,48 @@ import lombok.Setter;
 public class AttackChainRunSimple {
 
   @Schema(description = "Exercise Id")
-  @JsonProperty("exercise_id")
+  @JsonProperty("attack_chain_run_id")
   @NotBlank
   private String id;
 
   @Schema(description = "Exercise Name")
-  @JsonProperty("exercise_name")
+  @JsonProperty("attack_chain_run_name")
   @NotBlank
   private String name;
 
   @Schema(description = "Exercise status")
-  @JsonProperty("exercise_status")
+  @JsonProperty("attack_chain_run_status")
   @Enumerated(EnumType.STRING)
   private AttackChainRunStatus status;
 
   @Schema(description = "Exercise Subtitle")
-  @JsonProperty("exercise_subtitle")
+  @JsonProperty("attack_chain_run_subtitle")
   private String subtitle;
 
   @Schema(description = "Exercise Category")
-  @JsonProperty("exercise_category")
+  @JsonProperty("attack_chain_run_category")
   private String category;
 
   @Schema(description = "Exercise Start Date")
-  @JsonProperty("exercise_start_date")
+  @JsonProperty("attack_chain_run_start_date")
   private Instant start;
 
   @Schema(description = "Exercise Update Date")
-  @JsonProperty("exercise_updated_at")
+  @JsonProperty("attack_chain_run_updated_at")
   private Instant updatedAt = now();
 
   @Schema(description = "Tags")
-  @JsonProperty("exercise_tags")
+  @JsonProperty("attack_chain_run_tags")
   private Set<String> tagIds = new HashSet<>();
 
   @JsonIgnore private String[] attackChainNodeIds;
 
   // COMPUTED ATTRIBUTES
 
-  @JsonProperty("exercise_global_score")
+  @JsonProperty("attack_chain_run_global_score")
   @NotNull
   private List<ExpectationResultsByType> expectationResultByTypes = new ArrayList<>();
 
-  @JsonProperty("exercise_targets")
+  @JsonProperty("attack_chain_run_targets")
   private List<TargetSimple> targets = new ArrayList<>();
 }

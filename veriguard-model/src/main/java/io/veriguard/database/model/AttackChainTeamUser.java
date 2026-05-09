@@ -18,7 +18,7 @@ public class AttackChainTeamUser {
   @ManyToOne(fetch = FetchType.LAZY)
   @MapsId("attackChainId")
   @JoinColumn(name = "attack_chain_id")
-  @JsonProperty("scenario_id")
+  @JsonProperty("attack_chain_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   private AttackChain attackChain;

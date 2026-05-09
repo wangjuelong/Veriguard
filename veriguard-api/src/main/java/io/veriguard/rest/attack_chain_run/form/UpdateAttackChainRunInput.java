@@ -12,6 +12,6 @@ public class UpdateAttackChainRunInput extends AttackChainRunInput {
   @JsonProperty("apply_tag_rule")
   private boolean applyTagRule = false;
 
-  @JsonProperty("exercise_custom_dashboard")
+  @JsonProperty("attack_chain_run_custom_dashboard")
   private String customDashboard;
 }

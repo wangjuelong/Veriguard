@@ -116,73 +116,73 @@ public class AttackChain implements GrantableBase {
   @Id
   @UuidGenerator
   @Column(name = "attack_chain_id")
-  @JsonProperty("scenario_id")
+  @JsonProperty("attack_chain_id")
   @NotBlank
   private String id;
 
   @Column(name = "attack_chain_name")
-  @JsonProperty("scenario_name")
+  @JsonProperty("attack_chain_name")
   @Queryable(filterable = true, searchable = true, sortable = true)
   @NotBlank
   private String name;
 
   @Column(name = "attack_chain_description")
-  @JsonProperty("scenario_description")
+  @JsonProperty("attack_chain_description")
   private String description;
 
   @Column(name = "attack_chain_subtitle")
-  @JsonProperty("scenario_subtitle")
+  @JsonProperty("attack_chain_subtitle")
   private String subtitle;
 
   @Column(name = "attack_chain_category")
-  @JsonProperty("scenario_category")
+  @JsonProperty("attack_chain_category")
   @Queryable(filterable = true, sortable = true, dynamicValues = true)
   private String category;
 
   @Column(name = "attack_chain_main_focus")
-  @JsonProperty("scenario_main_focus")
+  @JsonProperty("attack_chain_main_focus")
   private String mainFocus;
 
   @Column(name = "attack_chain_severity")
   @Enumerated(EnumType.STRING)
-  @JsonProperty("scenario_severity")
+  @JsonProperty("attack_chain_severity")
   @Queryable(filterable = true, sortable = true)
   private SEVERITY severity;
 
   @Column(name = "attack_chain_type_affinity")
-  @JsonProperty("scenario_type_affinity")
+  @JsonProperty("attack_chain_type_affinity")
   private String typeAffinity;
 
   // -- OCTI GENERATION SCENARIO FROM HTTP CALL--
 
   @Column(name = "attack_chain_external_reference")
-  @JsonProperty("scenario_external_reference")
+  @JsonProperty("attack_chain_external_reference")
   private String externalReference;
 
   @Column(name = "attack_chain_external_url")
-  @JsonProperty("scenario_external_url")
+  @JsonProperty("attack_chain_external_url")
   private String externalUrl;
 
   // -- OCTI GENERATION SCENARIO FROM STIX --
 
   @OneToOne(mappedBy = "attackChain")
-  @JsonProperty("scenario_security_coverage")
+  @JsonProperty("attack_chain_security_coverage")
   @JsonIgnore
   private SecurityCoverage securityCoverage;
 
   // -- RECURRENCE --
 
   @Column(name = "attack_chain_recurrence")
-  @JsonProperty("scenario_recurrence")
+  @JsonProperty("attack_chain_recurrence")
   @Queryable(filterable = true)
   private String recurrence; // cron expression
 
   @Column(name = "attack_chain_recurrence_start")
-  @JsonProperty("scenario_recurrence_start")
+  @JsonProperty("attack_chain_recurrence_start")
   private Instant recurrenceStart;
 
   @Column(name = "attack_chain_recurrence_end")
-  @JsonProperty("scenario_recurrence_end")
+  @JsonProperty("attack_chain_recurrence_end")
   private Instant recurrenceEnd;
 
   // -- 邮件演练遗留字段（V3 已 drop DB 列；Java 字段保留为 @Transient 以维持 API 兼容）--
@@ -208,29 +208,29 @@ public class AttackChain implements GrantableBase {
 
   @Column(name = "execution_mode")
   @Enumerated(EnumType.STRING)
-  @JsonProperty("scenario_execution_mode")
+  @JsonProperty("attack_chain_execution_mode")
   @NotNull
   private ExecutionMode executionMode = ExecutionMode.STOP_ON_BLOCK;
 
   @Column(name = "validation_parameter_set_id")
-  @JsonProperty("scenario_validation_parameter_set_id")
+  @JsonProperty("attack_chain_validation_parameter_set_id")
   private UUID validationParameterSetId;
 
   @Type(JsonBinaryType.class)
   @Column(name = "soc_correlation_rules", columnDefinition = "jsonb")
-  @JsonProperty("scenario_soc_correlation_rules")
+  @JsonProperty("attack_chain_soc_correlation_rules")
   private List<SocCorrelationRuleRef> socCorrelationRules = new ArrayList<>();
 
   // -- AUDIT --
 
   @Column(name = "attack_chain_created_at")
-  @JsonProperty("scenario_created_at")
+  @JsonProperty("attack_chain_created_at")
   @NotNull
   @CreationTimestamp
   private Instant createdAt = now();
 
   @Column(name = "attack_chain_updated_at")
-  @JsonProperty("scenario_updated_at")
+  @JsonProperty("attack_chain_updated_at")
   @NotNull
   @Queryable(filterable = true, sortable = true)
   @UpdateTimestamp
@@ -242,7 +242,7 @@ public class AttackChain implements GrantableBase {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "attack_chain_custom_dashboard")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("scenario_custom_dashboard")
+  @JsonProperty("attack_chain_custom_dashboard")
   @Schema(type = "string")
   private CustomDashboard customDashboard;
 
@@ -260,7 +260,7 @@ public class AttackChain implements GrantableBase {
 
   @ArraySchema(schema = @Schema(type = "string"))
   @OneToMany(mappedBy = "attackChain", fetch = FetchType.LAZY)
-  @JsonProperty("scenario_injects")
+  @JsonProperty("attack_chain_nodes")
   @JsonSerialize(using = MultiIdListSerializer.class)
   @Getter(NONE)
   private Set<AttackChainNode> attackChainNodes = new HashSet<>();
@@ -278,7 +278,7 @@ public class AttackChain implements GrantableBase {
       joinColumns = @JoinColumn(name = "attack_chain_id"),
       inverseJoinColumns = @JoinColumn(name = "team_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("scenario_teams")
+  @JsonProperty("attack_chain_teams")
   private List<Team> teams = new ArrayList<>();
 
   // UpdatedAt now used to sync with linked object
@@ -292,7 +292,7 @@ public class AttackChain implements GrantableBase {
       fetch = FetchType.LAZY,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  @JsonProperty("scenario_teams_users")
+  @JsonProperty("attack_chain_teams_users")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<AttackChainTeamUser> teamUsers = new ArrayList<>();
 
@@ -307,7 +307,7 @@ public class AttackChain implements GrantableBase {
       joinColumns = @JoinColumn(name = "attack_chain_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
-  @JsonProperty("scenario_tags")
+  @JsonProperty("attack_chain_tags")
   @Queryable(filterable = true, dynamicValues = true, path = "tags.id")
   private Set<Tag> tags = new HashSet<>();
 
@@ -324,13 +324,13 @@ public class AttackChain implements GrantableBase {
       joinColumns = @JoinColumn(name = "attack_chain_id"),
       inverseJoinColumns = @JoinColumn(name = "document_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("scenario_documents")
+  @JsonProperty("attack_chain_documents")
   private List<Document> documents = new ArrayList<>();
 
   @ArraySchema(schema = @Schema(type = "string"))
   @OneToMany(mappedBy = "attackChain", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("scenario_lessons_categories")
+  @JsonProperty("attack_chain_lessons_categories")
   private List<LessonsCategory> lessonsCategories = new ArrayList<>();
 
   @Getter
@@ -345,7 +345,7 @@ public class AttackChain implements GrantableBase {
       joinColumns = @JoinColumn(name = "attack_chain_id"),
       inverseJoinColumns = @JoinColumn(name = "run_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("scenario_exercises")
+  @JsonProperty("attack_chain_runs")
   @Setter(NONE)
   private List<AttackChainRun> attackChainRuns;
 
@@ -361,7 +361,7 @@ public class AttackChain implements GrantableBase {
 
   @Getter
   @Column(name = "attack_chain_lessons_anonymized")
-  @JsonProperty("scenario_lessons_anonymized")
+  @JsonProperty("attack_chain_lessons_anonymized")
   private boolean lessonsAnonymized = false;
 
   @Getter(onMethod_ = @JsonIgnore)
@@ -383,14 +383,14 @@ public class AttackChain implements GrantableBase {
   // -- SECURITY --
 
   @ArraySchema(schema = @Schema(type = "string"))
-  @JsonProperty("scenario_planners")
+  @JsonProperty("attack_chain_planners")
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<User> getPlanners() {
     return getUsersByType(this.getGrants(), PLANNER);
   }
 
   @ArraySchema(schema = @Schema(type = "string"))
-  @JsonProperty("scenario_observers")
+  @JsonProperty("attack_chain_observers")
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<User> getObservers() {
     return getUsersByType(this.getGrants(), PLANNER, OBSERVER);
@@ -398,35 +398,35 @@ public class AttackChain implements GrantableBase {
 
   // -- STATISTICS --
 
-  @JsonProperty("scenario_injects_statistics")
+  @JsonProperty("attack_chain_nodes_statistics")
   public Map<String, Long> getAttackChainNodeStatistics() {
     return AttackChainNodeStatisticsHelper.getAttackChainNodeStatistics(this.getAttackChainNodes());
   }
 
-  @JsonProperty("scenario_all_users_number")
+  @JsonProperty("attack_chain_all_users_number")
   public long usersAllNumber() {
     return getTeams().stream().mapToLong(Team::getUsersNumber).sum();
   }
 
-  @JsonProperty("scenario_users_number")
+  @JsonProperty("attack_chain_users_number")
   public long usersNumber() {
     return getTeamUsers().stream().map(AttackChainTeamUser::getUser).distinct().count();
   }
 
   @ArraySchema(schema = @Schema(type = "string"))
-  @JsonProperty("scenario_users")
+  @JsonProperty("attack_chain_users")
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<User> getUsers() {
     return getTeamUsers().stream().map(AttackChainTeamUser::getUser).distinct().toList();
   }
 
-  @JsonProperty("scenario_communications_number")
+  @JsonProperty("attack_chain_communications_number")
   public long getCommunicationsNumber() {
     return getAttackChainNodes().stream().mapToLong(AttackChainNode::getCommunicationsNumber).sum();
   }
 
   // -- PLATFORMS --
-  @JsonProperty("scenario_platforms")
+  @JsonProperty("attack_chain_platforms")
   @Queryable(
       filterable = true,
       path = "attackChainNodes.nodeContract.platforms",
@@ -443,7 +443,7 @@ public class AttackChain implements GrantableBase {
   }
 
   // -- KILL CHAIN PHASES --
-  @JsonProperty("scenario_kill_chain_phases")
+  @JsonProperty("attack_chain_kill_chain_phases")
   @Queryable(
       filterable = true,
       dynamicValues = true,
@@ -461,7 +461,7 @@ public class AttackChain implements GrantableBase {
 
   @Type(StringArrayType.class)
   @Column(name = "attack_chain_dependencies", columnDefinition = "text[]")
-  @JsonProperty("scenario_dependencies")
+  @JsonProperty("attack_chain_dependencies")
   @Queryable(filterable = true, searchable = true, sortable = true)
   private Dependency[] dependencies;
 

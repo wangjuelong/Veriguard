@@ -19,10 +19,10 @@ public class AttackChainNodeExecutionCallback implements Queueable {
   @JsonProperty("agent_id")
   private String agentId;
 
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   private String attackChainNodeId;
 
-  @JsonProperty("inject_execution_input")
+  @JsonProperty("node_execution_input")
   private AttackChainNodeExecutionInput attackChainNodeExecutionInput;
 
   @JsonProperty("execution_emission_date")

@@ -25,114 +25,114 @@ import lombok.Setter;
 @Getter
 public class SimulationDetails {
 
-  @JsonProperty("exercise_id")
+  @JsonProperty("attack_chain_run_id")
   @NotBlank
   private String id;
 
-  @JsonProperty("exercise_name")
+  @JsonProperty("attack_chain_run_name")
   @NotBlank
   private String name;
 
-  @JsonProperty("exercise_description")
+  @JsonProperty("attack_chain_run_description")
   private String description;
 
-  @JsonProperty("exercise_status")
+  @JsonProperty("attack_chain_run_status")
   @NotNull
   private AttackChainRunStatus status;
 
-  @JsonProperty("exercise_subtitle")
+  @JsonProperty("attack_chain_run_subtitle")
   private String subtitle;
 
-  @JsonProperty("exercise_category")
+  @JsonProperty("attack_chain_run_category")
   private String category;
 
-  @JsonProperty("exercise_main_focus")
+  @JsonProperty("attack_chain_run_main_focus")
   private String mainFocus;
 
-  @JsonProperty("exercise_severity")
+  @JsonProperty("attack_chain_run_severity")
   private SEVERITY severity;
 
-  @JsonProperty("exercise_start_date")
+  @JsonProperty("attack_chain_run_start_date")
   private Instant start;
 
-  @JsonProperty("exercise_end_date")
+  @JsonProperty("attack_chain_run_end_date")
   private Instant end;
 
-  @JsonProperty("exercise_message_header")
+  @JsonProperty("attack_chain_run_message_header")
   private String header;
 
-  @JsonProperty("exercise_message_footer")
+  @JsonProperty("attack_chain_run_message_footer")
   private String footer;
 
-  @JsonProperty("exercise_mail_from")
+  @JsonProperty("attack_chain_run_mail_from")
   @NotBlank
   private String from;
 
-  @JsonProperty("exercise_mails_reply_to")
+  @JsonProperty("attack_chain_run_mails_reply_to")
   private List<String> replyTo;
 
-  @JsonProperty("exercise_lessons_anonymized")
+  @JsonProperty("attack_chain_run_lessons_anonymized")
   private boolean lessonsAnonymized;
 
   // -- SCENARIO --
 
-  @JsonProperty("exercise_scenario")
+  @JsonProperty("attack_chain_run_attack_chain")
   private String attackChain;
 
   // -- AUDIT --
 
-  @JsonProperty("exercise_created_at")
+  @JsonProperty("attack_chain_run_created_at")
   private Instant createAt;
 
-  @JsonProperty("exercise_updated_at")
+  @JsonProperty("attack_chain_run_updated_at")
   private Instant updatedAt;
 
   // -- RELATION --
 
-  @JsonProperty("exercise_teams_users")
+  @JsonProperty("attack_chain_run_teams_users")
   private Set<AttackChainRunTeamUser> attackChainRunTeamUsers;
 
-  @JsonProperty("exercise_tags")
+  @JsonProperty("attack_chain_run_tags")
   private Set<String> tags = new HashSet<>();
 
-  @JsonProperty("exercise_users")
+  @JsonProperty("attack_chain_run_users")
   private Set<String> users = new HashSet<>();
 
-  @JsonProperty("exercise_observers")
+  @JsonProperty("attack_chain_run_observers")
   private Set<String> observers = new HashSet<>();
 
-  @JsonProperty("exercise_lessons_answers_number")
+  @JsonProperty("attack_chain_run_lessons_answers_number")
   private long lessonsAnswersNumber;
 
-  @JsonProperty("exercise_planners")
+  @JsonProperty("attack_chain_run_planners")
   private Set<String> planners = new HashSet<>();
 
-  @JsonProperty("exercise_all_users_number")
+  @JsonProperty("attack_chain_run_all_users_number")
   private long allUsersNumber;
 
-  @JsonProperty("exercise_users_number")
+  @JsonProperty("attack_chain_run_users_number")
   private long usersNumber;
 
-  @JsonProperty("exercise_logs_number")
+  @JsonProperty("attack_chain_run_logs_number")
   private long logsNumber;
 
-  @JsonProperty("exercise_communications_number")
+  @JsonProperty("attack_chain_run_communications_number")
   public long communicationsNumber;
 
-  @JsonProperty("exercise_custom_dashboard")
+  @JsonProperty("attack_chain_run_custom_dashboard")
   private String customDashboard;
 
   // -- PLATFORMS --
 
-  @JsonProperty("exercise_platforms")
+  @JsonProperty("attack_chain_run_platforms")
   public List<String> platforms;
 
   // -- KILL CHAIN PHASES --
 
-  @JsonProperty("exercise_kill_chain_phases")
+  @JsonProperty("attack_chain_run_kill_chain_phases")
   public List<KillChainPhase> killChainPhases;
 
-  @JsonProperty("exercise_score")
+  @JsonProperty("attack_chain_run_score")
   public Double getEvaluationAverage() {
     double evaluationAverage =
         getObjectives().stream().mapToDouble(Objective::getEvaluationAverage).average().orElse(0D);

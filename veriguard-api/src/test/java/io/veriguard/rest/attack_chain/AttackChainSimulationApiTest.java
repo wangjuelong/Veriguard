@@ -116,7 +116,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
         attackChainRunRepository.save(attackChainRun2FromAttackChain);
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.simpleSearchWithAndOperator(
-                "exercise_tags", tag.getId(), Filters.FilterOperator.eq);
+                "attack_chain_run_tags", tag.getId(), Filters.FilterOperator.eq);
         mvc.perform(
                 post(SCENARIO_URI + "/" + attackChain.getId() + "/attack_chain_runs/search")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -125,7 +125,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.numberOfElements").value(1))
             .andExpect(
-                jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()));
+                jsonPath("$.content[0].attack_chain_run_id").value(attackChainRun2FromAttackChain.getId()));
         attackChainRun2FromAttackChain.setTags(null);
         attackChainRunRepository.save(attackChainRun2FromAttackChain);
         mvc.perform(
@@ -155,7 +155,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                 .sorts(
                     List.of(
                         SortField.builder()
-                            .property("exercise_updated_at")
+                            .property("attack_chain_run_updated_at")
                             .direction("DESC")
                             .build()))
                 .build();
@@ -167,9 +167,9 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.numberOfElements").value(2))
             .andExpect(
-                jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()))
+                jsonPath("$.content[0].attack_chain_run_id").value(attackChainRun2FromAttackChain.getId()))
             .andExpect(
-                jsonPath("$.content[1].exercise_id").value(attackChainRun1FromAttackChain.getId()));
+                jsonPath("$.content[1].attack_chain_run_id").value(attackChainRun1FromAttackChain.getId()));
       }
 
       @Test
@@ -199,12 +199,12 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                 .sorts(
                     List.of(
                         SortField.builder()
-                            .property("exercise_end_date")
+                            .property("attack_chain_run_end_date")
                             .direction("DESC")
                             .nullHandling(Sort.NullHandling.NULLS_LAST)
                             .build(),
                         SortField.builder()
-                            .property("exercise_updated_at")
+                            .property("attack_chain_run_updated_at")
                             .direction("DESC")
                             .build()))
                 .build();
@@ -216,12 +216,12 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.numberOfElements").value(3))
             .andExpect(
-                jsonPath("$.content[0].exercise_id").value(attackChainRun2FromAttackChain.getId()))
+                jsonPath("$.content[0].attack_chain_run_id").value(attackChainRun2FromAttackChain.getId()))
             .andExpect(
-                jsonPath("$.content[1].exercise_id")
+                jsonPath("$.content[1].attack_chain_run_id")
                     .value(attackChainRun3NotFromAttackChain.getId()))
             .andExpect(
-                jsonPath("$.content[2].exercise_id").value(attackChainRun1FromAttackChain.getId()));
+                jsonPath("$.content[2].attack_chain_run_id").value(attackChainRun1FromAttackChain.getId()));
       }
     }
 
@@ -241,7 +241,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.numberOfElements").value(1))
             .andExpect(
-                jsonPath("$.content[0].exercise_id").value(attackChainRun1FromAttackChain.getId()));
+                jsonPath("$.content[0].attack_chain_run_id").value(attackChainRun1FromAttackChain.getId()));
       }
 
       @Test

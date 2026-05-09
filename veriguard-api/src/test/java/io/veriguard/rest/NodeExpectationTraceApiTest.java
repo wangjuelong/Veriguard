@@ -141,10 +141,10 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
     // --ASSERT--
     assertEquals(
         savedAttackChainNodeExpectation.getId(),
-        JsonPath.read(response, "$.inject_expectation_trace_expectation"));
+        JsonPath.read(response, "$.node_expectation_trace_expectation"));
     assertEquals(
         savedSecurityPlatform.getId(),
-        JsonPath.read(response, "$.inject_expectation_trace_source_id"));
+        JsonPath.read(response, "$.node_expectation_trace_source_id"));
   }
 
   @DisplayName("Get the traces for a collector")

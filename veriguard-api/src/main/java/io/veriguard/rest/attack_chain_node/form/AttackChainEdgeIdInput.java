@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter
 public class AttackChainEdgeIdInput {
 
-  @JsonProperty("inject_parent_id")
+  @JsonProperty("node_parent_id")
   private String attackChainNodeParentId;
 
-  @JsonProperty("inject_children_id")
+  @JsonProperty("node_children_id")
   private String attackChainNodeChildrenId;
 }

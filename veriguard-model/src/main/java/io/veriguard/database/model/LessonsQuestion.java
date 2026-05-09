@@ -74,7 +74,7 @@ public class LessonsQuestion implements Base {
   private List<LessonsAnswer> answers = new ArrayList<>();
 
   // region transient
-  @JsonProperty("lessons_question_exercise")
+  @JsonProperty("lessons_question_attack_chain_run")
   public String getAttackChainRun() {
     if (getCategory() == null) {
       return null;
@@ -84,7 +84,7 @@ public class LessonsQuestion implements Base {
         .orElse(null);
   }
 
-  @JsonProperty("lessons_question_scenario")
+  @JsonProperty("lessons_question_attack_chain")
   public String getAttackChain() {
     if (getCategory() == null) {
       return null;

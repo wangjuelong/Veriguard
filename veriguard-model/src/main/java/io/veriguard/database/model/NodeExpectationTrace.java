@@ -25,42 +25,42 @@ public class NodeExpectationTrace implements Base {
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
   @Column(name = "trace_id")
-  @JsonProperty("inject_expectation_trace_id")
+  @JsonProperty("node_expectation_trace_id")
   private String id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "trace_expectation_id")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("inject_expectation_trace_expectation")
+  @JsonProperty("node_expectation_trace_expectation")
   @Schema(type = "string")
   private AttackChainNodeExpectation attackChainNodeExpectation;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "trace_source_id")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("inject_expectation_trace_source_id")
+  @JsonProperty("node_expectation_trace_source_id")
   @Schema(type = "string")
   private SecurityPlatform securityPlatform;
 
   @Column(name = "trace_alert_name")
-  @JsonProperty("inject_expectation_trace_alert_name")
+  @JsonProperty("node_expectation_trace_alert_name")
   private String alertName;
 
   @Column(name = "trace_alert_link")
-  @JsonProperty("inject_expectation_trace_alert_link")
+  @JsonProperty("node_expectation_trace_alert_link")
   private String alertLink;
 
-  @JsonProperty("inject_expectation_trace_date")
+  @JsonProperty("node_expectation_trace_date")
   @Column(name = "trace_date")
   private Instant alertDate;
 
   @Column(name = "trace_created_at")
-  @JsonProperty("inject_expectation_trace_created_at")
+  @JsonProperty("node_expectation_trace_created_at")
   @NotNull
   private Instant createdAt = now();
 
   @Column(name = "trace_updated_at")
-  @JsonProperty("inject_expectation_trace_updated_at")
+  @JsonProperty("node_expectation_trace_updated_at")
   @NotNull
   private Instant updatedAt = now();
 }

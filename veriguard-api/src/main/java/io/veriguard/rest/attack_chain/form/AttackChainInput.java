@@ -15,51 +15,51 @@ import lombok.Data;
 public class AttackChainInput {
 
   @NotBlank(message = MANDATORY_MESSAGE)
-  @JsonProperty("scenario_name")
+  @JsonProperty("attack_chain_name")
   private String name;
 
-  @JsonProperty("scenario_description")
+  @JsonProperty("attack_chain_description")
   private String description;
 
-  @JsonProperty("scenario_subtitle")
+  @JsonProperty("attack_chain_subtitle")
   private String subtitle;
 
   @Nullable
-  @JsonProperty("scenario_category")
+  @JsonProperty("attack_chain_category")
   private String category;
 
   @Nullable
-  @JsonProperty("scenario_main_focus")
+  @JsonProperty("attack_chain_main_focus")
   private String mainFocus;
 
   @Nullable
-  @JsonProperty("scenario_severity")
+  @JsonProperty("attack_chain_severity")
   private SEVERITY severity;
 
   @Nullable
-  @JsonProperty("scenario_external_reference")
+  @JsonProperty("attack_chain_external_reference")
   private String externalReference;
 
   @Nullable
-  @JsonProperty("scenario_external_url")
+  @JsonProperty("attack_chain_external_url")
   private String externalUrl;
 
-  @JsonProperty("scenario_tags")
+  @JsonProperty("attack_chain_tags")
   private List<String> tagIds = new ArrayList<>();
 
-  @JsonProperty("scenario_mail_from")
+  @JsonProperty("attack_chain_mail_from")
   @Email
   private String from;
 
-  @JsonProperty("scenario_mails_reply_to")
+  @JsonProperty("attack_chain_mails_reply_to")
   private List<String> replyTos = new ArrayList<>();
 
-  @JsonProperty("scenario_message_header")
+  @JsonProperty("attack_chain_message_header")
   private String header;
 
-  @JsonProperty("scenario_message_footer")
+  @JsonProperty("attack_chain_message_footer")
   private String footer;
 
-  @JsonProperty("scenario_custom_dashboard")
+  @JsonProperty("attack_chain_custom_dashboard")
   private String customDashboard;
 }

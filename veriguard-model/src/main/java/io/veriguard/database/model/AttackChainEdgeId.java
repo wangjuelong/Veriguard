@@ -23,14 +23,14 @@ public class AttackChainEdgeId implements Serializable {
   @Serial private static final long serialVersionUID = 1L;
 
   @ManyToOne
-  @JsonProperty("inject_parent_id")
+  @JsonProperty("node_parent_id")
   @JoinColumn(referencedColumnName = "node_id", name = "parent_node_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   private AttackChainNode attackChainNodeParent;
 
   @ManyToOne
-  @JsonProperty("inject_children_id")
+  @JsonProperty("node_children_id")
   @JoinColumn(referencedColumnName = "node_id", name = "child_node_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")

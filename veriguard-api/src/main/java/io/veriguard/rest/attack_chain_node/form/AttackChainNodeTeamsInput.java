@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AttackChainNodeTeamsInput {
 
-  @JsonProperty("inject_teams")
+  @JsonProperty("node_teams")
   private List<String> teamIds;
 
   public List<String> getTeamIds() {

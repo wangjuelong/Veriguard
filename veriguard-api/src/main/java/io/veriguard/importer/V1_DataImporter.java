@@ -114,11 +114,11 @@ public class V1_DataImporter implements Importer {
       String suffix) {
     Map<String, Base> baseIds = new HashMap<>();
 
-    String prefix = "inject_";
+    String prefix = "node_";
     if (importNode.has("exercise_information")) {
-      prefix = "exercise_";
+      prefix = "attack_chain_run_";
     } else if (importNode.has("scenario_information")) {
-      prefix = "scenario_";
+      prefix = "attack_chain_";
     } else if (importNode.has("payload_information")) {
       prefix = "payload_";
     }
@@ -816,9 +816,9 @@ public class V1_DataImporter implements Importer {
       Map<String, Base> baseIds) {
     Supplier<Stream<JsonNode>> attackChainNodesStream =
         () ->
-            importNode.has(prefix + "injects")
-                ? resolveJsonElements(importNode, prefix + "injects")
-                : Objects.equals(prefix, "inject_")
+            importNode.has(prefix + "nodes")
+                ? resolveJsonElements(importNode, prefix + "nodes")
+                : Objects.equals(prefix, "node_")
                     ? resolveJsonElements(importNode, prefix + "information")
                     : Stream.of();
 

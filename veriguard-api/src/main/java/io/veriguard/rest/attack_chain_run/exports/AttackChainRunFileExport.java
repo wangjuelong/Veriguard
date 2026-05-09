@@ -20,10 +20,10 @@ import org.hibernate.Hibernate;
 @Setter
 @JsonInclude(NON_NULL)
 public class AttackChainRunFileExport extends FileExportBase {
-  @JsonProperty("exercise_information")
+  @JsonProperty("attack_chain_run_information")
   private final AttackChainRun attackChainRun;
 
-  @JsonProperty("exercise_teams")
+  @JsonProperty("attack_chain_run_teams")
   private List<Team> teams;
 
   public List<Team> getTeams() {
@@ -36,7 +36,7 @@ public class AttackChainRunFileExport extends FileExportBase {
     return teams;
   }
 
-  @JsonProperty("exercise_objectives")
+  @JsonProperty("attack_chain_run_objectives")
   private List<Objective> objectives;
 
   public List<Objective> getObjectives() {
@@ -48,7 +48,7 @@ public class AttackChainRunFileExport extends FileExportBase {
     return objectives;
   }
 
-  @JsonProperty("exercise_users")
+  @JsonProperty("attack_chain_run_users")
   private List<User> users;
 
   public List<User> getUsers() {
@@ -64,7 +64,7 @@ public class AttackChainRunFileExport extends FileExportBase {
     return users;
   }
 
-  @JsonProperty("exercise_organizations")
+  @JsonProperty("attack_chain_run_organizations")
   private List<Organization> organizations;
 
   public List<Organization> getOrganizations() {
@@ -88,7 +88,7 @@ public class AttackChainRunFileExport extends FileExportBase {
     return organizations;
   }
 
-  @JsonProperty("exercise_injects")
+  @JsonProperty("attack_chain_run_nodes")
   private List<AttackChainNode> attackChainNodes;
 
   public List<AttackChainNode> getAttackChainNodes() {
@@ -100,7 +100,7 @@ public class AttackChainRunFileExport extends FileExportBase {
     return attackChainNodes;
   }
 
-  @JsonProperty("exercise_tags")
+  @JsonProperty("attack_chain_run_tags")
   private List<Tag> tags;
 
   public List<Tag> getTags() {
@@ -138,7 +138,7 @@ public class AttackChainRunFileExport extends FileExportBase {
     return tags;
   }
 
-  @JsonProperty("exercise_documents")
+  @JsonProperty("attack_chain_run_documents")
   private List<Document> documents;
 
   public List<Document> getDocuments() {
@@ -167,7 +167,7 @@ public class AttackChainRunFileExport extends FileExportBase {
     return documents;
   }
 
-  @JsonProperty("exercise_lessons_categories")
+  @JsonProperty("attack_chain_run_lessons_categories")
   private List<LessonsCategory> lessonsCategories;
 
   public List<LessonsCategory> getLessonsCategories() {
@@ -179,7 +179,7 @@ public class AttackChainRunFileExport extends FileExportBase {
     return lessonsCategories;
   }
 
-  @JsonProperty("exercise_lessons_questions")
+  @JsonProperty("attack_chain_run_lessons_questions")
   private List<LessonsQuestion> lessonsQuestions;
 
   public List<LessonsQuestion> getLessonsQuestions() {

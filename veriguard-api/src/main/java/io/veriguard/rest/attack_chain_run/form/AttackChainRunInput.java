@@ -22,41 +22,41 @@ public class AttackChainRunInput {
 
   @NotBlank(message = MANDATORY_MESSAGE)
   @Size(max = EXERCISE_NAME_MAX_LENGTH, message = MAX_255_MESSAGE)
-  @JsonProperty("exercise_name")
+  @JsonProperty("attack_chain_run_name")
   private String name;
 
-  @JsonProperty("exercise_subtitle")
+  @JsonProperty("attack_chain_run_subtitle")
   private String subtitle;
 
   @Nullable
-  @JsonProperty("exercise_category")
+  @JsonProperty("attack_chain_run_category")
   private String category;
 
   @Nullable
-  @JsonProperty("exercise_main_focus")
+  @JsonProperty("attack_chain_run_main_focus")
   private String mainFocus;
 
   @Nullable
-  @JsonProperty("exercise_severity")
+  @JsonProperty("attack_chain_run_severity")
   private String severity;
 
   @Nullable
-  @JsonProperty("exercise_description")
+  @JsonProperty("attack_chain_run_description")
   private String description;
 
-  @JsonProperty("exercise_tags")
+  @JsonProperty("attack_chain_run_tags")
   private List<String> tagIds = new ArrayList<>();
 
   @Email(message = EMAIL_FORMAT)
-  @JsonProperty("exercise_mail_from")
+  @JsonProperty("attack_chain_run_mail_from")
   private String from;
 
-  @JsonProperty("exercise_mails_reply_to")
+  @JsonProperty("attack_chain_run_mails_reply_to")
   private List<String> replyTos;
 
-  @JsonProperty("exercise_message_header")
+  @JsonProperty("attack_chain_run_message_header")
   private String header;
 
-  @JsonProperty("exercise_message_footer")
+  @JsonProperty("attack_chain_run_message_footer")
   private String footer;
 }

@@ -18,18 +18,18 @@ import org.springframework.beans.BeanUtils;
 @Data
 public class AttackChainSimple {
 
-  @JsonProperty("scenario_id")
+  @JsonProperty("attack_chain_id")
   private String id;
 
-  @JsonProperty("scenario_name")
+  @JsonProperty("attack_chain_name")
   private String name;
 
-  @JsonProperty("scenario_subtitle")
+  @JsonProperty("attack_chain_subtitle")
   private String subtitle;
 
   @ArraySchema(schema = @Schema(type = "string"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
-  @JsonProperty("scenario_tags")
+  @JsonProperty("attack_chain_tags")
   private Set<Tag> tags = new HashSet<>();
 
   public static AttackChainSimple fromAttackChain(@NotNull final AttackChain attackChain) {

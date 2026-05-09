@@ -34,14 +34,14 @@ public class AttackChainEdge {
 
   @ManyToOne
   @JoinColumn(name = "parent_node_id", referencedColumnName = "node_id")
-  @JsonProperty("inject_parent_id")
+  @JsonProperty("node_parent_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   private AttackChainNode attackChainNodeParent;
 
   @ManyToOne
   @JoinColumn(name = "child_node_id", referencedColumnName = "node_id")
-  @JsonProperty("inject_children_id")
+  @JsonProperty("node_children_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   private AttackChainNode attackChainNodeChildren;

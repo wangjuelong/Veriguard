@@ -36,7 +36,7 @@ public class Log implements Base {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "log_exercise")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("log_exercise")
+  @JsonProperty("log_attack_chain_run")
   @Schema(type = "string")
   private AttackChainRun attackChainRun;
 

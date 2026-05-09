@@ -244,7 +244,7 @@ public class Team implements Base {
         .sum();
   }
 
-  @JsonProperty("team_injects_expectations_total_score_by_exercise")
+  @JsonProperty("team_injects_expectations_total_score_by_attack_chain_run")
   @NotNull
   @Schema(description = "Total score of expectations by simulation linked to this team")
   public Map<String, Double> getAttackChainNodeExpectationsTotalScoreByAttackChainRun() {
@@ -269,7 +269,7 @@ public class Team implements Base {
         .sum();
   }
 
-  @JsonProperty("team_injects_expectations_total_expected_score_by_exercise")
+  @JsonProperty("team_injects_expectations_total_expected_score_by_attack_chain_run")
   @NotNull
   @Schema(description = "Total expected score of expectations by simulation linked to this team")
   public Map<String, Double> getAttackChainNodeExpectationsTotalExpectedScoreByAttackChainRun() {

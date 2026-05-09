@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 public class AttackChainRunUpdateTeamsInput {
 
-  @JsonProperty("exercise_teams")
+  @JsonProperty("attack_chain_run_teams")
   private List<String> teamIds = new ArrayList<>();
 }
