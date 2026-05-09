@@ -36,7 +36,7 @@ public class ReportAttackChainNodeComment {
   private Report report;
 
   @Column(name = "comment")
-  @JsonProperty("report_inject_comment")
+  @JsonProperty("report_node_comment")
   private String comment;
 
   @JsonProperty("node_id")

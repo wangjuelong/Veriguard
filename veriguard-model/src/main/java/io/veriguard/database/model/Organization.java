@@ -102,7 +102,7 @@ public class Organization implements Base {
     return attackChainNodes;
   }
 
-  @JsonProperty("organization_injects_number")
+  @JsonProperty("organization_nodes_number")
   public long getOrganizationAttackChainNodesNumber() {
     return attackChainNodes.size();
   }

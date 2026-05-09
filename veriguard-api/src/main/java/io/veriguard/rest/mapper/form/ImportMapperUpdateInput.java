@@ -18,11 +18,11 @@ public class ImportMapperUpdateInput {
   private String name;
 
   @Pattern(regexp = "^[A-Z]{1,2}$")
-  @JsonProperty("import_mapper_inject_type_column")
+  @JsonProperty("import_mapper_node_type_column")
   @NotBlank
   private String attackChainNodeTypeColumn;
 
-  @JsonProperty("import_mapper_inject_importers")
+  @JsonProperty("import_mapper_node_importers")
   @NotNull
   private List<AttackChainNodeImporterUpdateInput> importers = new ArrayList<>();
 }

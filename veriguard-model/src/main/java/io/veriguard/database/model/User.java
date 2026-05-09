@@ -243,7 +243,7 @@ public class User implements Base {
       fetch = FetchType.LAZY,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  @JsonProperty("team_exercises_users")
+  @JsonProperty("team_attack_chain_runs_users")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<AttackChainRunTeamUser> attackChainRunTeamUsers = new ArrayList<>();
 

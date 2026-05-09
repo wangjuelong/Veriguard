@@ -573,7 +573,7 @@ public class StarterPackTest extends IntegrationTest {
     assertTrue(dashboardTest.isPresent());
 
     Optional<Setting> staticsParameters =
-        settingRepository.findByKey("platform_scenario_dashboard");
+        settingRepository.findByKey("platform_attack_chain_dashboard");
     assertTrue(staticsParameters.isPresent());
     assertEquals(dashboardTest.get().getId(), staticsParameters.get().getValue());
   }
@@ -583,7 +583,7 @@ public class StarterPackTest extends IntegrationTest {
     assertTrue(dashboardTest.isPresent());
 
     Optional<Setting> staticsParameters =
-        settingRepository.findByKey("platform_simulation_dashboard");
+        settingRepository.findByKey("platform_attack_chain_run_dashboard");
     assertTrue(staticsParameters.isPresent());
     assertEquals(dashboardTest.get().getId(), staticsParameters.get().getValue());
   }

@@ -12,6 +12,6 @@ public class ReportAttackChainNodeCommentInput {
   @JsonProperty("node_id")
   private String attackChainNodeId;
 
-  @JsonProperty("report_inject_comment")
+  @JsonProperty("report_node_comment")
   private String comment;
 }

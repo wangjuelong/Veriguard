@@ -78,7 +78,7 @@ public class Report implements Base {
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       fetch = FetchType.EAGER)
-  @JsonProperty("report_injects_comments")
+  @JsonProperty("report_nodes_comments")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<ReportAttackChainNodeComment> reportAttackChainNodesComments = new ArrayList<>();
 
