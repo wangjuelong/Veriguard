@@ -74,6 +74,9 @@ public class AttackChainNodesExecutionJob implements Job {
   private final NotificationEventService notificationEventService;
   private final SecurityCoverageSendJobService securityCoverageSendJobService;
   private final io.veriguard.attackchain.execution.LinkVerdictCalculator linkVerdictCalculator;
+  private final io.veriguard.attackchain.execution.LinkExpectationService linkExpectationService;
+  private final io.veriguard.database.repository.AttackChainLinkExpectationRepository
+      attackChainLinkExpectationRepository;
 
   private final List<ExecutionStatus> executionStatusesNotReady =
       List.of(
@@ -123,9 +126,16 @@ public class AttackChainNodesExecutionJob implements Job {
                       attackChainRun.setStatus(AttackChainRunStatus.FINISHED);
                       attackChainRun.setEnd(now());
                       attackChainRun.setUpdatedAt(now());
-                      // Phase 5: 链路终态时计算并写入两维 verdict
+                      // Phase 7: 链路终态前先物化 + 评估链路级 SOC expectation
+                      linkExpectationService.instantiateForRun(attackChainRun);
+                      linkExpectationService.evaluateForRun(attackChainRun);
+                      // Phase 5 + 7: verdict 同时纳入节点级 + 链路级 expectation
                       io.veriguard.attackchain.execution.LinkVerdictCalculator.LinkVerdictResult
-                          verdict = linkVerdictCalculator.compute(attackChainRun);
+                          verdict =
+                              linkVerdictCalculator.compute(
+                                  attackChainRun,
+                                  attackChainLinkExpectationRepository.findByAttackChainRunId(
+                                      attackChainRun.getId()));
                       attackChainRun.setVerdictPrevention(verdict.prevention());
                       attackChainRun.setVerdictDetection(verdict.detection());
                       attackChainRun.setVerdictComputedAt(now());

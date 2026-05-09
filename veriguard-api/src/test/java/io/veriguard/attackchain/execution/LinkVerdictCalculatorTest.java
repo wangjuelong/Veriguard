@@ -2,11 +2,13 @@ package io.veriguard.attackchain.execution;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.veriguard.database.model.AttackChainLinkExpectation;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_STATUS;
 import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.LinkExpectationStatus;
 import io.veriguard.database.model.LinkVerdict;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,7 +204,96 @@ class LinkVerdictCalculatorTest {
     assertThat(result.prevention()).isEqualTo(LinkVerdict.FULL_BLOCKED);
   }
 
+  // ---- Phase 7：链路级 expectations 纳入 DETECTION 维度 ----
+
+  @Test
+  @DisplayName("链路级 expectation 全 SUCCESS + 无节点 DETECTION → DETECTION=FULL_BLOCKED")
+  void link_expectations_all_success() {
+    var run = runWithNodes(0);
+    var links =
+        List.of(linkExp(LinkExpectationStatus.SUCCESS), linkExp(LinkExpectationStatus.SUCCESS));
+
+    var result = calculator.compute(run, links);
+
+    assertThat(result.detection()).isEqualTo(LinkVerdict.FULL_BLOCKED);
+    assertThat(result.prevention()).isEqualTo(LinkVerdict.N_A);
+  }
+
+  @Test
+  @DisplayName("链路级 expectation 全 FAILED → DETECTION=FULL_BREACH")
+  void link_expectations_all_failed() {
+    var run = runWithNodes(0);
+    var links =
+        List.of(linkExp(LinkExpectationStatus.FAILED), linkExp(LinkExpectationStatus.FAILED));
+
+    var result = calculator.compute(run, links);
+
+    assertThat(result.detection()).isEqualTo(LinkVerdict.FULL_BREACH);
+  }
+
+  @Test
+  @DisplayName("链路级 expectation 混合（SUCCESS + UNKNOWN）→ DETECTION=PARTIAL")
+  void link_expectations_partial() {
+    var run = runWithNodes(0);
+    var links =
+        List.of(linkExp(LinkExpectationStatus.SUCCESS), linkExp(LinkExpectationStatus.UNKNOWN));
+
+    var result = calculator.compute(run, links);
+
+    assertThat(result.detection()).isEqualTo(LinkVerdict.PARTIAL);
+  }
+
+  @Test
+  @DisplayName("节点级 + 链路级 DETECTION 合并：节点全 SUCCESS + 链路 1 FAILED → PARTIAL")
+  void link_and_node_detection_merge() {
+    var run = runWithNodes(2);
+    run.getAttackChainNodes()
+        .forEach(
+            n ->
+                n.getExpectations()
+                    .add(expectation(EXPECTATION_TYPE.DETECTION, EXPECTATION_STATUS.SUCCESS)));
+    var links = List.of(linkExp(LinkExpectationStatus.FAILED));
+
+    var result = calculator.compute(run, links);
+
+    // 节点级 2 SUCCESS / 2，链路级 0 / 1 → 总 2 / 3 → PARTIAL
+    assertThat(result.detection()).isEqualTo(LinkVerdict.PARTIAL);
+  }
+
+  @Test
+  @DisplayName("compute(run) 老签名：不传 link expectations 等价于空列表（Phase 5 backward compat）")
+  void backward_compat_no_link_param() {
+    var run = runWithNodes(1);
+    run.getAttackChainNodes()
+        .get(0)
+        .getExpectations()
+        .add(expectation(EXPECTATION_TYPE.DETECTION, EXPECTATION_STATUS.SUCCESS));
+
+    assertThat(calculator.compute(run)).isEqualTo(calculator.compute(run, List.of()));
+  }
+
+  @Test
+  @DisplayName("null link expectations 列表 → 退化到只看节点级")
+  void null_link_expectations_safe() {
+    var run = runWithNodes(1);
+    run.getAttackChainNodes()
+        .get(0)
+        .getExpectations()
+        .add(expectation(EXPECTATION_TYPE.DETECTION, EXPECTATION_STATUS.SUCCESS));
+
+    var result = calculator.compute(run, null);
+
+    assertThat(result.detection()).isEqualTo(LinkVerdict.FULL_BLOCKED);
+  }
+
   // ---- helpers ----
+
+  private static AttackChainLinkExpectation linkExp(LinkExpectationStatus status) {
+    AttackChainLinkExpectation e = new AttackChainLinkExpectation();
+    e.setId(java.util.UUID.randomUUID());
+    e.setStatus(status);
+    return e;
+  }
 
   private static AttackChainRun run() {
     var r = new AttackChainRun();
