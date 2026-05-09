@@ -68,6 +68,15 @@ services:
       - "8080:8080"
     volumes:
       - ./deploy/application-prod.properties:/config/application-prod.properties:ro
+    environment:
+      # SOC Elastic connector (PRD §2.4, spec §4.4) — defaults disabled; ops sets credentials in .env to enable.
+      VERIGUARD_SOC_ELASTIC_ENABLED: ${VERIGUARD_SOC_ELASTIC_ENABLED:-false}
+      VERIGUARD_SOC_ELASTIC_URL: ${VERIGUARD_SOC_ELASTIC_URL:-}
+      VERIGUARD_SOC_ELASTIC_API_KEY: ${VERIGUARD_SOC_ELASTIC_API_KEY:-}
+      VERIGUARD_SOC_ELASTIC_ALERT_INDEX: ${VERIGUARD_SOC_ELASTIC_ALERT_INDEX:-.alerts-security.alerts-*}
+      VERIGUARD_SOC_ELASTIC_DETECTION_RULES_API: ${VERIGUARD_SOC_ELASTIC_DETECTION_RULES_API:-/api/detection_engine/rules/_find}
+      VERIGUARD_SOC_ELASTIC_QUERY_TIMEOUT_SECONDS: ${VERIGUARD_SOC_ELASTIC_QUERY_TIMEOUT_SECONDS:-10}
+      VERIGUARD_SOC_ELASTIC_RULES_CACHE_TTL_SECONDS: ${VERIGUARD_SOC_ELASTIC_RULES_CACHE_TTL_SECONDS:-300}
     command:
       - java
       - -jar

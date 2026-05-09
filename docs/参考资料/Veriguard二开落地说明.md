@@ -67,3 +67,47 @@
 | `mvn -pl veriguard-api -am test -Dtest='NotImplementedSandboxDriverTest,SandboxIntegrationExceptionMappingTest,SandboxServiceTest,SandboxScriptExporterTest' -Dsurefire.failIfNoSpecifiedTests=false` | M1 后端单元测试 4+2+5+8=19 PASS |
 | `cd veriguard-front && yarn vitest run src/admin/components/veriguard/sandbox` | M1 前端组件 + 工具单元测试 5+5+19=29 PASS |
 | `mvn -pl veriguard-api -am test -Dtest=SandboxApiIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false` | M1 集成测试编译通过；运行时验证待 dev stack 启动后回归（依赖 V4_73 迁移与 Postgres 实例） |
+
+## 七、启用 SOC connector
+
+PRD §2.4 攻击编排 link / 节点维度的 detection 验证依赖 SOC 适配器。当前已实现 `ElasticSocConnector`（spec §4.4），默认**关闭**——未配置时 `@ConditionalOnProperty` 不会实例化它，攻击编排在 SOC 状态页显示 "未配置"，不会因连不上 Elastic 而启动失败。
+
+### 配置项（来自 `ElasticSocConnectorProperties`）
+
+| 环境变量 | Spring 属性 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `VERIGUARD_SOC_ELASTIC_ENABLED` | `veriguard.soc.elastic.enabled` | `false` | 是否启用 connector |
+| `VERIGUARD_SOC_ELASTIC_URL` | `veriguard.soc.elastic.url` | -（必填） | Elastic 集群地址，例 `https://elastic.internal:9200` |
+| `VERIGUARD_SOC_ELASTIC_API_KEY` | `veriguard.soc.elastic.api-key` | -（推荐） | Elastic API key；username/password 仅供本地调试 |
+| `VERIGUARD_SOC_ELASTIC_ALERT_INDEX` | `veriguard.soc.elastic.alert-index` | `.alerts-security.alerts-*` | 告警索引 pattern（Kibana Security 默认） |
+| `VERIGUARD_SOC_ELASTIC_DETECTION_RULES_API` | `veriguard.soc.elastic.detection-rules-api` | `/api/detection_engine/rules/_find` | Kibana Detection Engine 规则查询路径 |
+| `VERIGUARD_SOC_ELASTIC_QUERY_TIMEOUT_SECONDS` | `veriguard.soc.elastic.query-timeout-seconds` | `10` | 单次查询超时，秒 |
+| `VERIGUARD_SOC_ELASTIC_RULES_CACHE_TTL_SECONDS` | `veriguard.soc.elastic.rules-cache-ttl-seconds` | `300` | `listAvailableRules()` 本地缓存 TTL，秒 |
+
+凭证仅来自 `application.properties` + 环境变量，**不入数据库**（spec §4.5）。
+
+### Prod（根 `docker-compose.yml`）
+
+1. `cp .env.example .env`，填入 `VERIGUARD_SOC_ELASTIC_ENABLED=true` 与 `URL` / `API_KEY`
+2. `docker compose up -d` 重建 `veriguard-app` 容器，使其读取新 env
+
+`veriguard-app` 服务的 `environment:` 段已用 `${VAR:-default}` 暴露所有 7 个变量，未填时维持默认值。
+
+### Dev（`mvn spring-boot:run` + `veriguard-dev/`）
+
+API 在宿主机进程内运行，不在 dev compose 中。最简单的做法：
+
+```sh
+cp veriguard-dev/.env.example veriguard-dev/.env   # 仅首次
+# 填入 VERIGUARD_SOC_ELASTIC_ENABLED=true / URL / API_KEY
+set -a && source veriguard-dev/.env && set +a
+mvn -pl veriguard-api spring-boot:run
+```
+
+或在 IntelliJ "Backend start" run config 的 Environment Variables 里追加 `VERIGUARD_SOC_ELASTIC_*=...`。
+
+### 验证
+
+- 启动后访问前端 `/admin/veriguard` SOC 状态页（Phase 11 `SocConnectorStatusList`），健康检查通过会显示 `OK`，连不上会显示具体错误。
+- 后端日志：`io.veriguard.attackchain.soc.elastic.ElasticSocConnector` 启动 banner 出现即代表 `@ConditionalOnProperty(enabled=true)` 生效。
+- 不要把生产 `.env` 提交到 git；`.gitignore` 已忽略 `.env`，仅 `.env.example` 入库。
