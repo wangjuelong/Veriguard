@@ -12,7 +12,7 @@ import { Can } from '../../../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../../../utils/permissions/types';
 import TeamPopover from '../../../../components/teams/TeamPopover';
 import { TeamContext } from '../../../Context';
-import InjectAddTeams from './InjectAddTeams';
+import AttackChainNodeAddTeams from './AttackChainNodeAddTeams';
 
 const useStyles = makeStyles()(theme => ({
   column: {
@@ -28,7 +28,7 @@ interface Props {
   error?: string | null;
 }
 
-const InjectTeamsList: FunctionComponent<Props> = ({ readOnly = false, hideEnabledUsersNumber = false, error }) => {
+const AttackChainNodeTeamsList: FunctionComponent<Props> = ({ readOnly = false, hideEnabledUsersNumber = false, error }) => {
   // Standard hooks
   const { classes } = useStyles();
   const { t } = useFormatter();
@@ -38,11 +38,11 @@ const InjectTeamsList: FunctionComponent<Props> = ({ readOnly = false, hideEnabl
   // -- TEAMS VALUES --
   const allTeams = useWatch({
     control,
-    name: 'inject_all_teams',
+    name: 'node_all_teams',
   });
   const injectTeamIds = useWatch({
     control,
-    name: 'inject_teams',
+    name: 'node_teams',
   });
   const [teams, setTeams] = useState<TeamOutput[]>([]);
 
@@ -56,11 +56,11 @@ const InjectTeamsList: FunctionComponent<Props> = ({ readOnly = false, hideEnabl
   }, [injectTeamIds]);
 
   // -- ACTIONS --
-  const onTeamsChange = (teamIds: string[]) => setValue('inject_teams', teamIds, { shouldValidate: true });
+  const onTeamsChange = (teamIds: string[]) => setValue('node_teams', teamIds, { shouldValidate: true });
 
   const onRemoveTeam = (teamId: string) => {
     const updatedTeamIds = injectTeamIds.filter((id: string) => id !== teamId);
-    setValue('inject_teams', updatedTeamIds, { shouldValidate: true });
+    setValue('node_teams', updatedTeamIds, { shouldValidate: true });
   };
 
   const teamListItem = (team: TeamOutput, userEnabled: number) => (
@@ -70,7 +70,7 @@ const InjectTeamsList: FunctionComponent<Props> = ({ readOnly = false, hideEnabl
       secondaryAction={!allTeams && (
         <TeamPopover
           team={team}
-          onRemoveTeamFromInject={onRemoveTeam}
+          onRemoveTeamFromAttackChainNode={onRemoveTeam}
           disabled={readOnly}
         />
       )}
@@ -112,15 +112,15 @@ const InjectTeamsList: FunctionComponent<Props> = ({ readOnly = false, hideEnabl
           team_name: t('All teams'),
           team_users_number: allUsersNumber,
           team_tags: [],
-          team_exercises: [],
-          team_scenarios: [],
+          team_attack_chain_runs: [],
+          team_attack_chains: [],
           team_updated_at: '',
         }, allUsersEnabledNumber ?? 0)}
       </List>
       {!allTeams
         && (
           <Can I={ACTIONS.MANAGE} a={SUBJECTS.TEAMS_AND_PLAYERS}>
-            <InjectAddTeams disabled={readOnly} handleModifyTeams={onTeamsChange} injectTeamsIds={injectTeamIds} error={error} />
+            <AttackChainNodeAddTeams disabled={readOnly} handleModifyTeams={onTeamsChange} injectTeamsIds={injectTeamIds} error={error} />
           </Can>
         )}
       {!allTeams && error && (
@@ -132,4 +132,4 @@ const InjectTeamsList: FunctionComponent<Props> = ({ readOnly = false, hideEnabl
   );
 };
 
-export default InjectTeamsList;
+export default AttackChainNodeTeamsList;

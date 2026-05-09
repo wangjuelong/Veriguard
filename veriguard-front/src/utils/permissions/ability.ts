@@ -33,7 +33,7 @@ export function defineAbility(capabilities: string[], grants: Record<string, str
     }
   }
 
-  // To use casl for grant : ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, scenario.scenario_id)
+  // To use casl for grant : ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, attack_chain.attack_chain_id)
   const parsedGrants = parseGrants(grants);
   if (parsedGrants) {
     for (const [action, subject, conditions] of parsedGrants) {

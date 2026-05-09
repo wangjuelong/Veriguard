@@ -5,8 +5,8 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
-import { fetchExerciseInjectExpectations } from '../../../../../actions/AttackChainRun';
+import { fetchAttackChainRunAttackChainNodes } from '../../../../../actions/AttackChainNode';
+import { fetchAttackChainRunAttackChainNodeExpectations } from '../../../../../actions/AttackChainRun';
 import { useFormatter } from '../../../../../components/i18n';
 import ItemTags from '../../../../../components/ItemTags';
 import Loader from '../../../../../components/Loader';
@@ -14,7 +14,7 @@ import SearchFilter from '../../../../../components/SearchFilter';
 import { useHelper } from '../../../../../store';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import { isNotEmptyField } from '../../../../../utils/utils';
-import InjectIcon from '../../../common/attack_chain_nodes/InjectIcon';
+import AttackChainNodeIcon from '../../../common/attack_chain_nodes/AttackChainNodeIcon';
 import TagsFilter from '../../../common/filters/TagsFilter';
 import AnimationMenu from '../AnimationMenu';
 import TeamOrAssetLine from './common/TeamOrAssetLine';
@@ -44,40 +44,40 @@ const Validations = () => {
   const handleRemoveTag = value => setTags(R.filter(n => n.id !== value, tags));
   // Fetching data
   const {
-    exercise,
+    attack_chain_run,
     injectExpectations,
     injectsMap,
   } = useHelper((helper) => {
     return {
-      exercise: helper.getExercise(exerciseId),
-      injectsMap: helper.getInjectsMap(),
-      injectExpectations: helper.getExerciseInjectExpectations(exerciseId),
+      attack_chain_run: helper.getAttackChainRun(exerciseId),
+      injectsMap: helper.getAttackChainNodesMap(),
+      injectExpectations: helper.getAttackChainRunAttackChainNodeExpectations(exerciseId),
     };
   });
   useDataLoader(() => {
-    dispatch(fetchExerciseInjectExpectations(exerciseId));
-    dispatch(fetchExerciseInjects(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodeExpectations(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodes(exerciseId));
   });
   const filterByKeyword = n => keyword === ''
-    || (n.inject_expectation_inject?.inject_title || '')
+    || (n.node_expectation_node?.node_title || '')
       .toLowerCase()
       .indexOf(keyword.toLowerCase()) !== -1
-      || (n.inject_expectation_inject?.inject_description || '')
+      || (n.node_expectation_node?.node_description || '')
         .toLowerCase()
         .indexOf(keyword.toLowerCase()) !== -1;
-  const sort = R.sortWith([R.descend(R.prop('inject_expectation_created_at'))]);
-  const sortedInjectExpectations = R.pipe(
-    R.uniqBy(R.prop('inject_expectation_id')),
+  const sort = R.sortWith([R.descend(R.prop('node_expectation_created_at'))]);
+  const sortedAttackChainNodeExpectations = R.pipe(
+    R.uniqBy(R.prop('node_expectation_id')),
     R.map(n => R.assoc(
-      'inject_expectation_inject',
-      injectsMap[n.inject_expectation_inject] || {},
+      'node_expectation_node',
+      injectsMap[n.node_expectation_node] || {},
       n,
     )),
-    R.filter(n => n.inject_expectation_type === 'MANUAL'),
+    R.filter(n => n.node_expectation_type === 'MANUAL'),
     R.filter(
       n => tags.length === 0
         || R.any(
-          filter => R.includes(filter, n.inject_expectation_inject?.inject_tags),
+          filter => R.includes(filter, n.node_expectation_node?.node_tags),
           R.pluck('id', tags),
         ),
     ),
@@ -85,43 +85,43 @@ const Validations = () => {
     sort,
   )(injectExpectations);
 
-  const groupedByInject = sortedInjectExpectations.reduce((group, expectation) => {
-    const { inject_expectation_inject } = expectation;
-    const { inject_id } = inject_expectation_inject;
-    if (inject_id) {
-      const values = group[inject_id] ?? [];
+  const groupedByAttackChainNode = sortedAttackChainNodeExpectations.reduce((group, expectation) => {
+    const { node_expectation_node } = expectation;
+    const { node_id } = node_expectation_node;
+    if (node_id) {
+      const values = group[node_id] ?? [];
       values.push(expectation);
-      group[inject_id] = values;
+      group[node_id] = values;
     }
     return group;
   }, {});
 
   const groupedByTeamOrAsset = (expectations) => {
     return expectations.reduce((group, expectation) => {
-      const { inject_expectation_team } = expectation;
-      const { inject_expectation_asset } = expectation;
-      const { inject_expectation_asset_group } = expectation;
-      if (inject_expectation_team) {
-        const values = group[inject_expectation_team] ?? [];
+      const { node_expectation_team } = expectation;
+      const { node_expectation_asset } = expectation;
+      const { node_expectation_asset_group } = expectation;
+      if (node_expectation_team) {
+        const values = group[node_expectation_team] ?? [];
         values.push(expectation);
-        group[inject_expectation_team] = values;
+        group[node_expectation_team] = values;
       }
-      if (inject_expectation_asset && !expectation.inject_expectation_group) {
-        const values = group[inject_expectation_asset] ?? [];
+      if (node_expectation_asset && !expectation.node_expectation_group) {
+        const values = group[node_expectation_asset] ?? [];
         values.push(expectation);
-        group[inject_expectation_asset] = values;
+        group[node_expectation_asset] = values;
       }
-      if (inject_expectation_asset_group) {
-        const values = group[inject_expectation_asset_group] ?? [];
+      if (node_expectation_asset_group) {
+        const values = group[node_expectation_asset_group] ?? [];
         values.push(expectation);
-        group[inject_expectation_asset_group] = values;
+        group[node_expectation_asset_group] = values;
       }
       return group;
     }, {});
   };
 
   // Rendering
-  if (exercise && injectExpectations) {
+  if (attack_chain_run && injectExpectations) {
     return (
       <div>
         <AnimationMenu exerciseId={exerciseId} />
@@ -149,22 +149,22 @@ const Validations = () => {
         </div>
         <div className="clearfix" />
         <List>
-          {Object.entries(groupedByInject).map(([injectId, expectationsByInject]) => {
-            const inject = injectsMap[injectId] || {};
-            const injectContract = inject.inject_injector_contract.convertedContent || {};
+          {Object.entries(groupedByAttackChainNode).map(([injectId, expectationsByAttackChainNode]) => {
+            const node = injectsMap[injectId] || {};
+            const injectContract = node.node_injector_contract.convertedContent || {};
             return (
-              <div key={inject.inject_id}>
+              <div key={node.node_id}>
                 <ListItem divider={true} classes={{ root: classes.item }}>
                   <ListItemIcon style={{ paddingTop: 5 }}>
-                    <InjectIcon
-                      isPayload={isNotEmptyField(inject.inject_injector_contract.injector_contract_payload)}
+                    <AttackChainNodeIcon
+                      isPayload={isNotEmptyField(node.node_injector_contract.injector_contract_payload)}
                       type={
-                        inject.inject_injector_contract.injector_contract_payload
-                          ? inject.inject_injector_contract.injector_contract_payload?.payload_collector_type
-                          || inject.inject_injector_contract.injector_contract_payload?.payload_type
-                          : inject.inject_type
+                        node.node_injector_contract.injector_contract_payload
+                          ? node.node_injector_contract.injector_contract_payload?.payload_collector_type
+                          || node.node_injector_contract.injector_contract_payload?.payload_type
+                          : node.node_type
                       }
-                      disabled={!inject.inject_enabled}
+                      disabled={!node.node_enabled}
                       size="small"
                     />
                   </ListItemIcon>
@@ -172,27 +172,27 @@ const Validations = () => {
                     primary={(
                       <>
                         <div className={classes.bodyItem} style={{ width: '55%' }}>
-                          {inject.inject_title}
+                          {node.node_title}
                         </div>
                         <div className={classes.bodyItem} style={{ width: '15%' }}>
-                          {fndt(inject.inject_sent_at)}
+                          {fndt(node.node_sent_at)}
                         </div>
                         <div className={classes.bodyItem} style={{ width: '30%' }}>
-                          <ItemTags variant="list" tags={inject.inject_tags} />
+                          <ItemTags variant="list" tags={node.node_tags} />
                         </div>
                       </>
                     )}
                   />
                 </ListItem>
                 <List component="div" disablePadding>
-                  {Object.entries(groupedByTeamOrAsset(expectationsByInject)).map(([id, expectations]) => {
+                  {Object.entries(groupedByTeamOrAsset(expectationsByAttackChainNode)).map(([id, expectations]) => {
                     return (
                       <TeamOrAssetLine
                         key={id}
                         exerciseId={exerciseId}
-                        inject={inject}
+                        node={node}
                         injectContract={injectContract}
-                        expectationsByInject={expectationsByInject}
+                        expectationsByAttackChainNode={expectationsByAttackChainNode}
                         id={id}
                         expectations={expectations}
                       />

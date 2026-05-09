@@ -1,10 +1,10 @@
-import { type LessonsCategory, type LessonsQuestion, type Objective, type Scenario, type Team } from '../../utils/api-types';
+import { type LessonsCategory, type LessonsQuestion, type Objective, type AttackChain, type Team } from '../../utils/api-types';
 
-export interface ScenariosHelper {
-  getScenario: (scenarioId: string) => Scenario;
-  getScenarios: () => Scenario[];
-  getScenarioTeams: (scenarioId: string) => Team[];
-  getScenarioObjectives: (scenarioId: string) => Objective[];
-  getScenarioLessonsCategories: (scenarioId: string) => LessonsCategory[];
-  getScenarioLessonsQuestions: (scenarioId: string) => LessonsQuestion[];
+export interface AttackChainsHelper {
+  getAttackChain: (scenarioId: string) => AttackChain;
+  getAttackChains: () => AttackChain[];
+  getAttackChainTeams: (scenarioId: string) => Team[];
+  getAttackChainObjectives: (scenarioId: string) => Objective[];
+  getAttackChainLessonsCategories: (scenarioId: string) => LessonsCategory[];
+  getAttackChainLessonsQuestions: (scenarioId: string) => LessonsQuestion[];
 }

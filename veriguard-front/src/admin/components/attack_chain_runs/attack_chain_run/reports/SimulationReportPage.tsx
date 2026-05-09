@@ -3,11 +3,11 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 
-import { updateReportForExercise, updateReportInjectCommentForExercise } from '../../../../../actions/reports/report-actions';
+import { updateReportForAttackChainRun, updateReportAttackChainNodeCommentForAttackChainRun } from '../../../../../actions/reports/report-actions';
 import ExportPdfButton from '../../../../../components/ExportPdfButton';
 import { useFormatter } from '../../../../../components/i18n';
 import Loader from '../../../../../components/Loader';
-import { type Exercise, type LessonsQuestion, type Report, type ReportInput } from '../../../../../utils/api-types';
+import { type AttackChainRun, type LessonsQuestion, type Report, type ReportInput } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useSimulationPermissions from '../../../../../utils/permissions/useSimulationPermissions';
 import ResponsePie from '../../../common/attack_chain_nodes/ResponsePie';
@@ -16,13 +16,13 @@ import ReportComment from '../../../components/reports/ReportComment';
 import ReportPopover from '../../../components/reports/ReportPopover';
 import AnswersByQuestionDialog from '../../../lessons/attack_chain_runs/AnswersByQuestionDialog';
 import LessonsCategories from '../../../lessons/attack_chain_runs/LessonsCategories';
-import ExerciseDistribution from '../overview/ExerciseDistribution';
+import AttackChainRunDistribution from '../overview/AttackChainRunDistribution';
 import SimulationMainInformation from '../SimulationMainInformation';
-import ExerciseReportForm from './ExerciseReportForm';
-import getExerciseReportPdfDocDefinition from './getExerciseReportPdfDoc';
-import InjectReportResult from './InjectReportResult';
+import AttackChainRunReportForm from './AttackChainRunReportForm';
+import getAttackChainRunReportPdfDocDefinition from './getAttackChainRunReportPdfDoc';
+import AttackChainNodeReportResult from './AttackChainNodeReportResult';
 import ReportInformationType from './ReportInformationType';
-import useExerciseReportData from './useExerciseReportData';
+import useAttackChainRunReportData from './useAttackChainRunReportData';
 
 const SimulationReportPage: FunctionComponent = () => {
   // Standard hooks
@@ -31,10 +31,10 @@ const SimulationReportPage: FunctionComponent = () => {
   const theme = useTheme();
 
   const { exerciseId, reportId } = useParams() as {
-    exerciseId: Exercise['exercise_id'];
+    exerciseId: AttackChainRun['attack_chain_run_id'];
     reportId: Report['report_id'];
   };
-  const { loading, report, displayModule, setReloadReportDataCount, reportData } = useExerciseReportData(reportId, exerciseId);
+  const { loading, report, displayModule, setReloadReportDataCount, reportData } = useAttackChainRunReportData(reportId, exerciseId);
   const [selectedQuestion, setSelectedQuestion] = useState<LessonsQuestion | null>(null);
   const selectedQuestionAnswers = selectedQuestion && selectedQuestion.lessonsquestion_id
     ? reportData.lessonsAnswers.filter(answer => answer.lessons_answer_question === selectedQuestion.lessonsquestion_id)
@@ -48,11 +48,11 @@ const SimulationReportPage: FunctionComponent = () => {
 
   // Context
   const context: ReportContextType = {
-    onUpdateReport: (_reportId: Report['report_id'], data: ReportInput) => dispatch(updateReportForExercise(exerciseId, reportId, data))
+    onUpdateReport: (_reportId: Report['report_id'], data: ReportInput) => dispatch(updateReportForAttackChainRun(exerciseId, reportId, data))
       .then(() => setReloadReportDataCount((prev: number) => prev + 1)),
     renderReportForm: (onSubmitForm, onHandleCancel, _report) => {
       return (
-        <ExerciseReportForm
+        <AttackChainRunReportForm
           onSubmit={onSubmitForm}
           handleCancel={onHandleCancel}
           initialValues={report}
@@ -62,7 +62,7 @@ const SimulationReportPage: FunctionComponent = () => {
     },
   } as ReportContextType;
 
-  const saveGlobalObservation = (comment: string) => dispatch(updateReportForExercise(
+  const saveGlobalObservation = (comment: string) => dispatch(updateReportForAttackChainRun(
     exerciseId,
     report.report_id,
     {
@@ -97,7 +97,7 @@ const SimulationReportPage: FunctionComponent = () => {
         <ToggleButtonGroup style={{ marginLeft: 'auto' }}>
           <ExportPdfButton
             pdfName={report.report_name}
-            getPdfDocDefinition={() => getExerciseReportPdfDocDefinition({
+            getPdfDocDefinition={() => getAttackChainRunReportPdfDocDefinition({
               report,
               reportData,
               displayModule,
@@ -135,7 +135,7 @@ const SimulationReportPage: FunctionComponent = () => {
               <Typography variant="h4" gutterBottom>
                 {t('General information')}
               </Typography>
-              <SimulationMainInformation exercise={reportData.exercise} />
+              <SimulationMainInformation attack_chain_run={reportData.attack_chain_run} />
             </div>
           )}
         {displayModule(ReportInformationType.SCORE_DETAILS)
@@ -176,12 +176,12 @@ const SimulationReportPage: FunctionComponent = () => {
           )}
         {displayModule(ReportInformationType.INJECT_RESULT)
           && (
-            <InjectReportResult
+            <AttackChainNodeReportResult
               canEditComment={canEditReport}
-              injectsComments={report?.report_injects_comments}
-              injects={reportData.injects}
+              injectsComments={report?.report_nodes_comments}
+              nodes={reportData.nodes}
               style={{ width: '100%' }}
-              onCommentSubmit={value => dispatch(updateReportInjectCommentForExercise(exerciseId, report.report_id, value))}
+              onCommentSubmit={value => dispatch(updateReportAttackChainNodeCommentForAttackChainRun(exerciseId, report.report_id, value))}
             />
           )}
         {displayModule(ReportInformationType.GLOBAL_OBSERVATION)
@@ -210,13 +210,13 @@ const SimulationReportPage: FunctionComponent = () => {
             />
           )}
         {displayModule(ReportInformationType.EXERCISE_DETAILS)
-          && <ExerciseDistribution exerciseId={exerciseId} isReport />}
+          && <AttackChainRunDistribution exerciseId={exerciseId} isReport />}
         <AnswersByQuestionDialog
           open={!!selectedQuestion}
           onClose={() => setSelectedQuestion(null)}
           question={selectedQuestion?.lessons_question_content || ''}
           answers={selectedQuestionAnswers}
-          anonymized={!!reportData.exercise.exercise_lessons_anonymized}
+          anonymized={!!reportData.attack_chain_run.attack_chain_run_lessons_anonymized}
           usersMap={reportData.usersMap}
         />
       </div>

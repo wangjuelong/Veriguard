@@ -10,11 +10,11 @@ import { useFormatter } from '../../../../components/i18n';
 import ItemTags from '../../../../components/ItemTags';
 import PlatformIcon from '../../../../components/PlatformIcon';
 import { useHelper } from '../../../../store';
-import { type InjectResultOverviewOutput, type KillChainPhaseSimple } from '../../../../utils/api-types';
+import { type AttackChainNodeResultOverviewOutput, type KillChainPhaseSimple } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
 import { isNotEmptyField } from '../../../../utils/utils';
-import InjectIcon from '../../common/attack_chain_nodes/InjectIcon';
+import AttackChainNodeIcon from '../../common/attack_chain_nodes/AttackChainNodeIcon';
 
 const useStyles = makeStyles()(() => ({
   chip: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles()(() => ({
   paper: { minHeight: '100%' },
 }));
 
-interface Props { injectResultOverviewOutput: InjectResultOverviewOutput }
+interface Props { injectResultOverviewOutput: AttackChainNodeResultOverviewOutput }
 
 const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOverviewOutput }) => {
   // Standard hooks
@@ -44,15 +44,15 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
 
   // utils
   const type = useMemo(() => {
-    const payload = injectResultOverviewOutput.inject_injector_contract?.injector_contract_payload;
-    return payload?.payload_collector_type ?? payload?.payload_type ?? injectResultOverviewOutput.inject_type;
+    const payload = injectResultOverviewOutput.node_injector_contract?.injector_contract_payload;
+    return payload?.payload_collector_type ?? payload?.payload_type ?? injectResultOverviewOutput.node_type;
   }, [injectResultOverviewOutput]);
 
   const documentNames = useMemo(() => {
-    const docs = injectResultOverviewOutput.injects_documents ?? [];
+    const docs = injectResultOverviewOutput.nodes_documents ?? [];
     if (docs.length === 0) return ['-'];
     return docs.map(docId => documentMap[docId]?.document_name ?? '-');
-  }, [injectResultOverviewOutput.injects_documents, documentMap]);
+  }, [injectResultOverviewOutput.nodes_documents, documentMap]);
 
   return (
     <Paper sx={{ p: theme.spacing(2) }} classes={{ root: classes.paper }} variant="outlined">
@@ -72,7 +72,7 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
           <Typography variant="h3" gutterBottom>
             {t('Description')}
           </Typography>
-          <ExpandableMarkdown source={injectResultOverviewOutput.inject_description} limit={300} />
+          <ExpandableMarkdown source={injectResultOverviewOutput.node_description} limit={300} />
         </div>
         <div style={{
           gridArea: 'type',
@@ -88,18 +88,18 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
             marginRight: theme.spacing(1),
           }}
           >
-            <InjectIcon
-              isPayload={isNotEmptyField(injectResultOverviewOutput.inject_injector_contract?.injector_contract_payload)}
+            <AttackChainNodeIcon
+              isPayload={isNotEmptyField(injectResultOverviewOutput.node_injector_contract?.injector_contract_payload)}
               type={type}
             />
-            <Tooltip title={tPick(injectResultOverviewOutput.inject_injector_contract?.injector_contract_labels)}>
+            <Tooltip title={tPick(injectResultOverviewOutput.node_injector_contract?.injector_contract_labels)}>
               <div style={{
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
               }}
               >
-                {tPick(injectResultOverviewOutput.inject_injector_contract?.injector_contract_labels)}
+                {tPick(injectResultOverviewOutput.node_injector_contract?.injector_contract_labels)}
               </div>
             </Tooltip>
           </div>
@@ -108,7 +108,7 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
           <Typography variant="h3" gutterBottom>
             {t('Last execution date')}
           </Typography>
-          {fldt(injectResultOverviewOutput?.inject_status?.tracking_end_date)}
+          {fldt(injectResultOverviewOutput?.node_status?.tracking_end_date)}
         </div>
         <div style={{ gridArea: 'documents' }}>
           <Typography variant="h3" gutterBottom>
@@ -126,7 +126,7 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
           <Typography variant="h3" gutterBottom>
             {t('Tags')}
           </Typography>
-          <ItemTags tags={injectResultOverviewOutput.injects_tags} limit={10} />
+          <ItemTags tags={injectResultOverviewOutput.nodes_tags} limit={10} />
         </div>
         <div style={{ gridArea: 'platforms' }}>
           <Typography variant="h3" gutterBottom>
@@ -138,7 +138,7 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
             gap: '10px',
           }}
           >
-            {injectResultOverviewOutput.inject_injector_contract?.injector_contract_platforms?.map((platform: string) => (
+            {injectResultOverviewOutput.node_injector_contract?.injector_contract_platforms?.map((platform: string) => (
               <div
                 key={platform}
                 style={{
@@ -156,8 +156,8 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
           <Typography variant="h3" gutterBottom>
             {t('Kill Chain Phases')}
           </Typography>
-          {(injectResultOverviewOutput.inject_kill_chain_phases ?? []).length === 0 && '-'}
-          {injectResultOverviewOutput.inject_kill_chain_phases?.map((killChainPhase: KillChainPhaseSimple) => (
+          {(injectResultOverviewOutput.node_kill_chain_phases ?? []).length === 0 && '-'}
+          {injectResultOverviewOutput.node_kill_chain_phases?.map((killChainPhase: KillChainPhaseSimple) => (
             <Chip
               key={killChainPhase.phase_id}
               variant="outlined"

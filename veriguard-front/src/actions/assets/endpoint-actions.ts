@@ -84,12 +84,12 @@ export const findSimulationEndpointsByIds = (simulationId: string, endpointIds: 
 
 // -- SCENARIOS --
 
-export const fetchScenarioEndpoints = (scenarioId: string) => (dispatch: Dispatch) => {
+export const fetchAttackChainEndpoints = (scenarioId: string) => (dispatch: Dispatch) => {
   const uri = `/api/attack_chains/${scenarioId}/endpoints`;
   return getReferential(arrayOfEndpoints, uri)(dispatch);
 };
 
-export const findScenarioEndpointsByIds = (simulationId: string, endpointIds: string[]) => {
+export const findAttackChainEndpointsByIds = (simulationId: string, endpointIds: string[]) => {
   const uri = `/api/attack_chains/${simulationId}/endpoints/find`;
   return simplePostCall(uri, endpointIds);
 };

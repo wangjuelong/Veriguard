@@ -1,9 +1,9 @@
 import { findSimulationAssetGroupsByIds } from '../../../actions/asset_groups/assetgroup-action';
 import { findSimulationEndpointsByIds } from '../../../actions/assets/endpoint-actions';
-import type { Exercise } from '../../api-types';
+import type { AttackChainRun } from '../../api-types';
 import { type EndpointContextType } from './EndpointContext';
 
-const endpointContextForExercise = (exerciseId: Exercise['exercise_id']): EndpointContextType => {
+const endpointContextForAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id']): EndpointContextType => {
   return {
     async fetchEndpointsByIds(endpointIds: string[]) {
       return findSimulationEndpointsByIds(exerciseId, endpointIds);
@@ -14,4 +14,4 @@ const endpointContextForExercise = (exerciseId: Exercise['exercise_id']): Endpoi
   };
 };
 
-export default endpointContextForExercise;
+export default endpointContextForAttackChainRun;

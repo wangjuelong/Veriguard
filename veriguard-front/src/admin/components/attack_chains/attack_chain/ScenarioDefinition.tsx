@@ -1,16 +1,16 @@
 import { useTheme } from '@mui/material/styles';
 import { useParams } from 'react-router';
 
-import { type ScenariosHelper } from '../../../../actions/attack_chains/scenario-helper';
+import { type AttackChainsHelper } from '../../../../actions/attack_chains/attack_chain-helper';
 import { useHelper } from '../../../../store';
-import { type Scenario } from '../../../../utils/api-types';
-import ScenarioTeams from './teams/ScenarioTeams';
-import ScenarioVariables from './variables/ScenarioVariables';
+import { type AttackChain } from '../../../../utils/api-types';
+import AttackChainTeams from './teams/AttackChainTeams';
+import AttackChainVariables from './variables/AttackChainVariables';
 
-const ScenarioDefinition = () => {
+const AttackChainDefinition = () => {
   const theme = useTheme();
-  const { scenarioId } = useParams() as { scenarioId: Scenario['scenario_id'] };
-  const { scenario } = useHelper((helper: ScenariosHelper) => ({ scenario: helper.getScenario(scenarioId) }));
+  const { scenarioId } = useParams() as { scenarioId: AttackChain['attack_chain_id'] };
+  const { attack_chain } = useHelper((helper: AttackChainsHelper) => ({ attack_chain: helper.getAttackChain(scenarioId) }));
   return (
     <div style={{
       display: 'grid',
@@ -18,10 +18,10 @@ const ScenarioDefinition = () => {
       gridTemplateColumns: '1fr 1fr',
     }}
     >
-      <ScenarioTeams scenarioTeamsUsers={scenario.scenario_teams_users} />
-      <ScenarioVariables />
+      <AttackChainTeams scenarioTeamsUsers={attack_chain.attack_chain_teams_users} />
+      <AttackChainVariables />
     </div>
   );
 };
 
-export default ScenarioDefinition;
+export default AttackChainDefinition;

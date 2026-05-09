@@ -1,66 +1,66 @@
 import {
-  addScenarioTeamPlayers,
-  disableScenarioTeamPlayers,
-  enableScenarioTeamPlayers,
-  fetchScenarioTeams,
-  removeScenarioTeamPlayers,
-} from '../../../../../actions/attack_chains/scenario-actions';
-import { removeScenarioTeams, replaceScenarioTeams, searchScenarioTeams } from '../../../../../actions/attack_chains/scenario-teams-action';
+  addAttackChainTeamPlayers,
+  disableAttackChainTeamPlayers,
+  enableAttackChainTeamPlayers,
+  fetchAttackChainTeams,
+  removeAttackChainTeamPlayers,
+} from '../../../../../actions/attack_chains/attack_chain-actions';
+import { removeAttackChainTeams, replaceAttackChainTeams, searchAttackChainTeams } from '../../../../../actions/attack_chains/attack_chain-teams-action';
 import { addTeam } from '../../../../../actions/teams/team-actions';
 import { type Page } from '../../../../../components/common/queryable/Page';
-import { type Scenario, type ScenarioTeamUser, type SearchPaginationInput, type Team, type TeamCreateInput, type TeamOutput } from '../../../../../utils/api-types';
+import { type AttackChain, type AttackChainTeamUser, type SearchPaginationInput, type Team, type TeamCreateInput, type TeamOutput } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import { type UserStore } from '../../../teams/players/Player';
 
-const teamContextForScenario = (scenarioId: Scenario['scenario_id'], scenarioTeamsUsers: Scenario['scenario_teams_users'], allUsersNumber = 0, allUsersEnabledNumber = 0) => {
+const teamContextForAttackChain = (scenarioId: AttackChain['attack_chain_id'], scenarioTeamsUsers: AttackChain['attack_chain_teams_users'], allUsersNumber = 0, allUsersEnabledNumber = 0) => {
   const dispatch = useAppDispatch();
 
   return {
     async onAddUsersTeam(teamId: Team['team_id'], userIds: UserStore['user_id'][]): Promise<void> {
-      await dispatch(addScenarioTeamPlayers(scenarioId, teamId, { scenario_team_players: userIds }));
-      return dispatch(fetchScenarioTeams(scenarioId));
+      await dispatch(addAttackChainTeamPlayers(scenarioId, teamId, { attack_chain_team_players: userIds }));
+      return dispatch(fetchAttackChainTeams(scenarioId));
     },
     async onRemoveUsersTeam(teamId: Team['team_id'], userIds: UserStore['user_id'][]): Promise<void> {
-      await dispatch(removeScenarioTeamPlayers(scenarioId, teamId, { scenario_team_players: userIds }));
-      return dispatch(fetchScenarioTeams(scenarioId));
+      await dispatch(removeAttackChainTeamPlayers(scenarioId, teamId, { attack_chain_team_players: userIds }));
+      return dispatch(fetchAttackChainTeams(scenarioId));
     },
     onCreateTeam(team: TeamCreateInput): Promise<{ result: string }> {
       return dispatch(addTeam({
         ...team,
-        team_scenarios: [scenarioId],
+        team_attack_chains: [scenarioId],
       }));
     },
     allUsersEnabledNumber: allUsersEnabledNumber,
     allUsersNumber: allUsersNumber,
     checkUserEnabled(teamId: Team['team_id'], userId: UserStore['user_id']): boolean {
-      return (scenarioTeamsUsers ?? [])?.filter((o: ScenarioTeamUser) => o.scenario_id === scenarioId && o.team_id === teamId && userId === o.user_id).length > 0;
+      return (scenarioTeamsUsers ?? [])?.filter((o: AttackChainTeamUser) => o.attack_chain_id === scenarioId && o.team_id === teamId && userId === o.user_id).length > 0;
     },
     computeTeamUsersEnabled(teamId: Team['team_id']) {
-      return scenarioTeamsUsers?.filter((o: ScenarioTeamUser) => o.team_id === teamId).length ?? 0;
+      return scenarioTeamsUsers?.filter((o: AttackChainTeamUser) => o.team_id === teamId).length ?? 0;
     },
     onRemoveTeam(teamId: Team['team_id']): Promise<{
       result: string[];
       entities: { teams: Record<string, Team> };
     }> {
-      return dispatch(removeScenarioTeams(scenarioId, { scenario_teams: [teamId] }));
+      return dispatch(removeAttackChainTeams(scenarioId, { attack_chain_teams: [teamId] }));
     },
     onReplaceTeam(teamIds: Team['team_id'][]): Promise<{
       result: string[];
       entities: { teams: Record<string, Team> };
     }> {
-      return dispatch(replaceScenarioTeams(scenarioId, { scenario_teams: teamIds }));
+      return dispatch(replaceAttackChainTeams(scenarioId, { attack_chain_teams: teamIds }));
     },
     onToggleUser(teamId: Team['team_id'], userId: UserStore['user_id'], userEnabled: boolean): void {
       if (userEnabled) {
-        dispatch(disableScenarioTeamPlayers(scenarioId, teamId, { scenario_team_players: [userId] }));
+        dispatch(disableAttackChainTeamPlayers(scenarioId, teamId, { attack_chain_team_players: [userId] }));
       } else {
-        dispatch(enableScenarioTeamPlayers(scenarioId, teamId, { scenario_team_players: [userId] }));
+        dispatch(enableAttackChainTeamPlayers(scenarioId, teamId, { attack_chain_team_players: [userId] }));
       }
     },
     searchTeams(input: SearchPaginationInput, contextualOnly?: boolean): Promise<{ data: Page<TeamOutput> }> {
-      return searchScenarioTeams(scenarioId, input, contextualOnly);
+      return searchAttackChainTeams(scenarioId, input, contextualOnly);
     },
   };
 };
 
-export default teamContextForScenario;
+export default teamContextForAttackChain;

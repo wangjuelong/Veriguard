@@ -1,14 +1,14 @@
 import { Autocomplete, MenuItem, Select, TextField } from '@mui/material';
 import { type FunctionComponent } from 'react';
 
-import { SCENARIO_NOT_SCHEDULED_STATUS, SCENARIO_SCHEDULED_STATUS } from '../../../../../admin/components/attack_chains/attack_chain/ScenarioStatus';
+import { SCENARIO_NOT_SCHEDULED_STATUS, SCENARIO_SCHEDULED_STATUS } from '../../../../../admin/components/attack_chains/attack_chain/AttackChainStatus';
 import { type PropertySchemaDTO } from '../../../../../utils/api-types';
 import { type Option } from '../../../../../utils/Option';
 import { useFormatter } from '../../../../i18n';
 import { type FilterHelpers } from '../FilterHelpers';
 import { OperatorKeyValues } from '../FilterUtils';
 
-const ScenarioStatusFilter: FunctionComponent<{
+const AttackChainStatusFilter: FunctionComponent<{
   propertySchema: PropertySchemaDTO;
   helpers: FilterHelpers;
 }> = ({
@@ -75,4 +75,4 @@ const ScenarioStatusFilter: FunctionComponent<{
   );
 };
 
-export default ScenarioStatusFilter;
+export default AttackChainStatusFilter;

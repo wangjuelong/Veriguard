@@ -24,21 +24,21 @@ import { makeStyles } from 'tss-react/mui';
 
 import { type AssetGroupsHelper } from '../actions/asset_groups/assetgroup-helper';
 import { type EndpointHelper } from '../actions/assets/asset-helper';
-import { type InjectOutputType, type InjectStore } from '../actions/attack_chain_nodes/Inject';
-import { type InjectHelper } from '../actions/attack_chain_nodes/inject-helper';
-import { type ExercisesHelper } from '../actions/attack_chain_runs/exercise-helper';
-import { type ScenariosHelper } from '../actions/attack_chains/scenario-helper';
+import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../actions/attack_chain_nodes/AttackChainNode';
+import { type AttackChainNodeHelper } from '../actions/attack_chain_nodes/node-helper';
+import { type AttackChainRunsHelper } from '../actions/attack_chain_runs/attack_chain_run-helper';
+import { type AttackChainsHelper } from '../actions/attack_chains/attack_chain-helper';
 import { type TeamsHelper } from '../actions/teams/team-helper';
-import { InjectTestContext, PermissionsContext } from '../admin/components/common/Context';
+import { AttackChainNodeTestContext, PermissionsContext } from '../admin/components/common/Context';
 import { useHelper } from '../store';
-import { type Inject, type InjectDependency } from '../utils/api-types';
+import { type AttackChainNode, type AttackChainNodeDependency } from '../utils/api-types';
 import handle from '../utils/period/Period';
 import ChainingUtils from './common/chaining/ChainingUtils';
 import CustomTimelineBackground from './CustomTimelineBackground';
 import CustomTimelinePanel from './CustomTimelinePanel';
 import { useFormatter } from './i18n';
 import nodeTypes from './nodes';
-import { type NodeInject } from './nodes/NodeInject';
+import { type NodeAttackChainNode } from './nodes/NodeAttackChainNode';
 import NodePhantom from './nodes/NodePhantom';
 
 const useStyles = makeStyles()(() => ({
@@ -56,26 +56,26 @@ const useStyles = makeStyles()(() => ({
 }));
 
 interface Props {
-  injects: InjectOutputType[];
-  onSelectedInject(inject?: InjectOutputType): void;
+  nodes: AttackChainNodeOutputType[];
+  onSelectedAttackChainNode(node?: AttackChainNodeOutputType): void;
   onTimelineClick(duration: number): void;
-  onUpdateInject: (data: Inject[]) => void;
+  onUpdateAttackChainNode: (data: AttackChainNode[]) => void;
   onCreate: (result: {
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }) => void;
   onUpdate: (result: {
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }) => void;
   onDelete: (result: string) => void;
 }
 
 const ChainedTimelineFlow: FunctionComponent<Props> = ({
-  injects,
-  onSelectedInject,
+  nodes,
+  onSelectedAttackChainNode,
   onTimelineClick,
-  onUpdateInject,
+  onUpdateAttackChainNode,
   onCreate,
   onUpdate,
   onDelete,
@@ -84,12 +84,12 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
   const { classes } = useStyles();
   const theme = useTheme();
   const { permissions } = useContext(PermissionsContext);
-  const [nodes, setNodes, onNodesChange] = useNodesState<NodeInject>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<NodeAttackChainNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [draggingOnGoing, setDraggingOnGoing] = useState<boolean>(false);
   const [viewportData, setViewportData] = useState<Viewport>();
   const [minutesPerGapIndex, setMinutesPerGapIndex] = useState<number>(0);
-  const [currentUpdatedNode, setCurrentUpdatedNode] = useState<NodeInject | null>(null);
+  const [currentUpdatedNode, setCurrentUpdatedNode] = useState<NodeAttackChainNode | null>(null);
   const [currentMousePosition, setCurrentMousePosition] = useState<XYPosition>({
     x: 0,
     y: 0,
@@ -101,16 +101,16 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
 
   const reactFlow = useReactFlow();
 
-  const { contextId } = useContext(InjectTestContext);
+  const { contextId } = useContext(AttackChainNodeTestContext);
 
-  const { injectsMap, teams, assets, assetGroups, scenario, exercise }
-    = useHelper((helper: ExercisesHelper & InjectHelper & TeamsHelper & EndpointHelper & AssetGroupsHelper & ScenariosHelper) => ({
-      injectsMap: helper.getInjectsMap(),
+  const { injectsMap, teams, assets, assetGroups, attack_chain, attack_chain_run }
+    = useHelper((helper: AttackChainRunsHelper & AttackChainNodeHelper & TeamsHelper & EndpointHelper & AssetGroupsHelper & AttackChainsHelper) => ({
+      injectsMap: helper.getAttackChainNodesMap(),
       teams: helper.getTeamsMap(),
       assets: helper.getEndpointsMap(),
       assetGroups: helper.getAssetGroupMaps(),
-      scenario: helper.getScenario(contextId),
-      exercise: helper.getExercise(contextId),
+      attack_chain: helper.getAttackChain(contextId),
+      attack_chain_run: helper.getAttackChainRun(contextId),
     }));
 
   const { t } = useFormatter();
@@ -141,19 +141,19 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
 
   let startDate: string | undefined;
 
-  // If we have a scenario, we find the startdate using the cron info
-  if (scenario !== undefined) {
-    const cronObject = handle(scenario.scenario_recurrence);
-    startDate = scenario?.scenario_recurrence_start ? scenario?.scenario_recurrence_start : exercise?.exercise_start_date;
+  // If we have a attack_chain, we find the startdate using the cron info
+  if (attack_chain !== undefined) {
+    const cronObject = handle(attack_chain.attack_chain_recurrence);
+    startDate = attack_chain?.attack_chain_recurrence_start ? attack_chain?.attack_chain_recurrence_start : attack_chain_run?.attack_chain_run_start_date;
     if (startDate !== undefined) {
       startDate = cronObject !== null
         ? moment(startDate).utc().hour(cronObject.getRecurrenceTime().hour || 0).minute(cronObject.getRecurrenceTime().minute || 0)
             .format()
         : moment(startDate).utc().format();
     }
-  } else if (exercise !== undefined) {
-    // Otherwise, we're in a simulation and we use the start_date
-    startDate = exercise.exercise_start_date !== null ? exercise.exercise_start_date : undefined;
+  } else if (attack_chain_run !== undefined) {
+    // Otherwise, we're in a attack_chain_run and we use the start_date
+    startDate = attack_chain_run.attack_chain_run_start_date !== null ? attack_chain_run.attack_chain_run_start_date : undefined;
   }
 
   /**
@@ -170,7 +170,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
    * @param to the target index
    * @param from the origin index
    */
-  const moveItem = (array: NodeInject[], to: number, from: number) => {
+  const moveItem = (array: NodeAttackChainNode[], to: number, from: number) => {
     const item = array[from];
     array.splice(from, 1);
     array.splice(to, 0, item);
@@ -182,9 +182,9 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
    * @param currentNode the node to calculate the bounding box for
    * @param nodesAvailable the nodes
    */
-  const calculateBoundingBox = (currentNode: NodeInject, nodesAvailable: NodeInject[]) => {
-    if (currentNode.data.inject?.inject_depends_on) {
-      const nodesId = currentNode.data.inject?.inject_depends_on.map(value => value.dependency_relationship?.inject_parent_id);
+  const calculateBoundingBox = (currentNode: NodeAttackChainNode, nodesAvailable: NodeAttackChainNode[]) => {
+    if (currentNode.data.node?.node_depends_on) {
+      const nodesId = currentNode.data.node?.node_depends_on.map(value => value.dependency_relationship?.node_parent_id);
       const dependencies = nodesAvailable.filter(dependencyNode => nodesId.includes(dependencyNode.id));
       const minX = Math.min(currentNode.position.x, ...dependencies.map(value => value.data.boundingBox!.topLeft.x));
       const minY = Math.min(currentNode.position.y, ...dependencies.map(value => value.data.boundingBox!.topLeft.y));
@@ -211,81 +211,81 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
   };
 
   /**
-   * Calculate injects position when dragging stopped
-   * @param nodeInjects the list of injects
+   * Calculate nodes position when dragging stopped
+   * @param nodeAttackChainNodes the list of nodes
    */
-  const calculateInjectPosition = (nodeInjects: NodeInject[]) => {
-    let reorganizedInjects = nodeInjects;
+  const calculateAttackChainNodePosition = (nodeAttackChainNodes: NodeAttackChainNode[]) => {
+    let reorganizedAttackChainNodes = nodeAttackChainNodes;
 
-    nodeInjects.forEach((node, i) => {
-      let childNodes = reorganizedInjects.slice(i).filter(nextNode => nextNode.id !== node.id
-        && nextNode.data.inject?.inject_depends_on !== undefined
-        && nextNode.data.inject?.inject_depends_on !== null
-        && nextNode.data.inject!.inject_depends_on
-          .find(dependsOn => dependsOn.dependency_relationship?.inject_parent_id === node.id) !== undefined);
+    nodeAttackChainNodes.forEach((node, i) => {
+      let childNodes = reorganizedAttackChainNodes.slice(i).filter(nextNode => nextNode.id !== node.id
+        && nextNode.data.node?.node_depends_on !== undefined
+        && nextNode.data.node?.node_depends_on !== null
+        && nextNode.data.node!.node_depends_on
+          .find(dependsOn => dependsOn.dependency_relationship?.node_parent_id === node.id) !== undefined);
 
-      childNodes = childNodes.sort((a, b) => a.data.inject!.inject_depends_duration - b.data.inject!.inject_depends_duration);
+      childNodes = childNodes.sort((a, b) => a.data.node!.node_depends_duration - b.data.node!.node_depends_duration);
 
       childNodes.forEach((childNode, j) => {
-        reorganizedInjects = moveItem(reorganizedInjects, i + j + 1, reorganizedInjects.indexOf(childNode, i));
+        reorganizedAttackChainNodes = moveItem(reorganizedAttackChainNodes, i + j + 1, reorganizedAttackChainNodes.indexOf(childNode, i));
       });
     });
 
-    reorganizedInjects.forEach((nodeInject, index) => {
-      const nodeInjectPosition = nodeInject.position;
-      const nodeInjectData = nodeInject.data;
+    reorganizedAttackChainNodes.forEach((nodeAttackChainNode, index) => {
+      const nodeAttackChainNodePosition = nodeAttackChainNode.position;
+      const nodeAttackChainNodeData = nodeAttackChainNode.data;
 
-      const previousNodes = reorganizedInjects.slice(0, index)
+      const previousNodes = reorganizedAttackChainNodes.slice(0, index)
         .filter(previousNode => previousNode.data.boundingBox !== undefined
-          && nodeInjectData.boundingBox !== undefined
-          && nodeInjectData.boundingBox?.topLeft.x >= previousNode.data.boundingBox.topLeft.x
-          && nodeInjectData.boundingBox?.topLeft.x < previousNode.data.boundingBox.bottomRight.x);
+          && nodeAttackChainNodeData.boundingBox !== undefined
+          && nodeAttackChainNodeData.boundingBox?.topLeft.x >= previousNode.data.boundingBox.topLeft.x
+          && nodeAttackChainNodeData.boundingBox?.topLeft.x < previousNode.data.boundingBox.bottomRight.x);
 
       const arrayOfY = previousNodes
         .map(previousNode => (previousNode.data.boundingBox?.bottomRight.y ? previousNode.data.boundingBox?.bottomRight.y : 0));
       const maxY = Math.max(0, ...arrayOfY);
 
-      nodeInjectPosition.y = 0;
+      nodeAttackChainNodePosition.y = 0;
       let rowFound = false;
       for (let row = 1; row <= (maxY / nodeHeightClearance) + 1; row += 1) {
         if (!arrayOfY.includes(row * nodeHeightClearance)) {
-          nodeInjectPosition.y = (row - 1) * nodeHeightClearance;
+          nodeAttackChainNodePosition.y = (row - 1) * nodeHeightClearance;
           rowFound = true;
           break;
         }
       }
 
       if (!rowFound) {
-        nodeInjectPosition.y = previousNodes.length === 0 ? 0 : maxY;
+        nodeAttackChainNodePosition.y = previousNodes.length === 0 ? 0 : maxY;
       }
-      if (nodeInject.data.inject?.inject_depends_on) {
-        const nodesId = nodeInject.data.inject?.inject_depends_on.map(value => value.dependency_relationship?.inject_parent_id);
-        const dependencies = reorganizedInjects.filter(dependencyNode => nodesId.includes(dependencyNode.id));
+      if (nodeAttackChainNode.data.node?.node_depends_on) {
+        const nodesId = nodeAttackChainNode.data.node?.node_depends_on.map(value => value.dependency_relationship?.node_parent_id);
+        const dependencies = reorganizedAttackChainNodes.filter(dependencyNode => nodesId.includes(dependencyNode.id));
         const minY = dependencies.length > 0 ? Math.min(...dependencies.map(value => value.data.boundingBox!.topLeft.y)) : 0;
 
-        nodeInjectPosition.y = nodeInjectPosition.y < minY ? minY : nodeInjectPosition.y;
+        nodeAttackChainNodePosition.y = nodeAttackChainNodePosition.y < minY ? minY : nodeAttackChainNodePosition.y;
       }
 
-      nodeInjectData.fixedY = nodeInjectPosition.y;
-      nodeInjectData.boundingBox = calculateBoundingBox(nodeInject, reorganizedInjects);
-      reorganizedInjects[index] = nodeInject;
+      nodeAttackChainNodeData.fixedY = nodeAttackChainNodePosition.y;
+      nodeAttackChainNodeData.boundingBox = calculateBoundingBox(nodeAttackChainNode, reorganizedAttackChainNodes);
+      reorganizedAttackChainNodes[index] = nodeAttackChainNode;
     });
   };
 
   const updateEdges = () => {
-    const newEdges = injects.filter(inject => inject.inject_depends_on !== null && inject.inject_depends_on !== undefined)
-      .flatMap((inject) => {
+    const newEdges = nodes.filter(node => node.node_depends_on !== null && node.node_depends_on !== undefined)
+      .flatMap((node) => {
         const results = [];
-        if (inject.inject_depends_on !== undefined) {
-          for (let i = 0; i < inject.inject_depends_on.length; i += 1) {
-            if (inject.inject_depends_on[i].dependency_relationship?.inject_children_id === inject.inject_id) {
+        if (node.node_depends_on !== undefined) {
+          for (let i = 0; i < node.node_depends_on.length; i += 1) {
+            if (node.node_depends_on[i].dependency_relationship?.node_children_id === node.node_id) {
               results.push({
-                id: `${inject.inject_depends_on[i].dependency_relationship?.inject_parent_id}->${inject.inject_depends_on[i].dependency_relationship?.inject_children_id}`,
-                target: `${inject.inject_depends_on[i].dependency_relationship?.inject_children_id}`,
-                targetHandle: `target-${inject.inject_depends_on[i].dependency_relationship?.inject_children_id}`,
-                source: `${inject.inject_depends_on[i].dependency_relationship?.inject_parent_id}`,
-                sourceHandle: `source-${inject.inject_depends_on[i].dependency_relationship?.inject_parent_id}`,
-                label: ChainingUtils.fromInjectDependencyToLabel(inject.inject_depends_on[i]),
+                id: `${node.node_depends_on[i].dependency_relationship?.node_parent_id}->${node.node_depends_on[i].dependency_relationship?.node_children_id}`,
+                target: `${node.node_depends_on[i].dependency_relationship?.node_children_id}`,
+                targetHandle: `target-${node.node_depends_on[i].dependency_relationship?.node_children_id}`,
+                source: `${node.node_depends_on[i].dependency_relationship?.node_parent_id}`,
+                sourceHandle: `source-${node.node_depends_on[i].dependency_relationship?.node_parent_id}`,
+                label: ChainingUtils.fromAttackChainNodeDependencyToLabel(node.node_depends_on[i]),
                 labelShowBg: false,
                 labelStyle: {
                   fill: theme.palette.text?.primary,
@@ -305,57 +305,57 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
    * Update all nodes
    */
   const updateNodes = () => {
-    if (injects.length > 0) {
-      const injectsNodes = injects
-        .sort((a, b) => a.inject_depends_duration - b.inject_depends_duration)
-        .map((inject: InjectOutputType) => ({
-          id: `${inject.inject_id}`,
-          type: 'inject',
+    if (nodes.length > 0) {
+      const injectsNodes = nodes
+        .sort((a, b) => a.node_depends_duration - b.node_depends_duration)
+        .map((node: AttackChainNodeOutputType) => ({
+          id: `${node.node_id}`,
+          type: 'node',
           data: {
-            key: inject.inject_id,
-            label: inject.inject_title,
+            key: node.node_id,
+            label: node.node_title,
             color: 'green',
             background:
                 theme.palette.mode === 'dark'
                   ? '#09101e'
                   : '#e5e5e5',
-            isTargeted: injects.find(anyInject => anyInject.inject_id === inject.inject_id) !== undefined,
-            isTargeting: inject.inject_depends_on !== undefined,
-            inject,
+            isTargeted: nodes.find(anyAttackChainNode => anyAttackChainNode.node_id === node.node_id) !== undefined,
+            isTargeting: node.node_depends_on !== undefined,
+            node,
             fixedY: 0,
             startDate,
-            onSelectedInject,
+            onSelectedAttackChainNode,
             boundingBox: {
               topLeft: {
-                x: (inject.inject_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]),
+                x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]),
                 y: 0,
               },
               bottomRight: {
-                x: (inject.inject_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]) + nodeWidthClearance,
+                x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]) + nodeWidthClearance,
                 y: nodeHeightClearance,
               },
             },
-            targets: inject.inject_assets!.map(asset => assets[asset]?.asset_name)
-              .concat(inject.inject_asset_groups!.map(assetGroup => assetGroups[assetGroup]?.asset_group_name))
-              .concat(inject.inject_teams!.map(team => teams[team]?.team_name)),
+            targets: node.node_assets!.map(asset => assets[asset]?.asset_name)
+              .concat(node.node_asset_groups!.map(assetGroup => assetGroups[assetGroup]?.asset_group_name))
+              .concat(node.node_teams!.map(team => teams[team]?.team_name)),
             contextId,
             onCreate,
             onUpdate,
             onDelete,
           },
           position: {
-            x: (inject.inject_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]),
+            x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]),
             y: 0,
           },
         }));
 
       if (currentUpdatedNode !== null) {
-        injectsNodes.find(inject => inject.id === currentUpdatedNode.id)!.position.x = currentUpdatedNode.position.x;
+        injectsNodes.find(node => node.id === currentUpdatedNode.id)!.position.x = currentUpdatedNode.position.x;
       }
 
       setCurrentUpdatedNode(null);
       setDraggingOnGoing(false);
-      calculateInjectPosition(injectsNodes);
+      calculateAttackChainNodePosition(injectsNodes);
       setNodes(injectsNodes);
       updateEdges();
     }
@@ -363,7 +363,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
 
   useEffect(() => {
     updateNodes();
-  }, [injects, minutesPerGapIndex]);
+  }, [nodes, minutesPerGapIndex]);
 
   /**
    * Actions to hide the new node 'button'
@@ -390,19 +390,19 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
    * @param _event the mouse event (unused for now)
    * @param node the node to update
    */
-  const nodeDragStop = (_event: ReactMouseEvent, node: NodeInject) => {
+  const nodeDragStop = (_event: ReactMouseEvent, node: NodeAttackChainNode) => {
     const injectFromMap = injectsMap[node.id];
     if (injectFromMap !== undefined) {
-      const inject = {
+      const node = {
         ...injectFromMap,
-        inject_injector_contract: injectFromMap.inject_injector_contract.injector_contract_id,
-        inject_id: node.id,
-        inject_depends_duration: convertCoordinatesToTime(node.position),
-        inject_depends_on: injectFromMap.inject_depends_on !== null
-          ? injectFromMap.inject_depends_on
+        node_injector_contract: injectFromMap.node_injector_contract.injector_contract_id,
+        node_id: node.id,
+        node_depends_duration: convertCoordinatesToTime(node.position),
+        node_depends_on: injectFromMap.node_depends_on !== null
+          ? injectFromMap.node_depends_on
           : null,
       };
-      onUpdateInject([inject]);
+      onUpdateAttackChainNode([node]);
       setCurrentUpdatedNode(node);
       setDraggingOnGoing(false);
     }
@@ -435,13 +435,13 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
   };
 
   const connect = (connection: Connection) => {
-    const inject = injects.find(currentInject => currentInject.inject_id === connection.target);
-    const injectParent = injects.find(currentInject => currentInject.inject_id === connection.source);
-    if (inject !== undefined && injectParent !== undefined && inject.inject_depends_duration > injectParent.inject_depends_duration) {
-      const newDependsOn: InjectDependency = {
+    const node = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connection.target);
+    const injectParent = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connection.source);
+    if (node !== undefined && injectParent !== undefined && node.node_depends_duration > injectParent.node_depends_duration) {
+      const newDependsOn: AttackChainNodeDependency = {
         dependency_relationship: {
-          inject_children_id: inject.inject_id,
-          inject_parent_id: injectParent.inject_id,
+          node_children_id: node.node_id,
+          node_parent_id: injectParent.node_id,
         },
         dependency_condition:
           {
@@ -457,12 +457,12 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
       };
 
       const injectToUpdate = {
-        ...injectsMap[inject.inject_id],
-        inject_injector_contract: inject.inject_injector_contract.injector_contract_id,
-        inject_id: inject.inject_id,
-        inject_depends_on: [newDependsOn],
+        ...injectsMap[node.node_id],
+        node_injector_contract: node.node_injector_contract.injector_contract_id,
+        node_id: node.node_id,
+        node_depends_on: [newDependsOn],
       };
-      onUpdateInject([injectToUpdate]);
+      onUpdateAttackChainNode([injectToUpdate]);
     }
   };
 
@@ -471,17 +471,17 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
    * @param _event the mouse event
    * @param node the node that is being dragged
    */
-  const nodeDrag = (_event: ReactMouseEvent, node: NodeInject) => {
+  const nodeDrag = (_event: ReactMouseEvent, node: NodeAttackChainNode) => {
     setDraggingOnGoing(true);
     const { position } = node;
     const { data } = node;
-    const dependsOn = nodes.find(currentNode => (data.inject?.inject_depends_on !== null
-      && data.inject?.inject_depends_on!.find(value => value.dependency_relationship?.inject_parent_id === currentNode.id)));
+    const dependsOn = nodes.find(currentNode => (data.node?.node_depends_on !== null
+      && data.node?.node_depends_on!.find(value => value.dependency_relationship?.node_parent_id === currentNode.id)));
     const dependsTo = nodes
-      .filter(currentNode => (currentNode.data.inject?.inject_depends_on !== undefined
-        && currentNode.data.inject?.inject_depends_on !== null
-        && currentNode.data.inject?.inject_depends_on.find(value => value.dependency_relationship?.inject_parent_id === node.id) !== undefined))
-      .sort((a, b) => a.data.inject!.inject_depends_duration - b.data.inject!.inject_depends_duration)[0];
+      .filter(currentNode => (currentNode.data.node?.node_depends_on !== undefined
+        && currentNode.data.node?.node_depends_on !== null
+        && currentNode.data.node?.node_depends_on.find(value => value.dependency_relationship?.node_parent_id === node.id) !== undefined))
+      .sort((a, b) => a.data.node!.node_depends_duration - b.data.node!.node_depends_duration)[0];
     const aSecond = gapSize / (minutesPerGapAllowed[minutesPerGapIndex] * 60);
     if (dependsOn?.position && position.x <= dependsOn?.position.x) {
       position.x = dependsOn.position.x + aSecond;
@@ -493,7 +493,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
 
     if (node.data.fixedY !== undefined) {
       position.y = node.data.fixedY;
-      if (data.inject) data.inject.inject_depends_duration = convertCoordinatesToTime(node.position);
+      if (data.node) data.node.node_depends_duration = convertCoordinatesToTime(node.position);
     }
   };
 
@@ -581,38 +581,38 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
 
   const onReconnectEnd = (event: ReactMouseEvent, edge: Edge, handleType: 'source' | 'target', connectionState: Omit<ConnectionState, 'inProgress'>) => {
     if (!connectionState.isValid) {
-      const inject = injects.find(currentInject => currentInject.inject_id === edge.target);
-      if (inject !== undefined) {
+      const node = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === edge.target);
+      if (node !== undefined) {
         const injectToUpdate = {
-          ...injectsMap[inject.inject_id],
-          inject_injector_contract: inject.inject_injector_contract.injector_contract_id,
-          inject_id: inject.inject_id,
-          inject_depends_on: undefined,
+          ...injectsMap[node.node_id],
+          node_injector_contract: node.node_injector_contract.injector_contract_id,
+          node_id: node.node_id,
+          node_depends_on: undefined,
         };
-        onUpdateInject([injectToUpdate]);
+        onUpdateAttackChainNode([injectToUpdate]);
       }
     } else if (handleType === 'source') {
       const updates = [];
-      const injectToRemove = injects.find(currentInject => currentInject.inject_id === edge.target);
-      const injectToUpdate = injects.find(currentInject => currentInject.inject_id === connectionState.toNode?.id);
+      const injectToRemove = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === edge.target);
+      const injectToUpdate = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connectionState.toNode?.id);
 
-      const parent = injects.find(currentInject => currentInject.inject_id === connectionState.fromNode?.id);
+      const parent = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connectionState.fromNode?.id);
 
       if (parent !== undefined
         && injectToUpdate !== undefined
         && injectToRemove !== undefined
-        && parent.inject_depends_duration < injectToUpdate.inject_depends_duration) {
+        && parent.node_depends_duration < injectToUpdate.node_depends_duration) {
         const injectToRemoveEdge = {
-          ...injectsMap[injectToRemove.inject_id],
-          inject_injector_contract: injectToRemove.inject_injector_contract.injector_contract_id,
-          inject_id: injectToRemove.inject_id,
-          inject_depends_on: undefined,
+          ...injectsMap[injectToRemove.node_id],
+          node_injector_contract: injectToRemove.node_injector_contract.injector_contract_id,
+          node_id: injectToRemove.node_id,
+          node_depends_on: undefined,
         };
         updates.push(injectToRemoveEdge);
-        const newDependsOn: InjectDependency = {
+        const newDependsOn: AttackChainNodeDependency = {
           dependency_relationship: {
-            inject_children_id: injectToUpdate.inject_id,
-            inject_parent_id: edge.source,
+            node_children_id: injectToUpdate.node_id,
+            node_parent_id: edge.source,
           },
           dependency_condition:
               {
@@ -627,22 +627,22 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
               },
         };
         const injectToUpdateEdge = {
-          ...injectsMap[injectToUpdate.inject_id],
-          inject_injector_contract: injectToUpdate.inject_injector_contract.injector_contract_id,
-          inject_id: injectToUpdate.inject_id,
-          inject_depends_on: [newDependsOn],
+          ...injectsMap[injectToUpdate.node_id],
+          node_injector_contract: injectToUpdate.node_injector_contract.injector_contract_id,
+          node_id: injectToUpdate.node_id,
+          node_depends_on: [newDependsOn],
         };
         updates.push(injectToUpdateEdge);
-        onUpdateInject(updates);
+        onUpdateAttackChainNode(updates);
       }
     } else {
-      const inject = injects.find(currentInject => currentInject.inject_id === edge.target);
-      const parent = injects.find(currentInject => currentInject.inject_id === connectionState.toNode?.id);
-      if (inject !== undefined && parent !== undefined && parent.inject_depends_duration < inject.inject_depends_duration) {
-        const newDependsOn: InjectDependency = {
+      const node = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === edge.target);
+      const parent = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connectionState.toNode?.id);
+      if (node !== undefined && parent !== undefined && parent.node_depends_duration < node.node_depends_duration) {
+        const newDependsOn: AttackChainNodeDependency = {
           dependency_relationship: {
-            inject_children_id: inject.inject_id,
-            inject_parent_id: connectionState.toNode?.id,
+            node_children_id: node.node_id,
+            node_parent_id: connectionState.toNode?.id,
           },
           dependency_condition:
               {
@@ -657,19 +657,19 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
               },
         };
         const injectToUpdate = {
-          ...injectsMap[inject.inject_id],
-          inject_injector_contract: inject.inject_injector_contract.injector_contract_id,
-          inject_id: inject.inject_id,
-          inject_depends_on: [newDependsOn],
+          ...injectsMap[node.node_id],
+          node_injector_contract: node.node_injector_contract.injector_contract_id,
+          node_id: node.node_id,
+          node_depends_on: [newDependsOn],
         };
-        onUpdateInject([injectToUpdate]);
+        onUpdateAttackChainNode([injectToUpdate]);
       }
     }
     updateNodes();
   };
   return (
     <>
-      {injects.length > 0 ? (
+      {nodes.length > 0 ? (
         <div
           className={`${classes.container} chainedTimeline`}
           style={{

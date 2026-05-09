@@ -23,7 +23,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { directFetchInjectorContract } from '../../../../../actions/NodeContracts';
 import { useFormatter } from '../../../../../components/i18n';
-import InjectContractComponent from '../../../../../components/InjectContractComponent';
+import AttackChainNodeContractComponent from '../../../../../components/AttackChainNodeContractComponent';
 import RegexComponent from '../../../../../components/RegexComponent';
 import { type ImportMapperAddInput } from '../../../../../utils/api-types';
 import { type ContractElement, type InjectorContractConverted } from '../../../../../utils/api-types-custom';
@@ -49,7 +49,7 @@ const useStyles = makeStyles()(() => ({
 }));
 
 interface Props {
-  field: FieldArrayWithId<ImportMapperAddInput, 'import_mapper_inject_importers', 'id'>;
+  field: FieldArrayWithId<ImportMapperAddInput, 'import_mapper_node_importers', 'id'>;
   methods: UseFormReturn<ImportMapperAddInput>;
   index: number;
   remove: UseFieldArrayRemove;
@@ -70,7 +70,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
 
   const { fields: rulesFields, remove: rulesRemove, append: rulesAppend } = useFieldArray({
     control,
-    name: `import_mapper_inject_importers.${index}.inject_importer_rule_attributes`,
+    name: `import_mapper_node_importers.${index}.node_importer_rule_attributes`,
   });
 
   const [contractFields, setContractFields] = useState<ContractElement[]>([]);
@@ -122,8 +122,8 @@ const RulesContractContent: FunctionComponent<Props> = ({
   };
 
   useEffect(() => {
-    if (methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_injector_contract`)) {
-      directFetchInjectorContract(methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_injector_contract`)).then((result: { data: InjectorContractConverted }) => {
+    if (methods.getValues(`import_mapper_node_importers.${index}.node_importer_injector_contract`)) {
+      directFetchInjectorContract(methods.getValues(`import_mapper_node_importers.${index}.node_importer_injector_contract`)).then((result: { data: InjectorContractConverted }) => {
         const injectorContract = result.data;
         setInjectorContractLabel(tPick(injectorContract.injector_contract_labels));
         const tmp = injectorContract?.convertedContent?.fields
@@ -134,7 +134,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
   }, []);
 
   const onChangeInjectorContractId = () => {
-    directFetchInjectorContract(methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_injector_contract`)).then((result: { data: InjectorContractConverted }) => {
+    directFetchInjectorContract(methods.getValues(`import_mapper_node_importers.${index}.node_importer_injector_contract`)).then((result: { data: InjectorContractConverted }) => {
       const injectorContract = result.data;
       setInjectorContractLabel(tPick(injectorContract.injector_contract_labels));
       const tmp = injectorContract?.convertedContent?.fields
@@ -173,7 +173,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
           width: '100%',
           marginBottom: '10px',
         }}
-        className={cx({ [classes.red]: !!errors.import_mapper_inject_importers?.[index] })}
+        className={cx({ [classes.red]: !!errors.import_mapper_node_importers?.[index] })}
       >
         <AccordionSummary
           expandIcon={<ExpandMore />}
@@ -204,14 +204,14 @@ const RulesContractContent: FunctionComponent<Props> = ({
               fullWidth
               label={t('Matching type in the xls')}
               style={{ marginTop: 10 }}
-              inputProps={methods.register(`import_mapper_inject_importers.${index}.inject_importer_type_value` as const)}
+              inputProps={methods.register(`import_mapper_node_importers.${index}.node_importer_type_value` as const)}
               InputLabelProps={{ required: true }}
-              error={!!methods.formState.errors.import_mapper_inject_importers?.[index]?.inject_importer_type_value}
-              helperText={methods.formState.errors.import_mapper_inject_importers?.[index]?.inject_importer_type_value?.message}
+              error={!!methods.formState.errors.import_mapper_node_importers?.[index]?.node_importer_type_value}
+              helperText={methods.formState.errors.import_mapper_node_importers?.[index]?.node_importer_type_value?.message}
             />
             <Tooltip
               title={t(
-                'This word will match in the specified column to determine the inject',
+                'This word will match in the specified column to determine the node',
               )}
             >
               <InformationOutline
@@ -224,10 +224,10 @@ const RulesContractContent: FunctionComponent<Props> = ({
 
           <Controller
             control={control}
-            name={`import_mapper_inject_importers.${index}.inject_importer_injector_contract`}
+            name={`import_mapper_node_importers.${index}.node_importer_injector_contract`}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <InjectContractComponent
-                label={t('Inject type')}
+              <AttackChainNodeContractComponent
+                label={t('AttackChainNode type')}
                 onChange={(data) => {
                   onChange(data);
                   onChangeInjectorContractId();
@@ -244,9 +244,9 @@ const RulesContractContent: FunctionComponent<Props> = ({
                 <Badge
                   color="secondary"
                   variant="dot"
-                  invisible={(!methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`) || methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`)?.length === 0)
-                    && (!methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_additional_config.timePattern`)
-                      || methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_additional_config`)?.timePattern?.length === 0)}
+                  invisible={(!methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`) || methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`)?.length === 0)
+                    && (!methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_additional_config.timePattern`)
+                      || methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_additional_config`)?.timePattern?.length === 0)}
                 >
                   <CogOutline />
                 </Badge>
@@ -256,9 +256,9 @@ const RulesContractContent: FunctionComponent<Props> = ({
                 <Badge
                   color="secondary"
                   variant="dot"
-                  invisible={(!methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`) || methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`)?.length === 0)
-                    && (!methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_additional_config.allTeamsValue`)
-                      || methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_additional_config`)?.allTeamsValue?.length === 0)}
+                  invisible={(!methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`) || methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`)?.length === 0)
+                    && (!methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_additional_config.allTeamsValue`)
+                      || methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_additional_config`)?.allTeamsValue?.length === 0)}
                 >
                   <CogOutline />
                 </Badge>
@@ -268,8 +268,8 @@ const RulesContractContent: FunctionComponent<Props> = ({
                 <Badge
                   color="secondary"
                   variant="dot"
-                  invisible={!methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`)
-                    || methods.getValues(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`)?.length === 0}
+                  invisible={!methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`)
+                    || methods.getValues(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_default_value`)?.length === 0}
                 >
                   <CogOutline />
                 </Badge>
@@ -281,7 +281,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
                   <Typography
                     style={{ textTransform: 'capitalize' }}
                     variant="body1"
-                    {...methods.register(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_name` as const)}
+                    {...methods.register(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_name` as const)}
                   >
                     {t(ruleField.rule_attribute_name[0].toUpperCase() + ruleField.rule_attribute_name.slice(1))}
                     {isMandatoryField(ruleField.rule_attribute_name)
@@ -289,7 +289,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
                   </Typography>
                   <Controller
                     control={control}
-                    name={`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${rulesIndex}.rule_attribute_columns` as const}
+                    name={`import_mapper_node_importers.${index}.node_importer_rule_attributes.${rulesIndex}.rule_attribute_columns` as const}
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                       <RegexComponent
                         label={t('Rule attributes columns')}
@@ -321,7 +321,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
                         <TextField
                           fullWidth
                           label={t('Default value')}
-                          inputProps={methods.register(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${currentRuleIndex}.rule_attribute_default_value`)}
+                          inputProps={methods.register(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${currentRuleIndex}.rule_attribute_default_value`)}
                         />
                         {currentRuleIndex === rulesFields.findIndex(r => r.rule_attribute_name === 'trigger_time')
                           && (
@@ -335,7 +335,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
                                 label={t('Time pattern')}
                                 fullWidth
                                 style={{ marginTop: 10 }}
-                                inputProps={methods.register(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${currentRuleIndex}.rule_attribute_additional_config.timePattern`)}
+                                inputProps={methods.register(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${currentRuleIndex}.rule_attribute_additional_config.timePattern`)}
                               />
                               <Tooltip
                                 title={t(
@@ -362,7 +362,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
                                 label={t('All teams value')}
                                 fullWidth
                                 style={{ marginTop: 10 }}
-                                inputProps={methods.register(`import_mapper_inject_importers.${index}.inject_importer_rule_attributes.${currentRuleIndex}.rule_attribute_additional_config.allTeamsValue`)}
+                                inputProps={methods.register(`import_mapper_node_importers.${index}.node_importer_rule_attributes.${currentRuleIndex}.rule_attribute_additional_config.allTeamsValue`)}
                               />
                               <Tooltip
                                 title={t(

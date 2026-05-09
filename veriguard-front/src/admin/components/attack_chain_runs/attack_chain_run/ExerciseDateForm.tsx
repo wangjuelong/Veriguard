@@ -6,17 +6,17 @@ import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useFormatter } from '../../../../components/i18n';
-import { type ExerciseUpdateStartDateInput } from '../../../../utils/api-types';
+import { type AttackChainRunUpdateStartDateInput } from '../../../../utils/api-types';
 import { minutesInFuture } from '../../../../utils/Time';
 import { zodImplement } from '../../../../utils/Zod';
 
 interface Props {
-  onSubmit: SubmitHandler<ExerciseUpdateStartDateInput>;
-  initialValues?: ExerciseUpdateStartDateInput;
+  onSubmit: SubmitHandler<AttackChainRunUpdateStartDateInput>;
+  initialValues?: AttackChainRunUpdateStartDateInput;
   handleClose: () => void;
 }
 
-interface ExerciseStartDateAndTime {
+interface AttackChainRunStartDateAndTime {
   date: string;
   time: string;
 }
@@ -24,7 +24,7 @@ interface ExerciseStartDateAndTime {
 // eslint-disable-next-line no-underscore-dangle
 const _MS_DELAY_TOO_CLOSE = 1000 * 60 * 2;
 
-const ExerciseDateForm: FunctionComponent<Props> = ({
+const AttackChainRunDateForm: FunctionComponent<Props> = ({
   onSubmit,
   handleClose,
   initialValues,
@@ -32,8 +32,8 @@ const ExerciseDateForm: FunctionComponent<Props> = ({
   const { t } = useFormatter();
 
   const defaultFormValues = () => {
-    if (initialValues?.exercise_start_date) {
-      const date = new Date(initialValues.exercise_start_date);
+    if (initialValues?.attack_chain_run_start_date) {
+      const date = new Date(initialValues.attack_chain_run_start_date);
       return ({
         date: new Date(new Date(date).setHours(0, 0, 0, 0)).toISOString(),
         time: new Date(new Date().setHours(date.getHours(), date.getMinutes(), date.getSeconds(), 0)).toISOString(),
@@ -45,17 +45,17 @@ const ExerciseDateForm: FunctionComponent<Props> = ({
     });
   };
 
-  const [checked, setChecked] = useState(!initialValues?.exercise_start_date);
+  const [checked, setChecked] = useState(!initialValues?.attack_chain_run_start_date);
 
-  const submit = (data: ExerciseStartDateAndTime) => {
+  const submit = (data: AttackChainRunStartDateAndTime) => {
     if (checked) {
-      onSubmit({ exercise_start_date: '' });
+      onSubmit({ attack_chain_run_start_date: '' });
     } else {
       const { date, time } = data;
       const newDate = new Date(date);
       const newTime = new Date(time);
       newDate.setHours(newTime.getHours(), newTime.getMinutes(), newTime.getSeconds());
-      onSubmit({ exercise_start_date: newDate.toISOString() });
+      onSubmit({ attack_chain_run_start_date: newDate.toISOString() });
     }
   };
 
@@ -65,10 +65,10 @@ const ExerciseDateForm: FunctionComponent<Props> = ({
     clearErrors,
     getValues,
     reset,
-  } = useForm<ExerciseStartDateAndTime>({
+  } = useForm<AttackChainRunStartDateAndTime>({
     defaultValues: defaultFormValues(),
     resolver: zodResolver(
-      zodImplement<ExerciseStartDateAndTime>().with({
+      zodImplement<AttackChainRunStartDateAndTime>().with({
         date: z.string(),
         time: z.string(),
       })
@@ -190,4 +190,4 @@ const ExerciseDateForm: FunctionComponent<Props> = ({
     </form>
   );
 };
-export default ExerciseDateForm;
+export default AttackChainRunDateForm;

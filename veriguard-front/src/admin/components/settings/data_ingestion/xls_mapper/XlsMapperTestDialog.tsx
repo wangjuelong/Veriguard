@@ -5,7 +5,7 @@ import Dialog from '../../../../../components/common/dialog/Dialog';
 import { useFormatter } from '../../../../../components/i18n';
 import { type ImportMapperAddInput, type ImportPostSummary } from '../../../../../utils/api-types';
 import ImportFileSelector from '../../../common/attack_chain_nodes/ImportFileSelector';
-import ImportUploaderInjectFromInjectsTest from '../../../common/attack_chain_nodes/ImportUploaderInjectFromInjectsTest';
+import ImportUploaderAttackChainNodeFromAttackChainNodesTest from '../../../common/attack_chain_nodes/ImportUploaderAttackChainNodeFromAttackChainNodesTest';
 
 interface IngestionCsvMapperTestDialogProps {
   open: boolean;
@@ -58,7 +58,7 @@ const XlsMapperTestDialog: FunctionComponent<IngestionCsvMapperTestDialogProps> 
           )}
         {importId !== null
           && (
-            <ImportUploaderInjectFromInjectsTest
+            <ImportUploaderAttackChainNodeFromAttackChainNodesTest
               importId={importId}
               sheets={sheets}
               importMapperValues={importMapperValues}

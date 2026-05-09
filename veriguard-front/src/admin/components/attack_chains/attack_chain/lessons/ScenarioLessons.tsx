@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
 import {
   addLessonsCategory,
   addLessonsQuestion,
@@ -11,18 +11,18 @@ import {
   deleteLessonsQuestion,
   emptyLessonsCategories,
   fetchLessonsCategories,
-  fetchLessonsQuestions, fetchPlayersByScenario,
-  fetchScenarioTeams,
+  fetchLessonsQuestions, fetchPlayersByAttackChain,
+  fetchAttackChainTeams,
   updateLessonsCategory,
   updateLessonsCategoryTeams,
   updateLessonsQuestion,
-  updateScenarioLessons,
-} from '../../../../../actions/attack_chains/scenario-actions';
-import { type ScenariosHelper } from '../../../../../actions/attack_chains/scenario-helper';
-import { addScenarioEvaluation, fetchScenarioEvaluations, updateScenarioEvaluation } from '../../../../../actions/Evaluation';
+  updateAttackChainLessons,
+} from '../../../../../actions/attack_chains/attack_chain-actions';
+import { type AttackChainsHelper } from '../../../../../actions/attack_chains/attack_chain-helper';
+import { addAttackChainEvaluation, fetchAttackChainEvaluations, updateAttackChainEvaluation } from '../../../../../actions/Evaluation';
 import { type UserHelper } from '../../../../../actions/helper';
 import { type LessonsTemplatesHelper } from '../../../../../actions/lessons/lesson-helper';
-import { addScenarioObjective, deleteScenarioObjective, fetchScenarioObjectives, updateScenarioObjective } from '../../../../../actions/Objective';
+import { addAttackChainObjective, deleteAttackChainObjective, fetchAttackChainObjectives, updateAttackChainObjective } from '../../../../../actions/Objective';
 import { fetchTeams } from '../../../../../actions/teams/team-actions';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
 import { useHelper } from '../../../../../store';
@@ -33,69 +33,69 @@ import {
   type LessonsCategoryUpdateInput,
   type LessonsQuestionCreateInput,
   type LessonsQuestionUpdateInput,
-  type ObjectiveInput, type Scenario,
+  type ObjectiveInput, type AttackChain,
 } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
-import useScenarioPermissions from '../../../../../utils/permissions/useScenarioPermissions';
+import useAttackChainPermissions from '../../../../../utils/permissions/useAttackChainPermissions';
 import { LessonContext, type LessonContextType } from '../../../common/Context';
 import Lessons from '../../../lessons/attack_chains/Lessons';
 
-const ScenarioLessons = () => {
+const AttackChainLessons = () => {
   const dispatch = useAppDispatch();
 
   // Fetching data
-  const { scenarioId } = useParams() as { scenarioId: Scenario['scenario_id'] };
+  const { scenarioId } = useParams() as { scenarioId: AttackChain['attack_chain_id'] };
 
-  const processToGenericSource = (scenario: Scenario) => {
+  const processToGenericSource = (attack_chain: AttackChain) => {
     return {
-      id: scenario.scenario_id,
-      type: 'scenario',
-      name: scenario.scenario_name,
-      lessons_anonymized: scenario.scenario_lessons_anonymized ?? false,
+      id: attack_chain.attack_chain_id,
+      type: 'attack_chain',
+      name: attack_chain.attack_chain_name,
+      lessons_anonymized: attack_chain.attack_chain_lessons_anonymized ?? false,
     };
   };
 
   const {
-    scenario,
+    attack_chain,
     objectives,
     teams,
     teamsMap,
     lessonsCategories,
     lessonsQuestions,
     lessonsTemplates,
-  } = useHelper((helper: ExercisesHelper & InjectHelper & LessonsTemplatesHelper & ScenariosHelper & TeamsHelper & UserHelper) => {
-    const scenarioData = helper.getScenario(scenarioId);
+  } = useHelper((helper: AttackChainRunsHelper & AttackChainNodeHelper & LessonsTemplatesHelper & AttackChainsHelper & TeamsHelper & UserHelper) => {
+    const scenarioData = helper.getAttackChain(scenarioId);
     return {
-      scenario: scenarioData,
-      objectives: helper.getScenarioObjectives(scenarioId),
-      lessonsCategories: helper.getScenarioLessonsCategories(scenarioId),
-      lessonsQuestions: helper.getScenarioLessonsQuestions(scenarioId),
+      attack_chain: scenarioData,
+      objectives: helper.getAttackChainObjectives(scenarioId),
+      lessonsCategories: helper.getAttackChainLessonsCategories(scenarioId),
+      lessonsQuestions: helper.getAttackChainLessonsQuestions(scenarioId),
       lessonsTemplates: helper.getLessonsTemplates(),
       teamsMap: helper.getTeamsMap(),
-      teams: helper.getScenarioTeams(scenarioId),
+      teams: helper.getAttackChainTeams(scenarioId),
     };
   });
   useDataLoader(() => {
     dispatch(fetchTeams());
-    dispatch(fetchPlayersByScenario(scenarioId));
+    dispatch(fetchPlayersByAttackChain(scenarioId));
     dispatch(fetchLessonsCategories(scenarioId));
     dispatch(fetchLessonsQuestions(scenarioId));
-    dispatch(fetchScenarioObjectives(scenarioId));
-    dispatch(fetchScenarioTeams(scenarioId));
+    dispatch(fetchAttackChainObjectives(scenarioId));
+    dispatch(fetchAttackChainTeams(scenarioId));
   });
 
   const source = useMemo(
-    () => processToGenericSource(scenario),
-    [scenario],
+    () => processToGenericSource(attack_chain),
+    [attack_chain],
   );
 
-  const permissions = useScenarioPermissions(scenarioId);
+  const permissions = useAttackChainPermissions(scenarioId);
 
   const context: LessonContextType = {
     onApplyLessonsTemplate: (data: string) => dispatch(applyLessonsTemplate(scenarioId, data)),
     onEmptyLessonsCategories: () => dispatch(emptyLessonsCategories(scenarioId)),
-    onUpdateSourceLessons: (data: boolean) => dispatch(updateScenarioLessons(scenarioId, { lessons_anonymized: data })),
+    onUpdateSourceLessons: (data: boolean) => dispatch(updateAttackChainLessons(scenarioId, { lessons_anonymized: data })),
     // Categories
     onAddLessonsCategory: (data: LessonsCategoryCreateInput) => dispatch(addLessonsCategory(scenarioId, data)),
     onDeleteLessonsCategory: (data: string) => dispatch(deleteLessonsCategory(scenarioId, data)),
@@ -119,13 +119,13 @@ const ScenarioLessons = () => {
     ),
     onAddLessonsQuestion: (lessonsCategoryId: string, data: LessonsQuestionCreateInput) => dispatch(addLessonsQuestion(scenarioId, lessonsCategoryId, data)),
     // Objectives
-    onAddObjective: (data: ObjectiveInput) => dispatch(addScenarioObjective(scenarioId, data)),
-    onUpdateObjective: (objectiveId: string, data: ObjectiveInput) => dispatch(updateScenarioObjective(scenarioId, objectiveId, data)),
-    onDeleteObjective: (objectiveId: string) => dispatch(deleteScenarioObjective(scenarioId, objectiveId)),
+    onAddObjective: (data: ObjectiveInput) => dispatch(addAttackChainObjective(scenarioId, data)),
+    onUpdateObjective: (objectiveId: string, data: ObjectiveInput) => dispatch(updateAttackChainObjective(scenarioId, objectiveId, data)),
+    onDeleteObjective: (objectiveId: string) => dispatch(deleteAttackChainObjective(scenarioId, objectiveId)),
     // Evaluation
-    onAddEvaluation: (objectiveId: string, data: EvaluationInput) => dispatch(addScenarioEvaluation(scenarioId, objectiveId, data)),
-    onUpdateEvaluation: (objectiveId: string, evaluationId: string, data: EvaluationInput) => dispatch(updateScenarioEvaluation(scenarioId, objectiveId, evaluationId, data)),
-    onFetchEvaluation: (objectiveId: string) => dispatch(fetchScenarioEvaluations(scenarioId, objectiveId)),
+    onAddEvaluation: (objectiveId: string, data: EvaluationInput) => dispatch(addAttackChainEvaluation(scenarioId, objectiveId, data)),
+    onUpdateEvaluation: (objectiveId: string, evaluationId: string, data: EvaluationInput) => dispatch(updateAttackChainEvaluation(scenarioId, objectiveId, evaluationId, data)),
+    onFetchEvaluation: (objectiveId: string) => dispatch(fetchAttackChainEvaluations(scenarioId, objectiveId)),
   };
 
   return (
@@ -148,4 +148,4 @@ const ScenarioLessons = () => {
   );
 };
 
-export default ScenarioLessons;
+export default AttackChainLessons;

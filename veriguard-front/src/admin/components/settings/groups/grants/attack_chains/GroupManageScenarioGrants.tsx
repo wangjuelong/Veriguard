@@ -1,31 +1,31 @@
 import { useState } from 'react';
 
-import { searchScenarios } from '../../../../../../actions/attack_chains/scenario-actions';
+import { searchAttackChains } from '../../../../../../actions/attack_chains/attack_chain-actions';
 import { initSorting } from '../../../../../../components/common/queryable/Page';
 import PaginationComponentV2 from '../../../../../../components/common/queryable/pagination/PaginationComponentV2';
 import { buildSearchPagination } from '../../../../../../components/common/queryable/QueryableUtils';
 import { useQueryableWithLocalStorage } from '../../../../../../components/common/queryable/useQueryableWithLocalStorage';
-import type { Scenario, SearchPaginationInput } from '../../../../../../utils/api-types';
+import type { AttackChain, SearchPaginationInput } from '../../../../../../utils/api-types';
 import TableData from '../ui/TableData';
-import useScenarioGrant from './useScenarioGrant';
+import useAttackChainGrant from './useAttackChainGrant';
 
-interface GroupManageScenarioGrantsProps {
+interface GroupManageAttackChainGrantsProps {
   groupId: string;
   onGrantChange: () => void;
 }
 
-const GroupManageScenarioGrants = ({ groupId, onGrantChange }: GroupManageScenarioGrantsProps) => {
-  const { configs } = useScenarioGrant({
+const GroupManageAttackChainGrants = ({ groupId, onGrantChange }: GroupManageAttackChainGrantsProps) => {
+  const { configs } = useAttackChainGrant({
     groupId,
     onGrantChange,
   });
-  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [attack_chains, setAttackChains] = useState<AttackChain[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const { queryableHelpers, searchPaginationInput } = useQueryableWithLocalStorage(`group-${groupId}-scenarios`, buildSearchPagination({ sorts: initSorting('scenario_updated_at', 'DESC') }));
+  const { queryableHelpers, searchPaginationInput } = useQueryableWithLocalStorage(`group-${groupId}-attack_chains`, buildSearchPagination({ sorts: initSorting('attack_chain_updated_at', 'DESC') }));
   const search = (input: SearchPaginationInput) => {
     setLoading(true);
-    return searchScenarios(input).finally(() => setLoading(false));
+    return searchAttackChains(input).finally(() => setLoading(false));
   };
 
   return (
@@ -33,13 +33,13 @@ const GroupManageScenarioGrants = ({ groupId, onGrantChange }: GroupManageScenar
       <PaginationComponentV2
         fetch={search}
         searchPaginationInput={searchPaginationInput}
-        setContent={setScenarios}
-        entityPrefix="scenario"
+        setContent={setAttackChains}
+        entityPrefix="attack_chain"
         queryableHelpers={queryableHelpers}
         disableFilters
       />
       <TableData
-        datas={scenarios}
+        datas={attack_chains}
         configs={configs}
         loading={loading}
       />
@@ -47,4 +47,4 @@ const GroupManageScenarioGrants = ({ groupId, onGrantChange }: GroupManageScenar
   );
 };
 
-export default GroupManageScenarioGrants;
+export default GroupManageAttackChainGrants;

@@ -1,22 +1,22 @@
 import {
-  type Exercise,
-  type Inject,
-  type InjectExpectation, type InjectExpectationAgentOutput,
-  type InjectTarget,
-  type Scenario,
+  type AttackChainRun,
+  type AttackChainNode,
+  type AttackChainNodeExpectation, type AttackChainNodeExpectationAgentOutput,
+  type AttackChainNodeTarget,
+  type AttackChain,
   type Team,
 } from '../../utils/api-types';
 
-export interface InjectHelper {
-  getInject: (injectId: Inject['inject_id']) => Inject;
-  getInjectsMap: () => Record<string, Inject>;
+export interface AttackChainNodeHelper {
+  getAttackChainNode: (injectId: AttackChainNode['node_id']) => AttackChainNode;
+  getAttackChainNodesMap: () => Record<string, AttackChainNode>;
 
-  getExerciseInjects: (exerciseId: Exercise['exercise_id']) => Inject[];
-  getExerciseInjectExpectations: (scenarioId: Scenario['scenario_id']) => InjectExpectation[];
-  getTeamExerciseInjects: (teamId: Team['team_id']) => Inject[];
+  getAttackChainRunAttackChainNodes: (exerciseId: AttackChainRun['attack_chain_run_id']) => AttackChainNode[];
+  getAttackChainRunAttackChainNodeExpectations: (scenarioId: AttackChain['attack_chain_id']) => AttackChainNodeExpectation[];
+  getTeamAttackChainRunAttackChainNodes: (teamId: Team['team_id']) => AttackChainNode[];
 
-  getScenarioInjects: (scenarioId: Scenario['scenario_id']) => Inject[];
-  getTeamScenarioInjects: (teamId: Team['team_id']) => Inject[];
+  getAttackChainAttackChainNodes: (scenarioId: AttackChain['attack_chain_id']) => AttackChainNode[];
+  getTeamAttackChainAttackChainNodes: (teamId: Team['team_id']) => AttackChainNode[];
 
-  getInjectExpectationsByAsset: (targetId: InjectTarget['target_id'], expectationType: string) => InjectExpectationAgentOutput[];
+  getAttackChainNodeExpectationsByAsset: (targetId: AttackChainNodeTarget['target_id'], expectationType: string) => AttackChainNodeExpectationAgentOutput[];
 }

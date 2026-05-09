@@ -6,16 +6,16 @@ import { fetchGroup } from '../../../../../../actions/Group';
 import type { GroupHelper } from '../../../../../../actions/group/group-helper';
 import { useFormatter } from '../../../../../../components/i18n';
 import { useHelper } from '../../../../../../store';
-import { type Grant, type GroupGrantInput, type Scenario } from '../../../../../../utils/api-types';
+import { type Grant, type GroupGrantInput, type AttackChain } from '../../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../../utils/hooks';
 import { type TableConfig } from '../ui/TableData';
 
-interface ScenarioGrantsProps {
+interface AttackChainGrantsProps {
   groupId: string;
   onGrantChange: () => void;
 }
 
-const useScenarioGrant = ({ groupId, onGrantChange }: ScenarioGrantsProps) => {
+const useAttackChainGrant = ({ groupId, onGrantChange }: AttackChainGrantsProps) => {
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
   const group = useHelper((helper: GroupHelper) => helper.getGroup(groupId));
@@ -46,10 +46,10 @@ const useScenarioGrant = ({ groupId, onGrantChange }: ScenarioGrantsProps) => {
     }
   };
 
-  const getGrantIds = (scenario: Scenario) => {
+  const getGrantIds = (attack_chain: AttackChain) => {
     const grants = group.group_grants ?? [];
     const findGrantId = (name: string) => grants
-      .find((g: Grant) => g.grant_resource === scenario.scenario_id && g.grant_name === name)?.grant_id ?? null;
+      .find((g: Grant) => g.grant_resource === attack_chain.attack_chain_id && g.grant_name === name)?.grant_id ?? null;
     return {
       observerId: findGrantId('OBSERVER'),
       plannerId: findGrantId('PLANNER'),
@@ -57,22 +57,22 @@ const useScenarioGrant = ({ groupId, onGrantChange }: ScenarioGrantsProps) => {
     };
   };
 
-  const configs: TableConfig<Scenario>[] = [
+  const configs: TableConfig<AttackChain>[] = [
     {
-      label: t('Scenario'),
-      value: scenario => scenario.scenario_name,
+      label: t('AttackChain'),
+      value: attack_chain => attack_chain.attack_chain_name,
       width: '40%',
       align: 'left',
     },
     {
       label: t('Access'),
-      value: (scenario) => {
-        const { observerId, plannerId, launcherId } = getGrantIds(scenario);
+      value: (attack_chain) => {
+        const { observerId, plannerId, launcherId } = getGrantIds(attack_chain);
         return (
           <Checkbox
             checked={!!(observerId || plannerId || launcherId)}
             disabled={!!(plannerId || launcherId)}
-            onChange={(_, checked) => handleGrant(scenario.scenario_id, observerId, 'OBSERVER', checked)}
+            onChange={(_, checked) => handleGrant(attack_chain.attack_chain_id, observerId, 'OBSERVER', checked)}
           />
         );
       },
@@ -80,13 +80,13 @@ const useScenarioGrant = ({ groupId, onGrantChange }: ScenarioGrantsProps) => {
     },
     {
       label: t('Manage+Delete'),
-      value: (scenario) => {
-        const { plannerId, launcherId } = getGrantIds(scenario);
+      value: (attack_chain) => {
+        const { plannerId, launcherId } = getGrantIds(attack_chain);
         return (
           <Checkbox
             checked={!!(plannerId || launcherId)}
             disabled={!!launcherId}
-            onChange={(_, checked) => handleGrant(scenario.scenario_id, plannerId, 'PLANNER', checked)}
+            onChange={(_, checked) => handleGrant(attack_chain.attack_chain_id, plannerId, 'PLANNER', checked)}
           />
         );
       },
@@ -94,12 +94,12 @@ const useScenarioGrant = ({ groupId, onGrantChange }: ScenarioGrantsProps) => {
     },
     {
       label: t('Launch'),
-      value: (scenario) => {
-        const { launcherId } = getGrantIds(scenario);
+      value: (attack_chain) => {
+        const { launcherId } = getGrantIds(attack_chain);
         return (
           <Checkbox
             checked={!!launcherId}
-            onChange={(_, checked) => handleGrant(scenario.scenario_id, launcherId, 'LAUNCHER', checked)}
+            onChange={(_, checked) => handleGrant(attack_chain.attack_chain_id, launcherId, 'LAUNCHER', checked)}
           />
         );
       },
@@ -110,4 +110,4 @@ const useScenarioGrant = ({ groupId, onGrantChange }: ScenarioGrantsProps) => {
   return { configs };
 };
 
-export default useScenarioGrant;
+export default useAttackChainGrant;

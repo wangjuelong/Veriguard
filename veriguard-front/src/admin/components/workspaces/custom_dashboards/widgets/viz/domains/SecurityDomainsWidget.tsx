@@ -59,7 +59,7 @@ const SecurityDomainsWidget: FunctionComponent<Props> = ({ data }) => {
               color: EMPTY_DATA,
             }}
             >
-              {t('No data collected on this domain at this time. Run a scenario to start analyzing your position on this domain.')}
+              {t('No data collected on this domain at this time. Run a attack_chain to start analyzing your position on this domain.')}
             </span>
           ),
           function: () => handleClick(domain.domain_name),

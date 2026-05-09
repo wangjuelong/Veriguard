@@ -1,7 +1,7 @@
 // 二开移除 Article — 占位 context 工厂直至前端深度解耦。
 import { type ArticleContextType } from '../../../common/Context';
 
-const articleContextForScenario = (_scenarioId: string): ArticleContextType => ({
+const articleContextForAttackChain = (_scenarioId: string): ArticleContextType => ({
   previewArticleUrl: () => '',
   fetchArticles: () => Promise.resolve({
     result: [],
@@ -17,4 +17,4 @@ const articleContextForScenario = (_scenarioId: string): ArticleContextType => (
   onDeleteArticle: () => '',
 });
 
-export default articleContextForScenario;
+export default articleContextForAttackChain;

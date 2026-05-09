@@ -1,10 +1,10 @@
 import { type Dispatch } from 'redux';
 
 import { delReferential, getReferential, postReferential, putReferential } from '../../utils/Action';
-import { type Exercise, type Report, type ReportInjectComment, type ReportInput } from '../../utils/api-types';
+import { type AttackChainRun, type Report, type ReportAttackChainNodeComment, type ReportInput } from '../../utils/api-types';
 import * as schema from '../Schema';
 
-export const fetchReportsForExercise = (exerciseId: Exercise['exercise_id']) => (dispatch: Dispatch) => {
+export const fetchReportsForAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id']) => (dispatch: Dispatch) => {
   const uri = `/api/attack_chain_runs/${exerciseId}/reports`;
   return getReferential(schema.arrayOfReports, uri)(dispatch);
 };
@@ -14,18 +14,18 @@ export const fetchReport = (reportId: Report['report_id']) => (dispatch: Dispatc
   return getReferential(schema.report, uri)(dispatch);
 };
 
-export const fetchReportFromSimulation = (exerciseId: Exercise['exercise_id'], reportId: Report['report_id']) => (dispatch: Dispatch) => {
+export const fetchReportFromSimulation = (exerciseId: AttackChainRun['attack_chain_run_id'], reportId: Report['report_id']) => (dispatch: Dispatch) => {
   const uri = `/api/attack_chain_runs/${exerciseId}/reports/${reportId}`;
   return getReferential(schema.report, uri)(dispatch);
 };
 
-export const addReportForExercise = (exerciseId: Exercise['exercise_id'], data: ReportInput) => (dispatch: Dispatch) => {
+export const addReportForAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id'], data: ReportInput) => (dispatch: Dispatch) => {
   const uri = `/api/attack_chain_runs/${exerciseId}/reports`;
   return postReferential(schema.report, uri, data)(dispatch);
 };
 
-export const updateReportForExercise = (
-  exerciseId: Exercise['exercise_id'],
+export const updateReportForAttackChainRun = (
+  exerciseId: AttackChainRun['attack_chain_run_id'],
   reportId: Report['report_id'],
   data: ReportInput,
 ) => (dispatch: Dispatch) => {
@@ -33,16 +33,16 @@ export const updateReportForExercise = (
   return putReferential(schema.report, uri, data)(dispatch);
 };
 
-export const updateReportInjectCommentForExercise = (
-  exerciseId: Exercise['exercise_id'],
+export const updateReportAttackChainNodeCommentForAttackChainRun = (
+  exerciseId: AttackChainRun['attack_chain_run_id'],
   reportId: Report['report_id'],
-  data: ReportInjectComment,
+  data: ReportAttackChainNodeComment,
 ) => (dispatch: Dispatch) => {
-  const uri = `/api/attack_chain_runs/${exerciseId}/reports/${reportId}/inject-comments`;
+  const uri = `/api/attack_chain_runs/${exerciseId}/reports/${reportId}/node-comments`;
   return putReferential(schema.report, uri, data)(dispatch);
 };
 
-export const deleteReportForExercise = (exerciseId: Exercise['exercise_id'], reportId: Report['report_id']) => (dispatch: Dispatch) => {
+export const deleteReportForAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id'], reportId: Report['report_id']) => (dispatch: Dispatch) => {
   const uri = `/api/attack_chain_runs/${exerciseId}/reports/${reportId}`;
   return delReferential(uri, 'reports', reportId)(dispatch);
 };

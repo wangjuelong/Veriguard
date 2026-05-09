@@ -5,10 +5,10 @@ import { useTheme } from '@mui/material/styles';
 import { type SyntheticEvent, useContext, useEffect, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
-import { fetchDocumentsPayloadByInject } from '../../../../actions/attack_chain_nodes/inject-action';
-import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject-helper';
-import { fetchInject } from '../../../../actions/AttackChainNode';
+import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../../../actions/attack_chain_nodes/AttackChainNode';
+import { fetchDocumentsPayloadByAttackChainNode } from '../../../../actions/attack_chain_nodes/node-action';
+import { type AttackChainNodeHelper } from '../../../../actions/attack_chain_nodes/node-helper';
+import { fetchAttackChainNode } from '../../../../actions/AttackChainNode';
 import Drawer from '../../../../components/common/Drawer';
 import { useFormatter } from '../../../../components/i18n';
 import PlatformIcon from '../../../../components/PlatformIcon';
@@ -16,8 +16,8 @@ import { useHelper } from '../../../../store';
 import {
   type Article,
   type AttackPattern, type Document,
-  type Inject,
-  type InjectInput,
+  type AttackChainNode,
+  type AttackChainNodeInput,
   type KillChainPhase, type Variable,
 } from '../../../../utils/api-types';
 import { type InjectorContractConverted } from '../../../../utils/api-types-custom';
@@ -28,65 +28,65 @@ import { ACTIONS, INHERITED_CONTEXT, SUBJECTS } from '../../../../utils/permissi
 import { arrayToRecord, isNotEmptyField } from '../../../../utils/utils';
 import PayloadComponent from '../../payloads/PayloadComponent';
 import { PermissionsContext } from '../Context';
-import InjectForm from './form/InjectForm';
-import InjectCardComponent from './InjectCardComponent';
-import InjectIcon from './InjectIcon';
-import UpdateInjectLogicalChains from './UpdateInjectLogicalChains';
+import AttackChainNodeForm from './form/AttackChainNodeForm';
+import AttackChainNodeCardComponent from './AttackChainNodeCardComponent';
+import AttackChainNodeIcon from './AttackChainNodeIcon';
+import UpdateAttackChainNodeLogicalChains from './UpdateAttackChainNodeLogicalChains';
 
 interface Props {
   open: boolean;
   handleClose: () => void;
-  onUpdateInject: (data: Inject) => Promise<void>;
-  massUpdateInject?: (data: Inject[]) => Promise<void>;
+  onUpdateAttackChainNode: (data: AttackChainNode) => Promise<void>;
+  massUpdateAttackChainNode?: (data: AttackChainNode[]) => Promise<void>;
   injectId: string;
   isAtomic?: boolean;
-  injects?: InjectOutputType[];
-  articlesFromExerciseOrScenario?: Article[];
+  nodes?: AttackChainNodeOutputType[];
+  articlesFromAttackChainRunOrAttackChain?: Article[];
   uriVariable?: string;
-  variablesFromExerciseOrScenario?: Variable[];
+  variablesFromAttackChainRunOrAttackChain?: Variable[];
 }
 
 const useStyles = makeStyles()(() => ({ tabPanel: { padding: 0 } }));
 
-const UpdateInject: React.FC<Props> = ({
+const UpdateAttackChainNode: React.FC<Props> = ({
   open,
   handleClose,
-  onUpdateInject,
-  massUpdateInject,
+  onUpdateAttackChainNode,
+  massUpdateAttackChainNode,
   injectId,
   isAtomic = false,
-  injects,
-  articlesFromExerciseOrScenario = [],
+  nodes,
+  articlesFromAttackChainRunOrAttackChain = [],
   uriVariable = '',
-  variablesFromExerciseOrScenario = [],
+  variablesFromAttackChainRunOrAttackChain = [],
 }) => {
   const { t } = useFormatter();
   const theme = useTheme();
   const { classes } = useStyles();
   const dispatch = useAppDispatch();
-  const [isInjectLoading, setIsInjectLoading] = useState(true);
+  const [isAttackChainNodeLoading, setIsAttackChainNodeLoading] = useState(true);
 
   const { permissions, inherited_context } = useContext(PermissionsContext);
   const ability = useContext(AbilityContext);
 
   // Setup tabs
-  const [availableTabs, setAvailableTabs] = useState<string[]>(['Inject details', 'Logical chains']);
+  const [availableTabs, setAvailableTabs] = useState<string[]>(['AttackChainNode details', 'Logical chains']);
   const [activeTab, setActiveTab] = useState<string>(availableTabs[0]);
 
   // Fetching data
-  const { inject }: { inject: InjectStore } = useHelper((helper: InjectHelper) => ({ inject: helper.getInject(injectId) }));
-  const contractPayload = inject?.inject_injector_contract?.injector_contract_payload;
-  const injectorContract = inject?.inject_injector_contract;
+  const { node }: { node: AttackChainNodeStore } = useHelper((helper: AttackChainNodeHelper) => ({ node: helper.getAttackChainNode(injectId) }));
+  const contractPayload = node?.node_injector_contract?.injector_contract_payload;
+  const injectorContract = node?.node_injector_contract;
   const [documentsMap, setDocumentsMap] = useState<Record<string, Document> | null>(null);
 
   useDataLoader(() => {
-    setIsInjectLoading(true);
-    dispatch(fetchInject(injectId)).then(() => {
-      const payloadId = inject?.inject_injector_contract?.injector_contract_payload?.payload_id;
+    setIsAttackChainNodeLoading(true);
+    dispatch(fetchAttackChainNode(injectId)).then(() => {
+      const payloadId = node?.node_injector_contract?.injector_contract_payload?.payload_id;
       if (payloadId) {
-        setAvailableTabs(['Inject details', 'Payload info', 'Logical chains']);
+        setAvailableTabs(['AttackChainNode details', 'Payload info', 'Logical chains']);
       }
-      setIsInjectLoading(false);
+      setIsAttackChainNodeLoading(false);
     });
   });
 
@@ -95,21 +95,21 @@ const UpdateInject: React.FC<Props> = ({
     setActiveTab(newValue);
 
     if (newValue === 'Payload info' && !documentsMap) {
-      fetchDocumentsPayloadByInject(injectId, contractPayload?.payload_id)
+      fetchDocumentsPayloadByAttackChainNode(injectId, contractPayload?.payload_id)
         .then(documents => setDocumentsMap(arrayToRecord<Document, 'document_id'>(documents, 'document_id')));
     }
   };
 
   const [injectorContractContent, setInjectorContractContent] = useState<InjectorContractConverted['convertedContent']>();
   useEffect(() => {
-    if (inject?.inject_injector_contract?.convertedContent) {
-      setInjectorContractContent(inject.inject_injector_contract?.convertedContent);
+    if (node?.node_injector_contract?.convertedContent) {
+      setInjectorContractContent(node.node_injector_contract?.convertedContent);
     }
-  }, [inject]);
+  }, [node]);
 
-  const getInjectHeaderTitle = (): string => {
-    if (injectorContract?.injector_contract_needs_executor && inject?.inject_attack_patterns?.length !== 0) {
-      return `${inject?.inject_kill_chain_phases?.map((value: KillChainPhase) => value.phase_name)?.join(', ')} / ${inject?.inject_attack_patterns?.map((value: AttackPattern) => value.attack_pattern_external_id)?.join(', ')}`;
+  const getAttackChainNodeHeaderTitle = (): string => {
+    if (injectorContract?.injector_contract_needs_executor && node?.node_attack_patterns?.length !== 0) {
+      return `${node?.node_kill_chain_phases?.map((value: KillChainPhase) => value.phase_name)?.join(', ')} / ${node?.node_attack_patterns?.map((value: AttackPattern) => value.attack_pattern_external_id)?.join(', ')}`;
     }
     if (injectorContract?.injector_contract_needs_executor) {
       return t('TTP Unknown');
@@ -118,10 +118,10 @@ const UpdateInject: React.FC<Props> = ({
   };
 
   const injectFormContent = (
-    <InjectCardComponent
+    <AttackChainNodeCardComponent
       avatar={injectorContractContent
         ? (
-            <InjectIcon
+            <AttackChainNodeIcon
               type={contractPayload ? (contractPayload.payload_collector_type ?? contractPayload.payload_type) : injectorContract?.injector_contract_injector_type}
               isPayload={isNotEmptyField(contractPayload?.payload_collector_type ?? contractPayload?.payload_type)}
             />
@@ -134,14 +134,14 @@ const UpdateInject: React.FC<Props> = ({
               <HelpOutlined />
             </Avatar>
           )}
-      title={getInjectHeaderTitle()}
+      title={getAttackChainNodeHeaderTitle()}
       action={(
         <div style={{
           display: 'flex',
           alignItems: 'center',
         }}
         >
-          {inject?.inject_injector_contract?.injector_contract_platforms?.map(
+          {node?.node_injector_contract?.injector_contract_platforms?.map(
             platform => (
               <PlatformIcon
                 key={platform}
@@ -153,7 +153,7 @@ const UpdateInject: React.FC<Props> = ({
           )}
         </div>
       )}
-      content={inject?.inject_title}
+      content={node?.node_title}
     />
 
   );
@@ -161,7 +161,7 @@ const UpdateInject: React.FC<Props> = ({
     <Drawer
       open={open}
       handleClose={handleClose}
-      title={t('Update the inject')}
+      title={t('Update the node')}
       disableEnforceFocus
       containerStyle={{
         display: 'flex',
@@ -177,11 +177,11 @@ const UpdateInject: React.FC<Props> = ({
             ))}
           </Tabs>
         )}
-        {/* Inject details */}
-        <TabPanel value="Inject details" keepMounted className={classes.tabPanel}>
+        {/* AttackChainNode details */}
+        <TabPanel value="AttackChainNode details" keepMounted className={classes.tabPanel}>
           {injectFormContent}
-          {!isInjectLoading && (
-            <InjectForm
+          {!isAttackChainNodeLoading && (
+            <AttackChainNodeForm
               handleClose={handleClose}
               disabled={
                 !injectorContractContent
@@ -190,12 +190,12 @@ const UpdateInject: React.FC<Props> = ({
                   && ability.cannot(ACTIONS.MANAGE, SUBJECTS.RESOURCE, injectId))
               }
               isAtomic={isAtomic}
-              defaultInject={inject}
+              defaultAttackChainNode={node}
               injectorContractContent={injectorContractContent}
-              onSubmitInject={(data: InjectInput) => onUpdateInject(data as Inject)}
-              articlesFromExerciseOrScenario={articlesFromExerciseOrScenario}
+              onSubmitAttackChainNode={(data: AttackChainNodeInput) => onUpdateAttackChainNode(data as AttackChainNode)}
+              articlesFromAttackChainRunOrAttackChain={articlesFromAttackChainRunOrAttackChain}
               uriVariable={uriVariable}
-              variablesFromExerciseOrScenario={variablesFromExerciseOrScenario}
+              variablesFromAttackChainRunOrAttackChain={variablesFromAttackChainRunOrAttackChain}
             />
           )}
         </TabPanel>
@@ -203,7 +203,7 @@ const UpdateInject: React.FC<Props> = ({
         {/* Payload info */}
         {contractPayload && !isAtomic && (
           <TabPanel value="Payload info" keepMounted className={classes.tabPanel}>
-            {!isInjectLoading && (
+            {!isAttackChainNodeLoading && (
               <PayloadComponent
                 documentsMap={documentsMap}
                 selectedPayload={contractPayload}
@@ -215,12 +215,12 @@ const UpdateInject: React.FC<Props> = ({
         {/* Logical chains */}
         <TabPanel value="Logical chains" keepMounted className={classes.tabPanel}>
           {injectFormContent}
-          {!isInjectLoading && !isAtomic && (
-            <UpdateInjectLogicalChains
-              inject={inject}
+          {!isAttackChainNodeLoading && !isAtomic && (
+            <UpdateAttackChainNodeLogicalChains
+              node={node}
               handleClose={handleClose}
-              onUpdateInject={massUpdateInject}
-              injects={injects}
+              onUpdateAttackChainNode={massUpdateAttackChainNode}
+              nodes={nodes}
               isDisabled={
                 !permissions.canManage
                 && ability.cannot(ACTIONS.MANAGE, SUBJECTS.RESOURCE, injectId)
@@ -233,4 +233,4 @@ const UpdateInject: React.FC<Props> = ({
   );
 };
 
-export default UpdateInject;
+export default UpdateAttackChainNode;

@@ -6,8 +6,8 @@ import { type CSSProperties, type FunctionComponent, type SyntheticEvent, useCon
 import { Link } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
-import { exportInjectSearch } from '../../../../actions/attack_chain_nodes/inject-action';
+import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../../../actions/attack_chain_nodes/AttackChainNode';
+import { exportAttackChainNodeSearch } from '../../../../actions/attack_chain_nodes/node-action';
 import ChainedTimeline from '../../../../components/ChainedTimeline';
 import ButtonCreate from '../../../../components/common/ButtonCreate';
 import { initSorting } from '../../../../components/common/queryable/Page';
@@ -24,11 +24,11 @@ import PaginatedListLoader from '../../../../components/PaginatedListLoader';
 import PlatformIcon from '../../../../components/PlatformIcon';
 import {
   type Article,
-  type Inject,
-  type InjectBulkUpdateOperation,
-  type InjectExportFromSearchRequestInput,
-  type InjectInput,
-  type InjectTestStatusOutput,
+  type AttackChainNode,
+  type AttackChainNodeBulkUpdateOperation,
+  type AttackChainNodeExportFromSearchRequestInput,
+  type AttackChainNodeInput,
+  type AttackChainNodeTestStatusOutput,
   type SearchPaginationInput,
   type Team,
   type Variable,
@@ -38,14 +38,14 @@ import { MESSAGING$ } from '../../../../utils/Environment';
 import useEntityToggle from '../../../../utils/hooks/useEntityToggle';
 import { splitDuration } from '../../../../utils/Time';
 import { download, isNotEmptyField } from '../../../../utils/utils';
-import { InjectContext, InjectTestContext, PermissionsContext, ViewModeContext } from '../Context';
+import { AttackChainNodeContext, AttackChainNodeTestContext, PermissionsContext, ViewModeContext } from '../Context';
 import ToolBar from '../ToolBar';
-import CreateInject from './CreateInject';
-import InjectIcon from './InjectIcon';
+import CreateAttackChainNode from './CreateAttackChainNode';
+import AttackChainNodeIcon from './AttackChainNodeIcon';
 import InjectorContract from './InjectorContract';
-import InjectPopover from './InjectPopover';
-import InjectsListButtons from './InjectsListButtons';
-import UpdateInject from './UpdateInject';
+import AttackChainNodePopover from './AttackChainNodePopover';
+import AttackChainNodesListButtons from './AttackChainNodesListButtons';
+import UpdateAttackChainNode from './UpdateAttackChainNode';
 
 const useStyles = makeStyles()(() => ({
   disabled: {
@@ -78,13 +78,13 @@ const useStyles = makeStyles()(() => ({
 }));
 
 const inlineStyles: Record<string, CSSProperties> = {
-  inject_type: { width: '15%' },
-  inject_title: { width: '20%' },
-  inject_contract_domains: { width: '15%' },
-  inject_depends_duration: { width: '18%' },
-  inject_platforms: { width: '10%' },
-  inject_enabled: { width: '12%' },
-  inject_tags: { width: '10%' },
+  node_type: { width: '15%' },
+  node_title: { width: '20%' },
+  node_contract_domains: { width: '15%' },
+  node_depends_duration: { width: '18%' },
+  node_platforms: { width: '10%' },
+  node_enabled: { width: '12%' },
+  node_tags: { width: '10%' },
 };
 
 interface Props {
@@ -96,7 +96,7 @@ interface Props {
   uriVariable: string;
 }
 
-const Injects: FunctionComponent<Props> = ({
+const AttackChainNodes: FunctionComponent<Props> = ({
   setViewMode,
   availableButtons,
   teams,
@@ -108,19 +108,19 @@ const Injects: FunctionComponent<Props> = ({
   const { classes } = useStyles();
   const { t, tPick } = useFormatter();
   const theme = useTheme();
-  const injectContext = useContext(InjectContext);
-  const { injects, setInjects } = injectContext;
+  const injectContext = useContext(AttackChainNodeContext);
+  const { nodes, setAttackChainNodes } = injectContext;
   const viewModeContext = useContext(ViewModeContext);
   const { permissions } = useContext(PermissionsContext);
-  const { contextId } = useContext(InjectTestContext);
+  const { contextId } = useContext(AttackChainNodeTestContext);
 
   // Headers
   const headers = useMemo(() => [
     {
-      field: 'inject_type',
+      field: 'node_type',
       label: 'Type',
       isSortable: false,
-      value: (_: InjectOutputType, injectContract: InjectorContractConverted['convertedContent']) => {
+      value: (_: AttackChainNodeOutputType, injectContract: InjectorContractConverted['convertedContent']) => {
         const injectorContractName = tPick(injectContract?.label);
         return injectContract
           ? (
@@ -134,30 +134,30 @@ const Injects: FunctionComponent<Props> = ({
       },
     },
     {
-      field: 'inject_title',
+      field: 'node_title',
       label: 'Title',
       isSortable: true,
-      value: (inject: InjectOutputType, _: InjectorContractConverted['convertedContent']) => <>{inject.inject_title}</>,
+      value: (node: AttackChainNodeOutputType, _: InjectorContractConverted['convertedContent']) => <>{node.node_title}</>,
     },
     {
-      field: 'inject_contract_domains',
+      field: 'node_contract_domains',
       label: t('Domains'),
       isSortable: true,
-      value: (inject: InjectOutputType, _: InjectorContractConverted['convertedContent']) => {
-        return inject.inject_contract_domains?.length
+      value: (node: AttackChainNodeOutputType, _: InjectorContractConverted['convertedContent']) => {
+        return node.node_contract_domains?.length
           ? (
-              <ItemDomains domains={inject.inject_contract_domains} variant="reduced-view" />
+              <ItemDomains domains={node.node_contract_domains} variant="reduced-view" />
             )
           : <></>;
       },
     },
     {
-      field: 'inject_depends_duration',
+      field: 'node_depends_duration',
       label: 'Trigger',
       isSortable: true,
-      value: (inject: InjectOutputType, _: InjectorContractConverted['convertedContent']) => {
+      value: (node: AttackChainNodeOutputType, _: InjectorContractConverted['convertedContent']) => {
         const duration = splitDuration(
-          inject.inject_depends_duration || 0,
+          node.node_depends_duration || 0,
         );
         return (
           <Chip
@@ -171,13 +171,13 @@ const Injects: FunctionComponent<Props> = ({
       },
     },
     {
-      field: 'inject_platforms',
+      field: 'node_platforms',
       label: 'Platform(s)',
       isSortable: false,
-      value: (inject: InjectOutputType, _: InjectorContractConverted['convertedContent']) => (
+      value: (node: AttackChainNodeOutputType, _: InjectorContractConverted['convertedContent']) => (
         <>
           {
-            inject.inject_injector_contract?.injector_contract_platforms?.map(
+            node.node_injector_contract?.injector_contract_platforms?.map(
               platform => (
                 <PlatformIcon
                   key={platform}
@@ -192,20 +192,20 @@ const Injects: FunctionComponent<Props> = ({
       ),
     },
     {
-      field: 'inject_enabled',
+      field: 'node_enabled',
       label: 'Status',
       isSortable: false,
-      value: (inject: InjectOutputType, _: InjectorContractConverted['convertedContent']) => {
-        let injectStatus = inject.inject_enabled
+      value: (node: AttackChainNodeOutputType, _: InjectorContractConverted['convertedContent']) => {
+        let injectStatus = node.node_enabled
           ? t('Enabled')
           : t('Disabled');
-        if (!inject.inject_ready) {
+        if (!node.node_ready) {
           injectStatus = t('Missing content');
         }
         return (
           <ItemBoolean
-            status={inject.inject_ready
-              ? inject.inject_enabled : false}
+            status={node.node_ready
+              ? node.node_enabled : false}
             label={injectStatus}
             variant="inList"
             tooltip={injectStatus}
@@ -214,13 +214,13 @@ const Injects: FunctionComponent<Props> = ({
       },
     },
     {
-      field: 'inject_tags',
+      field: 'node_tags',
       label: 'Tags',
       isSortable: false,
-      value: (inject: InjectOutputType, _: InjectorContractConverted['convertedContent']) => (
+      value: (node: AttackChainNodeOutputType, _: InjectorContractConverted['convertedContent']) => (
         <ItemTags
           variant="list"
-          tags={inject.inject_tags}
+          tags={node.node_tags}
         />
       ),
     },
@@ -228,93 +228,93 @@ const Injects: FunctionComponent<Props> = ({
 
   // Filters
   const availableFilterNames = [
-    'inject_platforms',
-    'inject_kill_chain_phases',
-    'inject_injector_contract',
-    'inject_type',
-    'inject_title',
-    'inject_assets',
-    'inject_asset_groups',
-    'inject_teams',
-    'inject_tags',
-    'inject_contract_domains',
+    'node_platforms',
+    'node_kill_chain_phases',
+    'node_injector_contract',
+    'node_type',
+    'node_title',
+    'node_assets',
+    'node_asset_groups',
+    'node_teams',
+    'node_tags',
+    'node_contract_domains',
   ];
 
   const {
     queryableHelpers,
     searchPaginationInput,
-  } = useQueryableWithLocalStorage(`${contextId}-injects`, buildSearchPagination({
-    sorts: initSorting('inject_depends_duration', 'ASC'),
+  } = useQueryableWithLocalStorage(`${contextId}-nodes`, buildSearchPagination({
+    sorts: initSorting('node_depends_duration', 'ASC'),
     size: 20,
   }));
 
   const [loading, setLoading] = useState<boolean>(true);
-  const searchInjectsToLoad = (input: SearchPaginationInput) => {
+  const searchAttackChainNodesToLoad = (input: SearchPaginationInput) => {
     setLoading(true);
-    return injectContext.searchInjects(input).finally(() => setLoading(false));
+    return injectContext.searchAttackChainNodes(input).finally(() => setLoading(false));
   };
 
-  // Injects
+  // AttackChainNodes
   // scoped to page
   // Bulk loading indicator for tests and delete
   const [isBulkLoading, setIsBulkLoading] = useState<boolean>(false);
-  const [selectedInjectId, setSelectedInjectId] = useState<string | null>(null);
-  const [reloadInjectCount, setReloadInjectCount] = useState(0);
+  const [selectedAttackChainNodeId, setSelectedAttackChainNodeId] = useState<string | null>(null);
+  const [reloadAttackChainNodeCount, setReloadAttackChainNodeCount] = useState(0);
 
   // Optimistic update
   const onCreate = (result: {
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }) => {
     if (result.entities) {
-      const created = result.entities.injects[result.result];
-      setInjects([created as InjectOutputType, ...injects]);
+      const created = result.entities.nodes[result.result];
+      setAttackChainNodes([created as AttackChainNodeOutputType, ...nodes]);
       queryableHelpers.paginationHelpers.handleChangeTotalElements(queryableHelpers.paginationHelpers.getTotalElements() + 1);
     }
   };
 
   const onUpdate = (result: {
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }) => {
     if (result.entities) {
-      const updatedResults = result.entities.injects[result.result];
-      setInjects(injects.map(i => i.inject_id !== updatedResults.inject_id ? i : updatedResults as InjectOutputType));
+      const updatedResults = result.entities.nodes[result.result];
+      setAttackChainNodes(nodes.map(i => i.node_id !== updatedResults.node_id ? i : updatedResults as AttackChainNodeOutputType));
     }
   };
 
-  const onBulkUpdate = (updatedResults: Inject[]) => {
-    setInjects(injects.map((originalInject) => {
-      return updatedResults.find(updatedInject => updatedInject.inject_id === originalInject.inject_id) as unknown as InjectOutputType || originalInject;
+  const onBulkUpdate = (updatedResults: AttackChainNode[]) => {
+    setAttackChainNodes(nodes.map((originalAttackChainNode) => {
+      return updatedResults.find(updatedAttackChainNode => updatedAttackChainNode.node_id === originalAttackChainNode.node_id) as unknown as AttackChainNodeOutputType || originalAttackChainNode;
     }));
   };
 
   const onDelete = (result: string) => {
     if (result) {
-      setInjects(injects.filter(i => (i.inject_id !== result)));
+      setAttackChainNodes(nodes.filter(i => (i.node_id !== result)));
       queryableHelpers.paginationHelpers.handleChangeTotalElements(queryableHelpers.paginationHelpers.getTotalElements() - 1);
     }
   };
 
-  const onCreateInject = async (data: InjectInput) => {
-    await injectContext.onAddInject(data as Inject).then((result: {
+  const onCreateAttackChainNode = async (data: AttackChainNodeInput) => {
+    await injectContext.onAddAttackChainNode(data as AttackChainNode).then((result: {
       result: string;
-      entities: { injects: Record<string, InjectStore> };
+      entities: { nodes: Record<string, AttackChainNodeStore> };
     }) => {
       onCreate(result);
     });
   };
 
-  const onCreateInjects = (created: InjectOutputType[]) => {
-    setInjects([...created, ...injects]);
+  const onCreateAttackChainNodes = (created: AttackChainNodeOutputType[]) => {
+    setAttackChainNodes([...created, ...nodes]);
     queryableHelpers.paginationHelpers.handleChangeTotalElements(queryableHelpers.paginationHelpers.getTotalElements() + created.length);
   };
 
-  const onUpdateInject = async (data: Inject) => {
-    if (selectedInjectId) {
-      await injectContext.onUpdateInject(selectedInjectId, data).then((result: {
+  const onUpdateAttackChainNode = async (data: AttackChainNode) => {
+    if (selectedAttackChainNodeId) {
+      await injectContext.onUpdateAttackChainNode(selectedAttackChainNodeId, data).then((result: {
         result: string;
-        entities: { injects: Record<string, InjectStore> };
+        entities: { nodes: Record<string, AttackChainNodeStore> };
       }) => {
         onUpdate(result);
         return result;
@@ -322,15 +322,15 @@ const Injects: FunctionComponent<Props> = ({
     }
   };
 
-  const massUpdateInject = async (data: Inject[]) => {
-    const promises: Promise<InjectStore | undefined>[] = [];
-    data.forEach((inject) => {
-      promises.push(injectContext.onUpdateInject(inject.inject_id, inject).then((result: {
+  const massUpdateAttackChainNode = async (data: AttackChainNode[]) => {
+    const promises: Promise<AttackChainNodeStore | undefined>[] = [];
+    data.forEach((node) => {
+      promises.push(injectContext.onUpdateAttackChainNode(node.node_id, node).then((result: {
         result: string;
-        entities: { injects: Record<string, InjectStore> };
+        entities: { nodes: Record<string, AttackChainNodeStore> };
       }) => {
         if (result.entities) {
-          return result.entities.injects[result.result];
+          return result.entities.nodes[result.result];
         }
         return undefined;
       }));
@@ -338,21 +338,21 @@ const Injects: FunctionComponent<Props> = ({
 
     Promise.all(promises).then((values) => {
       if (values !== undefined) {
-        const updatedInjects = injects
-          .map(inject => (values.find(value => value !== undefined && value.inject_id === inject.inject_id)
-            ? (values.find(value => value !== undefined && value?.inject_id === inject.inject_id) as InjectOutputType)
-            : inject as InjectOutputType));
-        setInjects(updatedInjects);
+        const updatedAttackChainNodes = nodes
+          .map(node => (values.find(value => value !== undefined && value.node_id === node.node_id)
+            ? (values.find(value => value !== undefined && value?.node_id === node.node_id) as AttackChainNodeOutputType)
+            : node as AttackChainNodeOutputType));
+        setAttackChainNodes(updatedAttackChainNodes);
       }
     });
   };
 
   const [openCreateDrawer, setOpenCreateDrawer] = useState(false);
 
-  const [presetInjectDuration, setPresetInjectDuration] = useState<number>(0);
-  const openCreateInjectDrawer = (duration: number) => {
+  const [presetAttackChainNodeDuration, setPresetAttackChainNodeDuration] = useState<number>(0);
+  const openCreateAttackChainNodeDrawer = (duration: number) => {
     setOpenCreateDrawer(true);
-    setPresetInjectDuration(duration);
+    setPresetAttackChainNodeDuration(duration);
   };
 
   // Toolbar
@@ -364,8 +364,8 @@ const Injects: FunctionComponent<Props> = ({
     handleToggleSelectAll,
     onToggleEntity,
     numberOfSelectedElements,
-  } = useEntityToggle<InjectOutputType>('inject', injects, queryableHelpers.paginationHelpers.getTotalElements());
-  const onRowShiftClick = (currentIndex: number, currentEntity: { inject_id: string }, event: SyntheticEvent | null = null) => {
+  } = useEntityToggle<AttackChainNodeOutputType>('node', nodes, queryableHelpers.paginationHelpers.getTotalElements());
+  const onRowShiftClick = (currentIndex: number, currentEntity: { node_id: string }, event: SyntheticEvent | null = null) => {
     if (event) {
       event.stopPropagation();
       event.preventDefault();
@@ -373,31 +373,31 @@ const Injects: FunctionComponent<Props> = ({
     if (selectedElements && !R.isEmpty(selectedElements)) {
       // Find the indexes of the first and last selected entities
       let firstIndex = R.findIndex(
-        (n: Inject) => n.inject_id === R.head(R.values(selectedElements)).inject_id,
-        injects,
+        (n: AttackChainNode) => n.node_id === R.head(R.values(selectedElements)).node_id,
+        nodes,
       );
       if (currentIndex > firstIndex) {
-        let entities: InjectOutputType[] = [];
+        let entities: AttackChainNodeOutputType[] = [];
         while (firstIndex <= currentIndex) {
-          entities = [...entities, injects[firstIndex]];
+          entities = [...entities, nodes[firstIndex]];
 
           firstIndex++;
         }
         const forcedRemove = R.values(selectedElements).filter(
-          (n: Inject) => !entities.map(o => o.inject_id).includes(n.inject_id),
+          (n: AttackChainNode) => !entities.map(o => o.node_id).includes(n.node_id),
         );
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         return onToggleEntity(entities, event, forcedRemove);
       }
-      let entities: InjectOutputType[] = [];
+      let entities: AttackChainNodeOutputType[] = [];
       while (firstIndex >= currentIndex) {
-        entities = [...entities, injects[firstIndex]];
+        entities = [...entities, nodes[firstIndex]];
 
         firstIndex--;
       }
       const forcedRemove = R.values(selectedElements).filter(
-        (n: Inject) => !entities.map(o => o.inject_id).includes(n.inject_id),
+        (n: AttackChainNode) => !entities.map(o => o.node_id).includes(n.node_id),
       );
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
@@ -420,12 +420,12 @@ const Injects: FunctionComponent<Props> = ({
       : Object.keys(deSelectedElements).filter(k => !Object.keys(selectedElements).includes(k));
   };
 
-  const massUpdateInjects = async (actions: {
+  const massUpdateAttackChainNodes = async (actions: {
     field: string;
     type: string;
     values: { value: string }[];
   }[]) => {
-    const operationsToPerform: InjectBulkUpdateOperation[] = [];
+    const operationsToPerform: AttackChainNodeBulkUpdateOperation[] = [];
     for (const action of actions) {
       // Case where no values where given
       if (!action.values.length || !action.values[0].value) continue;
@@ -433,13 +433,13 @@ const Injects: FunctionComponent<Props> = ({
         operation: action.type.toLowerCase(),
         field: action.field,
         values: R.uniq(action.values.map(n => n.value)),
-      } as InjectBulkUpdateOperation); // Cast is necessary because typeof enum don't work with operation and fields
+      } as AttackChainNodeBulkUpdateOperation); // Cast is necessary because typeof enum don't work with operation and fields
     }
-    await injectContext.onBulkUpdateInject({
+    await injectContext.onBulkUpdateAttackChainNode({
       search_pagination_input: selectAll ? searchPaginationInput : undefined,
-      inject_ids_to_process: selectAll ? undefined : injectIdsToProcess(selectAll),
-      inject_ids_to_ignore: injectIdsToIgnore(selectAll),
-      simulation_or_scenario_id: contextId,
+      node_ids_to_process: selectAll ? undefined : injectIdsToProcess(selectAll),
+      node_ids_to_ignore: injectIdsToIgnore(selectAll),
+      attack_chain_run_or_attack_chain_id: contextId,
       update_operations: operationsToPerform,
     })
       .then((result) => {
@@ -447,42 +447,42 @@ const Injects: FunctionComponent<Props> = ({
       });
   };
 
-  const bulkDeleteInjects = () => {
+  const bulkDeleteAttackChainNodes = () => {
     setIsBulkLoading(true);
     const deleteIds = injectIdsToProcess(selectAll);
     const ignoreIds = injectIdsToIgnore(selectAll);
-    injectContext.onBulkDeleteInjects({
+    injectContext.onBulkDeleteAttackChainNodes({
       search_pagination_input: selectAll ? searchPaginationInput : undefined,
-      inject_ids_to_process: selectAll ? undefined : deleteIds,
-      inject_ids_to_ignore: ignoreIds,
-      simulation_or_scenario_id: contextId,
+      node_ids_to_process: selectAll ? undefined : deleteIds,
+      node_ids_to_ignore: ignoreIds,
+      attack_chain_run_or_attack_chain_id: contextId,
     }).then((result) => {
       // We update the numbers of elements in the pagination
       const newNumbers = Math.max(0, (queryableHelpers.paginationHelpers.getTotalElements() - result.length));
-      // We remove the deleted injects from the current data table
-      const deletedIds = result.map(inject => inject.inject_id);
-      setInjects(newNumbers !== 0 ? injects.filter(inject => !deletedIds.includes(inject.inject_id)) : []);
+      // We remove the deleted nodes from the current data table
+      const deletedIds = result.map(node => node.node_id);
+      setAttackChainNodes(newNumbers !== 0 ? nodes.filter(node => !deletedIds.includes(node.node_id)) : []);
       queryableHelpers.paginationHelpers.handleChangeTotalElements(newNumbers);
     }).finally(() => {
       setIsBulkLoading(false);
     });
   };
 
-  const massTestInjects = () => {
+  const massTestAttackChainNodes = () => {
     setIsBulkLoading(true);
     const testIds = injectIdsToProcess(selectAll);
     const ignoreIds = injectIdsToIgnore(selectAll);
-    injectContext.bulkTestInjects({
+    injectContext.bulkTestAttackChainNodes({
       search_pagination_input: selectAll ? searchPaginationInput : undefined,
-      inject_ids_to_process: selectAll ? undefined : testIds,
-      inject_ids_to_ignore: ignoreIds,
-      simulation_or_scenario_id: contextId,
+      node_ids_to_process: selectAll ? undefined : testIds,
+      node_ids_to_ignore: ignoreIds,
+      attack_chain_run_or_attack_chain_id: contextId,
     }).then((result: {
       uri: string;
-      data: InjectTestStatusOutput[];
+      data: AttackChainNodeTestStatusOutput[];
     }) => {
       if (numberOfSelectedElements === 1) {
-        MESSAGING$.notifySuccess(t('Inject test has been sent, you can view test logs details on {itsDedicatedPage}.', {
+        MESSAGING$.notifySuccess(t('AttackChainNode test has been sent, you can view test logs details on {itsDedicatedPage}.', {
           itsDedicatedPage: (
             <Link
               to={`${result.uri}/${result.data[0].status_id}`}
@@ -492,7 +492,7 @@ const Injects: FunctionComponent<Props> = ({
           ),
         }));
       } else {
-        MESSAGING$.notifySuccess(t('Inject test has been sent, you can view test logs details on {itsDedicatedPage}.', { itsDedicatedPage: <Link to={`${result.uri}`}>{t('its dedicated page')}</Link> }));
+        MESSAGING$.notifySuccess(t('AttackChainNode test has been sent, you can view test logs details on {itsDedicatedPage}.', { itsDedicatedPage: <Link to={`${result.uri}`}>{t('its dedicated page')}</Link> }));
       }
     }).finally(() => {
       setIsBulkLoading(false);
@@ -503,18 +503,18 @@ const Injects: FunctionComponent<Props> = ({
     setIsBulkLoading(true);
     const testIds = injectIdsToProcess(selectAll);
     const ignoreIds = injectIdsToIgnore(selectAll);
-    const data: InjectExportFromSearchRequestInput = {
+    const data: AttackChainNodeExportFromSearchRequestInput = {
       search_pagination_input: selectAll ? searchPaginationInput : undefined,
-      inject_ids_to_process: selectAll ? undefined : testIds,
-      inject_ids_to_ignore: ignoreIds,
-      simulation_or_scenario_id: contextId,
+      node_ids_to_process: selectAll ? undefined : testIds,
+      node_ids_to_ignore: ignoreIds,
+      attack_chain_run_or_attack_chain_id: contextId,
       options: {
         with_players: withPlayers,
         with_teams: withTeams,
         with_variable_values: withVariableValues,
       },
     };
-    exportInjectSearch(data).then((result) => {
+    exportAttackChainNodeSearch(data).then((result) => {
       const contentDisposition = result.headers['content-disposition'];
       const match = contentDisposition.match(/filename\s*=\s*(.*)/i);
       const filename = match[1];
@@ -530,18 +530,18 @@ const Injects: FunctionComponent<Props> = ({
   return (
     <>
       <PaginationComponentV2
-        fetch={searchInjectsToLoad}
+        fetch={searchAttackChainNodesToLoad}
         searchPaginationInput={searchPaginationInput}
-        setContent={setInjects}
-        entityPrefix="inject"
+        setContent={setAttackChainNodes}
+        entityPrefix="node"
         availableFilterNames={availableFilterNames}
         queryableHelpers={queryableHelpers}
-        reloadContentCount={reloadInjectCount}
+        reloadContentCount={reloadAttackChainNodeCount}
         topBarButtons={(
-          <InjectsListButtons
+          <AttackChainNodesListButtons
             availableButtons={availableButtons}
             setViewMode={setViewMode}
-            onImportedInjects={() => setReloadInjectCount(prev => prev + 1)}
+            onImportedAttackChainNodes={() => setReloadAttackChainNodeCount(prev => prev + 1)}
           />
         )}
         contextId={contextId}
@@ -549,13 +549,13 @@ const Injects: FunctionComponent<Props> = ({
       {viewModeContext === 'chain' && (
         <div style={{ marginBottom: 10 }}>
           <ChainedTimeline
-            injects={injects}
-            onUpdateInject={massUpdateInject}
-            onTimelineClick={openCreateInjectDrawer}
-            onSelectedInject={(inject) => {
-              const injectContract = inject?.inject_injector_contract.convertedContent;
+            nodes={nodes}
+            onUpdateAttackChainNode={massUpdateAttackChainNode}
+            onTimelineClick={openCreateAttackChainNodeDrawer}
+            onSelectedAttackChainNode={(node) => {
+              const injectContract = node?.node_injector_contract.convertedContent;
               if (injectContract) {
-                setSelectedInjectId(inject?.inject_id);
+                setSelectedAttackChainNodeId(node?.node_id);
               }
             }}
             onCreate={onCreate}
@@ -596,17 +596,17 @@ const Injects: FunctionComponent<Props> = ({
           </ListItem>
           {loading
             ? <PaginatedListLoader Icon={HelpOutlineOutlined} headers={headers} headerStyles={inlineStyles} />
-            : injects.map((inject: InjectOutputType, index) => {
-                const injectContract = inject.inject_injector_contract?.convertedContent;
+            : nodes.map((node: AttackChainNodeOutputType, index) => {
+                const injectContract = node.node_injector_contract?.convertedContent;
                 return (
                   <ListItem
-                    key={inject.inject_id}
+                    key={node.node_id}
                     divider
                     secondaryAction={(
-                      <InjectPopover
-                        inject={inject}
+                      <AttackChainNodePopover
+                        node={node}
                         canBeTested
-                        setSelectedInjectId={setSelectedInjectId}
+                        setSelectedAttackChainNodeId={setSelectedAttackChainNodeId}
                         isDisabled={!injectContract}
                         onCreate={onCreate}
                         onUpdate={onUpdate}
@@ -618,7 +618,7 @@ const Injects: FunctionComponent<Props> = ({
                     <ListItemButton
                       onClick={() => {
                         if (injectContract) {
-                          setSelectedInjectId(inject.inject_id);
+                          setSelectedAttackChainNodeId(node.node_id);
                         }
                       }}
                     >
@@ -626,35 +626,35 @@ const Injects: FunctionComponent<Props> = ({
                       <ListItemIcon
                         style={{ minWidth: 40 }}
                         onClick={event => (event.shiftKey
-                          ? onRowShiftClick(index, inject, event)
-                          : onToggleEntity(inject, event))}
+                          ? onRowShiftClick(index, node, event)
+                          : onToggleEntity(node, event))}
                       >
                         <Checkbox
                           edge="start"
                           checked={
-                            (selectAll && !(inject.inject_id
+                            (selectAll && !(node.node_id
                               in (deSelectedElements || {})))
-                              || inject.inject_id in (selectedElements || {})
+                              || node.node_id in (selectedElements || {})
                           }
                           disableRipple
                         />
                       </ListItemIcon>
                       <ListItemIcon style={{ paddingTop: 5 }}>
-                        <InjectIcon
-                          isPayload={isNotEmptyField(inject.inject_injector_contract?.injector_contract_payload)}
+                        <AttackChainNodeIcon
+                          isPayload={isNotEmptyField(node.node_injector_contract?.injector_contract_payload)}
                           type={
-                            inject.inject_injector_contract?.injector_contract_payload
-                              ? inject.inject_injector_contract?.injector_contract_payload?.payload_collector_type
-                              || inject.inject_injector_contract?.injector_contract_payload?.payload_type
-                              : inject.inject_type
+                            node.node_injector_contract?.injector_contract_payload
+                              ? node.node_injector_contract?.injector_contract_payload?.payload_collector_type
+                              || node.node_injector_contract?.injector_contract_payload?.payload_type
+                              : node.node_type
                           }
-                          disabled={!injectContract || !inject.inject_enabled}
+                          disabled={!injectContract || !node.node_enabled}
                         />
                       </ListItemIcon>
                       <ListItemText
                         primary={(
                           <div className={(!injectContract
-                            || !inject.inject_enabled) ? classes.disabled : ''}
+                            || !node.node_enabled) ? classes.disabled : ''}
                           >
                             <div className={classes.bodyItems}>
                               {headers.map(header => (
@@ -663,7 +663,7 @@ const Injects: FunctionComponent<Props> = ({
                                   className={classes.bodyItem}
                                   style={inlineStyles[header.field]}
                                 >
-                                  {header.value(inject, injectContract)}
+                                  {header.value(node, injectContract)}
                                 </div>
                               ))}
                             </div>
@@ -677,17 +677,17 @@ const Injects: FunctionComponent<Props> = ({
         </List>
       )}
       <>
-        {selectedInjectId !== null
+        {selectedAttackChainNodeId !== null
           && (
-            <UpdateInject
+            <UpdateAttackChainNode
               open
-              handleClose={() => setSelectedInjectId(null)}
-              onUpdateInject={onUpdateInject}
-              massUpdateInject={massUpdateInject}
-              injectId={selectedInjectId}
-              injects={injects}
-              articlesFromExerciseOrScenario={articles}
-              variablesFromExerciseOrScenario={variables}
+              handleClose={() => setSelectedAttackChainNodeId(null)}
+              onUpdateAttackChainNode={onUpdateAttackChainNode}
+              massUpdateAttackChainNode={massUpdateAttackChainNode}
+              injectId={selectedAttackChainNodeId}
+              nodes={nodes}
+              articlesFromAttackChainRunOrAttackChain={articles}
+              variablesFromAttackChainRunOrAttackChain={variables}
               uriVariable={uriVariable}
             />
           )}
@@ -695,7 +695,7 @@ const Injects: FunctionComponent<Props> = ({
           {permissions.canManage && (
             <ButtonCreate onClick={() => {
               setOpenCreateDrawer(true);
-              setPresetInjectDuration(0);
+              setPresetAttackChainNodeDuration(0);
             }}
             />
           )}
@@ -709,11 +709,11 @@ const Injects: FunctionComponent<Props> = ({
                 deSelectedElements={deSelectedElements}
                 selectAll={selectAll}
                 handleClearSelectedElements={handleClearSelectedElements}
-                teamsFromExerciseOrScenario={teams}
+                teamsFromAttackChainRunOrAttackChain={teams}
                 id={contextId}
-                handleUpdate={massUpdateInjects}
-                handleBulkDelete={bulkDeleteInjects}
-                handleBulkTest={massTestInjects}
+                handleUpdate={massUpdateAttackChainNodes}
+                handleBulkDelete={bulkDeleteAttackChainNodes}
+                handleBulkTest={massTestAttackChainNodes}
                 handleExport={handleExport}
                 canManage={permissions.canManage}
               />
@@ -721,16 +721,16 @@ const Injects: FunctionComponent<Props> = ({
           }
           {openCreateDrawer
             && (
-              <CreateInject
-                title={t('Create a new inject')}
+              <CreateAttackChainNode
+                title={t('Create a new node')}
                 open
                 handleClose={() => setOpenCreateDrawer(false)}
-                onCreateInject={onCreateInject}
-                onCreateInjects={onCreateInjects}
-                presetInjectDuration={presetInjectDuration}
-                articlesFromExerciseOrScenario={articles}
+                onCreateAttackChainNode={onCreateAttackChainNode}
+                onCreateAttackChainNodes={onCreateAttackChainNodes}
+                presetAttackChainNodeDuration={presetAttackChainNodeDuration}
+                articlesFromAttackChainRunOrAttackChain={articles}
                 uriVariable={uriVariable}
-                variablesFromExerciseOrScenario={variables}
+                variablesFromAttackChainRunOrAttackChain={variables}
               />
             )}
         </>
@@ -740,4 +740,4 @@ const Injects: FunctionComponent<Props> = ({
   );
 };
 
-export default Injects;
+export default AttackChainNodes;

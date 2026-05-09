@@ -13,16 +13,16 @@ import { AbilityContext, Can } from '../../../../../utils/permissions/permission
 import { ACTIONS, SUBJECTS } from '../../../../../utils/permissions/types';
 import AssetGroupPopover from '../../../assets/asset_groups/AssetGroupPopover';
 import AssetGroupsList from '../../../assets/asset_groups/AssetGroupsList';
-import InjectAddAssetGroups from '../../../attack_chain_runs/attack_chain_run/attack_chain_nodes/asset_groups/InjectAddAssetGroups';
+import AttackChainNodeAddAssetGroups from '../../../attack_chain_runs/attack_chain_run/attack_chain_nodes/asset_groups/AttackChainNodeAddAssetGroups';
 import AvailableVariablesDialog from '../../../attack_chain_runs/attack_chain_run/variables/AvailableVariablesDialog';
 import type { ExpectationInput } from '../expectations/Expectation';
-import InjectExpectations from '../expectations/InjectExpectations';
-import InjectArticlesList from './articles/InjectArticlesList';
-import InjectChallengesList from './challenges/InjectChallengesList';
-import InjectDocumentsList from './documents/InjectDocumentsList';
-import InjectEndpointsList from './endpoints/InjectEndpointsList';
-import InjectContentFieldComponent from './InjectContentFieldComponent';
-import InjectTeamsList from './teams/InjectTeamsList';
+import AttackChainNodeExpectations from '../expectations/AttackChainNodeExpectations';
+import AttackChainNodeArticlesList from './articles/AttackChainNodeArticlesList';
+import AttackChainNodeChallengesList from './challenges/AttackChainNodeChallengesList';
+import AttackChainNodeDocumentsList from './documents/AttackChainNodeDocumentsList';
+import AttackChainNodeEndpointsList from './endpoints/AttackChainNodeEndpointsList';
+import AttackChainNodeContentFieldComponent from './AttackChainNodeContentFieldComponent';
+import AttackChainNodeTeamsList from './teams/AttackChainNodeTeamsList';
 
 interface Props {
   enhancedFields: EnhancedContractElement[];
@@ -37,7 +37,7 @@ interface Props {
   variables?: Variable[];
 }
 
-const InjectContentForm = ({
+const AttackChainNodeContentForm = ({
   enhancedFields,
   enhancedFieldsMapByType,
   injectorContractVariables,
@@ -64,7 +64,7 @@ const InjectContentForm = ({
 
   // -- TEAMS --
   const renderTeams = (err?: string | null) => (
-    <InjectTeamsList
+    <AttackChainNodeTeamsList
       readOnly={enhancedFieldsMapByType.get('team')?.readOnly || readOnly}
       hideEnabledUsersNumber={isAtomic}
       error={err}
@@ -75,11 +75,11 @@ const InjectContentForm = ({
   const renderSourceAssets = (err?: string | null, isInMandatoryGroup?: boolean, mandatoryGroupContractElementLabels?: string) => (
     <div key="asset">
       <InputLabel required={enhancedFieldsMapByType.get('asset')?.settings?.required} error={!!err}>{t(enhancedFieldsMapByType.get('asset')?.label || 'Assets')}</InputLabel>
-      <InjectEndpointsList
-        name="inject_assets"
+      <AttackChainNodeEndpointsList
+        name="node_assets"
         disabled={enhancedFieldsMapByType.get('asset')?.readOnly || readOnly}
-        platforms={getValues('inject_injector_contract.injector_contract_platforms')}
-        architectures={getValues('inject_injector_contract.injector_contract_arch')}
+        platforms={getValues('node_injector_contract.injector_contract_platforms')}
+        architectures={getValues('node_injector_contract.injector_contract_arch')}
         errorLabel={err && isInMandatoryGroup ? t('At least one is required ({labels})', { labels: mandatoryGroupContractElementLabels || '' }) : err}
         label={isInMandatoryGroup && t('At least one is required ({labels})', { labels: mandatoryGroupContractElementLabels || '' })}
       />
@@ -89,10 +89,10 @@ const InjectContentForm = ({
   // -- ASSETS GROUPS --
   const injectAssetGroupIds = useWatch({
     control,
-    name: 'inject_asset_groups',
+    name: 'node_asset_groups',
   }) as string[];
-  const onAssetGroupChange = (assetGroupIds: string[]) => setValue('inject_asset_groups', assetGroupIds, { shouldValidate: true });
-  const removeAssetGroup = (assetGroupId: string) => setValue('inject_asset_groups', injectAssetGroupIds.filter(id => id !== assetGroupId), { shouldValidate: true });
+  const onAssetGroupChange = (assetGroupIds: string[]) => setValue('node_asset_groups', assetGroupIds, { shouldValidate: true });
+  const removeAssetGroup = (assetGroupId: string) => setValue('node_asset_groups', injectAssetGroupIds.filter(id => id !== assetGroupId), { shouldValidate: true });
 
   const renderSourceAssetGroups = (err?: string | null, isInMandatoryGroup?: boolean, mandatoryGroupContractElementLabels?: string) => (
     <div key="asset-group">
@@ -110,7 +110,7 @@ const InjectContentForm = ({
       />
 
       <Can I={ACTIONS.ACCESS} a={SUBJECTS.ASSETS}>
-        <InjectAddAssetGroups
+        <AttackChainNodeAddAssetGroups
           disabled={enhancedFieldsMapByType.get('asset-group')?.readOnly || readOnly}
           assetGroupIds={injectAssetGroupIds}
           onSubmit={onAssetGroupChange}
@@ -123,7 +123,7 @@ const InjectContentForm = ({
 
   // -- ARTICLES --
   const renderArticles = () => (
-    <InjectArticlesList
+    <AttackChainNodeArticlesList
       allArticles={articles}
       readOnly={enhancedFieldsMapByType.get('article')?.readOnly || readOnly}
     />
@@ -131,7 +131,7 @@ const InjectContentForm = ({
 
   // -- CHALLENGES --
   const renderChallenges = (err?: string | null) => (
-    <InjectChallengesList
+    <AttackChainNodeChallengesList
       readOnly={enhancedFieldsMapByType.get('challenge')?.readOnly || readOnly}
       error={err}
     />
@@ -140,23 +140,23 @@ const InjectContentForm = ({
   // -- EXPECTATIONS --
   const injectExpectations = useWatch({
     control,
-    name: 'inject_content.expectations',
+    name: 'node_content.expectations',
   }) as ExpectationInput[];
-  const onExpectationChange = (expectationIds: ExpectationInput[]) => setValue('inject_content.expectations', expectationIds, { shouldValidate: true });
+  const onExpectationChange = (expectationIds: ExpectationInput[]) => setValue('node_content.expectations', expectationIds, { shouldValidate: true });
 
   const renderExpectations = () => (
-    <InjectExpectations
+    <AttackChainNodeExpectations
       expectationDatas={injectExpectations}
       handleExpectations={onExpectationChange}
       readOnly={enhancedFieldsMapByType.get('expectation')?.readOnly || readOnly}
       injectId={injectId}
-      injectorContractId={getValues('inject_injector_contract.injector_contract_id')}
+      injectorContractId={getValues('node_injector_contract.injector_contract_id')}
     />
   );
 
   // -- DOCUMENTS --
   const renderDocuments = () => (
-    <InjectDocumentsList
+    <AttackChainNodeDocumentsList
       hasAttachments={enhancedFieldsMapByType.has('attachment')}
       readOnly={enhancedFieldsMapByType.get('attachment')?.readOnly || readOnly}
     />
@@ -165,7 +165,7 @@ const InjectContentForm = ({
   // -- DYNAMIC FIELDS --
   const [openVariables, setOpenVariables] = useState(false);
   const openVariablesDialog = () => setOpenVariables(true);
-  const dynamicFields = enhancedFields.filter(field => field.isInjectContentType || field.type === 'asset-group' || field.type === 'asset');
+  const dynamicFields = enhancedFields.filter(field => field.isAttackChainNodeContentType || field.type === 'asset-group' || field.type === 'asset');
 
   const resetDefaultValue = () => {
     dynamicFields
@@ -203,7 +203,7 @@ const InjectContentForm = ({
           }
 
           return (
-            <InjectContentFieldComponent
+            <AttackChainNodeContentFieldComponent
               key={field.key}
               field={field}
               readOnly={readOnly || field.readOnly}
@@ -220,7 +220,7 @@ const InjectContentForm = ({
       title: () => renderTitle(t('Targeted teams'), enhancedFieldsMapByType.get('team')?.settings?.required, !!errors[enhancedFieldsMapByType.get('team')!.key]),
       renderRightButton: !isAtomic && (
         <SwitchFieldController
-          name="inject_all_teams"
+          name="node_all_teams"
           label={<strong>{t('All teams')}</strong>}
           disabled={enhancedFieldsMapByType.get('team')?.readOnly || readOnly}
           size="small"
@@ -242,8 +242,8 @@ const InjectContentForm = ({
       show: enhancedFieldsMapByType.has('challenge') && enhancedFieldsMapByType.get('challenge')?.isVisible,
     },
     {
-      key: 'inject_data_title',
-      title: () => <Typography variant="h5" style={{ marginTop: 0 }}>{t('Inject data')}</Typography>,
+      key: 'node_data_title',
+      title: () => <Typography variant="h5" style={{ marginTop: 0 }}>{t('AttackChainNode data')}</Typography>,
       parentStyle: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(-1),
@@ -275,13 +275,13 @@ const InjectContentForm = ({
       show: dynamicFields.length,
     },
     {
-      key: 'inject_data',
+      key: 'node_data',
       render: renderDynamicFields,
       show: true,
     },
     {
       key: 'expectations',
-      title: () => renderTitle(t('Inject expectations'), enhancedFieldsMapByType.get('expectation')?.settings?.required),
+      title: () => renderTitle(t('AttackChainNode expectations'), enhancedFieldsMapByType.get('expectation')?.settings?.required),
       render: renderExpectations,
       show: enhancedFieldsMapByType.has('expectation') && enhancedFieldsMapByType.get('expectation')?.isVisible,
       parentStyle: {
@@ -291,7 +291,7 @@ const InjectContentForm = ({
     },
     {
       key: 'documents',
-      title: () => renderTitle(t('Inject documents'), enhancedFieldsMapByType.get('attachment')?.settings?.required),
+      title: () => renderTitle(t('AttackChainNode documents'), enhancedFieldsMapByType.get('attachment')?.settings?.required),
       render: renderDocuments,
       show: enhancedFieldsMapByType.has('attachment') && enhancedFieldsMapByType.get('attachment')?.isVisible,
       parentStyle: {
@@ -345,4 +345,4 @@ const InjectContentForm = ({
   );
 };
 
-export default InjectContentForm;
+export default AttackChainNodeContentForm;

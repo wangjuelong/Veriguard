@@ -2,7 +2,7 @@ import { Kayaking } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchScenarios } from '../actions/attack_chains/scenario-actions';
+import { fetchAttackChains } from '../actions/attack_chains/attack_chain-actions';
 import { useHelper } from '../store';
 import { useAppDispatch } from '../utils/hooks';
 import useDataLoader from '../utils/hooks/useDataLoader';
@@ -21,20 +21,20 @@ const useStyles = makeStyles()(() => ({
   autoCompleteIndicator: { display: 'none' },
 }));
 
-const ScenarioField = (props) => {
+const AttackChainField = (props) => {
   // Standard hooks
   const { classes } = useStyles();
   const dispatch = useAppDispatch();
   // Fetching data
-  const scenarios = useHelper(helper => helper.getScenarios());
+  const attack_chains = useHelper(helper => helper.getAttackChains());
   useDataLoader(() => {
-    dispatch(fetchScenarios());
+    dispatch(fetchAttackChains());
   });
 
   const { name, onKeyDown, style, label, placeholder } = props;
-  const scenarioOptions = (scenarios || []).map(n => ({
-    id: n.scenario_id,
-    label: n.scenario_name,
+  const scenarioOptions = (attack_chains || []).map(n => ({
+    id: n.attack_chain_id,
+    label: n.attack_chain_name,
   }));
   return (
     <Autocomplete
@@ -61,4 +61,4 @@ const ScenarioField = (props) => {
   );
 };
 
-export default ScenarioField;
+export default AttackChainField;

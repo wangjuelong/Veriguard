@@ -1,6 +1,6 @@
-import { type Exercise, type Scenario, type Variable } from '../../utils/api-types';
+import { type AttackChainRun, type AttackChain, type Variable } from '../../utils/api-types';
 
 export interface VariablesHelper {
-  getExerciseVariables: (exerciseId: Exercise['exercise_id']) => Variable[];
-  getScenarioVariables: (scenarioId: Scenario['scenario_id']) => Variable[];
+  getAttackChainRunVariables: (exerciseId: AttackChainRun['attack_chain_run_id']) => Variable[];
+  getAttackChainVariables: (scenarioId: AttackChain['attack_chain_id']) => Variable[];
 }

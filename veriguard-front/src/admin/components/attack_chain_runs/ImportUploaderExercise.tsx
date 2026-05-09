@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router';
 
-import { importingExercise } from '../../../actions/AttackChainRun';
+import { importingAttackChainRun } from '../../../actions/AttackChainRun';
 import ImportUploader from '../../../components/common/ImportUploader';
 import { useAppDispatch } from '../../../utils/hooks';
 
-const ImportUploaderExercise = () => {
+const ImportUploaderAttackChainRun = () => {
   // Standard hooks
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleUpload = async (formData: FormData) => {
-    await dispatch(importingExercise(formData)).then((result: { [x: string]: string }) => {
+    await dispatch(importingAttackChainRun(formData)).then((result: { [x: string]: string }) => {
       if (!Object.prototype.hasOwnProperty.call(result, 'FINAL_FORM/form-error')) {
         navigate(0);
       }
@@ -18,8 +18,8 @@ const ImportUploaderExercise = () => {
   };
 
   return (
-    <ImportUploader title="Import a simulation" handleUpload={handleUpload} />
+    <ImportUploader title="Import a attack_chain_run" handleUpload={handleUpload} />
   );
 };
 
-export default ImportUploaderExercise;
+export default ImportUploaderAttackChainRun;

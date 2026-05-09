@@ -10,13 +10,13 @@ import { useCallback, useEffect } from 'react';
 
 import { useFormatter } from '../../../../../components/i18n';
 import { truncate } from '../../../../../utils/String';
-import type { InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import type { AttackChainNodeExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import nodeTypes from '../types/nodes';
 import type { NodeResultStep } from '../types/nodes/NodeResultStep';
 
 interface Props {
   className?: string;
-  targetResultsByType: Record<string, InjectExpectationsStore[]>;
+  targetResultsByType: Record<string, AttackChainNodeExpectationsStore[]>;
   lastExecutionStartDate: string;
   injectStatusName?: string;
   lastExecutionEndDate: string;
@@ -184,17 +184,17 @@ const TargetResultsReactFlow = ({ className = '', injectStatusName, targetResult
   useEffect(() => {
     let steps: Steptarget[] = [];
     const newSteps: Steptarget[] = Object.entries(targetResultsByType).flatMap(([type, expectations]) => {
-      return expectations.map((expectation: InjectExpectationsStore) => ({
+      return expectations.map((expectation: AttackChainNodeExpectationsStore) => ({
         key: 'result',
         label: (
           <span>
-            {getStatusLabel(type, [expectation.inject_expectation_status ?? 'UNKNOWN'])}
+            {getStatusLabel(type, [expectation.node_expectation_status ?? 'UNKNOWN'])}
             <br />
-            {truncate(expectation.inject_expectation_name, 20)}
+            {truncate(expectation.node_expectation_name, 20)}
           </span>
         ),
         type: type,
-        status: getStatus([expectation.inject_expectation_status ?? 'UNKNOWN']),
+        status: getStatus([expectation.node_expectation_status ?? 'UNKNOWN']),
       }));
     });
     steps = [...computeInitialSteps(initialSteps), ...newSteps];

@@ -1,79 +1,79 @@
 import { type FunctionComponent, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { fetchScenarioTeams } from '../../../../../actions/attack_chains/scenario-actions';
-import { type ScenariosHelper } from '../../../../../actions/attack_chains/scenario-helper';
-import { fetchScenarioInjectsSimple } from '../../../../../actions/attack_chains/scenario-inject-actions';
-import { fetchScenarioChallenges } from '../../../../../actions/challenge-action';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
+import { fetchAttackChainTeams } from '../../../../../actions/attack_chains/attack_chain-actions';
+import { type AttackChainsHelper } from '../../../../../actions/attack_chains/attack_chain-helper';
+import { fetchAttackChainAttackChainNodesSimple } from '../../../../../actions/attack_chains/attack_chain-node-actions';
+import { fetchAttackChainChallenges } from '../../../../../actions/challenge-action';
 import { type ArticlesHelper } from '../../../../../actions/channels/article-helper';
-import { fetchScenarioDocuments } from '../../../../../actions/documents/documents-actions';
+import { fetchAttackChainDocuments } from '../../../../../actions/documents/documents-actions';
 import { type ChallengeHelper } from '../../../../../actions/helper';
-import { testInject } from '../../../../../actions/inject_test/scenario-inject-test-actions';
+import { testAttackChainNode } from '../../../../../actions/node_test/attack_chain-node-test-actions';
 import type { TeamsHelper } from '../../../../../actions/teams/team-helper';
-import { fetchVariablesForScenario } from '../../../../../actions/variables/variable-actions';
+import { fetchVariablesForAttackChain } from '../../../../../actions/variables/variable-actions';
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
 import { useHelper } from '../../../../../store';
-import { type Scenario } from '../../../../../utils/api-types';
+import { type AttackChain } from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
-import endpointContextForScenario from '../../../../../utils/context/endpoint/EndpointContextForScenario';
+import endpointContextForAttackChain from '../../../../../utils/context/endpoint/EndpointContextForAttackChain';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
-import Injects from '../../../common/attack_chain_nodes/Injects';
+import AttackChainNodes from '../../../common/attack_chain_nodes/AttackChainNodes';
 import {
   ArticleContext,
   ChallengeContext,
-  InjectTestContext,
-  type InjectTestContextType,
+  AttackChainNodeTestContext,
+  type AttackChainNodeTestContextType,
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
-import articleContextForScenario from '../articles/articleContextForScenario';
-import teamContextForScenario from '../teams/teamContextForScenario';
+import articleContextForAttackChain from '../articles/articleContextForAttackChain';
+import teamContextForAttackChain from '../teams/teamContextForAttackChain';
 
-const ScenarioInjects: FunctionComponent = () => {
+const AttackChainAttackChainNodes: FunctionComponent = () => {
   // Standard hooks
   const dispatch = useAppDispatch();
-  const { scenarioId } = useParams() as { scenarioId: Scenario['scenario_id'] };
+  const { scenarioId } = useParams() as { scenarioId: AttackChain['attack_chain_id'] };
 
   const availableButtons = ['chain', 'list'];
 
-  const { scenario, teams, articles, variables } = useHelper(
-    (helper: InjectHelper & ScenariosHelper & ArticlesHelper & ChallengeHelper & VariablesHelper & TeamsHelper) => {
+  const { attack_chain, teams, articles, variables } = useHelper(
+    (helper: AttackChainNodeHelper & AttackChainsHelper & ArticlesHelper & ChallengeHelper & VariablesHelper & TeamsHelper) => {
       return {
-        scenario: helper.getScenario(scenarioId),
-        teams: helper.getScenarioTeams(scenarioId),
-        articles: helper.getScenarioArticles(scenarioId),
-        variables: helper.getScenarioVariables(scenarioId),
+        attack_chain: helper.getAttackChain(scenarioId),
+        teams: helper.getAttackChainTeams(scenarioId),
+        articles: helper.getAttackChainArticles(scenarioId),
+        variables: helper.getAttackChainVariables(scenarioId),
       };
     },
   );
   useDataLoader(() => {
-    dispatch(fetchScenarioInjectsSimple(scenarioId));
-    dispatch(fetchScenarioTeams(scenarioId));
-    dispatch(fetchVariablesForScenario(scenarioId));
-    dispatch(fetchScenarioDocuments(scenarioId));
+    dispatch(fetchAttackChainAttackChainNodesSimple(scenarioId));
+    dispatch(fetchAttackChainTeams(scenarioId));
+    dispatch(fetchVariablesForAttackChain(scenarioId));
+    dispatch(fetchAttackChainDocuments(scenarioId));
   });
 
-  const articleContext = articleContextForScenario(scenarioId);
-  const teamContext = teamContextForScenario(scenarioId, scenario.scenario_teams_users, scenario.scenario_all_users_number, scenario.scenario_users_number);
-  const endpointContext = endpointContextForScenario(scenarioId);
-  const challengeContext = { fetchChallenges: () => dispatch(fetchScenarioChallenges(scenarioId)) };
+  const articleContext = articleContextForAttackChain(scenarioId);
+  const teamContext = teamContextForAttackChain(scenarioId, attack_chain.attack_chain_teams_users, attack_chain.attack_chain_all_users_number, attack_chain.attack_chain_users_number);
+  const endpointContext = endpointContextForAttackChain(scenarioId);
+  const challengeContext = { fetchChallenges: () => dispatch(fetchAttackChainChallenges(scenarioId)) };
 
   const [viewMode, setViewMode] = useState(() => {
-    const storedValue = localStorage.getItem('scenario_or_exercise_view_mode');
+    const storedValue = localStorage.getItem('attack_chain_or_attack_chain_run_view_mode');
     return storedValue === null || !availableButtons.includes(storedValue) ? 'list' : storedValue;
   });
 
   const handleViewMode = (mode: string) => {
     setViewMode(mode);
-    localStorage.setItem('scenario_or_exercise_view_mode', mode);
+    localStorage.setItem('attack_chain_or_attack_chain_run_view_mode', mode);
   };
-  const injectTestContext: InjectTestContextType
+  const injectTestContext: AttackChainNodeTestContextType
     = {
       contextId: scenarioId,
       url: `/admin/attack_chains/${scenarioId}/tests/`,
-      testInject: testInject,
+      testAttackChainNode: testAttackChainNode,
     };
 
   return (
@@ -82,8 +82,8 @@ const ScenarioInjects: FunctionComponent = () => {
         <TeamContext.Provider value={teamContext}>
           <EndpointContext.Provider value={endpointContext}>
             <ChallengeContext.Provider value={challengeContext}>
-              <InjectTestContext.Provider value={injectTestContext}>
-                <Injects
+              <AttackChainNodeTestContext.Provider value={injectTestContext}>
+                <AttackChainNodes
                   teams={teams}
                   articles={articles}
                   variables={variables}
@@ -91,7 +91,7 @@ const ScenarioInjects: FunctionComponent = () => {
                   setViewMode={handleViewMode}
                   availableButtons={availableButtons}
                 />
-              </InjectTestContext.Provider>
+              </AttackChainNodeTestContext.Provider>
             </ChallengeContext.Provider>
           </EndpointContext.Provider>
         </TeamContext.Provider>
@@ -100,4 +100,4 @@ const ScenarioInjects: FunctionComponent = () => {
   );
 };
 
-export default ScenarioInjects;
+export default AttackChainAttackChainNodes;

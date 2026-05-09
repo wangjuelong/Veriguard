@@ -4,13 +4,13 @@ import { type SyntheticEvent, useContext, useEffect, useMemo, useState } from 'r
 import { useSearchParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { searchTargets } from '../../../../actions/attack_chain_nodes/inject-action';
+import { searchTargets } from '../../../../actions/attack_chain_nodes/node-action';
 import Empty from '../../../../components/Empty';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
-import { type InjectTarget, type SearchPaginationInput } from '../../../../utils/api-types';
+import { type AttackChainNodeTarget, type SearchPaginationInput } from '../../../../utils/api-types';
 import { isAgentless } from '../../../../utils/target/TargetUtils';
-import { InjectResultOverviewOutputContext, type InjectResultOverviewOutputContextType } from '../InjectResultOverviewOutputContext';
+import { AttackChainNodeResultOverviewOutputContext, type AttackChainNodeResultOverviewOutputContextType } from '../AttackChainNodeResultOverviewOutputContext';
 import PaginatedTargetTab from './PaginatedTargetTab';
 import TargetResultsDetail from './target_result/TargetResultsDetail';
 
@@ -55,7 +55,7 @@ const AtomicTesting = () => {
   const [activeTab, setActiveTab] = useState<TabConfig>();
 
   // Fetching data
-  const { injectResultOverviewOutput } = useContext<InjectResultOverviewOutputContextType>(InjectResultOverviewOutputContext);
+  const { injectResultOverviewOutput } = useContext<AttackChainNodeResultOverviewOutputContextType>(AttackChainNodeResultOverviewOutputContext);
   const [hasAssetsGroup, setHasAssetsGroup] = useState(false);
   const [hasAssetsGroupChecked, setHasAssetsGroupChecked] = useState(false);
   const [hasEndpoints, setHasEndpoints] = useState(false);
@@ -67,7 +67,7 @@ const AtomicTesting = () => {
   const [hasTeamsChecked, setHasTeamsChecked] = useState(false);
   const [hasPlayers, setHasPlayers] = useState(false);
   const [hasPlayersChecked, setHasPlayersChecked] = useState(false);
-  const [selectedTarget, setSelectedTarget] = useState<InjectTarget>();
+  const [selectedTarget, setSelectedTarget] = useState<AttackChainNodeTarget>();
 
   // Initial tab open
   const [searchParams, setSearchParams] = useSearchParams();
@@ -148,7 +148,7 @@ const AtomicTesting = () => {
     return activeTab?.key || 0;
   }, [activeTab]);
 
-  const injectId = injectResultOverviewOutput?.inject_id || '';
+  const injectId = injectResultOverviewOutput?.node_id || '';
 
   useEffect(() => {
     if (!injectResultOverviewOutput) return;
@@ -216,7 +216,7 @@ const AtomicTesting = () => {
   }, [injectResultOverviewOutput]);
 
   // Handles
-  const handleNewTargetClick = (target: InjectTarget) => {
+  const handleNewTargetClick = (target: AttackChainNodeTarget) => {
     setSelectedTarget(target);
   };
 
@@ -238,7 +238,7 @@ const AtomicTesting = () => {
             key={activeTabKey}
             handleSelectTarget={handleNewTargetClick}
             entityPrefix={tab.entityPrefix}
-            inject_id={injectResultOverviewOutput.inject_id}
+            node_id={injectResultOverviewOutput.node_id}
             target_type={tab.type}
             reloadContentCount={reloadContentCount}
           />
@@ -282,8 +282,8 @@ const AtomicTesting = () => {
         <Typography variant="h4" gutterBottom sx={{ mb: theme.spacing(1) }}>
           {t('Results by target')}
         </Typography>
-        {selectedTarget && !!injectResultOverviewOutput.inject_type && (
-          <TargetResultsDetail inject={injectResultOverviewOutput} target={selectedTarget} isAgentless={isAgentless(hasAgents, hasTeams)} />
+        {selectedTarget && !!injectResultOverviewOutput.node_type && (
+          <TargetResultsDetail node={injectResultOverviewOutput} target={selectedTarget} isAgentless={isAgentless(hasAgents, hasTeams)} />
         )}
         {!selectedTarget && (
           <Paper classes={{ root: classes.paper }} variant="outlined">

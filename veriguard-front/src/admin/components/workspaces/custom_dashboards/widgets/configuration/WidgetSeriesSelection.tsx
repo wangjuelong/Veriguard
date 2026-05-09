@@ -131,12 +131,12 @@ const WidgetSeriesSelection: FunctionComponent<{
       });
     }
     (customDashboard?.custom_dashboard_parameters ?? []).forEach((p) => {
-      if (p.custom_dashboards_parameter_type === 'simulation') {
-        const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_simulation_side');
+      if (p.custom_dashboards_parameter_type === 'attack_chain_run') {
+        const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_attack_chain_run_side');
         setDefaultValues(newDefaultValues);
       }
-      if (p.custom_dashboards_parameter_type === 'scenario') {
-        const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_scenario_side');
+      if (p.custom_dashboards_parameter_type === 'attack_chain') {
+        const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_attack_chain_side');
         setDefaultValues(newDefaultValues);
       }
     });

@@ -2,14 +2,14 @@ import * as R from 'ramda';
 import { type FunctionComponent, useContext } from 'react';
 
 import { updateAtomicTesting } from '../../../../actions/atomic_testings/atomic-testing-actions';
-import { type Inject, type InjectResultOutput, type InjectResultOverviewOutput } from '../../../../utils/api-types';
+import { type AttackChainNode, type AttackChainNodeResultOutput, type AttackChainNodeResultOverviewOutput } from '../../../../utils/api-types';
 import { EndpointContext } from '../../../../utils/context/endpoint/EndpointContext';
 import endpointContextForAtomicTesting from '../../../../utils/context/endpoint/EndpointContextForAtomicTesting';
-import UpdateInject from '../../common/attack_chain_nodes/UpdateInject';
-import { InjectResultOverviewOutputContext, type InjectResultOverviewOutputContextType } from '../InjectResultOverviewOutputContext';
+import UpdateAttackChainNode from '../../common/attack_chain_nodes/UpdateAttackChainNode';
+import { AttackChainNodeResultOverviewOutputContext, type AttackChainNodeResultOverviewOutputContextType } from '../AttackChainNodeResultOverviewOutputContext';
 
 interface Props {
-  atomic: InjectResultOutput | InjectResultOverviewOutput;
+  atomic: AttackChainNodeResultOutput | AttackChainNodeResultOverviewOutput;
   open: boolean;
   handleClose: () => void;
 }
@@ -19,37 +19,37 @@ const AtomicTestingUpdate: FunctionComponent<Props> = ({
   open,
   handleClose,
 }) => {
-  const { updateInjectResultOverviewOutput } = useContext<InjectResultOverviewOutputContextType>(InjectResultOverviewOutputContext);
-  const onUpdateAtomicTesting = async (data: Inject) => {
+  const { updateAttackChainNodeResultOverviewOutput } = useContext<AttackChainNodeResultOverviewOutputContextType>(AttackChainNodeResultOverviewOutputContext);
+  const onUpdateAtomicTesting = async (data: AttackChainNode) => {
     const toUpdate = R.pipe(
       R.pick([
-        'inject_tags',
-        'inject_title',
-        'inject_type',
-        'inject_injector_contract',
-        'inject_description',
-        'inject_content',
-        'inject_all_teams',
-        'inject_documents',
-        'inject_assets',
-        'inject_asset_groups',
-        'inject_teams',
-        'inject_tags',
+        'node_tags',
+        'node_title',
+        'node_type',
+        'node_injector_contract',
+        'node_description',
+        'node_content',
+        'node_all_teams',
+        'node_documents',
+        'node_assets',
+        'node_asset_groups',
+        'node_teams',
+        'node_tags',
       ]),
     )(data);
-    updateAtomicTesting(atomic.inject_id, toUpdate).then((result: { data: InjectResultOverviewOutput }) => {
-      updateInjectResultOverviewOutput(result.data);
+    updateAtomicTesting(atomic.node_id, toUpdate).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+      updateAttackChainNodeResultOverviewOutput(result.data);
     });
   };
 
   const endpointContext = endpointContextForAtomicTesting();
   return (
     <EndpointContext.Provider value={endpointContext}>
-      <UpdateInject
+      <UpdateAttackChainNode
         open={open}
         handleClose={handleClose}
-        onUpdateInject={onUpdateAtomicTesting}
-        injectId={atomic.inject_id}
+        onUpdateAttackChainNode={onUpdateAtomicTesting}
+        injectId={atomic.node_id}
         isAtomic
       />
     </EndpointContext.Provider>

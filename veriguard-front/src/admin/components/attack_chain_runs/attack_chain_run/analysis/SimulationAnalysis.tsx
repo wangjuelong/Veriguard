@@ -5,13 +5,13 @@ import {
   attackPathsBySimulation, averageBySimulation,
   countBySimulation,
   entitiesBySimulation, fetchCustomDashboardFromSimulation, seriesBySimulation, widgetToEntitiesBySimulation,
-} from '../../../../../actions/attack_chain_runs/exercise-action';
-import type { ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { updateExercise } from '../../../../../actions/AttackChainRun';
+} from '../../../../../actions/attack_chain_runs/attack_chain_run-action';
+import type { AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { updateAttackChainRun } from '../../../../../actions/AttackChainRun';
 import { useHelper } from '../../../../../store';
 import {
   type CustomDashboard,
-  type Exercise,
+  type AttackChainRun,
   type WidgetToEntitiesInput,
 } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
@@ -26,16 +26,16 @@ import { ALL_TIME_TIME_RANGE } from '../../../workspaces/custom_dashboards/widge
 const SimulationAnalysis = () => {
   const dispatch = useAppDispatch();
   const ability = useContext(AbilityContext);
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
 
-  const exercise = useHelper((helper: ExercisesHelper) => {
-    return helper.getExercise(exerciseId);
+  const attack_chain_run = useHelper((helper: AttackChainRunsHelper) => {
+    return helper.getAttackChainRun(exerciseId);
   });
 
   const handleSelectNewDashboard = (dashboardId: string) => {
-    dispatch(updateExercise(exercise.exercise_id, {
-      ...exercise,
-      exercise_custom_dashboard: dashboardId,
+    dispatch(updateAttackChainRun(attack_chain_run.attack_chain_run_id, {
+      ...attack_chain_run,
+      attack_chain_run_custom_dashboard: dashboardId,
     }));
   };
 
@@ -44,11 +44,11 @@ const SimulationAnalysis = () => {
     dashboardParameters?.forEach((p) => {
       let value = '';
       let hidden = false;
-      if ('simulation' === p.custom_dashboards_parameter_type) {
+      if ('attack_chain_run' === p.custom_dashboards_parameter_type) {
         value = exerciseId;
         hidden = true;
-      } else if ('scenario' === p.custom_dashboards_parameter_type) {
-        value = exercise.exercise_scenario ?? '';
+      } else if ('attack_chain' === p.custom_dashboards_parameter_type) {
+        value = attack_chain_run.attack_chain_run_attack_chain ?? '';
         hidden = true;
       } else if ('timeRange' === p.custom_dashboards_parameter_type) {
         value = ALL_TIME_TIME_RANGE;
@@ -67,8 +67,8 @@ const SimulationAnalysis = () => {
   };
 
   const configuration = {
-    customDashboardId: exercise?.exercise_custom_dashboard,
-    paramLocalStorageKey: 'custom-dashboard-simulation-' + exerciseId,
+    customDashboardId: attack_chain_run?.attack_chain_run_custom_dashboard,
+    paramLocalStorageKey: 'custom-dashboard-attack_chain_run-' + exerciseId,
     paramsBuilder,
     parentContextId: exerciseId,
     canChooseDashboard: ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, exerciseId),

@@ -7,10 +7,10 @@ import { makeStyles } from 'tss-react/mui';
 import { type InjectorContractHelper } from '../../../../../actions/injector_contracts/injector-contract-helper';
 import { fetchInjectorContract } from '../../../../../actions/NodeContracts';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type InjectorContract } from '../../../../../utils/api-types';
+import { type AttackChainRun, type InjectorContract } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import { PermissionsContext } from '../../../common/Context';
-import QuickInject, { EMAIL_CONTRACT } from './QuickInject';
+import QuickAttackChainNode, { EMAIL_CONTRACT } from './QuickAttackChainNode';
 
 const useStyles = makeStyles()(theme => ({
   createButton: {
@@ -25,9 +25,9 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-interface Props { exercise: Exercise }
+interface Props { attack_chain_run: AttackChainRun }
 
-const CreateQuickInject: FunctionComponent<Props> = ({ exercise }) => {
+const CreateQuickAttackChainNode: FunctionComponent<Props> = ({ attack_chain_run }) => {
   const dispatch = useAppDispatch();
   const { classes } = useStyles();
   const theme = useTheme();
@@ -47,7 +47,7 @@ const CreateQuickInject: FunctionComponent<Props> = ({ exercise }) => {
         color="primary"
         aria-label="Add"
         className={classes.createButton}
-        disabled={exercise.exercise_status !== 'RUNNING'}
+        disabled={attack_chain_run.attack_chain_run_status !== 'RUNNING'}
       >
         <Add />
       </Fab>
@@ -62,9 +62,9 @@ const CreateQuickInject: FunctionComponent<Props> = ({ exercise }) => {
             elevation={1}
             disableEnforceFocus={true}
           >
-            <QuickInject
-              exerciseId={exercise.exercise_id}
-              exercise={exercise}
+            <QuickAttackChainNode
+              exerciseId={attack_chain_run.attack_chain_run_id}
+              attack_chain_run={attack_chain_run}
               injectorContract={injectorContract}
               handleClose={() => setOpen(false)}
               theme={theme}
@@ -76,4 +76,4 @@ const CreateQuickInject: FunctionComponent<Props> = ({ exercise }) => {
   );
 };
 
-export default CreateQuickInject;
+export default CreateQuickAttackChainNode;

@@ -1,31 +1,31 @@
 import type { Dispatch } from 'redux';
 
 import { getReferential, postReferential, simplePostCall } from '../../utils/Action';
-import type { Exercise, InjectInput, SearchPaginationInput } from '../../utils/api-types';
+import type { AttackChainRun, AttackChainNodeInput, SearchPaginationInput } from '../../utils/api-types';
 import { MESSAGING$ } from '../../utils/Environment';
 import * as schema from '../Schema';
 
-export const createInjectsForSimulation = (simulationId: Exercise['exercise_id'], inputs: InjectInput[]) => (dispatch: Dispatch) => {
-  const uri = `/api/attack_chain_runs/${simulationId}/injects/bulk`;
-  return postReferential(schema.arrayOfInjects, uri, inputs)(dispatch);
+export const createAttackChainNodesForSimulation = (simulationId: AttackChainRun['attack_chain_run_id'], inputs: AttackChainNodeInput[]) => (dispatch: Dispatch) => {
+  const uri = `/api/attack_chain_runs/${simulationId}/nodes/bulk`;
+  return postReferential(schema.arrayOfAttackChainNodes, uri, inputs)(dispatch);
 };
 
-export const fetchExerciseInjectsSimple = (exerciseId: Exercise['exercise_id']) => (dispatch: Dispatch) => {
-  const uri = `/api/attack_chain_runs/${exerciseId}/injects/simple`;
-  return getReferential(schema.arrayOfInjects, uri)(dispatch);
+export const fetchAttackChainRunAttackChainNodesSimple = (exerciseId: AttackChainRun['attack_chain_run_id']) => (dispatch: Dispatch) => {
+  const uri = `/api/attack_chain_runs/${exerciseId}/nodes/simple`;
+  return getReferential(schema.arrayOfAttackChainNodes, uri)(dispatch);
 };
 
-export const searchExerciseInjectsSimple = (exerciseId: Exercise['exercise_id'], input: SearchPaginationInput) => {
-  const uri = `/api/attack_chain_runs/${exerciseId}/injects/simple`;
+export const searchAttackChainRunAttackChainNodesSimple = (exerciseId: AttackChainRun['attack_chain_run_id'], input: SearchPaginationInput) => {
+  const uri = `/api/attack_chain_runs/${exerciseId}/nodes/simple`;
   return simplePostCall(uri, input);
 };
 
-export const importInjectsForSimulation = (simulationId: Exercise['exercise_id'], file: File) => {
-  const uri = `/api/attack_chain_runs/${simulationId}/injects/import`;
+export const importAttackChainNodesForSimulation = (simulationId: AttackChainRun['attack_chain_run_id'], file: File) => {
+  const uri = `/api/attack_chain_runs/${simulationId}/nodes/import`;
   const formData = new FormData();
   formData.append('file', file);
   return simplePostCall(uri, formData).catch((error) => {
-    MESSAGING$.notifyError('Could not import injects');
+    MESSAGING$.notifyError('Could not import nodes');
     throw error;
   });
 };

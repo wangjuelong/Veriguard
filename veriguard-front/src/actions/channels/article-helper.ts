@@ -2,7 +2,7 @@
 import { type Article } from '../../utils/api-types';
 
 export interface ArticlesHelper {
-  getScenarioArticles: (scenarioId: string) => Article[];
-  getExerciseArticles: (exerciseId: string) => Article[];
+  getAttackChainArticles: (scenarioId: string) => Article[];
+  getAttackChainRunArticles: (exerciseId: string) => Article[];
   getArticlesMap: () => Record<string, Article>;
 }

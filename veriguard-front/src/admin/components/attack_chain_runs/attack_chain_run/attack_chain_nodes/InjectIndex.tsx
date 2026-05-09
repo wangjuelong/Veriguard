@@ -1,77 +1,77 @@
 import { type FunctionComponent, Suspense, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { fetchInjectResultOverviewOutput } from '../../../../../actions/atomic_testings/atomic-testing-actions';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise } from '../../../../../actions/AttackChainRun';
+import { fetchAttackChainNodeResultOverviewOutput } from '../../../../../actions/atomic_testings/atomic-testing-actions';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRun } from '../../../../../actions/AttackChainRun';
 import Loader from '../../../../../components/Loader';
 import { useHelper } from '../../../../../store';
-import { type Exercise as ExerciseType, type InjectResultOverviewOutput } from '../../../../../utils/api-types';
+import { type AttackChainRun as AttackChainRunType, type AttackChainNodeResultOverviewOutput } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import { INHERITED_CONTEXT } from '../../../../../utils/permissions/types';
 import useSimulationPermissions from '../../../../../utils/permissions/useSimulationPermissions';
 import AtomicTestingRoutes from '../../../atomic_testings/atomic_testing/AtomicTestingRoutes';
-import { InjectResultOverviewOutputContext } from '../../../atomic_testings/InjectResultOverviewOutputContext';
+import { AttackChainNodeResultOverviewOutputContext } from '../../../atomic_testings/AttackChainNodeResultOverviewOutputContext';
 import { PermissionsContext, type PermissionsContextType } from '../../../common/Context';
-import InjectIndexHeader from './InjectIndexHeader';
+import AttackChainNodeIndexHeader from './AttackChainNodeIndexHeader';
 
-const InjectIndexComponent: FunctionComponent<{
-  exercise: ExerciseType;
-  injectResult: InjectResultOverviewOutput;
+const AttackChainNodeIndexComponent: FunctionComponent<{
+  attack_chain_run: AttackChainRunType;
+  injectResult: AttackChainNodeResultOverviewOutput;
 }> = ({
-  exercise,
+  attack_chain_run,
   injectResult,
 }) => {
   const permissionsContext: PermissionsContextType = {
-    permissions: useSimulationPermissions(exercise.exercise_id, exercise),
+    permissions: useSimulationPermissions(attack_chain_run.attack_chain_run_id, attack_chain_run),
     inherited_context: INHERITED_CONTEXT.SIMULATION,
   };
 
-  const [injectResultOverviewOutput, setInjectResultOverviewOutput] = useState<InjectResultOverviewOutput>(injectResult);
+  const [injectResultOverviewOutput, setAttackChainNodeResultOverviewOutput] = useState<AttackChainNodeResultOverviewOutput>(injectResult);
 
-  const updateInjectResultOverviewOutput = (newData: InjectResultOverviewOutput) => {
-    setInjectResultOverviewOutput(newData);
+  const updateAttackChainNodeResultOverviewOutput = (newData: AttackChainNodeResultOverviewOutput) => {
+    setAttackChainNodeResultOverviewOutput(newData);
   };
 
   return (
-    <InjectResultOverviewOutputContext.Provider value={{
+    <AttackChainNodeResultOverviewOutputContext.Provider value={{
       injectResultOverviewOutput,
-      updateInjectResultOverviewOutput,
+      updateAttackChainNodeResultOverviewOutput,
     }}
     >
       <PermissionsContext.Provider value={permissionsContext}>
-        <InjectIndexHeader injectResultOverview={injectResultOverviewOutput} exercise={exercise} />
+        <AttackChainNodeIndexHeader injectResultOverview={injectResultOverviewOutput} attack_chain_run={attack_chain_run} />
         <Suspense fallback={<Loader />}>
           <AtomicTestingRoutes injectResultOverview={injectResultOverviewOutput} />
         </Suspense>
       </PermissionsContext.Provider>
-    </InjectResultOverviewOutputContext.Provider>
+    </AttackChainNodeResultOverviewOutputContext.Provider>
   );
 };
 
-const InjectIndex = () => {
+const AttackChainNodeIndex = () => {
   // Standard hooks
   const dispatch = useAppDispatch();
   // Fetching data
-  const { exerciseId } = useParams() as { exerciseId: ExerciseType['exercise_id'] };
-  const { injectId } = useParams() as { injectId: InjectResultOverviewOutput['inject_id'] };
-  const exercise = useHelper((helper: ExercisesHelper) => helper.getExercise(exerciseId));
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRunType['attack_chain_run_id'] };
+  const { injectId } = useParams() as { injectId: AttackChainNodeResultOverviewOutput['node_id'] };
+  const attack_chain_run = useHelper((helper: AttackChainRunsHelper) => helper.getAttackChainRun(exerciseId));
   useDataLoader(() => {
-    dispatch(fetchExercise(exerciseId));
+    dispatch(fetchAttackChainRun(exerciseId));
   });
-  const [injectResultOutput, setInjectResultOverviewOutput] = useState<InjectResultOverviewOutput>();
+  const [injectResultOutput, setAttackChainNodeResultOverviewOutput] = useState<AttackChainNodeResultOverviewOutput>();
 
   useEffect(() => {
-    fetchInjectResultOverviewOutput(injectId).then((result: { data: InjectResultOverviewOutput }) => {
-      setInjectResultOverviewOutput(result.data);
+    fetchAttackChainNodeResultOverviewOutput(injectId).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+      setAttackChainNodeResultOverviewOutput(result.data);
     });
   }, [injectId]);
 
-  if (exercise && injectResultOutput) {
-    return <InjectIndexComponent exercise={exercise} injectResult={injectResultOutput} />;
+  if (attack_chain_run && injectResultOutput) {
+    return <AttackChainNodeIndexComponent attack_chain_run={attack_chain_run} injectResult={injectResultOutput} />;
   }
   return <Loader />;
 };
 
-export default InjectIndex;
+export default AttackChainNodeIndex;

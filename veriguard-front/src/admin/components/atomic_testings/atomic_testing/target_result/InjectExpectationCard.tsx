@@ -7,26 +7,26 @@ import ButtonPopover from '../../../../../components/common/ButtonPopover';
 import Paper from '../../../../../components/common/Paper';
 import { useFormatter } from '../../../../../components/i18n';
 import ItemStatus from '../../../../../components/ItemStatus';
-import type { InjectResultOverviewOutput, InjectTarget } from '../../../../../utils/api-types';
+import type { AttackChainNodeResultOverviewOutput, AttackChainNodeTarget } from '../../../../../utils/api-types';
 import { AbilityContext } from '../../../../../utils/permissions/permissionsContext';
 import { ACTIONS, INHERITED_CONTEXT, SUBJECTS } from '../../../../../utils/permissions/types';
-import { computeInjectExpectationLabel } from '../../../../../utils/statusUtils';
+import { computeAttackChainNodeExpectationLabel } from '../../../../../utils/statusUtils';
 import { emptyFilled } from '../../../../../utils/String';
 import { isAssets } from '../../../../../utils/target/TargetUtils';
 import { isAgentExpectation, isAssetExpectation, isAssetGroupExpectation, isPlayerExpectation, useIsManuallyUpdatable } from '../../../attack_chain_runs/attack_chain_run/validation/expectations/ExpectationUtils';
-import type { InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import type { AttackChainNodeExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import { isManualExpectation, isTechnicalExpectation } from '../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 import { PermissionsContext } from '../../../common/Context';
-import InjectExpectationContext from '../context/InjectExpectationContext';
+import AttackChainNodeExpectationContext from '../context/AttackChainNodeExpectationContext';
 import ExpirationChip from '../ExpirationChip';
-import InjectExpectationAggregatedAgentsView from './InjectExpectationAggregatedAgentsView';
-import InjectExpectationResultList from './InjectExpectationResultList';
+import AttackChainNodeExpectationAggregatedAgentsView from './AttackChainNodeExpectationAggregatedAgentsView';
+import AttackChainNodeExpectationResultList from './AttackChainNodeExpectationResultList';
 
 interface Props {
-  inject: InjectResultOverviewOutput;
-  injectExpectation: InjectExpectationsStore;
+  node: AttackChainNodeResultOverviewOutput;
+  injectExpectation: AttackChainNodeExpectationsStore;
   isAgentless: boolean;
-  target: InjectTarget;
+  target: AttackChainNodeTarget;
 }
 
 const useStyles = makeStyles()(theme => ({
@@ -42,21 +42,21 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-const InjectExpectationCard = ({ inject, injectExpectation, isAgentless, target }: Props) => {
+const AttackChainNodeExpectationCard = ({ node, injectExpectation, isAgentless, target }: Props) => {
   const { t } = useFormatter();
   const { classes } = useStyles();
   const ability = useContext(AbilityContext);
   const { permissions, inherited_context } = useContext(PermissionsContext);
 
-  const { onOpenDeleteInjectExpectationResult, onOpenEditInjectExpectationResultResult } = useContext(InjectExpectationContext);
+  const { onOpenDeleteAttackChainNodeExpectationResult, onOpenEditAttackChainNodeExpectationResultResult } = useContext(AttackChainNodeExpectationContext);
 
   // Hooks must be called at top level - not in JSX or conditionally
   const isManuallyUpdatable = useIsManuallyUpdatable(injectExpectation);
 
-  const statusResult = computeInjectExpectationLabel(injectExpectation.inject_expectation_status, injectExpectation.inject_expectation_type);
+  const statusResult = computeAttackChainNodeExpectationLabel(injectExpectation.node_expectation_status, injectExpectation.node_expectation_type);
 
   const getLabelOfValidationType = (): string => {
-    if (isTechnicalExpectation(injectExpectation.inject_expectation_type)) {
+    if (isTechnicalExpectation(injectExpectation.node_expectation_type)) {
       let entityName;
       if (isAgentExpectation(injectExpectation)) {
         entityName = 'agent';
@@ -65,29 +65,29 @@ const InjectExpectationCard = ({ inject, injectExpectation, isAgentless, target 
       } else if (isAssetGroupExpectation(injectExpectation)) {
         entityName = 'asset';
       }
-      return injectExpectation.inject_expectation_group
+      return injectExpectation.node_expectation_group
         ? t(`At least one ${entityName} (per group) must validate the expectation`)
         : t(`All ${entityName}s (per group) must validate the expectation`);
     } else {
-      return injectExpectation.inject_expectation_group
+      return injectExpectation.node_expectation_group
         ? t('At least one player (per team) must validate the expectation')
         : t('All players (per team) must validate the expectation');
     }
   };
 
   const canManage = ability.can(ACTIONS.MANAGE, SUBJECTS.ASSESSMENT)
-    || (inherited_context === INHERITED_CONTEXT.NONE && ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, inject.inject_id))
+    || (inherited_context === INHERITED_CONTEXT.NONE && ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, node.node_id))
     || permissions.canManage;
 
   const entries = [{
     label: t('Update'),
-    action: () => onOpenEditInjectExpectationResultResult((injectExpectation?.inject_expectation_results || [])[0], injectExpectation),
+    action: () => onOpenEditAttackChainNodeExpectationResultResult((injectExpectation?.node_expectation_results || [])[0], injectExpectation),
     disabled: false,
     userRight: canManage,
   },
   {
     label: t('Delete'),
-    action: () => onOpenDeleteInjectExpectationResult((injectExpectation?.inject_expectation_results || [])[0], injectExpectation),
+    action: () => onOpenDeleteAttackChainNodeExpectationResult((injectExpectation?.node_expectation_results || [])[0], injectExpectation),
     disabled: false,
     userRight: canManage,
   }];
@@ -95,22 +95,22 @@ const InjectExpectationCard = ({ inject, injectExpectation, isAgentless, target 
   return (
     <Paper>
       <div className={classes.lineContainer}>
-        <Typography style={{ marginRight: 'auto' }} variant="h5">{injectExpectation.inject_expectation_name}</Typography>
-        {injectExpectation.inject_expectation_score !== null && (
+        <Typography style={{ marginRight: 'auto' }} variant="h5">{injectExpectation.node_expectation_name}</Typography>
+        {injectExpectation.node_expectation_score !== null && (
           <>
-            <ItemStatus label={t(`${statusResult}`)} status={injectExpectation.inject_expectation_status} />
+            <ItemStatus label={t(`${statusResult}`)} status={injectExpectation.node_expectation_status} />
             <Tooltip title={t('Score')}>
               <Chip
                 classes={{ root: classes.score }}
-                label={injectExpectation.inject_expectation_score}
+                label={injectExpectation.node_expectation_score}
               />
             </Tooltip>
           </>
         )}
-        {injectExpectation.inject_expectation_score === null && injectExpectation.inject_expectation_created_at && (
+        {injectExpectation.node_expectation_score === null && injectExpectation.node_expectation_created_at && (
           <ExpirationChip
-            expirationTime={injectExpectation.inject_expiration_time}
-            startDate={injectExpectation.inject_expectation_created_at}
+            expirationTime={injectExpectation.node_expiration_time}
+            startDate={injectExpectation.node_expectation_created_at}
           />
         )}
 
@@ -119,9 +119,9 @@ const InjectExpectationCard = ({ inject, injectExpectation, isAgentless, target 
           <Tooltip title={t('Add a result')}>
             <IconButton
               aria-label="Add"
-              onClick={() => onOpenEditInjectExpectationResultResult(null, injectExpectation)}
+              onClick={() => onOpenEditAttackChainNodeExpectationResultResult(null, injectExpectation)}
             >
-              {['DETECTION', 'PREVENTION'].includes(injectExpectation.inject_expectation_type)
+              {['DETECTION', 'PREVENTION'].includes(injectExpectation.node_expectation_type)
                 ? <AddModeratorOutlined color="primary" fontSize="medium" />
                 : <InventoryOutlined color="primary" fontSize="medium" />}
             </IconButton>
@@ -129,8 +129,8 @@ const InjectExpectationCard = ({ inject, injectExpectation, isAgentless, target 
         )}
 
         {/* Update expectation result */}
-        {isManualExpectation(injectExpectation.inject_expectation_type)
-          && (injectExpectation.inject_expectation_results?.length ?? 0) > 0 && (
+        {isManualExpectation(injectExpectation.node_expectation_type)
+          && (injectExpectation.node_expectation_results?.length ?? 0) > 0 && (
           <ButtonPopover entries={entries} variant="icon" />
         )}
       </div>
@@ -143,23 +143,23 @@ const InjectExpectationCard = ({ inject, injectExpectation, isAgentless, target 
         )}
 
       {
-        // If endpoint with agents, show the injects expectations aggregated for each agent of the endpoint
-        // Else show the injects expectations for the selected target (agents, endpoints agentless,...)
+        // If endpoint with agents, show the nodes expectations aggregated for each agent of the endpoint
+        // Else show the nodes expectations for the selected target (agents, endpoints agentless,...)
         (isAssets(target) && !isAgentless) ? (
-          <InjectExpectationAggregatedAgentsView
-            inject={inject}
-            expectationType={injectExpectation.inject_expectation_type}
+          <AttackChainNodeExpectationAggregatedAgentsView
+            node={node}
+            expectationType={injectExpectation.node_expectation_type}
             target={target}
           />
         ) : (
-          (!isAssetGroupExpectation(injectExpectation) && ['DETECTION', 'PREVENTION'].includes(injectExpectation.inject_expectation_type) && (injectExpectation.inject_expectation_results?.length ?? 0) > 0)
+          (!isAssetGroupExpectation(injectExpectation) && ['DETECTION', 'PREVENTION'].includes(injectExpectation.node_expectation_type) && (injectExpectation.node_expectation_results?.length ?? 0) > 0)
           && (
-            <InjectExpectationResultList
+            <AttackChainNodeExpectationResultList
               injectExpectation={injectExpectation}
-              injectExpectationResults={injectExpectation.inject_expectation_results ?? []}
-              injectExpectationAgent={injectExpectation.inject_expectation_agent}
-              injectorContractPayload={inject.inject_injector_contract?.injector_contract_payload}
-              injectType={inject.inject_type}
+              injectExpectationResults={injectExpectation.node_expectation_results ?? []}
+              injectExpectationAgent={injectExpectation.node_expectation_agent}
+              injectorContractPayload={node.node_injector_contract?.injector_contract_payload}
+              injectType={node.node_type}
             />
           )
         )
@@ -168,4 +168,4 @@ const InjectExpectationCard = ({ inject, injectExpectation, isAgentless, target 
   );
 };
 
-export default InjectExpectationCard;
+export default AttackChainNodeExpectationCard;

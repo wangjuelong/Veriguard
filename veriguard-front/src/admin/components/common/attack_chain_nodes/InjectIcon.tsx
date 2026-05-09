@@ -17,7 +17,7 @@ interface Props {
   tooltip?: object;
 }
 
-const InjectIcon: FunctionComponent<Props> = ({
+const AttackChainNodeIcon: FunctionComponent<Props> = ({
   type,
   size,
   variant,
@@ -85,4 +85,4 @@ const InjectIcon: FunctionComponent<Props> = ({
   );
 };
 
-export default InjectIcon;
+export default AttackChainNodeIcon;

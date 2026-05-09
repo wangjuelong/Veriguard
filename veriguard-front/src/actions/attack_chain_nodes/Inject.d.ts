@@ -1,15 +1,15 @@
-import { type Inject, type InjectorContract, type InjectOutput } from '../../utils/api-types';
+import { type AttackChainNode, type InjectorContract, type AttackChainNodeOutput } from '../../utils/api-types';
 import { type InjectorContractConverted } from '../../utils/api-types-custom';
 
-export type InjectStore = Omit<Inject, 'inject_content' | 'inject_injector_contract'> & {
-  inject_content?: {
+export type AttackChainNodeStore = Omit<AttackChainNode, 'node_content' | 'node_injector_contract'> & {
+  node_content?: {
     expectationScore: number;
     challenges: string[] | undefined;
   };
-  inject_injector_contract: Omit<InjectorContract, 'convertedContent'> & { convertedContent: InjectorContractConverted['convertedContent'] };
+  node_injector_contract: Omit<InjectorContract, 'convertedContent'> & { convertedContent: InjectorContractConverted['convertedContent'] };
 };
 
-export type InjectOutputType = InjectOutput & { inject_injector_contract: { convertedContent: InjectorContractConverted['convertedContent'] } & Inject['inject_injector_contract'] };
+export type AttackChainNodeOutputType = AttackChainNodeOutput & { node_injector_contract: { convertedContent: InjectorContractConverted['convertedContent'] } & AttackChainNode['node_injector_contract'] };
 
 export interface ConditionElement {
   name: string;
@@ -26,7 +26,7 @@ export interface ConditionType {
 }
 
 export interface Dependency {
-  inject?: InjectOutputType;
+  node?: AttackChainNodeOutputType;
   index: number;
 }
 

@@ -27,7 +27,7 @@ interface Props {
   label?: string | boolean;
 }
 
-const InjectAddAssetGroups: FunctionComponent<Props> = ({
+const AttackChainNodeAddAssetGroups: FunctionComponent<Props> = ({
   assetGroupIds,
   onSubmit,
   disabled = false,
@@ -78,4 +78,4 @@ const InjectAddAssetGroups: FunctionComponent<Props> = ({
   );
 };
 
-export default InjectAddAssetGroups;
+export default AttackChainNodeAddAssetGroups;

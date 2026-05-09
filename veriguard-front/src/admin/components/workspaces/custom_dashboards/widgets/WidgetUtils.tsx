@@ -3,10 +3,10 @@ import { AlignHorizontalLeft, ChartBar, ChartDonut, ChartLine, Counter } from 'm
 
 import {
   type CustomDashboardParameters, type DateHistogramWidget, type EsAttackPath, type EsAvgs, type EsBase, type EsCountInterval, type EsSeries,
-  type Exercise,
+  type AttackChainRun,
   type Filter,
   type FilterGroup,
-  type InjectExpectation, type Series, type StructuralHistogramWidget,
+  type AttackChainNodeExpectation, type Series, type StructuralHistogramWidget,
   type Widget,
   type WidgetInput,
 } from '../../../../../utils/api-types';
@@ -133,10 +133,10 @@ export const getWidgetTitle = (widgetTitle: Widget['widget_config']['title'], ty
 export const extractGroupOptionsFromCustomDashboardParameters = (customDashboardParameters: CustomDashboardParameters[] = []) => {
   const groupOptionsMap = new Map<string, GroupOption[]>();
   customDashboardParameters.forEach((p) => {
-    if (p.custom_dashboards_parameter_type === 'simulation') {
-      const items = groupOptionsMap.get('base_simulation_side') ?? [];
+    if (p.custom_dashboards_parameter_type === 'attack_chain_run') {
+      const items = groupOptionsMap.get('base_attack_chain_run_side') ?? [];
       const option = createGroupOption(p.custom_dashboards_parameter_id, p.custom_dashboards_parameter_name, 'Parameters');
-      if (!items.map(i => i.id).includes(option.id)) groupOptionsMap.set('base_simulation_side', [...items, option]);
+      if (!items.map(i => i.id).includes(option.id)) groupOptionsMap.set('base_attack_chain_run_side', [...items, option]);
     }
   });
   return groupOptionsMap;
@@ -160,7 +160,7 @@ export const excludeBaseEntities = (filterGroup: FilterGroup | undefined) => {
 export const getDefaultValuesForType = (
   currentValues: Map<string, GroupOption[]>,
   param: CustomDashboardParameters,
-  key: 'base_simulation_side' | 'base_scenario_side',
+  key: 'base_attack_chain_run_side' | 'base_attack_chain_side',
 ) => {
   const values = currentValues;
   const items = values.get(key) ?? [];
@@ -181,34 +181,34 @@ const entityFilter: Filter = {
   key: BASE_ENTITY_FILTER_KEY,
   mode: 'and',
   operator: 'eq',
-  values: ['expectation-inject'],
+  values: ['expectation-node'],
 };
 const statusSuccessFilter: Filter = {
-  key: 'inject_expectation_status',
+  key: 'node_expectation_status',
   mode: 'and',
   operator: 'eq',
   values: ['SUCCESS'],
 };
 const statusFailedFilter: Filter = {
-  key: 'inject_expectation_status',
+  key: 'node_expectation_status',
   mode: 'and',
   operator: 'eq',
   values: ['FAILED'],
 };
-const typeFilter: (injectExpectationType: InjectExpectation['inject_expectation_type']) => Filter = injectExpectationType => ({
-  key: 'inject_expectation_type',
+const typeFilter: (injectExpectationType: AttackChainNodeExpectation['node_expectation_type']) => Filter = injectExpectationType => ({
+  key: 'node_expectation_type',
   mode: 'and',
   operator: 'eq',
   values: [injectExpectationType],
 });
-const simulationFilter: (simulationId: Exercise['exercise_id']) => Filter = simulationId => ({
-  key: 'base_simulation_side',
+const simulationFilter: (simulationId: AttackChainRun['attack_chain_run_id']) => Filter = simulationId => ({
+  key: 'base_attack_chain_run_side',
   mode: 'and',
   operator: 'eq',
   values: [simulationId],
 });
 
-const getSuccessSeries: (injectExpectationType: InjectExpectation['inject_expectation_type'], simulationId?: Exercise['exercise_id']) => Series = (injectExpectationType, simulationId) => {
+const getSuccessSeries: (injectExpectationType: AttackChainNodeExpectation['node_expectation_type'], simulationId?: AttackChainRun['attack_chain_run_id']) => Series = (injectExpectationType, simulationId) => {
   return {
     filter: {
       mode: 'and',
@@ -223,7 +223,7 @@ const getSuccessSeries: (injectExpectationType: InjectExpectation['inject_expect
   };
 };
 
-const getFailedSeries: (injectExpectationType: InjectExpectation['inject_expectation_type'], simulationId?: Exercise['exercise_id']) => Series = (injectExpectationType, simulationId) => {
+const getFailedSeries: (injectExpectationType: AttackChainNodeExpectation['node_expectation_type'], simulationId?: AttackChainRun['attack_chain_run_id']) => Series = (injectExpectationType, simulationId) => {
   return {
     filter: {
       mode: 'and',
@@ -238,16 +238,16 @@ const getFailedSeries: (injectExpectationType: InjectExpectation['inject_expecta
   };
 };
 
-export const getSeries: (injectExpectationType: InjectExpectation['inject_expectation_type'], simulationId?: Exercise['exercise_id']) => Series[] = (injectExpectationType, simulationId) => {
+export const getSeries: (injectExpectationType: AttackChainNodeExpectation['node_expectation_type'], simulationId?: AttackChainRun['attack_chain_run_id']) => Series[] = (injectExpectationType, simulationId) => {
   return [getSuccessSeries(injectExpectationType, simulationId), getFailedSeries(injectExpectationType, simulationId)];
 };
 
-export const updateSimulationFilterOnSeries = (series: Series[], simulationId?: Exercise['exercise_id']) => {
+export const updateSimulationFilterOnSeries = (series: Series[], simulationId?: AttackChainRun['attack_chain_run_id']) => {
   if (!simulationId) {
     return series;
   }
   series.forEach((s) => {
-    const filter = s.filter?.filters?.find(f => f.key === 'base_simulation_side');
+    const filter = s.filter?.filters?.find(f => f.key === 'base_attack_chain_run_side');
     if (filter) {
       filter.values = [simulationId];
     } else {
@@ -262,7 +262,7 @@ export const domainsEntityFilter: Filter = {
   key: BASE_ENTITY_FILTER_KEY,
   mode: 'or',
   operator: 'eq',
-  values: ['expectation-inject'],
+  values: ['expectation-node'],
 };
 
 export enum WidgetVizDataType {

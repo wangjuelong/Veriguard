@@ -3,30 +3,30 @@ import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 
 import { fetchTargetResultAssetWithAgents } from '../../../../../actions/atomic_testings/atomic-testing-actions';
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import ExpandableSection from '../../../../../components/common/ExpandableSection';
 import { useFormatter } from '../../../../../components/i18n';
 import ItemStatus from '../../../../../components/ItemStatus';
 import Loader from '../../../../../components/Loader';
 import { useHelper } from '../../../../../store';
 import type {
-  InjectExpectationAgentOutput,
-  InjectResultOverviewOutput,
-  InjectTarget,
+  AttackChainNodeExpectationAgentOutput,
+  AttackChainNodeResultOverviewOutput,
+  AttackChainNodeTarget,
 } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
-import { computeInjectExpectationLabel } from '../../../../../utils/statusUtils';
-import type { InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
-import InjectExpectationResultList from './InjectExpectationResultList';
+import { computeAttackChainNodeExpectationLabel } from '../../../../../utils/statusUtils';
+import type { AttackChainNodeExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import AttackChainNodeExpectationResultList from './AttackChainNodeExpectationResultList';
 
 interface Props {
-  inject: InjectResultOverviewOutput;
+  node: AttackChainNodeResultOverviewOutput;
   expectationType: string;
-  target: InjectTarget;
+  target: AttackChainNodeTarget;
 }
 
-const InjectExpectationAggregatedAgentsView = ({ inject, expectationType, target }: Props) => {
+const AttackChainNodeExpectationAggregatedAgentsView = ({ node, expectationType, target }: Props) => {
   const dispatch = useAppDispatch();
   const { t } = useFormatter();
   const theme = useTheme();
@@ -34,11 +34,11 @@ const InjectExpectationAggregatedAgentsView = ({ inject, expectationType, target
 
   useDataLoader(() => {
     setLoading(true);
-    dispatch(fetchTargetResultAssetWithAgents(inject.inject_id, target.target_id, expectationType)).finally(() => setLoading(false));
+    dispatch(fetchTargetResultAssetWithAgents(node.node_id, target.target_id, expectationType)).finally(() => setLoading(false));
   });
 
-  const { injectExpectationsWithAgents } = useHelper((helper: InjectHelper) =>
-    ({ injectExpectationsWithAgents: helper.getInjectExpectationsByAsset(target.target_id, expectationType) }));
+  const { injectExpectationsWithAgents } = useHelper((helper: AttackChainNodeHelper) =>
+    ({ injectExpectationsWithAgents: helper.getAttackChainNodeExpectationsByAsset(target.target_id, expectationType) }));
 
   if (loading) {
     return <Loader />;
@@ -48,17 +48,17 @@ const InjectExpectationAggregatedAgentsView = ({ inject, expectationType, target
     <>
       {!loading && injectExpectationsWithAgents && injectExpectationsWithAgents.length > 0 && (
         <>
-          {injectExpectationsWithAgents.map((injectExpectationAgent: InjectExpectationAgentOutput) => {
-            const statusResult = computeInjectExpectationLabel(injectExpectationAgent.inject_expectation_status, injectExpectationAgent.inject_expectation_type);
+          {injectExpectationsWithAgents.map((injectExpectationAgent: AttackChainNodeExpectationAgentOutput) => {
+            const statusResult = computeAttackChainNodeExpectationLabel(injectExpectationAgent.node_expectation_status, injectExpectationAgent.node_expectation_type);
             const header = (
               <>
                 <Typography gutterBottom sx={{ mr: theme.spacing(1.5) }}>
-                  {injectExpectationAgent.inject_expectation_agent_name}
+                  {injectExpectationAgent.node_expectation_agent_name}
                 </Typography>
-                <ItemStatus label={t(`${statusResult}`)} status={injectExpectationAgent.inject_expectation_status} />
+                <ItemStatus label={t(`${statusResult}`)} status={injectExpectationAgent.node_expectation_status} />
               </>
             );
-            return injectExpectationAgent?.inject_expectation_status !== 'PENDING' && injectExpectationAgent?.inject_expectation_agent
+            return injectExpectationAgent?.node_expectation_status !== 'PENDING' && injectExpectationAgent?.node_expectation_agent
               && (
                 <Paper
                   variant="outlined"
@@ -70,15 +70,15 @@ const InjectExpectationAggregatedAgentsView = ({ inject, expectationType, target
                   <ExpandableSection
                     forceExpanded={false}
                     header={header}
-                    key={injectExpectationAgent.inject_expectation_id}
+                    key={injectExpectationAgent.node_expectation_id}
                   >
                     <div style={{ margin: theme.spacing(0, 2) }}>
-                      <InjectExpectationResultList
-                        injectExpectation={injectExpectationAgent as InjectExpectationsStore}
-                        injectExpectationResults={injectExpectationAgent.inject_expectation_results ?? []}
-                        injectExpectationAgent={injectExpectationAgent.inject_expectation_agent}
-                        injectorContractPayload={inject.inject_injector_contract?.injector_contract_payload}
-                        injectType={inject.inject_type}
+                      <AttackChainNodeExpectationResultList
+                        injectExpectation={injectExpectationAgent as AttackChainNodeExpectationsStore}
+                        injectExpectationResults={injectExpectationAgent.node_expectation_results ?? []}
+                        injectExpectationAgent={injectExpectationAgent.node_expectation_agent}
+                        injectorContractPayload={node.node_injector_contract?.injector_contract_payload}
+                        injectType={node.node_type}
                       />
                     </div>
                   </ExpandableSection>
@@ -91,4 +91,4 @@ const InjectExpectationAggregatedAgentsView = ({ inject, expectationType, target
   );
 };
 
-export default InjectExpectationAggregatedAgentsView;
+export default AttackChainNodeExpectationAggregatedAgentsView;

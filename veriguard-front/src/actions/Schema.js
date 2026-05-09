@@ -21,11 +21,11 @@ export const injectorContract = new schema.Entity(
 export const arrayOfInjectorContracts = new schema.Array(injectorContract);
 
 export const injectStatus = new schema.Entity(
-  'inject_statuses',
+  'node_statuses',
   {},
   { idAttribute: 'status_id' },
 );
-export const arrayOfInjectStatuses = new schema.Array(injectStatus);
+export const arrayOfAttackChainNodeStatuses = new schema.Array(injectStatus);
 
 export const platformParameters = new schema.Entity(
   'platformParameters',
@@ -71,12 +71,12 @@ export const role = new schema.Entity(
 );
 export const arrayOfRoles = new schema.Array(role);
 
-export const exercise = new schema.Entity(
-  'exercises',
+export const attack_chain_run = new schema.Entity(
+  'attack_chain_runs',
   {},
-  { idAttribute: 'exercise_id' },
+  { idAttribute: 'attack_chain_run_id' },
 );
-export const arrayOfExercises = new schema.Array(exercise);
+export const arrayOfAttackChainRuns = new schema.Array(attack_chain_run);
 
 export const objective = new schema.Entity(
   'objectives',
@@ -113,12 +113,12 @@ export const team = new schema.Entity(
 );
 export const arrayOfTeams = new schema.Array(team);
 
-export const inject = new schema.Entity(
-  'injects',
+export const node = new schema.Entity(
+  'nodes',
   {},
-  { idAttribute: 'inject_id' },
+  { idAttribute: 'node_id' },
 );
-export const arrayOfInjects = new schema.Array(inject);
+export const arrayOfAttackChainNodes = new schema.Array(node);
 
 export const communication = new schema.Entity(
   'communications',
@@ -144,17 +144,17 @@ export const channelReader = new schema.Entity(
 export const simulationChallengesReaders = new schema.Entity(
   'simulationchallengesreaders',
   {},
-  { idAttribute: 'exercise_id' },
+  { idAttribute: 'attack_chain_run_id' },
 );
 export const scenarioChallengesReaders = new schema.Entity(
   'scenariochallengesreaders',
   {},
-  { idAttribute: 'scenario_id' },
+  { idAttribute: 'attack_chain_id' },
 );
 export const injectexpectation = new schema.Entity(
   'injectexpectations',
   {},
-  { idAttribute: 'inject_expectation_id' },
+  { idAttribute: 'node_expectation_id' },
 );
 export const arrayOfInjectexpectations = new schema.Array(injectexpectation);
 
@@ -292,35 +292,35 @@ export const storeHelper = state => ({
     return userLang;
   },
   getStatistics: () => state.referential.getIn(['entities', 'statistics', 'veriguard']),
-  // exercises
-  getExercises: () => entities('exercises', state),
-  getExercisesMap: () => maps('exercises', state),
-  getExercise: id => entity(id, 'exercises', state),
-  getExerciseComchecks: id => entities('comchecks', state).filter(i => i.get('comcheck_exercise') === id),
-  getExerciseTeams: id => entities('teams', state).filter(i => i.get('team_exercises')?.includes(id)),
-  getExerciseVariables: id => entities('variables', state).filter(i => i.get('variable_exercise') === id),
-  getExerciseArticles: id => entities('articles', state).filter(i => i.get('article_exercise') === id),
-  getExerciseInjects: id => entities('injects', state).filter(i => i.get('inject_exercise') === id),
-  getExerciseCommunications: id => entities('communications', state).filter(
-    i => i.get('communication_exercise') === id,
+  // attack_chain_runs
+  getAttackChainRuns: () => entities('attack_chain_runs', state),
+  getAttackChainRunsMap: () => maps('attack_chain_runs', state),
+  getAttackChainRun: id => entity(id, 'attack_chain_runs', state),
+  getAttackChainRunComchecks: id => entities('comchecks', state).filter(i => i.get('comcheck_attack_chain_run') === id),
+  getAttackChainRunTeams: id => entities('teams', state).filter(i => i.get('team_attack_chain_runs')?.includes(id)),
+  getAttackChainRunVariables: id => entities('variables', state).filter(i => i.get('variable_attack_chain_run') === id),
+  getAttackChainRunArticles: id => entities('articles', state).filter(i => i.get('article_attack_chain_run') === id),
+  getAttackChainRunAttackChainNodes: id => entities('nodes', state).filter(i => i.get('node_attack_chain_run') === id),
+  getAttackChainRunCommunications: id => entities('communications', state).filter(
+    i => i.get('communication_attack_chain_run') === id,
   ),
-  getExerciseObjectives: id => entities('objectives', state).filter(o => o.get('objective_exercise') === id),
-  getExerciseLogs: id => entities('logs', state).filter(l => l.get('log_exercise') === id),
-  getExerciseLessonsCategories: id => entities('lessonscategorys', state).filter(
-    l => l.get('lessons_category_exercise') === id,
+  getAttackChainRunObjectives: id => entities('objectives', state).filter(o => o.get('objective_attack_chain_run') === id),
+  getAttackChainRunLogs: id => entities('logs', state).filter(l => l.get('log_attack_chain_run') === id),
+  getAttackChainRunLessonsCategories: id => entities('lessonscategorys', state).filter(
+    l => l.get('lessons_category_attack_chain_run') === id,
   ),
-  getExerciseLessonsQuestions: id => entities('lessonsquestions', state).filter(
-    l => l.get('lessons_question_exercise') === id,
+  getAttackChainRunLessonsQuestions: id => entities('lessonsquestions', state).filter(
+    l => l.get('lessons_question_attack_chain_run') === id,
   ),
-  getExerciseLessonsAnswers: exerciseId => entities('lessonsanswers', state).filter(
-    l => l.get('lessons_answer_exercise') === exerciseId,
+  getAttackChainRunLessonsAnswers: exerciseId => entities('lessonsanswers', state).filter(
+    l => l.get('lessons_answer_attack_chain_run') === exerciseId,
   ),
-  getExerciseUserLessonsAnswers: (exerciseId, userId) => entities('lessonsanswers', state).filter(
-    l => l.get('lessons_answer_exercise') === exerciseId
+  getAttackChainRunUserLessonsAnswers: (exerciseId, userId) => entities('lessonsanswers', state).filter(
+    l => l.get('lessons_answer_attack_chain_run') === exerciseId
       && l.get('lessons_answer_user') === userId,
   ),
-  isExercise: id => !maps('exercises', state)?.get(id)?.isEmpty(),
-  getExerciseReports: exerciseId => entities('reports', state).filter(l => l.get('report_exercise') === exerciseId),
+  isAttackChainRun: id => !maps('attack_chain_runs', state)?.get(id)?.isEmpty(),
+  getAttackChainRunReports: exerciseId => entities('reports', state).filter(l => l.get('report_attack_chain_run') === exerciseId),
   // report
   getReport: id => entity(id, 'reports', state),
   // comcheck
@@ -331,7 +331,7 @@ export const storeHelper = state => ({
   ),
   getChannelReader: id => entity(id, 'channelreaders', state),
   getSimulationChallengesReader: id => entity(id, 'simulationchallengesreaders', state),
-  getScenarioChallengesReader: id => entity(id, 'scenariochallengesreaders', state),
+  getAttackChainChallengesReader: id => entity(id, 'scenariochallengesreaders', state),
   // users
   getUsers: () => entities('users', state),
   getGroup: id => entity(id, 'groups', state),
@@ -348,25 +348,25 @@ export const storeHelper = state => ({
   getTags: () => entities('tags', state),
   getTagsMap: () => maps('tags', state),
 
-  // injects
-  getInject: id => entity(id, 'injects', state),
+  // nodes
+  getAttackChainNode: id => entity(id, 'nodes', state),
   getAtomicTesting: id => entity(id, 'atomics', state),
   getAtomicTestingDetail: id => entity(id, 'atomicdetails', state),
   getAtomicTestings: () => entities('atomics', state),
-  getTargetResults: (id, injectId) => entities('targetresults', state).filter(r => (r.get('target_id') === id) && (r.get('target_inject_id') === injectId)),
-  getInjectsMap: () => maps('injects', state),
-  getInjectCommunications: id => entities('communications', state).filter(
-    i => i.get('communication_inject') === id,
+  getTargetResults: (id, injectId) => entities('targetresults', state).filter(r => (r.get('target_id') === id) && (r.get('target_node_id') === injectId)),
+  getAttackChainNodesMap: () => maps('nodes', state),
+  getAttackChainNodeCommunications: id => entities('communications', state).filter(
+    i => i.get('communication_node') === id,
   ),
   // injectexpectation
-  getInjectExpectations: () => entities('injectexpectations', state),
-  getExerciseInjectExpectations: id => entities('injectexpectations', state).filter(
-    i => i.get('inject_expectation_exercise') === id,
+  getAttackChainNodeExpectations: () => entities('injectexpectations', state),
+  getAttackChainRunAttackChainNodeExpectations: id => entities('injectexpectations', state).filter(
+    i => i.get('node_expectation_attack_chain_run') === id,
   ),
-  getInjectExpectationsByAsset: (id, type) => entities('injectexpectations', state).filter(
-    i => (i.get('inject_expectation_asset') === id && i.get('inject_expectation_type') === type),
+  getAttackChainNodeExpectationsByAsset: (id, type) => entities('injectexpectations', state).filter(
+    i => (i.get('node_expectation_asset') === id && i.get('node_expectation_type') === type),
   ),
-  getInjectExpectationsMap: () => maps('injectexpectations', state),
+  getAttackChainNodeExpectationsMap: () => maps('injectexpectations', state),
   // documents
   getDocuments: () => entities('documents', state),
   getDocumentsMap: () => maps('documents', state),
@@ -377,10 +377,10 @@ export const storeHelper = state => ({
     if (!team) return List([]);
     return team.get('team_users').map(tu => entity(tu, 'users', state)).filter(u => !!u);
   },
-  getTeamExerciseInjects: (id) => {
+  getTeamAttackChainRunAttackChainNodes: (id) => {
     const team = entity(id, 'teams', state);
     if (!team) return List([]);
-    return team.get('team_exercise_injects').map(te => entity(te, 'injects', state)).filter(i => !!i);
+    return team.get('team_attack_chain_run_nodes').map(te => entity(te, 'nodes', state)).filter(i => !!i);
   },
   getTeams: () => entities('teams', state),
   getTeamsMap: () => maps('teams', state),
@@ -442,7 +442,7 @@ export const storeHelper = state => ({
   getArticlesMap: () => maps('articles', state),
   // challenges
   getChallenges: () => entities('challenges', state),
-  getExerciseChallenges: id => entities('challenges', state).filter(c => c.get('challenge_exercises').includes(id)),
+  getAttackChainRunChallenges: id => entities('challenges', state).filter(c => c.get('challenge_attack_chain_runs').includes(id)),
   getChallengesMap: () => maps('challenges', state),
   // lessons templates
   getLessonsTemplate: id => entity(id, 'lessonstemplates', state),
@@ -468,26 +468,26 @@ export const storeHelper = state => ({
   getSecurityPlatforms: () => entities('securityplatforms', state),
   getSecurityPlatformsMap: () => maps('securityplatforms', state),
   getSecurityPlatform: id => entity(id, 'securityplatforms', state),
-  // scenarios
-  getScenarios: () => entities('scenarios', state),
-  getScenariosMap: () => maps('scenarios', state),
-  getScenario: id => entity(id, 'scenarios', state),
-  getScenarioTeams: id => entities('teams', state).filter(i => i.get('team_scenarios').includes(id)),
-  getScenarioVariables: id => entities('variables', state).filter(i => i.get('variable_scenario') === id),
-  getScenarioArticles: id => entities('articles', state).filter(i => i.get('article_scenario') === id),
-  getScenarioChallenges: id => entities('challenges', state).filter(c => c.get('challenge_scenarios').includes(id)),
-  getScenarioInjects: id => entities('injects', state).filter(i => i.get('inject_scenario') === id),
-  getTeamScenarioInjects: (id) => {
+  // attack_chains
+  getAttackChains: () => entities('attack_chains', state),
+  getAttackChainsMap: () => maps('attack_chains', state),
+  getAttackChain: id => entity(id, 'attack_chains', state),
+  getAttackChainTeams: id => entities('teams', state).filter(i => i.get('team_attack_chains').includes(id)),
+  getAttackChainVariables: id => entities('variables', state).filter(i => i.get('variable_attack_chain') === id),
+  getAttackChainArticles: id => entities('articles', state).filter(i => i.get('article_attack_chain') === id),
+  getAttackChainChallenges: id => entities('challenges', state).filter(c => c.get('challenge_attack_chains').includes(id)),
+  getAttackChainAttackChainNodes: id => entities('nodes', state).filter(i => i.get('node_attack_chain') === id),
+  getTeamAttackChainAttackChainNodes: (id) => {
     const team = entity(id, 'teams', state);
     if (!team) return List([]);
-    return team.get('team_scenario_injects').map(te => entity(te, 'injects', state)).filter(i => !!i);
+    return team.get('team_attack_chain_nodes').map(te => entity(te, 'nodes', state)).filter(i => !!i);
   },
-  getScenarioObjectives: id => entities('objectives', state).filter(o => o.get('objective_scenario') === id),
-  getScenarioLessonsCategories: id => entities('lessonscategorys', state).filter(
-    l => l.get('lessons_category_scenario') === id,
+  getAttackChainObjectives: id => entities('objectives', state).filter(o => o.get('objective_attack_chain') === id),
+  getAttackChainLessonsCategories: id => entities('lessonscategorys', state).filter(
+    l => l.get('lessons_category_attack_chain') === id,
   ),
-  getScenarioLessonsQuestions: id => entities('lessonsquestions', state).filter(
-    l => l.get('lessons_question_scenario') === id,
+  getAttackChainLessonsQuestions: id => entities('lessonsquestions', state).filter(
+    l => l.get('lessons_question_attack_chain') === id,
   ),
   getAgents: () => entities('agents', state),
   // domains

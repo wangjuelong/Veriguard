@@ -4,9 +4,9 @@ import * as R from 'ramda';
 import { Fragment, type FunctionComponent } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectStore } from '../actions/attack_chain_nodes/Inject';
-import InjectIcon from '../admin/components/common/attack_chain_nodes/InjectIcon';
-import { type Inject, type Team } from '../utils/api-types';
+import { type AttackChainNodeStore } from '../actions/attack_chain_nodes/AttackChainNode';
+import AttackChainNodeIcon from '../admin/components/common/attack_chain_nodes/AttackChainNodeIcon';
+import { type AttackChainNode, type Team } from '../utils/api-types';
 import useSearchAndFilter from '../utils/SortingFiltering';
 import { truncate } from '../utils/String';
 import { splitDuration } from '../utils/Time';
@@ -86,46 +86,46 @@ const useStyles = makeStyles()(() => ({
 }));
 
 interface Props {
-  injects: InjectStore[];
+  nodes: AttackChainNodeStore[];
   teams: Team[];
-  onSelectInject: (injectId: string) => void;
+  onSelectAttackChainNode: (injectId: string) => void;
 }
 
-const Timeline: FunctionComponent<Props> = ({ injects, onSelectInject, teams }) => {
+const Timeline: FunctionComponent<Props> = ({ nodes, onSelectAttackChainNode, teams }) => {
   // Standard hooks
   const { classes } = useStyles();
   const theme = useTheme();
   const { t } = useFormatter();
 
   // Retrieve data
-  const getInjectsPerTeam = (teamId: string) => {
-    return injects.filter(i => i.inject_teams?.includes(teamId) || i.inject_all_teams);
+  const getAttackChainNodesPerTeam = (teamId: string) => {
+    return nodes.filter(i => i.node_teams?.includes(teamId) || i.node_all_teams);
   };
 
   const injectsPerTeam = R.mergeAll(
-    teams.map((a: Team) => ({ [a.team_id]: getInjectsPerTeam(a.team_id) })),
+    teams.map((a: Team) => ({ [a.team_id]: getAttackChainNodesPerTeam(a.team_id) })),
   );
 
-  const allTeamInjectIds = new Set(R.values(injectsPerTeam).flat().map((inj: Inject) => inj.inject_id));
+  const allTeamAttackChainNodeIds = new Set(R.values(injectsPerTeam).flat().map((inj: AttackChainNode) => inj.node_id));
 
-  // Build map of technical Injects or without team
+  // Build map of technical AttackChainNodes or without team
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const injectsWithoutTeamMap = injects.reduce((acc: { [x: string]: any[] }, inject: InjectStore) => {
+  const injectsWithoutTeamMap = nodes.reduce((acc: { [x: string]: any[] }, node: AttackChainNodeStore) => {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     let keys: any[] = [];
 
-    if (!allTeamInjectIds.has(inject.inject_id)) {
+    if (!allTeamAttackChainNodeIds.has(node.node_id)) {
       if (
-        inject.inject_injector_contract?.convertedContent
-        && 'fields' in inject.inject_injector_contract.convertedContent
-        && inject.inject_injector_contract.convertedContent.fields.some(
+        node.node_injector_contract?.convertedContent
+        && 'fields' in node.node_injector_contract.convertedContent
+        && node.node_injector_contract.convertedContent.fields.some(
           /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
           (field: any) => field.key === 'teams',
         )
       ) {
         keys = ['No teams'];
-      } else if (inject.inject_type !== null) {
-        keys = [inject.inject_type];
+      } else if (node.node_type !== null) {
+        keys = [node.node_type];
       }
     }
 
@@ -133,11 +133,11 @@ const Timeline: FunctionComponent<Props> = ({ injects, onSelectInject, teams }) 
       if (!acc[key]) {
         acc[key] = [];
       }
-      acc[key].push(inject);
+      acc[key].push(node);
     });
 
     return acc;
-  }, {} as { [key: string]: Inject[] });
+  }, {} as { [key: string]: AttackChainNode[] });
 
   const injectsMap = {
     ...injectsPerTeam,
@@ -145,7 +145,7 @@ const Timeline: FunctionComponent<Props> = ({ injects, onSelectInject, teams }) 
   };
 
   // Sorted teams
-  const teamInjectNames = R.map((key: string) => ({
+  const teamAttackChainNodeNames = R.map((key: string) => ({
     team_id: key,
     team_name: key,
   }), R.keys(injectsMap));
@@ -155,37 +155,37 @@ const Timeline: FunctionComponent<Props> = ({ injects, onSelectInject, teams }) 
     teams,
   );
 
-  const filteredTeamInject = R.reject(
-    (teamInjectName: Team) => R.includes(
-      teamInjectName.team_id,
+  const filteredTeamAttackChainNode = R.reject(
+    (teamAttackChainNodeName: Team) => R.includes(
+      teamAttackChainNodeName.team_id,
       R.pluck('team_id', sortedNativeTeams),
     ),
-    teamInjectNames,
+    teamAttackChainNodeNames,
   );
 
-  const sortedTeams = [...filteredTeamInject, ...sortedNativeTeams];
+  const sortedTeams = [...filteredTeamAttackChainNode, ...sortedNativeTeams];
 
   // Re utilisation of filter and sort hook
   const searchColumns = ['title', 'description', 'content'];
   const filtering = useSearchAndFilter(
-    'inject',
+    'node',
     'depends_duration',
     searchColumns,
   );
 
-  const handleSelectInject = (id: string) => onSelectInject(id);
+  const handleSelectAttackChainNode = (id: string) => onSelectAttackChainNode(id);
 
-  const lastInject = R.pipe(
-    R.sortWith([R.descend(R.prop('inject_depends_duration'))]),
+  const lastAttackChainNode = R.pipe(
+    R.sortWith([R.descend(R.prop('node_depends_duration'))]),
     R.head,
-  )(injects);
-  const totalDuration = lastInject
-    ? lastInject.inject_depends_duration + 3600
+  )(nodes);
+  const totalDuration = lastAttackChainNode
+    ? lastAttackChainNode.node_depends_duration + 3600
     : 60;
   const tickDuration = Math.round(totalDuration / 20);
   const ticks = [...Array(21)].map((_, i) => tickDuration * i);
-  const byTick = R.groupBy((inject: InjectStore) => {
-    const duration = inject.inject_depends_duration;
+  const byTick = R.groupBy((node: AttackChainNodeStore) => {
+    const duration = node.node_depends_duration;
     for (const tick of ticks) {
       if (duration < tick) {
         return tick - tickDuration;
@@ -208,7 +208,7 @@ const Timeline: FunctionComponent<Props> = ({ injects, onSelectInject, teams }) 
 
   return (
     <>
-      {injects.length > 0 && sortedTeams.length > 0 ? (
+      {nodes.length > 0 && sortedTeams.length > 0 ? (
         <div className={classes.container}>
           <div className={classes.names}>
             {sortedTeams.map(team => (
@@ -246,11 +246,11 @@ const Timeline: FunctionComponent<Props> = ({ injects, onSelectInject, teams }) 
                         className={classes.injectGroup}
                         style={{ left: `${injectGroupPosition}%` }}
                       >
-                        {injectsGroupedByTick[key].map((inject: InjectStore) => {
-                          const duration = splitDuration(inject.inject_depends_duration || 0);
+                        {injectsGroupedByTick[key].map((node: AttackChainNodeStore) => {
+                          const duration = splitDuration(node.node_depends_duration || 0);
                           const tooltipContent = (
                             <Fragment>
-                              {inject.inject_title}
+                              {node.node_title}
                               <br />
                               <span style={{
                                 display: 'block',
@@ -263,18 +263,18 @@ const Timeline: FunctionComponent<Props> = ({ injects, onSelectInject, teams }) 
                             </Fragment>
                           );
                           return (
-                            <InjectIcon
-                              key={inject.inject_id}
-                              isPayload={isNotEmptyField(inject.inject_injector_contract?.injector_contract_payload)}
+                            <AttackChainNodeIcon
+                              key={node.node_id}
+                              isPayload={isNotEmptyField(node.node_injector_contract?.injector_contract_payload)}
                               type={
-                                inject.inject_injector_contract?.injector_contract_payload
-                                  ? inject.inject_injector_contract.injector_contract_payload?.payload_collector_type
-                                  || inject.inject_injector_contract.injector_contract_payload?.payload_type
-                                  : inject.inject_type
+                                node.node_injector_contract?.injector_contract_payload
+                                  ? node.node_injector_contract.injector_contract_payload?.payload_collector_type
+                                  || node.node_injector_contract.injector_contract_payload?.payload_type
+                                  : node.node_type
                               }
-                              onClick={() => handleSelectInject(inject.inject_id)}
-                              done={inject.inject_status !== null}
-                              disabled={!inject.inject_enabled}
+                              onClick={() => handleSelectAttackChainNode(node.node_id)}
+                              done={node.node_status !== null}
+                              disabled={!node.node_enabled}
                               size="small"
                               variant="timeline"
                               tooltip={tooltipContent}

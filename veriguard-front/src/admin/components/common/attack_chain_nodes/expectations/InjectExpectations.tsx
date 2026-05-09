@@ -12,7 +12,7 @@ import { PermissionsContext } from '../../Context';
 import { type ExpectationInput } from './Expectation';
 import ExpectationPopover from './ExpectationPopover';
 import { isAutomatic, typeIcon } from './ExpectationUtils';
-import InjectAddExpectation from './InjectAddExpectation';
+import AttackChainNodeAddExpectation from './AttackChainNodeAddExpectation';
 
 const useStyles = makeStyles()(theme => ({
   column: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles()(theme => ({
   bodyItem: { fontSize: theme.typography.h3.fontSize },
 }));
 
-interface InjectExpectationsProps {
+interface AttackChainNodeExpectationsProps {
   expectationDatas: ExpectationInput[];
   handleExpectations: (expectations: ExpectationInput[]) => void;
   readOnly?: boolean;
@@ -30,7 +30,7 @@ interface InjectExpectationsProps {
   injectorContractId: string;
 }
 
-const InjectExpectations: FunctionComponent<InjectExpectationsProps> = ({
+const AttackChainNodeExpectations: FunctionComponent<AttackChainNodeExpectationsProps> = ({
   expectationDatas,
   handleExpectations,
   injectId,
@@ -146,7 +146,7 @@ const InjectExpectations: FunctionComponent<InjectExpectationsProps> = ({
       </List>
       { userCanAddExpectations && predefinedExpectations?.length !== 0
         && (
-          <InjectAddExpectation
+          <AttackChainNodeAddExpectation
             handleAddExpectation={handleAddExpectation}
             predefinedExpectations={predefinedExpectations}
           />
@@ -155,4 +155,4 @@ const InjectExpectations: FunctionComponent<InjectExpectationsProps> = ({
   );
 };
 
-export default InjectExpectations;
+export default AttackChainNodeExpectations;

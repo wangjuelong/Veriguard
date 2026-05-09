@@ -143,7 +143,7 @@ const TopBar: FunctionComponent = () => {
         </div>
         <div className={classes.barRight}>
           <div className={classes.barRightContainer}>
-            <Tooltip title={t('Install simulation agents')}>
+            <Tooltip title={t('Install attack_chain_run agents')}>
               <Button
                 aria-haspopup="true"
                 component={Link}

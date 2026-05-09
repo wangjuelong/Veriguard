@@ -1,6 +1,6 @@
-import { type InjectDependency } from '../../../utils/api-types';
+import { type AttackChainNodeDependency } from '../../../utils/api-types';
 
-const fromInjectDependencyToLabel = (dependency: InjectDependency) => {
+const fromAttackChainNodeDependencyToLabel = (dependency: AttackChainNodeDependency) => {
   let label = '';
   if (dependency.dependency_condition?.conditions !== undefined) {
     label = dependency.dependency_condition.conditions
@@ -11,4 +11,4 @@ const fromInjectDependencyToLabel = (dependency: InjectDependency) => {
   return label;
 };
 
-export default { fromInjectDependencyToLabel };
+export default { fromAttackChainNodeDependencyToLabel };

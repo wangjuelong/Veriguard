@@ -1,11 +1,11 @@
 import { Button, CircularProgress } from '@mui/material';
 import { Form } from 'react-final-form';
 
-import ExerciseField from '../../../../components/ExerciseField';
+import AttackChainRunField from '../../../../components/AttackChainRunField';
 import OldTextField from '../../../../components/fields/OldTextField';
 import FileField from '../../../../components/FileField';
 import { useFormatter } from '../../../../components/i18n';
-import ScenarioField from '../../../../components/ScenarioField';
+import AttackChainField from '../../../../components/AttackChainField';
 import TagField from '../../../../components/TagField';
 
 const DocumentForm = (props) => {
@@ -59,17 +59,17 @@ const DocumentForm = (props) => {
             label={t('Description')}
             style={{ marginTop: 10 }}
           />
-          <ExerciseField
-            name="document_exercises"
+          <AttackChainRunField
+            name="document_attack_chain_runs"
             values={values}
             label={t('Simulations')}
             setFieldValue={form.mutators.setValue}
             style={{ marginTop: 20 }}
           />
-          <ScenarioField
-            name="document_scenarios"
+          <AttackChainField
+            name="document_attack_chains"
             values={values}
-            label={t('Scenarios')}
+            label={t('AttackChains')}
             setFieldValue={form.mutators.setValue}
             style={{ marginTop: 20 }}
           />

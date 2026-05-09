@@ -4,74 +4,74 @@ import { type SubmitHandler } from 'react-hook-form';
 
 import { useFormatter } from '../../../../../components/i18n';
 import ItemTargets from '../../../../../components/ItemTargets';
-import { type InjectResultOutput, type ReportInjectComment } from '../../../../../utils/api-types';
+import { type AttackChainNodeResultOutput, type ReportAttackChainNodeComment } from '../../../../../utils/api-types';
 import AtomicTestingResult from '../../../atomic_testings/atomic_testing/AtomicTestingResult';
 import InjectorContract from '../../../common/attack_chain_nodes/InjectorContract';
 import ReportComment from '../../../components/reports/ReportComment';
 
 interface Props {
   style?: CSSProperties;
-  injects: InjectResultOutput[];
-  injectsComments?: ReportInjectComment[];
+  nodes: AttackChainNodeResultOutput[];
+  injectsComments?: ReportAttackChainNodeComment[];
   canEditComment?: boolean;
-  onCommentSubmit?: SubmitHandler<ReportInjectComment>;
+  onCommentSubmit?: SubmitHandler<ReportAttackChainNodeComment>;
 }
 
-const InjectReportResult: FunctionComponent<Props> = ({
+const AttackChainNodeReportResult: FunctionComponent<Props> = ({
   style,
-  injects,
+  nodes,
   injectsComments = [],
   canEditComment = false,
   onCommentSubmit = () => {},
 }) => {
   // Standard hooks
   const { t, fldt, tPick } = useFormatter();
-  const findInjectCommentsByInjectId = (injectId: InjectResultOutput['inject_id']) => (injectsComments ?? []).find(c => c.inject_id === injectId) ?? null;
+  const findAttackChainNodeCommentsByAttackChainNodeId = (injectId: AttackChainNodeResultOutput['node_id']) => (injectsComments ?? []).find(c => c.node_id === injectId) ?? null;
 
-  const saveComment = (injectId: ReportInjectComment['inject_id'], value: string) => {
+  const saveComment = (injectId: ReportAttackChainNodeComment['node_id'], value: string) => {
     onCommentSubmit({
-      inject_id: injectId,
-      report_inject_comment: value,
+      node_id: injectId,
+      report_node_comment: value,
     });
   };
 
   const columns = [
     {
       label: 'Type',
-      render: (inject: InjectResultOutput) => {
-        return inject.inject_injector_contract
-          ? <InjectorContract variant="list" label={tPick(inject.inject_injector_contract?.injector_contract_labels)} />
+      render: (node: AttackChainNodeResultOutput) => {
+        return node.node_injector_contract
+          ? <InjectorContract variant="list" label={tPick(node.node_injector_contract?.injector_contract_labels)} />
           : <InjectorContract variant="list" label={t('Deleted')} deleted={true} />;
       },
     },
     {
       label: 'Title',
-      render: (inject: InjectResultOutput) => inject.inject_title,
+      render: (node: AttackChainNodeResultOutput) => node.node_title,
     },
     {
       label: 'Execution date',
-      render: (inject: InjectResultOutput) => {
-        const trackingDate = inject.inject_status?.tracking_sent_date;
+      render: (node: AttackChainNodeResultOutput) => {
+        const trackingDate = node.node_status?.tracking_sent_date;
         return <>{trackingDate ? fldt(trackingDate) : '-'}</>;
       },
     },
     {
       label: 'Scores',
-      render: (inject: InjectResultOutput) => <AtomicTestingResult expectations={inject.inject_expectation_results} injectId={inject.inject_id} />,
+      render: (node: AttackChainNodeResultOutput) => <AtomicTestingResult expectations={node.node_expectation_results} injectId={node.node_id} />,
     },
     {
       label: 'Targets',
-      render: (inject: InjectResultOutput) => <ItemTargets targets={inject.inject_targets} />,
+      render: (node: AttackChainNodeResultOutput) => <ItemTargets targets={node.node_targets} />,
     },
     {
       label: 'Comments',
-      render: (inject: InjectResultOutput) => {
-        const currentInjectComment = findInjectCommentsByInjectId(inject.inject_id);
+      render: (node: AttackChainNodeResultOutput) => {
+        const currentAttackChainNodeComment = findAttackChainNodeCommentsByAttackChainNodeId(node.node_id);
         return (
           <ReportComment
             canEditComment={canEditComment}
-            initialComment={currentInjectComment?.report_inject_comment || ''}
-            saveComment={value => saveComment(inject.inject_id, value)}
+            initialComment={currentAttackChainNodeComment?.report_node_comment || ''}
+            saveComment={value => saveComment(node.node_id, value)}
           />
         );
       },
@@ -81,7 +81,7 @@ const InjectReportResult: FunctionComponent<Props> = ({
   return (
     <div style={style}>
       <Typography variant="h4" gutterBottom>
-        {t('Injects results')}
+        {t('AttackChainNodes results')}
       </Typography>
 
       <Paper variant="outlined">
@@ -90,7 +90,7 @@ const InjectReportResult: FunctionComponent<Props> = ({
           overflow: 'visible',
         }}
         >
-          <Table aria-label="injects results">
+          <Table aria-label="nodes results">
             <TableHead>
               <TableRow>
                 {columns.map(col => (
@@ -111,9 +111,9 @@ const InjectReportResult: FunctionComponent<Props> = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {injects.map(inject => (
+              {nodes.map(node => (
                 <TableRow
-                  key={inject.inject_id}
+                  key={node.node_id}
                 >
                   {columns.map(col => (
                     <TableCell
@@ -123,9 +123,9 @@ const InjectReportResult: FunctionComponent<Props> = ({
                         flexGrow: 1,
                         alignItems: 'flex-start',
                       } : { verticalAlign: 'top' }}
-                      key={`${inject.inject_id}-${col.label}`}
+                      key={`${node.node_id}-${col.label}`}
                     >
-                      {col.render(inject)}
+                      {col.render(node)}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -138,4 +138,4 @@ const InjectReportResult: FunctionComponent<Props> = ({
   );
 };
 
-export default InjectReportResult;
+export default AttackChainNodeReportResult;

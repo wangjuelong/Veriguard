@@ -4,7 +4,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { BACK_LABEL, BACK_URI } from '../../../../../components/Breadcrumbs';
 import { useFormatter } from '../../../../../components/i18n';
-import type { Exercise as ExerciseType, InjectResultOverviewOutput } from '../../../../../utils/api-types';
+import type { AttackChainRun as AttackChainRunType, AttackChainNodeResultOverviewOutput } from '../../../../../utils/api-types';
 import { externalContractTypesWithFindings } from '../../../../../utils/injector_contract/InjectorContractUtils';
 
 const useStyles = makeStyles()(theme => ({
@@ -17,13 +17,13 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface Props {
-  injectResultOverview: InjectResultOverviewOutput;
-  exercise: ExerciseType;
+  injectResultOverview: AttackChainNodeResultOverviewOutput;
+  attack_chain_run: AttackChainRunType;
   backlabel?: string | null;
   backuri?: string | null;
 }
 
-const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }: Props) => {
+const AttackChainNodeIndexTabs = ({ injectResultOverview, attack_chain_run, backlabel, backuri }: Props) => {
   const { classes } = useStyles();
   const { t } = useFormatter();
   const location = useLocation();
@@ -40,42 +40,42 @@ const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }:
     <Tabs value={tabValue}>
       <Tab
         component={Link}
-        to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}`)}
-        value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}`}
+        to={computePath(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}`)}
+        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}`}
         label={t('Overview')}
         className={classes.item}
       />
       <Tab
         component={Link}
-        to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/detail`)}
-        value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/detail`}
-        label={t('Inject Execution details')}
+        to={computePath(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}/detail`)}
+        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}/detail`}
+        label={t('AttackChainNode Execution details')}
         className={classes.item}
       />
-      {injectResultOverview.inject_injector_contract?.injector_contract_payload && (
+      {injectResultOverview.node_injector_contract?.injector_contract_payload && (
         <Tab
           component={Link}
-          to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/payload_info`)}
-          value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/payload_info`}
+          to={computePath(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}/payload_info`)}
+          value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}/payload_info`}
           label={t('Payload info')}
           className={classes.item}
         />
       )}
-      {(injectResultOverview.inject_injector_contract?.injector_contract_payload
-        || externalContractTypesWithFindings.includes(injectResultOverview.inject_type ?? '')) && (
+      {(injectResultOverview.node_injector_contract?.injector_contract_payload
+        || externalContractTypesWithFindings.includes(injectResultOverview.node_type ?? '')) && (
         <Tab
           component={Link}
-          to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/findings`)}
-          value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/findings`}
+          to={computePath(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}/findings`)}
+          value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}/findings`}
           label={t('Findings')}
           className={classes.item}
         />
       )}
-      {injectResultOverview.inject_injector_contract?.injector_contract_payload && (
+      {injectResultOverview.node_injector_contract?.injector_contract_payload && (
         <Tab
           component={Link}
-          to={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`)}
-          value={computePath(`/admin/attack_chain_runs/${exercise.exercise_id}/injects/${injectResultOverview.inject_id}/remediations`)}
+          to={computePath(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}/remediations`)}
+          value={computePath(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes/${injectResultOverview.node_id}/remediations`)}
           label={t('Remediations')}
           className={classes.item}
         />
@@ -83,4 +83,4 @@ const InjectIndexTabs = ({ injectResultOverview, exercise, backlabel, backuri }:
     </Tabs>
   );
 };
-export default InjectIndexTabs;
+export default AttackChainNodeIndexTabs;

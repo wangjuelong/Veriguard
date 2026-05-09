@@ -1,34 +1,34 @@
 import { simpleCall, simplePostCall } from '../../utils/Action';
 import {
-  type InjectExportFromSearchRequestInput,
-  type InjectExportRequestInput,
-  type InjectIndividualExportRequestInput,
+  type AttackChainNodeExportFromSearchRequestInput,
+  type AttackChainNodeExportRequestInput,
+  type AttackChainNodeIndividualExportRequestInput,
   type SearchPaginationInput,
 } from '../../utils/api-types';
 import { MESSAGING$ } from '../../utils/Environment';
 
 export const INJECT_URI = '/api/attack_chain_nodes';
 
-export const exportInjectSearch = (data: InjectExportFromSearchRequestInput) => {
+export const exportAttackChainNodeSearch = (data: AttackChainNodeExportFromSearchRequestInput) => {
   const uri = '/api/attack_chain_nodes/search/export';
   return simplePostCall(uri, data, { responseType: 'arraybuffer' }).catch((error) => {
-    MESSAGING$.notifyError('Could not request export of injects');
+    MESSAGING$.notifyError('Could not request export of nodes');
     throw error;
   });
 };
 
-export const exportInjects = (data: InjectExportRequestInput) => {
+export const exportAttackChainNodes = (data: AttackChainNodeExportRequestInput) => {
   const uri = '/api/attack_chain_nodes/export';
   return simplePostCall(uri, data, { responseType: 'arraybuffer' }).catch((error) => {
-    MESSAGING$.notifyError('Could not request export of injects');
+    MESSAGING$.notifyError('Could not request export of nodes');
     throw error;
   });
 };
 
-export const exportInject = (injectId: string, data: InjectIndividualExportRequestInput) => {
-  const uri = `/api/attack_chain_nodes/${injectId}/inject_export`;
+export const exportAttackChainNode = (injectId: string, data: AttackChainNodeIndividualExportRequestInput) => {
+  const uri = `/api/attack_chain_nodes/${injectId}/node_export`;
   return simplePostCall(uri, data, { responseType: 'arraybuffer' }).catch((error) => {
-    MESSAGING$.notifyError('Could not request export of inject');
+    MESSAGING$.notifyError('Could not request export of node');
     throw error;
   });
 };
@@ -55,7 +55,7 @@ export const searchTargetOptionsById = (targetType: string, ids: string[]) => {
 
 // -- OPTION --
 
-export const searchInjectLinkedToFindingsAsOption = (searchText: string = '', sourceId: string = '') => {
+export const searchAttackChainNodeLinkedToFindingsAsOption = (searchText: string = '', sourceId: string = '') => {
   const params = {
     searchText,
     sourceId,
@@ -63,13 +63,13 @@ export const searchInjectLinkedToFindingsAsOption = (searchText: string = '', so
   return simpleCall(`${INJECT_URI}/findings/options`, { params });
 };
 
-export const searchInjectByIdAsOption = (ids: string[]) => {
+export const searchAttackChainNodeByIdAsOption = (ids: string[]) => {
   return simplePostCall(`${INJECT_URI}/options`, ids);
 };
 
 // -- EXECUTION TRACES --
 
-export const getInjectTracesFromInjectAndTarget = (injectId: string = '', targetId: string = '', targetType: string = '') => {
+export const getAttackChainNodeTracesFromAttackChainNodeAndTarget = (injectId: string = '', targetId: string = '', targetType: string = '') => {
   const params = {
     injectId,
     targetId,
@@ -77,19 +77,19 @@ export const getInjectTracesFromInjectAndTarget = (injectId: string = '', target
   };
   return simpleCall(`${INJECT_URI}/execution-traces`, { params });
 };
-export const getInjectStatusWithGlobalExecutionTraces = (injectId: string = '') => {
+export const getAttackChainNodeStatusWithGlobalExecutionTraces = (injectId: string = '') => {
   const params = { injectId };
   return simpleCall(`${INJECT_URI}/status`, { params });
 };
 
 // Detection Remediation
-export const fetchPayloadDetectionRemediationsByInject = (injectId: string) => {
+export const fetchPayloadDetectionRemediationsByAttackChainNode = (injectId: string) => {
   const uri = `${INJECT_URI}/detection-remediations/${injectId}`;
   return simpleCall(uri);
 };
 
 // Documents
-export const fetchDocumentsPayloadByInject = async (injectId: string, payloadId: string | undefined) => {
+export const fetchDocumentsPayloadByAttackChainNode = async (injectId: string, payloadId: string | undefined) => {
   const uri = `${INJECT_URI}/${injectId}/payload/${payloadId}/documents`;
   const result = await simpleCall(uri);
   return result.data;

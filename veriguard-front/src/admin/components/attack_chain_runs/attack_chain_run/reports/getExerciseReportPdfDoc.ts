@@ -3,11 +3,11 @@ import type { Content, ContentTable, TDocumentDefinitions } from 'pdfmake/interf
 
 import { type Translate } from '../../../../../components/i18n';
 import LogoText from '../../../../../static/images/logo_text_light.svg';
-import { type InjectResultOutput, type LessonsAnswer, type Report } from '../../../../../utils/api-types';
+import { type AttackChainNodeResultOutput, type LessonsAnswer, type Report } from '../../../../../utils/api-types';
 import { resolveUserName } from '../../../../../utils/String';
 import convertMarkdownToPdfMake from './convertMarkdownToPdfMake';
 import ReportInformationType from './ReportInformationType';
-import { type ExerciseReportData } from './useExerciseReportData';
+import { type AttackChainRunReportData } from './useAttackChainRunReportData';
 
 const getBase64ImageFromURL = (url: string) => {
   return new Promise((resolve, reject) => {
@@ -60,14 +60,14 @@ const imageBorder = {
 
 interface Props {
   report: Report;
-  reportData: ExerciseReportData;
+  reportData: AttackChainRunReportData;
   displayModule: (moduleType: ReportInformationType) => boolean;
   tPick: (input?: Record<string, string>) => string;
   fldt: (input?: string) => string;
   t: Translate;
 }
 
-const getExerciseReportPdfDocDefinition = async ({
+const getAttackChainRunReportPdfDocDefinition = async ({
   report,
   reportData,
   displayModule,
@@ -80,15 +80,15 @@ const getExerciseReportPdfDocDefinition = async ({
     'main_information',
     'score_details',
     'lessons_categories',
-    'exercise_distribution_score_by_team',
-    'exercise_distribution_score_over_time',
-    'exercise_distribution_total_score_by_team',
-    'exercise_distribution_score_over_time_by_team',
-    'exercise_distribution_total_score_by_inject_type',
-    'exercise_distribution_score_over_time_by_inject',
-    'exercise_distribution_total_score_by_organization',
-    'exercise_distribution_total_score_by_player',
-    'exercise_distribution_total_score_by_inject',
+    'attack_chain_run_distribution_score_by_team',
+    'attack_chain_run_distribution_score_over_time',
+    'attack_chain_run_distribution_total_score_by_team',
+    'attack_chain_run_distribution_score_over_time_by_team',
+    'attack_chain_run_distribution_total_score_by_node_type',
+    'attack_chain_run_distribution_score_over_time_by_node',
+    'attack_chain_run_distribution_total_score_by_organization',
+    'attack_chain_run_distribution_total_score_by_player',
+    'attack_chain_run_distribution_total_score_by_node',
   ];
   const fetchPromises = [getBase64ImageFromURL(LogoText).then(img => ({
     key: 'veriguard_logo',
@@ -103,23 +103,23 @@ const getExerciseReportPdfDocDefinition = async ({
       })));
     }
   });
-  (reportData.injects || []).forEach((inject) => {
-    const element = document.getElementById(`inject_expectations_${inject.inject_id}`);
+  (reportData.nodes || []).forEach((node) => {
+    const element = document.getElementById(`node_expectations_${node.node_id}`);
     if (element) {
       fetchPromises.push(
         toPng(element).then((img: string) => ({
-          key: `inject_${inject.inject_id}`,
+          key: `node_${node.node_id}`,
           img,
         })),
       );
     }
   });
 
-  // Inject Result page
-  const findCommentsByInjectId = (injectId: InjectResultOutput['inject_id']) => (report?.report_injects_comments ?? []).find(c => c.inject_id === injectId)?.report_inject_comment ?? null;
+  // AttackChainNode Result page
+  const findCommentsByAttackChainNodeId = (injectId: AttackChainNodeResultOutput['node_id']) => (report?.report_nodes_comments ?? []).find(c => c.node_id === injectId)?.report_node_comment ?? null;
   const injectResultPage = (imagesMap: Map<string, string>) => ([
     {
-      text: t('Injects results'),
+      text: t('AttackChainNodes results'),
       tocItem: ['mainToc'],
       pageBreak: 'before',
       style: 'header',
@@ -133,17 +133,17 @@ const getExerciseReportPdfDocDefinition = async ({
             text: title,
             style: 'tableTitle',
           })),
-          ...reportData.injects.map((inject) => {
+          ...reportData.nodes.map((node) => {
             return [
-              { text: tPick(inject.inject_injector_contract?.injector_contract_labels) },
-              { text: inject.inject_title },
-              { text: fldt(inject.inject_status?.tracking_sent_date) || 'N/A' },
+              { text: tPick(node.node_injector_contract?.injector_contract_labels) },
+              { text: node.node_title },
+              { text: fldt(node.node_status?.tracking_sent_date) || 'N/A' },
               {
-                image: imagesMap.get(`inject_${inject.inject_id}`),
+                image: imagesMap.get(`node_${node.node_id}`),
                 width: 60,
               },
-              { text: inject.inject_targets?.map(target => target.target_name).join(', ') },
-              { stack: convertMarkdownToPdfMake(findCommentsByInjectId(inject.inject_id) || '') },
+              { text: node.node_targets?.map(target => target.target_name).join(', ') },
+              { stack: convertMarkdownToPdfMake(findCommentsByAttackChainNodeId(node.node_id) || '') },
             ];
           }),
         ],
@@ -152,44 +152,44 @@ const getExerciseReportPdfDocDefinition = async ({
     },
   ]);
 
-  // Exercise Details page
+  // AttackChainRun Details page
   const exerciseDetailsPage = (imagesMap: Map<string, string>) => {
     const doubleColumns = [
       [
         {
           title: 'Distribution of score by team (in % of expectations)',
-          img: imagesMap.get('exercise_distribution_score_by_team'),
+          img: imagesMap.get('attack_chain_run_distribution_score_by_team'),
         },
         {
           title: 'Teams scores over time (in % of expectations)',
-          img: imagesMap.get('exercise_distribution_score_over_time'),
+          img: imagesMap.get('attack_chain_run_distribution_score_over_time'),
         },
       ],
       [
         {
           title: 'Distribution of total score by team',
-          img: imagesMap.get('exercise_distribution_total_score_by_team'),
+          img: imagesMap.get('attack_chain_run_distribution_total_score_by_team'),
         },
         {
           title: 'Teams scores over time)',
-          img: imagesMap.get('exercise_distribution_score_over_time_by_team'),
+          img: imagesMap.get('attack_chain_run_distribution_score_over_time_by_team'),
         },
       ],
       [
         {
-          title: 'Distribution of total score by inject type',
-          img: imagesMap.get('exercise_distribution_total_score_by_inject_type'),
+          title: 'Distribution of total score by node type',
+          img: imagesMap.get('attack_chain_run_distribution_total_score_by_node_type'),
         },
         {
-          title: 'Inject types scores over time',
-          img: imagesMap.get('exercise_distribution_score_over_time_by_inject'),
+          title: 'AttackChainNode types scores over time',
+          img: imagesMap.get('attack_chain_run_distribution_score_over_time_by_node'),
         },
       ],
     ];
 
     return [
       {
-        text: t('Exercise details'),
+        text: t('AttackChainRun details'),
         tocItem: ['mainToc'],
         pageBreak: 'before',
         style: 'header',
@@ -225,7 +225,7 @@ const getExerciseReportPdfDocDefinition = async ({
                 style: 'chartTitle',
               },
               {
-                image: imagesMap.get('exercise_distribution_total_score_by_organization'),
+                image: imagesMap.get('attack_chain_run_distribution_total_score_by_organization'),
                 width: 250,
                 margin: [-5, 0, 0, 0],
               },
@@ -238,7 +238,7 @@ const getExerciseReportPdfDocDefinition = async ({
                 style: 'chartTitle',
               },
               {
-                image: imagesMap.get('exercise_distribution_total_score_by_player'),
+                image: imagesMap.get('attack_chain_run_distribution_total_score_by_player'),
                 width: 130,
               },
             ],
@@ -246,11 +246,11 @@ const getExerciseReportPdfDocDefinition = async ({
             width: '25%',
             stack: [
               {
-                text: t('Distribution of total score by inject'),
+                text: t('Distribution of total score by node'),
                 style: 'chartTitle',
               },
               {
-                image: imagesMap.get('exercise_distribution_total_score_by_inject'),
+                image: imagesMap.get('attack_chain_run_distribution_total_score_by_node'),
                 width: 130,
               },
             ],
@@ -284,7 +284,7 @@ const getExerciseReportPdfDocDefinition = async ({
             .map(answerId => reportData.lessonsAnswers.find(answer => answer.lessonsanswer_id === answerId));
           const totalScore = (lessonsAnswers || []).reduce((sum, answer) => sum + (answer?.lessons_answer_score || 0), 0);
           const getUserName = (answer: LessonsAnswer): string => {
-            if (reportData.exercise.exercise_lessons_anonymized) return t('Anonymized');
+            if (reportData.attack_chain_run.attack_chain_run_lessons_anonymized) return t('Anonymized');
             if (answer.lessons_answer_user) return resolveUserName(reportData.usersMap[answer.lessons_answer_user as string]);
             return '-';
           };
@@ -328,10 +328,10 @@ const getExerciseReportPdfDocDefinition = async ({
     imagesMap.set(key_1, img_3 as string);
   });
 
-  const displayInjectResultPage = displayModule(ReportInformationType.INJECT_RESULT);
+  const displayAttackChainNodeResultPage = displayModule(ReportInformationType.INJECT_RESULT);
   const displayGlobalObservation = displayModule(ReportInformationType.GLOBAL_OBSERVATION);
   const displayPlayerSurveys = displayModule(ReportInformationType.PLAYER_SURVEYS);
-  const displayExerciseDetails = imagesMap.has('exercise_distribution_score_by_team');
+  const displayAttackChainRunDetails = imagesMap.has('attack_chain_run_distribution_score_by_team');
 
   return {
     compress: false,
@@ -365,15 +365,15 @@ const getExerciseReportPdfDocDefinition = async ({
         text: report.report_name,
         style: 'reportTitle',
       },
-      reportData.exercise.exercise_start_date
+      reportData.attack_chain_run.attack_chain_run_start_date
         ? {
-            text: fldt(reportData.exercise.exercise_start_date),
+            text: fldt(reportData.attack_chain_run.attack_chain_run_start_date),
             margin: [0, 10, 0, 0],
           }
         : {},
-      reportData.exercise.exercise_teams?.length && reportData.exercise.exercise_teams?.length > 0
+      reportData.attack_chain_run.attack_chain_run_teams?.length && reportData.attack_chain_run.attack_chain_run_teams?.length > 0
         ? {
-            text: [{ text: t('Teams') }, { text: ` : ${reportData.exercise.exercise_teams?.map(teamId_1 => reportData.teams.find(team_1 => team_1.team_id === teamId_1)?.team_name).join(', ')}` }],
+            text: [{ text: t('Teams') }, { text: ` : ${reportData.attack_chain_run.attack_chain_run_teams?.map(teamId_1 => reportData.teams.find(team_1 => team_1.team_id === teamId_1)?.team_name).join(', ')}` }],
             margin: [0, 0, 0, 150],
           }
         : {},
@@ -410,7 +410,7 @@ const getExerciseReportPdfDocDefinition = async ({
           }
         : {},
       // Table of Contents Page
-      ...((displayInjectResultPage || displayGlobalObservation || displayPlayerSurveys || displayExerciseDetails)
+      ...((displayAttackChainNodeResultPage || displayGlobalObservation || displayPlayerSurveys || displayAttackChainRunDetails)
         ? [{
             toc: {
               id: 'mainToc',
@@ -424,8 +424,8 @@ const getExerciseReportPdfDocDefinition = async ({
           }]
         : []),
 
-      // Inject Results Page
-      displayInjectResultPage ? injectResultPage(imagesMap) : {},
+      // AttackChainNode Results Page
+      displayAttackChainNodeResultPage ? injectResultPage(imagesMap) : {},
 
       // Global Information Page
       ...(displayGlobalObservation
@@ -443,8 +443,8 @@ const getExerciseReportPdfDocDefinition = async ({
       // Player surveys page
       displayPlayerSurveys && reportData.lessonsCategories.length > 0 ? playersSurveysPage() : [],
 
-      // Exercise details page
-      displayExerciseDetails ? exerciseDetailsPage(imagesMap) : [],
+      // AttackChainRun details page
+      displayAttackChainRunDetails ? exerciseDetailsPage(imagesMap) : [],
     ] as Content,
     styles: {
       reportTitle: {
@@ -486,4 +486,4 @@ const getExerciseReportPdfDocDefinition = async ({
   };
 };
 
-export default getExerciseReportPdfDocDefinition;
+export default getAttackChainRunReportPdfDocDefinition;

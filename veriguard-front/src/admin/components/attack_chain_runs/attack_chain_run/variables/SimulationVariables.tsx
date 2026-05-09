@@ -3,11 +3,11 @@ import { useTheme } from '@mui/material/styles';
 import { useContext } from 'react';
 import { useParams } from 'react-router';
 
-import { addVariableForExercise, deleteVariableForExercise, fetchVariablesForExercise, updateVariableForExercise } from '../../../../../actions/variables/variable-actions';
+import { addVariableForAttackChainRun, deleteVariableForAttackChainRun, fetchVariablesForAttackChainRun, updateVariableForAttackChainRun } from '../../../../../actions/variables/variable-actions';
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type Variable, type VariableInput } from '../../../../../utils/api-types';
+import { type AttackChainRun, type Variable, type VariableInput } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import { PermissionsContext, VariableContext, type VariableContextType } from '../../../common/Context';
@@ -21,17 +21,17 @@ const SimulationVariables = () => {
   const theme = useTheme();
 
   // Fetching data
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
   const { permissions } = useContext(PermissionsContext);
-  const variables = useHelper((helper: VariablesHelper) => helper.getExerciseVariables(exerciseId));
+  const variables = useHelper((helper: VariablesHelper) => helper.getAttackChainRunVariables(exerciseId));
   useDataLoader(() => {
-    dispatch(fetchVariablesForExercise(exerciseId));
+    dispatch(fetchVariablesForAttackChainRun(exerciseId));
   });
 
   const context: VariableContextType = {
-    onCreateVariable: (data: VariableInput) => dispatch(addVariableForExercise(exerciseId, data)),
-    onEditVariable: (variable: Variable, data: VariableInput) => dispatch(updateVariableForExercise(exerciseId, variable.variable_id, data)),
-    onDeleteVariable: (variable: Variable) => dispatch(deleteVariableForExercise(exerciseId, variable.variable_id)),
+    onCreateVariable: (data: VariableInput) => dispatch(addVariableForAttackChainRun(exerciseId, data)),
+    onEditVariable: (variable: Variable, data: VariableInput) => dispatch(updateVariableForAttackChainRun(exerciseId, variable.variable_id, data)),
+    onDeleteVariable: (variable: Variable) => dispatch(deleteVariableForAttackChainRun(exerciseId, variable.variable_id)),
   };
 
   return (

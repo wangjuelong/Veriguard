@@ -1,8 +1,8 @@
 import { schema } from 'normalizr';
 
-export const scenario = new schema.Entity(
-  'scenarios',
+export const attack_chain = new schema.Entity(
+  'attack_chains',
   {},
-  { idAttribute: 'scenario_id' },
+  { idAttribute: 'attack_chain_id' },
 );
-export const arrayOfScenarios = new schema.Array(scenario);
+export const arrayOfAttackChains = new schema.Array(attack_chain);

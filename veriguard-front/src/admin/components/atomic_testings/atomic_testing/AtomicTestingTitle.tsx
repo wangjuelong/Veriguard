@@ -5,7 +5,7 @@ import { makeStyles } from 'tss-react/mui';
 import { useFormatter } from '../../../../components/i18n';
 import ItemStatus from '../../../../components/ItemStatus';
 import Loader from '../../../../components/Loader';
-import type { InjectResultOverviewOutput } from '../../../../utils/api-types';
+import type { AttackChainNodeResultOverviewOutput } from '../../../../utils/api-types';
 import { truncate } from '../../../../utils/String';
 import AtomicTestingInformation from './AtomicTestingInformation';
 
@@ -16,7 +16,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-interface Props { injectResultOverview: InjectResultOverviewOutput }
+interface Props { injectResultOverview: AttackChainNodeResultOverviewOutput }
 
 const AtomicTestingTitle = ({ injectResultOverview }: Props) => {
   const { classes } = useStyles();
@@ -28,18 +28,18 @@ const AtomicTestingTitle = ({ injectResultOverview }: Props) => {
 
   return (
     <Box>
-      <Tooltip title={injectResultOverview.inject_title}>
+      <Tooltip title={injectResultOverview.node_title}>
         <Typography
           variant="h1"
           gutterBottom
           classes={{ root: classes.title }}
         >
-          {truncate(injectResultOverview.inject_title, 80)}
+          {truncate(injectResultOverview.node_title, 80)}
         </Typography>
       </Tooltip>
       <ItemStatus
-        status={injectResultOverview.inject_status?.status_name}
-        label={t(injectResultOverview.inject_status?.status_name ?? 'Unknown')}
+        status={injectResultOverview.node_status?.status_name}
+        label={t(injectResultOverview.node_status?.status_name ?? 'Unknown')}
       />
       <Tooltip
         slotProps={{

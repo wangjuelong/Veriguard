@@ -37,13 +37,13 @@ const CreateDocumentComponent = (props) => {
     // TODO: should be platform
     : {
         document_tags: [],
-        document_exercises: [],
-        document_scenarios: [],
+        document_attack_chain_runs: [],
+        document_attack_chains: [],
       };
   const computeInputValues = data => R.pipe(
     R.assoc('document_tags', R.pluck('id', data.document_tags)),
-    R.assoc('document_exercises', R.pluck('id', data.document_exercises)),
-    R.assoc('document_scenarios', R.pluck('id', data.document_scenarios)),
+    R.assoc('document_attack_chain_runs', R.pluck('id', data.document_attack_chain_runs)),
+    R.assoc('document_attack_chains', R.pluck('id', data.document_attack_chains)),
   )(data);
 
   const onSubmit = (data) => {

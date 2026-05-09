@@ -2,11 +2,11 @@ import { EmojiEventsOutlined } from '@mui/icons-material';
 import { type FunctionComponent } from 'react';
 
 import { type Challenge } from '../../../../../../utils/api-types';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import ExpectationLine from './ExpectationLine';
 
 interface Props {
-  expectation: InjectExpectationsStore;
+  expectation: AttackChainNodeExpectationsStore;
   challenge: Challenge;
 }
 

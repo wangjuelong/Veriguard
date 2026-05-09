@@ -9,23 +9,23 @@ import { type Report, type ReportInformationInput, type ReportInput } from '../.
 import { zodImplement } from '../../../../../utils/Zod';
 import ReportInformationType from './ReportInformationType';
 
-interface ExerciseReportFormInput {
+interface AttackChainRunReportFormInput {
   report_name: string;
   report_main_information: boolean;
   report_score_details: boolean;
-  report_inject_result: boolean;
+  report_node_result: boolean;
   report_global_observation: boolean;
   report_player_surveys: boolean;
-  report_exercise_details: boolean;
+  report_attack_chain_run_details: boolean;
 }
 
-interface ExerciseReportModulesConfig {
+interface AttackChainRunReportModulesConfig {
   type: ReportInformationType;
-  name: 'report_main_information' | 'report_score_details' | 'report_inject_result' | 'report_player_surveys' | 'report_exercise_details' | 'report_name' | 'report_global_observation';
+  name: 'report_main_information' | 'report_score_details' | 'report_node_result' | 'report_player_surveys' | 'report_attack_chain_run_details' | 'report_name' | 'report_global_observation';
   label: string;
 }
 
-const exerciseReportModulesConfig: ExerciseReportModulesConfig[] = [
+const exerciseReportModulesConfig: AttackChainRunReportModulesConfig[] = [
   {
     type: ReportInformationType.MAIN_INFORMATION,
     name: 'report_main_information',
@@ -38,8 +38,8 @@ const exerciseReportModulesConfig: ExerciseReportModulesConfig[] = [
   },
   {
     type: ReportInformationType.INJECT_RESULT,
-    name: 'report_inject_result',
-    label: 'Injects results',
+    name: 'report_node_result',
+    label: 'AttackChainNodes results',
   },
   {
     type: ReportInformationType.PLAYER_SURVEYS,
@@ -53,8 +53,8 @@ const exerciseReportModulesConfig: ExerciseReportModulesConfig[] = [
   },
   {
     type: ReportInformationType.EXERCISE_DETAILS,
-    name: 'report_exercise_details',
-    label: 'Exercise details',
+    name: 'report_attack_chain_run_details',
+    label: 'AttackChainRun details',
   },
 ];
 
@@ -64,7 +64,7 @@ interface Props {
   editing?: boolean;
   initialValues?: Report;
 }
-const ExerciseReportForm: FunctionComponent<Props> = ({
+const AttackChainRunReportForm: FunctionComponent<Props> = ({
   onSubmit,
   handleCancel,
   editing,
@@ -86,14 +86,14 @@ const ExerciseReportForm: FunctionComponent<Props> = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ExerciseReportFormInput>({
+  } = useForm<AttackChainRunReportFormInput>({
     mode: 'onTouched',
     resolver: zodResolver(
-      zodImplement<ExerciseReportFormInput>().with({
+      zodImplement<AttackChainRunReportFormInput>().with({
         report_name: z.string().min(1, { message: t('Should not be empty') }),
-        report_exercise_details: z.boolean(),
+        report_attack_chain_run_details: z.boolean(),
         report_global_observation: z.boolean(),
-        report_inject_result: z.boolean(),
+        report_node_result: z.boolean(),
         report_main_information: z.boolean(),
         report_player_surveys: z.boolean(),
         report_score_details: z.boolean(),
@@ -104,7 +104,7 @@ const ExerciseReportForm: FunctionComponent<Props> = ({
     },
   });
 
-  const onSubmitHandler = (data: ExerciseReportFormInput) => {
+  const onSubmitHandler = (data: AttackChainRunReportFormInput) => {
     const reportInformationList: ReportInformationInput[] = exerciseReportModulesConfig.map((moduleConfig) => {
       return {
         report_informations_type: moduleConfig.type,
@@ -120,7 +120,7 @@ const ExerciseReportForm: FunctionComponent<Props> = ({
 
   return (
     <form
-      id="reportExerciseForm"
+      id="reportAttackChainRunForm"
       onSubmit={handleSubmit(onSubmitHandler)}
       style={{
         display: 'grid',
@@ -185,4 +185,4 @@ const ExerciseReportForm: FunctionComponent<Props> = ({
   );
 };
 
-export default ExerciseReportForm;
+export default AttackChainRunReportForm;

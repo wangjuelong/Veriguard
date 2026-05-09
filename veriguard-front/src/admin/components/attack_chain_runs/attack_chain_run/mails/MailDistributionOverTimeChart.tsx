@@ -3,17 +3,17 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { fetchExerciseCommunications } from '../../../../../actions/Communication';
+import { fetchAttackChainRunCommunications } from '../../../../../actions/Communication';
 import { type CommunicationHelper } from '../../../../../actions/communications/communication-helper';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Communication, type Exercise } from '../../../../../utils/api-types';
+import { type Communication, type AttackChainRun } from '../../../../../utils/api-types';
 import { areaChartOptions } from '../../../../../utils/Charts';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
 const MailDistributionOverTimeChart: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
@@ -22,9 +22,9 @@ const MailDistributionOverTimeChart: FunctionComponent<Props> = ({ exerciseId })
   const theme = useTheme();
 
   // Fetching data
-  const { communications } = useHelper((helper: CommunicationHelper) => ({ communications: helper.getExerciseCommunications(exerciseId) }));
+  const { communications } = useHelper((helper: CommunicationHelper) => ({ communications: helper.getAttackChainRunCommunications(exerciseId) }));
   useDataLoader(() => {
-    dispatch(fetchExerciseCommunications(exerciseId));
+    dispatch(fetchAttackChainRunCommunications(exerciseId));
   });
 
   let cumulation = 0;
@@ -58,7 +58,7 @@ const MailDistributionOverTimeChart: FunctionComponent<Props> = ({ exerciseId })
       ) : (
         <Empty
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}

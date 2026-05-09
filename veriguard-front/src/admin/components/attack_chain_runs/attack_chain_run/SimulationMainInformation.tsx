@@ -2,7 +2,7 @@ import { Chip, Grid, Paper, Typography, useTheme } from '@mui/material';
 import * as R from 'ramda';
 import { type FunctionComponent, useContext } from 'react';
 
-import { type ScenariosHelper } from '../../../../actions/attack_chains/scenario-helper';
+import { type AttackChainsHelper } from '../../../../actions/attack_chains/attack_chain-helper';
 import ContextLink from '../../../../components/ContextLink';
 import ExpandableMarkdown from '../../../../components/ExpandableMarkdown';
 import { useFormatter } from '../../../../components/i18n';
@@ -14,33 +14,33 @@ import PlatformIcon from '../../../../components/PlatformIcon';
 import TypeAffinityChip from '../../../../components/TypeAffinityChip';
 import { ATTACK_CHAIN_BASE_URL } from '../../../../constants/BaseUrls';
 import { useHelper } from '../../../../store';
-import { type Exercise, type KillChainPhase } from '../../../../utils/api-types';
+import { type AttackChainRun, type KillChainPhase } from '../../../../utils/api-types';
 import { AbilityContext } from '../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
 
-interface Props { exercise: Exercise }
+interface Props { attack_chain_run: AttackChainRun }
 
-const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
+const SimulationMainInformation: FunctionComponent<Props> = ({ attack_chain_run }) => {
   const { t } = useFormatter();
   const theme = useTheme();
   const ability = useContext(AbilityContext);
 
   const sortByOrder = R.sortWith([R.ascend(R.prop('phase_order'))]);
-  const { scenario } = useHelper((helper: ScenariosHelper) => ({ scenario: helper.getScenario(exercise.exercise_scenario || '') }));
+  const { attack_chain } = useHelper((helper: AttackChainsHelper) => ({ attack_chain: helper.getAttackChain(attack_chain_run.attack_chain_run_attack_chain || '') }));
 
-  const renderScenarioContent = () => {
-    if (!scenario) {
+  const renderAttackChainContent = () => {
+    if (!attack_chain) {
       return '-';
     }
-    if (ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, scenario.scenario_id)) {
+    if (ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, attack_chain.attack_chain_id)) {
       return (
         <ContextLink
-          title={scenario.scenario_name}
-          url={`${ATTACK_CHAIN_BASE_URL}/${scenario.scenario_id}`}
+          title={attack_chain.attack_chain_name}
+          url={`${ATTACK_CHAIN_BASE_URL}/${attack_chain.attack_chain_id}`}
         />
       );
     }
-    return scenario.scenario_name;
+    return attack_chain.attack_chain_name;
   };
 
   return (
@@ -55,7 +55,7 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
             {t('Description')}
           </Typography>
           <ExpandableMarkdown
-            source={exercise.exercise_description}
+            source={attack_chain_run.attack_chain_run_description}
             limit={300}
           />
         </Grid>
@@ -65,9 +65,9 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
             gutterBottom
             style={{ marginTop: 20 }}
           >
-            {t('Parent scenario')}
+            {t('Parent attack_chain')}
           </Typography>
-          {renderScenarioContent()}
+          {renderAttackChainContent()}
         </Grid>
         <Grid size={{ xs: 4 }}>
           <Typography
@@ -78,7 +78,7 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
           >
             {t('Severity')}
           </Typography>
-          <ItemSeverity severity={exercise.exercise_severity} label={t(exercise.exercise_severity ?? 'Unknown')} />
+          <ItemSeverity severity={attack_chain_run.attack_chain_run_severity} label={t(attack_chain_run.attack_chain_run_severity ?? 'Unknown')} />
         </Grid>
         <Grid size={{ xs: 4 }}>
           <Typography
@@ -88,7 +88,7 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
           >
             {t('Category')}
           </Typography>
-          <ItemCategory category={exercise?.exercise_category ?? ''} label={t(exercise.exercise_category ?? 'Unknown')} />
+          <ItemCategory category={attack_chain_run?.attack_chain_run_category ?? ''} label={t(attack_chain_run.attack_chain_run_category ?? 'Unknown')} />
         </Grid>
         <Grid size={{ xs: 4 }}>
           <Typography
@@ -98,7 +98,7 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
           >
             {t('Main Focus')}
           </Typography>
-          <ItemMainFocus mainFocus={exercise?.exercise_main_focus ?? ''} label={t(exercise.exercise_main_focus ?? 'Unknown')} />
+          <ItemMainFocus mainFocus={attack_chain_run?.attack_chain_run_main_focus ?? ''} label={t(attack_chain_run.attack_chain_run_main_focus ?? 'Unknown')} />
         </Grid>
         <Grid size={{ xs: 4 }}>
           <Typography
@@ -108,7 +108,7 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
           >
             {t('Tags')}
           </Typography>
-          <ItemTags tags={exercise.exercise_tags} limit={10} />
+          <ItemTags tags={attack_chain_run.attack_chain_run_tags} limit={10} />
         </Grid>
         <Grid size={{ xs: 4 }}>
           <Typography
@@ -118,9 +118,9 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
           >
             {t('Platforms')}
           </Typography>
-          {(exercise.exercise_platforms ?? []).length === 0 ? (
-            <PlatformIcon platform={t('No inject in this scenario')} tooltip width={25} />
-          ) : exercise.exercise_platforms?.map(
+          {(attack_chain_run.attack_chain_run_platforms ?? []).length === 0 ? (
+            <PlatformIcon platform={t('No node in this attack_chain')} tooltip width={25} />
+          ) : attack_chain_run.attack_chain_run_platforms?.map(
             (platform: string) => <PlatformIcon key={platform} platform={platform} tooltip width={25} marginRight={theme.spacing(2)} />,
           )}
         </Grid>
@@ -132,7 +132,7 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
           >
             {t('Type Affinity')}
           </Typography>
-          <TypeAffinityChip affinity_text={scenario?.scenario_type_affinity} />
+          <TypeAffinityChip affinity_text={attack_chain?.attack_chain_type_affinity} />
         </Grid>
         <Grid size={{ xs: 4 }}>
           <Typography
@@ -142,8 +142,8 @@ const SimulationMainInformation: FunctionComponent<Props> = ({ exercise }) => {
           >
             {t('Kill Chain Phases')}
           </Typography>
-          {(exercise.exercise_kill_chain_phases ?? []).length === 0 && '-'}
-          {sortByOrder(exercise.exercise_kill_chain_phases ?? []).map((killChainPhase: KillChainPhase) => (
+          {(attack_chain_run.attack_chain_run_kill_chain_phases ?? []).length === 0 && '-'}
+          {sortByOrder(attack_chain_run.attack_chain_run_kill_chain_phases ?? []).map((killChainPhase: KillChainPhase) => (
             <Chip
               key={killChainPhase.phase_id}
               variant="outlined"

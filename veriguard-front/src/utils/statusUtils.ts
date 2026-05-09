@@ -26,16 +26,16 @@ const injectExpectationMap = {
   },
 } as const;
 
-type InjectExpectationStatus = keyof typeof injectExpectationMap;
-type InjectExpectationType = keyof (typeof injectExpectationMap)[InjectExpectationStatus];
+type AttackChainNodeExpectationStatus = keyof typeof injectExpectationMap;
+type AttackChainNodeExpectationType = keyof (typeof injectExpectationMap)[AttackChainNodeExpectationStatus];
 
-export function computeInjectExpectationLabel(
+export function computeAttackChainNodeExpectationLabel(
   status?: string,
   type?: string): string | undefined {
   if (!status || !type) return undefined;
 
-  const normalizedStatus = status.toUpperCase() as InjectExpectationStatus;
-  const normalizedType = type.toUpperCase() as InjectExpectationType;
+  const normalizedStatus = status.toUpperCase() as AttackChainNodeExpectationStatus;
+  const normalizedType = type.toUpperCase() as AttackChainNodeExpectationType;
 
   const result = injectExpectationMap[normalizedStatus]?.[normalizedType];
   if (result) return result;
@@ -78,7 +78,7 @@ export const computeStatusStyle = (status: string | undefined | null) => {
     'INFO': colorStyles.blue,
 
     // -- ExecutionStatus --
-    // Inject-level statuses (from ExecutionStatus)
+    // AttackChainNode-level statuses (from ExecutionStatus)
     'PARTIAL': colorStyles.orange,
     'EXECUTING': colorStyles.blue,
     'PENDING': colorStyles.blue,

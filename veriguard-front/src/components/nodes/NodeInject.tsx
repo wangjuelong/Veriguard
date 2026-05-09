@@ -5,9 +5,9 @@ import moment from 'moment';
 import { memo, type MouseEvent } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectOutputType, type InjectStore } from '../../actions/attack_chain_nodes/Inject';
-import InjectIcon from '../../admin/components/common/attack_chain_nodes/InjectIcon';
-import InjectPopover from '../../admin/components/common/attack_chain_nodes/InjectPopover';
+import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../actions/attack_chain_nodes/AttackChainNode';
+import AttackChainNodeIcon from '../../admin/components/common/attack_chain_nodes/AttackChainNodeIcon';
+import AttackChainNodePopover from '../../admin/components/common/attack_chain_nodes/AttackChainNodePopover';
 import { isNotEmptyField } from '../../utils/utils';
 import { useFormatter } from '../i18n';
 
@@ -73,7 +73,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-export type NodeInject = Node<{
+export type NodeAttackChainNode = Node<{
   background?: string;
   color?: string;
   key: string;
@@ -81,8 +81,8 @@ export type NodeInject = Node<{
   description?: string;
   isTargeted?: boolean;
   isTargeting?: boolean;
-  onConnectInjects?: OnConnect;
-  inject?: InjectOutputType;
+  onConnectAttackChainNodes?: OnConnect;
+  node?: AttackChainNodeOutputType;
   fixedY?: number;
   startDate?: string;
   targets: string[];
@@ -90,14 +90,14 @@ export type NodeInject = Node<{
     topLeft: XYPosition;
     bottomRight: XYPosition;
   };
-  onSelectedInject(inject?: InjectOutputType): void;
+  onSelectedAttackChainNode(node?: AttackChainNodeOutputType): void;
   onCreate: (result: {
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }) => void;
   onUpdate: (result: {
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }) => void;
   onDelete: (result: string) => void;
 }
@@ -105,11 +105,11 @@ export type NodeInject = Node<{
 >;
 
 /**
- * The node used to represent an inject
+ * The node used to represent an node
  * @param data the props used
  * @constructor
  */
-const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
+const NodeAttackChainNodeComponent = ({ data }: NodeProps<NodeAttackChainNode>) => {
   const { classes } = useStyles();
   const theme = useTheme();
   const { ft, fld } = useFormatter();
@@ -140,7 +140,7 @@ const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
    * Actions on click on the node
    */
   const onClick = () => {
-    if (data.inject) data.onSelectedInject(data.inject);
+    if (data.node) data.onSelectedAttackChainNode(data.node);
   };
 
   /**
@@ -154,14 +154,14 @@ const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
   /**
    * Actions if a node is selected (clicked)
    */
-  const selectedInject = () => {
-    if (data.inject) data.onSelectedInject(data.inject);
+  const selectedAttackChainNode = () => {
+    if (data.node) data.onSelectedAttackChainNode(data.node);
   };
 
-  const dimNode = !data.inject?.inject_enabled;
+  const dimNode = !data.node?.node_enabled;
 
   let borderLeftColor = theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)';
-  if (!data.inject?.inject_enabled) {
+  if (!data.node?.node_enabled) {
     borderLeftColor = theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
   }
 
@@ -176,13 +176,13 @@ const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
       onClick={onClick}
     >
       <div className={classes.icon} style={{ opacity: dimNode ? '0.3' : '1' }}>
-        <InjectIcon
-          isPayload={isNotEmptyField(data.inject?.inject_injector_contract?.injector_contract_payload)}
+        <AttackChainNodeIcon
+          isPayload={isNotEmptyField(data.node?.node_injector_contract?.injector_contract_payload)}
           type={
-            data.inject?.inject_injector_contract?.injector_contract_payload
-              ? data.inject?.inject_injector_contract?.injector_contract_payload?.payload_collector_type
-              || data.inject?.inject_injector_contract?.injector_contract_payload?.payload_type
-              : data.inject?.inject_type
+            data.node?.node_injector_contract?.injector_contract_payload
+              ? data.node?.node_injector_contract?.injector_contract_payload?.payload_collector_type
+              || data.node?.node_injector_contract?.injector_contract_payload?.payload_type
+              : data.node?.node_type
           }
         />
       </div>
@@ -191,7 +191,7 @@ const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
           className={classes.triggerTime}
           style={{ opacity: dimNode ? '0.3' : '1' }}
         >
-          {convertToAbsoluteTime(data.startDate, data.inject!.inject_depends_duration)}
+          {convertToAbsoluteTime(data.startDate, data.node!.node_depends_duration)}
         </div>
 
       ) : (
@@ -199,7 +199,7 @@ const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
           className={classes.triggerTime}
           style={{ opacity: dimNode ? '0.3' : '1' }}
         >
-          {convertToRelativeTime(data.inject!.inject_depends_duration)}
+          {convertToRelativeTime(data.node!.node_depends_duration)}
         </div>
 
       )}
@@ -214,10 +214,10 @@ const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
         </Tooltip>
         <div className={classes.popover}>
           <span onClick={preventClick}>
-            <InjectPopover
-              inject={data.inject!}
-              setSelectedInjectId={selectedInject}
-              canBeTested={data.inject?.inject_testable}
+            <AttackChainNodePopover
+              node={data.node!}
+              setSelectedAttackChainNodeId={selectedAttackChainNode}
+              canBeTested={data.node?.node_testable}
               onDelete={data.onDelete}
               onUpdate={data.onUpdate}
               onCreate={data.onCreate}
@@ -232,7 +232,7 @@ const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
           id={`target-${data.key}`}
           position={Position.Left}
           isConnectable={true}
-          onConnect={data.onConnectInjects}
+          onConnect={data.onConnectAttackChainNodes}
         />
       ) : null)}
       {(data.isTargeting ? (
@@ -241,11 +241,11 @@ const NodeInjectComponent = ({ data }: NodeProps<NodeInject>) => {
           id={`source-${data.key}`}
           position={Position.Right}
           isConnectable={true}
-          onConnect={data.onConnectInjects}
+          onConnect={data.onConnectAttackChainNodes}
         />
       ) : null)}
     </div>
   );
 };
 
-export default memo(NodeInjectComponent);
+export default memo(NodeAttackChainNodeComponent);

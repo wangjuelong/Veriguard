@@ -4,7 +4,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import colorStyles from '../../../../components/Color';
 import { useFormatter } from '../../../../components/i18n';
-import { type Exercise } from '../../../../utils/api-types';
+import { type AttackChainRun } from '../../../../utils/api-types';
 
 const useStyles = makeStyles()(() => ({
   chip: {
@@ -27,12 +27,12 @@ const useStyles = makeStyles()(() => ({
 }));
 
 interface Props {
-  exerciseStatus: Exercise['exercise_status'] | undefined;
+  exerciseStatus: AttackChainRun['attack_chain_run_status'] | undefined;
   exerciseStartDate?: string;
   variant?: 'list';
 }
 
-const ExerciseStatus: FunctionComponent<Props> = ({
+const AttackChainRunStatus: FunctionComponent<Props> = ({
   exerciseStatus,
   exerciseStartDate,
   variant,
@@ -92,4 +92,4 @@ const ExerciseStatus: FunctionComponent<Props> = ({
       );
   }
 };
-export default ExerciseStatus;
+export default AttackChainRunStatus;

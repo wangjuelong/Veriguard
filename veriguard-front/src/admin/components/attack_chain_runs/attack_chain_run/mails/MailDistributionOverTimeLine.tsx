@@ -3,18 +3,18 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
+import { fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Communication, type Exercise, type Team } from '../../../../../utils/api-types';
+import { type Communication, type AttackChainRun, type Team } from '../../../../../utils/api-types';
 import { lineChartOptions } from '../../../../../utils/Charts';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import { getTeamsColors } from '../../../teams/utils';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
 const MailDistributionOverTime: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
@@ -23,9 +23,9 @@ const MailDistributionOverTime: FunctionComponent<Props> = ({ exerciseId }) => {
   const theme = useTheme();
 
   // Fetching data
-  const { teams } = useHelper((helper: TeamsHelper) => ({ teams: helper.getExerciseTeams(exerciseId) }));
+  const { teams } = useHelper((helper: TeamsHelper) => ({ teams: helper.getAttackChainRunTeams(exerciseId) }));
   useDataLoader(() => {
-    dispatch(fetchExerciseTeams(exerciseId));
+    dispatch(fetchAttackChainRunTeams(exerciseId));
   });
 
   let cumulation = 0;
@@ -72,7 +72,7 @@ const MailDistributionOverTime: FunctionComponent<Props> = ({ exerciseId }) => {
       ) : (
         <Empty
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}

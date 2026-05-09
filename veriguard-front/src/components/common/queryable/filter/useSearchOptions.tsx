@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { searchAssetGroupAsOption, searchAssetGroupLinkedToFindingsAsOption } from '../../../../actions/asset_groups/assetgroup-action';
 import { searchEndpointAsOption, searchEndpointLinkedToFindingsAsOption } from '../../../../actions/assets/endpoint-actions';
 import { searchSecurityPlatformAsOption } from '../../../../actions/assets/securityPlatform-actions';
-import { searchInjectLinkedToFindingsAsOption, searchTargetOptions } from '../../../../actions/attack_chain_nodes/inject-action';
-import { searchExerciseLinkedToFindingsAsOption } from '../../../../actions/attack_chain_runs/exercise-action';
-import { searchSimulationAsOptions } from '../../../../actions/attack_chain_runs/simulation-action';
-import { searchScenarioAsOption, searchScenarioCategoryAsOption } from '../../../../actions/attack_chains/scenario-actions';
-import { searchScenarioSimulationsAsOption } from '../../../../actions/attack_chains/scenario-simulation-action';
+import { searchAttackChainNodeLinkedToFindingsAsOption, searchTargetOptions } from '../../../../actions/attack_chain_nodes/node-action';
+import { searchAttackChainRunLinkedToFindingsAsOption } from '../../../../actions/attack_chain_runs/attack_chain_run-action';
+import { searchSimulationAsOptions } from '../../../../actions/attack_chain_runs/attack_chain_run-action';
+import { searchAttackChainAsOption, searchAttackChainCategoryAsOption } from '../../../../actions/attack_chains/attack_chain-actions';
+import { searchAttackChainSimulationsAsOption } from '../../../../actions/attack_chains/attack_chain-attack_chain_run-action';
 import { searchAttackPatternsByNameAsOption } from '../../../../actions/AttackPattern';
 import { searchCustomDashboardAsOptions } from '../../../../actions/custom_dashboards/customdashboard-action';
 import { searchDomainsByNameAsOption } from '../../../../actions/domains/domain-actions';
@@ -49,35 +49,35 @@ const useSearchOptions = () => {
     const { filterKey, contextId = '' } = config;
     switch (filterKey) {
       case SIMULATIONS:
-      case 'base_simulation_side':
+      case 'base_attack_chain_run_side':
         searchSimulationAsOptions(search).then((response) => {
           handleOptions(response, config.defaultValues);
         });
         break;
       case 'injector_contract_injector':
-      case 'inject_injector_contract':
+      case 'node_injector_contract':
         searchInjectorsByNameAsOption(search, contextId).then((response) => {
           setOptions(response.data);
         });
         break;
       case 'injector_contract_kill_chain_phases':
-      case 'scenario_kill_chain_phases':
-      case 'exercise_kill_chain_phases':
-      case 'inject_kill_chain_phases':
+      case 'attack_chain_kill_chain_phases':
+      case 'attack_chain_run_kill_chain_phases':
+      case 'node_kill_chain_phases':
         searchKillChainPhasesByNameAsOption(search).then((response) => {
           setOptions(response.data);
         });
         break;
       case 'payload_attack_patterns':
       case 'base_attack_patterns_side':
-      case 'inject_attack_patterns':
+      case 'node_attack_patterns':
         searchAttackPatternsByNameAsOption(search).then((response) => {
           setOptions(response.data);
         });
         break;
       case 'payload_domains':
       case 'injector_contract_domains':
-      case 'inject_contract_domains':
+      case 'node_contract_domains':
         searchDomainsByNameAsOption(search).then((response) => {
           setOptions(response.data);
         });
@@ -100,10 +100,10 @@ const useSearchOptions = () => {
         break;
       case 'asset_tags':
       case 'asset_group_tags':
-      case 'exercise_tags':
-      case 'inject_tags':
+      case 'attack_chain_run_tags':
+      case 'node_tags':
       case 'payload_tags':
-      case 'scenario_tags':
+      case 'attack_chain_tags':
       case 'target_tags':
       case 'team_tags':
       case 'finding_tags':
@@ -118,7 +118,7 @@ const useSearchOptions = () => {
           setOptions(response.data);
         });
         break;
-      case 'inject_asset_groups':
+      case 'node_asset_groups':
         searchAssetGroupAsOption(search, contextId, contextId ? 'SIMULATION_OR_SCENARIO' : 'ATOMIC_TESTING').then((response) => {
           setOptions(response.data);
         });
@@ -133,7 +133,7 @@ const useSearchOptions = () => {
           setOptions(response.data);
         });
         break;
-      case 'inject_assets':
+      case 'node_assets':
       case 'base_endpoint_side':
         searchEndpointAsOption(search, contextId, contextId ? 'SIMULATION_OR_SCENARIO' : 'ATOMIC_TESTING').then((response) => {
           setOptions(response.data);
@@ -144,7 +144,7 @@ const useSearchOptions = () => {
           setOptions(response.data);
         });
         break;
-      case 'inject_teams':
+      case 'node_teams':
         searchTeamsAsOption(search, contextId, contextId ? 'SIMULATION_OR_SCENARIO' : 'ATOMIC_TESTING').then((response) => {
           setOptions(response.data);
         });
@@ -154,8 +154,8 @@ const useSearchOptions = () => {
           setOptions(response.data);
         });
         break;
-      case 'finding_inject_id':
-        searchInjectLinkedToFindingsAsOption(search, contextId).then((response) => {
+      case 'finding_node_id':
+        searchAttackChainNodeLinkedToFindingsAsOption(search, contextId).then((response) => {
           setOptions(response.data);
         });
         break;
@@ -170,21 +170,21 @@ const useSearchOptions = () => {
         setOptions(typeOptions);
         break;
       }
-      case 'finding_simulation':
-        searchExerciseLinkedToFindingsAsOption(search, contextId).then((response) => {
+      case 'finding_attack_chain_run':
+        searchAttackChainRunLinkedToFindingsAsOption(search, contextId).then((response) => {
           setOptions(response.data);
         });
         break;
-      case 'finding_scenario':
-      case 'exercise_scenario':
-      case 'base_scenario_side':
+      case 'finding_attack_chain':
+      case 'attack_chain_run_attack_chain':
+      case 'base_attack_chain_side':
       case SCENARIOS:
-        searchScenarioAsOption(search).then((response) => {
+        searchAttackChainAsOption(search).then((response) => {
           handleOptions(response, config.defaultValues);
         });
         break;
-      case 'scenario_category':
-        searchScenarioCategoryAsOption(search).then((response: { data: Option[] }) => {
+      case 'attack_chain_category':
+        searchAttackChainCategoryAsOption(search).then((response: { data: Option[] }) => {
           setOptions(response.data.map(d => ({
             id: d.id,
             label: t(d.label),
@@ -210,7 +210,7 @@ const useSearchOptions = () => {
         });
         break;
       case SCENARIO_SIMULATIONS:
-        searchScenarioSimulationsAsOption(contextId, search).then((response) => {
+        searchAttackChainSimulationsAsOption(contextId, search).then((response) => {
           setOptions(response.data);
         });
         break;

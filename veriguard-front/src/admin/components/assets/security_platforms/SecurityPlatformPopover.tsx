@@ -17,7 +17,7 @@ interface Props {
   securityPlatform: SecurityPlatformStoreWithType;
   assetGroupId?: string;
   assetGroupSecurityPlatformIds?: string[];
-  onRemoveSecurityPlatformFromInject?: (assetId: string) => void;
+  onRemoveSecurityPlatformFromAttackChainNode?: (assetId: string) => void;
   onRemoveSecurityPlatformFromAssetGroup?: (assetId: string) => void;
   openEditOnInit?: boolean;
   onUpdate?: (result: SecurityPlatform) => void;

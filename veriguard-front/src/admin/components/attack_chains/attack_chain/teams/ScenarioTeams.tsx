@@ -3,21 +3,21 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useContext } from 'react';
 import { useParams } from 'react-router';
 
-import { fetchScenarioTeams } from '../../../../../actions/attack_chains/scenario-actions';
-import { type ScenariosHelper } from '../../../../../actions/attack_chains/scenario-helper';
+import { fetchAttackChainTeams } from '../../../../../actions/attack_chains/attack_chain-actions';
+import { type AttackChainsHelper } from '../../../../../actions/attack_chains/attack_chain-helper';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Scenario, type Team } from '../../../../../utils/api-types';
+import { type AttackChain, type Team } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import { PermissionsContext, TeamContext } from '../../../common/Context';
 import ContextualTeams from '../../../components/teams/ContextualTeams';
 import UpdateTeams from '../../../components/teams/UpdateTeams';
-import teamContextForScenario from './teamContextForScenario';
+import teamContextForAttackChain from './teamContextForAttackChain';
 
-interface Props { scenarioTeamsUsers: Scenario['scenario_teams_users'] }
+interface Props { scenarioTeamsUsers: AttackChain['attack_chain_teams_users'] }
 
-const ScenarioTeams: FunctionComponent<Props> = ({ scenarioTeamsUsers }) => {
+const AttackChainTeams: FunctionComponent<Props> = ({ scenarioTeamsUsers }) => {
   // Standard hooks
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
@@ -25,14 +25,14 @@ const ScenarioTeams: FunctionComponent<Props> = ({ scenarioTeamsUsers }) => {
   const theme = useTheme();
 
   // Fetching data
-  const { scenarioId } = useParams() as { scenarioId: Scenario['scenario_id'] };
-  const { teamsStore }: { teamsStore: Team[] } = useHelper((helper: ScenariosHelper) => ({ teamsStore: helper.getScenarioTeams(scenarioId) }));
+  const { scenarioId } = useParams() as { scenarioId: AttackChain['attack_chain_id'] };
+  const { teamsStore }: { teamsStore: Team[] } = useHelper((helper: AttackChainsHelper) => ({ teamsStore: helper.getAttackChainTeams(scenarioId) }));
   useDataLoader(() => {
-    dispatch(fetchScenarioTeams(scenarioId));
+    dispatch(fetchAttackChainTeams(scenarioId));
   });
 
   return (
-    <TeamContext.Provider value={teamContextForScenario(scenarioId, scenarioTeamsUsers)}>
+    <TeamContext.Provider value={teamContextForAttackChain(scenarioId, scenarioTeamsUsers)}>
       <div style={{
         display: 'grid',
         gap: `0 ${theme.spacing(3)}`,
@@ -56,4 +56,4 @@ const ScenarioTeams: FunctionComponent<Props> = ({ scenarioTeamsUsers }) => {
   );
 };
 
-export default ScenarioTeams;
+export default AttackChainTeams;

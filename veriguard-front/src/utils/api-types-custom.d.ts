@@ -65,7 +65,7 @@ export interface ContractElement {
 
 export type EnhancedContractElement = ContractElement & {
   originalKey: string;
-  isInjectContentType: boolean;
+  isAttackChainNodeContentType: boolean;
   isVisible: boolean;
   isInMandatoryGroup: boolean;
   mandatoryGroupContractElementLabels: string;

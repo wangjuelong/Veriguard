@@ -3,54 +3,54 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { type InjectStore } from '../../../../../actions/attack_chain_nodes/Inject';
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
+import { type AttackChainNodeStore } from '../../../../../actions/attack_chain_nodes/AttackChainNode';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type InjectExpectation } from '../../../../../utils/api-types';
+import { type AttackChainRun, type AttackChainNodeExpectation } from '../../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../../utils/Charts';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
-const ExerciseDistributionByInjectorContract: FunctionComponent<Props> = ({ exerciseId }) => {
+const AttackChainRunDistributionByInjectorContract: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
   const { t, tPick } = useFormatter();
   const theme = useTheme();
 
   // Fetching data
   const { injectsMap, injectExpectations }: {
-    injectsMap: Record<string, InjectStore>;
-    injectExpectations: InjectExpectation[];
-  } = useHelper((helper: InjectHelper) => ({
-    injectsMap: helper.getInjectsMap(),
-    injectExpectations: helper.getExerciseInjectExpectations(exerciseId),
+    injectsMap: Record<string, AttackChainNodeStore>;
+    injectExpectations: AttackChainNodeExpectation[];
+  } = useHelper((helper: AttackChainNodeHelper) => ({
+    injectsMap: helper.getAttackChainNodesMap(),
+    injectExpectations: helper.getAttackChainRunAttackChainNodeExpectations(exerciseId),
   }));
 
   const sortedInjectorContractsByTotalScore = R.pipe(
-    R.filter((n: InjectExpectation) => !R.isEmpty(n.inject_expectation_results)),
-    R.map((n: InjectExpectation) => R.assoc(
-      'inject_expectation_inject',
-      injectsMap[n.inject_expectation_inject ?? ''] || {},
+    R.filter((n: AttackChainNodeExpectation) => !R.isEmpty(n.node_expectation_results)),
+    R.map((n: AttackChainNodeExpectation) => R.assoc(
+      'node_expectation_node',
+      injectsMap[n.node_expectation_node ?? ''] || {},
       n,
     )),
-    R.groupBy(R.path(['inject_expectation_inject', 'inject_type'])),
+    R.groupBy(R.path(['node_expectation_node', 'node_type'])),
     R.toPairs,
-    R.map((n: [string, InjectExpectation[]]) => ({
-      inject_type: n[0],
-      inject_total_score: R.sum(R.map((o: InjectExpectation) => o.inject_expectation_score ?? 0, n[1])),
+    R.map((n: [string, AttackChainNodeExpectation[]]) => ({
+      node_type: n[0],
+      node_total_score: R.sum(R.map((o: AttackChainNodeExpectation) => o.node_expectation_score ?? 0, n[1])),
     })),
-    R.sortWith([R.descend(R.prop('inject_total_score'))]),
+    R.sortWith([R.descend(R.prop('node_total_score'))]),
     R.take(10),
   )(injectExpectations);
 
   const totalScoreByInjectorContractData = [
     {
       name: t('Total score'),
-      data: sortedInjectorContractsByTotalScore.map((i: InjectStore & { inject_total_score: number }) => ({
-        x: tPick(i.inject_injector_contract?.injector_contract_labels),
-        y: i.inject_total_score,
-        fillColor: i.inject_injector_contract?.convertedContent?.config?.[`color_${theme.palette.mode}`],
+      data: sortedInjectorContractsByTotalScore.map((i: AttackChainNodeStore & { node_total_score: number }) => ({
+        x: tPick(i.node_injector_contract?.injector_contract_labels),
+        y: i.node_total_score,
+        fillColor: i.node_injector_contract?.convertedContent?.config?.[`color_${theme.palette.mode}`],
       })),
     },
   ];
@@ -59,7 +59,7 @@ const ExerciseDistributionByInjectorContract: FunctionComponent<Props> = ({ exer
     <>
       {sortedInjectorContractsByTotalScore.length > 0 ? (
         <Chart
-          id="exercise_distribution_total_score_by_inject_type"
+          id="attack_chain_run_distribution_total_score_by_node_type"
           options={horizontalBarsChartOptions({
             theme,
             distributed: true,
@@ -71,9 +71,9 @@ const ExerciseDistributionByInjectorContract: FunctionComponent<Props> = ({ exer
         />
       ) : (
         <Empty
-          id="exercise_distribution_total_score_by_inject_type"
+          id="attack_chain_run_distribution_total_score_by_node_type"
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}
@@ -81,4 +81,4 @@ const ExerciseDistributionByInjectorContract: FunctionComponent<Props> = ({ exer
   );
 };
 
-export default ExerciseDistributionByInjectorContract;
+export default AttackChainRunDistributionByInjectorContract;

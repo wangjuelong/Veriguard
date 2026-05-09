@@ -7,9 +7,9 @@ import { makeStyles } from 'tss-react/mui';
 import { type Contract } from '../../../../../../actions/contract/contract';
 import Drawer from '../../../../../../components/common/Drawer';
 import { useFormatter } from '../../../../../../components/i18n';
-import { type InjectExpectationResult } from '../../../../../../utils/api-types';
+import { type AttackChainNodeExpectationResult } from '../../../../../../utils/api-types';
 import { truncate } from '../../../../../../utils/String';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import { typeIcon } from '../../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 import ExpectationLine from './ExpectationLine';
 import { getSourceLabel } from './ExpectationUtils';
@@ -29,7 +29,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface Props {
-  expectation: InjectExpectationsStore;
+  expectation: AttackChainNodeExpectationsStore;
   injectContract: Contract;
   gap?: number;
 }
@@ -43,7 +43,7 @@ const TechnicalExpectationAsset: FunctionComponent<Props> = ({
   const { t } = useFormatter();
 
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<InjectExpectationResult | null>(null);
+  const [selected, setSelected] = useState<AttackChainNodeExpectationResult | null>(null);
 
   const toJsonFormat = (result: string) => {
     try {
@@ -61,7 +61,7 @@ const TechnicalExpectationAsset: FunctionComponent<Props> = ({
         expectation={expectation}
         info={injectContract.config.label?.en}
         title={injectContract.label.en}
-        icon={typeIcon(expectation.inject_expectation_type)}
+        icon={typeIcon(expectation.node_expectation_type)}
         onClick={() => setOpen(true)}
         gap={gap}
       />
@@ -81,7 +81,7 @@ const TechnicalExpectationAsset: FunctionComponent<Props> = ({
             {selected == null
               && (
                 <>
-                  {!R.isEmpty(expectation.inject_expectation_results)
+                  {!R.isEmpty(expectation.node_expectation_results)
                     && (
                       <>
                         <ListItem divider>
@@ -93,7 +93,7 @@ const TechnicalExpectationAsset: FunctionComponent<Props> = ({
                           component="div"
                           disablePadding
                         >
-                          {expectation.inject_expectation_results?.map(result => (
+                          {expectation.node_expectation_results?.map(result => (
                             <ListItemButton key={result.sourceId} divider onClick={() => setSelected(result)}>
                               <ListItemText
                                 style={{
@@ -111,7 +111,7 @@ const TechnicalExpectationAsset: FunctionComponent<Props> = ({
                         </List>
                       </>
                     )}
-                  {R.isEmpty(expectation.inject_expectation_results) && t('Pending result')}
+                  {R.isEmpty(expectation.node_expectation_results) && t('Pending result')}
                 </>
               )}
             {selected !== null

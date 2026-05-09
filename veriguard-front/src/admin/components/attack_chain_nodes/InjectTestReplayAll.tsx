@@ -4,17 +4,17 @@ import { type FunctionComponent, useContext, useState } from 'react';
 
 import DialogTest from '../../../components/common/DialogTest';
 import { useFormatter } from '../../../components/i18n';
-import { type InjectTestStatusOutput, type SearchPaginationInput } from '../../../utils/api-types';
+import { type AttackChainNodeTestStatusOutput, type SearchPaginationInput } from '../../../utils/api-types';
 import { MESSAGING$ } from '../../../utils/Environment';
-import { InjectTestContext, PermissionsContext } from '../common/Context';
+import { AttackChainNodeTestContext, PermissionsContext } from '../common/Context';
 
 interface Props {
   searchPaginationInput: SearchPaginationInput;
   injectIds: string[] | undefined;
-  onTest?: (result: InjectTestStatusOutput[]) => void;
+  onTest?: (result: AttackChainNodeTestStatusOutput[]) => void;
 }
 
-const InjectTestReplayAll: FunctionComponent<Props> = ({
+const AttackChainNodeTestReplayAll: FunctionComponent<Props> = ({
   searchPaginationInput,
   injectIds,
   onTest,
@@ -27,8 +27,8 @@ const InjectTestReplayAll: FunctionComponent<Props> = ({
 
   const {
     contextId,
-    bulkTestInjects,
-  } = useContext(InjectTestContext);
+    bulkTestAttackChainNodes,
+  } = useContext(AttackChainNodeTestContext);
 
   const handleOpenAllTest = () => {
     setOpenAllTest(true);
@@ -39,11 +39,11 @@ const InjectTestReplayAll: FunctionComponent<Props> = ({
   };
 
   const handleSubmitAllTest = () => {
-    if (bulkTestInjects) {
-      bulkTestInjects(contextId, {
+    if (bulkTestAttackChainNodes) {
+      bulkTestAttackChainNodes(contextId, {
         search_pagination_input: searchPaginationInput,
-        simulation_or_scenario_id: contextId,
-      }!).then((result: { data: InjectTestStatusOutput[] }) => {
+        attack_chain_run_or_attack_chain_id: contextId,
+      }!).then((result: { data: AttackChainNodeTestStatusOutput[] }) => {
         onTest?.(result.data);
         MESSAGING$.notifySuccess(t('Test(s) sent'));
         return result;
@@ -83,4 +83,4 @@ const InjectTestReplayAll: FunctionComponent<Props> = ({
   );
 };
 
-export default InjectTestReplayAll;
+export default AttackChainNodeTestReplayAll;

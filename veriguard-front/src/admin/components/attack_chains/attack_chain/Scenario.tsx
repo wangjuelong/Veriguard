@@ -14,11 +14,11 @@ import { Link, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { type AgentHelper } from '../../../../actions/agents/agent-helper';
-import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject-helper';
-import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
-import { searchScenarioExercises, searchScenarioHealthcheks } from '../../../../actions/attack_chains/scenario-actions';
-import { type ScenariosHelper } from '../../../../actions/attack_chains/scenario-helper';
-import { fetchScenarioInjects } from '../../../../actions/AttackChainNode';
+import { type AttackChainNodeHelper } from '../../../../actions/attack_chain_nodes/node-helper';
+import { type AttackChainRunsHelper } from '../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { searchAttackChainAttackChainRuns, searchAttackChainHealthcheks } from '../../../../actions/attack_chains/attack_chain-actions';
+import { type AttackChainsHelper } from '../../../../actions/attack_chains/attack_chain-helper';
+import { fetchAttackChainAttackChainNodes } from '../../../../actions/AttackChainNode';
 import type { CollectorHelper } from '../../../../actions/collectors/collector-helper';
 import type { LoggedHelper } from '../../../../actions/helper';
 import { initSorting } from '../../../../components/common/queryable/Page';
@@ -38,9 +38,9 @@ import octiLight from '../../../../static/images/xtm/octi_light.png';
 import { useHelper } from '../../../../store';
 import {
   type Agent,
-  type ExerciseSimple, type HealthCheck, type Inject,
+  type AttackChainRunSimple, type HealthCheck, type AttackChainNode,
   type KillChainPhase,
-  type Scenario as ScenarioType,
+  type AttackChain as AttackChainType,
   type SearchPaginationInput,
 } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
@@ -48,10 +48,10 @@ import useDataLoader from '../../../../utils/hooks/useDataLoader';
 import { AbilityContext } from '../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
 import { isEmptyField } from '../../../../utils/utils';
-import ExercisePopover from '../../attack_chain_runs/attack_chain_run/ExercisePopover';
+import AttackChainRunPopover from '../../attack_chain_runs/attack_chain_run/AttackChainRunPopover';
 import SimulationList from '../../attack_chain_runs/SimulationList';
 import Healthchecks from '../../common/healthchecks/Healthchecks';
-import ScenarioDistributionByExercise from './ScenarioDistributionByExercise';
+import AttackChainDistributionByAttackChainRun from './AttackChainDistributionByAttackChainRun';
 
 // Deprecated - https://mui.com/system/styles/basics/
 // Do not use it for new code.
@@ -67,77 +67,77 @@ const useStyles = makeStyles()(theme => ({
   paper: { padding: theme.spacing(2) },
 }));
 
-const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiateSimulationAndStart: Dispatch<SetStateAction<boolean>> }) => {
+const AttackChain = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiateSimulationAndStart: Dispatch<SetStateAction<boolean>> }) => {
   // Standard hooks
   const { classes } = useStyles();
   const theme = useTheme();
   const { t } = useFormatter();
-  const { scenarioId } = useParams() as { scenarioId: ScenarioType['scenario_id'] };
+  const { scenarioId } = useParams() as { scenarioId: AttackChainType['attack_chain_id'] };
   const ability = useContext(AbilityContext);
   const dispatch = useAppDispatch();
 
   // Fetching data
   const {
-    scenario,
+    attack_chain,
     settings,
-    injects,
+    nodes,
     collectors,
     agents,
-  } = useHelper((helper: ScenariosHelper & ExercisesHelper & LoggedHelper & InjectHelper & CollectorHelper & AgentHelper) => ({
-    scenario: helper.getScenario(scenarioId),
+  } = useHelper((helper: AttackChainsHelper & AttackChainRunsHelper & LoggedHelper & AttackChainNodeHelper & CollectorHelper & AgentHelper) => ({
+    attack_chain: helper.getAttackChain(scenarioId),
     settings: helper.getPlatformSettings(),
-    injects: helper.getScenarioInjects(scenarioId),
+    nodes: helper.getAttackChainAttackChainNodes(scenarioId),
     collectors: helper.getExistingCollectors(),
     agents: helper.getAgents(),
   }));
-  const areAnyExercisesInScenario = scenario.scenario_exercises?.length > 0;
+  const areAnyAttackChainRunsInAttackChain = attack_chain.attack_chain_runs?.length > 0;
   const sortByOrder = R.sortWith([R.ascend(R.prop('phase_order'))]);
 
   // Spy on modifications to reload healthchecks
   const [healthchecks, setHealthchecks] = useState<HealthCheck[]>([]);
   const agentsActive = useMemo(() => {
-    const injectAssetIds: string[] = injects.flatMap((inject: Inject) => inject.inject_assets);
+    const injectAssetIds: string[] = nodes.flatMap((node: AttackChainNode) => node.node_assets);
     return agents
       .filter((agent: Agent) => injectAssetIds.includes(agent.agent_asset))
       .map((agent: Agent) => agent.agent_active);
-  }, [agents, injects]);
+  }, [agents, nodes]);
 
   useDataLoader(() => {
-    if (!injects) {
-      dispatch(fetchScenarioInjects(scenarioId));
+    if (!nodes) {
+      dispatch(fetchAttackChainAttackChainNodes(scenarioId));
     }
   });
 
   useEffect(() => {
-    searchScenarioHealthcheks(scenarioId).then((result: { data: HealthCheck[] }) => setHealthchecks(result.data));
+    searchAttackChainHealthcheks(scenarioId).then((result: { data: HealthCheck[] }) => setHealthchecks(result.data));
   }, [
     settings?.smtp_service_available,
     settings?.imap_service_available,
-    scenario,
-    injects,
+    attack_chain,
+    nodes,
     collectors.length,
     agentsActive,
   ]);
 
-  // Exercises
-  const [loadingExercises, setLoadingExercises] = useState(true);
-  const [exercises, setExercises] = useState<ExerciseSimple[]>([]);
+  // AttackChainRuns
+  const [loadingAttackChainRuns, setLoadingAttackChainRuns] = useState(true);
+  const [attack_chain_runs, setAttackChainRuns] = useState<AttackChainRunSimple[]>([]);
   const {
     queryableHelpers,
     searchPaginationInput,
-  } = useQueryableWithLocalStorage(`scenario-${scenarioId}-simulations`, buildSearchPagination({ sorts: initSorting('exercise_updated_at', 'DESC') }));
-  const search = (scenarioId: ScenarioType['scenario_id'], input: SearchPaginationInput) => {
-    setLoadingExercises(true);
-    return searchScenarioExercises(scenarioId, input).finally(() => {
-      setLoadingExercises(false);
+  } = useQueryableWithLocalStorage(`attack_chain-${scenarioId}-attack_chain_runs`, buildSearchPagination({ sorts: initSorting('attack_chain_run_updated_at', 'DESC') }));
+  const search = (scenarioId: AttackChainType['attack_chain_id'], input: SearchPaginationInput) => {
+    setLoadingAttackChainRuns(true);
+    return searchAttackChainAttackChainRuns(scenarioId, input).finally(() => {
+      setLoadingAttackChainRuns(false);
     });
   };
-  const secondaryAction = (exercise: ExerciseSimple) => (
-    <ExercisePopover
-      // @ts-expect-error: should pass Exercise model IF we have update as action
-      exercise={exercise}
+  const secondaryAction = (attack_chain_run: AttackChainRunSimple) => (
+    <AttackChainRunPopover
+      // @ts-expect-error: should pass AttackChainRun model IF we have update as action
+      attack_chain_run={attack_chain_run}
       actions={['Duplicate', 'Export', 'Delete']}
-      onDelete={result => setExercises(exercises.filter(e => (e.exercise_id !== result)))}
+      onDelete={result => setAttackChainRuns(attack_chain_runs.filter(e => (e.attack_chain_run_id !== result)))}
       inList
     />
   );
@@ -167,7 +167,7 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
           <Typography variant="h4" marginBottom={0}>{t('Information')}</Typography>
           <Button
             component={Link}
-            to={scenario.scenario_external_url}
+            to={attack_chain.attack_chain_external_url}
             target="_blank"
             size="small"
             variant="outlined"
@@ -181,7 +181,7 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
                 alt="OCTI"
               />
             )}
-            disabled={isEmptyField(scenario.scenario_external_url)}
+            disabled={isEmptyField(attack_chain.attack_chain_external_url)}
           >
             {t('Threat intelligence')}
           </Button>
@@ -198,7 +198,7 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
                 {t('Description')}
               </Typography>
               <ExpandableMarkdown
-                source={scenario.scenario_description}
+                source={attack_chain.attack_chain_description}
                 limit={300}
               />
             </GridLegacy>
@@ -210,7 +210,7 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
               >
                 {t('Severity')}
               </Typography>
-              <ItemSeverity severity={scenario.scenario_severity} label={t(scenario.scenario_severity ?? 'Unknown')} />
+              <ItemSeverity severity={attack_chain.attack_chain_severity} label={t(attack_chain.attack_chain_severity ?? 'Unknown')} />
             </GridLegacy>
             <GridLegacy item xs={4} style={{ paddingTop: 10 }}>
               <Typography
@@ -220,7 +220,7 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
               >
                 {t('Category')}
               </Typography>
-              <ItemCategory category={scenario.scenario_category} label={t(scenario.scenario_category ?? 'Unknown')} />
+              <ItemCategory category={attack_chain.attack_chain_category} label={t(attack_chain.attack_chain_category ?? 'Unknown')} />
             </GridLegacy>
             <GridLegacy item xs={4} style={{ paddingTop: 10 }}>
               <Typography
@@ -231,8 +231,8 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
                 {t('Main Focus')}
               </Typography>
               <ItemMainFocus
-                mainFocus={scenario.scenario_main_focus}
-                label={t(scenario.scenario_main_focus ?? 'Unknown')}
+                mainFocus={attack_chain.attack_chain_main_focus}
+                label={t(attack_chain.attack_chain_main_focus ?? 'Unknown')}
               />
             </GridLegacy>
             <GridLegacy item xs={4} style={{ paddingTop: 10 }}>
@@ -243,7 +243,7 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
               >
                 {t('Tags')}
               </Typography>
-              <ItemTags tags={scenario.scenario_tags} limit={10} />
+              <ItemTags tags={attack_chain.attack_chain_tags} limit={10} />
             </GridLegacy>
             <GridLegacy item xs={4} style={{ paddingTop: 10 }}>
               <Typography
@@ -253,9 +253,9 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
               >
                 {t('Platforms')}
               </Typography>
-              {(scenario.scenario_platforms ?? []).length === 0 ? (
-                <PlatformIcon platform={t('No inject in this scenario')} tooltip width={25} />
-              ) : scenario.scenario_platforms.map(
+              {(attack_chain.attack_chain_platforms ?? []).length === 0 ? (
+                <PlatformIcon platform={t('No node in this attack_chain')} tooltip width={25} />
+              ) : attack_chain.attack_chain_platforms.map(
                 (platform: string) => (
                   <PlatformIcon
                     key={platform}
@@ -275,7 +275,7 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
               >
                 {t('Type Affinity')}
               </Typography>
-              <TypeAffinityChip affinity_text={scenario?.scenario_type_affinity} />
+              <TypeAffinityChip affinity_text={attack_chain?.attack_chain_type_affinity} />
             </GridLegacy>
             <GridLegacy item xs={4} style={{ paddingTop: 10 }}>
               <Typography
@@ -285,8 +285,8 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
               >
                 {t('Kill Chain Phases')}
               </Typography>
-              {(scenario.scenario_kill_chain_phases ?? []).length === 0 && '-'}
-              {sortByOrder(scenario.scenario_kill_chain_phases ?? [])?.map((killChainPhase: KillChainPhase) => (
+              {(attack_chain.attack_chain_kill_chain_phases ?? []).length === 0 && '-'}
+              {sortByOrder(attack_chain.attack_chain_kill_chain_phases ?? [])?.map((killChainPhase: KillChainPhase) => (
                 <Chip
                   key={killChainPhase.phase_id}
                   variant="outlined"
@@ -299,10 +299,10 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
           </GridLegacy>
         </Paper>
         <Paper classes={{ root: classes.paper }} variant="outlined">
-          <ScenarioDistributionByExercise scenarioId={scenarioId} />
+          <AttackChainDistributionByAttackChainRun scenarioId={scenarioId} />
         </Paper>
       </div>
-      {areAnyExercisesInScenario && (
+      {areAnyAttackChainRunsInAttackChain && (
         <div style={{
           display: 'grid',
           marginTop: theme.spacing(3),
@@ -315,30 +315,30 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
             <PaginationComponentV2
               fetch={input => search(scenarioId, input)}
               searchPaginationInput={searchPaginationInput}
-              setContent={setExercises}
-              entityPrefix="exercise"
-              availableFilterNames={['exercise_kill_chain_phases', 'exercise_name', 'exercise_tags']}
+              setContent={setAttackChainRuns}
+              entityPrefix="attack_chain_run"
+              availableFilterNames={['attack_chain_run_kill_chain_phases', 'attack_chain_run_name', 'attack_chain_run_tags']}
               queryableHelpers={queryableHelpers}
               searchEnable={false}
             />
             <SimulationList
-              exercises={exercises}
+              attack_chain_runs={attack_chain_runs}
               queryableHelpers={queryableHelpers}
               secondaryAction={secondaryAction}
-              loading={loadingExercises}
+              loading={loadingAttackChainRuns}
               isGlobalScoreAsync={true}
             />
           </Paper>
         </div>
       )}
-      {!areAnyExercisesInScenario && !scenario.scenario_recurrence && ability.can(ACTIONS.LAUNCH, SUBJECTS.RESOURCE, scenario.scenario_id) && (
+      {!areAnyAttackChainRunsInAttackChain && !attack_chain.attack_chain_recurrence && ability.can(ACTIONS.LAUNCH, SUBJECTS.RESOURCE, attack_chain.attack_chain_id) && (
         <div style={{
           marginTop: 100,
           textAlign: 'center',
         }}
         >
           <div style={{ fontSize: 20 }}>
-            {t('This scenario has never run, schedule or run it now!')}
+            {t('This attack_chain has never run, schedule or run it now!')}
           </div>
           <Button
             style={{ marginTop: 20 }}
@@ -348,18 +348,18 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
             size="large"
             onClick={() => setOpenInstantiateSimulationAndStart(true)}
           >
-            {t('Launch simulation now')}
+            {t('Launch attack_chain_run now')}
           </Button>
         </div>
       )}
-      {!areAnyExercisesInScenario && scenario.scenario_recurrence && (
+      {!areAnyAttackChainRunsInAttackChain && attack_chain.attack_chain_recurrence && (
         <div style={{
           marginTop: 100,
           textAlign: 'center',
         }}
         >
           <div style={{ fontSize: 20 }}>
-            {t('This scenario is scheduled to run, results will appear soon.')}
+            {t('This attack_chain is scheduled to run, results will appear soon.')}
           </div>
         </div>
       )}
@@ -367,4 +367,4 @@ const Scenario = ({ setOpenInstantiateSimulationAndStart }: { setOpenInstantiate
   );
 };
 
-export default Scenario;
+export default AttackChain;

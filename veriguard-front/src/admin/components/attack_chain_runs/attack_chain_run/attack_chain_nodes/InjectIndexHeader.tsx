@@ -4,17 +4,17 @@ import { useSearchParams } from 'react-router';
 
 import Breadcrumbs, { type BreadcrumbsElement } from '../../../../../components/Breadcrumbs';
 import { useFormatter } from '../../../../../components/i18n';
-import type { Exercise as ExerciseType, InjectResultOverviewOutput } from '../../../../../utils/api-types';
+import type { AttackChainRun as AttackChainRunType, AttackChainNodeResultOverviewOutput } from '../../../../../utils/api-types';
 import AtomicTestingTitle from '../../../atomic_testings/atomic_testing/AtomicTestingTitle';
 import ResponsePie from '../../../common/attack_chain_nodes/ResponsePie';
-import InjectIndexTabs from './InjectIndexTabs';
+import AttackChainNodeIndexTabs from './AttackChainNodeIndexTabs';
 
 interface Props {
-  injectResultOverview: InjectResultOverviewOutput;
-  exercise: ExerciseType;
+  injectResultOverview: AttackChainNodeResultOverviewOutput;
+  attack_chain_run: AttackChainRunType;
 }
 
-const InjectIndexHeader = ({ injectResultOverview, exercise }: Props) => {
+const AttackChainNodeIndexHeader = ({ injectResultOverview, attack_chain_run }: Props) => {
   const { t } = useFormatter();
   const theme = useTheme();
   const [searchParams] = useSearchParams();
@@ -27,8 +27,8 @@ const InjectIndexHeader = ({ injectResultOverview, exercise }: Props) => {
       link: '/admin/attack_chain_runs',
     },
     {
-      label: t(exercise.exercise_name),
-      link: `/admin/attack_chain_runs/${exercise.exercise_id}`,
+      label: t(attack_chain_run.attack_chain_run_name),
+      link: `/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}`,
     },
   ];
 
@@ -38,9 +38,9 @@ const InjectIndexHeader = ({ injectResultOverview, exercise }: Props) => {
       link: backuri,
     });
   }
-  breadcrumbs.push({ label: t('Injects') });
+  breadcrumbs.push({ label: t('AttackChainNodes') });
   breadcrumbs.push({
-    label: injectResultOverview.inject_title,
+    label: injectResultOverview.node_title,
     current: true,
   });
 
@@ -62,12 +62,12 @@ const InjectIndexHeader = ({ injectResultOverview, exercise }: Props) => {
         <Box display="flex" flexDirection="column" justifyContent="left" alignItems="flex-start">
           <Breadcrumbs variant="object" elements={breadcrumbs} />
           <AtomicTestingTitle injectResultOverview={injectResultOverview} />
-          <InjectIndexTabs injectResultOverview={injectResultOverview} exercise={exercise} backlabel={backlabel} backuri={backuri} />
+          <AttackChainNodeIndexTabs injectResultOverview={injectResultOverview} attack_chain_run={attack_chain_run} backlabel={backlabel} backuri={backuri} />
         </Box>
-        <ResponsePie hasTitles={false} forceSize={112} expectationResultsByTypes={injectResultOverview.inject_expectation_results} />
+        <ResponsePie hasTitles={false} forceSize={112} expectationResultsByTypes={injectResultOverview.node_expectation_results} />
       </div>
     </Box>
   );
 };
 
-export default InjectIndexHeader;
+export default AttackChainNodeIndexHeader;

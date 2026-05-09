@@ -4,8 +4,8 @@ import { type FunctionComponent, useContext } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { useFormatter } from '../../../../components/i18n';
-import { InjectContext, PermissionsContext, ViewModeContext } from '../Context';
-import InjectImportMenu from './InjectImportMenu';
+import { AttackChainNodeContext, PermissionsContext, ViewModeContext } from '../Context';
+import AttackChainNodeImportMenu from './AttackChainNodeImportMenu';
 
 const useStyles = makeStyles()(() => ({
   container: {
@@ -19,27 +19,27 @@ const useStyles = makeStyles()(() => ({
 interface Props {
   setViewMode?: (mode: string) => void;
   availableButtons: string[];
-  onImportedInjects?: () => void;
+  onImportedAttackChainNodes?: () => void;
 }
 
-const InjectsListButtons: FunctionComponent<Props> = ({
+const AttackChainNodesListButtons: FunctionComponent<Props> = ({
   setViewMode,
   availableButtons,
-  onImportedInjects,
+  onImportedAttackChainNodes,
 }) => {
   // Standard hooks
   const { classes } = useStyles();
   const { t } = useFormatter();
-  const injectContext = useContext(InjectContext);
+  const injectContext = useContext(AttackChainNodeContext);
   const viewModeContext = useContext(ViewModeContext);
   const { permissions } = useContext(PermissionsContext);
 
-  const hasImportModesEnabled = () => !!injectContext.onImportInjectFromXls || !!injectContext.onImportInjectFromJson;
+  const hasImportModesEnabled = () => !!injectContext.onImportAttackChainNodeFromXls || !!injectContext.onImportAttackChainNodeFromJson;
 
   return (
     <div className={classes.container}>
       {hasImportModesEnabled()
-        && permissions.canManage && <InjectImportMenu onImportedInjects={onImportedInjects} />}
+        && permissions.canManage && <AttackChainNodeImportMenu onImportedAttackChainNodes={onImportedAttackChainNodes} />}
       <ToggleButtonGroup
         size="small"
         exclusive
@@ -89,4 +89,4 @@ const InjectsListButtons: FunctionComponent<Props> = ({
   );
 };
 
-export default InjectsListButtons;
+export default AttackChainNodesListButtons;

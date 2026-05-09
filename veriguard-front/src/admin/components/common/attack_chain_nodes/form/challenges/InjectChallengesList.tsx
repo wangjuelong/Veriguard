@@ -4,6 +4,6 @@ interface Props {
   error?: string | null;
 }
 
-const InjectChallengesList = (_props: Props) => null;
+const AttackChainNodeChallengesList = (_props: Props) => null;
 
-export default InjectChallengesList;
+export default AttackChainNodeChallengesList;

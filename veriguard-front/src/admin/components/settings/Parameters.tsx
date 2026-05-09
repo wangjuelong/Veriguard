@@ -103,8 +103,8 @@ const Parameters = () => {
               platform_theme: settings?.platform_theme,
               platform_lang: settings?.platform_lang,
               platform_home_dashboard: settings?.platform_home_dashboard,
-              platform_scenario_dashboard: settings?.platform_scenario_dashboard,
-              platform_simulation_dashboard: settings?.platform_simulation_dashboard,
+              platform_attack_chain_dashboard: settings?.platform_attack_chain_dashboard,
+              platform_attack_chain_run_dashboard: settings?.platform_attack_chain_run_dashboard,
             }}
             canNotManage={cannotManagePlatformSettings}
           />

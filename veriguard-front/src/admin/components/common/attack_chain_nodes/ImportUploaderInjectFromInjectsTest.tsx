@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { testXlsFile } from '../../../../actions/mapper/mapper-actions';
 import CodeBlock from '../../../../components/common/CodeBlock';
 import { useFormatter } from '../../../../components/i18n';
-import { type ImportMapperAddInput, type ImportTestSummary, type InjectsImportTestInput } from '../../../../utils/api-types';
+import { type ImportMapperAddInput, type ImportTestSummary, type AttackChainNodesImportTestInput } from '../../../../utils/api-types';
 import { zodImplement } from '../../../../utils/Zod';
 
 const useStyles = makeStyles()(() => ({
@@ -38,7 +38,7 @@ interface Props {
   handleClose: () => void;
 }
 
-const ImportUploaderInjectFromInjectsTest: FunctionComponent<Props> = ({
+const ImportUploaderAttackChainNodeFromAttackChainNodesTest: FunctionComponent<Props> = ({
   importId,
   sheets,
   importMapperValues,
@@ -71,7 +71,7 @@ const ImportUploaderInjectFromInjectsTest: FunctionComponent<Props> = ({
   const [result, setResult] = useState<ImportTestSummary | undefined>(undefined);
 
   const onSubmitImportTest = (values: FormProps) => {
-    const input: InjectsImportTestInput = {
+    const input: AttackChainNodesImportTestInput = {
       import_mapper: importMapperValues,
       sheet_name: values.sheetName,
       timezone_offset: moment.tz(values.timezone).utcOffset(),
@@ -89,7 +89,7 @@ const ImportUploaderInjectFromInjectsTest: FunctionComponent<Props> = ({
   };
 
   return (
-    <form id="importUploadInjectForm" onSubmit={handleSubmitWithoutPropagation}>
+    <form id="importUploadAttackChainNodeForm" onSubmit={handleSubmitWithoutPropagation}>
       <div className={classes.container}>
         <Controller
           control={control}
@@ -148,7 +148,7 @@ const ImportUploaderInjectFromInjectsTest: FunctionComponent<Props> = ({
           {' '}
         </span>
         <CodeBlock
-          code={JSON.stringify(result?.injects, null, ' ') || t('You will find here the result in JSON format.')}
+          code={JSON.stringify(result?.nodes, null, ' ') || t('You will find here the result in JSON format.')}
           language="json"
           maxHeight="250px"
         />
@@ -185,4 +185,4 @@ const ImportUploaderInjectFromInjectsTest: FunctionComponent<Props> = ({
   );
 };
 
-export default ImportUploaderInjectFromInjectsTest;
+export default ImportUploaderAttackChainNodeFromAttackChainNodesTest;

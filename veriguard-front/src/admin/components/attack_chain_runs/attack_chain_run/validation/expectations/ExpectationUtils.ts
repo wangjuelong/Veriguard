@@ -1,48 +1,48 @@
-import { type InjectExpectation, type InjectExpectationResult } from '../../../../../../utils/api-types';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectation, type AttackChainNodeExpectationResult } from '../../../../../../utils/api-types';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import { isManualExpectation } from '../../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 
-export const groupedByAsset = (es: InjectExpectationsStore[]) => {
+export const groupedByAsset = (es: AttackChainNodeExpectationsStore[]) => {
   return es.reduce((group, expectation) => {
-    const { inject_expectation_asset } = expectation;
-    if (inject_expectation_asset) {
-      const values = group.get(inject_expectation_asset) ?? [];
+    const { node_expectation_asset } = expectation;
+    if (node_expectation_asset) {
+      const values = group.get(node_expectation_asset) ?? [];
       values.push(expectation);
-      group.set(inject_expectation_asset, values);
+      group.set(node_expectation_asset, values);
     }
     return group;
   }, new Map());
 };
 
-export const isAssetGroupExpectation = (injectExpectation: InjectExpectation) => {
-  return injectExpectation.inject_expectation_asset_group != null
-    && injectExpectation.inject_expectation_asset == null
-    && injectExpectation.inject_expectation_agent == null;
+export const isAssetGroupExpectation = (injectExpectation: AttackChainNodeExpectation) => {
+  return injectExpectation.node_expectation_asset_group != null
+    && injectExpectation.node_expectation_asset == null
+    && injectExpectation.node_expectation_agent == null;
 };
 
-export const isAssetExpectation = (injectExpectation: InjectExpectation) => {
-  return injectExpectation.inject_expectation_asset != null
-    && injectExpectation.inject_expectation_agent == null;
+export const isAssetExpectation = (injectExpectation: AttackChainNodeExpectation) => {
+  return injectExpectation.node_expectation_asset != null
+    && injectExpectation.node_expectation_agent == null;
 };
 
-export const isAgentExpectation = (injectExpectation: InjectExpectation) => {
-  return injectExpectation.inject_expectation_agent != null;
+export const isAgentExpectation = (injectExpectation: AttackChainNodeExpectation) => {
+  return injectExpectation.node_expectation_agent != null;
 };
 
-export const isPlayerExpectation = (injectExpectation: InjectExpectation) => {
-  return injectExpectation.inject_expectation_user != null;
+export const isPlayerExpectation = (injectExpectation: AttackChainNodeExpectation) => {
+  return injectExpectation.node_expectation_user != null;
 };
 
-export const useIsManuallyUpdatable = (injectExpectation: InjectExpectation) => {
+export const useIsManuallyUpdatable = (injectExpectation: AttackChainNodeExpectation) => {
   // Technical
-  if (['DETECTION', 'PREVENTION'].includes(injectExpectation.inject_expectation_type)) {
+  if (['DETECTION', 'PREVENTION'].includes(injectExpectation.node_expectation_type)) {
     if (isAssetGroupExpectation(injectExpectation) || isAgentExpectation(injectExpectation)) return false;
 
     return true;
   }
   // Human
-  if (isManualExpectation(injectExpectation.inject_expectation_type)) {
-    if ((injectExpectation.inject_expectation_results?.length ?? 0) > 0) return false;
+  if (isManualExpectation(injectExpectation.node_expectation_type)) {
+    if ((injectExpectation.node_expectation_results?.length ?? 0) > 0) return false;
 
     return true;
   }
@@ -52,11 +52,11 @@ export const useIsManuallyUpdatable = (injectExpectation: InjectExpectation) => 
 /**
  * Returns a formatted label for the source of an expectation result.
  *
- * @param {InjectExpectationResult | null | undefined} expectationResult - The result object containing source information.
+ * @param {AttackChainNodeExpectationResult | null | undefined} expectationResult - The result object containing source information.
  * @returns {string} The formatted source label, e.g. "sourceName (sourcePlatform)" or "-" if not available.
  */
 export const getSourceLabel = (
-  expectationResult?: InjectExpectationResult | null,
+  expectationResult?: AttackChainNodeExpectationResult | null,
 ): string => {
   const sourceName = expectationResult?.sourceName?.trim();
   const sourcePlatform = expectationResult?.sourcePlatform?.trim();

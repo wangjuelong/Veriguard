@@ -11,8 +11,8 @@ import ConfirmChangeDefaultDashboardDialog from './ConfirmChangeDefaultDashboard
 interface Props {
   initialDefaultDashboardIds: {
     home: string | undefined;
-    scenario: string | undefined;
-    simulation: string | undefined;
+    attack_chain: string | undefined;
+    attack_chain_run: string | undefined;
   };
 }
 
@@ -27,15 +27,15 @@ const GeneralFormTab = ({ initialDefaultDashboardIds }: Props) => {
       label: t('Use by default in home'),
       defaultId: initialDefaultDashboardIds?.home,
     },
-    scenario: {
-      fieldName: 'is_default_scenario_dashboard',
-      label: t('Use by default in scenario'),
-      defaultId: initialDefaultDashboardIds?.scenario,
+    attack_chain: {
+      fieldName: 'is_default_attack_chain_dashboard',
+      label: t('Use by default in attack_chain'),
+      defaultId: initialDefaultDashboardIds?.attack_chain,
     },
-    simulation: {
-      fieldName: 'is_default_simulation_dashboard',
-      label: t('Use by default in simulation'),
-      defaultId: initialDefaultDashboardIds?.simulation,
+    attack_chain_run: {
+      fieldName: 'is_default_attack_chain_run_dashboard',
+      label: t('Use by default in attack_chain_run'),
+      defaultId: initialDefaultDashboardIds?.attack_chain_run,
     },
   } as const;
 

@@ -6,6 +6,6 @@ interface Props {
   readOnly?: boolean;
 }
 
-const InjectArticlesList = (_props: Props) => null;
+const AttackChainNodeArticlesList = (_props: Props) => null;
 
-export default InjectArticlesList;
+export default AttackChainNodeArticlesList;

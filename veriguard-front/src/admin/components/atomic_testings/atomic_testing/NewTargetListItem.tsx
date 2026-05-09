@@ -4,13 +4,13 @@ import { useTheme } from '@mui/material/styles';
 import { SelectGroup } from 'mdi-material-ui';
 
 import PlatformIcon from '../../../../components/PlatformIcon';
-import type { InjectTarget } from '../../../../utils/api-types';
+import type { AttackChainNodeTarget } from '../../../../utils/api-types';
 import NewAtomicTestingResult from './NewAtomicTestingResult';
 
 interface Props {
   selected?: boolean;
-  onClick: (target: InjectTarget) => void;
-  target: InjectTarget;
+  onClick: (target: AttackChainNodeTarget) => void;
+  target: AttackChainNodeTarget;
 }
 
 const NewTargetListItem: React.FC<Props> = ({ onClick, target, selected }) => {
@@ -18,7 +18,7 @@ const NewTargetListItem: React.FC<Props> = ({ onClick, target, selected }) => {
   const handleItemClick = () => {
     onClick(target);
   };
-  const getIcon = (target: InjectTarget) => {
+  const getIcon = (target: AttackChainNodeTarget) => {
     const iconMap = {
       // TODO: for Endpoints and Agents, check the targetSubType attribute
       ASSETS_GROUPS: <SelectGroup />,

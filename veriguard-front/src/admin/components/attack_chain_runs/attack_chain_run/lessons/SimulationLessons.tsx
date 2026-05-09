@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { addLessonsCategory, addLessonsQuestion, applyLessonsTemplate, deleteLessonsCategory, deleteLessonsQuestion, emptyLessonsCategories, fetchLessonsAnswers, fetchLessonsCategories, fetchLessonsQuestions, fetchPlayersByExercise, resetLessonsAnswers, sendLessons, updateLessonsCategory, updateLessonsCategoryTeams, updateLessonsQuestion } from '../../../../../actions/attack_chain_runs/exercise-action';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { type ScenariosHelper } from '../../../../../actions/attack_chains/scenario-helper';
-import { fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
-import { fetchExerciseTeams, updateExerciseLessons } from '../../../../../actions/AttackChainRun';
-import { addExerciseEvaluation, fetchExerciseEvaluations, updateExerciseEvaluation } from '../../../../../actions/Evaluation';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
+import { addLessonsCategory, addLessonsQuestion, applyLessonsTemplate, deleteLessonsCategory, deleteLessonsQuestion, emptyLessonsCategories, fetchLessonsAnswers, fetchLessonsCategories, fetchLessonsQuestions, fetchPlayersByAttackChainRun, resetLessonsAnswers, sendLessons, updateLessonsCategory, updateLessonsCategoryTeams, updateLessonsQuestion } from '../../../../../actions/attack_chain_runs/attack_chain_run-action';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { type AttackChainsHelper } from '../../../../../actions/attack_chains/attack_chain-helper';
+import { fetchAttackChainRunAttackChainNodes } from '../../../../../actions/AttackChainNode';
+import { fetchAttackChainRunTeams, updateAttackChainRunLessons } from '../../../../../actions/AttackChainRun';
+import { addAttackChainRunEvaluation, fetchAttackChainRunEvaluations, updateAttackChainRunEvaluation } from '../../../../../actions/Evaluation';
 import { type UserHelper } from '../../../../../actions/helper';
 import { type LessonsTemplatesHelper } from '../../../../../actions/lessons/lesson-helper';
-import { addExerciseObjective, deleteExerciseObjective, fetchExerciseObjectives, updateExerciseObjective } from '../../../../../actions/Objective';
+import { addAttackChainRunObjective, deleteAttackChainRunObjective, fetchAttackChainRunObjectives, updateAttackChainRunObjective } from '../../../../../actions/Objective';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type EvaluationInput, type Exercise, type LessonsCategoryCreateInput, type LessonsCategoryTeamsInput, type LessonsCategoryUpdateInput, type LessonsQuestionCreateInput, type LessonsQuestionUpdateInput, type LessonsSendInput, type ObjectiveInput } from '../../../../../utils/api-types';
+import { type EvaluationInput, type AttackChainRun, type LessonsCategoryCreateInput, type LessonsCategoryTeamsInput, type LessonsCategoryUpdateInput, type LessonsQuestionCreateInput, type LessonsQuestionUpdateInput, type LessonsSendInput, type ObjectiveInput } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import useSimulationPermissions from '../../../../../utils/permissions/useSimulationPermissions';
@@ -24,29 +24,29 @@ import Lessons from '../../../lessons/attack_chain_runs/Lessons';
 const SimulationLessons = () => {
   const dispatch = useAppDispatch();
   // Fetching data
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
   const { t } = useFormatter();
 
-  const processToGenericSource = (exercise: Exercise) => {
+  const processToGenericSource = (attack_chain_run: AttackChainRun) => {
     return {
-      id: exercise.exercise_id,
-      type: 'simulation',
-      name: exercise.exercise_name,
-      score: exercise.exercise_score ?? 0,
-      lessons_answers_number: exercise.exercise_lessons_answers_number ?? 0,
-      communications_number: exercise.exercise_communications_number ?? 0,
-      start_date: exercise.exercise_start_date ?? t('Unknown'),
-      end_date: exercise.exercise_end_date ?? t('Unknown'),
-      users_number: exercise.exercise_users_number ?? 0,
-      logs_number: exercise.exercise_logs_number ?? 0,
-      lessons_anonymized: exercise.exercise_lessons_anonymized ?? false,
+      id: attack_chain_run.attack_chain_run_id,
+      type: 'attack_chain_run',
+      name: attack_chain_run.attack_chain_run_name,
+      score: attack_chain_run.attack_chain_run_score ?? 0,
+      lessons_answers_number: attack_chain_run.attack_chain_run_lessons_answers_number ?? 0,
+      communications_number: attack_chain_run.attack_chain_run_communications_number ?? 0,
+      start_date: attack_chain_run.attack_chain_run_start_date ?? t('Unknown'),
+      end_date: attack_chain_run.attack_chain_run_end_date ?? t('Unknown'),
+      users_number: attack_chain_run.attack_chain_run_users_number ?? 0,
+      logs_number: attack_chain_run.attack_chain_run_logs_number ?? 0,
+      lessons_anonymized: attack_chain_run.attack_chain_run_lessons_anonymized ?? false,
     };
   };
 
   const {
-    exercise,
+    attack_chain_run,
     objectives,
-    injects,
+    nodes,
     teams,
     teamsMap,
     lessonsCategories,
@@ -54,43 +54,43 @@ const SimulationLessons = () => {
     lessonsAnswers,
     lessonsTemplates,
     usersMap,
-  } = useHelper((helper: ExercisesHelper & InjectHelper & LessonsTemplatesHelper & ScenariosHelper & TeamsHelper & UserHelper) => {
-    const exerciseData = helper.getExercise(exerciseId);
+  } = useHelper((helper: AttackChainRunsHelper & AttackChainNodeHelper & LessonsTemplatesHelper & AttackChainsHelper & TeamsHelper & UserHelper) => {
+    const exerciseData = helper.getAttackChainRun(exerciseId);
     return {
-      exercise: exerciseData,
-      objectives: helper.getExerciseObjectives(exerciseId),
-      injects: helper.getExerciseInjects(exerciseId),
-      lessonsCategories: helper.getExerciseLessonsCategories(exerciseId),
-      lessonsQuestions: helper.getExerciseLessonsQuestions(exerciseId),
-      lessonsAnswers: helper.getExerciseLessonsAnswers(exerciseId),
+      attack_chain_run: exerciseData,
+      objectives: helper.getAttackChainRunObjectives(exerciseId),
+      nodes: helper.getAttackChainRunAttackChainNodes(exerciseId),
+      lessonsCategories: helper.getAttackChainRunLessonsCategories(exerciseId),
+      lessonsQuestions: helper.getAttackChainRunLessonsQuestions(exerciseId),
+      lessonsAnswers: helper.getAttackChainRunLessonsAnswers(exerciseId),
       lessonsTemplates: helper.getLessonsTemplates(),
       teamsMap: helper.getTeamsMap(),
-      teams: helper.getExerciseTeams(exerciseId),
+      teams: helper.getAttackChainRunTeams(exerciseId),
       usersMap: helper.getUsersMap(),
     };
   });
 
   const source = useMemo(
-    () => processToGenericSource(exercise),
-    [exercise],
+    () => processToGenericSource(attack_chain_run),
+    [attack_chain_run],
   );
 
   useDataLoader(() => {
-    dispatch(fetchPlayersByExercise(exerciseId));
+    dispatch(fetchPlayersByAttackChainRun(exerciseId));
     dispatch(fetchLessonsCategories(exerciseId));
     dispatch(fetchLessonsQuestions(exerciseId));
     dispatch(fetchLessonsAnswers(exerciseId));
-    dispatch(fetchExerciseObjectives(exerciseId));
-    dispatch(fetchExerciseInjects(exerciseId));
-    dispatch(fetchExerciseTeams(exerciseId));
+    dispatch(fetchAttackChainRunObjectives(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodes(exerciseId));
+    dispatch(fetchAttackChainRunTeams(exerciseId));
   });
-  const permissions = useSimulationPermissions(exerciseId, exercise);
+  const permissions = useSimulationPermissions(exerciseId, attack_chain_run);
 
   const context: LessonContextType = {
     onApplyLessonsTemplate: (data: string) => dispatch(applyLessonsTemplate(exerciseId, data)),
     onResetLessonsAnswers: () => dispatch(resetLessonsAnswers(exerciseId)),
     onEmptyLessonsCategories: () => dispatch(emptyLessonsCategories(exerciseId)),
-    onUpdateSourceLessons: (data: boolean) => dispatch(updateExerciseLessons(exerciseId, { lessons_anonymized: data })),
+    onUpdateSourceLessons: (data: boolean) => dispatch(updateAttackChainRunLessons(exerciseId, { lessons_anonymized: data })),
     onSendLessons: (data: LessonsSendInput) => dispatch(sendLessons(exerciseId, data)),
     // Categories
     onAddLessonsCategory: (data: LessonsCategoryCreateInput) => dispatch(addLessonsCategory(exerciseId, data)),
@@ -117,13 +117,13 @@ const SimulationLessons = () => {
       addLessonsQuestion(exerciseId, lessonsCategoryId, data),
     ),
     // Objectives
-    onAddObjective: (data: ObjectiveInput) => dispatch(addExerciseObjective(exerciseId, data)),
-    onUpdateObjective: (objectiveId: string, data: ObjectiveInput) => dispatch(updateExerciseObjective(exerciseId, objectiveId, data)),
-    onDeleteObjective: (objectiveId: string) => dispatch(deleteExerciseObjective(exerciseId, objectiveId)),
+    onAddObjective: (data: ObjectiveInput) => dispatch(addAttackChainRunObjective(exerciseId, data)),
+    onUpdateObjective: (objectiveId: string, data: ObjectiveInput) => dispatch(updateAttackChainRunObjective(exerciseId, objectiveId, data)),
+    onDeleteObjective: (objectiveId: string) => dispatch(deleteAttackChainRunObjective(exerciseId, objectiveId)),
     // Evaluation
-    onAddEvaluation: (objectiveId: string, data: EvaluationInput) => dispatch(addExerciseEvaluation(exerciseId, objectiveId, data)),
-    onUpdateEvaluation: (objectiveId: string, evaluationId: string, data: EvaluationInput) => dispatch(updateExerciseEvaluation(exerciseId, objectiveId, evaluationId, data)),
-    onFetchEvaluation: (objectiveId: string) => dispatch(fetchExerciseEvaluations(exerciseId, objectiveId)),
+    onAddEvaluation: (objectiveId: string, data: EvaluationInput) => dispatch(addAttackChainRunEvaluation(exerciseId, objectiveId, data)),
+    onUpdateEvaluation: (objectiveId: string, evaluationId: string, data: EvaluationInput) => dispatch(updateAttackChainRunEvaluation(exerciseId, objectiveId, evaluationId, data)),
+    onFetchEvaluation: (objectiveId: string) => dispatch(fetchAttackChainRunEvaluations(exerciseId, objectiveId)),
   };
 
   return (
@@ -135,7 +135,7 @@ const SimulationLessons = () => {
           isUpdatable: permissions.canManage,
         }}
         objectives={objectives}
-        injects={injects}
+        nodes={nodes}
         teamsMap={teamsMap}
         teams={teams}
         lessonsCategories={lessonsCategories}

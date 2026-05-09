@@ -7,18 +7,18 @@ interface ImportJsonDialogProps {
   handleClose: () => void;
   handleSubmit: (values: { file: File }) => void;
 }
-const InjectImportJsonDialog = (props: ImportJsonDialogProps) => {
+const AttackChainNodeImportJsonDialog = (props: ImportJsonDialogProps) => {
   const { t } = useFormatter();
 
   return (
     <Dialog
       open={props.open}
       handleClose={props.handleClose}
-      title={t('Import injects')}
+      title={t('Import nodes')}
       maxWidth="sm"
     >
       <ImportFileSelector
-        label={t('inject_import_file_must_be_zip')}
+        label={t('node_import_file_must_be_zip')}
         mimeTypes="application/octet-stream, multipart/x-zip, application/zip, application/zip-compressed, application/x-zip-compressed"
         submitActionLabel={t('Import')}
         handleClose={props.handleClose}
@@ -28,4 +28,4 @@ const InjectImportJsonDialog = (props: ImportJsonDialogProps) => {
   );
 };
 
-export default InjectImportJsonDialog;
+export default AttackChainNodeImportJsonDialog;

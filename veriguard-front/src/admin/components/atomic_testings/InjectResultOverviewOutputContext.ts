@@ -1,13 +1,13 @@
 import { createContext } from 'react';
 
-import { type InjectResultOverviewOutput } from '../../../utils/api-types';
+import { type AttackChainNodeResultOverviewOutput } from '../../../utils/api-types';
 
-export type InjectResultOverviewOutputContextType = {
-  injectResultOverviewOutput: InjectResultOverviewOutput | null;
-  updateInjectResultOverviewOutput: (data: InjectResultOverviewOutput) => void;
+export type AttackChainNodeResultOverviewOutputContextType = {
+  injectResultOverviewOutput: AttackChainNodeResultOverviewOutput | null;
+  updateAttackChainNodeResultOverviewOutput: (data: AttackChainNodeResultOverviewOutput) => void;
 };
-export const InjectResultOverviewOutputContext = createContext<InjectResultOverviewOutputContextType>({
+export const AttackChainNodeResultOverviewOutputContext = createContext<AttackChainNodeResultOverviewOutputContextType>({
   injectResultOverviewOutput: null,
-  updateInjectResultOverviewOutput: () => {
+  updateAttackChainNodeResultOverviewOutput: () => {
   },
 });

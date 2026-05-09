@@ -15,14 +15,14 @@ import TagFieldController from '../../../../../components/fields/TagFieldControl
 import TextFieldController from '../../../../../components/fields/TextFieldController';
 import { useFormatter } from '../../../../../components/i18n';
 import { type ChoiceItem, type EnhancedContractElement } from '../../../../../utils/api-types-custom';
-import InjectEndpointsList from './endpoints/InjectEndpointsList';
+import AttackChainNodeEndpointsList from './endpoints/AttackChainNodeEndpointsList';
 
 interface Props {
   field: EnhancedContractElement;
   readOnly?: boolean;
 }
 
-const InjectContentFieldComponent = ({
+const AttackChainNodeContentFieldComponent = ({
   field,
   readOnly = false,
 }: Props) => {
@@ -55,7 +55,7 @@ const InjectContentFieldComponent = ({
     ? `${t(field.label)} - ${field.linkedFields.map(f => f.key).join(', ')}`
     : t(field.label);
 
-  const error = (errors.inject_content as Record<string, FieldError>)?.[field.originalKey];
+  const error = (errors.node_content as Record<string, FieldError>)?.[field.originalKey];
 
   const fieldComponent = () => {
     switch (fieldType) {
@@ -125,7 +125,7 @@ const InjectContentFieldComponent = ({
         return (
           <>
             <InputLabel required={field?.settings?.required} error={!!error}>{`${t('Targeted assets')} - ${field.key.split('.').at(-1)}`}</InputLabel>
-            <InjectEndpointsList
+            <AttackChainNodeEndpointsList
               name={field.key}
               errorLabel={error?.message}
             />
@@ -166,4 +166,4 @@ const InjectContentFieldComponent = ({
   );
 };
 
-export default InjectContentFieldComponent;
+export default AttackChainNodeContentFieldComponent;

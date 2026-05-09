@@ -2,33 +2,33 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
 import { fetchMe } from '../../../actions/Application';
-import { addLessonsAnswers, fetchLessonsAnswers, fetchLessonsCategories, fetchLessonsQuestions, fetchPlayerLessonsAnswers, fetchPlayerLessonsCategories, fetchPlayerLessonsQuestions } from '../../../actions/attack_chain_runs/exercise-action';
-import { type ExercisesHelper } from '../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise, fetchPlayerExercise } from '../../../actions/AttackChainRun';
+import { addLessonsAnswers, fetchLessonsAnswers, fetchLessonsCategories, fetchLessonsQuestions, fetchPlayerLessonsAnswers, fetchPlayerLessonsCategories, fetchPlayerLessonsQuestions } from '../../../actions/attack_chain_runs/attack_chain_run-action';
+import { type AttackChainRunsHelper } from '../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRun, fetchPlayerAttackChainRun } from '../../../actions/AttackChainRun';
 import { type UserHelper } from '../../../actions/helper';
 import { ViewLessonContext, type ViewLessonContextType } from '../../../admin/components/common/Context';
 import { useHelper } from '../../../store';
-import { type Exercise } from '../../../utils/api-types';
+import { type AttackChainRun } from '../../../utils/api-types';
 import { useQueryParameter } from '../../../utils/Environment';
 import { useAppDispatch } from '../../../utils/hooks';
 import useSimulationPermissions from '../../../utils/permissions/useSimulationPermissions';
 import LessonsPlayer from './LessonsPlayer';
 import LessonsPreview from './LessonsPreview';
 
-const ExerciseViewLessons = () => {
+const AttackChainRunViewLessons = () => {
   const dispatch = useAppDispatch();
   const [preview] = useQueryParameter(['preview']);
   const [userId] = useQueryParameter(['user']);
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
   const isPreview = preview === 'true';
 
-  const processToGenericSource = (exercise: Exercise | undefined) => {
-    if (!exercise) return undefined;
+  const processToGenericSource = (attack_chain_run: AttackChainRun | undefined) => {
+    if (!attack_chain_run) return undefined;
     return {
       id: exerciseId,
-      type: 'simulation',
-      name: exercise.exercise_name,
-      subtitle: exercise.exercise_subtitle,
+      type: 'attack_chain_run',
+      name: attack_chain_run.attack_chain_run_name,
+      subtitle: attack_chain_run.attack_chain_run_subtitle,
       userId,
       isUserAbsent: userId === 'null',
       isPlayerViewAvailable: true,
@@ -37,21 +37,21 @@ const ExerciseViewLessons = () => {
 
   const {
     me,
-    exercise,
+    attack_chain_run,
     source,
     lessonsCategories,
     lessonsQuestions,
     lessonsAnswers,
-  } = useHelper((helper: ExercisesHelper & UserHelper) => {
+  } = useHelper((helper: AttackChainRunsHelper & UserHelper) => {
     const currentUser = helper.getMe();
-    const exerciseData = helper.getExercise(exerciseId);
+    const exerciseData = helper.getAttackChainRun(exerciseId);
     return {
       me: currentUser,
-      exercise: exerciseData,
+      attack_chain_run: exerciseData,
       source: processToGenericSource(exerciseData),
-      lessonsCategories: helper.getExerciseLessonsCategories(exerciseId),
-      lessonsQuestions: helper.getExerciseLessonsQuestions(exerciseId),
-      lessonsAnswers: helper.getExerciseUserLessonsAnswers(
+      lessonsCategories: helper.getAttackChainRunLessonsCategories(exerciseId),
+      lessonsQuestions: helper.getAttackChainRunLessonsQuestions(exerciseId),
+      lessonsAnswers: helper.getAttackChainRunUserLessonsAnswers(
         exerciseId,
         userId && userId !== 'null' ? userId : currentUser?.user_id,
       ),
@@ -63,20 +63,20 @@ const ExerciseViewLessons = () => {
   useEffect(() => {
     dispatch(fetchMe());
     if (isPreview) {
-      dispatch(fetchExercise(exerciseId));
+      dispatch(fetchAttackChainRun(exerciseId));
       dispatch(fetchLessonsCategories(exerciseId));
       dispatch(fetchLessonsQuestions(exerciseId));
       dispatch(fetchLessonsAnswers(exerciseId));
     } else {
-      dispatch(fetchPlayerExercise(exerciseId, userId));
+      dispatch(fetchPlayerAttackChainRun(exerciseId, userId));
       dispatch(fetchPlayerLessonsCategories(exerciseId, finalUserId));
       dispatch(fetchPlayerLessonsQuestions(exerciseId, finalUserId));
       dispatch(fetchPlayerLessonsAnswers(exerciseId, finalUserId));
     }
   }, [dispatch, exerciseId, userId, finalUserId]);
 
-  // Pass the full exercise because the exercise is never loaded in the store at this point
-  const permissions = useSimulationPermissions(exerciseId, exercise);
+  // Pass the full attack_chain_run because the attack_chain_run is never loaded in the store at this point
+  const permissions = useSimulationPermissions(exerciseId, attack_chain_run);
 
   const context: ViewLessonContextType = {
     onAddLessonsAnswers: (questionCategory, lessonsQuestionId, answerData) => dispatch(
@@ -119,4 +119,4 @@ const ExerciseViewLessons = () => {
   );
 };
 
-export default ExerciseViewLessons;
+export default AttackChainRunViewLessons;

@@ -3,38 +3,38 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import { type UserHelper } from '../../../../../actions/helper';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type InjectExpectation, type User } from '../../../../../utils/api-types';
+import { type AttackChainRun, type AttackChainNodeExpectation, type User } from '../../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../../utils/Charts';
 import { resolveUserName } from '../../../../../utils/String';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
-const ExerciseDistributionScoreByPlayer: FunctionComponent<Props> = ({ exerciseId }) => {
+const AttackChainRunDistributionScoreByPlayer: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
   const { t } = useFormatter();
   const theme = useTheme();
 
   // Fetching data
-  const { injectExpectations, usersMap } = useHelper((helper: InjectHelper & UserHelper) => ({
-    injectExpectations: helper.getExerciseInjectExpectations(exerciseId),
+  const { injectExpectations, usersMap } = useHelper((helper: AttackChainNodeHelper & UserHelper) => ({
+    injectExpectations: helper.getAttackChainRunAttackChainNodeExpectations(exerciseId),
     usersMap: helper.getUsersMap(),
   }));
 
   const usersTotalScores = R.pipe(
     R.filter(
-      (n: InjectExpectation) => !R.isEmpty(n.inject_expectation_results)
-        && n.inject_expectation_user !== null,
+      (n: AttackChainNodeExpectation) => !R.isEmpty(n.node_expectation_results)
+        && n.node_expectation_user !== null,
     ),
-    R.groupBy(R.prop('inject_expectation_user')),
+    R.groupBy(R.prop('node_expectation_user')),
     R.toPairs,
-    R.map((n: [string, InjectExpectation[]]) => ({
+    R.map((n: [string, AttackChainNodeExpectation[]]) => ({
       ...usersMap[n[0]],
-      user_total_score: R.sum(R.map((o: InjectExpectation) => o.inject_expectation_score, n[1])),
+      user_total_score: R.sum(R.map((o: AttackChainNodeExpectation) => o.node_expectation_score, n[1])),
     })),
   )(injectExpectations);
 
@@ -57,7 +57,7 @@ const ExerciseDistributionScoreByPlayer: FunctionComponent<Props> = ({ exerciseI
     <>
       {usersTotalScores.length > 0 ? (
         <Chart
-          id="exercise_distribution_total_score_by_player"
+          id="attack_chain_run_distribution_total_score_by_player"
           options={horizontalBarsChartOptions({ theme })}
           series={totalScoreByUserData}
           type="bar"
@@ -66,13 +66,13 @@ const ExerciseDistributionScoreByPlayer: FunctionComponent<Props> = ({ exerciseI
         />
       ) : (
         <Empty
-          id="exercise_distribution_total_score_by_player"
+          id="attack_chain_run_distribution_total_score_by_player"
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}
     </>
   );
 };
-export default ExerciseDistributionScoreByPlayer;
+export default AttackChainRunDistributionScoreByPlayer;

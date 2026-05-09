@@ -139,7 +139,7 @@ class LogPopoverComponent extends Component {
 LogPopoverComponent.propTypes = {
   t: PropTypes.func,
   exerciseId: PropTypes.string,
-  exercise: PropTypes.object,
+  attack_chain_run: PropTypes.object,
   log: PropTypes.object,
   updateLog: PropTypes.func,
   deleteLog: PropTypes.func,
@@ -149,7 +149,7 @@ const select = (state, ownProps) => {
   const helper = storeHelper(state);
   const { exerciseId } = ownProps;
   return {
-    exercise: helper.getExercise(exerciseId).toJS(),
+    attack_chain_run: helper.getAttackChainRun(exerciseId).toJS(),
     tagsMap: helper.getTagsMap().toJS(),
   };
 };

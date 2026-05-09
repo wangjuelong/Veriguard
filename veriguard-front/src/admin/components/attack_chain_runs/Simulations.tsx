@@ -1,7 +1,7 @@
 import { ToggleButtonGroup } from '@mui/material';
 import { useState } from 'react';
 
-import { searchExercises } from '../../../actions/AttackChainRun';
+import { searchAttackChainRuns } from '../../../actions/AttackChainRun';
 import Breadcrumbs from '../../../components/Breadcrumbs';
 import ExportButton from '../../../components/common/ExportButton';
 import { initSorting } from '../../../components/common/queryable/Page';
@@ -9,12 +9,12 @@ import PaginationComponentV2 from '../../../components/common/queryable/paginati
 import { buildSearchPagination } from '../../../components/common/queryable/QueryableUtils';
 import { useQueryableWithLocalStorage } from '../../../components/common/queryable/useQueryableWithLocalStorage';
 import { useFormatter } from '../../../components/i18n';
-import { type ExerciseSimple, type SearchPaginationInput } from '../../../utils/api-types';
+import { type AttackChainRunSimple, type SearchPaginationInput } from '../../../utils/api-types';
 import { Can } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
-import ExerciseCreation from './attack_chain_run/ExerciseCreation';
-import ExercisePopover from './attack_chain_run/ExercisePopover';
-import ImportUploaderExercise from './ImportUploaderExercise';
+import AttackChainRunCreation from './attack_chain_run/AttackChainRunCreation';
+import AttackChainRunPopover from './attack_chain_run/AttackChainRunPopover';
+import ImportUploaderAttackChainRun from './ImportUploaderAttackChainRun';
 import SimulationList from './SimulationList';
 
 const Simulations = () => {
@@ -22,48 +22,48 @@ const Simulations = () => {
   const { t } = useFormatter();
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [exercises, setExercises] = useState<ExerciseSimple[]>([]);
+  const [attack_chain_runs, setAttackChainRuns] = useState<AttackChainRunSimple[]>([]);
 
   // Filters
   const availableFilterNames = [
-    'exercise_kill_chain_phases',
-    'exercise_name',
-    'exercise_scenario',
-    'exercise_start_date',
-    'exercise_status',
-    'exercise_tags',
-    'exercise_updated_at',
+    'attack_chain_run_kill_chain_phases',
+    'attack_chain_run_name',
+    'attack_chain_run_attack_chain',
+    'attack_chain_run_start_date',
+    'attack_chain_run_status',
+    'attack_chain_run_tags',
+    'attack_chain_run_updated_at',
   ];
 
-  const { queryableHelpers, searchPaginationInput } = useQueryableWithLocalStorage('simulations', buildSearchPagination({ sorts: initSorting('exercise_updated_at', 'DESC') }));
+  const { queryableHelpers, searchPaginationInput } = useQueryableWithLocalStorage('attack_chain_runs', buildSearchPagination({ sorts: initSorting('attack_chain_run_updated_at', 'DESC') }));
 
   // Export
   const exportProps = {
-    exportType: 'exercise',
+    exportType: 'attack_chain_run',
     exportKeys: [
-      'exercise_name',
-      'exercise_subtitle',
-      'exercise_description',
-      'exercise_status',
-      'exercise_tags',
+      'attack_chain_run_name',
+      'attack_chain_run_subtitle',
+      'attack_chain_run_description',
+      'attack_chain_run_status',
+      'attack_chain_run_tags',
     ],
-    exportData: exercises,
+    exportData: attack_chain_runs,
     exportFileName: `${t('Simulations')}.csv`,
   };
 
-  const secondaryAction = (exercise: ExerciseSimple) => (
-    <ExercisePopover
-      // @ts-expect-error: should pass Exercise model IF we have update as action
-      exercise={exercise}
+  const secondaryAction = (attack_chain_run: AttackChainRunSimple) => (
+    <AttackChainRunPopover
+      // @ts-expect-error: should pass AttackChainRun model IF we have update as action
+      attack_chain_run={attack_chain_run}
       actions={['Duplicate', 'Export', 'Delete']}
-      onDelete={result => setExercises(exercises.filter(e => (e.exercise_id !== result)))}
+      onDelete={result => setAttackChainRuns(attack_chain_runs.filter(e => (e.attack_chain_run_id !== result)))}
       inList
     />
   );
 
   const search = (input: SearchPaginationInput) => {
     setLoading(true);
-    return searchExercises(input).finally(() => {
+    return searchAttackChainRuns(input).finally(() => {
       setLoading(false);
     });
   };
@@ -80,27 +80,27 @@ const Simulations = () => {
       <PaginationComponentV2
         fetch={search}
         searchPaginationInput={searchPaginationInput}
-        setContent={setExercises}
-        entityPrefix="exercise"
+        setContent={setAttackChainRuns}
+        entityPrefix="attack_chain_run"
         availableFilterNames={availableFilterNames}
         queryableHelpers={queryableHelpers}
         topBarButtons={(
           <ToggleButtonGroup value="fake" exclusive>
             <ExportButton totalElements={queryableHelpers.paginationHelpers.getTotalElements()} exportProps={exportProps} />
             <Can I={ACTIONS.MANAGE} a={SUBJECTS.ASSESSMENT}>
-              <ImportUploaderExercise />
+              <ImportUploaderAttackChainRun />
             </Can>
           </ToggleButtonGroup>
         )}
       />
       <SimulationList
-        exercises={exercises}
+        attack_chain_runs={attack_chain_runs}
         queryableHelpers={queryableHelpers}
         secondaryAction={secondaryAction}
         loading={loading}
       />
       <Can I={ACTIONS.MANAGE} a={SUBJECTS.ASSESSMENT}>
-        <ExerciseCreation />
+        <AttackChainRunCreation />
       </Can>
     </>
   );

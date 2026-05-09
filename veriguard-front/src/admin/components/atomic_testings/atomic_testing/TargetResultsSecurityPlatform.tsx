@@ -7,16 +7,16 @@ import { makeStyles } from 'tss-react/mui';
 import { fetchExpectationTraces } from '../../../../actions/atomic_testings/atomic-testing-actions';
 import Drawer from '../../../../components/common/Drawer';
 import { useFormatter } from '../../../../components/i18n';
-import type { InjectExpectationResult, InjectExpectationTrace } from '../../../../utils/api-types';
+import type { AttackChainNodeExpectationResult, AttackChainNodeExpectationTrace } from '../../../../utils/api-types';
 import { getSourceLabel } from '../../attack_chain_runs/attack_chain_run/validation/expectations/ExpectationUtils';
-import { type InjectExpectationsStore } from '../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../common/attack_chain_nodes/expectations/Expectation';
 
 const useStyles = makeStyles()(() => ({ flexContainer: { display: 'flex' } }));
 
 interface Props {
-  injectExpectation: InjectExpectationsStore;
+  injectExpectation: AttackChainNodeExpectationsStore;
   sourceId: string;
-  expectationResult: InjectExpectationResult | null;
+  expectationResult: AttackChainNodeExpectationResult | null;
   open: boolean;
   handleClose: () => void;
 }
@@ -31,11 +31,11 @@ const TargetResultsSecurityPlatform: FunctionComponent<Props> = ({
   const { classes } = useStyles();
   const { t, fldt } = useFormatter();
   const theme = useTheme();
-  const [expectationTraces, setExpectationTraces] = useState<InjectExpectationTrace[]>([]);
+  const [expectationTraces, setExpectationTraces] = useState<AttackChainNodeExpectationTrace[]>([]);
 
   useEffect(() => {
-    fetchExpectationTraces(injectExpectation.inject_expectation_id, sourceId).then((result: { data: InjectExpectationTrace[] }) => setExpectationTraces(result.data ?? []));
-  }, [injectExpectation.inject_expectation_id, sourceId]);
+    fetchExpectationTraces(injectExpectation.node_expectation_id, sourceId).then((result: { data: AttackChainNodeExpectationTrace[] }) => setExpectationTraces(result.data ?? []));
+  }, [injectExpectation.node_expectation_id, sourceId]);
 
   return (
     <Drawer
@@ -45,7 +45,7 @@ const TargetResultsSecurityPlatform: FunctionComponent<Props> = ({
     >
       <>
         <Typography variant="body1">
-          {`${injectExpectation.inject_expectation_type} ${t('Alerts')}`}
+          {`${injectExpectation.node_expectation_type} ${t('Alerts')}`}
         </Typography>
         <TableContainer sx={{ marginTop: theme.spacing(4) }}>
           <Table
@@ -55,22 +55,22 @@ const TargetResultsSecurityPlatform: FunctionComponent<Props> = ({
             <TableHead>
               <TableRow sx={{ textTransform: 'uppercase' }}>
                 <TableCell>{t('Name')}</TableCell>
-                <TableCell>{`${injectExpectation.inject_expectation_type} ${t('Date')}`}</TableCell>
+                <TableCell>{`${injectExpectation.node_expectation_type} ${t('Date')}`}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {
-                expectationTraces.map((expectationTrace: InjectExpectationTrace) => {
+                expectationTraces.map((expectationTrace: AttackChainNodeExpectationTrace) => {
                   return (
                     <TableRow
-                      key={expectationTrace.inject_expectation_trace_id}
+                      key={expectationTrace.node_expectation_trace_id}
                       sx={{ height: '50px' }}
                     >
                       <TableCell sx={{ fontSize: '14px' }}>
-                        <Link underline="always" href={expectationTrace.inject_expectation_trace_alert_link} target="_blank">
+                        <Link underline="always" href={expectationTrace.node_expectation_trace_alert_link} target="_blank">
                           <div className={classes.flexContainer}>
                             <div>
-                              {expectationTrace.inject_expectation_trace_alert_name}
+                              {expectationTrace.node_expectation_trace_alert_name}
                             </div>
                             <div style={{
                               paddingTop: '2px',
@@ -83,7 +83,7 @@ const TargetResultsSecurityPlatform: FunctionComponent<Props> = ({
                         </Link>
                       </TableCell>
                       <TableCell sx={{ fontSize: '14px' }}>
-                        {fldt(expectationTrace.inject_expectation_trace_date)}
+                        {fldt(expectationTrace.node_expectation_trace_date)}
                       </TableCell>
                     </TableRow>
                   );

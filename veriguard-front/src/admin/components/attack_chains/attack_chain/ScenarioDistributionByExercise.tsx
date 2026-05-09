@@ -2,18 +2,18 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 
-import { fetchScenarioStatistic } from '../../../../actions/attack_chains/scenario-actions';
+import { fetchAttackChainStatistic } from '../../../../actions/attack_chains/attack_chain-actions';
 import Empty from '../../../../components/Empty';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
-import { type GlobalScoreBySimulationEndDate, type ScenarioStatistic } from '../../../../utils/api-types';
+import { type GlobalScoreBySimulationEndDate, type AttackChainStatistic } from '../../../../utils/api-types';
 import { type CustomTooltipFunction, type CustomTooltipOptions, verticalBarsChartOptions } from '../../../../utils/Charts';
 
 interface Props { scenarioId: string }
 
 function generateFakeDataFromDates(dates: string[], percentage: number): GlobalScoreBySimulationEndDate[] {
   return dates.map(date => ({
-    simulation_end_date: date,
+    attack_chain_run_end_date: date,
     global_score_success_percentage: percentage,
   }));
 }
@@ -36,9 +36,9 @@ const generateFakeData = (): Record<string, GlobalScoreBySimulationEndDate[]> =>
 function generateSeriesData(globalScores: GlobalScoreBySimulationEndDate[], successfulExpectationLabel: string) {
   const { fldt } = useFormatter();
   return globalScores.map((globalScore, index) => ({
-    x: `${index}|${globalScore.simulation_end_date}`,
+    x: `${index}|${globalScore.attack_chain_run_end_date}`,
     y: globalScore.global_score_success_percentage / 100,
-    simulationEndDate: fldt(globalScore.simulation_end_date),
+    simulationEndDate: fldt(globalScore.attack_chain_run_end_date),
     simulationSuccessPercentage: globalScore.global_score_success_percentage,
     successfulExpectationLabel: successfulExpectationLabel,
   }));
@@ -82,18 +82,18 @@ function getYFormatter() {
   return (value: number) => `${value * 100}%`;
 }
 
-const ScenarioDistributionByExercise: FunctionComponent<Props> = ({ scenarioId }) => {
+const AttackChainDistributionByAttackChainRun: FunctionComponent<Props> = ({ scenarioId }) => {
   // Standard hooks
   const { fsd, t } = useFormatter();
   const theme = useTheme();
 
   const simulationEndDateLabel = t('Simulation end date');
 
-  const [loadingScenarioStatistics, setLoadingScenarioStatistics] = useState(true);
-  const [statistic, setStatistic] = useState<ScenarioStatistic>();
+  const [loadingAttackChainStatistics, setLoadingAttackChainStatistics] = useState(true);
+  const [statistic, setStatistic] = useState<AttackChainStatistic>();
   const fetchStatistics = () => {
-    setLoadingScenarioStatistics(true);
-    fetchScenarioStatistic(scenarioId).then((result: { data: ScenarioStatistic }) => setStatistic(result.data)).finally(() => setLoadingScenarioStatistics(false));
+    setLoadingAttackChainStatistics(true);
+    fetchAttackChainStatistic(scenarioId).then((result: { data: AttackChainStatistic }) => setStatistic(result.data)).finally(() => setLoadingAttackChainStatistics(false));
   };
   useEffect(() => {
     fetchStatistics();
@@ -106,7 +106,7 @@ const ScenarioDistributionByExercise: FunctionComponent<Props> = ({ scenarioId }
     ['HUMAN_RESPONSE', 'Human Response', 'Successful'],
   ] as const;
 
-  const rawScores = statistic?.simulations_results_latest.global_scores_by_expectation_type || {};
+  const rawScores = statistic?.attack_chain_runs_results_latest.global_scores_by_expectation_type || {};
   const hasRealData = EXPECTATION_TYPES.some(([type]) => Array.isArray(rawScores[type]) && rawScores[type].length > 0);
   const globalScoresByExpectationType = hasRealData ? rawScores : generateFakeData();
   const isFakeData = !hasRealData;
@@ -120,8 +120,8 @@ const ScenarioDistributionByExercise: FunctionComponent<Props> = ({ scenarioId }
 
   return (
     <>
-      {loadingScenarioStatistics && (<Loader variant="inElement" />)}
-      {(!loadingScenarioStatistics && series[0].data.length > 0) && (
+      {loadingAttackChainStatistics && (<Loader variant="inElement" />)}
+      {(!loadingAttackChainStatistics && series[0].data.length > 0) && (
         <Chart
           options={verticalBarsChartOptions({
             theme,
@@ -141,7 +141,7 @@ const ScenarioDistributionByExercise: FunctionComponent<Props> = ({ scenarioId }
           height={300}
         />
       )}
-      {(!loadingScenarioStatistics && series[0].data.length === 0) && (
+      {(!loadingAttackChainStatistics && series[0].data.length === 0) && (
         <Empty
           message={t(
             'No data to display',
@@ -151,4 +151,4 @@ const ScenarioDistributionByExercise: FunctionComponent<Props> = ({ scenarioId }
     </>
   );
 };
-export default ScenarioDistributionByExercise;
+export default AttackChainDistributionByAttackChainRun;

@@ -2,29 +2,29 @@ import { UpdateOutlined } from '@mui/icons-material';
 import { Dialog, DialogContent, DialogTitle, IconButton, Tooltip } from '@mui/material';
 import { type FunctionComponent, useState } from 'react';
 
-import { updateExerciseStartDate } from '../../../../actions/AttackChainRun';
+import { updateAttackChainRunStartDate } from '../../../../actions/AttackChainRun';
 import Transition from '../../../../components/common/Transition';
 import { useFormatter } from '../../../../components/i18n';
-import { type Exercise } from '../../../../utils/api-types';
+import { type AttackChainRun } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
-import ExerciseDateForm from './ExerciseDateForm';
+import AttackChainRunDateForm from './AttackChainRunDateForm';
 
-interface Props { exercise: Exercise }
+interface Props { attack_chain_run: AttackChainRun }
 
-const ExerciseDatePopover: FunctionComponent<Props> = ({ exercise }) => {
+const AttackChainRunDatePopover: FunctionComponent<Props> = ({ attack_chain_run }) => {
   const [openEdit, setOpenEdit] = useState(false);
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
-  const onSubmitEdit = async (data: Pick<Exercise, 'exercise_start_date'>) => {
-    await dispatch(updateExerciseStartDate(exercise.exercise_id, data));
+  const onSubmitEdit = async (data: Pick<AttackChainRun, 'attack_chain_run_start_date'>) => {
+    await dispatch(updateAttackChainRunStartDate(attack_chain_run.attack_chain_run_id, data));
     setOpenEdit(false);
   };
-  const initialValues = { exercise_start_date: exercise.exercise_start_date };
+  const initialValues = { attack_chain_run_start_date: attack_chain_run.attack_chain_run_start_date };
   return (
     <>
       <Tooltip title={(t('Modify the scheduling'))}>
         <span>
-          <IconButton size="small" color="primary" onClick={() => setOpenEdit(true)} style={{ marginRight: 5 }} disabled={exercise.exercise_status !== 'SCHEDULED'}>
+          <IconButton size="small" color="primary" onClick={() => setOpenEdit(true)} style={{ marginRight: 5 }} disabled={attack_chain_run.attack_chain_run_status !== 'SCHEDULED'}>
             <UpdateOutlined />
           </IconButton>
         </span>
@@ -37,9 +37,9 @@ const ExerciseDatePopover: FunctionComponent<Props> = ({ exercise }) => {
         maxWidth="xs"
         fullWidth
       >
-        <DialogTitle>{t('Update simulation start date and time')}</DialogTitle>
+        <DialogTitle>{t('Update attack_chain_run start date and time')}</DialogTitle>
         <DialogContent>
-          <ExerciseDateForm
+          <AttackChainRunDateForm
             initialValues={initialValues}
             onSubmit={onSubmitEdit}
             handleClose={() => setOpenEdit(false)}
@@ -50,4 +50,4 @@ const ExerciseDatePopover: FunctionComponent<Props> = ({ exercise }) => {
   );
 };
 
-export default ExerciseDatePopover;
+export default AttackChainRunDatePopover;

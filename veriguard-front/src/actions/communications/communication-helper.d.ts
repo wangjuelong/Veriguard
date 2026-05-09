@@ -1,3 +1,3 @@
 import { type Communication } from '../../utils/api-types';
 
-export interface CommunicationHelper { getExerciseCommunications: (exerciseId: string) => Communication[] }
+export interface CommunicationHelper { getAttackChainRunCommunications: (exerciseId: string) => Communication[] }

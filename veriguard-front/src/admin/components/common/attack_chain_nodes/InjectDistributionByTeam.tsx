@@ -3,35 +3,35 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { fetchExerciseTeams } from '../../../../actions/AttackChainRun';
+import { fetchAttackChainRunTeams } from '../../../../actions/AttackChainRun';
 import { type TeamsHelper } from '../../../../actions/teams/team-helper';
 import Empty from '../../../../components/Empty';
 import { useFormatter } from '../../../../components/i18n';
 import { useHelper } from '../../../../store';
-import { type Exercise, type Team } from '../../../../utils/api-types';
+import { type AttackChainRun, type Team } from '../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../utils/Charts';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
 import { getTeamsColors } from '../../teams/utils';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
-const InjectDistributionByTeam: FunctionComponent<Props> = ({ exerciseId }) => {
+const AttackChainNodeDistributionByTeam: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
   // Fetching data
-  const { teams } = useHelper((helper: TeamsHelper) => ({ teams: helper.getExerciseTeams(exerciseId) }));
+  const { teams } = useHelper((helper: TeamsHelper) => ({ teams: helper.getAttackChainRunTeams(exerciseId) }));
   useDataLoader(() => {
-    dispatch(fetchExerciseTeams(exerciseId));
+    dispatch(fetchAttackChainRunTeams(exerciseId));
   });
 
   const teamsColors = getTeamsColors(teams);
   const sortedTeamsByExpectedScore = R.pipe(
     R.sortWith([
-      R.descend(R.prop('team_injects_expectations_total_expected_score')),
+      R.descend(R.prop('team_nodes_expectations_total_expected_score')),
     ]),
     R.take(10),
   )(teams || []);
@@ -40,7 +40,7 @@ const InjectDistributionByTeam: FunctionComponent<Props> = ({ exerciseId }) => {
       name: t('Total expected score'),
       data: sortedTeamsByExpectedScore.map((a: Team) => ({
         x: a.team_name,
-        y: a.team_injects_expectations_total_expected_score,
+        y: a.team_nodes_expectations_total_expected_score,
         fillColor: teamsColors[a.team_id],
       })),
     },
@@ -57,10 +57,10 @@ const InjectDistributionByTeam: FunctionComponent<Props> = ({ exerciseId }) => {
           height={50 + sortedTeamsByExpectedScore.length * 50}
         />
       ) : (
-        <Empty message={t('No teams in this exercise.')} />
+        <Empty message={t('No teams in this attack_chain_run.')} />
       )}
     </>
   );
 };
 
-export default InjectDistributionByTeam;
+export default AttackChainNodeDistributionByTeam;

@@ -5,7 +5,7 @@ import { type FunctionComponent } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { useFormatter } from '../../../../components/i18n';
-import { type ExpectationResultsByType, type InjectResultOutput } from '../../../../utils/api-types';
+import { type ExpectationResultsByType, type AttackChainNodeResultOutput } from '../../../../utils/api-types';
 import { expectationResultTypes } from '../../common/attack_chain_nodes/expectations/Expectation';
 
 const useStyles = makeStyles()(() => ({
@@ -18,7 +18,7 @@ const useStyles = makeStyles()(() => ({
 
 interface Props {
   expectations: ExpectationResultsByType[] | undefined;
-  injectId?: InjectResultOutput['inject_id'];
+  injectId?: AttackChainNodeResultOutput['node_id'];
 }
 
 const AtomicTestingResult: FunctionComponent<Props> = ({ expectations, injectId }) => {
@@ -38,14 +38,14 @@ const AtomicTestingResult: FunctionComponent<Props> = ({ expectations, injectId 
 
   if (!expectations || expectations.length === 0) {
     return (
-      <div className={classes.inline} id={`inject_expectations_${injectId}`}>
+      <div className={classes.inline} id={`node_expectations_${injectId}`}>
         -
       </div>
     );
   }
 
   return (
-    <div className={classes.inline} id={`inject_expectations_${injectId}`}>
+    <div className={classes.inline} id={`node_expectations_${injectId}`}>
       {expectations.sort((a, b) => expectationResultTypes.indexOf(a.type) - expectationResultTypes.indexOf(b.type)).map((expectation, index) => {
         const color = getColor(expectation.avgResult);
         let IconComponent;

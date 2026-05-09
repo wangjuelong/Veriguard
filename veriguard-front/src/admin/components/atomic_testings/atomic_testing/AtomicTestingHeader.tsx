@@ -3,18 +3,18 @@ import { useTheme } from '@mui/material/styles';
 
 import Breadcrumbs, { type BreadcrumbsElement } from '../../../../components/Breadcrumbs';
 import { useFormatter } from '../../../../components/i18n';
-import type { InjectResultOverviewOutput } from '../../../../utils/api-types';
+import type { AttackChainNodeResultOverviewOutput } from '../../../../utils/api-types';
 import ResponsePie from '../../common/attack_chain_nodes/ResponsePie';
 import AtomicTestingHeaderActions from './AtomicTestingHeaderActions';
 import AtomicTestingTabs from './AtomicTestingTabs';
 import AtomicTestingTitle from './AtomicTestingTitle';
 
 interface Props {
-  injectResultOverview: InjectResultOverviewOutput;
-  setInjectResultOverview: (injectResultOverviewOutput: InjectResultOverviewOutput) => void;
+  injectResultOverview: AttackChainNodeResultOverviewOutput;
+  setAttackChainNodeResultOverview: (injectResultOverviewOutput: AttackChainNodeResultOverviewOutput) => void;
 }
 
-const AtomicTestingHeader = ({ injectResultOverview, setInjectResultOverview }: Props) => {
+const AtomicTestingHeader = ({ injectResultOverview, setAttackChainNodeResultOverview }: Props) => {
   const { t } = useFormatter();
   const theme = useTheme();
 
@@ -24,7 +24,7 @@ const AtomicTestingHeader = ({ injectResultOverview, setInjectResultOverview }: 
       link: '/admin/atomic_testings',
     },
     {
-      label: injectResultOverview.inject_title,
+      label: injectResultOverview.node_title,
       current: true,
     },
   ];
@@ -52,8 +52,8 @@ const AtomicTestingHeader = ({ injectResultOverview, setInjectResultOverview }: 
           <AtomicTestingTitle injectResultOverview={injectResultOverview} />
           <AtomicTestingTabs injectResultOverview={injectResultOverview} />
         </Box>
-        <ResponsePie hasTitles={false} forceSize={112} expectationResultsByTypes={injectResultOverview.inject_expectation_results} />
-        <AtomicTestingHeaderActions injectResultOverview={injectResultOverview} setInjectResultOverview={setInjectResultOverview} />
+        <ResponsePie hasTitles={false} forceSize={112} expectationResultsByTypes={injectResultOverview.node_expectation_results} />
+        <AtomicTestingHeaderActions injectResultOverview={injectResultOverview} setAttackChainNodeResultOverview={setAttackChainNodeResultOverview} />
       </div>
     </Box>
   );

@@ -3,19 +3,19 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useContext } from 'react';
 import { useParams } from 'react-router';
 
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type Team } from '../../../../../utils/api-types';
+import { type AttackChainRun, type Team } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import { PermissionsContext, TeamContext } from '../../../common/Context';
 import ContextualTeams from '../../../components/teams/ContextualTeams';
 import UpdateTeams from '../../../components/teams/UpdateTeams';
-import teamContextForExercise from './teamContextForExercise';
+import teamContextForAttackChainRun from './teamContextForAttackChainRun';
 
-interface Props { exerciseTeamsUsers: Exercise['exercise_teams_users'] }
+interface Props { exerciseTeamsUsers: AttackChainRun['attack_chain_run_teams_users'] }
 
 const SimulationTeams: FunctionComponent<Props> = ({ exerciseTeamsUsers }) => {
   // Standard hooks
@@ -25,14 +25,14 @@ const SimulationTeams: FunctionComponent<Props> = ({ exerciseTeamsUsers }) => {
   const theme = useTheme();
 
   // Fetching data
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
-  const { teamsStore }: { teamsStore: Team[] } = useHelper((helper: ExercisesHelper) => ({ teamsStore: helper.getExerciseTeams(exerciseId) }));
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
+  const { teamsStore }: { teamsStore: Team[] } = useHelper((helper: AttackChainRunsHelper) => ({ teamsStore: helper.getAttackChainRunTeams(exerciseId) }));
   useDataLoader(() => {
-    dispatch(fetchExerciseTeams(exerciseId));
+    dispatch(fetchAttackChainRunTeams(exerciseId));
   });
 
   return (
-    <TeamContext.Provider value={teamContextForExercise(exerciseId, exerciseTeamsUsers)}>
+    <TeamContext.Provider value={teamContextForAttackChainRun(exerciseId, exerciseTeamsUsers)}>
       <div style={{
         display: 'grid',
         gap: `0 ${theme.spacing(3)}`,

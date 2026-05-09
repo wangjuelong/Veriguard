@@ -1,6 +1,6 @@
 import { type FunctionComponent } from 'react';
 
-import { createNotificationRule, deleteNotificationRule, updateNotificationRule } from '../../../../../actions/attack_chains/scenario-notification-rules';
+import { createNotificationRule, deleteNotificationRule, updateNotificationRule } from '../../../../../actions/attack_chains/attack_chain-notification-rules';
 import Drawer from '../../../../../components/common/Drawer';
 import { useFormatter } from '../../../../../components/i18n';
 import { type CreateNotificationRuleInput, type NotificationRuleOutput, type UpdateNotificationRuleInput } from '../../../../../utils/api-types';
@@ -18,7 +18,7 @@ interface Props {
   onDelete?: () => void;
 }
 
-const ScenarioNotificationRulesDrawer: FunctionComponent<Props> = ({
+const AttackChainNotificationRulesDrawer: FunctionComponent<Props> = ({
   open,
   editing,
   setOpen,
@@ -115,4 +115,4 @@ const ScenarioNotificationRulesDrawer: FunctionComponent<Props> = ({
   );
 };
 
-export default ScenarioNotificationRulesDrawer;
+export default AttackChainNotificationRulesDrawer;

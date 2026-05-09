@@ -4,40 +4,40 @@ import { type FunctionComponent, useState } from 'react';
 import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
-import { fetchExerciseChallenges } from '../../../../../actions/challenge-action';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
+import { fetchAttackChainRunChallenges } from '../../../../../actions/challenge-action';
 import { type ArticlesHelper } from '../../../../../actions/channels/article-helper';
-import { fetchExerciseDocuments } from '../../../../../actions/documents/documents-actions';
+import { fetchAttackChainRunDocuments } from '../../../../../actions/documents/documents-actions';
 import { type ChallengeHelper } from '../../../../../actions/helper';
-import { testInject } from '../../../../../actions/inject_test/simulation-inject-test-actions';
+import { testAttackChainNode } from '../../../../../actions/node_test/attack_chain_run-node-test-actions';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
-import { fetchVariablesForExercise } from '../../../../../actions/variables/variable-actions';
+import { fetchVariablesForAttackChainRun } from '../../../../../actions/variables/variable-actions';
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Exercise } from '../../../../../utils/api-types';
+import { type AttackChainRun } from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
-import endpointContextForExercise from '../../../../../utils/context/endpoint/EndpointContextForExercise';
+import endpointContextForAttackChainRun from '../../../../../utils/context/endpoint/EndpointContextForAttackChainRun';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
-import InjectDistributionByTeam from '../../../common/attack_chain_nodes/InjectDistributionByTeam';
-import InjectDistributionByType from '../../../common/attack_chain_nodes/InjectDistributionByType';
-import Injects from '../../../common/attack_chain_nodes/Injects';
+import AttackChainNodeDistributionByTeam from '../../../common/attack_chain_nodes/AttackChainNodeDistributionByTeam';
+import AttackChainNodeDistributionByType from '../../../common/attack_chain_nodes/AttackChainNodeDistributionByType';
+import AttackChainNodes from '../../../common/attack_chain_nodes/AttackChainNodes';
 import {
   ArticleContext,
   ChallengeContext,
-  InjectTestContext,
-  type InjectTestContextType,
+  AttackChainNodeTestContext,
+  type AttackChainNodeTestContextType,
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
-import articleContextForExercise from '../articles/articleContextForExercise';
-import ExerciseDistributionScoreByTeamInPercentage from '../overview/ExerciseDistributionScoreByTeamInPercentage';
-import ExerciseDistributionScoreOverTimeByInjectorContract from '../overview/ExerciseDistributionScoreOverTimeByInjectorContract';
-import ExerciseDistributionScoreOverTimeByTeam from '../overview/ExerciseDistributionScoreOverTimeByTeam';
-import ExerciseDistributionScoreOverTimeByTeamInPercentage from '../overview/ExerciseDistributionScoreOverTimeByTeamInPercentage';
-import teamContextForExercise from '../teams/teamContextForExercise';
+import articleContextForAttackChainRun from '../articles/articleContextForAttackChainRun';
+import AttackChainRunDistributionScoreByTeamInPercentage from '../overview/AttackChainRunDistributionScoreByTeamInPercentage';
+import AttackChainRunDistributionScoreOverTimeByInjectorContract from '../overview/AttackChainRunDistributionScoreOverTimeByInjectorContract';
+import AttackChainRunDistributionScoreOverTimeByTeam from '../overview/AttackChainRunDistributionScoreOverTimeByTeam';
+import AttackChainRunDistributionScoreOverTimeByTeamInPercentage from '../overview/AttackChainRunDistributionScoreOverTimeByTeamInPercentage';
+import teamContextForAttackChainRun from '../teams/teamContextForAttackChainRun';
 
 const useStyles = makeStyles()(() => ({
   paperChart: {
@@ -48,49 +48,49 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-const ExerciseInjects: FunctionComponent = () => {
+const AttackChainRunAttackChainNodes: FunctionComponent = () => {
   // Standard hooks
   const { t } = useFormatter();
   const { classes } = useStyles();
   const dispatch = useAppDispatch();
   const availableButtons = ['chain', 'list', 'distribution'];
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
 
   const [viewMode, setViewMode] = useState(() => {
-    const storedValue = localStorage.getItem('scenario_or_exercise_view_mode');
+    const storedValue = localStorage.getItem('attack_chain_or_attack_chain_run_view_mode');
     return storedValue === null || !availableButtons.includes(storedValue) ? 'list' : storedValue;
   });
 
   const handleViewMode = (mode: string) => {
-    localStorage.setItem('scenario_or_exercise_view_mode', mode);
+    localStorage.setItem('attack_chain_or_attack_chain_run_view_mode', mode);
     setViewMode(mode);
   };
 
-  const { exercise, teams, articles, variables } = useHelper(
-    (helper: ExercisesHelper & ArticlesHelper & ChallengeHelper & VariablesHelper & TeamsHelper) => {
+  const { attack_chain_run, teams, articles, variables } = useHelper(
+    (helper: AttackChainRunsHelper & ArticlesHelper & ChallengeHelper & VariablesHelper & TeamsHelper) => {
       return {
-        exercise: helper.getExercise(exerciseId),
-        teams: helper.getExerciseTeams(exerciseId),
-        articles: helper.getExerciseArticles(exerciseId),
-        variables: helper.getExerciseVariables(exerciseId),
+        attack_chain_run: helper.getAttackChainRun(exerciseId),
+        teams: helper.getAttackChainRunTeams(exerciseId),
+        articles: helper.getAttackChainRunArticles(exerciseId),
+        variables: helper.getAttackChainRunVariables(exerciseId),
       };
     },
   );
   useDataLoader(() => {
-    dispatch(fetchExerciseTeams(exerciseId));
-    dispatch(fetchVariablesForExercise(exerciseId));
-    dispatch(fetchExerciseDocuments(exerciseId));
+    dispatch(fetchAttackChainRunTeams(exerciseId));
+    dispatch(fetchVariablesForAttackChainRun(exerciseId));
+    dispatch(fetchAttackChainRunDocuments(exerciseId));
   });
 
-  const articleContext = articleContextForExercise(exerciseId);
-  const teamContext = teamContextForExercise(exerciseId, exercise.exercise_teams_users, exercise.exercise_all_users_number, exercise.exercise_users_number);
-  const endpointContext = endpointContextForExercise(exerciseId);
-  const challengeContext = { fetchChallenges: () => dispatch(fetchExerciseChallenges(exerciseId)) };
+  const articleContext = articleContextForAttackChainRun(exerciseId);
+  const teamContext = teamContextForAttackChainRun(exerciseId, attack_chain_run.attack_chain_run_teams_users, attack_chain_run.attack_chain_run_all_users_number, attack_chain_run.attack_chain_run_users_number);
+  const endpointContext = endpointContextForAttackChainRun(exerciseId);
+  const challengeContext = { fetchChallenges: () => dispatch(fetchAttackChainRunChallenges(exerciseId)) };
 
-  const injectTestContext: InjectTestContextType = {
+  const injectTestContext: AttackChainNodeTestContextType = {
     contextId: exerciseId,
     url: `/admin/attack_chain_runs/${exerciseId}/tests/`,
-    testInject: testInject,
+    testAttackChainNode: testAttackChainNode,
   };
 
   return (
@@ -100,8 +100,8 @@ const ExerciseInjects: FunctionComponent = () => {
           <TeamContext.Provider value={teamContext}>
             <EndpointContext.Provider value={endpointContext}>
               <ChallengeContext.Provider value={challengeContext}>
-                <InjectTestContext.Provider value={injectTestContext}>
-                  <Injects
+                <AttackChainNodeTestContext.Provider value={injectTestContext}>
+                  <AttackChainNodes
                     setViewMode={handleViewMode}
                     availableButtons={availableButtons}
                     teams={teams}
@@ -109,7 +109,7 @@ const ExerciseInjects: FunctionComponent = () => {
                     variables={variables}
                     uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
                   />
-                </InjectTestContext.Provider>
+                </AttackChainNodeTestContext.Provider>
               </ChallengeContext.Provider>
             </EndpointContext.Provider>
           </TeamContext.Provider>
@@ -165,10 +165,10 @@ const ExerciseInjects: FunctionComponent = () => {
                 }}
               >
                 <Typography variant="h4">
-                  {t('Distribution of injects by type')}
+                  {t('Distribution of nodes by type')}
                 </Typography>
                 <Paper variant="outlined" classes={{ root: classes.paperChart }}>
-                  <InjectDistributionByType exerciseId={exerciseId} />
+                  <AttackChainNodeDistributionByType exerciseId={exerciseId} />
                 </Paper>
               </GridLegacy>
               <GridLegacy
@@ -180,10 +180,10 @@ const ExerciseInjects: FunctionComponent = () => {
                 }}
               >
                 <Typography variant="h4">
-                  {t('Distribution of injects by team')}
+                  {t('Distribution of nodes by team')}
                 </Typography>
                 <Paper variant="outlined" classes={{ root: classes.paperChart }}>
-                  <InjectDistributionByTeam exerciseId={exerciseId} />
+                  <AttackChainNodeDistributionByTeam exerciseId={exerciseId} />
                 </Paper>
               </GridLegacy>
               <GridLegacy
@@ -195,12 +195,12 @@ const ExerciseInjects: FunctionComponent = () => {
                 }}
               >
                 <Typography variant="h4">
-                  {t('Distribution of expectations by inject type')}
+                  {t('Distribution of expectations by node type')}
                   {' '}
                   (%)
                 </Typography>
                 <Paper variant="outlined" classes={{ root: classes.paperChart }}>
-                  <ExerciseDistributionScoreByTeamInPercentage exerciseId={exerciseId} />
+                  <AttackChainRunDistributionScoreByTeamInPercentage exerciseId={exerciseId} />
                 </Paper>
               </GridLegacy>
               <GridLegacy
@@ -212,10 +212,10 @@ const ExerciseInjects: FunctionComponent = () => {
                 }}
               >
                 <Typography variant="h4">
-                  {t('Distribution of expected total score by inject type')}
+                  {t('Distribution of expected total score by node type')}
                 </Typography>
                 <Paper variant="outlined" classes={{ root: classes.paperChart }}>
-                  <ExerciseDistributionScoreOverTimeByInjectorContract exerciseId={exerciseId} />
+                  <AttackChainRunDistributionScoreOverTimeByInjectorContract exerciseId={exerciseId} />
                 </Paper>
               </GridLegacy>
               <GridLegacy
@@ -230,7 +230,7 @@ const ExerciseInjects: FunctionComponent = () => {
                   {t('Distribution of expectations by team')}
                 </Typography>
                 <Paper variant="outlined" classes={{ root: classes.paperChart }}>
-                  <ExerciseDistributionScoreOverTimeByTeam exerciseId={exerciseId} />
+                  <AttackChainRunDistributionScoreOverTimeByTeam exerciseId={exerciseId} />
                 </Paper>
               </GridLegacy>
               <GridLegacy
@@ -245,7 +245,7 @@ const ExerciseInjects: FunctionComponent = () => {
                   {t('Distribution of expected total score by team')}
                 </Typography>
                 <Paper variant="outlined" classes={{ root: classes.paperChart }}>
-                  <ExerciseDistributionScoreOverTimeByTeamInPercentage exerciseId={exerciseId} />
+                  <AttackChainRunDistributionScoreOverTimeByTeamInPercentage exerciseId={exerciseId} />
                 </Paper>
               </GridLegacy>
             </GridLegacy>
@@ -256,4 +256,4 @@ const ExerciseInjects: FunctionComponent = () => {
   );
 };
 
-export default ExerciseInjects;
+export default AttackChainRunAttackChainNodes;

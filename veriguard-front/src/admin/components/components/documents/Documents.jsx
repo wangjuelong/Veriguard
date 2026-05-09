@@ -5,8 +5,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchScenariosById } from '../../../../actions/attack_chains/scenario-actions';
-import { fetchExercisesById } from '../../../../actions/AttackChainRun';
+import { fetchAttackChainsById } from '../../../../actions/attack_chains/attack_chain-actions';
+import { fetchAttackChainRunsById } from '../../../../actions/AttackChainRun';
 import { searchDocuments } from '../../../../actions/Document';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
 import PaginationComponent from '../../../../components/common/pagination/PaginationComponent';
@@ -33,14 +33,14 @@ const useStyles = makeStyles()(() => ({
     paddingLeft: 10,
     height: 50,
   },
-  exercise: {
+  attack_chain_run: {
     fontSize: 12,
     height: 20,
     float: 'left',
     marginRight: 7,
     width: 120,
   },
-  scenario: {
+  attack_chain: {
     fontSize: 12,
     height: 20,
     float: 'left',
@@ -52,11 +52,11 @@ const useStyles = makeStyles()(() => ({
 const inlineStyles = {
   document_name: { width: '20%' },
   document_description: { width: '15%' },
-  document_exercises: {
+  document_attack_chain_runs: {
     width: '20%',
     cursor: 'default',
   },
-  document_scenarios: {
+  document_attack_chains: {
     width: '20%',
     cursor: 'default',
   },
@@ -72,8 +72,8 @@ const Documents = () => {
   const navigate = useNavigate();
   const { t } = useFormatter();
   const { exercisesMap, scenariosMap } = useHelper(helper => ({
-    exercisesMap: helper.getExercisesMap(),
-    scenariosMap: helper.getScenariosMap(),
+    exercisesMap: helper.getAttackChainRunsMap(),
+    scenariosMap: helper.getAttackChainsMap(),
   }));
 
   // Headers
@@ -89,13 +89,13 @@ const Documents = () => {
       isSortable: true,
     },
     {
-      field: 'document_exercises',
+      field: 'document_attack_chain_runs',
       label: 'Simulations',
       isSortable: false,
     },
     {
-      field: 'document_scenarios',
-      label: 'Scenarios',
+      field: 'document_attack_chains',
+      label: 'AttackChains',
       isSortable: false,
     },
     {
@@ -113,37 +113,37 @@ const Documents = () => {
   const [documents, setDocuments] = useState([]);
   const [searchPaginationInput, setSearchPaginationInput] = useState({ sorts: initSorting('document_name') });
   const [loadingDocuments, setLoadingDocuments] = useState(true);
-  const [loadingExercisesAndScenarios, setLoadingExercisesAndScenarios] = useState(false);
+  const [loadingAttackChainRunsAndAttackChains, setLoadingAttackChainRunsAndAttackChains] = useState(false);
 
   useEffect(() => {
     if (documents.length === 0) return;
 
-    setLoadingExercisesAndScenarios(true);
+    setLoadingAttackChainRunsAndAttackChains(true);
 
     const exerciseIds = new Set(
-      documents.flatMap(d => d.document_exercises?.slice(0, 3) ?? []),
+      documents.flatMap(d => d.document_attack_chain_runs?.slice(0, 3) ?? []),
     );
 
     const scenarioIds = new Set(
-      documents.flatMap(d => d.document_scenarios?.slice(0, 3) ?? []),
+      documents.flatMap(d => d.document_attack_chains?.slice(0, 3) ?? []),
     );
 
     const promises = [];
 
     if (exerciseIds.size > 0) {
       promises.push(
-        dispatch(fetchExercisesById({ exercise_ids: [...exerciseIds] })),
+        dispatch(fetchAttackChainRunsById({ attack_chain_run_ids: [...exerciseIds] })),
       );
     }
 
     if (scenarioIds.size > 0) {
       promises.push(
-        dispatch(fetchScenariosById({ scenario_ids: [...scenarioIds] })),
+        dispatch(fetchAttackChainsById({ attack_chain_ids: [...scenarioIds] })),
       );
     }
 
     Promise.all(promises).finally(() => {
-      setLoadingExercisesAndScenarios(false);
+      setLoadingAttackChainRunsAndAttackChains(false);
     });
   }, [documents, dispatch]);
 
@@ -219,11 +219,11 @@ const Documents = () => {
           />
           <ListItemSecondaryAction> &nbsp; </ListItemSecondaryAction>
         </ListItem>
-        {(loadingDocuments || loadingExercisesAndScenarios)
+        {(loadingDocuments || loadingAttackChainRunsAndAttackChains)
           ? <PaginatedListLoader Icon={HelpOutlineOutlined} headers={headers} headerStyles={inlineStyles} />
           : documents.map((document) => {
-              const displayedExercises = document.document_exercises?.slice(0, 3) ?? [];
-              const displayedScenarios = document.document_scenarios?.slice(0, 3) ?? [];
+              const displayedAttackChainRuns = document.document_attack_chain_runs?.slice(0, 3) ?? [];
+              const displayedAttackChains = document.document_attack_chains?.slice(0, 3) ?? [];
               return (
                 <ListItem
                   key={document.document_id}
@@ -233,7 +233,7 @@ const Documents = () => {
                       document={document}
                       onUpdate={result => setDocuments(documents.map(d => (d.document_id !== result.document_id ? d : result)))}
                       onDelete={result => setDocuments(documents.filter(d => (d.document_id !== result)))}
-                      scenariosAndExercisesFetched
+                      scenariosAndAttackChainRunsFetched
                       inList
                     />
                   )}
@@ -269,29 +269,29 @@ const Documents = () => {
                           <div
                             style={{
                               ...bodyItemsStyles.bodyItem,
-                              ...inlineStyles.document_exercises,
+                              ...inlineStyles.document_attack_chain_runs,
                             }}
                           >
-                            {displayedExercises && displayedExercises.length > 0 ? (
-                              displayedExercises.map((e) => {
-                                const exercise = exercisesMap[e];
+                            {displayedAttackChainRuns && displayedAttackChainRuns.length > 0 ? (
+                              displayedAttackChainRuns.map((e) => {
+                                const attack_chain_run = exercisesMap[e];
 
-                                if (!exercise) {
+                                if (!attack_chain_run) {
                                   return <span key={e}>-</span>;
                                 }
 
                                 return (
-                                  <Tooltip key={exercise.exercise_id} title={exercise.exercise_name}>
+                                  <Tooltip key={attack_chain_run.attack_chain_run_id} title={attack_chain_run.attack_chain_run_name}>
                                     <Chip
                                       icon={<RowingOutlined style={{ fontSize: 12 }} />}
-                                      classes={{ root: classes.exercise }}
+                                      classes={{ root: classes.attack_chain_run }}
                                       variant="outlined"
-                                      label={exercise.exercise_name}
+                                      label={attack_chain_run.attack_chain_run_name}
                                       clickable
                                       onClick={(event) => {
                                         event.stopPropagation();
                                         event.preventDefault();
-                                        navigate(`/admin/attack_chain_runs/${exercise.exercise_id}`);
+                                        navigate(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}`);
                                       }}
                                     />
                                   </Tooltip>
@@ -304,29 +304,29 @@ const Documents = () => {
                           <div
                             style={{
                               ...bodyItemsStyles.bodyItem,
-                              ...inlineStyles.document_scenarios,
+                              ...inlineStyles.document_attack_chains,
                             }}
                           >
-                            {displayedScenarios && displayedScenarios.length > 0 ? (
-                              displayedScenarios.map((e) => {
-                                const scenario = scenariosMap[e];
+                            {displayedAttackChains && displayedAttackChains.length > 0 ? (
+                              displayedAttackChains.map((e) => {
+                                const attack_chain = scenariosMap[e];
 
-                                if (!scenario) {
+                                if (!attack_chain) {
                                   return <span key={e}>-</span>;
                                 }
 
                                 return (
-                                  <Tooltip key={scenario.scenario_id} title={scenario.scenario_name}>
+                                  <Tooltip key={attack_chain.attack_chain_id} title={attack_chain.attack_chain_name}>
                                     <Chip
                                       icon={<RowingOutlined style={{ fontSize: 12 }} />}
-                                      classes={{ root: classes.scenario }}
+                                      classes={{ root: classes.attack_chain }}
                                       variant="outlined"
-                                      label={scenario.scenario_name}
+                                      label={attack_chain.attack_chain_name}
                                       clickable
                                       onClick={(event) => {
                                         event.stopPropagation();
                                         event.preventDefault();
-                                        navigate(`/admin/attack_chains/${scenario.scenario_id}`);
+                                        navigate(`/admin/attack_chains/${attack_chain.attack_chain_id}`);
                                       }}
                                     />
                                   </Tooltip>

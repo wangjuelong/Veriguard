@@ -29,7 +29,7 @@ interface Props {
   label?: string | boolean;
 }
 
-const InjectAddEndpoints: FunctionComponent<Props> = ({
+const AttackChainNodeAddEndpoints: FunctionComponent<Props> = ({
   disabled = false,
   endpointIds,
   onSubmit,
@@ -79,10 +79,10 @@ const InjectAddEndpoints: FunctionComponent<Props> = ({
         payloadArch={payloadArch}
         onClose={handleClose}
         onSubmit={onSubmit}
-        title={t('Modify assets in this inject')}
+        title={t('Modify assets in this node')}
       />
     </>
   );
 };
 
-export default InjectAddEndpoints;
+export default AttackChainNodeAddEndpoints;

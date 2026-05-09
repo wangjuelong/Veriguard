@@ -4,7 +4,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import colorStyles from '../../../../components/Color';
 import { useFormatter } from '../../../../components/i18n';
-import { type Scenario } from '../../../../utils/api-types';
+import { type AttackChain } from '../../../../utils/api-types';
 
 const useStyles = makeStyles()(() => ({
   chip: {
@@ -27,7 +27,7 @@ const useStyles = makeStyles()(() => ({
 }));
 
 interface Props {
-  scenario: Scenario;
+  attack_chain: AttackChain;
   variant?: 'list';
 }
 
@@ -35,7 +35,7 @@ export const SCENARIO_SCHEDULED_STATUS = 'Scheduled';
 export const SCENARIO_NOT_SCHEDULED_STATUS = 'Not planned';
 
 const scenarioStatus: FunctionComponent<Props> = ({
-  scenario,
+  attack_chain,
   variant,
 }) => {
   // Standard hooks
@@ -43,7 +43,7 @@ const scenarioStatus: FunctionComponent<Props> = ({
   const { classes } = useStyles();
 
   const style = variant === 'list' ? classes.chipInList : classes.chip;
-  if (scenario.scenario_recurrence) {
+  if (attack_chain.attack_chain_recurrence) {
     return (
       <Chip
         classes={{ root: style }}

@@ -1,11 +1,11 @@
 import { type FunctionComponent, useEffect, useState } from 'react';
 
 import { getAlertLinksCount } from '../../../../../actions/atomic_testings/atomic-testing-actions';
-import { type InjectExpectationResult } from '../../../../../utils/api-types';
+import { type AttackChainNodeExpectationResult } from '../../../../../utils/api-types';
 
 interface Props {
   injectExpectationId: string;
-  expectationResult: InjectExpectationResult;
+  expectationResult: AttackChainNodeExpectationResult;
 }
 
 const TargetResultAlertNumber: FunctionComponent<Props> = ({

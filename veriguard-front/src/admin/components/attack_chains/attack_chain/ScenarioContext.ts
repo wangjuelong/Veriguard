@@ -1,87 +1,87 @@
 import { useState } from 'react';
 
-import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
-import { dryImportXlsForScenario, fetchScenario, fetchScenarioTeams, importXlsForScenario } from '../../../../actions/attack_chains/scenario-actions';
-import { createInjectsForScenario, importInjectsForScenario, searchScenarioInjectsSimple } from '../../../../actions/attack_chains/scenario-inject-actions';
-import { addInjectForScenario, bulkDeleteInjectsSimple, bulkUpdateInjectSimple, deleteInjectScenario, fetchScenarioInjects, updateInjectActivationForScenario, updateInjectForScenario } from '../../../../actions/AttackChainNode';
-import { bulkTestInjects } from '../../../../actions/inject_test/scenario-inject-test-actions';
+import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../../../actions/attack_chain_nodes/AttackChainNode';
+import { dryImportXlsForAttackChain, fetchAttackChain, fetchAttackChainTeams, importXlsForAttackChain } from '../../../../actions/attack_chains/attack_chain-actions';
+import { createAttackChainNodesForAttackChain, importAttackChainNodesForAttackChain, searchAttackChainAttackChainNodesSimple } from '../../../../actions/attack_chains/attack_chain-node-actions';
+import { addAttackChainNodeForAttackChain, bulkDeleteAttackChainNodesSimple, bulkUpdateAttackChainNodeSimple, deleteAttackChainNodeAttackChain, fetchAttackChainAttackChainNodes, updateAttackChainNodeActivationForAttackChain, updateAttackChainNodeForAttackChain } from '../../../../actions/AttackChainNode';
+import { bulkTestAttackChainNodes } from '../../../../actions/node_test/attack_chain-node-test-actions';
 import { type Page } from '../../../../components/common/queryable/Page';
-import { type ImportTestSummary, type Inject, type InjectBulkProcessingInput, type InjectBulkUpdateInputs, type InjectInput, type InjectsImportInput, type InjectTestStatusOutput, type Scenario, type SearchPaginationInput } from '../../../../utils/api-types';
+import { type ImportTestSummary, type AttackChainNode, type AttackChainNodeBulkProcessingInput, type AttackChainNodeBulkUpdateInputs, type AttackChainNodeInput, type AttackChainNodesImportInput, type AttackChainNodeTestStatusOutput, type AttackChain, type SearchPaginationInput } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 
-const injectContextForScenario = (scenario: Scenario) => {
+const injectContextForAttackChain = (attack_chain: AttackChain) => {
   const dispatch = useAppDispatch();
-  const [injects, setInjects] = useState<InjectOutputType[]>([]);
+  const [nodes, setAttackChainNodes] = useState<AttackChainNodeOutputType[]>([]);
 
   return {
-    injects,
-    setInjects,
-    searchInjects(input: SearchPaginationInput): Promise<{ data: Page<InjectOutputType> }> {
-      return searchScenarioInjectsSimple(scenario.scenario_id, input);
+    nodes,
+    setAttackChainNodes,
+    searchAttackChainNodes(input: SearchPaginationInput): Promise<{ data: Page<AttackChainNodeOutputType> }> {
+      return searchAttackChainAttackChainNodesSimple(attack_chain.attack_chain_id, input);
     },
-    onAddInject(inject: Inject): Promise<{
+    onAddAttackChainNode(node: AttackChainNode): Promise<{
       result: string;
-      entities: { injects: Record<string, InjectStore> };
+      entities: { nodes: Record<string, AttackChainNodeStore> };
     }> {
-      return dispatch(addInjectForScenario(scenario.scenario_id, inject));
+      return dispatch(addAttackChainNodeForAttackChain(attack_chain.attack_chain_id, node));
     },
 
-    onAddMultipleInjects(inputs: InjectInput[]): Promise<{
+    onAddMultipleAttackChainNodes(inputs: AttackChainNodeInput[]): Promise<{
       result: string[];
-      entities: { injects: Record<string, InjectStore> };
+      entities: { nodes: Record<string, AttackChainNodeStore> };
     }> {
-      return dispatch(createInjectsForScenario(scenario.scenario_id, inputs));
+      return dispatch(createAttackChainNodesForAttackChain(attack_chain.attack_chain_id, inputs));
     },
-    onBulkUpdateInject(param: InjectBulkUpdateInputs): Promise<Inject[] | void> {
-      return bulkUpdateInjectSimple(param).then((result: { data: Inject[] }) => result?.data);
+    onBulkUpdateAttackChainNode(param: AttackChainNodeBulkUpdateInputs): Promise<AttackChainNode[] | void> {
+      return bulkUpdateAttackChainNodeSimple(param).then((result: { data: AttackChainNode[] }) => result?.data);
     },
-    onUpdateInject(injectId: Inject['inject_id'], inject: Inject): Promise<{
+    onUpdateAttackChainNode(injectId: AttackChainNode['node_id'], node: AttackChainNode): Promise<{
       result: string;
-      entities: { injects: Record<string, InjectStore> };
+      entities: { nodes: Record<string, AttackChainNodeStore> };
     }> {
-      return dispatch(updateInjectForScenario(scenario.scenario_id, injectId, inject));
+      return dispatch(updateAttackChainNodeForAttackChain(attack_chain.attack_chain_id, injectId, node));
     },
-    onUpdateInjectActivation(injectId: Inject['inject_id'], injectEnabled: { inject_enabled: boolean }): Promise<{
+    onUpdateAttackChainNodeActivation(injectId: AttackChainNode['node_id'], injectEnabled: { node_enabled: boolean }): Promise<{
       result: string;
-      entities: { injects: Record<string, InjectStore> };
+      entities: { nodes: Record<string, AttackChainNodeStore> };
     }> {
-      return dispatch(updateInjectActivationForScenario(scenario.scenario_id, injectId, injectEnabled));
+      return dispatch(updateAttackChainNodeActivationForAttackChain(attack_chain.attack_chain_id, injectId, injectEnabled));
     },
-    onDeleteInject(injectId: Inject['inject_id']): Promise<void> {
-      return dispatch(deleteInjectScenario(scenario.scenario_id, injectId));
+    onDeleteAttackChainNode(injectId: AttackChainNode['node_id']): Promise<void> {
+      return dispatch(deleteAttackChainNodeAttackChain(attack_chain.attack_chain_id, injectId));
     },
-    onImportInjectFromJson(file: File): Promise<void> {
-      return importInjectsForScenario(scenario.scenario_id, file).then(response => new Promise((resolve, _reject) => {
-        dispatch(fetchScenarioInjects(scenario.scenario_id));
-        dispatch(fetchScenario(scenario.scenario_id));
-        dispatch(fetchScenarioTeams(scenario.scenario_id));
+    onImportAttackChainNodeFromJson(file: File): Promise<void> {
+      return importAttackChainNodesForAttackChain(attack_chain.attack_chain_id, file).then(response => new Promise((resolve, _reject) => {
+        dispatch(fetchAttackChainAttackChainNodes(attack_chain.attack_chain_id));
+        dispatch(fetchAttackChain(attack_chain.attack_chain_id));
+        dispatch(fetchAttackChainTeams(attack_chain.attack_chain_id));
         resolve(response.data);
       }));
     },
-    onImportInjectFromXls(importId: string, input: InjectsImportInput): Promise<ImportTestSummary> {
-      return importXlsForScenario(scenario.scenario_id, importId, input).then(response => new Promise((resolve, _reject) => {
-        dispatch(fetchScenarioInjects(scenario.scenario_id));
-        dispatch(fetchScenario(scenario.scenario_id));
-        dispatch(fetchScenarioTeams(scenario.scenario_id));
+    onImportAttackChainNodeFromXls(importId: string, input: AttackChainNodesImportInput): Promise<ImportTestSummary> {
+      return importXlsForAttackChain(attack_chain.attack_chain_id, importId, input).then(response => new Promise((resolve, _reject) => {
+        dispatch(fetchAttackChainAttackChainNodes(attack_chain.attack_chain_id));
+        dispatch(fetchAttackChain(attack_chain.attack_chain_id));
+        dispatch(fetchAttackChainTeams(attack_chain.attack_chain_id));
         resolve(response.data);
       }));
     },
-    async onDryImportInjectFromXls(importId: string, input: InjectsImportInput): Promise<ImportTestSummary> {
-      return dryImportXlsForScenario(scenario.scenario_id, importId, input).then(result => result.data);
+    async onDryImportAttackChainNodeFromXls(importId: string, input: AttackChainNodesImportInput): Promise<ImportTestSummary> {
+      return dryImportXlsForAttackChain(attack_chain.attack_chain_id, importId, input).then(result => result.data);
     },
-    onBulkDeleteInjects(param: InjectBulkProcessingInput): Promise<Inject[]> {
-      return bulkDeleteInjectsSimple(param).then((result: { data: Inject[] }) => result?.data);
+    onBulkDeleteAttackChainNodes(param: AttackChainNodeBulkProcessingInput): Promise<AttackChainNode[]> {
+      return bulkDeleteAttackChainNodesSimple(param).then((result: { data: AttackChainNode[] }) => result?.data);
     },
-    bulkTestInjects(param: InjectBulkProcessingInput): Promise<{
+    bulkTestAttackChainNodes(param: AttackChainNodeBulkProcessingInput): Promise<{
       uri: string;
-      data: InjectTestStatusOutput[];
+      data: AttackChainNodeTestStatusOutput[];
     }> {
-      return bulkTestInjects(scenario.scenario_id, param).then(result => ({
-        uri: `/admin/attack_chains/${scenario.scenario_id}/tests`,
+      return bulkTestAttackChainNodes(attack_chain.attack_chain_id, param).then(result => ({
+        uri: `/admin/attack_chains/${attack_chain.attack_chain_id}/tests`,
         data: result.data,
       }));
     },
   };
 };
 
-export default injectContextForScenario;
+export default injectContextForAttackChain;

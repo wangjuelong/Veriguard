@@ -239,7 +239,7 @@ const WidgetForm: FunctionComponent<Props> = ({
             control={control}
             name="widget_config.series"
             render={({ field: { value, onChange } }) => (
-              <WidgetSecurityDomainsSeriesSelection entity="expectation-inject" onSubmit={nextStep} currentSeries={value ?? [{ name: '' }]} onChange={onChange} />
+              <WidgetSecurityDomainsSeriesSelection entity="expectation-node" onSubmit={nextStep} currentSeries={value ?? [{ name: '' }]} onChange={onChange} />
             )}
           />
         );

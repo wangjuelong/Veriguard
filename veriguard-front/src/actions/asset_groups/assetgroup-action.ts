@@ -99,12 +99,12 @@ export const findSimulationAssetGroupsByIds = (simulationId: string, assetGroupI
 
 // -- SCENARIOS --
 
-export const fetchScenarioAssetGroups = (scenarioId: string) => (dispatch: Dispatch) => {
+export const fetchAttackChainAssetGroups = (scenarioId: string) => (dispatch: Dispatch) => {
   const uri = `/api/attack_chains/${scenarioId}/asset-groups`;
   return getReferential(arrayOfAssetGroups, uri)(dispatch);
 };
 
-export const findScenarioAssetGroupsByIds = (scenarioId: string, assetGroupIds: string[]) => {
+export const findAttackChainAssetGroupsByIds = (scenarioId: string, assetGroupIds: string[]) => {
   const uri = `/api/attack_chains/${scenarioId}/asset-groups/find`;
   return simplePostCall(uri, assetGroupIds);
 };

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import { fetchMe } from '../../../../actions/Application';
 import { launchAtomicTesting, relaunchAtomicTesting } from '../../../../actions/atomic_testings/atomic-testing-actions';
 import { useFormatter } from '../../../../components/i18n';
-import type { InjectResultOverviewOutput } from '../../../../utils/api-types';
+import type { AttackChainNodeResultOverviewOutput } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import { AbilityContext } from '../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
@@ -15,17 +15,17 @@ import AtomicTestingPopover from './AtomicTestingPopover';
 import AtomicTestingUpdate from './AtomicTestingUpdate';
 
 interface Props {
-  injectResultOverview: InjectResultOverviewOutput;
-  setInjectResultOverview: (injectResultOverviewOutput: InjectResultOverviewOutput) => void;
+  injectResultOverview: AttackChainNodeResultOverviewOutput;
+  setAttackChainNodeResultOverview: (injectResultOverviewOutput: AttackChainNodeResultOverviewOutput) => void;
 }
 
-const AtomicTestingHeaderActions = ({ injectResultOverview, setInjectResultOverview }: Props) => {
+const AtomicTestingHeaderActions = ({ injectResultOverview, setAttackChainNodeResultOverview }: Props) => {
   const { t } = useFormatter();
   const theme = useTheme();
   const navigate = useNavigate();
   const ability = useContext(AbilityContext);
   const dispatch = useAppDispatch();
-  const hasAbility = ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT) || ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, injectResultOverview.inject_id);
+  const hasAbility = ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT) || ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, injectResultOverview.node_id);
 
   const [edition, setEdition] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -42,9 +42,9 @@ const AtomicTestingHeaderActions = ({ injectResultOverview, setInjectResultOverv
   const submitLaunch = async () => {
     handleCloseDialog();
     handleCannotLaunch();
-    if (injectResultOverview?.inject_id) {
-      await launchAtomicTesting(injectResultOverview.inject_id).then((result: { data: InjectResultOverviewOutput }) => {
-        setInjectResultOverview(result.data);
+    if (injectResultOverview?.node_id) {
+      await launchAtomicTesting(injectResultOverview.node_id).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+        setAttackChainNodeResultOverview(result.data);
       });
     }
     handleCanLaunch();
@@ -53,23 +53,23 @@ const AtomicTestingHeaderActions = ({ injectResultOverview, setInjectResultOverv
   const submitRelaunch = async () => {
     handleCloseDialog();
     handleCannotLaunch();
-    if (injectResultOverview?.inject_id) {
-      await relaunchAtomicTesting(injectResultOverview.inject_id).then((result) => {
+    if (injectResultOverview?.node_id) {
+      await relaunchAtomicTesting(injectResultOverview.node_id).then((result) => {
         dispatch(fetchMe()).then(() => {
-          navigate(`/admin/atomic_testings/${result.data.inject_id}`);
+          navigate(`/admin/atomic_testings/${result.data.node_id}`);
         });
       });
     }
     handleCanLaunch();
   };
 
-  function getActionButton(injectResultOverviewOutput: InjectResultOverviewOutput) {
-    if (!injectResultOverviewOutput.inject_injector_contract) return null;
+  function getActionButton(injectResultOverviewOutput: AttackChainNodeResultOverviewOutput) {
+    if (!injectResultOverviewOutput.node_injector_contract) return null;
 
-    const hasManageAbility = ability.can(ACTIONS.MANAGE, SUBJECTS.ASSESSMENT) || ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, injectResultOverview.inject_id);
-    const hasLaunchAbility = ability.can(ACTIONS.LAUNCH, SUBJECTS.ASSESSMENT) || ability.can(ACTIONS.LAUNCH, SUBJECTS.RESOURCE, injectResultOverview.inject_id);
-    if (injectResultOverviewOutput.inject_ready && hasLaunchAbility) {
-      const launchOrRelaunchKey = !injectResultOverviewOutput.inject_status?.status_id ? 'Launch now' : 'Relaunch now';
+    const hasManageAbility = ability.can(ACTIONS.MANAGE, SUBJECTS.ASSESSMENT) || ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, injectResultOverview.node_id);
+    const hasLaunchAbility = ability.can(ACTIONS.LAUNCH, SUBJECTS.ASSESSMENT) || ability.can(ACTIONS.LAUNCH, SUBJECTS.RESOURCE, injectResultOverview.node_id);
+    if (injectResultOverviewOutput.node_ready && hasLaunchAbility) {
+      const launchOrRelaunchKey = !injectResultOverviewOutput.node_status?.status_id ? 'Launch now' : 'Relaunch now';
       return (
         <Button
           style={{
@@ -107,16 +107,16 @@ const AtomicTestingHeaderActions = ({ injectResultOverview, setInjectResultOverv
     }
   }
 
-  function getDialog(injectResultOverviewOutput: InjectResultOverviewOutput) {
+  function getDialog(injectResultOverviewOutput: AttackChainNodeResultOverviewOutput) {
     return (
       <Dialog open={openDialog} onClose={handleCloseDialog} slotProps={{ paper: { elevation: 1 } }}>
         <DialogContent>
           <DialogContentText>
-            {injectResultOverviewOutput.inject_ready && !injectResultOverviewOutput.inject_status?.status_id
-              ? t('Do you want to launch this atomic testing: {title}?', { title: injectResultOverviewOutput.inject_title })
-              : t('Do you want to relaunch this atomic testing: {title}?', { title: injectResultOverviewOutput.inject_title })}
+            {injectResultOverviewOutput.node_ready && !injectResultOverviewOutput.node_status?.status_id
+              ? t('Do you want to launch this atomic testing: {title}?', { title: injectResultOverviewOutput.node_title })
+              : t('Do you want to relaunch this atomic testing: {title}?', { title: injectResultOverviewOutput.node_title })}
           </DialogContentText>
-          {injectResultOverviewOutput.inject_ready && injectResultOverviewOutput.inject_status?.status_id && (
+          {injectResultOverviewOutput.node_ready && injectResultOverviewOutput.node_status?.status_id && (
             <Alert severity="warning" style={{ marginTop: theme.spacing(2) }}>
               {t('This atomic testing and its previous results will be deleted')}
             </Alert>
@@ -127,7 +127,7 @@ const AtomicTestingHeaderActions = ({ injectResultOverview, setInjectResultOverv
           <Button
             color="secondary"
             onClick={
-              injectResultOverviewOutput.inject_ready && !injectResultOverviewOutput.inject_status?.status_id
+              injectResultOverviewOutput.node_ready && !injectResultOverviewOutput.node_status?.status_id
                 ? submitLaunch
                 : submitRelaunch
             }

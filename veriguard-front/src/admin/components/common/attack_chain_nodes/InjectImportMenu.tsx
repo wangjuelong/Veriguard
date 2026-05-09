@@ -5,19 +5,19 @@ import { type MouseEvent as ReactMouseEvent, useContext, useState } from 'react'
 import { storeXlsFile } from '../../../../actions/mapper/mapper-actions';
 import Dialog from '../../../../components/common/dialog/Dialog';
 import { useFormatter } from '../../../../components/i18n';
-import { type ImportMessage, type ImportPostSummary, type ImportTestSummary, type InjectsImportInput } from '../../../../utils/api-types';
+import { type ImportMessage, type ImportPostSummary, type ImportTestSummary, type AttackChainNodesImportInput } from '../../../../utils/api-types';
 import { MESSAGING$ } from '../../../../utils/Environment';
-import { InjectContext } from '../Context';
+import { AttackChainNodeContext } from '../Context';
 import ImportFileSelector from './ImportFileSelector';
-import ImportUploaderInjectFromXlsInjects from './ImportUploaderInjectFromXlsInjects';
-import InjectImportJsonDialog from './InjectImportJsonDialog';
+import ImportUploaderAttackChainNodeFromXlsAttackChainNodes from './ImportUploaderAttackChainNodeFromXlsAttackChainNodes';
+import AttackChainNodeImportJsonDialog from './AttackChainNodeImportJsonDialog';
 
-interface Props { onImportedInjects?: () => void }
+interface Props { onImportedAttackChainNodes?: () => void }
 
-const InjectImportMenu = ({ onImportedInjects = () => {} }: Props) => {
+const AttackChainNodeImportMenu = ({ onImportedAttackChainNodes = () => {} }: Props) => {
   // Standard hooks
   const { t } = useFormatter();
-  const injectContext = useContext(InjectContext);
+  const injectContext = useContext(AttackChainNodeContext);
 
   const [importId, setImportId] = useState<string | undefined>(undefined);
   const [sheets, setSheets] = useState<string[]>([]);
@@ -69,21 +69,21 @@ const InjectImportMenu = ({ onImportedInjects = () => {} }: Props) => {
     });
   };
 
-  const onSubmitImportInjects = (input: InjectsImportInput) => {
+  const onSubmitImportAttackChainNodes = (input: AttackChainNodesImportInput) => {
     if (importId) {
-      injectContext.onImportInjectFromXls?.(importId, input).then((value: ImportTestSummary) => {
+      injectContext.onImportAttackChainNodeFromXls?.(importId, input).then((value: ImportTestSummary) => {
         const criticalMessages = value.import_message?.filter((importMessage: ImportMessage) => importMessage.message_level === 'CRITICAL');
         if (criticalMessages && criticalMessages?.length > 0) {
           MESSAGING$.notifyError(t(criticalMessages[0].message_code || 'An unknown error occurred. Please contact your administrator or the Veriguard maintainers.'), true);
         }
-        onImportedInjects();
+        onImportedAttackChainNodes();
         handleXlsImportClose();
       });
     }
   };
   const onFileSelectSubmit = (values: { file: File }) => {
-    injectContext.onImportInjectFromJson?.(values.file).then(() => {
-      onImportedInjects();
+    injectContext.onImportAttackChainNodeFromJson?.(values.file).then(() => {
+      onImportedAttackChainNodes();
       handleJsonImportClose();
     });
   };
@@ -97,8 +97,8 @@ const InjectImportMenu = ({ onImportedInjects = () => {} }: Props) => {
         onClick={event => handleOpenMenu(event)}
       >
         <Tooltip
-          title={t('Import injects')}
-          aria-label="Import injects"
+          title={t('Import nodes')}
+          aria-label="Import nodes"
         >
           <CloudUploadOutlined
             color="primary"
@@ -107,19 +107,19 @@ const InjectImportMenu = ({ onImportedInjects = () => {} }: Props) => {
         </Tooltip>
       </ToggleButton>
       <Menu
-        id="menu-import-injects"
+        id="menu-import-nodes"
         anchorEl={menuOpen.anchorEl}
         open={menuOpen.open}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={handleJsonImportOpen}>{t('inject_import_json_action')}</MenuItem>
-        <MenuItem onClick={handleXlsImportOpen}>{t('inject_import_xls_action')}</MenuItem>
+        <MenuItem onClick={handleJsonImportOpen}>{t('node_import_json_action')}</MenuItem>
+        <MenuItem onClick={handleXlsImportOpen}>{t('node_import_xls_action')}</MenuItem>
       </Menu>
-      <InjectImportJsonDialog open={openJsonImportDialog} handleClose={handleJsonImportClose} handleSubmit={onFileSelectSubmit} />
+      <AttackChainNodeImportJsonDialog open={openJsonImportDialog} handleClose={handleJsonImportClose} handleSubmit={onFileSelectSubmit} />
       <Dialog
         open={openXlsImportDialog}
         handleClose={handleXlsImportClose}
-        title={t('Import injects')}
+        title={t('Import nodes')}
         maxWidth="sm"
       >
         <>
@@ -135,11 +135,11 @@ const InjectImportMenu = ({ onImportedInjects = () => {} }: Props) => {
             )}
           {importId
             && (
-              <ImportUploaderInjectFromXlsInjects
+              <ImportUploaderAttackChainNodeFromXlsAttackChainNodes
                 sheets={sheets}
                 handleClose={handleXlsImportClose}
                 importId={importId}
-                handleSubmit={onSubmitImportInjects}
+                handleSubmit={onSubmitImportAttackChainNodes}
               />
             )}
         </>
@@ -148,4 +148,4 @@ const InjectImportMenu = ({ onImportedInjects = () => {} }: Props) => {
   );
 };
 
-export default InjectImportMenu;
+export default AttackChainNodeImportMenu;

@@ -4,7 +4,7 @@ import { z, type ZodType } from 'zod/v4';
 import { type Translate } from '../../../../components/i18n';
 import type { ContractElement } from '../../../../utils/api-types-custom';
 
-export const isInjectContentType = (type: ContractElement['type']) => type !== 'asset' && type !== 'team' && type !== 'asset-group' && type !== 'article' && type !== 'challenge' && type !== 'attachment';
+export const isAttackChainNodeContentType = (type: ContractElement['type']) => type !== 'asset' && type !== 'team' && type !== 'asset-group' && type !== 'article' && type !== 'challenge' && type !== 'attachment';
 
 export const isRequiredField = (field: ContractElement, fields: ContractElement[], values: FieldValues) => {
   if (field.mandatory) {
@@ -15,8 +15,8 @@ export const isRequiredField = (field: ContractElement, fields: ContractElement[
     field.mandatoryConditionFields.forEach((fieldMandatoryConditionField) => {
       let value;
       const fieldMandatoryConditionFieldType = fields.find(f => f.key === fieldMandatoryConditionField)?.type;
-      if (fieldMandatoryConditionFieldType && isInjectContentType(fieldMandatoryConditionFieldType)) {
-        value = values.inject_content[fieldMandatoryConditionField];
+      if (fieldMandatoryConditionFieldType && isAttackChainNodeContentType(fieldMandatoryConditionFieldType)) {
+        value = values.node_content[fieldMandatoryConditionField];
       } else {
         value = values[fieldMandatoryConditionField];
       }
@@ -39,8 +39,8 @@ export const isVisibleField = (field: ContractElement, fields: ContractElement[]
     let value;
     const fieldVisibleConditionFieldType = fields.find(f => f.key === fieldVisibleConditionField)?.type;
 
-    if (fieldVisibleConditionFieldType && isInjectContentType(fieldVisibleConditionFieldType)) {
-      value = values.inject_content[fieldVisibleConditionField];
+    if (fieldVisibleConditionFieldType && isAttackChainNodeContentType(fieldVisibleConditionFieldType)) {
+      value = values.node_content[fieldVisibleConditionField];
     } else {
       value = values[fieldVisibleConditionField];
     }

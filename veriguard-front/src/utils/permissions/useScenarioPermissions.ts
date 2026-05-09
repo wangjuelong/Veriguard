@@ -1,16 +1,16 @@
 import * as R from 'ramda';
 import { useContext } from 'react';
 
-import { type ScenariosHelper } from '../../actions/attack_chains/scenario-helper';
+import { type AttackChainsHelper } from '../../actions/attack_chains/attack_chain-helper';
 import { type LoggedHelper, type UserHelper } from '../../actions/helper';
 import { useHelper } from '../../store';
 import { AbilityContext } from './permissionsContext';
 import { ACTIONS, SUBJECTS } from './types';
 
-const useScenarioPermissions = (scenarioId: string) => {
+const useAttackChainPermissions = (scenarioId: string) => {
   const ability = useContext(AbilityContext);
 
-  const { logged } = useHelper((helper: ScenariosHelper & UserHelper & LoggedHelper) => {
+  const { logged } = useHelper((helper: AttackChainsHelper & UserHelper & LoggedHelper) => {
     return { logged: helper.logged() };
   });
 
@@ -30,4 +30,4 @@ const useScenarioPermissions = (scenarioId: string) => {
   };
 };
 
-export default useScenarioPermissions;
+export default useAttackChainPermissions;

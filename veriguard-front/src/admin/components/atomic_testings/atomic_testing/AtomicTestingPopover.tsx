@@ -2,16 +2,16 @@ import { type FunctionComponent, useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { deleteAtomicTesting, duplicateAtomicTesting } from '../../../../actions/atomic_testings/atomic-testing-actions';
-import { exportInject } from '../../../../actions/attack_chain_nodes/inject-action';
+import { exportAttackChainNode } from '../../../../actions/attack_chain_nodes/node-action';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogDelete from '../../../../components/common/DialogDelete';
 import DialogDuplicate from '../../../../components/common/DialogDuplicate';
 import ExportOptionsDialog from '../../../../components/common/export/ExportOptionsDialog';
 import { useFormatter } from '../../../../components/i18n';
 import type {
-  InjectIndividualExportRequestInput,
-  InjectResultOutput,
-  InjectResultOverviewOutput,
+  AttackChainNodeIndividualExportRequestInput,
+  AttackChainNodeResultOutput,
+  AttackChainNodeResultOverviewOutput,
 } from '../../../../utils/api-types';
 import { AbilityContext } from '../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
@@ -21,7 +21,7 @@ import AtomicTestingUpdate from './AtomicTestingUpdate';
 type AtomicTestingActionType = 'Duplicate' | 'Update' | 'Delete' | 'Export';
 
 interface Props {
-  atomic: InjectResultOutput | InjectResultOverviewOutput;
+  atomic: AttackChainNodeResultOutput | AttackChainNodeResultOverviewOutput;
   actions: AtomicTestingActionType[];
   onDelete?: (result: string) => void;
   inList?: boolean;
@@ -43,9 +43,9 @@ const AtomicTestingPopover: FunctionComponent<Props> = ({
   const handleOpenDuplicate = () => setDuplicate(true);
   const handleCloseDuplicate = () => setDuplicate(false);
   const submitDuplicate = async () => {
-    await duplicateAtomicTesting(atomic.inject_id).then((result: { data: InjectResultOverviewOutput }) => {
+    await duplicateAtomicTesting(atomic.node_id).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
       handleCloseDuplicate();
-      navigate(`/admin/atomic_testings/${result.data.inject_id}`);
+      navigate(`/admin/atomic_testings/${result.data.node_id}`);
     });
   };
 
@@ -59,9 +59,9 @@ const AtomicTestingPopover: FunctionComponent<Props> = ({
   const handleOpenDelete = () => setDeletion(true);
   const handleCloseDelete = () => setDeletion(false);
   const submitDelete = () => {
-    deleteAtomicTesting(atomic.inject_id).then(() => {
+    deleteAtomicTesting(atomic.node_id).then(() => {
       handleCloseDelete();
-      if (onDelete) onDelete(atomic.inject_id);
+      if (onDelete) onDelete(atomic.node_id);
     });
   };
 
@@ -70,7 +70,7 @@ const AtomicTestingPopover: FunctionComponent<Props> = ({
   const handleOpenExport = () => setExportOpen(true);
   const handleCloseExport = () => setExportOpen(false);
   const doExport = (withPlayers: boolean, withTeams: boolean, withVariableValues: boolean) => {
-    const exportData: InjectIndividualExportRequestInput = {
+    const exportData: AttackChainNodeIndividualExportRequestInput = {
       options: {
         with_players: withPlayers,
         with_teams: withTeams,
@@ -78,7 +78,7 @@ const AtomicTestingPopover: FunctionComponent<Props> = ({
       },
     };
 
-    exportInject(atomic.inject_id, exportData).then((result) => {
+    exportAttackChainNode(atomic.node_id, exportData).then((result) => {
       const contentDisposition = result.headers['content-disposition'];
       const match = contentDisposition.match(/filename\s*=\s*(.*)/i);
       const filename = match[1];
@@ -89,25 +89,25 @@ const AtomicTestingPopover: FunctionComponent<Props> = ({
 
   // Button Popover
   const entries = [];
-  if (actions.includes('Update') && atomic.inject_injector_contract !== null) entries.push({
+  if (actions.includes('Update') && atomic.node_injector_contract !== null) entries.push({
     label: 'Update',
     action: () => handleOpenEdit(),
-    userRight: ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, atomic.inject_id) || ability.can(ACTIONS.MANAGE, SUBJECTS.ASSESSMENT),
+    userRight: ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, atomic.node_id) || ability.can(ACTIONS.MANAGE, SUBJECTS.ASSESSMENT),
   });
-  if (actions.includes('Duplicate') && atomic.inject_injector_contract !== null) entries.push({
+  if (actions.includes('Duplicate') && atomic.node_injector_contract !== null) entries.push({
     label: 'Duplicate',
     action: () => handleOpenDuplicate(),
     userRight: ability.can(ACTIONS.MANAGE, SUBJECTS.ASSESSMENT),
   });
-  if (actions.includes('Export') && atomic.inject_injector_contract !== null) entries.push({
-    label: t('inject_export_json_single'),
+  if (actions.includes('Export') && atomic.node_injector_contract !== null) entries.push({
+    label: t('node_export_json_single'),
     action: () => handleOpenExport(),
     userRight: true,
   });
   if (actions.includes('Delete')) entries.push({
     label: 'Delete',
     action: () => handleOpenDelete(),
-    userRight: ability.can(ACTIONS.DELETE, SUBJECTS.RESOURCE, atomic.inject_id) || ability.can(ACTIONS.DELETE, SUBJECTS.ASSESSMENT),
+    userRight: ability.can(ACTIONS.DELETE, SUBJECTS.RESOURCE, atomic.node_id) || ability.can(ACTIONS.DELETE, SUBJECTS.ASSESSMENT),
   });
 
   return (
@@ -127,7 +127,7 @@ const AtomicTestingPopover: FunctionComponent<Props> = ({
             open={duplicate}
             handleClose={handleCloseDuplicate}
             handleSubmit={submitDuplicate}
-            text={`${t('Do you want to duplicate this atomic testing:')} ${atomic.inject_title} ?`}
+            text={`${t('Do you want to duplicate this atomic testing:')} ${atomic.node_title} ?`}
           />
         )}
       {actions.includes('Export')
@@ -146,7 +146,7 @@ const AtomicTestingPopover: FunctionComponent<Props> = ({
             open={deletion}
             handleClose={handleCloseDelete}
             handleSubmit={submitDelete}
-            text={`${t('Do you want to delete this atomic testing:')} ${atomic.inject_title} ?`}
+            text={`${t('Do you want to delete this atomic testing:')} ${atomic.node_title} ?`}
           />
         )}
     </>

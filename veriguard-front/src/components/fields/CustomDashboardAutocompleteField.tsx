@@ -30,7 +30,7 @@ const CustomDashboardAutocompleteField = ({ label, value, onChange, required = f
       const res = await searchCustomDashboardAsOptions(searchText);
       options = res.data as Option[];
     } else if (scenarioOrSimulationId) {
-      // get the dashboards from scenario or simulation
+      // get the dashboards from attack_chain or attack_chain_run
       const res = await searchCustomDashboardAsOptionsByResourceId(scenarioOrSimulationId);
       options = res.data as Option[];
     }

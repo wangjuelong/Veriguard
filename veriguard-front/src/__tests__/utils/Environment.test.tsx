@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest';
 
 import { exportData } from '../../utils/Environment';
 import {
-  createExercisesMap,
+  createAttackChainRunsMap,
   createOrganisationsMap,
-  createScenarioMap,
+  createAttackChainMap,
   createTagMap,
 } from '../fixtures/api-types.fixtures';
 
@@ -236,12 +236,12 @@ describe('exportData tests', () => {
       });
     });
 
-    describe('when object does not have exercises', () => {
+    describe('when object does not have attack_chain_runs', () => {
       const obj = createObjWithDefaultKeys(objtype);
 
       const keys = [
         `${objtype}_name`,
-        `${objtype}_exercises`,
+        `${objtype}_attack_chain_runs`,
       ];
       const result = exportData(
         objtype,
@@ -251,24 +251,24 @@ describe('exportData tests', () => {
 
       const line = result[0];
 
-      it('does not incorporate exercises in line', () => {
-        expect(Object.keys(line)).not.toContain(`${objtype}_exercises`);
+      it('does not incorporate attack_chain_runs in line', () => {
+        expect(Object.keys(line)).not.toContain(`${objtype}_attack_chain_runs`);
       });
     });
 
-    describe('when object has exercises', () => {
+    describe('when object has attack_chain_runs', () => {
       const obj = createObjWithDefaultKeys(objtype);
-      const exerciseMap = createExercisesMap(3);
-      obj[`${objtype}_exercises`] = Object.keys(exerciseMap);
+      const exerciseMap = createAttackChainRunsMap(3);
+      obj[`${objtype}_attack_chain_runs`] = Object.keys(exerciseMap);
 
       // the goal is to concatenate tag names in the export
-      const expected_exercise_names = Object.keys(exerciseMap)
-        .map(k => exerciseMap[k].exercise_name)
+      const expected_attack_chain_run_names = Object.keys(exerciseMap)
+        .map(k => exerciseMap[k].attack_chain_run_name)
         .join(',');
 
       const keys = [
         `${objtype}_name`,
-        `${objtype}_exercises`,
+        `${objtype}_attack_chain_runs`,
       ];
       const result = exportData(
         objtype,
@@ -281,26 +281,26 @@ describe('exportData tests', () => {
 
       const line = result[0];
 
-      it('has key _exercises in line', () => {
-        expect(Object.keys(line)).toContain(`${objtype}_exercises`);
+      it('has key _attack_chain_runs in line', () => {
+        expect(Object.keys(line)).toContain(`${objtype}_attack_chain_runs`);
       });
 
       it('incorporates matching tags from map into line', () => {
-        expect(line[`${objtype}_exercises`]).toBe(expected_exercise_names);
+        expect(line[`${objtype}_attack_chain_runs`]).toBe(expected_attack_chain_run_names);
       });
     });
 
-    describe('when object has unknown exercise', () => {
+    describe('when object has unknown attack_chain_run', () => {
       const obj = createObjWithDefaultKeys(objtype);
-      const exerciseMap = createExercisesMap(3);
-      obj[`${objtype}_exercises`] = [faker.string.uuid(), faker.string.uuid()]; // not found in tag map
+      const exerciseMap = createAttackChainRunsMap(3);
+      obj[`${objtype}_attack_chain_runs`] = [faker.string.uuid(), faker.string.uuid()]; // not found in tag map
 
       // the goal is to concatenate tag names in the export
-      const expected_exercise_names = '';
+      const expected_attack_chain_run_names = '';
 
       const keys = [
         `${objtype}_name`,
-        `${objtype}_exercises`,
+        `${objtype}_attack_chain_runs`,
       ];
       const result = exportData(
         objtype,
@@ -313,21 +313,21 @@ describe('exportData tests', () => {
 
       const line = result[0];
 
-      it('has key _exercises in line', () => {
-        expect(Object.keys(line)).toContain(`${objtype}_exercises`);
+      it('has key _attack_chain_runs in line', () => {
+        expect(Object.keys(line)).toContain(`${objtype}_attack_chain_runs`);
       });
 
-      it('incorporates matching exercises from map into line', () => {
-        expect(line[`${objtype}_exercises`]).toBe(expected_exercise_names);
+      it('incorporates matching attack_chain_runs from map into line', () => {
+        expect(line[`${objtype}_attack_chain_runs`]).toBe(expected_attack_chain_run_names);
       });
     });
 
-    describe('when object does not have scenarios', () => {
+    describe('when object does not have attack_chains', () => {
       const obj = createObjWithDefaultKeys(objtype);
 
       const keys = [
         `${objtype}_name`,
-        `${objtype}_scenarios`,
+        `${objtype}_attack_chains`,
       ];
       const result = exportData(
         objtype,
@@ -337,24 +337,24 @@ describe('exportData tests', () => {
 
       const line = result[0];
 
-      it('does not incorporate scenarios in line', () => {
-        expect(Object.keys(line)).not.toContain(`${objtype}_scenarios`);
+      it('does not incorporate attack_chains in line', () => {
+        expect(Object.keys(line)).not.toContain(`${objtype}_attack_chains`);
       });
     });
 
-    describe('when object has scenarios', () => {
+    describe('when object has attack_chains', () => {
       const obj = createObjWithDefaultKeys(objtype);
-      const scenarioMap = createScenarioMap(3);
-      obj[`${objtype}_scenarios`] = Object.keys(scenarioMap);
+      const scenarioMap = createAttackChainMap(3);
+      obj[`${objtype}_attack_chains`] = Object.keys(scenarioMap);
 
       // the goal is to concatenate tag names in the export
-      const expected_scenario_names = Object.keys(scenarioMap)
-        .map(k => scenarioMap[k].scenario_name)
+      const expected_attack_chain_names = Object.keys(scenarioMap)
+        .map(k => scenarioMap[k].attack_chain_name)
         .join(',');
 
       const keys = [
         `${objtype}_name`,
-        `${objtype}_scenarios`,
+        `${objtype}_attack_chains`,
       ];
 
       const result = exportData(
@@ -369,26 +369,26 @@ describe('exportData tests', () => {
 
       const line = result[0];
 
-      it('has key _scenarios in line', () => {
-        expect(Object.keys(line)).toContain(`${objtype}_scenarios`);
+      it('has key _attack_chains in line', () => {
+        expect(Object.keys(line)).toContain(`${objtype}_attack_chains`);
       });
 
       it('incorporates matching tags from map into line', () => {
-        expect(line[`${objtype}_scenarios`]).toBe(expected_scenario_names);
+        expect(line[`${objtype}_attack_chains`]).toBe(expected_attack_chain_names);
       });
     });
 
-    describe('when object has unknown scenario', () => {
+    describe('when object has unknown attack_chain', () => {
       const obj = createObjWithDefaultKeys(objtype);
-      const scenarioMap = createScenarioMap(3);
-      obj[`${objtype}_scenarios`] = [faker.string.uuid(), faker.string.uuid()]; // not found in tag map
+      const scenarioMap = createAttackChainMap(3);
+      obj[`${objtype}_attack_chains`] = [faker.string.uuid(), faker.string.uuid()]; // not found in tag map
 
       // the goal is to concatenate tag names in the export
-      const expected_scenario_names = '';
+      const expected_attack_chain_names = '';
 
       const keys = [
         `${objtype}_name`,
-        `${objtype}_scenarios`,
+        `${objtype}_attack_chains`,
       ];
 
       const result = exportData(
@@ -403,20 +403,20 @@ describe('exportData tests', () => {
 
       const line = result[0];
 
-      it('has key _scenarios in line', () => {
-        expect(Object.keys(line)).toContain(`${objtype}_scenarios`);
+      it('has key _attack_chains in line', () => {
+        expect(Object.keys(line)).toContain(`${objtype}_attack_chains`);
       });
 
-      it('incorporates matching scenarios from map into line', () => {
-        expect(line[`${objtype}_scenarios`]).toBe(expected_scenario_names);
+      it('incorporates matching attack_chains from map into line', () => {
+        expect(line[`${objtype}_attack_chains`]).toBe(expected_attack_chain_names);
       });
     });
   });
 
-  describe('when exporting an object of type inject', () => {
-    const objtype = 'inject';
+  describe('when exporting an object of type node', () => {
+    const objtype = 'node';
 
-    describe('when inject has an object content', () => {
+    describe('when node has an object content', () => {
       const obj = createObjWithDefaultKeys(objtype);
       const object_content = {
         key1: 'content1',

@@ -239,7 +239,7 @@ nohup ${agentFolder ?? '/opt/veriguard-caldera-agent'}/veriguard-caldera-agent -
       <>
         <Typography variant="h2" style={{ marginTop: theme.spacing(2) }}>{t('Step 2 - Add antivirus exclusions')}</Typography>
         <p>
-          {t('You will need to add proper antivirus exclusions for this agent (to ensure injects execution to work properly). It may not be necessary in the future but this is generally a good practice to ensure the agent will be always available.')}
+          {t('You will need to add proper antivirus exclusions for this agent (to ensure nodes execution to work properly). It may not be necessary in the future but this is generally a good practice to ensure the agent will be always available.')}
         </p>
         <pre style={{ margin: theme.spacing(2, 0, 1) }}>{exclusions}</pre>
       </>

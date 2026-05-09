@@ -4,8 +4,8 @@ import { useTheme } from '@mui/material/styles';
 import * as R from 'ramda';
 import { useContext, useEffect, useState } from 'react';
 
-import { fetchScenarios } from '../../../../actions/attack_chains/scenario-actions';
-import { fetchExercises } from '../../../../actions/AttackChainRun';
+import { fetchAttackChains } from '../../../../actions/attack_chains/attack_chain-actions';
+import { fetchAttackChainRuns } from '../../../../actions/AttackChainRun';
 import { deleteDocument, updateDocument } from '../../../../actions/Document';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogDelete from '../../../../components/common/DialogDelete';
@@ -25,15 +25,15 @@ import DocumentForm from './DocumentForm';
 
 const entityPaths = {
   atomicTestings: item => `${ATOMIC_BASE_URL}/${item.id}`,
-  simulations: item => `${ATTACK_CHAIN_RUN_BASE_URL}/${item.id}`,
+  attack_chain_runs: item => `${ATTACK_CHAIN_RUN_BASE_URL}/${item.id}`,
   payloads: item => `${PAYLOAD_BASE_URL}?query=${craftedDocumentFilter(item, 'payload_name', 'payloads')}`,
-  scenarioInjects: item => `${ATTACK_CHAIN_BASE_URL}/${item.context}/injects?query=${craftedDocumentFilter(item, 'inject_title', `${item.context}-injects`)}`,
-  simulationInjects: item => `${ATTACK_CHAIN_RUN_BASE_URL}/${item.context}/injects?query=${craftedDocumentFilter(item, 'inject_title', `${item.context}-injects`)}`,
+  scenarioAttackChainNodes: item => `${ATTACK_CHAIN_BASE_URL}/${item.context}/nodes?query=${craftedDocumentFilter(item, 'node_title', `${item.context}-nodes`)}`,
+  simulationAttackChainNodes: item => `${ATTACK_CHAIN_RUN_BASE_URL}/${item.context}/nodes?query=${craftedDocumentFilter(item, 'node_title', `${item.context}-nodes`)}`,
   securityPlatforms: item => `${SECURITY_PLATFORM_BASE_URL}?search=${item.name}`,
 };
 
 // Ordered entity types
-const renderOrder = ['atomicTestings', 'scenarioInjects', 'simulationInjects', 'simulations', 'payloads', 'securityPlatforms'];
+const renderOrder = ['atomicTestings', 'scenarioAttackChainNodes', 'simulationAttackChainNodes', 'attack_chain_runs', 'payloads', 'securityPlatforms'];
 
 const DocumentPopover = (props) => {
   // Standard hooks
@@ -47,13 +47,13 @@ const DocumentPopover = (props) => {
   // Fetching data
   const { tagsMap, exercisesMap, scenariosMap } = useHelper(helper => ({
     tagsMap: helper.getTagsMap(),
-    exercisesMap: helper.getExercisesMap(),
-    scenariosMap: helper.getScenariosMap(),
+    exercisesMap: helper.getAttackChainRunsMap(),
+    scenariosMap: helper.getAttackChainsMap(),
   }));
-  if (!props.scenariosAndExercisesFetched) {
+  if (!props.scenariosAndAttackChainRunsFetched) {
     useDataLoader(() => {
-      dispatch(fetchExercises());
-      dispatch(fetchScenarios());
+      dispatch(fetchAttackChainRuns());
+      dispatch(fetchAttackChains());
     });
   }
 
@@ -73,7 +73,7 @@ const DocumentPopover = (props) => {
   };
 
   const onSubmitEdit = (data) => {
-    const inputValues = R.pipe(R.assoc('document_tags', R.pluck('id', data.document_tags)), R.assoc('document_exercises', R.pluck('id', data.document_exercises)), R.assoc('document_scenarios', R.pluck('id', data.document_scenarios)))(data);
+    const inputValues = R.pipe(R.assoc('document_tags', R.pluck('id', data.document_tags)), R.assoc('document_attack_chain_runs', R.pluck('id', data.document_attack_chain_runs)), R.assoc('document_attack_chains', R.pluck('id', data.document_attack_chains)))(data);
     return dispatch(updateDocument(document.document_id, inputValues))
       .then((result) => {
         if (onUpdate) {
@@ -202,9 +202,9 @@ const DocumentPopover = (props) => {
   };
 
   const documentTags = tagOptions(document.document_tags, tagsMap);
-  const documentExercises = exerciseOptions(document.document_exercises, exercisesMap);
-  const documentScenarios = scenarioOptions(document.document_scenarios, scenariosMap);
-  const initialValues = R.pipe(R.assoc('document_tags', documentTags), R.assoc('document_exercises', documentExercises), R.assoc('document_scenarios', documentScenarios), R.pick(['document_name', 'document_description', 'document_type', 'document_tags', 'document_exercises', 'document_scenarios']))(document);
+  const documentAttackChainRuns = exerciseOptions(document.document_attack_chain_runs, exercisesMap);
+  const documentAttackChains = scenarioOptions(document.document_attack_chains, scenariosMap);
+  const initialValues = R.pipe(R.assoc('document_tags', documentTags), R.assoc('document_attack_chain_runs', documentAttackChainRuns), R.assoc('document_attack_chains', documentAttackChains), R.pick(['document_name', 'document_description', 'document_type', 'document_tags', 'document_attack_chain_runs', 'document_attack_chains']))(document);
 
   const entries = [];
   if (onUpdate) entries.push({

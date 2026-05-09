@@ -13,27 +13,27 @@ import ButtonPopover from '../../../../../components/common/ButtonPopover';
 import { useFormatter } from '../../../../../components/i18n';
 import ItemStatus from '../../../../../components/ItemStatus';
 import {
-  type Inject,
-  type InjectExpectation,
-  type InjectExpectationResult,
+  type AttackChainNode,
+  type AttackChainNodeExpectation,
+  type AttackChainNodeExpectationResult,
   type PayloadSimple,
 } from '../../../../../utils/api-types';
 import { isNotEmptyField } from '../../../../../utils/utils';
 import { getSourceLabel } from '../../../attack_chain_runs/attack_chain_run/validation/expectations/ExpectationUtils';
-import { type InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
-import InjectIcon from '../../../common/attack_chain_nodes/InjectIcon';
-import InjectExpectationContext from '../context/InjectExpectationContext';
+import { type AttackChainNodeExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import AttackChainNodeIcon from '../../../common/attack_chain_nodes/AttackChainNodeIcon';
+import AttackChainNodeExpectationContext from '../context/AttackChainNodeExpectationContext';
 import TargetResultAlertNumber from './TargetResultAlertNumber';
 
 interface Props {
-  injectExpectation: InjectExpectationsStore;
-  injectExpectationResults: InjectExpectationResult[];
-  injectExpectationAgent: InjectExpectation['inject_expectation_agent'];
+  injectExpectation: AttackChainNodeExpectationsStore;
+  injectExpectationResults: AttackChainNodeExpectationResult[];
+  injectExpectationAgent: AttackChainNodeExpectation['node_expectation_agent'];
   injectorContractPayload?: PayloadSimple;
-  injectType: Inject['inject_type'];
+  injectType: AttackChainNode['node_type'];
 }
 
-const InjectExpectationResultList = ({
+const AttackChainNodeExpectationResultList = ({
   injectExpectation,
   injectExpectationResults,
   injectExpectationAgent,
@@ -43,9 +43,9 @@ const InjectExpectationResultList = ({
   const { nsdt, t } = useFormatter();
   const theme = useTheme();
 
-  const { onOpenDeleteInjectExpectationResult, onOpenEditInjectExpectationResultResult, onOpenSecurityPlatform } = useContext(InjectExpectationContext);
+  const { onOpenDeleteAttackChainNodeExpectationResult, onOpenEditAttackChainNodeExpectationResultResult, onOpenSecurityPlatform } = useContext(AttackChainNodeExpectationContext);
 
-  const getAvatar = (expectationResult: InjectExpectationResult) => {
+  const getAvatar = (expectationResult: AttackChainNodeExpectationResult) => {
     if (expectationResult.sourceType === 'collector' || expectationResult.sourceType === 'security-platform') {
       return (
         <img
@@ -63,7 +63,7 @@ const InjectExpectationResultList = ({
     }
 
     return (
-      <InjectIcon
+      <AttackChainNodeIcon
         isPayload={isNotEmptyField(injectorContractPayload)}
         type={injectorContractPayload
           ? injectorContractPayload.payload_collector_type
@@ -128,7 +128,7 @@ const InjectExpectationResultList = ({
                 <TableCell>
                   {
                     expectationResult.sourceId && injectExpectationAgent && expectationResult.sourceType === 'collector' && (expectationResult.result === 'Prevented' || expectationResult.result === 'Detected') && (
-                      <TargetResultAlertNumber expectationResult={expectationResult} injectExpectationId={injectExpectation.inject_expectation_id} />
+                      <TargetResultAlertNumber expectationResult={expectationResult} injectExpectationId={injectExpectation.node_expectation_id} />
                     )
                   }
                   {(!injectExpectationAgent
@@ -143,13 +143,13 @@ const InjectExpectationResultList = ({
                     disabled={['collector', 'media-pressure', 'challenge'].includes(expectationResult.sourceType ?? 'unknown')}
                     entries={[{
                       label: t('Update'),
-                      action: () => onOpenEditInjectExpectationResultResult(expectationResult, injectExpectation),
+                      action: () => onOpenEditAttackChainNodeExpectationResultResult(expectationResult, injectExpectation),
                       disabled: false,
                       userRight: true,
                     },
                     {
                       label: t('Delete'),
-                      action: () => onOpenDeleteInjectExpectationResult(expectationResult, injectExpectation),
+                      action: () => onOpenDeleteAttackChainNodeExpectationResult(expectationResult, injectExpectation),
                       disabled: false,
                       userRight: true,
                     }]}
@@ -165,4 +165,4 @@ const InjectExpectationResultList = ({
     </TableContainer>
   );
 };
-export default InjectExpectationResultList;
+export default AttackChainNodeExpectationResultList;

@@ -21,12 +21,12 @@ const updateDefaultDashboardsInParameters = (
       formKey: 'is_default_home_dashboard',
     },
     {
-      settingsKey: 'platform_scenario_dashboard',
-      formKey: 'is_default_scenario_dashboard',
+      settingsKey: 'platform_attack_chain_dashboard',
+      formKey: 'is_default_attack_chain_dashboard',
     },
     {
-      settingsKey: 'platform_simulation_dashboard',
-      formKey: 'is_default_simulation_dashboard',
+      settingsKey: 'platform_attack_chain_run_dashboard',
+      formKey: 'is_default_attack_chain_run_dashboard',
     },
   ] as {
     settingsKey: keyof PlatformSettings;

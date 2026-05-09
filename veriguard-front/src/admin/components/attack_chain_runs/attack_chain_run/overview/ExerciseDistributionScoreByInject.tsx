@@ -3,75 +3,75 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type Inject, type InjectExpectation } from '../../../../../utils/api-types';
+import { type AttackChainRun, type AttackChainNode, type AttackChainNodeExpectation } from '../../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../../utils/Charts';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
-const ExerciseDistributionScoreByInject: FunctionComponent<Props> = ({ exerciseId }) => {
+const AttackChainRunDistributionScoreByAttackChainNode: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
   const { t } = useFormatter();
   const theme = useTheme();
 
   // Fetching data
-  const { injectsMap, injectExpectations } = useHelper((helper: InjectHelper) => ({
-    injectsMap: helper.getInjectsMap(),
-    injectExpectations: helper.getExerciseInjectExpectations(exerciseId),
+  const { injectsMap, injectExpectations } = useHelper((helper: AttackChainNodeHelper) => ({
+    injectsMap: helper.getAttackChainNodesMap(),
+    injectExpectations: helper.getAttackChainRunAttackChainNodeExpectations(exerciseId),
   }));
 
   const injectsTotalScores = R.pipe(
-    R.filter((n: InjectExpectation) => !R.isEmpty(n.inject_expectation_results)),
-    R.groupBy(R.prop('inject_expectation_inject')),
+    R.filter((n: AttackChainNodeExpectation) => !R.isEmpty(n.node_expectation_results)),
+    R.groupBy(R.prop('node_expectation_node')),
     R.toPairs,
-    R.map((n: [string, InjectExpectation[]]) => ({
+    R.map((n: [string, AttackChainNodeExpectation[]]) => ({
       ...injectsMap[n[0]],
-      inject_total_score: R.sum(R.map((o: InjectExpectation) => o.inject_expectation_score, n[1])),
+      node_total_score: R.sum(R.map((o: AttackChainNodeExpectation) => o.node_expectation_score, n[1])),
     })),
   )(injectExpectations);
 
-  const sortedInjectsByTotalScore = R.pipe(
-    R.sortWith([R.descend(R.prop('inject_total_score'))]),
-    R.filter((n: InjectExpectation & { inject_total_score: number }) => n.inject_total_score > 0),
+  const sortedAttackChainNodesByTotalScore = R.pipe(
+    R.sortWith([R.descend(R.prop('node_total_score'))]),
+    R.filter((n: AttackChainNodeExpectation & { node_total_score: number }) => n.node_total_score > 0),
     R.take(10),
   )(injectsTotalScores);
 
-  const totalScoreByInjectData = [
+  const totalScoreByAttackChainNodeData = [
     {
       name: t('Total score'),
-      data: sortedInjectsByTotalScore.map((i: Inject & { inject_total_score: number }) => ({
-        x: i.inject_title,
-        y: i.inject_total_score,
+      data: sortedAttackChainNodesByTotalScore.map((i: AttackChainNode & { node_total_score: number }) => ({
+        x: i.node_title,
+        y: i.node_total_score,
       })),
     },
   ];
 
   return (
     <>
-      {sortedInjectsByTotalScore.length > 0 ? (
+      {sortedAttackChainNodesByTotalScore.length > 0 ? (
         <Chart
-          id="exercise_distribution_total_score_by_inject"
+          id="attack_chain_run_distribution_total_score_by_node"
           options={horizontalBarsChartOptions({
             theme,
             distributed: true,
           })}
-          series={totalScoreByInjectData}
+          series={totalScoreByAttackChainNodeData}
           type="bar"
           width="100%"
-          height={50 + sortedInjectsByTotalScore.length * 50}
+          height={50 + sortedAttackChainNodesByTotalScore.length * 50}
         />
       ) : (
         <Empty
-          id="exercise_distribution_total_score_by_inject"
+          id="attack_chain_run_distribution_total_score_by_node"
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}
     </>
   );
 };
-export default ExerciseDistributionScoreByInject;
+export default AttackChainRunDistributionScoreByAttackChainNode;

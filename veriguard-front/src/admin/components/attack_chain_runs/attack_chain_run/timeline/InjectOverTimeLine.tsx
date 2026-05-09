@@ -3,34 +3,34 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { type InjectStore } from '../../../../../actions/attack_chain_nodes/Inject';
+import { type AttackChainNodeStore } from '../../../../../actions/attack_chain_nodes/AttackChainNode';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
-import { type Inject } from '../../../../../utils/api-types';
+import { type AttackChainNode } from '../../../../../utils/api-types';
 import { lineChartOptions } from '../../../../../utils/Charts';
 
-interface Props { injects: Inject[] }
+interface Props { nodes: AttackChainNode[] }
 
-const InjectOverTimeLine: FunctionComponent<Props> = ({ injects }) => {
+const AttackChainNodeOverTimeLine: FunctionComponent<Props> = ({ nodes }) => {
   // Standard hooks
   const { t, nsdt } = useFormatter();
   const theme = useTheme();
 
   let cumulation = 0;
   const injectsOverTime = R.pipe(
-    R.filter((i: InjectStore) => i && i.inject_sent_at !== null),
-    R.sortWith([R.ascend(R.prop('inject_sent_at'))]),
-    R.map((i: InjectStore) => {
+    R.filter((i: AttackChainNodeStore) => i && i.node_sent_at !== null),
+    R.sortWith([R.ascend(R.prop('node_sent_at'))]),
+    R.map((i: AttackChainNodeStore) => {
       cumulation += 1;
-      return R.assoc('inject_cumulated_number', cumulation, i);
+      return R.assoc('node_cumulated_number', cumulation, i);
     }),
-  )(injects);
+  )(nodes);
   const injectsData = [
     {
-      name: t('Number of injects'),
-      data: injectsOverTime.map((i: InjectStore & { inject_cumulated_number: number }) => ({
-        x: i.inject_sent_at,
-        y: i.inject_cumulated_number,
+      name: t('Number of nodes'),
+      data: injectsOverTime.map((i: AttackChainNodeStore & { node_cumulated_number: number }) => ({
+        x: i.node_sent_at,
+        y: i.node_cumulated_number,
       })),
     },
   ];
@@ -52,7 +52,7 @@ const InjectOverTimeLine: FunctionComponent<Props> = ({ injects }) => {
       ) : (
         <Empty
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}
@@ -60,4 +60,4 @@ const InjectOverTimeLine: FunctionComponent<Props> = ({ injects }) => {
   );
 };
 
-export default InjectOverTimeLine;
+export default AttackChainNodeOverTimeLine;

@@ -2,19 +2,19 @@ import { useContext } from 'react';
 import { useParams } from 'react-router';
 
 import {
-  attackPathsByScenario, averageByScenario,
-  countByScenario,
-  entitiesByScenario,
-  fetchCustomDashboardFromScenario, searchScenarioExercises,
-  seriesByScenario,
-  updateScenario, widgetToEntitiesByByScenario,
-} from '../../../../../actions/attack_chains/scenario-actions';
-import type { ScenariosHelper } from '../../../../../actions/attack_chains/scenario-helper';
+  attackPathsByAttackChain, averageByAttackChain,
+  countByAttackChain,
+  entitiesByAttackChain,
+  fetchCustomDashboardFromAttackChain, searchAttackChainAttackChainRuns,
+  seriesByAttackChain,
+  updateAttackChain, widgetToEntitiesByByAttackChain,
+} from '../../../../../actions/attack_chains/attack_chain-actions';
+import type { AttackChainsHelper } from '../../../../../actions/attack_chains/attack_chain-helper';
 import { SCENARIO_SIMULATIONS } from '../../../../../components/common/queryable/filter/constants';
 import { useHelper } from '../../../../../store';
 import {
   type CustomDashboard,
-  type Scenario,
+  type AttackChain,
   type SortField,
   type WidgetToEntitiesInput,
 } from '../../../../../utils/api-types';
@@ -26,38 +26,38 @@ import CustomDashboardWrapper from '../../../workspaces/custom_dashboards/Custom
 import NoDashboardComponent from '../../../workspaces/custom_dashboards/NoDashboardComponent';
 import SelectDashboardButton from '../../../workspaces/custom_dashboards/SelectDashboardButton';
 
-const ScenarioAnalysis = () => {
+const AttackChainAnalysis = () => {
   const dispatch = useAppDispatch();
   const ability = useContext(AbilityContext);
-  const { scenarioId } = useParams() as { scenarioId: Scenario['scenario_id'] };
+  const { scenarioId } = useParams() as { scenarioId: AttackChain['attack_chain_id'] };
 
-  const scenario = useHelper((helper: ScenariosHelper) => {
-    return helper.getScenario(scenarioId);
+  const attack_chain = useHelper((helper: AttackChainsHelper) => {
+    return helper.getAttackChain(scenarioId);
   });
   const handleSelectNewDashboard = (dashboardId: string) => {
-    dispatch(updateScenario(scenario.scenario_id, {
-      ...scenario,
-      scenario_custom_dashboard: dashboardId,
+    dispatch(updateAttackChain(attack_chain.attack_chain_id, {
+      ...attack_chain,
+      attack_chain_custom_dashboard: dashboardId,
     }));
   };
 
   const lastSimulationEndedId = async () => {
-    const { data } = await searchScenarioExercises(scenarioId, {
+    const { data } = await searchAttackChainAttackChainRuns(scenarioId, {
       size: 1,
       page: 0,
       sorts: [
         {
-          property: 'exercise_end_date',
+          property: 'attack_chain_run_end_date',
           direction: 'DESC',
           nullHandling: 'NULLS_LAST' as SortField['nullHandling'],
         },
         {
-          property: 'exercise_updated_at',
+          property: 'attack_chain_run_updated_at',
           direction: 'DESC',
         },
       ],
     });
-    return data.content?.[0]?.exercise_id;
+    return data.content?.[0]?.attack_chain_run_id;
   };
 
   const paramsBuilder = async (dashboardParameters: CustomDashboard['custom_dashboard_parameters'], localStorageParams: Record<string, ParameterOption>) => {
@@ -66,12 +66,12 @@ const ScenarioAnalysis = () => {
         const paramId = p.custom_dashboards_parameter_id;
         let paramOptions;
         const value = localStorageParams[paramId]?.value;
-        if ('scenario' === p.custom_dashboards_parameter_type) {
+        if ('attack_chain' === p.custom_dashboards_parameter_type) {
           paramOptions = {
-            value: scenario.scenario_id,
+            value: attack_chain.attack_chain_id,
             hidden: true,
           };
-        } else if ('simulation' === p.custom_dashboards_parameter_type) {
+        } else if ('attack_chain_run' === p.custom_dashboards_parameter_type) {
           const valueToSet = value == undefined ? await lastSimulationEndedId() : value;
           paramOptions = {
             value: valueToSet,
@@ -94,19 +94,19 @@ const ScenarioAnalysis = () => {
   };
 
   const configuration = {
-    customDashboardId: scenario?.scenario_custom_dashboard,
-    paramLocalStorageKey: 'custom-dashboard-scenario-' + scenarioId,
+    customDashboardId: attack_chain?.attack_chain_custom_dashboard,
+    paramLocalStorageKey: 'custom-dashboard-attack_chain-' + scenarioId,
     paramsBuilder,
     parentContextId: scenarioId,
     canChooseDashboard: ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, scenarioId),
     handleSelectNewDashboard,
-    fetchCustomDashboard: () => fetchCustomDashboardFromScenario(scenarioId),
-    fetchCount: (widgetId: string, params: Record<string, string | undefined>) => countByScenario(scenarioId, widgetId, params),
-    fetchAverage: (widgetId: string, params: Record<string, string | undefined>) => averageByScenario(scenarioId, widgetId, params),
-    fetchSeries: (widgetId: string, params: Record<string, string | undefined>) => seriesByScenario(scenarioId, widgetId, params),
-    fetchEntities: (widgetId: string, params: Record<string, string | undefined>) => entitiesByScenario(scenarioId, widgetId, params),
-    fetchEntitiesRuntime: (widgetId: string, input: WidgetToEntitiesInput) => widgetToEntitiesByByScenario(scenarioId, widgetId, input),
-    fetchAttackPaths: (widgetId: string, params: Record<string, string | undefined>) => attackPathsByScenario(scenarioId, widgetId, params),
+    fetchCustomDashboard: () => fetchCustomDashboardFromAttackChain(scenarioId),
+    fetchCount: (widgetId: string, params: Record<string, string | undefined>) => countByAttackChain(scenarioId, widgetId, params),
+    fetchAverage: (widgetId: string, params: Record<string, string | undefined>) => averageByAttackChain(scenarioId, widgetId, params),
+    fetchSeries: (widgetId: string, params: Record<string, string | undefined>) => seriesByAttackChain(scenarioId, widgetId, params),
+    fetchEntities: (widgetId: string, params: Record<string, string | undefined>) => entitiesByAttackChain(scenarioId, widgetId, params),
+    fetchEntitiesRuntime: (widgetId: string, input: WidgetToEntitiesInput) => widgetToEntitiesByByAttackChain(scenarioId, widgetId, input),
+    fetchAttackPaths: (widgetId: string, params: Record<string, string | undefined>) => attackPathsByAttackChain(scenarioId, widgetId, params),
   };
 
   return (
@@ -129,4 +129,4 @@ const ScenarioAnalysis = () => {
   );
 };
 
-export default ScenarioAnalysis;
+export default AttackChainAnalysis;

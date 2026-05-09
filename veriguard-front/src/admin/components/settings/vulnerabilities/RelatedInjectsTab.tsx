@@ -31,7 +31,7 @@ interface Props {
   contextId?: string;
 }
 
-const RelatedInjectsTab = ({ searchFindings, finding, contextId, additionalHeaders = [], additionalFilterNames = [] }: Props) => {
+const RelatedAttackChainNodesTab = ({ searchFindings, finding, contextId, additionalHeaders = [], additionalFilterNames = [] }: Props) => {
   const { classes } = useStyles();
   const theme = useTheme();
   const bodyItemsStyles = useBodyItemsStyles();
@@ -57,7 +57,7 @@ const RelatedInjectsTab = ({ searchFindings, finding, contextId, additionalHeade
   const {
     queryableHelpers,
     searchPaginationInput,
-  } = useQueryableWithLocalStorage(`related-injects-${finding.finding_type}-${finding.finding_value}-${contextId}`, buildSearchPagination({
+  } = useQueryableWithLocalStorage(`related-nodes-${finding.finding_type}-${finding.finding_value}-${contextId}`, buildSearchPagination({
     sorts: initSorting('finding_created_at', 'DESC'),
     filterGroup: baseFilter,
   }));
@@ -157,4 +157,4 @@ const RelatedInjectsTab = ({ searchFindings, finding, contextId, additionalHeade
   );
 };
 
-export default RelatedInjectsTab;
+export default RelatedAttackChainNodesTab;

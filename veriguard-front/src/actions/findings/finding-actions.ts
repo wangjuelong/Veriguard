@@ -9,9 +9,9 @@ export const searchFindings = (searchPaginationInput: SearchPaginationInput) => 
   return simplePostCall(uri, data);
 };
 
-export const searchFindingsForInjects = (injectId: string, searchPaginationInput: SearchPaginationInput) => {
+export const searchFindingsForAttackChainNodes = (injectId: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
-  const uri = `${FINDING_URI}/injects/${injectId}/search`;
+  const uri = `${FINDING_URI}/nodes/${injectId}/search`;
   return simplePostCall(uri, data);
 };
 
@@ -23,11 +23,11 @@ export const searchFindingsOnEndpoint = (endpointId: string, searchPaginationInp
 
 export const searchFindingsForSimulations = (simulationId: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
-  const uri = `${FINDING_URI}/exercises/${simulationId}/search`;
+  const uri = `${FINDING_URI}/attack_chain_runs/${simulationId}/search`;
   return simplePostCall(uri, data);
 };
 
-export const searchFindingsForScenarios = (scenarioId: string, searchPaginationInput: SearchPaginationInput) => {
+export const searchFindingsForAttackChains = (scenarioId: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
   const uri = `${FINDING_URI}/attack_chains/${scenarioId}/search`;
   return simplePostCall(uri, data);
@@ -41,9 +41,9 @@ export const searchDistinctFindings = (searchPaginationInput: SearchPaginationIn
   return simplePostCall(uri, data);
 };
 
-export const searchDistinctFindingsForInjects = (injectId: string, searchPaginationInput: SearchPaginationInput) => {
+export const searchDistinctFindingsForAttackChainNodes = (injectId: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
-  const uri = `${FINDING_URI}/injects/${injectId}/search?distinct=true`;
+  const uri = `${FINDING_URI}/nodes/${injectId}/search?distinct=true`;
   return simplePostCall(uri, data);
 };
 
@@ -55,11 +55,11 @@ export const searchDistinctFindingsOnEndpoint = (endpointId: string, searchPagin
 
 export const searchDistinctFindingsForSimulations = (simulationId: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
-  const uri = `${FINDING_URI}/exercises/${simulationId}/search?distinct=true`;
+  const uri = `${FINDING_URI}/attack_chain_runs/${simulationId}/search?distinct=true`;
   return simplePostCall(uri, data);
 };
 
-export const searchDistinctFindingsForScenarios = (scenarioId: string, searchPaginationInput: SearchPaginationInput) => {
+export const searchDistinctFindingsForAttackChains = (scenarioId: string, searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
   const uri = `${FINDING_URI}/attack_chains/${scenarioId}/search?distinct=true`;
   return simplePostCall(uri, data);

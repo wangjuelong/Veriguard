@@ -35,7 +35,7 @@ export const fetchSimulationPlayerDocuments = (simulationId: string, userId: str
   `/api/player/attack_chain_runs/${simulationId}/documents${userId ? `?userId=${userId}` : ''}`,
 )(dispatch);
 
-export const fetchScenarioPlayerDocuments = (scenarioId: string, userId: string | null = null) => (dispatch: Dispatch) => getReferential(
+export const fetchAttackChainPlayerDocuments = (scenarioId: string, userId: string | null = null) => (dispatch: Dispatch) => getReferential(
   schema.arrayOfDocuments,
   `/api/player/attack_chains/${scenarioId}/documents${userId ? `?userId=${userId}` : ''}`,
 )(dispatch);

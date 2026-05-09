@@ -33,10 +33,10 @@ import { FieldArray } from 'react-final-form-arrays';
 import { connect } from 'react-redux';
 import { withStyles } from 'tss-react/mui';
 
-import { addInjectForExercise } from '../../../../../actions/AttackChainNode';
+import { addAttackChainNodeForAttackChainRun } from '../../../../../actions/AttackChainNode';
 import { fetchDocuments } from '../../../../../actions/Document';
 import { storeHelper } from '../../../../../actions/Schema';
-import { fetchVariablesForExercise } from '../../../../../actions/variables/variable-actions';
+import { fetchVariablesForAttackChainRun } from '../../../../../actions/variables/variable-actions';
 import MultipleFileLoader from '../../../../../components/fields/MultipleFileLoader';
 import OldRichTextField from '../../../../../components/fields/OldRichTextField';
 import OldSelectField from '../../../../../components/fields/OldSelectField';
@@ -46,8 +46,8 @@ import inject18n from '../../../../../components/i18n';
 import ItemBoolean from '../../../../../components/ItemBoolean';
 import ItemTags from '../../../../../components/ItemTags';
 import { secondsFromToNow } from '../../../../../utils/Time';
-import InjectExpectations from '../../../common/attack_chain_nodes/expectations/InjectExpectations';
-import InjectAddTeams from '../../../common/attack_chain_nodes/form/teams/InjectAddTeams';
+import AttackChainNodeExpectations from '../../../common/attack_chain_nodes/expectations/AttackChainNodeExpectations';
+import AttackChainNodeAddTeams from '../../../common/attack_chain_nodes/form/teams/AttackChainNodeAddTeams';
 import DocumentPopover from '../../../components/documents/DocumentPopover';
 import DocumentType from '../../../components/documents/DocumentType';
 import TeamPopover from '../../../components/teams/TeamPopover';
@@ -217,7 +217,7 @@ const inlineStyles = {
   },
 };
 
-class QuickInjectComponent extends Component {
+class QuickAttackChainNodeComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -245,7 +245,7 @@ class QuickInjectComponent extends Component {
   componentDidMount() {
     const { exerciseId } = this.props;
     this.props.fetchDocuments();
-    this.props.fetchVariablesForExercise(exerciseId);
+    this.props.fetchVariablesForAttackChainRun(exerciseId);
   }
 
   toggleAll() {
@@ -422,20 +422,20 @@ class QuickInjectComponent extends Component {
       });
     const { allTeams, teamsIds, documents } = this.state;
     const injectDependsDuration = secondsFromToNow(
-      this.props.exercise.exercise_start_date,
+      this.props.attack_chain_run.attack_chain_run_start_date,
     );
     const values = {
-      inject_title: finalData.subject,
-      inject_injector_contract: EMAIL_CONTRACT,
-      inject_depends_duration:
+      node_title: finalData.subject,
+      node_injector_contract: EMAIL_CONTRACT,
+      node_depends_duration:
         injectDependsDuration > 0 ? injectDependsDuration : 0,
-      inject_content: finalData,
-      inject_all_teams: allTeams,
-      inject_teams: teamsIds,
-      inject_documents: documents,
+      node_content: finalData,
+      node_all_teams: allTeams,
+      node_teams: teamsIds,
+      node_documents: documents,
     };
     return this.props
-      .addInject(this.props.exerciseId, values)
+      .addAttackChainNode(this.props.exerciseId, values)
       .then(() => this.props.handleClose());
   }
 
@@ -796,7 +796,7 @@ class QuickInjectComponent extends Component {
       classes,
       handleClose,
       exerciseId,
-      exercise,
+      attack_chain_run,
       injectorContract,
       teamsMap,
       documentsMap,
@@ -936,7 +936,7 @@ class QuickInjectComponent extends Component {
             <CloseRounded fontSize="small" color="primary" />
           </IconButton>
           <Typography variant="h6" classes={{ root: classes.title }}>
-            {t('Quick inject definition')}
+            {t('Quick node definition')}
           </Typography>
           <div className="clearfix" />
         </div>
@@ -1046,7 +1046,7 @@ class QuickInjectComponent extends Component {
                                   style={inlineStyles.team_users_number}
                                 >
                                   <strong>
-                                    {exercise.exercise_users_number}
+                                    {attack_chain_run.attack_chain_run_users_number}
                                   </strong>
                                 </div>
                                 <div
@@ -1135,7 +1135,7 @@ class QuickInjectComponent extends Component {
                               />
                             </ListItem>
                           ))}
-                          <InjectAddTeams
+                          <AttackChainNodeAddTeams
                             injectTeamsIds={teamsIds}
                             handleModifyTeams={this.handleModifyTeams.bind(
                               this,
@@ -1148,7 +1148,7 @@ class QuickInjectComponent extends Component {
                 )}
                 <div style={{ marginTop: hasTeams ? theme.spacing(2.5) : 0 }}>
                   <div style={{ float: 'left' }}>
-                    <Typography variant="h2">{t('Inject data')}</Typography>
+                    <Typography variant="h2">{t('AttackChainNode data')}</Typography>
                   </div>
                   <div style={{ float: 'right' }}>
                     <Button
@@ -1212,7 +1212,7 @@ class QuickInjectComponent extends Component {
                   && (
                     <>
                       <Typography variant="h2" style={{ marginTop: 30 }}>
-                        {t('Inject expectations')}
+                        {t('AttackChainNode expectations')}
                       </Typography>
                       {expectationsNotManual.length > 0 && (
                         <div>
@@ -1249,7 +1249,7 @@ class QuickInjectComponent extends Component {
                       )}
                       {hasExpectations
                         && (
-                          <InjectExpectations
+                          <AttackChainNodeExpectations
                             expectationDatas={expectations}
                             handleExpectations={this.handleExpectations.bind(this)}
                             injectorContractId={this.props.injectorContract.injector_contract_id}
@@ -1259,7 +1259,7 @@ class QuickInjectComponent extends Component {
                   )}
                 <div>
                   <Typography variant="h2" style={{ marginTop: 30 }}>
-                    {t('Inject documents')}
+                    {t('AttackChainNode documents')}
                   </Typography>
                   <List>
                     <ListItem
@@ -1392,7 +1392,7 @@ class QuickInjectComponent extends Component {
                     <MultipleFileLoader
                       exerciseId={exerciseId}
                       initialDocumentIds={documents
-                        .filter(a => !a.inject_document_attached)
+                        .filter(a => !a.node_document_attached)
                         .map(d => d.document_id)}
                       handleAddDocuments={this.handleAddDocuments.bind(this)}
                       hasAttachments={hasAttachments}
@@ -1429,14 +1429,14 @@ class QuickInjectComponent extends Component {
   }
 }
 
-QuickInjectComponent.propTypes = {
+QuickAttackChainNodeComponent.propTypes = {
   t: PropTypes.func,
   nsdt: PropTypes.func,
   theme: PropTypes.func,
   exerciseId: PropTypes.string,
-  exercise: PropTypes.object,
-  fetchInjectTeams: PropTypes.func,
-  addInject: PropTypes.func,
+  attack_chain_run: PropTypes.object,
+  fetchAttackChainNodeTeams: PropTypes.func,
+  addAttackChainNode: PropTypes.func,
   handleClose: PropTypes.func,
   injectorContract: PropTypes.object,
   fetchDocuments: PropTypes.func,
@@ -1447,7 +1447,7 @@ const select = (state, ownProps) => {
   const documentsMap = helper.getDocumentsMap().toJS();
   const teamsMap = helper.getTeamsMap().toJS();
   const { exerciseId } = ownProps;
-  const exerciseVariables = helper.getExerciseVariables(exerciseId).toJS();
+  const exerciseVariables = helper.getAttackChainRunVariables(exerciseId).toJS();
   return {
     documentsMap,
     teamsMap,
@@ -1455,14 +1455,14 @@ const select = (state, ownProps) => {
   };
 };
 
-const QuickInject = R.compose(
+const QuickAttackChainNode = R.compose(
   connect(select, {
     fetchDocuments,
-    fetchVariablesForExercise,
-    addInject: addInjectForExercise,
+    fetchVariablesForAttackChainRun,
+    addAttackChainNode: addAttackChainNodeForAttackChainRun,
   }),
   inject18n,
   Component => withStyles(Component, styles),
-)(QuickInjectComponent);
+)(QuickAttackChainNodeComponent);
 
-export default QuickInject;
+export default QuickAttackChainNode;

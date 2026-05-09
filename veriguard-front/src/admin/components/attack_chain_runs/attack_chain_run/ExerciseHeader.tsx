@@ -5,17 +5,17 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
-import { updateExerciseStatus } from '../../../../actions/AttackChainRun';
+import { type AttackChainRunsHelper } from '../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { updateAttackChainRunStatus } from '../../../../actions/AttackChainRun';
 import Transition from '../../../../components/common/Transition';
 import { useFormatter } from '../../../../components/i18n';
 import { useHelper } from '../../../../store';
-import { type Exercise, type Exercise as ExerciseType } from '../../../../utils/api-types';
+import { type AttackChainRun, type AttackChainRun as AttackChainRunType } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useSimulationPermissions from '../../../../utils/permissions/useSimulationPermissions';
 import { truncate } from '../../../../utils/String';
-import ExercisePopover, { type ExerciseActionPopover } from './ExercisePopover';
-import ExerciseStatus from './ExerciseStatus';
+import AttackChainRunPopover, { type AttackChainRunActionPopover } from './AttackChainRunPopover';
+import AttackChainRunStatus from './AttackChainRunStatus';
 
 const useStyles = makeStyles()(() => ({
   title: {
@@ -30,9 +30,9 @@ const useStyles = makeStyles()(() => ({
 }));
 
 const Buttons = ({ exerciseId, exerciseStatus, exerciseName, onLoading, isLoading }: {
-  exerciseId: Exercise['exercise_id'];
-  exerciseStatus: Exercise['exercise_status'];
-  exerciseName: Exercise['exercise_name'];
+  exerciseId: AttackChainRun['attack_chain_run_id'];
+  exerciseStatus: AttackChainRun['attack_chain_run_status'];
+  exerciseName: AttackChainRun['attack_chain_run_name'];
   onLoading: (loading: boolean) => void;
   isLoading: boolean;
 }) => {
@@ -40,13 +40,13 @@ const Buttons = ({ exerciseId, exerciseStatus, exerciseName, onLoading, isLoadin
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
   const permissions = useSimulationPermissions(exerciseId);
-  const [openChangeStatus, setOpenChangeStatus] = useState<Exercise['exercise_status'] | null>(null);
+  const [openChangeStatus, setOpenChangeStatus] = useState<AttackChainRun['attack_chain_run_status'] | null>(null);
 
-  const submitUpdateStatus = async (status: { exercise_status: Exercise['exercise_status'] | null }) => {
+  const submitUpdateStatus = async (status: { attack_chain_run_status: AttackChainRun['attack_chain_run_status'] | null }) => {
     setOpenChangeStatus(null);
     onLoading(true);
     try {
-      await dispatch(updateExerciseStatus(exerciseId, { exercise_status: status.exercise_status ?? undefined }));
+      await dispatch(updateAttackChainRunStatus(exerciseId, { attack_chain_run_status: status.attack_chain_run_status ?? undefined }));
     } finally {
       onLoading(false);
     }
@@ -162,13 +162,13 @@ const Buttons = ({ exerciseId, exerciseStatus, exerciseName, onLoading, isLoadin
       case 'RUNNING':
         return `${exerciseName} ${t('will be started, do you want to continue?')}`;
       case 'PAUSED':
-        return `${t('Injects will be paused, do you want to continue?')}`;
+        return `${t('AttackChainNodes will be paused, do you want to continue?')}`;
       case 'SCHEDULED':
         return `${exerciseName} ${t('data will be reset, do you want to restart?')}`;
       case 'CANCELED':
         return `${exerciseName} ${t('data will be reset, do you want to restart?')}`;
       default:
-        return 'Do you want to change the status of this simulation?';
+        return 'Do you want to change the status of this attack_chain_run?';
     }
   };
   return (
@@ -192,7 +192,7 @@ const Buttons = ({ exerciseId, exerciseStatus, exerciseName, onLoading, isLoadin
           </Button>
           <Button
             color="secondary"
-            onClick={() => submitUpdateStatus({ exercise_status: openChangeStatus })}
+            onClick={() => submitUpdateStatus({ attack_chain_run_status: openChangeStatus })}
           >
             {t('Confirm')}
           </Button>
@@ -202,7 +202,7 @@ const Buttons = ({ exerciseId, exerciseStatus, exerciseName, onLoading, isLoadin
   );
 };
 
-const ExerciseHeader = ({ onLoading, isLoading }: {
+const AttackChainRunHeader = ({ onLoading, isLoading }: {
   onLoading: (loading: boolean) => void;
   isLoading: boolean;
 }) => {
@@ -211,18 +211,18 @@ const ExerciseHeader = ({ onLoading, isLoading }: {
   const { classes } = useStyles();
   const navigate = useNavigate();
 
-  const { exerciseId } = useParams() as { exerciseId: ExerciseType['exercise_id'] };
-  const { exercise } = useHelper((helper: ExercisesHelper) => {
-    return { exercise: helper.getExercise(exerciseId) };
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRunType['attack_chain_run_id'] };
+  const { attack_chain_run } = useHelper((helper: AttackChainRunsHelper) => {
+    return { attack_chain_run: helper.getAttackChainRun(exerciseId) };
   });
 
-  const actions: ExerciseActionPopover[] = ['Update', 'Duplicate', 'Export', 'Delete', 'Access reports'];
+  const actions: AttackChainRunActionPopover[] = ['Update', 'Duplicate', 'Export', 'Delete', 'Access reports'];
 
   return (
     <>
-      <Tooltip title={exercise.exercise_name}>
+      <Tooltip title={attack_chain_run.attack_chain_run_name}>
         <Typography variant="h1" gutterBottom={true} classes={{ root: classes.title }}>
-          {truncate(exercise.exercise_name, 80)}
+          {truncate(attack_chain_run.attack_chain_run_name, 80)}
         </Typography>
       </Tooltip>
       <div style={{
@@ -233,17 +233,17 @@ const ExerciseHeader = ({ onLoading, isLoading }: {
         height: 20,
       }}
       />
-      <ExerciseStatus exerciseStatus={exercise.exercise_status} exerciseStartDate={exercise.exercise_start_date} />
+      <AttackChainRunStatus exerciseStatus={attack_chain_run.attack_chain_run_status} exerciseStartDate={attack_chain_run.attack_chain_run_start_date} />
       <div className={classes.actions}>
         <Buttons
-          exerciseId={exercise.exercise_id}
-          exerciseStatus={exercise.exercise_status}
-          exerciseName={exercise.exercise_name}
+          exerciseId={attack_chain_run.attack_chain_run_id}
+          exerciseStatus={attack_chain_run.attack_chain_run_status}
+          exerciseName={attack_chain_run.attack_chain_run_name}
           onLoading={onLoading}
           isLoading={isLoading}
         />
-        <ExercisePopover
-          exercise={exercise}
+        <AttackChainRunPopover
+          attack_chain_run={attack_chain_run}
           actions={actions}
           onDelete={() => navigate('/admin/attack_chain_runs')}
         />
@@ -253,4 +253,4 @@ const ExerciseHeader = ({ onLoading, isLoading }: {
   );
 };
 
-export default ExerciseHeader;
+export default AttackChainRunHeader;

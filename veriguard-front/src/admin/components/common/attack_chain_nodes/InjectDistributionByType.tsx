@@ -3,49 +3,49 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
-import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject-helper';
-import { fetchExerciseInjects } from '../../../../actions/AttackChainNode';
+import { type AttackChainNodeStore } from '../../../../actions/attack_chain_nodes/AttackChainNode';
+import { type AttackChainNodeHelper } from '../../../../actions/attack_chain_nodes/node-helper';
+import { fetchAttackChainRunAttackChainNodes } from '../../../../actions/AttackChainNode';
 import { type InjectorContractHelper } from '../../../../actions/injector_contracts/injector-contract-helper';
 import Empty from '../../../../components/Empty';
 import { useFormatter } from '../../../../components/i18n';
 import { useHelper } from '../../../../store';
-import { type Exercise, type InjectExpectation } from '../../../../utils/api-types';
+import { type AttackChainRun, type AttackChainNodeExpectation } from '../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../utils/Charts';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
-const InjectDistributionByType: FunctionComponent<Props> = ({ exerciseId }) => {
+const AttackChainNodeDistributionByType: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
   const { t, tPick } = useFormatter();
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
   // Fetching data
-  const { injects } = useHelper((helper: InjectHelper & InjectorContractHelper) => ({ injects: helper.getExerciseInjects(exerciseId) }));
+  const { nodes } = useHelper((helper: AttackChainNodeHelper & InjectorContractHelper) => ({ nodes: helper.getAttackChainRunAttackChainNodes(exerciseId) }));
   useDataLoader(() => {
-    dispatch(fetchExerciseInjects(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodes(exerciseId));
   });
 
   const injectsByType = R.pipe(
-    R.filter((n: InjectStore) => n.inject_sent_at !== null),
-    R.groupBy(R.prop('inject_type')),
+    R.filter((n: AttackChainNodeStore) => n.node_sent_at !== null),
+    R.groupBy(R.prop('node_type')),
     R.toPairs,
-    R.map((n: [string, InjectExpectation[]]) => ({
-      inject_type: n[0],
+    R.map((n: [string, AttackChainNodeExpectation[]]) => ({
+      node_type: n[0],
       number: n[1].length,
     })),
     R.sortWith([R.descend(R.prop('number'))]),
-  )(injects);
+  )(nodes);
   const injectsByInjectorContractData = [
     {
-      name: t('Number of injects'),
-      data: injectsByType.map((a: InjectStore & { number: number }) => ({
-        x: tPick(a.inject_injector_contract?.injector_contract_labels),
+      name: t('Number of nodes'),
+      data: injectsByType.map((a: AttackChainNodeStore & { number: number }) => ({
+        x: tPick(a.node_injector_contract?.injector_contract_labels),
         y: a.number,
-        fillColor: a.inject_injector_contract?.convertedContent?.config?.[`color_${theme.palette.mode}`],
+        fillColor: a.node_injector_contract?.convertedContent?.config?.[`color_${theme.palette.mode}`],
       })),
     },
   ];
@@ -63,7 +63,7 @@ const InjectDistributionByType: FunctionComponent<Props> = ({ exerciseId }) => {
       ) : (
         <Empty
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}
@@ -71,4 +71,4 @@ const InjectDistributionByType: FunctionComponent<Props> = ({ exerciseId }) => {
   );
 };
 
-export default InjectDistributionByType;
+export default AttackChainNodeDistributionByType;

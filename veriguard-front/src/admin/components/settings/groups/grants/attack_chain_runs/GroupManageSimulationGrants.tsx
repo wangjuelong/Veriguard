@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { searchExercises } from '../../../../../../actions/AttackChainRun';
+import { searchAttackChainRuns } from '../../../../../../actions/AttackChainRun';
 import { initSorting } from '../../../../../../components/common/queryable/Page';
 import PaginationComponentV2 from '../../../../../../components/common/queryable/pagination/PaginationComponentV2';
 import { buildSearchPagination } from '../../../../../../components/common/queryable/QueryableUtils';
 import { useQueryableWithLocalStorage } from '../../../../../../components/common/queryable/useQueryableWithLocalStorage';
-import type { Exercise, SearchPaginationInput } from '../../../../../../utils/api-types';
+import type { AttackChainRun, SearchPaginationInput } from '../../../../../../utils/api-types';
 import TableData from '../ui/TableData';
 import useSimulationGrant from './useSimulationGrant';
 
@@ -19,16 +19,16 @@ const GroupManageSimulationGrants = ({ groupId, onGrantChange }: GGroupManageSim
     groupId,
     onGrantChange,
   });
-  const [simulations, setSimulations] = useState<Exercise[]>([]);
+  const [attack_chain_runs, setSimulations] = useState<AttackChainRun[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const {
     queryableHelpers,
     searchPaginationInput,
-  } = useQueryableWithLocalStorage(`group-${groupId}-simulations`, buildSearchPagination({ sorts: initSorting('exercise_updated_at', 'DESC') }));
+  } = useQueryableWithLocalStorage(`group-${groupId}-attack_chain_runs`, buildSearchPagination({ sorts: initSorting('attack_chain_run_updated_at', 'DESC') }));
   const search = (input: SearchPaginationInput) => {
     setLoading(true);
-    return searchExercises(input).finally(() => setLoading(false));
+    return searchAttackChainRuns(input).finally(() => setLoading(false));
   };
 
   return (
@@ -37,12 +37,12 @@ const GroupManageSimulationGrants = ({ groupId, onGrantChange }: GGroupManageSim
         fetch={search}
         searchPaginationInput={searchPaginationInput}
         setContent={setSimulations}
-        entityPrefix="exercise"
+        entityPrefix="attack_chain_run"
         queryableHelpers={queryableHelpers}
         disableFilters
       />
       <TableData
-        datas={simulations}
+        datas={attack_chain_runs}
         configs={configs}
         loading={loading}
       />

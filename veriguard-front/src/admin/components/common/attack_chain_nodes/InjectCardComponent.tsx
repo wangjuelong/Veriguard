@@ -10,7 +10,7 @@ interface Props {
   content: string;
 }
 
-const InjectCardComponent: FunctionComponent<Props> = ({
+const AttackChainNodeCardComponent: FunctionComponent<Props> = ({
   avatar,
   title,
   action,
@@ -40,4 +40,4 @@ const InjectCardComponent: FunctionComponent<Props> = ({
   );
 };
 
-export default InjectCardComponent;
+export default AttackChainNodeCardComponent;

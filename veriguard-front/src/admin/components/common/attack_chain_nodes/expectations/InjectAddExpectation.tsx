@@ -16,12 +16,12 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-interface InjectAddExpectationProps {
+interface AttackChainNodeAddExpectationProps {
   predefinedExpectations: ExpectationInput[];
   handleAddExpectation: (data: ExpectationInput) => void;
 }
 
-const InjectAddExpectation: FunctionComponent<InjectAddExpectationProps> = ({
+const AttackChainNodeAddExpectation: FunctionComponent<AttackChainNodeAddExpectationProps> = ({
   predefinedExpectations,
   handleAddExpectation,
 }) => {
@@ -64,7 +64,7 @@ const InjectAddExpectation: FunctionComponent<InjectAddExpectationProps> = ({
       <Dialog
         open={openDialog}
         handleClose={handleClose}
-        title={t('Add expectation in this inject')}
+        title={t('Add expectation in this node')}
       >
         <ExpectationFormCreate
           predefinedExpectations={predefinedExpectations}
@@ -76,4 +76,4 @@ const InjectAddExpectation: FunctionComponent<InjectAddExpectationProps> = ({
   );
 };
 
-export default InjectAddExpectation;
+export default AttackChainNodeAddExpectation;

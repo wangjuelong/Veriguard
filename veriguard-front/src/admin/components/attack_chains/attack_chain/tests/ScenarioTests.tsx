@@ -1,30 +1,30 @@
 import { type FunctionComponent } from 'react';
 import { useParams } from 'react-router';
 
-import { bulkTestInjects, deleteInjectTest, fetchInjectTestStatus, searchInjectTests, testInject } from '../../../../../actions/inject_test/scenario-inject-test-actions';
-import { type InjectTestStatusOutput, type Scenario } from '../../../../../utils/api-types';
-import InjectTestList from '../../../attack_chain_nodes/InjectTestList';
-import { InjectTestContext, type InjectTestContextType } from '../../../common/Context';
+import { bulkTestAttackChainNodes, deleteAttackChainNodeTest, fetchAttackChainNodeTestStatus, searchAttackChainNodeTests, testAttackChainNode } from '../../../../../actions/node_test/attack_chain-node-test-actions';
+import { type AttackChainNodeTestStatusOutput, type AttackChain } from '../../../../../utils/api-types';
+import AttackChainNodeTestList from '../../../attack_chain_nodes/AttackChainNodeTestList';
+import { AttackChainNodeTestContext, type AttackChainNodeTestContextType } from '../../../common/Context';
 
-const ScenarioTests: FunctionComponent = () => {
+const AttackChainTests: FunctionComponent = () => {
   const { scenarioId, statusId } = useParams() as {
-    scenarioId: Scenario['scenario_id'];
-    statusId: InjectTestStatusOutput['status_id'];
+    scenarioId: AttackChain['attack_chain_id'];
+    statusId: AttackChainNodeTestStatusOutput['status_id'];
   };
-  const injectTestContext: InjectTestContextType = {
+  const injectTestContext: AttackChainNodeTestContextType = {
     contextId: scenarioId,
-    bulkTestInjects: bulkTestInjects,
-    deleteInjectTest: deleteInjectTest,
-    searchInjectTests: searchInjectTests,
-    fetchInjectTestStatus: fetchInjectTestStatus,
-    testInject: testInject,
+    bulkTestAttackChainNodes: bulkTestAttackChainNodes,
+    deleteAttackChainNodeTest: deleteAttackChainNodeTest,
+    searchAttackChainNodeTests: searchAttackChainNodeTests,
+    fetchAttackChainNodeTestStatus: fetchAttackChainNodeTestStatus,
+    testAttackChainNode: testAttackChainNode,
   };
 
   return (
-    <InjectTestContext.Provider value={injectTestContext}>
-      <InjectTestList statusId={statusId} />
-    </InjectTestContext.Provider>
+    <AttackChainNodeTestContext.Provider value={injectTestContext}>
+      <AttackChainNodeTestList statusId={statusId} />
+    </AttackChainNodeTestContext.Provider>
   );
 };
 
-export default ScenarioTests;
+export default AttackChainTests;

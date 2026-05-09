@@ -1,9 +1,9 @@
-import { type AssetGroup, type Exercise, type Scenario } from '../../utils/api-types';
+import { type AssetGroup, type AttackChainRun, type AttackChain } from '../../utils/api-types';
 
 export interface AssetGroupsHelper {
   getAssetGroups: () => AssetGroup[];
   getAssetGroupMaps: () => Record<string, AssetGroup>;
   getAssetGroup: (assetGroupId: string) => AssetGroup | undefined;
-  getExerciseAssetGroups: (exerciseId: Exercise['exercise_id']) => AssetGroup[];
-  getScenarioAssetGroups: (scenarioId: Scenario['scenario_id']) => AssetGroup[];
+  getAttackChainRunAssetGroups: (exerciseId: AttackChainRun['attack_chain_run_id']) => AssetGroup[];
+  getAttackChainAssetGroups: (scenarioId: AttackChain['attack_chain_id']) => AssetGroup[];
 }

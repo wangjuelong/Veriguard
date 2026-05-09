@@ -9,37 +9,37 @@ import SelectField from '../../../../components/fields/SelectField';
 import TagField from '../../../../components/fields/TagField';
 import TextField from '../../../../components/fields/TextField';
 import { useFormatter } from '../../../../components/i18n';
-import { type CreateExerciseInput } from '../../../../utils/api-types';
+import { type CreateAttackChainRunInput } from '../../../../utils/api-types';
 import { zodImplement } from '../../../../utils/Zod';
 import { scenarioCategories } from '../../attack_chains/constants';
 import { EXERCISE_NAME_MAX_LENGTH, EXERCISE_NAME_MIN_LENGTH } from '../constants';
 
 interface Props {
-  onSubmit: SubmitHandler<CreateExerciseInput>;
+  onSubmit: SubmitHandler<CreateAttackChainRunInput>;
   handleClose: () => void;
-  initialValues?: CreateExerciseInput;
+  initialValues?: CreateAttackChainRunInput;
   disabled?: boolean;
   edit: boolean;
   simulationId?: string;
 }
 
-const ExerciseForm: FunctionComponent<Props> = ({
+const AttackChainRunForm: FunctionComponent<Props> = ({
   onSubmit,
   handleClose,
   disabled,
   edit,
   initialValues = {
-    exercise_name: '',
-    exercise_subtitle: '',
-    exercise_description: '',
-    exercise_category: 'attack-scenario',
-    exercise_main_focus: 'incident-response',
-    exercise_severity: 'high',
-    exercise_tags: [],
-    exercise_mail_from: '',
-    exercise_mails_reply_to: [],
-    exercise_message_header: '',
-    exercise_message_footer: '',
+    attack_chain_run_name: '',
+    attack_chain_run_subtitle: '',
+    attack_chain_run_description: '',
+    attack_chain_run_category: 'attack-attack_chain',
+    attack_chain_run_main_focus: 'incident-response',
+    attack_chain_run_severity: 'high',
+    attack_chain_run_tags: [],
+    attack_chain_run_mail_from: '',
+    attack_chain_run_mails_reply_to: [],
+    attack_chain_run_message_header: '',
+    attack_chain_run_message_footer: '',
   },
 }) => {
   // Standard hooks
@@ -51,24 +51,24 @@ const ExerciseForm: FunctionComponent<Props> = ({
     control,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
-  } = useForm<CreateExerciseInput>({
+  } = useForm<CreateAttackChainRunInput>({
     mode: 'onTouched',
     resolver: zodResolver(
-      zodImplement<CreateExerciseInput>().with({
-        exercise_name: z.string().min(EXERCISE_NAME_MIN_LENGTH, { message: t('Should not be empty') })
+      zodImplement<CreateAttackChainRunInput>().with({
+        attack_chain_run_name: z.string().min(EXERCISE_NAME_MIN_LENGTH, { message: t('Should not be empty') })
           .max(EXERCISE_NAME_MAX_LENGTH, { message: t('Should not exceed {max_length} characters', { max_length: EXERCISE_NAME_MAX_LENGTH.toString() }) }),
-        exercise_subtitle: z.string().optional(),
-        exercise_category: z.string().optional(),
-        exercise_main_focus: z.string().optional(),
-        exercise_severity: z.string().optional(),
-        exercise_description: z.string().optional(),
-        exercise_start_date: z.string().datetime().optional().nullable(),
-        exercise_tags: z.string().array().optional(),
-        exercise_mail_from: z.string().email(t('Should be a valid email address')).optional(),
-        exercise_mails_reply_to: z.array(z.string().email(t('Should be a valid email address'))).optional(),
-        exercise_message_header: z.string().optional(),
-        exercise_message_footer: z.string().optional(),
-        exercise_custom_dashboard: z.string().optional(),
+        attack_chain_run_subtitle: z.string().optional(),
+        attack_chain_run_category: z.string().optional(),
+        attack_chain_run_main_focus: z.string().optional(),
+        attack_chain_run_severity: z.string().optional(),
+        attack_chain_run_description: z.string().optional(),
+        attack_chain_run_start_date: z.string().datetime().optional().nullable(),
+        attack_chain_run_tags: z.string().array().optional(),
+        attack_chain_run_mail_from: z.string().email(t('Should be a valid email address')).optional(),
+        attack_chain_run_mails_reply_to: z.array(z.string().email(t('Should be a valid email address'))).optional(),
+        attack_chain_run_message_header: z.string().optional(),
+        attack_chain_run_message_footer: z.string().optional(),
+        attack_chain_run_custom_dashboard: z.string().optional(),
       }),
     ),
     defaultValues: initialValues,
@@ -89,9 +89,9 @@ const ExerciseForm: FunctionComponent<Props> = ({
         fullWidth
         label={t('Name')}
         style={{ marginTop: 20 }}
-        error={!!errors.exercise_name}
-        helperText={errors.exercise_name?.message}
-        inputProps={register('exercise_name')}
+        error={!!errors.attack_chain_run_name}
+        helperText={errors.attack_chain_run_name?.message}
+        inputProps={register('attack_chain_run_name')}
         InputLabelProps={{ required: true }}
         control={control}
         maxLength={255}
@@ -101,12 +101,12 @@ const ExerciseForm: FunctionComponent<Props> = ({
           <SelectField
             variant="standard"
             fullWidth={true}
-            name="exercise_category"
+            name="attack_chain_run_category"
             label={t('Category')}
             style={{ marginTop: 20 }}
-            error={!!errors.exercise_category}
+            error={!!errors.attack_chain_run_category}
             control={control}
-            defaultValue={initialValues.exercise_category}
+            defaultValue={initialValues.attack_chain_run_category}
           >
             {Array.from(scenarioCategories).map(([key, value]) => (
               <MenuItem key={key} value={key}>
@@ -119,12 +119,12 @@ const ExerciseForm: FunctionComponent<Props> = ({
           <SelectField
             variant="standard"
             fullWidth={true}
-            name="exercise_main_focus"
+            name="attack_chain_run_main_focus"
             label={t('Main focus')}
             style={{ marginTop: 20 }}
-            error={!!errors.exercise_main_focus}
+            error={!!errors.attack_chain_run_main_focus}
             control={control}
-            defaultValue={initialValues.exercise_main_focus}
+            defaultValue={initialValues.attack_chain_run_main_focus}
           >
             <MenuItem key="endpoint-protection" value="endpoint-protection">
               {t('Endpoint Protection')}
@@ -151,12 +151,12 @@ const ExerciseForm: FunctionComponent<Props> = ({
       <SelectField
         variant="standard"
         fullWidth={true}
-        name="exercise_severity"
+        name="attack_chain_run_severity"
         label={t('Severity')}
         style={{ marginTop: 20 }}
-        error={!!errors.exercise_severity}
+        error={!!errors.attack_chain_run_severity}
         control={control}
-        defaultValue={initialValues.exercise_severity}
+        defaultValue={initialValues.attack_chain_run_severity}
       >
         <MenuItem key="low" value="low">
           {t('Low')}
@@ -178,16 +178,16 @@ const ExerciseForm: FunctionComponent<Props> = ({
         rows={2}
         label={t('Description')}
         style={{ marginTop: 20 }}
-        error={!!errors.exercise_description}
-        helperText={errors.exercise_description?.message}
-        inputProps={register('exercise_description')}
+        error={!!errors.attack_chain_run_description}
+        helperText={errors.attack_chain_run_description?.message}
+        inputProps={register('attack_chain_run_description')}
         control={control}
       />
       {!edit
         && (
           <Controller
             control={control}
-            name="exercise_start_date"
+            name="attack_chain_run_start_date"
             render={({ field }) => (
               <MuiDateTimePicker
                 value={field.value ? new Date(field.value) : null}
@@ -198,8 +198,8 @@ const ExerciseForm: FunctionComponent<Props> = ({
                     variant: 'standard',
                     fullWidth: true,
                     style: { marginTop: 20 },
-                    error: !!errors.exercise_start_date,
-                    helperText: errors.exercise_start_date?.message,
+                    error: !!errors.attack_chain_run_start_date,
+                    helperText: errors.attack_chain_run_start_date?.message,
                   },
                 }}
                 onChange={date => field.onChange(date?.toISOString())}
@@ -211,7 +211,7 @@ const ExerciseForm: FunctionComponent<Props> = ({
         )}
       <Controller
         control={control}
-        name="exercise_tags"
+        name="attack_chain_run_tags"
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <TagField
             label={t('Tags')}
@@ -236,15 +236,15 @@ const ExerciseForm: FunctionComponent<Props> = ({
         fullWidth
         label={t('Sender email address')}
         style={{ marginTop: 20 }}
-        error={!!errors.exercise_mail_from}
-        helperText={errors.exercise_mail_from && errors.exercise_mail_from?.message}
-        inputProps={register('exercise_mail_from')}
+        error={!!errors.attack_chain_run_mail_from}
+        helperText={errors.attack_chain_run_mail_from && errors.attack_chain_run_mail_from?.message}
+        inputProps={register('attack_chain_run_mail_from')}
         disabled={disabled}
       />
 
       <Controller
         control={control}
-        name="exercise_mails_reply_to"
+        name="attack_chain_run_mails_reply_to"
         render={({ field, fieldState }) => {
           return (
             <Autocomplete
@@ -288,7 +288,7 @@ const ExerciseForm: FunctionComponent<Props> = ({
                   label={t('Reply to')}
                   style={{ marginTop: 20 }}
                   error={!!fieldState.error}
-                  helperText={errors.exercise_mails_reply_to?.find ? errors.exercise_mails_reply_to?.find(value => value != null)?.message ?? '' : ''}
+                  helperText={errors.attack_chain_run_mails_reply_to?.find ? errors.attack_chain_run_mails_reply_to?.find(value => value != null)?.message ?? '' : ''}
                 />
               )}
             />
@@ -304,7 +304,7 @@ const ExerciseForm: FunctionComponent<Props> = ({
         }}
       >
         <AlertTitle>
-          {t('If you remove the default email address, the email reception for this simulation / scenario will be disabled.')}
+          {t('If you remove the default email address, the email reception for this attack_chain_run / attack_chain will be disabled.')}
         </AlertTitle>
       </Alert>
       <MuiTextField
@@ -312,9 +312,9 @@ const ExerciseForm: FunctionComponent<Props> = ({
         fullWidth
         label={t('Messages header')}
         style={{ marginTop: 20 }}
-        error={!!errors.exercise_message_header}
-        helperText={errors.exercise_message_header && errors.exercise_message_header?.message}
-        inputProps={register('exercise_message_header')}
+        error={!!errors.attack_chain_run_message_header}
+        helperText={errors.attack_chain_run_message_header && errors.attack_chain_run_message_header?.message}
+        inputProps={register('attack_chain_run_message_header')}
         disabled={disabled}
       />
       <MuiTextField
@@ -322,9 +322,9 @@ const ExerciseForm: FunctionComponent<Props> = ({
         fullWidth
         label={t('Messages footer')}
         style={{ marginTop: 20 }}
-        error={!!errors.exercise_message_footer}
-        helperText={errors.exercise_message_footer && errors.exercise_message_footer?.message}
-        inputProps={register('exercise_message_footer')}
+        error={!!errors.attack_chain_run_message_footer}
+        helperText={errors.attack_chain_run_message_footer && errors.attack_chain_run_message_footer?.message}
+        inputProps={register('attack_chain_run_message_footer')}
         disabled={disabled}
       />
       <div style={{
@@ -353,4 +353,4 @@ const ExerciseForm: FunctionComponent<Props> = ({
   );
 };
 
-export default ExerciseForm;
+export default AttackChainRunForm;

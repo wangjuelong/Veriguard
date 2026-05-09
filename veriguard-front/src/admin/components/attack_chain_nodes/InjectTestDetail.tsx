@@ -3,18 +3,18 @@ import { useTheme } from '@mui/material/styles';
 
 import Drawer from '../../../components/common/Drawer';
 import { useFormatter } from '../../../components/i18n';
-import { type InjectTestStatusOutput } from '../../../utils/api-types';
+import { type AttackChainNodeTestStatusOutput } from '../../../utils/api-types';
 import { truncate } from '../../../utils/String';
-import InjectIcon from '../common/attack_chain_nodes/InjectIcon';
+import AttackChainNodeIcon from '../common/attack_chain_nodes/AttackChainNodeIcon';
 import GlobalExecutionTraces from '../common/attack_chain_nodes/status/traces/GlobalExecutionTraces';
 
 interface Props {
   open: boolean;
   handleClose: () => void;
-  injectTestStatus: InjectTestStatusOutput | undefined;
+  injectTestStatus: AttackChainNodeTestStatusOutput | undefined;
 }
 
-const InjectTestDetail = ({
+const AttackChainNodeTestDetail = ({
   open,
   handleClose,
   injectTestStatus,
@@ -35,9 +35,9 @@ const InjectTestDetail = ({
                 <CardHeader
                   sx={{ backgroundColor: theme.palette.background.default }}
                   avatar={(
-                    <InjectIcon
+                    <AttackChainNodeIcon
                       isPayload={false}
-                      type={injectTestStatus.inject_type}
+                      type={injectTestStatus.node_type}
                       variant="list"
                     />
                   )}
@@ -53,7 +53,7 @@ const InjectTestDetail = ({
             textAlign: 'center',
           }}
           >
-            {truncate(injectTestStatus?.inject_title, 80)}
+            {truncate(injectTestStatus?.node_title, 80)}
           </CardContent>
         </Card>
         {injectTestStatus && <GlobalExecutionTraces injectStatus={injectTestStatus} />}
@@ -62,4 +62,4 @@ const InjectTestDetail = ({
   );
 };
 
-export default InjectTestDetail;
+export default AttackChainNodeTestDetail;

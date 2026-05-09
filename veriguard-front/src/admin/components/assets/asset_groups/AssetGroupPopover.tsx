@@ -43,7 +43,7 @@ const AssetGroupPopover: FunctionComponent<AssetGroupPopoverProps> = ({
   assetGroup,
   onRemoveAssetGroupFromList,
   onRemoveEndpointFromAssetGroup,
-  removeAssetGroupFromListMessage = 'Remove from the inject',
+  removeAssetGroupFromListMessage = 'Remove from the node',
   openEditOnInit = false,
   onUpdate,
   onDelete,

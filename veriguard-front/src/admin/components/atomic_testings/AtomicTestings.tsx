@@ -9,15 +9,15 @@ import { initSorting } from '../../../components/common/queryable/Page';
 import { buildSearchPagination } from '../../../components/common/queryable/QueryableUtils';
 import { useQueryableWithLocalStorage } from '../../../components/common/queryable/useQueryableWithLocalStorage';
 import { useFormatter } from '../../../components/i18n';
-import { type AtomicTestingInput, type InjectResultOverviewOutput } from '../../../utils/api-types';
+import { type AtomicTestingInput, type AttackChainNodeResultOverviewOutput } from '../../../utils/api-types';
 import { EndpointContext } from '../../../utils/context/endpoint/EndpointContext';
 import endpointContextForAtomicTesting from '../../../utils/context/endpoint/EndpointContextForAtomicTesting';
 import { Can } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
-import CreateInject from '../common/attack_chain_nodes/CreateInject';
+import CreateAttackChainNode from '../common/attack_chain_nodes/CreateAttackChainNode';
 import { TeamContext } from '../common/Context';
 import teamContextForAtomicTesting from './atomic_testing/context/TeamContextForAtomicTesting';
-import InjectResultList from './InjectResultList';
+import AttackChainNodeResultList from './AttackChainNodeResultList';
 
 const AtomicTestings = () => {
   // Standard hooks
@@ -27,23 +27,23 @@ const AtomicTestings = () => {
 
   const onCreateAtomicTesting = async (data: AtomicTestingInput) => {
     const toCreate = R.pipe(
-      R.assoc('inject_tags', data.inject_tags),
-      R.assoc('inject_title', data.inject_title),
-      R.assoc('inject_all_teams', data.inject_all_teams),
-      R.assoc('inject_asset_groups', data.inject_asset_groups),
-      R.assoc('inject_assets', data.inject_assets),
-      R.assoc('inject_content', data.inject_content),
-      R.assoc('inject_injector_contract', data.inject_injector_contract),
-      R.assoc('inject_description', data.inject_description),
-      R.assoc('inject_documents', data.inject_documents),
-      R.assoc('inject_teams', data.inject_teams),
+      R.assoc('node_tags', data.node_tags),
+      R.assoc('node_title', data.node_title),
+      R.assoc('node_all_teams', data.node_all_teams),
+      R.assoc('node_asset_groups', data.node_asset_groups),
+      R.assoc('node_assets', data.node_assets),
+      R.assoc('node_content', data.node_content),
+      R.assoc('node_injector_contract', data.node_injector_contract),
+      R.assoc('node_description', data.node_description),
+      R.assoc('node_documents', data.node_documents),
+      R.assoc('node_teams', data.node_teams),
     )(data);
-    await createAtomicTesting(toCreate).then((result: { data: InjectResultOverviewOutput }) => {
-      navigate(`/admin/atomic_testings/${result.data.inject_id}`);
+    await createAtomicTesting(toCreate).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+      navigate(`/admin/atomic_testings/${result.data.node_id}`);
     });
   };
 
-  const { queryableHelpers, searchPaginationInput } = useQueryableWithLocalStorage('atomic-testing', buildSearchPagination({ sorts: initSorting('inject_updated_at', 'DESC') }));
+  const { queryableHelpers, searchPaginationInput } = useQueryableWithLocalStorage('atomic-testing', buildSearchPagination({ sorts: initSorting('node_updated_at', 'DESC') }));
   const endpointContext = endpointContextForAtomicTesting();
 
   return (
@@ -55,9 +55,9 @@ const AtomicTestings = () => {
           current: true,
         }]}
       />
-      <InjectResultList
+      <AttackChainNodeResultList
         showActions
-        fetchInjects={searchAtomicTestings}
+        fetchAttackChainNodes={searchAtomicTestings}
         goTo={injectId => `/admin/atomic_testings/${injectId}`}
         queryableHelpers={queryableHelpers}
         searchPaginationInput={searchPaginationInput}
@@ -68,9 +68,9 @@ const AtomicTestings = () => {
           <ButtonCreate onClick={() => setOpenCreateDrawer(true)} />
           <TeamContext.Provider value={teamContextForAtomicTesting()}>
             <EndpointContext.Provider value={endpointContext}>
-              <CreateInject
+              <CreateAttackChainNode
                 title={t('Create a new atomic test')}
-                onCreateInject={onCreateAtomicTesting}
+                onCreateAttackChainNode={onCreateAtomicTesting}
                 isAtomic
                 open={openCreateDrawer}
                 handleClose={() => setOpenCreateDrawer(false)}

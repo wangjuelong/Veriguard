@@ -17,12 +17,12 @@ import ItemDomains from '../../../components/ItemDomains';
 import ItemStatus from '../../../components/ItemStatus';
 import ItemTargets from '../../../components/ItemTargets';
 import PaginatedListLoader from '../../../components/PaginatedListLoader';
-import { type InjectResultOutput, type SearchPaginationInput } from '../../../utils/api-types';
+import { type AttackChainNodeResultOutput, type SearchPaginationInput } from '../../../utils/api-types';
 import { Can } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
 import { isNotEmptyField } from '../../../utils/utils';
-import InjectIcon from '../common/attack_chain_nodes/InjectIcon';
-import InjectImportJsonDialog from '../common/attack_chain_nodes/InjectImportJsonDialog';
+import AttackChainNodeIcon from '../common/attack_chain_nodes/AttackChainNodeIcon';
+import AttackChainNodeImportJsonDialog from '../common/attack_chain_nodes/AttackChainNodeImportJsonDialog';
 import InjectorContract from '../common/attack_chain_nodes/InjectorContract';
 import AtomicTestingPopover from './atomic_testing/AtomicTestingPopover';
 import AtomicTestingResult from './atomic_testing/AtomicTestingResult';
@@ -33,19 +33,19 @@ const useStyles = makeStyles()(() => ({
 }));
 
 const inlineStyles: Record<string, CSSProperties> = {
-  'inject_type': { width: '10%' },
-  'inject_title': { width: '15%' },
-  'inject_contract_domains': { width: '15%' },
-  'inject_status.tracking_sent_date': { width: '15%' },
-  'inject_status': { width: '10%' },
-  'inject_targets': { width: '15%' },
-  'inject_expectations': { width: '10%' },
-  'inject_updated_at': { width: '10%' },
+  'node_type': { width: '10%' },
+  'node_title': { width: '15%' },
+  'node_contract_domains': { width: '15%' },
+  'node_status.tracking_sent_date': { width: '15%' },
+  'node_status': { width: '10%' },
+  'node_targets': { width: '15%' },
+  'node_expectations': { width: '10%' },
+  'node_updated_at': { width: '10%' },
 };
 
 interface Props {
   showActions?: boolean;
-  fetchInjects: (input: SearchPaginationInput) => Promise<{ data: Page<InjectResultOutput> }>;
+  fetchAttackChainNodes: (input: SearchPaginationInput) => Promise<{ data: Page<AttackChainNodeResultOutput> }>;
   goTo: (injectId: string) => string;
   queryableHelpers: QueryableHelpers;
   searchPaginationInput: SearchPaginationInput;
@@ -53,9 +53,9 @@ interface Props {
   contextId?: string;
 }
 
-const InjectResultList: FunctionComponent<Props> = ({
+const AttackChainNodeResultList: FunctionComponent<Props> = ({
   showActions,
-  fetchInjects,
+  fetchAttackChainNodes,
   goTo,
   queryableHelpers,
   searchPaginationInput,
@@ -72,102 +72,102 @@ const InjectResultList: FunctionComponent<Props> = ({
 
   // Filter and sort hook
   const availableFilterNames = [
-    'inject_attack_patterns',
-    'inject_kill_chain_phases',
-    'inject_tags',
-    'inject_title',
-    'inject_type',
-    'inject_updated_at',
-    'inject_assets',
-    'inject_asset_groups',
-    'inject_teams',
-    'inject_contract_domains',
+    'node_attack_patterns',
+    'node_kill_chain_phases',
+    'node_tags',
+    'node_title',
+    'node_type',
+    'node_updated_at',
+    'node_assets',
+    'node_asset_groups',
+    'node_teams',
+    'node_contract_domains',
   ];
-  const [injects, setInjects] = useState<InjectResultOutput[]>([]);
+  const [nodes, setAttackChainNodes] = useState<AttackChainNodeResultOutput[]>([]);
 
   // Headers
   const headers: Header[] = useMemo(() => [
     {
-      field: 'inject_type',
+      field: 'node_type',
       label: 'Type',
       isSortable: false,
-      value: (injectResultOutput: InjectResultOutput) => {
-        if (injectResultOutput.inject_injector_contract) {
+      value: (injectResultOutput: AttackChainNodeResultOutput) => {
+        if (injectResultOutput.node_injector_contract) {
           return (
-            <InjectorContract variant="list" label={tPick(injectResultOutput.inject_injector_contract?.injector_contract_labels)} />
+            <InjectorContract variant="list" label={tPick(injectResultOutput.node_injector_contract?.injector_contract_labels)} />
           );
         }
         return <InjectorContract variant="list" label={t('Deleted')} deleted={true} />;
       },
     },
     {
-      field: 'inject_title',
+      field: 'node_title',
       label: 'Name',
       isSortable: true,
-      value: (injectResultOutput: InjectResultOutput) => {
-        return <>{injectResultOutput.inject_title}</>;
+      value: (injectResultOutput: AttackChainNodeResultOutput) => {
+        return <>{injectResultOutput.node_title}</>;
       },
     },
     {
-      field: 'inject_contract_domains',
+      field: 'node_contract_domains',
       label: t('Domains'),
       isSortable: true,
-      value: (injectResultOutput: InjectResultOutput) => {
-        return injectResultOutput.inject_contract_domains?.length
+      value: (injectResultOutput: AttackChainNodeResultOutput) => {
+        return injectResultOutput.node_contract_domains?.length
           ? (
-              <ItemDomains domains={injectResultOutput.inject_contract_domains} variant="reduced-view" />
+              <ItemDomains domains={injectResultOutput.node_contract_domains} variant="reduced-view" />
             )
           : <></>;
       },
     },
     {
-      field: 'inject_status.tracking_sent_date',
+      field: 'node_status.tracking_sent_date',
       label: 'Execution Date',
       isSortable: false,
-      value: (injectResultOutput: InjectResultOutput) => {
-        const trackingDate = injectResultOutput.inject_status?.tracking_sent_date;
+      value: (injectResultOutput: AttackChainNodeResultOutput) => {
+        const trackingDate = injectResultOutput.node_status?.tracking_sent_date;
         return <>{trackingDate ? fldt(trackingDate) : '-'}</>;
       },
     },
     {
-      field: 'inject_status',
+      field: 'node_status',
       label: 'Execution status',
       isSortable: false,
-      value: (injectResultOutput: InjectResultOutput) => {
-        return (<ItemStatus status={injectResultOutput.inject_status?.status_name} label={t(injectResultOutput.inject_status?.status_name || '-')} variant="inList" />);
+      value: (injectResultOutput: AttackChainNodeResultOutput) => {
+        return (<ItemStatus status={injectResultOutput.node_status?.status_name} label={t(injectResultOutput.node_status?.status_name || '-')} variant="inList" />);
       },
     },
     {
-      field: 'inject_targets',
+      field: 'node_targets',
       label: 'Target',
       isSortable: false,
-      value: (injectResultOutput: InjectResultOutput) => {
-        return (<ItemTargets targets={injectResultOutput.inject_targets} />);
+      value: (injectResultOutput: AttackChainNodeResultOutput) => {
+        return (<ItemTargets targets={injectResultOutput.node_targets} />);
       },
     },
     {
-      field: 'inject_expectations',
+      field: 'node_expectations',
       label: 'Global score',
       isSortable: false,
-      value: (injectResultOutput: InjectResultOutput) => {
+      value: (injectResultOutput: AttackChainNodeResultOutput) => {
         return (
-          <AtomicTestingResult expectations={injectResultOutput.inject_expectation_results} />
+          <AtomicTestingResult expectations={injectResultOutput.node_expectation_results} />
         );
       },
     },
     {
-      field: 'inject_updated_at',
+      field: 'node_updated_at',
       label: 'Updated',
       isSortable: true,
-      value: (injectResultOutput: InjectResultOutput) => {
-        return <>{nsdt(injectResultOutput.inject_updated_at)}</>;
+      value: (injectResultOutput: AttackChainNodeResultOutput) => {
+        return <>{nsdt(injectResultOutput.node_updated_at)}</>;
       },
     },
   ], []);
 
   const search = (input: SearchPaginationInput) => {
     setLoading(true);
-    return fetchInjects(input).finally(() => setLoading(false));
+    return fetchAttackChainNodes(input).finally(() => setLoading(false));
   };
 
   const handleOpenJsonImportDialog = () => {
@@ -188,15 +188,15 @@ const InjectResultList: FunctionComponent<Props> = ({
       <PaginationComponentV2
         fetch={search}
         searchPaginationInput={searchPaginationInput}
-        setContent={setInjects}
-        entityPrefix="inject"
+        setContent={setAttackChainNodes}
+        entityPrefix="node"
         availableFilterNames={availableFilterNames}
         queryableHelpers={queryableHelpers}
         contextId={contextId}
         reloadContentCount={reloadCount}
         topBarButtons={showActions ? (
           <Can I={ACTIONS.MANAGE} a={SUBJECTS.ASSESSMENT}>
-            <Tooltip title={t('inject_import_json_action')}>
+            <Tooltip title={t('node_import_json_action')}>
               <ToggleButton
                 value="import"
                 aria-label="import"
@@ -212,7 +212,7 @@ const InjectResultList: FunctionComponent<Props> = ({
           </Can>
         ) : null}
       />
-      <InjectImportJsonDialog open={openJsonImportDialog} handleClose={handleCloseJsonImportDialog} handleSubmit={handleSubmitJsonImportFile} />
+      <AttackChainNodeImportJsonDialog open={openJsonImportDialog} handleClose={handleCloseJsonImportDialog} handleSubmit={handleSubmitJsonImportFile} />
       <List>
         <ListItem
           classes={{ root: classes.itemHead }}
@@ -234,16 +234,16 @@ const InjectResultList: FunctionComponent<Props> = ({
         {
           loading
             ? <PaginatedListLoader Icon={HelpOutlineOutlined} headers={headers} headerStyles={inlineStyles} />
-            : injects.map((injectResultOutput) => {
+            : nodes.map((injectResultOutput) => {
                 return (
                   <ListItem
-                    key={injectResultOutput.inject_id}
+                    key={injectResultOutput.node_id}
                     divider
                     secondaryAction={showActions ? (
                       <AtomicTestingPopover
                         atomic={injectResultOutput}
                         actions={['Duplicate', 'Export', 'Delete']}
-                        onDelete={result => setInjects(injects.filter(e => e.inject_id !== result))}
+                        onDelete={result => setAttackChainNodes(nodes.filter(e => e.node_id !== result))}
                         inList
                       />
                     ) : null}
@@ -252,16 +252,16 @@ const InjectResultList: FunctionComponent<Props> = ({
                     <ListItemButton
                       component={Link}
                       classes={{ root: classes.item }}
-                      to={goTo(injectResultOutput.inject_id)}
+                      to={goTo(injectResultOutput.node_id)}
                     >
                       <ListItemIcon>
-                        <InjectIcon
-                          isPayload={isNotEmptyField(injectResultOutput.inject_injector_contract?.injector_contract_payload?.payload_id)}
+                        <AttackChainNodeIcon
+                          isPayload={isNotEmptyField(injectResultOutput.node_injector_contract?.injector_contract_payload?.payload_id)}
                           type={
-                            injectResultOutput.inject_injector_contract?.injector_contract_payload?.payload_id
-                              ? injectResultOutput.inject_injector_contract.injector_contract_payload?.payload_collector_type
-                              || injectResultOutput.inject_injector_contract.injector_contract_payload?.payload_type
-                              : injectResultOutput.inject_type
+                            injectResultOutput.node_injector_contract?.injector_contract_payload?.payload_id
+                              ? injectResultOutput.node_injector_contract.injector_contract_payload?.payload_collector_type
+                              || injectResultOutput.node_injector_contract.injector_contract_payload?.payload_type
+                              : injectResultOutput.node_type
                           }
                           variant="list"
                         />
@@ -288,10 +288,10 @@ const InjectResultList: FunctionComponent<Props> = ({
                 );
               })
         }
-        {!injects ? (<Empty message={t('No data available')} />) : null}
+        {!nodes ? (<Empty message={t('No data available')} />) : null}
       </List>
     </>
   );
 };
 
-export default InjectResultList;
+export default AttackChainNodeResultList;

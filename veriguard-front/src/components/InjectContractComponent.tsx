@@ -4,7 +4,7 @@ import { type FieldError } from 'react-hook-form';
 import { makeStyles } from 'tss-react/mui';
 
 import { searchInjectorContracts } from '../actions/NodeContracts';
-import InjectIcon from '../admin/components/common/attack_chain_nodes/InjectIcon';
+import AttackChainNodeIcon from '../admin/components/common/attack_chain_nodes/AttackChainNodeIcon';
 import { type FilterGroup, type InjectorContract } from '../utils/api-types';
 import { isNotEmptyField } from '../utils/utils';
 import { initSorting, type Page } from './common/queryable/Page';
@@ -29,7 +29,7 @@ interface Props {
   fieldValue: string | undefined;
 }
 
-const InjectContractComponent: FunctionComponent<Props> = ({
+const AttackChainNodeContractComponent: FunctionComponent<Props> = ({
   label,
   onChange,
   error,
@@ -112,7 +112,7 @@ const InjectContractComponent: FunctionComponent<Props> = ({
       renderOption={(props, option) => (
         <li {...props}>
           <div className={classes.icon}>
-            <InjectIcon
+            <AttackChainNodeIcon
               type={
                 option.injector_contract_payload
                   ? (option.injector_contract_payload?.payload_collector_type ?? option.injector_contract_payload?.payload_type)
@@ -130,4 +130,4 @@ const InjectContractComponent: FunctionComponent<Props> = ({
   );
 };
 
-export default InjectContractComponent;
+export default AttackChainNodeContractComponent;

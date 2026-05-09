@@ -3,58 +3,58 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
+import { fetchAttackChainRunAttackChainNodes } from '../../../../../actions/AttackChainNode';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type Inject } from '../../../../../utils/api-types';
+import { type AttackChainRun, type AttackChainNode } from '../../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../../utils/Charts';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
-const MailDistributionByInject: FunctionComponent<Props> = ({ exerciseId }) => {
+const MailDistributionByAttackChainNode: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
   // Fetching data
-  const { injects } = useHelper((helper: InjectHelper) => ({ injects: helper.getScenarioInjects(exerciseId) }));
+  const { nodes } = useHelper((helper: AttackChainNodeHelper) => ({ nodes: helper.getAttackChainAttackChainNodes(exerciseId) }));
   useDataLoader(() => {
-    dispatch(fetchExerciseInjects(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodes(exerciseId));
   });
 
-  const sortedInjectsByCommunicationNumber = R.pipe(
-    R.sortWith([R.descend(R.prop('inject_communications_number'))]),
+  const sortedAttackChainNodesByCommunicationNumber = R.pipe(
+    R.sortWith([R.descend(R.prop('node_communications_number'))]),
     R.take(10),
-  )(injects || []);
-  const totalMailsByInjectData = [
+  )(nodes || []);
+  const totalMailsByAttackChainNodeData = [
     {
       name: t('Total mails'),
-      data: sortedInjectsByCommunicationNumber.map((i: Inject) => ({
-        x: i.inject_title,
-        y: i.inject_communications_number,
+      data: sortedAttackChainNodesByCommunicationNumber.map((i: AttackChainNode) => ({
+        x: i.node_title,
+        y: i.node_communications_number,
       })),
     },
   ];
 
   return (
     <>
-      {sortedInjectsByCommunicationNumber.length > 0 ? (
+      {sortedAttackChainNodesByCommunicationNumber.length > 0 ? (
         <Chart
           options={horizontalBarsChartOptions({ theme })}
-          series={totalMailsByInjectData}
+          series={totalMailsByAttackChainNodeData}
           type="bar"
           width="100%"
-          height={50 + sortedInjectsByCommunicationNumber.length * 50}
+          height={50 + sortedAttackChainNodesByCommunicationNumber.length * 50}
         />
       ) : (
         <Empty
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}
@@ -62,4 +62,4 @@ const MailDistributionByInject: FunctionComponent<Props> = ({ exerciseId }) => {
   );
 };
 
-export default MailDistributionByInject;
+export default MailDistributionByAttackChainNode;

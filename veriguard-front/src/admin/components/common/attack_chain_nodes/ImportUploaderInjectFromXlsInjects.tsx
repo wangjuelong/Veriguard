@@ -25,10 +25,10 @@ import {
   type ImportMapper,
   type ImportMessage,
   type ImportTestSummary,
-  type InjectsImportInput,
+  type AttackChainNodesImportInput,
 } from '../../../../utils/api-types';
 import { zodImplement } from '../../../../utils/Zod';
-import { InjectContext } from '../Context';
+import { AttackChainNodeContext } from '../Context';
 
 const useStyles = makeStyles()(() => ({
   container: {
@@ -64,7 +64,7 @@ interface Props {
   sheets: string[];
   importId: string;
   handleClose: () => void;
-  handleSubmit: (input: InjectsImportInput) => void;
+  handleSubmit: (input: AttackChainNodesImportInput) => void;
 }
 
 interface MapperOption {
@@ -73,7 +73,7 @@ interface MapperOption {
   isHint: boolean;
 }
 
-const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
+const ImportUploaderAttackChainNodeFromXlsAttackChainNodes: FunctionComponent<Props> = ({
   sheets,
   importId,
   handleClose,
@@ -89,7 +89,7 @@ const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
   // Launch Date
   const [needLaunchDate, setNeedLaunchDate] = useState<boolean>(false);
   const [messageInfoMapperXls, setMessageInfoMapperXls] = useState<string[]>([]);
-  const injectContext = useContext(InjectContext);
+  const injectContext = useContext(AttackChainNodeContext);
 
   // Form
   const {
@@ -153,8 +153,8 @@ const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
     onChangeSearchInput('');
   }, []);
 
-  const onSubmitImportInjects = (values: FormProps) => {
-    const input: InjectsImportInput = {
+  const onSubmitImportAttackChainNodes = (values: FormProps) => {
+    const input: AttackChainNodesImportInput = {
       import_mapper_id: values.importMapperId,
       sheet_name: values.sheetName,
       timezone_offset: moment.tz(values.timezone).utcOffset(),
@@ -166,7 +166,7 @@ const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
   const handleSubmitWithoutPropagation = (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    handleSubmitForm(onSubmitImportInjects)(e);
+    handleSubmitForm(onSubmitImportAttackChainNodes)(e);
   };
 
   type GroupedMessage = {
@@ -216,12 +216,12 @@ const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
     const formValues = getValues();
     if (formValues.importMapperId && formValues.sheetName && formValues.timezone) {
       setNeedLaunchDate(false);
-      const input: InjectsImportInput = {
+      const input: AttackChainNodesImportInput = {
         import_mapper_id: formValues.importMapperId,
         sheet_name: formValues.sheetName,
         timezone_offset: moment.tz(formValues.timezone).utcOffset(),
       };
-      injectContext.onDryImportInjectFromXls?.(importId, input).then((value: ImportTestSummary) => {
+      injectContext.onDryImportAttackChainNodeFromXls?.(importId, input).then((value: ImportTestSummary) => {
         const criticalMessages = value.import_message?.filter((importMessage: ImportMessage) => importMessage.message_level === 'CRITICAL');
         if (criticalMessages && criticalMessages?.filter((message) => {
           return message.message_code === 'ABSOLUTE_TIME_WITHOUT_START_DATE';
@@ -230,14 +230,14 @@ const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
         }
         const messageInfo: string[] = formatMessages(value.import_message ?? []);
 
-        messageInfo.push((value.total_injects ?? 0) + ' / ' + (value.total_rows_analysed ?? 0) + ' ');
+        messageInfo.push((value.total_nodes ?? 0) + ' / ' + (value.total_rows_analysed ?? 0) + ' ');
 
         setMessageInfoMapperXls(messageInfo);
       });
     }
   };
   return (
-    <form id="importUploadInjectForm" onSubmit={handleSubmitWithoutPropagation}>
+    <form id="importUploadAttackChainNodeForm" onSubmit={handleSubmitWithoutPropagation}>
       <div className={classes.container}>
         <Controller
           control={control}
@@ -363,7 +363,7 @@ const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
                       label: (
                         <Box display="flex" alignItems="center">
                           {t('Start date')}
-                          <Tooltip title={t('The imported file contains absolute dates (ex.: 9h30). A starting date must be provided for the Scenario to be build')}>
+                          <Tooltip title={t('The imported file contains absolute dates (ex.: 9h30). A starting date must be provided for the AttackChain to be build')}>
                             <InformationOutline
                               fontSize="small"
                               color="primary"
@@ -406,7 +406,7 @@ const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
       {messageInfoMapperXls.length != 0
         && (
           <Alert severity="info">
-            {((messageInfoMapperXls.at(messageInfoMapperXls.length - 1) ?? '') + t('injects are ready to import'))}
+            {((messageInfoMapperXls.at(messageInfoMapperXls.length - 1) ?? '') + t('nodes are ready to import'))}
             <p>{t('ERRORS DETECTED:')}</p>
             {messageInfoMapperXls.map((msg, i) => (
               (i != messageInfoMapperXls.length - 1)
@@ -433,4 +433,4 @@ const ImportUploaderInjectFromXlsInjects: FunctionComponent<Props> = ({
   );
 };
 
-export default ImportUploaderInjectFromXlsInjects;
+export default ImportUploaderAttackChainNodeFromXlsAttackChainNodes;

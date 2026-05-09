@@ -1,86 +1,86 @@
 import { type ReactNode, useContext, useMemo, useState } from 'react';
 
-import { fetchInjectResultOverviewOutput } from '../../../../../actions/atomic_testings/atomic-testing-actions';
-import { deleteInjectExpectationResult } from '../../../../../actions/AttackChainRun';
+import { fetchAttackChainNodeResultOverviewOutput } from '../../../../../actions/atomic_testings/atomic-testing-actions';
+import { deleteAttackChainNodeExpectationResult } from '../../../../../actions/AttackChainRun';
 import DialogDelete from '../../../../../components/common/DialogDelete';
 import { useFormatter } from '../../../../../components/i18n';
-import { type InjectExpectationResult, type InjectResultOverviewOutput } from '../../../../../utils/api-types';
+import { type AttackChainNodeExpectationResult, type AttackChainNodeResultOverviewOutput } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
-import type { InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import type { AttackChainNodeExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import {
-  InjectResultOverviewOutputContext,
-  type InjectResultOverviewOutputContextType,
-} from '../../InjectResultOverviewOutputContext';
-import EditInjectExpectationResultDialog from '../target_result/EditInjectExpectationResultDialog';
+  AttackChainNodeResultOverviewOutputContext,
+  type AttackChainNodeResultOverviewOutputContextType,
+} from '../../AttackChainNodeResultOverviewOutputContext';
+import EditAttackChainNodeExpectationResultDialog from '../target_result/EditAttackChainNodeExpectationResultDialog';
 import TargetResultsSecurityPlatform from '../TargetResultsSecurityPlatform';
-import InjectExpectationContext from './InjectExpectationContext';
+import AttackChainNodeExpectationContext from './AttackChainNodeExpectationContext';
 
-const InjectExpectationProvider = ({ children, inject }: {
+const AttackChainNodeExpectationProvider = ({ children, node }: {
   children: ReactNode;
-  inject: InjectResultOverviewOutput;
+  node: AttackChainNodeResultOverviewOutput;
 }) => {
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
 
   const [openEditResult, setOpenEditResult] = useState<boolean>(false);
-  const [selectedResult, setSelectedResult] = useState<InjectExpectationResult | null>(null);
-  const [selectedInjectExpectation, setSelectedInjectExpectation] = useState<InjectExpectationsStore | null>(null);
+  const [selectedResult, setSelectedResult] = useState<AttackChainNodeExpectationResult | null>(null);
+  const [selectedAttackChainNodeExpectation, setSelectedAttackChainNodeExpectation] = useState<AttackChainNodeExpectationsStore | null>(null);
   const [openDeleteResult, setOpenDeleteResult] = useState<boolean>(false);
   const [openSecurityPlatform, setOpenSecurityPlatform] = useState<boolean>(false);
 
-  const { updateInjectResultOverviewOutput } = useContext<InjectResultOverviewOutputContextType>(InjectResultOverviewOutputContext);
+  const { updateAttackChainNodeResultOverviewOutput } = useContext<AttackChainNodeResultOverviewOutputContextType>(AttackChainNodeResultOverviewOutputContext);
 
-  // -- Delete Inject Expectation Result
-  const onOpenDeleteInjectExpectationResult = (injectExpectationResult: InjectExpectationResult | null = null, injectExpectationStore: InjectExpectationsStore | null = null) => {
+  // -- Delete AttackChainNode Expectation Result
+  const onOpenDeleteAttackChainNodeExpectationResult = (injectExpectationResult: AttackChainNodeExpectationResult | null = null, injectExpectationStore: AttackChainNodeExpectationsStore | null = null) => {
     setSelectedResult(injectExpectationResult);
-    setSelectedInjectExpectation(injectExpectationStore);
+    setSelectedAttackChainNodeExpectation(injectExpectationStore);
     setOpenDeleteResult(true);
   };
-  const onCloseDeleteInjectExpectationResult = () => {
+  const onCloseDeleteAttackChainNodeExpectationResult = () => {
     setSelectedResult(null);
-    setSelectedInjectExpectation(null);
+    setSelectedAttackChainNodeExpectation(null);
     setOpenDeleteResult(false);
   };
   const onDelete = () => {
-    dispatch(deleteInjectExpectationResult(selectedInjectExpectation?.inject_expectation_id ?? '', selectedResult?.sourceId ?? '')).then(() => {
-      fetchInjectResultOverviewOutput(inject.inject_id).then((result: { data: InjectResultOverviewOutput }) => {
-        updateInjectResultOverviewOutput(result.data);
-        onCloseDeleteInjectExpectationResult();
+    dispatch(deleteAttackChainNodeExpectationResult(selectedAttackChainNodeExpectation?.node_expectation_id ?? '', selectedResult?.sourceId ?? '')).then(() => {
+      fetchAttackChainNodeResultOverviewOutput(node.node_id).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+        updateAttackChainNodeResultOverviewOutput(result.data);
+        onCloseDeleteAttackChainNodeExpectationResult();
       });
     });
   };
 
-  // -- Create or Update Inject Expectation Result
-  const onOpenEditInjectExpectationResultResult = (result: InjectExpectationResult | null = null, injectExpectationStore: InjectExpectationsStore | null = null) => {
+  // -- Create or Update AttackChainNode Expectation Result
+  const onOpenEditAttackChainNodeExpectationResultResult = (result: AttackChainNodeExpectationResult | null = null, injectExpectationStore: AttackChainNodeExpectationsStore | null = null) => {
     setSelectedResult(result);
-    setSelectedInjectExpectation(injectExpectationStore);
+    setSelectedAttackChainNodeExpectation(injectExpectationStore);
     setOpenEditResult(true);
   };
-  const onCloseEditInjectExpectationResultResult = () => {
+  const onCloseEditAttackChainNodeExpectationResultResult = () => {
     setSelectedResult(null);
-    setSelectedInjectExpectation(null);
+    setSelectedAttackChainNodeExpectation(null);
     setOpenEditResult(false);
   };
   const onUpdateValidation = () => {
-    fetchInjectResultOverviewOutput(inject.inject_id).then((result: { data: InjectResultOverviewOutput }) => {
-      updateInjectResultOverviewOutput(result.data);
-      onCloseEditInjectExpectationResultResult();
+    fetchAttackChainNodeResultOverviewOutput(node.node_id).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+      updateAttackChainNodeResultOverviewOutput(result.data);
+      onCloseEditAttackChainNodeExpectationResultResult();
     });
   };
 
-  const onOpenSecurityPlatform = (result: InjectExpectationResult | null = null, injectExpectationStore: InjectExpectationsStore | null = null) => {
+  const onOpenSecurityPlatform = (result: AttackChainNodeExpectationResult | null = null, injectExpectationStore: AttackChainNodeExpectationsStore | null = null) => {
     setSelectedResult(result);
-    setSelectedInjectExpectation(injectExpectationStore);
+    setSelectedAttackChainNodeExpectation(injectExpectationStore);
     setOpenSecurityPlatform(true);
   };
 
   const onCloseSecurityPlatformResult = () => {
     setSelectedResult(null);
-    setSelectedInjectExpectation(null);
+    setSelectedAttackChainNodeExpectation(null);
     setOpenSecurityPlatform(false);
   };
 
-  const computeExistingSourceIds = (results: InjectExpectationResult[]) => {
+  const computeExistingSourceIds = (results: AttackChainNodeExpectationResult[]) => {
     const sourceIds: string[] = [];
     results.forEach((result) => {
       if (result.sourceId) {
@@ -91,23 +91,23 @@ const InjectExpectationProvider = ({ children, inject }: {
   };
 
   const contextValue = useMemo(() => ({
-    onOpenDeleteInjectExpectationResult,
-    onOpenEditInjectExpectationResultResult,
+    onOpenDeleteAttackChainNodeExpectationResult,
+    onOpenEditAttackChainNodeExpectationResultResult,
     onOpenSecurityPlatform,
   }),
-  [onOpenDeleteInjectExpectationResult,
-    onOpenEditInjectExpectationResultResult,
+  [onOpenDeleteAttackChainNodeExpectationResult,
+    onOpenEditAttackChainNodeExpectationResultResult,
     onOpenSecurityPlatform]);
 
   return (
-    <InjectExpectationContext.Provider value={contextValue}>
+    <AttackChainNodeExpectationContext.Provider value={contextValue}>
       {children}
       {openEditResult && (
-        <EditInjectExpectationResultDialog
+        <EditAttackChainNodeExpectationResultDialog
           open={openEditResult}
-          injectExpectation={selectedInjectExpectation}
-          sourceIds={computeExistingSourceIds(selectedInjectExpectation?.inject_expectation_results ?? [])}
-          onClose={onCloseEditInjectExpectationResultResult}
+          injectExpectation={selectedAttackChainNodeExpectation}
+          sourceIds={computeExistingSourceIds(selectedAttackChainNodeExpectation?.node_expectation_results ?? [])}
+          onClose={onCloseEditAttackChainNodeExpectationResultResult}
           onUpdate={onUpdateValidation}
           resultToEdit={selectedResult}
         />
@@ -115,22 +115,22 @@ const InjectExpectationProvider = ({ children, inject }: {
       {openDeleteResult && (
         <DialogDelete
           open={openDeleteResult}
-          handleClose={onCloseDeleteInjectExpectationResult}
+          handleClose={onCloseDeleteAttackChainNodeExpectationResult}
           text={t('Do you want to delete this expectation result?')}
           handleSubmit={onDelete}
         />
       ) }
-      {selectedInjectExpectation && (
+      {selectedAttackChainNodeExpectation && (
         <TargetResultsSecurityPlatform
-          injectExpectation={selectedInjectExpectation}
+          injectExpectation={selectedAttackChainNodeExpectation}
           sourceId={selectedResult?.sourceId ?? ''}
           expectationResult={selectedResult}
           open={openSecurityPlatform}
           handleClose={onCloseSecurityPlatformResult}
         />
       )}
-    </InjectExpectationContext.Provider>
+    </AttackChainNodeExpectationContext.Provider>
   );
 };
 
-export default InjectExpectationProvider;
+export default AttackChainNodeExpectationProvider;

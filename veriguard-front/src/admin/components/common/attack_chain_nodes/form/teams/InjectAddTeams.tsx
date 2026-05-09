@@ -47,7 +47,7 @@ interface Props {
   error?: string | null;
 }
 
-const InjectAddTeams: FunctionComponent<Props> = ({
+const AttackChainNodeAddTeams: FunctionComponent<Props> = ({
   handleModifyTeams,
   injectTeamsIds,
   disabled = false,
@@ -145,7 +145,7 @@ const InjectAddTeams: FunctionComponent<Props> = ({
           },
         }}
       >
-        <DialogTitle>{t('Modify target teams in this inject')}</DialogTitle>
+        <DialogTitle>{t('Modify target teams in this node')}</DialogTitle>
         <DialogContent>
           <Box sx={{ marginTop: 2 }}>
             <SelectList
@@ -163,7 +163,7 @@ const InjectAddTeams: FunctionComponent<Props> = ({
                     onCreate={(team) => {
                       setTeamValues([...teamValues, team as TeamOutput]);
                       setSelectedTeamValues([...selectedTeamValues, team as TeamOutput]);
-                      // If a team is created, it has to be linked to the simulation/scenario
+                      // If a team is created, it has to be linked to the attack_chain_run/attack_chain
                       onReplaceTeam?.([...selectedTeamValues, team as TeamOutput].map(v => v.team_id));
                     }}
                   />
@@ -186,4 +186,4 @@ const InjectAddTeams: FunctionComponent<Props> = ({
     </div>
   );
 };
-export default InjectAddTeams;
+export default AttackChainNodeAddTeams;

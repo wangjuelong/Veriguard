@@ -4,17 +4,17 @@ import ButtonPopover from '../../../components/common/ButtonPopover';
 import DialogDelete from '../../../components/common/DialogDelete';
 import DialogTest from '../../../components/common/DialogTest';
 import { useFormatter } from '../../../components/i18n';
-import { type InjectTestStatusOutput } from '../../../utils/api-types';
+import { type AttackChainNodeTestStatusOutput } from '../../../utils/api-types';
 import { MESSAGING$ } from '../../../utils/Environment';
-import { InjectTestContext, PermissionsContext } from '../common/Context';
+import { AttackChainNodeTestContext, PermissionsContext } from '../common/Context';
 
 interface Props {
-  injectTest: InjectTestStatusOutput;
-  onTest?: (result: InjectTestStatusOutput) => void;
+  injectTest: AttackChainNodeTestStatusOutput;
+  onTest?: (result: AttackChainNodeTestStatusOutput) => void;
   onDelete?: (result: string) => void;
 }
 
-const InjectTestPopover: FunctionComponent<Props> = ({
+const AttackChainNodeTestPopover: FunctionComponent<Props> = ({
   injectTest,
   onDelete,
   onTest,
@@ -28,17 +28,17 @@ const InjectTestPopover: FunctionComponent<Props> = ({
 
   const {
     contextId,
-    deleteInjectTest,
-    testInject,
-  } = useContext(InjectTestContext);
+    deleteAttackChainNodeTest,
+    testAttackChainNode,
+  } = useContext(AttackChainNodeTestContext);
 
   const handleOpenDelete = () => {
     setOpenDelete(true);
   };
   const handleCloseDelete = () => setOpenDelete(false);
   const submitDelete = () => {
-    if (deleteInjectTest) {
-      deleteInjectTest(contextId, injectTest.status_id);
+    if (deleteAttackChainNodeTest) {
+      deleteAttackChainNodeTest(contextId, injectTest.status_id);
       if (onDelete) {
         onDelete(injectTest.status_id!);
       }
@@ -55,10 +55,10 @@ const InjectTestPopover: FunctionComponent<Props> = ({
   };
 
   const submitTest = () => {
-    if (testInject) {
-      testInject(contextId, injectTest.inject_id!).then((result: { data: InjectTestStatusOutput }) => {
+    if (testAttackChainNode) {
+      testAttackChainNode(contextId, injectTest.node_id!).then((result: { data: AttackChainNodeTestStatusOutput }) => {
         onTest?.(result.data);
-        MESSAGING$.notifySuccess(t(`Test for inject ${injectTest.inject_title} has been sent`));
+        MESSAGING$.notifySuccess(t(`Test for node ${injectTest.node_title} has been sent`));
         return result;
       });
     }
@@ -95,4 +95,4 @@ const InjectTestPopover: FunctionComponent<Props> = ({
   );
 };
 
-export default InjectTestPopover;
+export default AttackChainNodeTestPopover;

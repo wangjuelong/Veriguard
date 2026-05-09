@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-import { type Exercise, type Organization, type Scenario, type Tag } from '../../utils/api-types';
+import { type AttackChainRun, type Organization, type AttackChain, type Tag } from '../../utils/api-types';
 
 export function createTagMap(numberTags: number): { [key: string]: Tag } {
   const tagMap: { [key: string]: Tag } = {};
@@ -28,32 +28,32 @@ export function createOrganisationsMap(numberTags: number): { [key: string]: Org
   return orgMap;
 }
 
-export function createExercisesMap(numberTags: number): { [key: string]: Exercise } {
-  const exerciseMap: { [key: string]: Exercise } = {};
+export function createAttackChainRunsMap(numberTags: number): { [key: string]: AttackChainRun } {
+  const exerciseMap: { [key: string]: AttackChainRun } = {};
   for (let i = 0; i < numberTags; i++) {
     const id = faker.string.uuid();
     exerciseMap[id] = {
-      exercise_created_at: faker.date.recent().toISOString(),
-      exercise_id: id,
-      exercise_mail_from: faker.internet.email(),
-      exercise_name: faker.hacker.phrase(),
-      exercise_status: 'SCHEDULED',
-      exercise_updated_at: faker.date.soon().toISOString(),
+      attack_chain_run_created_at: faker.date.recent().toISOString(),
+      attack_chain_run_id: id,
+      attack_chain_run_mail_from: faker.internet.email(),
+      attack_chain_run_name: faker.hacker.phrase(),
+      attack_chain_run_status: 'SCHEDULED',
+      attack_chain_run_updated_at: faker.date.soon().toISOString(),
     };
   }
   return exerciseMap;
 }
 
-export function createScenarioMap(numberTags: number): { [key: string]: Scenario } {
-  const scenarioMap: { [key: string]: Scenario } = {};
+export function createAttackChainMap(numberTags: number): { [key: string]: AttackChain } {
+  const scenarioMap: { [key: string]: AttackChain } = {};
   for (let i = 0; i < numberTags; i++) {
     const id = faker.string.uuid();
     scenarioMap[id] = {
-      scenario_created_at: faker.date.recent().toISOString(),
-      scenario_id: id,
-      scenario_mail_from: faker.internet.email(),
-      scenario_name: faker.hacker.phrase(),
-      scenario_updated_at: faker.date.soon().toISOString(),
+      attack_chain_created_at: faker.date.recent().toISOString(),
+      attack_chain_id: id,
+      attack_chain_mail_from: faker.internet.email(),
+      attack_chain_name: faker.hacker.phrase(),
+      attack_chain_updated_at: faker.date.soon().toISOString(),
     };
   }
   return scenarioMap;

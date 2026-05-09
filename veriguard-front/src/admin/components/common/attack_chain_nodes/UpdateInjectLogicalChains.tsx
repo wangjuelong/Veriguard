@@ -4,92 +4,92 @@ import arrayMutators from 'final-form-arrays';
 import { type FunctionComponent, useContext } from 'react';
 import { Form } from 'react-final-form';
 
-import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
-import { type InjectHelper } from '../../../../actions/attack_chain_nodes/inject-helper';
+import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../../../actions/attack_chain_nodes/AttackChainNode';
+import { type AttackChainNodeHelper } from '../../../../actions/attack_chain_nodes/node-helper';
 import { useFormatter } from '../../../../components/i18n';
 import { useHelper } from '../../../../store';
-import { type Inject, type InjectDependency } from '../../../../utils/api-types';
+import { type AttackChainNode, type AttackChainNodeDependency } from '../../../../utils/api-types';
 import { PermissionsContext } from '../Context';
-import InjectChainsForm from './InjectChainsForm';
+import AttackChainNodeChainsForm from './AttackChainNodeChainsForm';
 
 interface Props {
-  inject: InjectStore;
+  node: AttackChainNodeStore;
   handleClose: () => void;
-  onUpdateInject?: (data: Inject[]) => Promise<void>;
-  injects?: InjectOutputType[];
+  onUpdateAttackChainNode?: (data: AttackChainNode[]) => Promise<void>;
+  nodes?: AttackChainNodeOutputType[];
   isDisabled: boolean;
 }
 
-const UpdateInjectLogicalChains: FunctionComponent<Props> = ({ inject, handleClose, onUpdateInject, injects, isDisabled }) => {
+const UpdateAttackChainNodeLogicalChains: FunctionComponent<Props> = ({ node, handleClose, onUpdateAttackChainNode, nodes, isDisabled }) => {
   const { t } = useFormatter();
   const theme = useTheme();
   const { permissions } = useContext(PermissionsContext);
 
-  const { injectsMap } = useHelper((helper: InjectHelper) => ({ injectsMap: helper.getInjectsMap() }));
+  const { injectsMap } = useHelper((helper: AttackChainNodeHelper) => ({ injectsMap: helper.getAttackChainNodesMap() }));
 
   const initialValues = {
-    ...inject,
-    inject_depends_to: injects !== undefined
-      ? injects
-          .filter(currentInject => currentInject.inject_depends_on !== undefined
-            && currentInject.inject_depends_on !== null
-            && currentInject.inject_depends_on
-              .find(searchInject => searchInject.dependency_relationship?.inject_parent_id === inject.inject_id)
+    ...node,
+    node_depends_to: nodes !== undefined
+      ? nodes
+          .filter(currentAttackChainNode => currentAttackChainNode.node_depends_on !== undefined
+            && currentAttackChainNode.node_depends_on !== null
+            && currentAttackChainNode.node_depends_on
+              .find(searchAttackChainNode => searchAttackChainNode.dependency_relationship?.node_parent_id === node.node_id)
               !== undefined)
-          .flatMap((currentInject) => {
-            return currentInject.inject_depends_on;
+          .flatMap((currentAttackChainNode) => {
+            return currentAttackChainNode.node_depends_on;
           })
       : undefined,
-    inject_depends_on: inject.inject_depends_on,
+    node_depends_on: node.node_depends_on,
   };
 
-  const onSubmit = async (data: Inject & { inject_depends_to: InjectDependency[] }) => {
+  const onSubmit = async (data: AttackChainNode & { node_depends_to: AttackChainNodeDependency[] }) => {
     const injectUpdate = {
       ...data,
-      inject_id: data.inject_id,
-      inject_injector_contract: data.inject_injector_contract?.injector_contract_id,
-      inject_depends_on: data.inject_depends_on,
+      node_id: data.node_id,
+      node_injector_contract: data.node_injector_contract?.injector_contract_id,
+      node_depends_on: data.node_depends_on,
     };
 
-    const injectsToUpdate: Inject[] = [];
+    const injectsToUpdate: AttackChainNode[] = [];
 
-    const childrenIds = data.inject_depends_to.map((childrenInject: InjectDependency) => childrenInject.dependency_relationship?.inject_children_id);
+    const childrenIds = data.node_depends_to.map((childrenAttackChainNode: AttackChainNodeDependency) => childrenAttackChainNode.dependency_relationship?.node_children_id);
 
-    const injectsWithoutDependencies = injects
-      ? injects
-          .filter(currentInject => currentInject.inject_depends_on !== null
-            && currentInject.inject_depends_on?.find(searchInject => searchInject.dependency_relationship?.inject_parent_id === data.inject_id) !== undefined
-            && !childrenIds.includes(currentInject.inject_id))
-          .map((currentInject) => {
+    const injectsWithoutDependencies = nodes
+      ? nodes
+          .filter(currentAttackChainNode => currentAttackChainNode.node_depends_on !== null
+            && currentAttackChainNode.node_depends_on?.find(searchAttackChainNode => searchAttackChainNode.dependency_relationship?.node_parent_id === data.node_id) !== undefined
+            && !childrenIds.includes(currentAttackChainNode.node_id))
+          .map((currentAttackChainNode) => {
             return {
-              ...injectsMap[currentInject.inject_id],
-              inject_id: currentInject.inject_id,
-              inject_injector_contract: currentInject.inject_injector_contract?.injector_contract_id,
-              inject_depends_on: undefined,
-            } as unknown as Inject;
+              ...injectsMap[currentAttackChainNode.node_id],
+              node_id: currentAttackChainNode.node_id,
+              node_injector_contract: currentAttackChainNode.node_injector_contract?.injector_contract_id,
+              node_depends_on: undefined,
+            } as unknown as AttackChainNode;
           })
       : [];
 
     injectsToUpdate.push(...injectsWithoutDependencies);
 
     childrenIds.forEach((childrenId) => {
-      if (injects === undefined || childrenId === undefined) return;
-      const children = injects.find(currentInject => currentInject.inject_id === childrenId);
+      if (nodes === undefined || childrenId === undefined) return;
+      const children = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === childrenId);
       if (children !== undefined) {
-        const injectDependsOnUpdate = data.inject_depends_to
-          .find(dependsTo => dependsTo.dependency_relationship?.inject_children_id === childrenId);
+        const injectDependsOnUpdate = data.node_depends_to
+          .find(dependsTo => dependsTo.dependency_relationship?.node_children_id === childrenId);
 
-        const injectChildrenUpdate: Inject = {
-          ...injectsMap[children.inject_id],
-          inject_id: children.inject_id,
-          inject_injector_contract: children.inject_injector_contract?.injector_contract_id,
-          inject_depends_on: injectDependsOnUpdate ? [injectDependsOnUpdate] : [],
+        const injectChildrenUpdate: AttackChainNode = {
+          ...injectsMap[children.node_id],
+          node_id: children.node_id,
+          node_injector_contract: children.node_injector_contract?.injector_contract_id,
+          node_depends_on: injectDependsOnUpdate ? [injectDependsOnUpdate] : [],
         };
         injectsToUpdate.push(injectChildrenUpdate);
       }
     });
-    if (onUpdateInject) {
-      await onUpdateInject([injectUpdate as Inject, ...injectsToUpdate]);
+    if (onUpdateAttackChainNode) {
+      await onUpdateAttackChainNode([injectUpdate as AttackChainNode, ...injectsToUpdate]);
     }
 
     handleClose();
@@ -110,10 +110,10 @@ const UpdateInjectLogicalChains: FunctionComponent<Props> = ({ inject, handleClo
       {({ form, handleSubmit, values, errors }) => {
         return (
           <form id="injectContentForm" onSubmit={handleSubmit}>
-            <InjectChainsForm
+            <AttackChainNodeChainsForm
               form={form}
               values={values}
-              injects={injects}
+              nodes={nodes}
               isDisabled={isDisabled}
             />
             <div style={{
@@ -144,4 +144,4 @@ const UpdateInjectLogicalChains: FunctionComponent<Props> = ({ inject, handleClo
   );
 };
 
-export default UpdateInjectLogicalChains;
+export default UpdateAttackChainNodeLogicalChains;

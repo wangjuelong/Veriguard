@@ -1,21 +1,21 @@
 import Dialog from '../../../../../components/common/dialog/Dialog';
-import type { InjectExpectationResult } from '../../../../../utils/api-types';
+import type { AttackChainNodeExpectationResult } from '../../../../../utils/api-types';
 import DetectionPreventionExpectationsValidationForm
   from '../../../attack_chain_runs/attack_chain_run/validation/expectations/DetectionPreventionExpectationsValidationForm';
 import ManualExpectationsValidationForm
   from '../../../attack_chain_runs/attack_chain_run/validation/expectations/ManualExpectationsValidationForm';
-import { type InjectExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import { isManualExpectation } from '../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 
 interface Props {
   open: boolean;
-  injectExpectation: InjectExpectationsStore | null;
+  injectExpectation: AttackChainNodeExpectationsStore | null;
   sourceIds: string[];
-  resultToEdit?: InjectExpectationResult | null;
+  resultToEdit?: AttackChainNodeExpectationResult | null;
   onClose: () => void;
   onUpdate: () => void;
 }
-const EditInjectExpectationResultDialog = ({ open, injectExpectation, sourceIds, resultToEdit, onClose, onUpdate }: Props) => {
+const EditAttackChainNodeExpectationResultDialog = ({ open, injectExpectation, sourceIds, resultToEdit, onClose, onUpdate }: Props) => {
   return (
     <Dialog
       open={open}
@@ -23,9 +23,9 @@ const EditInjectExpectationResultDialog = ({ open, injectExpectation, sourceIds,
     >
       {injectExpectation && (
         <>
-          {isManualExpectation(injectExpectation.inject_expectation_type)
+          {isManualExpectation(injectExpectation.node_expectation_type)
             && <ManualExpectationsValidationForm expectation={injectExpectation} onUpdate={onUpdate} />}
-          {['DETECTION', 'PREVENTION'].includes(injectExpectation.inject_expectation_type)
+          {['DETECTION', 'PREVENTION'].includes(injectExpectation.node_expectation_type)
             && (
               <DetectionPreventionExpectationsValidationForm
                 expectation={injectExpectation}
@@ -40,4 +40,4 @@ const EditInjectExpectationResultDialog = ({ open, injectExpectation, sourceIds,
   );
 };
 
-export default EditInjectExpectationResultDialog;
+export default EditAttackChainNodeExpectationResultDialog;

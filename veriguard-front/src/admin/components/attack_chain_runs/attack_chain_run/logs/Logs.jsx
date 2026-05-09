@@ -8,7 +8,7 @@ import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { addLog, fetchLogs } from '../../../../../actions/Log';
-import { fetchExerciseObjectives } from '../../../../../actions/Objective';
+import { fetchAttackChainRunObjectives } from '../../../../../actions/Objective';
 import { useFormatter } from '../../../../../components/i18n';
 import ItemTags from '../../../../../components/ItemTags';
 import { useHelper } from '../../../../../store';
@@ -44,12 +44,12 @@ const Logs = () => {
   const { exerciseId } = useParams();
   const { logs, usersMap } = useHelper((helper) => {
     return {
-      logs: helper.getExerciseLogs(exerciseId),
+      logs: helper.getAttackChainRunLogs(exerciseId),
       usersMap: helper.getUsersMap(),
     };
   });
   useDataLoader(() => {
-    dispatch(fetchExerciseObjectives(exerciseId));
+    dispatch(fetchAttackChainRunObjectives(exerciseId));
     dispatch(fetchLogs(exerciseId));
   });
   const scrollToBottom = () => {

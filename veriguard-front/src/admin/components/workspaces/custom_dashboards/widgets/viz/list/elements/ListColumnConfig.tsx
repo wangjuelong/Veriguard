@@ -16,9 +16,9 @@ import ItemTags from '../../../../../../../../components/ItemTags';
 import {
   type AttackPattern,
   type EsBase,
-  type EsInjectExpectation,
+  type EsAttackChainNodeExpectation,
 } from '../../../../../../../../utils/api-types';
-import { computeInjectExpectationLabel } from '../../../../../../../../utils/statusUtils';
+import { computeAttackChainNodeExpectationLabel } from '../../../../../../../../utils/statusUtils';
 import EndpointListItemFragments from '../../../../../../common/endpoints/EndpointListItemFragments';
 
 export type ColumnRenderer = (value: string | string[] | boolean | boolean[], opts: {
@@ -50,13 +50,13 @@ const vulnerableEndpointColumnsRenderers: RendererMap = {
 };
 
 const injectColumnsRenderers: RendererMap = {
-  ['inject_status']: status => <ItemStatus status={status as string} label={status as string} variant="inList" />,
+  ['node_status']: status => <ItemStatus status={status as string} label={status as string} variant="inList" />,
   ['base_platforms_side_denormalized']: platform => <AssetPlatformFragment platform={platform as string} />,
   ['execution_date']: value => <DateFragment value={value as string} />,
 
 };
 
-export const getTargetTypeFromInjectExpectation = (expectation: EsInjectExpectation): {
+export const getTargetTypeFromAttackChainNodeExpectation = (expectation: EsAttackChainNodeExpectation): {
   label: string;
   type: string;
 } => {
@@ -82,17 +82,17 @@ export const getTargetTypeFromInjectExpectation = (expectation: EsInjectExpectat
 };
 
 const injectExpectationRenderers: RendererMap = {
-  ['inject_expectation_status']: (_, { element }) => {
-    const expectation = element as EsInjectExpectation;
-    const label = computeInjectExpectationLabel(
-      expectation.inject_expectation_status,
-      expectation.inject_expectation_type,
+  ['node_expectation_status']: (_, { element }) => {
+    const expectation = element as EsAttackChainNodeExpectation;
+    const label = computeAttackChainNodeExpectationLabel(
+      expectation.node_expectation_status,
+      expectation.node_expectation_type,
     ) ?? '';
     return <ItemStatus label={label} variant="inList" status={label} />;
   },
-  ['inject_expectation_source']: (_, { element }) => {
+  ['node_expectation_source']: (_, { element }) => {
     const { t } = useFormatter();
-    const target = getTargetTypeFromInjectExpectation(element as EsInjectExpectation);
+    const target = getTargetTypeFromAttackChainNodeExpectation(element as EsAttackChainNodeExpectation);
     return (
       <Tooltip title={target.label} placement="bottom-start">
         <span>{(t(target.label)).toUpperCase()}</span>

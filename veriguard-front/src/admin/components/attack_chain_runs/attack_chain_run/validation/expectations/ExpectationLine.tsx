@@ -2,7 +2,7 @@ import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { type FunctionComponent, type ReactElement } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import ResultChip from './ResultChip';
 
 const useStyles = makeStyles()(theme => ({
@@ -20,7 +20,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface Props {
-  expectation: InjectExpectationsStore;
+  expectation: AttackChainNodeExpectationsStore;
   info?: string;
   title: string;
   icon: ReactElement;
@@ -42,7 +42,7 @@ const ExpectationLine: FunctionComponent<Props> = ({
   return (
     <>
       <ListItemButton
-        key={expectation.inject_expectation_id}
+        key={expectation.node_expectation_id}
         divider
         sx={{ pl: gap ?? 8 }}
         classes={{ root: classes.item }}

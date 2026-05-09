@@ -5,7 +5,7 @@ import { type CSSProperties, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { searchScenarios } from '../../../actions/attack_chains/scenario-actions';
+import { searchAttackChains } from '../../../actions/attack_chains/attack_chain-actions';
 import Breadcrumbs from '../../../components/Breadcrumbs';
 import ExportButton from '../../../components/common/ExportButton';
 import { initSorting } from '../../../components/common/queryable/Page';
@@ -20,13 +20,13 @@ import ItemSeverity from '../../../components/ItemSeverity';
 import ItemTags from '../../../components/ItemTags';
 import PaginatedListLoader from '../../../components/PaginatedListLoader';
 import PlatformIcon from '../../../components/PlatformIcon';
-import { type Scenario, type SearchPaginationInput } from '../../../utils/api-types';
+import { type AttackChain, type SearchPaginationInput } from '../../../utils/api-types';
 import { Can } from '../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../utils/permissions/types';
-import ScenarioPopover from './attack_chain/ScenarioPopover';
-import ScenarioStatus from './attack_chain/ScenarioStatus';
-import ImportUploaderScenario from './ImportUploaderScenario';
-import ScenarioCreation from './ScenarioCreation';
+import AttackChainPopover from './attack_chain/AttackChainPopover';
+import AttackChainStatus from './attack_chain/AttackChainStatus';
+import ImportUploaderAttackChain from './ImportUploaderAttackChain';
+import AttackChainCreation from './AttackChainCreation';
 
 const useStyles = makeStyles()(() => ({
   itemHead: { textTransform: 'uppercase' },
@@ -34,16 +34,16 @@ const useStyles = makeStyles()(() => ({
 }));
 
 const inlineStyles: Record<string, CSSProperties> = {
-  scenario_name: { width: '25%' },
-  scenario_severity: { width: '8%' },
-  scenario_category: { width: '12%' },
-  scenario_recurrence: { width: '12%' },
-  scenario_platforms: { width: '10%' },
-  scenario_tags: { width: '18%' },
-  scenario_updated_at: { width: '10%' },
+  attack_chain_name: { width: '25%' },
+  attack_chain_severity: { width: '8%' },
+  attack_chain_category: { width: '12%' },
+  attack_chain_recurrence: { width: '12%' },
+  attack_chain_platforms: { width: '10%' },
+  attack_chain_tags: { width: '18%' },
+  attack_chain_updated_at: { width: '10%' },
 };
 
-const Scenarios = () => {
+const AttackChains = () => {
   // Standard hooks
   const { classes } = useStyles();
   const bodyItemsStyles = useBodyItemsStyles();
@@ -55,49 +55,49 @@ const Scenarios = () => {
   // Headers
   const headers = useMemo(() => [
     {
-      field: 'scenario_name',
+      field: 'attack_chain_name',
       label: 'Name',
       isSortable: true,
-      value: (scenario: Scenario) => scenario.scenario_name,
+      value: (attack_chain: AttackChain) => attack_chain.attack_chain_name,
     },
     {
-      field: 'scenario_severity',
+      field: 'attack_chain_severity',
       label: 'Severity',
       isSortable: true,
-      value: (scenario: Scenario) => (
+      value: (attack_chain: AttackChain) => (
         <ItemSeverity
-          label={t(scenario.scenario_severity ?? 'Unknown')}
-          severity={scenario.scenario_severity ?? 'Unknown'}
+          label={t(attack_chain.attack_chain_severity ?? 'Unknown')}
+          severity={attack_chain.attack_chain_severity ?? 'Unknown'}
           variant="inList"
         />
       ),
     },
     {
-      field: 'scenario_category',
+      field: 'attack_chain_category',
       label: 'Category',
       isSortable: true,
-      value: (scenario: Scenario) => (
+      value: (attack_chain: AttackChain) => (
         <ItemCategory
-          category={scenario.scenario_category ?? 'Unknown'}
-          label={t(scenario.scenario_category ?? 'Unknown')}
+          category={attack_chain.attack_chain_category ?? 'Unknown'}
+          label={t(attack_chain.attack_chain_category ?? 'Unknown')}
           size="medium"
         />
       ),
     },
     {
-      field: 'scenario_recurrence',
+      field: 'attack_chain_recurrence',
       label: 'Status',
       isSortable: false,
-      value: (scenario: Scenario) => <ScenarioStatus scenario={scenario} variant="list" />,
+      value: (attack_chain: AttackChain) => <AttackChainStatus attack_chain={attack_chain} variant="list" />,
     },
     {
-      field: 'scenario_platforms',
+      field: 'attack_chain_platforms',
       label: 'Platforms',
       isSortable: false,
-      value: (scenario: Scenario) => {
-        const platforms = scenario.scenario_platforms ?? [];
+      value: (attack_chain: AttackChain) => {
+        const platforms = attack_chain.attack_chain_platforms ?? [];
         if (platforms.length === 0) {
-          return <PlatformIcon platform={t('No inject in this scenario')} tooltip width={25} />;
+          return <PlatformIcon platform={t('No node in this attack_chain')} tooltip width={25} />;
         }
         return (
           <>
@@ -109,54 +109,54 @@ const Scenarios = () => {
       },
     },
     {
-      field: 'scenario_tags',
+      field: 'attack_chain_tags',
       label: 'Tags',
       isSortable: false,
-      value: (scenario: Scenario) => <ItemTags tags={scenario.scenario_tags} variant="list" />,
+      value: (attack_chain: AttackChain) => <ItemTags tags={attack_chain.attack_chain_tags} variant="list" />,
     },
     {
-      field: 'scenario_updated_at',
+      field: 'attack_chain_updated_at',
       label: 'Updated',
       isSortable: true,
-      value: (scenario: Scenario) => nsdt(scenario.scenario_updated_at),
+      value: (attack_chain: AttackChain) => nsdt(attack_chain.attack_chain_updated_at),
     },
   ], []);
 
-  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [attack_chains, setAttackChains] = useState<AttackChain[]>([]);
 
   // Filters
   const availableFilterNames = [
-    'scenario_category',
-    'scenario_kill_chain_phases',
-    'scenario_name',
-    'scenario_platforms',
-    'scenario_recurrence',
-    'scenario_severity',
-    'scenario_tags',
-    'scenario_updated_at',
+    'attack_chain_category',
+    'attack_chain_kill_chain_phases',
+    'attack_chain_name',
+    'attack_chain_platforms',
+    'attack_chain_recurrence',
+    'attack_chain_severity',
+    'attack_chain_tags',
+    'attack_chain_updated_at',
   ];
 
-  const { queryableHelpers, searchPaginationInput, setSearchPaginationInput } = useQueryableWithLocalStorage('scenarios', buildSearchPagination({ sorts: initSorting('scenario_updated_at', 'DESC') }));
+  const { queryableHelpers, searchPaginationInput, setSearchPaginationInput } = useQueryableWithLocalStorage('attack_chains', buildSearchPagination({ sorts: initSorting('attack_chain_updated_at', 'DESC') }));
 
   // Export
   const exportProps = {
-    exportType: 'scenario',
+    exportType: 'attack_chain',
     exportKeys: [
-      'scenario_name',
-      'scenario_severity',
-      'scenario_category',
-      'scenario_main_focus',
-      'scenario_platforms',
-      'scenario_tags',
-      'scenario_updated_at',
+      'attack_chain_name',
+      'attack_chain_severity',
+      'attack_chain_category',
+      'attack_chain_main_focus',
+      'attack_chain_platforms',
+      'attack_chain_tags',
+      'attack_chain_updated_at',
     ],
-    exportData: scenarios,
-    exportFileName: `${t('Scenarios')}.csv`,
+    exportData: attack_chains,
+    exportFileName: `${t('AttackChains')}.csv`,
   };
 
   const search = (input: SearchPaginationInput) => {
     setLoading(true);
-    return searchScenarios(input).finally(() => setLoading(false));
+    return searchAttackChains(input).finally(() => setLoading(false));
   };
 
   return (
@@ -164,15 +164,15 @@ const Scenarios = () => {
       <Breadcrumbs
         variant="list"
         elements={[{
-          label: t('Scenarios'),
+          label: t('AttackChains'),
           current: true,
         }]}
       />
       <PaginationComponentV2
         fetch={search}
         searchPaginationInput={searchPaginationInput}
-        setContent={setScenarios}
-        entityPrefix="scenario"
+        setContent={setAttackChains}
+        entityPrefix="attack_chain"
         availableFilterNames={availableFilterNames}
         queryableHelpers={queryableHelpers}
         topBarButtons={(
@@ -180,7 +180,7 @@ const Scenarios = () => {
             <ToggleButtonGroup value="fake" exclusive>
               <ExportButton totalElements={queryableHelpers.paginationHelpers.getTotalElements()} exportProps={exportProps} />
               <Can I={ACTIONS.MANAGE} a={SUBJECTS.ASSESSMENT}>
-                <ImportUploaderScenario />
+                <ImportUploaderAttackChain />
               </Can>
             </ToggleButtonGroup>
           </Box>
@@ -206,17 +206,17 @@ const Scenarios = () => {
         {
           loading
             ? <PaginatedListLoader Icon={MovieFilterOutlined} headers={headers} headerStyles={inlineStyles} />
-            : scenarios.map((scenario: Scenario) => {
+            : attack_chains.map((attack_chain: AttackChain) => {
                 return (
                   <ListItem
-                    key={scenario.scenario_id}
+                    key={attack_chain.attack_chain_id}
                     divider
                     secondaryAction={(
-                      <ScenarioPopover
-                        scenario={scenario}
+                      <AttackChainPopover
+                        attack_chain={attack_chain}
                         actions={['Duplicate', 'Export', 'Delete']}
                         onDelete={(result) => {
-                          setScenarios(scenarios.filter(e => (e.scenario_id !== result)));
+                          setAttackChains(attack_chains.filter(e => (e.attack_chain_id !== result)));
                           setSearchPaginationInput(prev => ({
                             ...prev,
                             size: prev.size - 1,
@@ -229,7 +229,7 @@ const Scenarios = () => {
                   >
                     <ListItemButton
                       component={Link}
-                      to={`/admin/attack_chains/${scenario.scenario_id}`}
+                      to={`/admin/attack_chains/${attack_chain.attack_chain_id}`}
                       classes={{ root: classes.item }}
                     >
                       <ListItemIcon>
@@ -246,7 +246,7 @@ const Scenarios = () => {
                                   ...inlineStyles[header.field],
                                 }}
                               >
-                                {header.value(scenario)}
+                                {header.value(attack_chain)}
                               </div>
                             ))}
                           </div>
@@ -259,10 +259,10 @@ const Scenarios = () => {
         }
       </List>
       <Can I={ACTIONS.MANAGE} a={SUBJECTS.ASSESSMENT}>
-        <ScenarioCreation />
+        <AttackChainCreation />
       </Can>
     </>
   );
 };
 
-export default Scenarios;
+export default AttackChains;

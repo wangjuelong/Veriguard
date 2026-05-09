@@ -6,7 +6,7 @@ import { fetchGroup } from '../../../../../../actions/Group';
 import { type GroupHelper } from '../../../../../../actions/group/group-helper';
 import { useFormatter } from '../../../../../../components/i18n';
 import { useHelper } from '../../../../../../store';
-import { type Grant, type GroupGrantInput, type InjectResultOutput } from '../../../../../../utils/api-types';
+import { type Grant, type GroupGrantInput, type AttackChainNodeResultOutput } from '../../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../../utils/hooks';
 import { type TableConfig } from '../ui/TableData';
 
@@ -44,10 +44,10 @@ const useAtomicTestingGrant = ({ groupId, onGrantChange }: AtomicTestingGrantsPr
     }
   };
 
-  const getGrantIds = (inject: InjectResultOutput) => {
+  const getGrantIds = (node: AttackChainNodeResultOutput) => {
     const grants = group.group_grants ?? [];
     const findGrantId = (name: string) => grants
-      .find((g: Grant) => g.grant_resource === inject.inject_id && g.grant_name === name)?.grant_id ?? null;
+      .find((g: Grant) => g.grant_resource === node.node_id && g.grant_name === name)?.grant_id ?? null;
     return {
       observerId: findGrantId('OBSERVER'),
       plannerId: findGrantId('PLANNER'),
@@ -55,22 +55,22 @@ const useAtomicTestingGrant = ({ groupId, onGrantChange }: AtomicTestingGrantsPr
     };
   };
 
-  const configs: TableConfig<InjectResultOutput>[] = [
+  const configs: TableConfig<AttackChainNodeResultOutput>[] = [
     {
       label: t('Atomic testing'),
-      value: inject => inject.inject_title,
+      value: node => node.node_title,
       width: '40%',
       align: 'left',
     },
     {
       label: t('Access'),
-      value: (inject) => {
-        const { observerId, plannerId, launcherId } = getGrantIds(inject);
+      value: (node) => {
+        const { observerId, plannerId, launcherId } = getGrantIds(node);
         return (
           <Checkbox
             checked={!!(observerId || plannerId || launcherId)}
             disabled={!!(plannerId || launcherId)}
-            onChange={(_, checked) => handleGrant(inject.inject_id, observerId, 'OBSERVER', checked)}
+            onChange={(_, checked) => handleGrant(node.node_id, observerId, 'OBSERVER', checked)}
           />
         );
       },
@@ -78,13 +78,13 @@ const useAtomicTestingGrant = ({ groupId, onGrantChange }: AtomicTestingGrantsPr
     },
     {
       label: t('Manage+Delete'),
-      value: (inject) => {
-        const { plannerId, launcherId } = getGrantIds(inject);
+      value: (node) => {
+        const { plannerId, launcherId } = getGrantIds(node);
         return (
           <Checkbox
             checked={!!(plannerId || launcherId)}
             disabled={!!launcherId}
-            onChange={(_, checked) => handleGrant(inject.inject_id, plannerId, 'PLANNER', checked)}
+            onChange={(_, checked) => handleGrant(node.node_id, plannerId, 'PLANNER', checked)}
           />
         );
       },
@@ -92,12 +92,12 @@ const useAtomicTestingGrant = ({ groupId, onGrantChange }: AtomicTestingGrantsPr
     },
     {
       label: t('Launch'),
-      value: (inject) => {
-        const { launcherId } = getGrantIds(inject);
+      value: (node) => {
+        const { launcherId } = getGrantIds(node);
         return (
           <Checkbox
             checked={!!launcherId}
-            onChange={(_, checked) => handleGrant(inject.inject_id, launcherId, 'LAUNCHER', checked)}
+            onChange={(_, checked) => handleGrant(node.node_id, launcherId, 'LAUNCHER', checked)}
           />
         );
       },

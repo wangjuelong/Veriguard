@@ -123,7 +123,7 @@ const PayloadComponent: FunctionComponent<Props> = ({ selectedPayload, documents
             {t('Platforms')}
           </Typography>
           {(selectedPayload?.payload_platforms ?? []).length === 0 ? (
-            <PlatformIcon platform={t('No inject in this scenario')} tooltip width={25} />
+            <PlatformIcon platform={t('No node in this attack_chain')} tooltip width={25} />
           ) : selectedPayload?.payload_platforms?.map(
             platform => <PlatformIcon key={platform} platform={platform} tooltip width={25} marginRight={theme.spacing(2)} />,
           )}

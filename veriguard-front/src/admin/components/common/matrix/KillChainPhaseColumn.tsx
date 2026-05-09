@@ -2,7 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type AttackPattern, type InjectExpectationResultsByAttackPattern, type KillChainPhase } from '../../../../utils/api-types';
+import { type AttackPattern, type AttackChainNodeExpectationResultsByAttackPattern, type KillChainPhase } from '../../../../utils/api-types';
 import AttackPatternBox from './AttackPatternBox';
 
 const useStyles = makeStyles()(() => ({
@@ -17,7 +17,7 @@ interface KillChainPhaseComponentProps {
   goToLink?: string;
   killChainPhase: KillChainPhase;
   attackPatterns: AttackPattern[];
-  injectResults: InjectExpectationResultsByAttackPattern[];
+  injectResults: AttackChainNodeExpectationResultsByAttackPattern[];
   dummy?: boolean;
 }
 
@@ -41,9 +41,9 @@ const KillChainPhaseColumn: FunctionComponent<KillChainPhaseComponentProps> = ({
     }
     return 0;
   };
-  // Inject Results
-  const getInjectResult = (attack: AttackPattern) => {
-    return injectResults.find(injectResult => injectResult.inject_attack_pattern?.includes(attack.attack_pattern_id));
+  // AttackChainNode Results
+  const getAttackChainNodeResult = (attack: AttackPattern) => {
+    return injectResults.find(injectResult => injectResult.node_attack_pattern?.includes(attack.attack_pattern_id));
   };
   return (
     <div style={{ marginBottom: 16 }}>
@@ -63,7 +63,7 @@ const KillChainPhaseColumn: FunctionComponent<KillChainPhaseComponentProps> = ({
               goToLink={goToLink}
               key={attackPattern.attack_pattern_id}
               attackPattern={attackPattern}
-              injectResult={getInjectResult(attackPattern)}
+              injectResult={getAttackChainNodeResult(attackPattern)}
               dummy={dummy}
             />
           ))}

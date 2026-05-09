@@ -11,12 +11,12 @@ import Empty from '../../../components/Empty';
 import { useFormatter } from '../../../components/i18n';
 import ItemStatus from '../../../components/ItemStatus';
 import PaginatedListLoader from '../../../components/PaginatedListLoader';
-import { type InjectTestStatusOutput, type SearchPaginationInput } from '../../../utils/api-types';
-import InjectIcon from '../common/attack_chain_nodes/InjectIcon';
-import { InjectTestContext, PermissionsContext } from '../common/Context';
-import InjectTestDetail from './InjectTestDetail';
-import InjectTestPopover from './InjectTestPopover';
-import InjectTestReplayAll from './InjectTestReplayAll';
+import { type AttackChainNodeTestStatusOutput, type SearchPaginationInput } from '../../../utils/api-types';
+import AttackChainNodeIcon from '../common/attack_chain_nodes/AttackChainNodeIcon';
+import { AttackChainNodeTestContext, PermissionsContext } from '../common/Context';
+import AttackChainNodeTestDetail from './AttackChainNodeTestDetail';
+import AttackChainNodeTestPopover from './AttackChainNodeTestPopover';
+import AttackChainNodeTestReplayAll from './AttackChainNodeTestReplayAll';
 
 const useStyles = makeStyles()(() => ({
   bodyItems: {
@@ -44,7 +44,7 @@ const useStyles = makeStyles()(() => ({
 }));
 
 const inlineStyles: Record<string, CSSProperties> = {
-  inject_title: {
+  node_title: {
     width: '40%',
     cursor: 'default',
   },
@@ -54,26 +54,26 @@ const inlineStyles: Record<string, CSSProperties> = {
 
 interface Props { statusId: string | undefined }
 
-const InjectTestList: FunctionComponent<Props> = ({ statusId }) => {
+const AttackChainNodeTestList: FunctionComponent<Props> = ({ statusId }) => {
   // Standard hooks
   const { classes } = useStyles();
   const { t, fldt } = useFormatter();
   const theme = useTheme();
   const { permissions } = useContext(PermissionsContext);
 
-  const [selectedInjectTestStatus, setSelectedInjectTestStatus] = useState<InjectTestStatusOutput | null>(null);
+  const [selectedAttackChainNodeTestStatus, setSelectedAttackChainNodeTestStatus] = useState<AttackChainNodeTestStatusOutput | null>(null);
 
   const {
     contextId,
-    searchInjectTests,
-    fetchInjectTestStatus,
-  } = useContext(InjectTestContext);
+    searchAttackChainNodeTests,
+    fetchAttackChainNodeTestStatus,
+  } = useContext(AttackChainNodeTestContext);
 
   // Fetching test
   useEffect(() => {
-    if (statusId !== null && statusId !== undefined && fetchInjectTestStatus) {
-      fetchInjectTestStatus(statusId).then((result: { data: InjectTestStatusOutput }) => {
-        setSelectedInjectTestStatus(result.data);
+    if (statusId !== null && statusId !== undefined && fetchAttackChainNodeTestStatus) {
+      fetchAttackChainNodeTestStatus(statusId).then((result: { data: AttackChainNodeTestStatusOutput }) => {
+        setSelectedAttackChainNodeTestStatus(result.data);
       });
     }
   }, [statusId]);
@@ -81,39 +81,39 @@ const InjectTestList: FunctionComponent<Props> = ({ statusId }) => {
   // Headers
   const headers = [
     {
-      field: 'inject_title',
-      label: 'Inject title',
+      field: 'node_title',
+      label: 'AttackChainNode title',
       isSortable: true,
-      value: (test: InjectTestStatusOutput) => test.inject_title,
+      value: (test: AttackChainNodeTestStatusOutput) => test.node_title,
     },
     {
       field: 'tracking_sent_date',
       label: 'Test execution time',
       isSortable: true,
-      value: (test: InjectTestStatusOutput) => fldt(test.tracking_sent_date),
+      value: (test: AttackChainNodeTestStatusOutput) => fldt(test.tracking_sent_date),
     },
     {
       field: 'status_name',
       label: 'Test status',
       isSortable: true,
-      value: (test: InjectTestStatusOutput) => {
-        return (<ItemStatus isInject status={test.status_name} label={t(test.status_name || '-')} variant="inList" />);
+      value: (test: AttackChainNodeTestStatusOutput) => {
+        return (<ItemStatus isAttackChainNode status={test.status_name} label={t(test.status_name || '-')} variant="inList" />);
       },
     },
   ];
 
   // Filter and sort hook
-  const [tests, setTests] = useState<InjectTestStatusOutput[] | null>([]);
+  const [tests, setTests] = useState<AttackChainNodeTestStatusOutput[] | null>([]);
   const [searchPaginationInput, setSearchPaginationInput] = useState<SearchPaginationInput>(buildSearchPagination({}));
 
   const [loading, setLoading] = useState<boolean>(true);
-  const searchInjectTestsToLoad = (input: SearchPaginationInput) => {
+  const searchAttackChainNodeTestsToLoad = (input: SearchPaginationInput) => {
     setLoading(true);
     try {
-      if (searchInjectTests) {
-        return searchInjectTests(contextId, input);
+      if (searchAttackChainNodeTests) {
+        return searchAttackChainNodeTests(contextId, input);
       } else {
-        return new Promise<{ data: Page<InjectTestStatusOutput> }>(() => {
+        return new Promise<{ data: Page<AttackChainNodeTestStatusOutput> }>(() => {
         });
       }
     } finally {
@@ -124,13 +124,13 @@ const InjectTestList: FunctionComponent<Props> = ({ statusId }) => {
   return (
     <>
       <PaginationComponent
-        fetch={searchInjectTestsToLoad}
+        fetch={searchAttackChainNodeTestsToLoad}
         searchPaginationInput={searchPaginationInput}
         setContent={setTests}
       >
-        <InjectTestReplayAll
+        <AttackChainNodeTestReplayAll
           searchPaginationInput={searchPaginationInput}
-          injectIds={tests?.map((test: InjectTestStatusOutput) => test.inject_id!)}
+          injectIds={tests?.map((test: AttackChainNodeTestStatusOutput) => test.node_id!)}
           onTest={result => setTests(result)}
         />
       </PaginationComponent>
@@ -163,7 +163,7 @@ const InjectTestList: FunctionComponent<Props> = ({ statusId }) => {
                   divider
                   secondaryAction={(
                     permissions.canManage && (
-                      <InjectTestPopover
+                      <AttackChainNodeTestPopover
                         injectTest={test}
                         onTest={result =>
                           setTests(tests?.map(existing => existing.status_id !== result.status_id ? existing : result))}
@@ -176,12 +176,12 @@ const InjectTestList: FunctionComponent<Props> = ({ statusId }) => {
                 >
                   <ListItemButton
                     classes={{ root: classes.item }}
-                    onClick={() => setSelectedInjectTestStatus(test)}
-                    selected={test.status_id === selectedInjectTestStatus?.status_id}
+                    onClick={() => setSelectedAttackChainNodeTestStatus(test)}
+                    selected={test.status_id === selectedAttackChainNodeTestStatus?.status_id}
                   >
                     <ListItemIcon>
-                      <InjectIcon
-                        type={test.inject_type}
+                      <AttackChainNodeIcon
+                        type={test.node_type}
                         variant="list"
                       />
                     </ListItemIcon>
@@ -207,11 +207,11 @@ const InjectTestList: FunctionComponent<Props> = ({ statusId }) => {
         {!tests ? (<Empty message={t('No data available')} />) : null}
       </List>
       {
-        selectedInjectTestStatus !== null
-        && <InjectTestDetail open handleClose={() => setSelectedInjectTestStatus(null)} injectTestStatus={selectedInjectTestStatus} />
+        selectedAttackChainNodeTestStatus !== null
+        && <AttackChainNodeTestDetail open handleClose={() => setSelectedAttackChainNodeTestStatus(null)} injectTestStatus={selectedAttackChainNodeTestStatus} />
       }
     </>
   );
 };
 
-export default InjectTestList;
+export default AttackChainNodeTestList;

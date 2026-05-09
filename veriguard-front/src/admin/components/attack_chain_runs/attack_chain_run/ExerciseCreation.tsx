@@ -1,26 +1,26 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { addExercise } from '../../../../actions/AttackChainRun';
+import { addAttackChainRun } from '../../../../actions/AttackChainRun';
 import { type LoggedHelper } from '../../../../actions/helper';
 import ButtonCreate from '../../../../components/common/ButtonCreate';
 import Drawer from '../../../../components/common/Drawer';
 import { useFormatter } from '../../../../components/i18n';
 import { useHelper } from '../../../../store';
-import { type CreateExerciseInput, type Exercise, type PlatformSettings } from '../../../../utils/api-types';
+import { type CreateAttackChainRunInput, type AttackChainRun, type PlatformSettings } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
-import ExerciseForm from './ExerciseForm';
+import AttackChainRunForm from './AttackChainRunForm';
 
-const ExerciseCreation = () => {
+const AttackChainRunCreation = () => {
   // Standard hooks
   const [open, setOpen] = useState(false);
   const { t } = useFormatter();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const onSubmit = (data: CreateExerciseInput) => {
-    dispatch(addExercise(data)).then((result: {
+  const onSubmit = (data: CreateAttackChainRunInput) => {
+    dispatch(addAttackChainRun(data)).then((result: {
       result: string;
-      entities: { scenarios: Record<string, Exercise> };
+      entities: { attack_chains: Record<string, AttackChainRun> };
     }) => {
       setOpen(false);
       navigate(`/admin/attack_chain_runs/${result.result}`);
@@ -30,19 +30,19 @@ const ExerciseCreation = () => {
   const { settings }: { settings: PlatformSettings } = useHelper((helper: LoggedHelper) => ({ settings: helper.getPlatformSettings() }));
 
   // Form
-  const initialValues: CreateExerciseInput = {
-    exercise_name: '',
-    exercise_subtitle: '',
-    exercise_description: '',
-    exercise_category: 'attack-scenario',
-    exercise_main_focus: 'incident-response',
-    exercise_severity: 'high',
-    exercise_tags: [],
-    exercise_start_date: null,
-    exercise_mail_from: settings.default_mailer,
-    exercise_mails_reply_to: [settings.default_reply_to ? settings.default_reply_to : ''],
-    exercise_message_header: t('SIMULATION HEADER'),
-    exercise_message_footer: t('SIMULATION FOOTER'),
+  const initialValues: CreateAttackChainRunInput = {
+    attack_chain_run_name: '',
+    attack_chain_run_subtitle: '',
+    attack_chain_run_description: '',
+    attack_chain_run_category: 'attack-attack_chain',
+    attack_chain_run_main_focus: 'incident-response',
+    attack_chain_run_severity: 'high',
+    attack_chain_run_tags: [],
+    attack_chain_run_start_date: null,
+    attack_chain_run_mail_from: settings.default_mailer,
+    attack_chain_run_mails_reply_to: [settings.default_reply_to ? settings.default_reply_to : ''],
+    attack_chain_run_message_header: t('SIMULATION HEADER'),
+    attack_chain_run_message_footer: t('SIMULATION FOOTER'),
   };
 
   return (
@@ -51,9 +51,9 @@ const ExerciseCreation = () => {
       <Drawer
         open={open}
         handleClose={() => setOpen(false)}
-        title={t('Create a new simulation')}
+        title={t('Create a new attack_chain_run')}
       >
-        <ExerciseForm
+        <AttackChainRunForm
           onSubmit={onSubmit}
           handleClose={() => setOpen(false)}
           initialValues={initialValues}
@@ -64,4 +64,4 @@ const ExerciseCreation = () => {
   );
 };
 
-export default ExerciseCreation;
+export default AttackChainRunCreation;

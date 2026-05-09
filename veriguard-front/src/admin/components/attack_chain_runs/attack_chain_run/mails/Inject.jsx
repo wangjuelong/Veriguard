@@ -6,8 +6,8 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { executeInject, fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
-import { fetchInjectCommunications } from '../../../../../actions/Communication';
+import { executeAttackChainNode, fetchAttackChainRunAttackChainNodes } from '../../../../../actions/AttackChainNode';
+import { fetchAttackChainNodeCommunications } from '../../../../../actions/Communication';
 import { fetchPlayers } from '../../../../../actions/users/User';
 import Transition from '../../../../../components/common/Transition';
 import { useFormatter } from '../../../../../components/i18n';
@@ -33,7 +33,7 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-const Inject = () => {
+const AttackChainNode = () => {
   // Standard hooks
   const { classes } = useStyles();
   const dispatch = useDispatch();
@@ -43,17 +43,17 @@ const Inject = () => {
   const { permissions } = useContext(PermissionsContext);
 
   // Fetching data
-  const { exercise, inject, communications, usersMap } = useHelper((helper) => {
+  const { attack_chain_run, node, communications, usersMap } = useHelper((helper) => {
     return {
-      exercise: helper.getExercise(exerciseId),
-      inject: helper.getInject(injectId),
-      communications: helper.getInjectCommunications(injectId),
+      attack_chain_run: helper.getAttackChainRun(exerciseId),
+      node: helper.getAttackChainNode(injectId),
+      communications: helper.getAttackChainNodeCommunications(injectId),
       usersMap: helper.getUsersMap(),
     };
   });
   useDataLoader(() => {
-    dispatch(fetchExerciseInjects(exerciseId));
-    dispatch(fetchInjectCommunications(exerciseId, injectId));
+    dispatch(fetchAttackChainRunAttackChainNodes(exerciseId));
+    dispatch(fetchAttackChainNodeCommunications(exerciseId, injectId));
     dispatch(fetchPlayers());
   });
   const sortCommunications = R.sortWith([
@@ -91,21 +91,21 @@ const Inject = () => {
 </div>
 </blockquote>`;
     const inputValues = {
-      inject_title: 'Manual email',
-      inject_description: 'Manual email',
-      inject_injector_contract: inject.inject_injector_contract.injector_contract_id,
-      inject_content: {
+      node_title: 'Manual email',
+      node_description: 'Manual email',
+      node_injector_contract: node.node_injector_contract.injector_contract_id,
+      node_content: {
         inReplyTo: lastCommunication.communication_message_id,
         subject: data.communication_subject,
         body,
       },
-      inject_users: topic.communication_users,
+      node_users: topic.communication_users,
     };
     return dispatch(
-      executeInject(exerciseId, inputValues, data.communication_file),
+      executeAttackChainNode(exerciseId, inputValues, data.communication_file),
     ).then(() => handleCloseReply());
   };
-  if (inject && communications) {
+  if (node && communications) {
     // Group communication by subject
     const communicationsWithMails = R.map(
       n => R.assoc(
@@ -157,41 +157,41 @@ const Inject = () => {
         <AnimationMenu exerciseId={exerciseId} />
         <GridLegacy container={true} spacing={3}>
           <GridLegacy item={true} xs={6} style={{ marginTop: -10 }}>
-            <Typography variant="h4">{t('Inject context')}</Typography>
+            <Typography variant="h4">{t('AttackChainNode context')}</Typography>
             <Paper variant="outlined" classes={{ root: classes.paper }}>
               <GridLegacy container={true} spacing={3}>
                 <GridLegacy item={true} xs={6}>
                   <Typography variant="h3">{t('Title')}</Typography>
-                  {inject.inject_title}
+                  {node.node_title}
                 </GridLegacy>
                 <GridLegacy item={true} xs={6}>
                   <Typography variant="h3">{t('Description')}</Typography>
-                  {inject.inject_description}
+                  {node.node_description}
                 </GridLegacy>
                 <GridLegacy item={true} xs={6}>
                   <Typography variant="h3">{t('Sent at')}</Typography>
-                  {fndt(inject.inject_sent_at)}
+                  {fndt(node.node_sent_at)}
                 </GridLegacy>
                 <GridLegacy item={true} xs={6}>
                   <Typography variant="h3">
                     {t('Sender email address')}
                   </Typography>
-                  {exercise.exercise_mail_from}
+                  {attack_chain_run.attack_chain_run_mail_from}
                 </GridLegacy>
               </GridLegacy>
             </Paper>
           </GridLegacy>
           <GridLegacy item={true} xs={6} style={{ marginTop: -10 }}>
-            <Typography variant="h4">{t('Inject details')}</Typography>
+            <Typography variant="h4">{t('AttackChainNode details')}</Typography>
             <Paper variant="outlined" classes={{ root: classes.paper }}>
               <GridLegacy container={true} spacing={3}>
                 <GridLegacy item={true} xs={6}>
                   <Typography variant="h3">{t('Targeted players')}</Typography>
-                  {inject.inject_users_number}
+                  {node.node_users_number}
                 </GridLegacy>
                 <GridLegacy item={true} xs={6}>
                   <Typography variant="h3">{t('Tags')}</Typography>
-                  <ItemTags tags={inject.inject_tags} />
+                  <ItemTags tags={node.node_tags} />
                 </GridLegacy>
                 <GridLegacy item={true} xs={6}>
                   <Typography variant="h3">{t('Documents')}</Typography>
@@ -287,4 +287,4 @@ const Inject = () => {
   );
 };
 
-export default Inject;
+export default AttackChainNode;

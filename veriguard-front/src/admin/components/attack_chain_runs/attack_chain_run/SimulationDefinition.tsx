@@ -1,16 +1,16 @@
 import { useTheme } from '@mui/material/styles';
 import { useParams } from 'react-router';
 
-import type { ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
+import type { AttackChainRunsHelper } from '../../../../actions/attack_chain_runs/attack_chain_run-helper';
 import { useHelper } from '../../../../store';
-import { type Exercise } from '../../../../utils/api-types';
+import { type AttackChainRun } from '../../../../utils/api-types';
 import SimulationTeams from './teams/SimulationTeams';
 import SimulationVariables from './variables/SimulationVariables';
 
 const SimulationDefinition = () => {
   const theme = useTheme();
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
-  const { exercise } = useHelper((helper: ExercisesHelper) => ({ exercise: helper.getExercise(exerciseId) }));
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
+  const { attack_chain_run } = useHelper((helper: AttackChainRunsHelper) => ({ attack_chain_run: helper.getAttackChainRun(exerciseId) }));
   return (
     <div style={{
       display: 'grid',
@@ -18,7 +18,7 @@ const SimulationDefinition = () => {
       gridTemplateColumns: '1fr 1fr',
     }}
     >
-      <SimulationTeams exerciseTeamsUsers={exercise.exercise_teams_users ?? []} />
+      <SimulationTeams exerciseTeamsUsers={attack_chain_run.attack_chain_run_teams_users ?? []} />
       <SimulationVariables />
     </div>
   );

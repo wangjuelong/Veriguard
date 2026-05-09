@@ -5,20 +5,20 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExerciseExpectationResult, fetchExerciseInjectExpectationResults, searchExerciseInjects } from '../../../../../actions/attack_chain_runs/exercise-action';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
+import { fetchAttackChainRunExpectationResult, fetchAttackChainRunAttackChainNodeExpectationResults, searchAttackChainRunAttackChainNodes } from '../../../../../actions/attack_chain_runs/attack_chain_run-action';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
 import { initSorting } from '../../../../../components/common/queryable/Page';
 import { buildSearchPagination } from '../../../../../components/common/queryable/QueryableUtils';
 import { useQueryableWithLocalStorage } from '../../../../../components/common/queryable/useQueryableWithLocalStorage';
 import { useFormatter } from '../../../../../components/i18n';
 import Loader from '../../../../../components/Loader';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type ExpectationResultsByType, type InjectExpectationResultsByAttackPattern } from '../../../../../utils/api-types';
-import InjectResultList from '../../../atomic_testings/InjectResultList';
+import { type AttackChainRun, type ExpectationResultsByType, type AttackChainNodeExpectationResultsByAttackPattern } from '../../../../../utils/api-types';
+import AttackChainNodeResultList from '../../../atomic_testings/AttackChainNodeResultList';
 import ResponsePie from '../../../common/attack_chain_nodes/ResponsePie';
 import MitreMatrix from '../../../common/matrix/MitreMatrix';
 import SimulationMainInformation from '../SimulationMainInformation';
-import ExerciseDistribution from './ExerciseDistribution';
+import AttackChainRunDistribution from './AttackChainRunDistribution';
 
 // Deprecated - https://mui.com/system/styles/basics/
 // Do not use it for new code.
@@ -42,27 +42,27 @@ const SimulationComponent = () => {
   const [searchParams] = useSearchParams();
   // We do not use the traditional anchor (`#`) as the pagination hook overrides it
   const anchor = searchParams.get('anchor');
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
-  const { exercise } = useHelper((helper: ExercisesHelper) => ({ exercise: helper.getExercise(exerciseId) }));
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
+  const { attack_chain_run } = useHelper((helper: AttackChainRunsHelper) => ({ attack_chain_run: helper.getAttackChainRun(exerciseId) }));
   const [results, setResults] = useState<ExpectationResultsByType[] | null>(null);
-  const [injectResults, setInjectResults] = useState<InjectExpectationResultsByAttackPattern[] | null>(null);
+  const [injectResults, setAttackChainNodeResults] = useState<AttackChainNodeExpectationResultsByAttackPattern[] | null>(null);
 
   useEffect(() => {
-    fetchExerciseExpectationResult(exerciseId).then((result: { data: ExpectationResultsByType[] }) => setResults(result.data));
-    fetchExerciseInjectExpectationResults(exerciseId).then((result: { data: InjectExpectationResultsByAttackPattern[] }) => setInjectResults(result.data));
+    fetchAttackChainRunExpectationResult(exerciseId).then((result: { data: ExpectationResultsByType[] }) => setResults(result.data));
+    fetchAttackChainRunAttackChainNodeExpectationResults(exerciseId).then((result: { data: AttackChainNodeExpectationResultsByAttackPattern[] }) => setAttackChainNodeResults(result.data));
   }, [exerciseId]);
 
-  const goToLink = `/admin/attack_chain_runs/${exerciseId}/injects`;
+  const goToLink = `/admin/attack_chain_runs/${exerciseId}/nodes`;
   let resultAttackPatternIds = [];
   if (injectResults) {
     resultAttackPatternIds = R.uniq(
       injectResults
-        .filter(injectResult => !!injectResult.inject_attack_pattern)
-        .flatMap(injectResult => injectResult.inject_attack_pattern) as unknown as string[],
+        .filter(injectResult => !!injectResult.node_attack_pattern)
+        .flatMap(injectResult => injectResult.node_attack_pattern) as unknown as string[],
     );
   }
 
-  const { queryableHelpers, searchPaginationInput } = useQueryableWithLocalStorage('simulation-injects-results', buildSearchPagination({ sorts: initSorting('inject_updated_at', 'DESC') }));
+  const { queryableHelpers, searchPaginationInput } = useQueryableWithLocalStorage('attack_chain_run-nodes-results', buildSearchPagination({ sorts: initSorting('node_updated_at', 'DESC') }));
 
   useEffect(() => {
     if (scrolledToAnchor) {
@@ -95,7 +95,7 @@ const SimulationComponent = () => {
       >
         <Typography variant="h4">{t('Information')}</Typography>
         <Typography variant="h4">{t('Results')}</Typography>
-        <SimulationMainInformation exercise={exercise} />
+        <SimulationMainInformation attack_chain_run={attack_chain_run} />
         <Paper
           variant="outlined"
           style={{
@@ -128,7 +128,7 @@ const SimulationComponent = () => {
           </Paper>
         </div>
       )}
-      {exercise.exercise_status !== 'SCHEDULED' && (
+      {attack_chain_run.attack_chain_run_status !== 'SCHEDULED' && (
         <div
           style={{
             display: 'grid',
@@ -136,21 +136,21 @@ const SimulationComponent = () => {
             gap: `0px ${theme.spacing(3)}`,
             gridTemplateColumns: '1fr',
           }}
-          id="injects-results"
+          id="nodes-results"
         >
-          <Typography variant="h4">{t('Injects results')}</Typography>
+          <Typography variant="h4">{t('AttackChainNodes results')}</Typography>
           <Paper classes={{ root: classes.paper }} variant="outlined">
-            <InjectResultList
-              fetchInjects={input => searchExerciseInjects(exerciseId, input)}
-              goTo={injectId => `/admin/attack_chain_runs/${exerciseId}/injects/${injectId}`}
+            <AttackChainNodeResultList
+              fetchAttackChainNodes={input => searchAttackChainRunAttackChainNodes(exerciseId, input)}
+              goTo={injectId => `/admin/attack_chain_runs/${exerciseId}/nodes/${injectId}`}
               queryableHelpers={queryableHelpers}
               searchPaginationInput={searchPaginationInput}
-              contextId={exercise.exercise_id}
+              contextId={attack_chain_run.attack_chain_run_id}
             />
           </Paper>
         </div>
       )}
-      <ExerciseDistribution exerciseId={exerciseId} />
+      <AttackChainRunDistribution exerciseId={exerciseId} />
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { type EndpointHelper } from '../../../../../../actions/assets/asset-help
 import { type Contract } from '../../../../../../actions/contract/contract';
 import { useHelper } from '../../../../../../store';
 import { type AssetGroup, type Endpoint, type Team } from '../../../../../../utils/api-types';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import { typeIcon } from '../../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 import ExpectationLine from './ExpectationLine';
 import { groupedByAsset } from './ExpectationUtils';
@@ -23,9 +23,9 @@ const useStyles = makeStyles()(() => ({
 }));
 
 interface Props {
-  expectation: InjectExpectationsStore;
+  expectation: AttackChainNodeExpectationsStore;
   injectContract: Contract;
-  relatedExpectations: InjectExpectationsStore[];
+  relatedExpectations: AttackChainNodeExpectationsStore[];
   team: Team;
   assetGroup: AssetGroup;
 }
@@ -51,7 +51,7 @@ const TechnicalExpectationAssetGroup: FunctionComponent<Props> = ({
         expectation={expectation}
         info={injectContract.config.label?.en}
         title={injectContract.label.en}
-        icon={typeIcon(expectation.inject_expectation_type)}
+        icon={typeIcon(expectation.node_expectation_type)}
       />
       {Array.from(groupedByAsset(relatedExpectations)).map(([groupedId, groupedExpectations]) => {
         const relatedAsset: Endpoint = assetsMap[groupedId];
@@ -73,8 +73,8 @@ const TechnicalExpectationAssetGroup: FunctionComponent<Props> = ({
                 )}
               />
             </ListItem>
-            {groupedExpectations.map((e: InjectExpectationsStore) => (
-              <TechnicalExpectationAsset key={e.inject_expectation_id} expectation={e} injectContract={injectContract} gap={16} />
+            {groupedExpectations.map((e: AttackChainNodeExpectationsStore) => (
+              <TechnicalExpectationAsset key={e.node_expectation_id} expectation={e} injectContract={injectContract} gap={16} />
             ))}
           </div>
         );

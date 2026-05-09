@@ -153,7 +153,7 @@ const InjectorContractPopover = ({ injectorContract, killChainPhasesMap, attackP
       >
         <DialogContent>
           <DialogContentText>
-            {t('Do you want to delete this inject contract?')}
+            {t('Do you want to delete this node contract?')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

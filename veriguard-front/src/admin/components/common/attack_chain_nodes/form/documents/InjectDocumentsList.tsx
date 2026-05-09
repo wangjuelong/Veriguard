@@ -35,7 +35,7 @@ interface Props {
   hasAttachments: boolean;
 }
 
-const InjectDocumentsList = ({ readOnly, hasAttachments }: Props) => {
+const AttackChainNodeDocumentsList = ({ readOnly, hasAttachments }: Props) => {
   const { t } = useFormatter();
   const { control } = useFormContext();
   const { classes } = useStyles();
@@ -44,12 +44,12 @@ const InjectDocumentsList = ({ readOnly, hasAttachments }: Props) => {
   const { documentsMap } = useHelper((helper: DocumentHelper) => ({ documentsMap: helper.getDocumentsMap() }));
   const {
     fields,
-    append: appendInjectDocuments,
-    remove: removeInjectDocuments,
-    update: updateInjectDocuments,
+    append: appendAttackChainNodeDocuments,
+    remove: removeAttackChainNodeDocuments,
+    update: updateAttackChainNodeDocuments,
   } = useFieldArray({
     control,
-    name: 'inject_documents',
+    name: 'node_documents',
   });
 
   const injectDocuments = fields as ({
@@ -74,7 +74,7 @@ const InjectDocumentsList = ({ readOnly, hasAttachments }: Props) => {
   const toggleAttachment = (documentId: string) => {
     const index = injectDocuments.findIndex(d => d.document_id === documentId);
     if (index !== -1) {
-      updateInjectDocuments(index, {
+      updateAttackChainNodeDocuments(index, {
         ...injectDocuments[index],
         document_attached: !injectDocuments[index].document_attached,
       });
@@ -84,7 +84,7 @@ const InjectDocumentsList = ({ readOnly, hasAttachments }: Props) => {
   const removeDocuments = (documentId: string) => {
     const index = injectDocuments.findIndex(d => d.document_id === documentId);
     if (index !== -1) {
-      removeInjectDocuments(index);
+      removeAttackChainNodeDocuments(index);
     }
   };
 
@@ -104,7 +104,7 @@ const InjectDocumentsList = ({ readOnly, hasAttachments }: Props) => {
       }));
 
     if (newDocs.length > 0) {
-      appendInjectDocuments(newDocs);
+      appendAttackChainNodeDocuments(newDocs);
     }
 
     // Remove documents that are currently stored but no longer selected
@@ -113,7 +113,7 @@ const InjectDocumentsList = ({ readOnly, hasAttachments }: Props) => {
     idsToRemove.forEach((id) => {
       const index = injectDocuments.findIndex(d => d.document_id === id);
       if (index !== -1) {
-        removeInjectDocuments(index);
+        removeAttackChainNodeDocuments(index);
       }
     });
   };
@@ -189,4 +189,4 @@ const InjectDocumentsList = ({ readOnly, hasAttachments }: Props) => {
   );
 };
 
-export default InjectDocumentsList;
+export default AttackChainNodeDocumentsList;

@@ -1,21 +1,21 @@
 import { Paper } from '@mui/material';
 import { type FunctionComponent, useMemo } from 'react';
 
-import useFetchInjectExecutionResult from '../../../../../../actions/inject_status/useFetchInjectExecutionResult';
+import useFetchAttackChainNodeExecutionResult from '../../../../../../actions/node_status/useFetchAttackChainNodeExecutionResult';
 import Empty from '../../../../../../components/Empty';
 import { useFormatter } from '../../../../../../components/i18n';
-import type { InjectTarget } from '../../../../../../utils/api-types';
+import type { AttackChainNodeTarget } from '../../../../../../utils/api-types';
 import TerminalView from './TerminalView';
 
 interface Props {
   injectId: string;
-  target: InjectTarget;
+  target: AttackChainNodeTarget;
   forceExpanded: boolean;
 }
 
 const TerminalViewTab: FunctionComponent<Props> = ({ injectId, target, forceExpanded }) => {
   const { t } = useFormatter();
-  const { injectExecutionResult, loading } = useFetchInjectExecutionResult(injectId, target);
+  const { injectExecutionResult, loading } = useFetchAttackChainNodeExecutionResult(injectId, target);
 
   const nonEmptyTraces = useMemo(() => {
     if (!injectExecutionResult?.execution_traces) {

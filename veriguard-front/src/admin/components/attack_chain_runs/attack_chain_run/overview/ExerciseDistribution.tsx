@@ -3,27 +3,27 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
-import { fetchExerciseInjectExpectations, fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRunAttackChainNodes } from '../../../../../actions/AttackChainNode';
+import { fetchAttackChainRunAttackChainNodeExpectations, fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
 import { useFormatter } from '../../../../../components/i18n';
 import Loader from '../../../../../components/Loader';
 import arrowDark from '../../../../../static/images/misc/arrow_dark.png';
 import arrowLight from '../../../../../static/images/misc/arrow_light.png';
 import { useHelper } from '../../../../../store';
-import { type Exercise } from '../../../../../utils/api-types';
+import { type AttackChainRun } from '../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
-import ExerciseDistributionByInjectorContract from './ExerciseDistributionByInjectorContract';
-import ExerciseDistributionScoreByInject from './ExerciseDistributionScoreByInject';
-import ExerciseDistributionScoreByOrganization from './ExerciseDistributionScoreByOrganization';
-import ExerciseDistributionScoreByPlayer from './ExerciseDistributionScoreByPlayer';
-import ExerciseDistributionScoreByTeam from './ExerciseDistributionScoreByTeam';
-import ExerciseDistributionScoreByTeamInPercentage from './ExerciseDistributionScoreByTeamInPercentage';
-import ExerciseDistributionScoreOverTimeByInjectorContract from './ExerciseDistributionScoreOverTimeByInjectorContract';
-import ExerciseDistributionScoreOverTimeByTeam from './ExerciseDistributionScoreOverTimeByTeam';
-import ExerciseDistributionScoreOverTimeByTeamInPercentage from './ExerciseDistributionScoreOverTimeByTeamInPercentage';
+import AttackChainRunDistributionByInjectorContract from './AttackChainRunDistributionByInjectorContract';
+import AttackChainRunDistributionScoreByAttackChainNode from './AttackChainRunDistributionScoreByAttackChainNode';
+import AttackChainRunDistributionScoreByOrganization from './AttackChainRunDistributionScoreByOrganization';
+import AttackChainRunDistributionScoreByPlayer from './AttackChainRunDistributionScoreByPlayer';
+import AttackChainRunDistributionScoreByTeam from './AttackChainRunDistributionScoreByTeam';
+import AttackChainRunDistributionScoreByTeamInPercentage from './AttackChainRunDistributionScoreByTeamInPercentage';
+import AttackChainRunDistributionScoreOverTimeByInjectorContract from './AttackChainRunDistributionScoreOverTimeByInjectorContract';
+import AttackChainRunDistributionScoreOverTimeByTeam from './AttackChainRunDistributionScoreOverTimeByTeam';
+import AttackChainRunDistributionScoreOverTimeByTeamInPercentage from './AttackChainRunDistributionScoreOverTimeByTeamInPercentage';
 
 const useStyles = makeStyles()(() => ({
   paperChart: {
@@ -35,11 +35,11 @@ const useStyles = makeStyles()(() => ({
 }));
 
 interface Props {
-  exerciseId: Exercise['exercise_id'];
+  exerciseId: AttackChainRun['attack_chain_run_id'];
   isReport?: boolean;
 }
 
-const ExerciseDistribution: FunctionComponent<Props> = ({
+const AttackChainRunDistribution: FunctionComponent<Props> = ({
   exerciseId,
   isReport = false,
 }) => {
@@ -53,9 +53,9 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
   useDataLoader(() => {
     setLoading(true);
     const fetchPromises = [
-      dispatch(fetchExerciseInjectExpectations(exerciseId)),
-      dispatch(fetchExerciseInjects(exerciseId)),
-      dispatch(fetchExerciseTeams(exerciseId)),
+      dispatch(fetchAttackChainRunAttackChainNodeExpectations(exerciseId)),
+      dispatch(fetchAttackChainRunAttackChainNodes(exerciseId)),
+      dispatch(fetchAttackChainRunTeams(exerciseId)),
     ];
     Promise.all(fetchPromises)
       .finally(() => {
@@ -63,12 +63,12 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
       });
   });
 
-  const { injectExpectations, exercise } = useHelper((helper: InjectHelper & ExercisesHelper) => ({
-    exercise: helper.getExercise(exerciseId),
-    injectExpectations: helper.getExerciseInjectExpectations(exerciseId),
+  const { injectExpectations, attack_chain_run } = useHelper((helper: AttackChainNodeHelper & AttackChainRunsHelper) => ({
+    attack_chain_run: helper.getAttackChainRun(exerciseId),
+    injectExpectations: helper.getAttackChainRunAttackChainNodeExpectations(exerciseId),
   }));
 
-  if (exercise.exercise_status === 'SCHEDULED' && injectExpectations?.length === 0 && !isReport) {
+  if (attack_chain_run.attack_chain_run_status === 'SCHEDULED' && injectExpectations?.length === 0 && !isReport) {
     return (
       <div style={{
         marginTop: 100,
@@ -76,7 +76,7 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
       }}
       >
         <div style={{ fontSize: 20 }}>
-          {t('This simulation is not running yet. Start now!')}
+          {t('This attack_chain_run is not running yet. Start now!')}
         </div>
         <img style={{ marginTop: 20 }} width={100} src={theme.palette.mode === 'dark' ? arrowDark : arrowLight} alt="arrow" />
       </div>
@@ -84,7 +84,7 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
   }
 
   return (
-    <GridLegacy id="exercise_distribution" container spacing={3} sx={{ marginBottom: 1 }}>
+    <GridLegacy id="attack_chain_run_distribution" container spacing={3} sx={{ marginBottom: 1 }}>
       <GridLegacy item xs={6} style={{ marginTop: 25 }}>
         <Typography variant="h4">
           {t('Distribution of score by team (in % of expectations)')}
@@ -93,7 +93,7 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionScoreByTeamInPercentage exerciseId={exerciseId} />
+              : <AttackChainRunDistributionScoreByTeamInPercentage exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
@@ -105,7 +105,7 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionScoreOverTimeByTeamInPercentage exerciseId={exerciseId} />
+              : <AttackChainRunDistributionScoreOverTimeByTeamInPercentage exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
@@ -117,7 +117,7 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionScoreByTeam exerciseId={exerciseId} />
+              : <AttackChainRunDistributionScoreByTeam exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
@@ -127,31 +127,31 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionScoreOverTimeByTeam exerciseId={exerciseId} />
+              : <AttackChainRunDistributionScoreOverTimeByTeam exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
       <GridLegacy item xs={6} style={{ marginTop: 25 }}>
         <Typography variant="h4">
-          {t('Distribution of total score by inject type')}
+          {t('Distribution of total score by node type')}
         </Typography>
         <Paper variant="outlined" classes={{ root: classes.paperChart }}>
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionByInjectorContract exerciseId={exerciseId} />
+              : <AttackChainRunDistributionByInjectorContract exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
       <GridLegacy item xs={6} style={{ marginTop: 25 }}>
         <Typography variant="h4">
-          {t('Inject types scores over time')}
+          {t('AttackChainNode types scores over time')}
         </Typography>
         <Paper variant="outlined" classes={{ root: classes.paperChart }}>
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionScoreOverTimeByInjectorContract exerciseId={exerciseId} />
+              : <AttackChainRunDistributionScoreOverTimeByInjectorContract exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
@@ -163,7 +163,7 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionScoreByOrganization exerciseId={exerciseId} />
+              : <AttackChainRunDistributionScoreByOrganization exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
@@ -175,23 +175,23 @@ const ExerciseDistribution: FunctionComponent<Props> = ({
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionScoreByPlayer exerciseId={exerciseId} />
+              : <AttackChainRunDistributionScoreByPlayer exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
       <GridLegacy item xs={3} style={{ marginTop: 25 }}>
         <Typography variant="h4">
-          {t('Distribution of total score by inject')}
+          {t('Distribution of total score by node')}
         </Typography>
         <Paper variant="outlined" classes={{ root: classes.paperChart }}>
           {
             loading
               ? <Loader variant="inElement" />
-              : <ExerciseDistributionScoreByInject exerciseId={exerciseId} />
+              : <AttackChainRunDistributionScoreByAttackChainNode exerciseId={exerciseId} />
           }
         </Paper>
       </GridLegacy>
     </GridLegacy>
   );
 };
-export default ExerciseDistribution;
+export default AttackChainRunDistribution;

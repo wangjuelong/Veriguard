@@ -19,20 +19,20 @@ import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExerciseInjects } from '../../../../../actions/AttackChainNode';
+import { fetchAttackChainRunAttackChainNodes } from '../../../../../actions/AttackChainNode';
 import { useFormatter } from '../../../../../components/i18n';
 import ItemTags from '../../../../../components/ItemTags';
 import SearchFilter from '../../../../../components/SearchFilter';
 import { useHelper } from '../../../../../store';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import useSearchAndFilter from '../../../../../utils/SortingFiltering';
-import InjectIcon from '../../../common/attack_chain_nodes/InjectIcon';
+import AttackChainNodeIcon from '../../../common/attack_chain_nodes/AttackChainNodeIcon';
 import { PermissionsContext, TeamContext } from '../../../common/Context';
 import TagsFilter from '../../../common/filters/TagsFilter';
 import AnimationMenu from '../AnimationMenu';
-import CreateQuickInject from '../attack_chain_nodes/CreateQuickInject';
-import teamContextForExercise from '../teams/teamContextForExercise';
-import MailDistributionByInject from './MailDistributionByInject';
+import CreateQuickAttackChainNode from '../attack_chain_nodes/CreateQuickAttackChainNode';
+import teamContextForAttackChainRun from '../teams/teamContextForAttackChainRun';
+import MailDistributionByAttackChainNode from './MailDistributionByAttackChainNode';
 import MailDistributionByPlayer from './MailDistributionByPlayer';
 import MailDistributionByTeam from './MailDistributionByTeam';
 import MailDistributionOverTimeChart from './MailDistributionOverTimeChart';
@@ -89,43 +89,43 @@ const headerStyles = {
     padding: 0,
     top: '0px',
   },
-  inject_type: {
+  node_type: {
     float: 'left',
     width: '15%',
     fontSize: 12,
     fontWeight: '700',
   },
-  inject_title: {
+  node_title: {
     float: 'left',
     width: '30%',
     fontSize: 12,
     fontWeight: '700',
   },
-  inject_users_number: {
+  node_users_number: {
     float: 'left',
     width: '15%',
     fontSize: 12,
     fontWeight: '700',
   },
-  inject_sent_at: {
+  node_sent_at: {
     float: 'left',
     width: '15%',
     fontSize: 12,
     fontWeight: '700',
   },
-  inject_communications_not_ack_number: {
+  node_communications_not_ack_number: {
     float: 'left',
     width: '10%',
     fontSize: 12,
     fontWeight: '700',
   },
-  inject_communications_number: {
+  node_communications_number: {
     float: 'left',
     width: '10%',
     fontSize: 12,
     fontWeight: '700',
   },
-  inject_tags: {
+  node_tags: {
     float: 'left',
     fontSize: 12,
     fontWeight: '700',
@@ -133,7 +133,7 @@ const headerStyles = {
 };
 
 const inlineStyles = {
-  inject_type: {
+  node_type: {
     float: 'left',
     width: '15%',
     height: 20,
@@ -141,7 +141,7 @@ const inlineStyles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  inject_title: {
+  node_title: {
     float: 'left',
     width: '30%',
     height: 20,
@@ -149,7 +149,7 @@ const inlineStyles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  inject_users_number: {
+  node_users_number: {
     float: 'left',
     width: '15%',
     height: 20,
@@ -157,7 +157,7 @@ const inlineStyles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  inject_sent_at: {
+  node_sent_at: {
     float: 'left',
     width: '15%',
     height: 20,
@@ -165,7 +165,7 @@ const inlineStyles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  inject_communications_not_ack_number: {
+  node_communications_not_ack_number: {
     float: 'left',
     width: '10%',
     height: 20,
@@ -173,7 +173,7 @@ const inlineStyles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  inject_communications_number: {
+  node_communications_number: {
     float: 'left',
     width: '10%',
     height: 20,
@@ -181,7 +181,7 @@ const inlineStyles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  inject_tags: {
+  node_tags: {
     float: 'left',
     height: 20,
     whiteSpace: 'nowrap',
@@ -200,23 +200,23 @@ const Mails = () => {
 
   // Filter and sort hook
   const searchColumns = ['title', 'description', 'content'];
-  const filtering = useSearchAndFilter('inject', 'sent_at', searchColumns);
+  const filtering = useSearchAndFilter('node', 'sent_at', searchColumns);
   // Fetching data
   const { exerciseId } = useParams();
-  const { exercise, injects } = useHelper((helper) => {
+  const { attack_chain_run, nodes } = useHelper((helper) => {
     return {
-      exercise: helper.getExercise(exerciseId),
-      injects: helper.getExerciseInjects(exerciseId),
+      attack_chain_run: helper.getAttackChainRun(exerciseId),
+      nodes: helper.getAttackChainRunAttackChainNodes(exerciseId),
     };
   });
   useDataLoader(() => {
-    dispatch(fetchExerciseInjects(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodes(exerciseId));
   });
-  const sortedInjects = filtering
-    .filterAndSort(injects)
-    .filter(i => i.inject_communications_number > 0);
+  const sortedAttackChainNodes = filtering
+    .filterAndSort(nodes)
+    .filter(i => i.node_communications_number > 0);
 
-  const teamContext = teamContextForExercise(exerciseId, exercise.exercise_teams_users, exercise.exercise_all_users_number, exercise.exercise_users_number);
+  const teamContext = teamContextForAttackChainRun(exerciseId, attack_chain_run.attack_chain_run_teams_users, attack_chain_run.attack_chain_run_all_users_number, attack_chain_run.attack_chain_run_users_number);
 
   // Rendering
   return (
@@ -286,10 +286,10 @@ const Mails = () => {
             </Grid>
             <Grid size={{ xs: 4 }} style={{ paddingTop: 25 }}>
               <Typography variant="h4">
-                {t('Distribution of mails by inject')}
+                {t('Distribution of mails by node')}
               </Typography>
               <Paper variant="outlined" classes={{ root: classes.paperChart }}>
-                <MailDistributionByInject exerciseId={exerciseId} />
+                <MailDistributionByAttackChainNode exerciseId={exerciseId} />
               </Paper>
             </Grid>
           </Grid>
@@ -341,37 +341,37 @@ const Mails = () => {
                 primary={(
                   <div>
                     {filtering.buildHeader(
-                      'inject_title',
+                      'node_title',
                       'Title',
                       false,
                       headerStyles,
                     )}
                     {filtering.buildHeader(
-                      'inject_users_number',
+                      'node_users_number',
                       'Players',
                       true,
                       headerStyles,
                     )}
                     {filtering.buildHeader(
-                      'inject_sent_at',
+                      'node_sent_at',
                       'Sent at',
                       true,
                       headerStyles,
                     )}
                     {filtering.buildHeader(
-                      'inject_communications_not_ack_number',
+                      'node_communications_not_ack_number',
                       'Mails not read',
                       true,
                       headerStyles,
                     )}
                     {filtering.buildHeader(
-                      'inject_communications_number',
+                      'node_communications_number',
                       'Total mails',
                       true,
                       headerStyles,
                     )}
                     {filtering.buildHeader(
-                      'inject_tags',
+                      'node_tags',
                       'Tags',
                       true,
                       headerStyles,
@@ -381,62 +381,62 @@ const Mails = () => {
               />
               <ListItemSecondaryAction> &nbsp; </ListItemSecondaryAction>
             </ListItem>
-            {sortedInjects.map((inject) => {
+            {sortedAttackChainNodes.map((node) => {
               return (
                 <ListItemButton
-                  key={inject.inject_id}
+                  key={node.node_id}
                   component={Link}
-                  to={`/admin/attack_chain_runs/${exerciseId}/animation/mails/${inject.inject_id}`}
+                  to={`/admin/attack_chain_runs/${exerciseId}/animation/mails/${node.node_id}`}
                   classes={{ root: classes.item }}
                   divider={true}
                 >
                   <ListItemIcon style={{ paddingTop: 5 }}>
-                    <InjectIcon type={inject.inject_type} disabled={!inject.inject_enabled} />
+                    <AttackChainNodeIcon type={node.node_type} disabled={!node.node_enabled} />
                   </ListItemIcon>
                   <ListItemText
                     primary={(
                       <div>
                         <div
                           className={classes.bodyItem}
-                          style={inlineStyles.inject_title}
+                          style={inlineStyles.node_title}
                         >
-                          {inject.inject_title}
+                          {node.node_title}
                         </div>
                         <div
                           className={classes.bodyItem}
-                          style={inlineStyles.inject_users_number}
+                          style={inlineStyles.node_users_number}
                         >
-                          {inject.inject_users_number}
+                          {node.node_users_number}
                         </div>
                         <div
                           className={classes.bodyItem}
-                          style={inlineStyles.inject_sent_at}
+                          style={inlineStyles.node_sent_at}
                         >
-                          {fndt(inject.inject_sent_at)}
+                          {fndt(node.node_sent_at)}
                         </div>
                         <div
                           className={classes.bodyItem}
-                          style={inlineStyles.inject_communications_not_ack_number}
+                          style={inlineStyles.node_communications_not_ack_number}
                         >
                           <Chip
                             classes={{ root: classes.comsNotRead }}
-                            label={inject.inject_communications_not_ack_number}
+                            label={node.node_communications_not_ack_number}
                           />
                         </div>
                         <div
                           className={classes.bodyItem}
-                          style={inlineStyles.inject_communications_number}
+                          style={inlineStyles.node_communications_number}
                         >
                           <Chip
                             classes={{ root: classes.coms }}
-                            label={inject.inject_communications_number}
+                            label={node.node_communications_number}
                           />
                         </div>
                         <div
                           className={classes.bodyItem}
-                          style={inlineStyles.inject_tags}
+                          style={inlineStyles.node_tags}
                         >
-                          <ItemTags variant="list" tags={inject.inject_tags} />
+                          <ItemTags variant="list" tags={node.node_tags} />
                         </div>
                       </div>
                     )}
@@ -450,7 +450,7 @@ const Mails = () => {
           </List>
           {permissions.canManage && (
             <TeamContext.Provider value={teamContext}>
-              <CreateQuickInject exercise={exercise} />
+              <CreateQuickAttackChainNode attack_chain_run={attack_chain_run} />
             </TeamContext.Provider>
           )}
         </>

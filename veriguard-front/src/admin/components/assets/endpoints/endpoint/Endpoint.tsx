@@ -51,19 +51,19 @@ const Endpoint = () => {
   const { endpoint } = useHelper((helper: EndpointHelper) => ({ endpoint: helper.getEndpoint(endpointId) }));
 
   const additionalFilterNames = [
-    'finding_inject_id',
-    'finding_simulation',
+    'finding_node_id',
+    'finding_attack_chain_run',
   ];
 
   const additionalHeaders = [
     {
-      field: 'finding_inject',
-      label: 'Inject',
+      field: 'finding_node',
+      label: 'AttackChainNode',
       isSortable: false,
       value: (finding: RelatedFindingOutput) => <FindingContextLink finding={finding} type={INJECT} />,
     },
     {
-      field: 'finding_simulation',
+      field: 'finding_attack_chain_run',
       label: 'Simulation',
       isSortable: false,
       value: (finding: RelatedFindingOutput) => <FindingContextLink finding={finding} type={SIMULATION} />,

@@ -21,7 +21,7 @@ import { z } from 'zod';
 
 import Transition from '../../../../components/common/Transition';
 import { useFormatter } from '../../../../components/i18n';
-import { type ScenarioRecurrenceInput } from '../../../../utils/api-types';
+import { type AttackChainRecurrenceInput } from '../../../../utils/api-types';
 import {
   Cron,
   CronParser, generateDailyCronExpression, generateHourlyCronExpression, generateMonthlyCronExpression, generateWeeklyCronExpression,
@@ -37,7 +37,7 @@ interface Props {
   onSubmit: (cron: Cron, start: string, end?: string) => void;
   onSelectRecurring: (selectRecurring: string) => void;
   selectRecurring: string;
-  initialValues: ScenarioRecurrenceInput;
+  initialValues: AttackChainRecurrenceInput;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
@@ -62,7 +62,7 @@ const defaultFormValues: Recurrence = {
   uiSupported: true,
 };
 
-const ScenarioRecurringFormDialog: FunctionComponent<Props> = ({ cronObject, setCronObject, onSubmit, selectRecurring, onSelectRecurring, initialValues, open, setOpen }) => {
+const AttackChainRecurringFormDialog: FunctionComponent<Props> = ({ cronObject, setCronObject, onSubmit, selectRecurring, onSelectRecurring, initialValues, open, setOpen }) => {
   const { t } = useFormatter();
   const submit = (data: Recurrence) => {
     const { time } = data as Omit<Recurrence, 'time'> & { time: string };
@@ -175,19 +175,19 @@ const ScenarioRecurringFormDialog: FunctionComponent<Props> = ({ cronObject, set
   });
 
   useEffect(() => {
-    if (initialValues.scenario_recurrence != null) {
-      if (!initialValues.scenario_recurrence || !initialValues.scenario_recurrence_start) {
+    if (initialValues.attack_chain_recurrence != null) {
+      if (!initialValues.attack_chain_recurrence || !initialValues.attack_chain_recurrence_start) {
         reset(defaultFormValues);
       }
-      const actualCron = handle(initialValues.scenario_recurrence);
+      const actualCron = handle(initialValues.attack_chain_recurrence);
       setCronObject(actualCron);
       if (actualCron instanceof Cron) {
         const time = actualCron.getHours()?.getRecurrence()
           ? new Date(new Date().setHours(Number(actualCron.getHours()?.getRecurrence()), actualCron.getMinutes()?.toNumber() || 0))
           : new Date(new Date().setUTCHours(actualCron.getHours()?.toNumber() || 0, actualCron.getMinutes()?.toNumber() || 0));
         reset({
-          startDate: initialValues.scenario_recurrence_start,
-          endDate: initialValues.scenario_recurrence_end || '',
+          startDate: initialValues.attack_chain_recurrence_start,
+          endDate: initialValues.attack_chain_recurrence_end || '',
           onlyWeekday: actualCron.isOnlyOnWeekdays(),
           time: time.toISOString() || '',
           dayOfWeek: (actualCron.getWeeklyRecurrence() || 1) as Recurrence['dayOfWeek'],
@@ -196,7 +196,7 @@ const ScenarioRecurringFormDialog: FunctionComponent<Props> = ({ cronObject, set
         });
       }
     }
-  }, [initialValues.scenario_recurrence]);
+  }, [initialValues.attack_chain_recurrence]);
 
   const handleClose = () => {
     reset(defaultFormValues);
@@ -416,4 +416,4 @@ const ScenarioRecurringFormDialog: FunctionComponent<Props> = ({ cronObject, set
   );
 };
 
-export default ScenarioRecurringFormDialog;
+export default AttackChainRecurringFormDialog;

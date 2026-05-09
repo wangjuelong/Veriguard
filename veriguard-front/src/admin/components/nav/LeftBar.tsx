@@ -38,7 +38,7 @@ const LeftBar = () => {
         {
           path: `/admin/attack_chains`,
           icon: () => (<MovieFilterOutlined />),
-          label: 'Scenarios',
+          label: 'AttackChains',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
         },
         {

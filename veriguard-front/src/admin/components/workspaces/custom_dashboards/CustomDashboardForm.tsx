@@ -17,8 +17,8 @@ import ParametersTab from './form/ParametersTab';
 
 export type CustomDashboardFormType = CustomDashboardInput & {
   is_default_home_dashboard: boolean;
-  is_default_scenario_dashboard: boolean;
-  is_default_simulation_dashboard: boolean;
+  is_default_attack_chain_dashboard: boolean;
+  is_default_attack_chain_run_dashboard: boolean;
 };
 
 interface Props {
@@ -49,7 +49,7 @@ const CustomDashboardForm: FunctionComponent<Props> = ({
   const parametersSchema = z.object({
     custom_dashboards_parameter_id: z.string().optional(),
     custom_dashboards_parameter_name: z.string().min(1, { message: t('Should not be empty') }),
-    custom_dashboards_parameter_type: z.enum(['scenario', 'simulation', 'timeRange', 'startDate', 'endDate']),
+    custom_dashboards_parameter_type: z.enum(['attack_chain', 'attack_chain_run', 'timeRange', 'startDate', 'endDate']),
   });
 
   const validationSchema = useMemo(
@@ -59,8 +59,8 @@ const CustomDashboardForm: FunctionComponent<Props> = ({
         custom_dashboard_description: z.string().optional().describe('General'),
         custom_dashboard_parameters: z.array(parametersSchema).optional().describe('Parameters'),
         is_default_home_dashboard: z.boolean().describe('General'),
-        is_default_scenario_dashboard: z.boolean().describe('General'),
-        is_default_simulation_dashboard: z.boolean().describe('General'),
+        is_default_attack_chain_dashboard: z.boolean().describe('General'),
+        is_default_attack_chain_run_dashboard: z.boolean().describe('General'),
       }),
     [],
   );
@@ -71,8 +71,8 @@ const CustomDashboardForm: FunctionComponent<Props> = ({
     defaultValues: {
       ...initialValues,
       is_default_home_dashboard: editing && settings.platform_home_dashboard === customDashboardId,
-      is_default_scenario_dashboard: editing && settings.platform_scenario_dashboard === customDashboardId,
-      is_default_simulation_dashboard: editing && settings.platform_simulation_dashboard === customDashboardId,
+      is_default_attack_chain_dashboard: editing && settings.platform_attack_chain_dashboard === customDashboardId,
+      is_default_attack_chain_run_dashboard: editing && settings.platform_attack_chain_run_dashboard === customDashboardId,
     },
   });
 
@@ -123,8 +123,8 @@ const CustomDashboardForm: FunctionComponent<Props> = ({
             initialDefaultDashboardIds={
               {
                 home: settings.platform_home_dashboard,
-                scenario: settings.platform_scenario_dashboard,
-                simulation: settings.platform_simulation_dashboard,
+                attack_chain: settings.platform_attack_chain_dashboard,
+                attack_chain_run: settings.platform_attack_chain_run_dashboard,
               }
             }
           />

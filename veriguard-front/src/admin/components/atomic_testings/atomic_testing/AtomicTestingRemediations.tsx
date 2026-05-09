@@ -7,10 +7,10 @@ import { useLocation, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchCollectorsForAtomicTesting } from '../../../../actions/atomic_testings/atomic-testing-actions';
-import { fetchPayloadDetectionRemediationsByInject } from '../../../../actions/attack_chain_nodes/inject-action';
+import { fetchPayloadDetectionRemediationsByAttackChainNode } from '../../../../actions/attack_chain_nodes/node-action';
 import { fetchCollectors } from '../../../../actions/Collector';
 import type { CollectorHelper } from '../../../../actions/collectors/collector-helper';
-import { postDetectionRemediationAIRulesByInject } from '../../../../actions/detection-remediation/detectionremediation-action';
+import { postDetectionRemediationAIRulesByAttackChainNode } from '../../../../actions/detection-remediation/detectionremediation-action';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
 import { COLLECTOR_LIST } from '../../../../constants/Entities';
@@ -18,7 +18,7 @@ import { useHelper } from '../../../../store';
 import {
   type Collector,
   type DetectionRemediationOutput,
-  type InjectResultOverviewOutput,
+  type AttackChainNodeResultOverviewOutput,
 } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
@@ -48,7 +48,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 const AtomicTestingRemediations = () => {
-  const { injectId } = useParams() as { injectId: InjectResultOverviewOutput['inject_id'] };
+  const { injectId } = useParams() as { injectId: AttackChainNodeResultOverviewOutput['node_id'] };
   const dispatch = useAppDispatch();
   const { t } = useFormatter();
   const { classes } = useStyles();
@@ -99,7 +99,7 @@ const AtomicTestingRemediations = () => {
 
   useEffect(() => {
     if (isRemediationTab && injectId && !hasFetchedRemediations) {
-      fetchPayloadDetectionRemediationsByInject(injectId).then((result) => {
+      fetchPayloadDetectionRemediationsByAttackChainNode(injectId).then((result) => {
         setDetectionRemediations(result.data);
         setHasFetchedRemediations(true);
       });
@@ -188,7 +188,7 @@ const AtomicTestingRemediations = () => {
     updateSnapshot(tabs, activeTab, true);
     setTyping(true);
     const collectorType = tabs[activeTab].collector_type;
-    return postDetectionRemediationAIRulesByInject(injectId, tabs[activeTab].collector_type).then((value) => {
+    return postDetectionRemediationAIRulesByAttackChainNode(injectId, tabs[activeTab].collector_type).then((value) => {
       updateSnapshotNewRemediation(tabs, collectorType, value.data.detection_remediation_values, true);
       addOrUpdateRemediation(value.data);
     }).finally(() => {

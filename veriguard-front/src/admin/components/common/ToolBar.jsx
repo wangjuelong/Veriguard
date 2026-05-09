@@ -562,13 +562,13 @@ class ToolBarComponent extends Component {
     }
     const confirmationText = () => {
       return numberOfSelectedElements === 1
-        ? t('Do you want to delete this inject?')
-        : t('Do you want to delete these {count} injects?', { count: numberOfSelectedElements });
+        ? t('Do you want to delete this node?')
+        : t('Do you want to delete these {count} nodes?', { count: numberOfSelectedElements });
     };
     const testConfirmationText = () => {
       return numberOfSelectedElements === 1
-        ? t('Do you want to test this inject?')
-        : t('Do you want to test these {count} injects?', { count: numberOfSelectedElements });
+        ? t('Do you want to test this node?')
+        : t('Do you want to test these {count} nodes?', { count: numberOfSelectedElements });
     };
     return (
       <>
@@ -775,7 +775,7 @@ class ToolBarComponent extends Component {
           </Drawer>
         </Drawer>
         <ExportOptionsDialog
-          title={t('inject_export_json_selection')}
+          title={t('node_export_json_selection')}
           open={this.state.displayExport}
           onCancel={this.handleCloseExport.bind(this)}
           onClose={this.handleCloseExport.bind(this)}
@@ -792,7 +792,7 @@ class ToolBarComponent extends Component {
           handleClose={this.handleCloseBulkTest.bind(this)}
           handleSubmit={this.handleSubmitBulkTest.bind(this)}
           text={testConfirmationText()}
-          alertText={t('Only SMS and emails related injects will be tested')}
+          alertText={t('Only SMS and emails related nodes will be tested')}
         />
       </>
     );
@@ -833,7 +833,7 @@ const select = (state, ownProps) => {
       value: n.asset_group_id,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
-  const teams = ownProps.teamsFromExerciseOrScenario
+  const teams = ownProps.teamsFromAttackChainRunOrAttackChain
     .map(n => ({
       label: n.team_name,
       value: n.team_id,

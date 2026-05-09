@@ -4,69 +4,69 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, lazy, Suspense, useEffect, useState } from 'react';
 import { Link, Route, Routes, useLocation, useParams } from 'react-router';
 
-import { fetchScenario } from '../../../../actions/attack_chains/scenario-actions';
-import { type ScenariosHelper } from '../../../../actions/attack_chains/scenario-helper';
-import { findNotificationRuleByResource } from '../../../../actions/attack_chains/scenario-notification-rules';
+import { fetchAttackChain } from '../../../../actions/attack_chains/attack_chain-actions';
+import { type AttackChainsHelper } from '../../../../actions/attack_chains/attack_chain-helper';
+import { findNotificationRuleByResource } from '../../../../actions/attack_chains/attack_chain-notification-rules';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
 import { errorWrapper } from '../../../../components/Error';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
 import NotFound from '../../../../components/NotFound';
 import { useHelper } from '../../../../store';
-import { type NotificationRuleOutput, type Scenario } from '../../../../utils/api-types';
+import { type NotificationRuleOutput, type AttackChain } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
 import handle from '../../../../utils/period/Period';
 import { type PeriodExpressionHandler } from '../../../../utils/period/PeriodExpressionHandler';
 import { INHERITED_CONTEXT } from '../../../../utils/permissions/types';
-import useScenarioPermissions from '../../../../utils/permissions/useScenarioPermissions';
-import { DocumentContext, type DocumentContextType, InjectContext, PermissionsContext, type PermissionsContextType } from '../../common/Context';
-import ScenarioNotificationRulesDrawer from './notification_rule/ScenarioNotificationRulesDrawer';
-import injectContextForScenario from './ScenarioContext';
-import ScenarioHeader from './ScenarioHeader';
+import useAttackChainPermissions from '../../../../utils/permissions/useAttackChainPermissions';
+import { DocumentContext, type DocumentContextType, AttackChainNodeContext, PermissionsContext, type PermissionsContextType } from '../../common/Context';
+import AttackChainNotificationRulesDrawer from './notification_rule/AttackChainNotificationRulesDrawer';
+import injectContextForAttackChain from './AttackChainContext';
+import AttackChainHeader from './AttackChainHeader';
 
-const ScenarioComponent = lazy(() => import('./Scenario'));
-const ScenarioDefinition = lazy(() => import('./ScenarioDefinition'));
-const Injects = lazy(() => import('./attack_chain_nodes/ScenarioInjects'));
-const Tests = lazy(() => import('./tests/ScenarioTests'));
-const Lessons = lazy(() => import('./lessons/ScenarioLessons'));
-const ScenarioFindings = lazy(() => import('./findings/ScenarioFindings'));
-const ScenarioAnalysis = lazy(() => import('./analysis/ScenarioAnalysis'));
+const AttackChainComponent = lazy(() => import('./AttackChain'));
+const AttackChainDefinition = lazy(() => import('./AttackChainDefinition'));
+const AttackChainNodes = lazy(() => import('./attack_chain_nodes/AttackChainAttackChainNodes'));
+const Tests = lazy(() => import('./tests/AttackChainTests'));
+const Lessons = lazy(() => import('./lessons/AttackChainLessons'));
+const AttackChainFindings = lazy(() => import('./findings/AttackChainFindings'));
+const AttackChainAnalysis = lazy(() => import('./analysis/AttackChainAnalysis'));
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ scenario }) => {
+const IndexAttackChainComponent: FunctionComponent<{ attack_chain: AttackChain }> = ({ attack_chain }) => {
   const { t, locale, fld } = useFormatter();
   const location = useLocation();
   const theme = useTheme();
   const permissionsContext: PermissionsContextType = {
-    permissions: useScenarioPermissions(scenario.scenario_id),
+    permissions: useAttackChainPermissions(attack_chain.attack_chain_id),
     inherited_context: INHERITED_CONTEXT.SCENARIO,
   };
   const documentContext: DocumentContextType = {
     onInitDocument: () => ({
       document_tags: [],
-      document_scenarios: scenario
+      document_attack_chains: attack_chain
         ? [{
-            id: scenario.scenario_id,
-            label: scenario.scenario_name,
+            id: attack_chain.attack_chain_id,
+            label: attack_chain.attack_chain_name,
           }]
         : [],
-      document_exercises: [],
+      document_attack_chain_runs: [],
     }),
   };
   let tabValue = location.pathname;
-  if (location.pathname.includes(`/admin/attack_chains/${scenario.scenario_id}/definition`)) {
-    tabValue = `/admin/attack_chains/${scenario.scenario_id}/definition`;
-  } else if (location.pathname.includes(`/admin/attack_chains/${scenario.scenario_id}/tests`)) {
-    tabValue = `/admin/attack_chains/${scenario.scenario_id}/tests`;
+  if (location.pathname.includes(`/admin/attack_chains/${attack_chain.attack_chain_id}/definition`)) {
+    tabValue = `/admin/attack_chains/${attack_chain.attack_chain_id}/definition`;
+  } else if (location.pathname.includes(`/admin/attack_chains/${attack_chain.attack_chain_id}/tests`)) {
+    tabValue = `/admin/attack_chains/${attack_chain.attack_chain_id}/tests`;
   }
-  const [openScenarioRecurringFormDialog, setOpenScenarioRecurringFormDialog] = useState<boolean>(false);
+  const [openAttackChainRecurringFormDialog, setOpenAttackChainRecurringFormDialog] = useState<boolean>(false);
   const [openInstantiateSimulationAndStart, setOpenInstantiateSimulationAndStart] = useState<boolean>(false);
   const [selectRecurring, setSelectRecurring] = useState('noRepeat');
-  const [cronObject, setCronObject] = useState<PeriodExpressionHandler | null>(handle(scenario.scenario_recurrence));
-  const noRepeat = !!scenario.scenario_recurrence_end && !!scenario.scenario_recurrence_start
-    && new Date(scenario.scenario_recurrence_end).getTime() - new Date(scenario.scenario_recurrence_start).getTime() <= MS_PER_DAY
+  const [cronObject, setCronObject] = useState<PeriodExpressionHandler | null>(handle(attack_chain.attack_chain_recurrence));
+  const noRepeat = !!attack_chain.attack_chain_recurrence_end && !!attack_chain.attack_chain_recurrence_start
+    && new Date(attack_chain.attack_chain_recurrence_end).getTime() - new Date(attack_chain.attack_chain_recurrence_start).getTime() <= MS_PER_DAY
     && ['noRepeat', 'daily'].includes(selectRecurring);
   const getHumanReadableScheduling = () => {
     if (!cronObject?.isValid()) {
@@ -76,15 +76,15 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
 
     let sentence: string;
     sentence = `${cronObject.toTranslatableStringArray(locale).map(element => t(element)).join(' ')}`;
-    if (scenario.scenario_recurrence_end) {
-      sentence += ` ${t('recurrence_from')} ${fld(scenario.scenario_recurrence_start)}`;
-      sentence += ` ${t('recurrence_to')} ${fld(scenario.scenario_recurrence_end)}`;
+    if (attack_chain.attack_chain_recurrence_end) {
+      sentence += ` ${t('recurrence_from')} ${fld(attack_chain.attack_chain_recurrence_start)}`;
+      sentence += ` ${t('recurrence_to')} ${fld(attack_chain.attack_chain_recurrence_end)}`;
     } else {
-      sentence += ` ${t('recurrence_starting_from')} ${fld(scenario.scenario_recurrence_start)}`;
+      sentence += ` ${t('recurrence_starting_from')} ${fld(attack_chain.attack_chain_recurrence_start)}`;
     }
     return sentence;
   };
-  const [openScenarioNotificationRuleDrawer, setOpenScenarioNotificationRuleDrawer] = useState(false);
+  const [openAttackChainNotificationRuleDrawer, setOpenAttackChainNotificationRuleDrawer] = useState(false);
   const [editNotification, setEditNotification] = useState<boolean>(false);
   const [notificationRule, setNotificationRule] = useState<NotificationRuleOutput>({
     notification_rule_id: '',
@@ -95,7 +95,7 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
   });
 
   useEffect(() => {
-    findNotificationRuleByResource(scenario.scenario_id).then((result: { data: NotificationRuleOutput[] }) => {
+    findNotificationRuleByResource(attack_chain.attack_chain_id).then((result: { data: NotificationRuleOutput[] }) => {
       if (result.data.length > 0) {
         setEditNotification(true);
         setNotificationRule(result.data[0]);
@@ -127,22 +127,22 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
             variant="list"
             elements={[
               {
-                label: t('Scenarios'),
+                label: t('AttackChains'),
                 link: '/admin/attack_chains',
               },
               {
-                label: scenario.scenario_name,
+                label: attack_chain.attack_chain_name,
                 current: true,
               },
             ]}
           />
-          <ScenarioHeader
+          <AttackChainHeader
             cronObject={cronObject}
             setCronObject={setCronObject}
             setSelectRecurring={setSelectRecurring}
             selectRecurring={selectRecurring}
-            setOpenScenarioRecurringFormDialog={setOpenScenarioRecurringFormDialog}
-            openScenarioRecurringFormDialog={openScenarioRecurringFormDialog}
+            setOpenAttackChainRecurringFormDialog={setOpenAttackChainRecurringFormDialog}
+            openAttackChainRecurringFormDialog={openAttackChainRecurringFormDialog}
             setOpenInstantiateSimulationAndStart={setOpenInstantiateSimulationAndStart}
             openInstantiateSimulationAndStart={openInstantiateSimulationAndStart}
             noRepeat={noRepeat}
@@ -165,44 +165,44 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
             >
               <Tab
                 component={Link}
-                to={`/admin/attack_chains/${scenario.scenario_id}`}
-                value={`/admin/attack_chains/${scenario.scenario_id}`}
+                to={`/admin/attack_chains/${attack_chain.attack_chain_id}`}
+                value={`/admin/attack_chains/${attack_chain.attack_chain_id}`}
                 label={t('Overview')}
               />
               <Tab
                 component={Link}
-                to={`/admin/attack_chains/${scenario.scenario_id}/definition`}
-                value={`/admin/attack_chains/${scenario.scenario_id}/definition`}
+                to={`/admin/attack_chains/${attack_chain.attack_chain_id}/definition`}
+                value={`/admin/attack_chains/${attack_chain.attack_chain_id}/definition`}
                 label={t('Definition')}
               />
               <Tab
                 component={Link}
-                to={`/admin/attack_chains/${scenario.scenario_id}/injects`}
-                value={`/admin/attack_chains/${scenario.scenario_id}/injects`}
-                label={t('Injects')}
+                to={`/admin/attack_chains/${attack_chain.attack_chain_id}/nodes`}
+                value={`/admin/attack_chains/${attack_chain.attack_chain_id}/nodes`}
+                label={t('AttackChainNodes')}
               />
               <Tab
                 component={Link}
-                to={`/admin/attack_chains/${scenario.scenario_id}/tests`}
-                value={`/admin/attack_chains/${scenario.scenario_id}/tests`}
+                to={`/admin/attack_chains/${attack_chain.attack_chain_id}/tests`}
+                value={`/admin/attack_chains/${attack_chain.attack_chain_id}/tests`}
                 label={t('Tests')}
               />
               <Tab
                 component={Link}
-                to={`/admin/attack_chains/${scenario.scenario_id}/lessons`}
-                value={`/admin/attack_chains/${scenario.scenario_id}/lessons`}
+                to={`/admin/attack_chains/${attack_chain.attack_chain_id}/lessons`}
+                value={`/admin/attack_chains/${attack_chain.attack_chain_id}/lessons`}
                 label={t('Lessons learned')}
               />
               <Tab
                 component={Link}
-                to={`/admin/attack_chains/${scenario.scenario_id}/findings`}
-                value={`/admin/attack_chains/${scenario.scenario_id}/findings`}
+                to={`/admin/attack_chains/${attack_chain.attack_chain_id}/findings`}
+                value={`/admin/attack_chains/${attack_chain.attack_chain_id}/findings`}
                 label={t('Findings')}
               />
               <Tab
                 component={Link}
-                to={`/admin/attack_chains/${scenario.scenario_id}/analysis`}
-                value={`/admin/attack_chains/${scenario.scenario_id}/analysis`}
+                to={`/admin/attack_chains/${attack_chain.attack_chain_id}/analysis`}
+                value={`/admin/attack_chains/${attack_chain.attack_chain_id}/analysis`}
                 label={t('Analysis')}
               />
             </Tabs>
@@ -221,7 +221,7 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
                     <IconButton
                       size="small"
                       style={{ marginRight: theme.spacing(1) }}
-                      onClick={() => setOpenScenarioNotificationRuleDrawer(true)}
+                      onClick={() => setOpenAttackChainNotificationRuleDrawer(true)}
                     >
                       <NotificationsOutlined color={editNotification ? 'success' : 'primary'} />
                     </IconButton>
@@ -231,16 +231,16 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
                     >
                       {t('Notification rules')}
                     </Typography>
-                    <ScenarioNotificationRulesDrawer
-                      open={openScenarioNotificationRuleDrawer}
-                      setOpen={setOpenScenarioNotificationRuleDrawer}
+                    <AttackChainNotificationRulesDrawer
+                      open={openAttackChainNotificationRuleDrawer}
+                      setOpen={setOpenAttackChainNotificationRuleDrawer}
                       editing={editNotification}
                       onCreate={onCreateNotification}
                       onUpdate={result => setNotificationRule(result)}
                       onDelete={onDeleteNotification}
                       notificationRule={notificationRule}
-                      scenarioId={scenario.scenario_id}
-                      scenarioName={scenario.scenario_name}
+                      scenarioId={attack_chain.attack_chain_id}
+                      scenarioName={attack_chain.attack_chain_name}
                     />
                   </div>
                 )
@@ -252,11 +252,11 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
                 }}
                 >
                   {!cronObject?.isValid() && (
-                    <IconButton size="small" onClick={() => setOpenScenarioRecurringFormDialog(true)} style={{ marginRight: theme.spacing(1) }}>
+                    <IconButton size="small" onClick={() => setOpenAttackChainRecurringFormDialog(true)} style={{ marginRight: theme.spacing(1) }}>
                       <UpdateOutlined color="primary" />
                     </IconButton>
                   )}
-                  {cronObject?.isValid() && !scenario.scenario_recurrence && (
+                  {cronObject?.isValid() && !attack_chain.attack_chain_recurrence && (
                     <IconButton
                       size="small"
                       style={{
@@ -267,9 +267,9 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
                       <UpdateOutlined />
                     </IconButton>
                   )}
-                  {cronObject?.isValid() && scenario.scenario_recurrence && (
+                  {cronObject?.isValid() && attack_chain.attack_chain_recurrence && (
                     <Tooltip title={(t('Modify the scheduling'))}>
-                      <IconButton size="small" onClick={() => setOpenScenarioRecurringFormDialog(true)} style={{ marginRight: theme.spacing(1) }}>
+                      <IconButton size="small" onClick={() => setOpenAttackChainRecurringFormDialog(true)} style={{ marginRight: theme.spacing(1) }}>
                         <UpdateOutlined color="primary" />
                       </IconButton>
                     </Tooltip>
@@ -284,13 +284,13 @@ const IndexScenarioComponent: FunctionComponent<{ scenario: Scenario }> = ({ sce
           </Box>
           <Suspense fallback={<Loader />}>
             <Routes>
-              <Route path="" element={errorWrapper(ScenarioComponent)({ setOpenInstantiateSimulationAndStart })} />
-              <Route path="definition" element={errorWrapper(ScenarioDefinition)()} />
-              <Route path="injects" element={errorWrapper(Injects)()} />
+              <Route path="" element={errorWrapper(AttackChainComponent)({ setOpenInstantiateSimulationAndStart })} />
+              <Route path="definition" element={errorWrapper(AttackChainDefinition)()} />
+              <Route path="nodes" element={errorWrapper(AttackChainNodes)()} />
               <Route path="tests/:statusId?" element={errorWrapper(Tests)()} />
               <Route path="lessons" element={errorWrapper(Lessons)()} />
-              <Route path="findings" element={errorWrapper(ScenarioFindings)()} />
-              <Route path="analysis" element={errorWrapper(ScenarioAnalysis)()} />
+              <Route path="findings" element={errorWrapper(AttackChainFindings)()} />
+              <Route path="analysis" element={errorWrapper(AttackChainAnalysis)()} />
               {/* Not found */}
               <Route path="*" element={<NotFound />} />
             </Routes>
@@ -308,34 +308,34 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const { t } = useFormatter();
   // Fetching data
-  const { scenarioId } = useParams() as { scenarioId: Scenario['scenario_id'] };
-  const { scenario } = useHelper((helper: ScenariosHelper) => ({ scenario: helper.getScenario(scenarioId) }));
+  const { scenarioId } = useParams() as { scenarioId: AttackChain['attack_chain_id'] };
+  const { attack_chain } = useHelper((helper: AttackChainsHelper) => ({ attack_chain: helper.getAttackChain(scenarioId) }));
   useDataLoader(() => {
     setLoading(true);
-    dispatch(fetchScenario(scenarioId)).finally(() => {
+    dispatch(fetchAttackChain(scenarioId)).finally(() => {
       setPristine(false);
       setLoading(false);
     });
   });
 
-  const scenarioInjectContext = injectContextForScenario(scenario);
+  const scenarioAttackChainNodeContext = injectContextForAttackChain(attack_chain);
 
   // avoid to show loader if something trigger useDataLoader
   if (pristine && loading) {
     return <Loader />;
   }
-  if (!loading && !scenario) {
+  if (!loading && !attack_chain) {
     return (
       <Alert severity="warning">
         <AlertTitle>{t('Warning')}</AlertTitle>
-        {t('Scenario is currently unavailable or you do not have sufficient permissions to access it.')}
+        {t('AttackChain is currently unavailable or you do not have sufficient permissions to access it.')}
       </Alert>
     );
   }
   return (
-    <InjectContext.Provider value={scenarioInjectContext}>
-      <IndexScenarioComponent scenario={scenario} />
-    </InjectContext.Provider>
+    <AttackChainNodeContext.Provider value={scenarioAttackChainNodeContext}>
+      <IndexAttackChainComponent attack_chain={attack_chain} />
+    </AttackChainNodeContext.Provider>
   );
 };
 

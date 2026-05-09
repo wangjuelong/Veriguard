@@ -2,15 +2,15 @@ import { useParams } from 'react-router';
 
 import { searchDistinctFindingsForSimulations, searchFindingsForSimulations } from '../../../../../actions/findings/finding-actions';
 import { INJECT } from '../../../../../constants/Entities';
-import type { Exercise, RelatedFindingOutput, SearchPaginationInput } from '../../../../../utils/api-types';
+import type { AttackChainRun, RelatedFindingOutput, SearchPaginationInput } from '../../../../../utils/api-types';
 import FindingContextLink from '../../../findings/FindingContextLink';
 import FindingList from '../../../findings/FindingList';
 
 const SimulationFindings = () => {
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
 
   const additionalFilterNames = [
-    'finding_inject_id',
+    'finding_node_id',
   ];
 
   const search = (input: SearchPaginationInput) => {
@@ -21,8 +21,8 @@ const SimulationFindings = () => {
   };
   const additionalHeaders = [
     {
-      field: 'finding_inject',
-      label: 'Inject',
+      field: 'finding_node',
+      label: 'AttackChainNode',
       isSortable: false,
       value: (finding: RelatedFindingOutput) => <FindingContextLink finding={finding} type={INJECT} />,
     },
@@ -30,7 +30,7 @@ const SimulationFindings = () => {
 
   return (
     <FindingList
-      filterLocalStorageKey={`simulation-findings_${exerciseId}`}
+      filterLocalStorageKey={`attack_chain_run-findings_${exerciseId}`}
       searchFindings={search}
       searchDistinctFindings={searchDistinct}
       additionalHeaders={additionalHeaders}

@@ -9,7 +9,7 @@ import { Can } from '../../../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../../../utils/permissions/types';
 import EndpointPopover from '../../../../assets/endpoints/EndpointPopover';
 import EndpointsList from '../../../../assets/endpoints/EndpointsList';
-import InjectAddEndpoints from '../../../../attack_chain_runs/attack_chain_run/attack_chain_nodes/endpoints/InjectAddEndpoints';
+import AttackChainNodeAddEndpoints from '../../../../attack_chain_runs/attack_chain_run/attack_chain_nodes/endpoints/AttackChainNodeAddEndpoints';
 
 interface Props {
   name: string;
@@ -19,7 +19,7 @@ interface Props {
   errorLabel?: string | null;
   label?: string | boolean;
 }
-const InjectEndpointsList = ({ name, platforms = [], architectures, disabled = false, errorLabel, label }: Props) => {
+const AttackChainNodeEndpointsList = ({ name, platforms = [], architectures, disabled = false, errorLabel, label }: Props) => {
   const { control, setValue } = useFormContext();
   const { fetchEndpointsByIds } = useContext(EndpointContext);
   const [endpoints, setEndpoints] = useState<EndpointOutput[]>([]);
@@ -58,14 +58,14 @@ const InjectEndpointsList = ({ name, platforms = [], architectures, disabled = f
             agentless={endpoint.asset_agents.length === 0}
             endpoint={endpoint}
             onRemoveFromContext={onRemoveEndpoint}
-            removeFromContextLabel="Remove from the inject"
+            removeFromContextLabel="Remove from the node"
             onDelete={onRemoveEndpoint}
             disabled={disabled}
           />
         )}
       />
       <Can I={ACTIONS.ACCESS} a={SUBJECTS.ASSETS}>
-        <InjectAddEndpoints
+        <AttackChainNodeAddEndpoints
           endpointIds={endpointIds}
           onSubmit={onEndpointChange}
           platforms={platforms}
@@ -79,4 +79,4 @@ const InjectEndpointsList = ({ name, platforms = [], architectures, disabled = f
   );
 };
 
-export default InjectEndpointsList;
+export default AttackChainNodeEndpointsList;

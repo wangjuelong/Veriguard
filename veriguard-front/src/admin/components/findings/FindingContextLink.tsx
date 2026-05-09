@@ -17,40 +17,40 @@ const FindingContextLink: FunctionComponent<Props> = ({ finding, type }) => {
 
   switch (type) {
     case INJECT: {
-      const title = finding.finding_inject?.inject_title;
-      const injectId = finding.finding_inject?.inject_id;
-      const simulationId = finding.finding_simulation?.exercise_id;
+      const title = finding.finding_node?.node_title;
+      const injectId = finding.finding_node?.node_id;
+      const simulationId = finding.finding_attack_chain_run?.attack_chain_run_id;
 
       if (!title || !injectId) return '-';
 
       const isAtomic = !simulationId;
       const url = isAtomic
         ? `${ATOMIC_BASE_URL}/${injectId}`
-        : `${ATTACK_CHAIN_RUN_BASE_URL}/${simulationId}/injects/${injectId}`;
+        : `${ATTACK_CHAIN_RUN_BASE_URL}/${simulationId}/nodes/${injectId}`;
 
       const userRight = isAtomic
         ? (ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT) || ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, injectId))
-        : ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_simulation?.exercise_id);
+        : ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_attack_chain_run?.attack_chain_run_id);
 
       return userRight ? <ContextLink title={title} url={url} /> : title;
     }
 
     case SIMULATION: {
-      const title = finding.finding_simulation?.exercise_name;
-      const id = finding.finding_simulation?.exercise_id;
+      const title = finding.finding_attack_chain_run?.attack_chain_run_name;
+      const id = finding.finding_attack_chain_run?.attack_chain_run_id;
 
       if (!title || !id) return '-';
 
-      return ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_simulation?.exercise_id) ? <ContextLink title={title} url={`${ATTACK_CHAIN_RUN_BASE_URL}/${id}`} /> : title;
+      return ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_attack_chain_run?.attack_chain_run_id) ? <ContextLink title={title} url={`${ATTACK_CHAIN_RUN_BASE_URL}/${id}`} /> : title;
     }
 
     case SCENARIO: {
-      const title = finding.finding_scenario?.scenario_name;
-      const id = finding.finding_scenario?.scenario_id;
+      const title = finding.finding_attack_chain?.attack_chain_name;
+      const id = finding.finding_attack_chain?.attack_chain_id;
 
       if (!title || !id) return '-';
 
-      return ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_scenario?.scenario_id) ? <ContextLink title={title} url={`${ATTACK_CHAIN_BASE_URL}/${id}`} /> : title;
+      return ability.can(ACTIONS.ACCESS, SUBJECTS.RESOURCE, finding.finding_attack_chain?.attack_chain_id) ? <ContextLink title={title} url={`${ATTACK_CHAIN_BASE_URL}/${id}`} /> : title;
     }
 
     default:

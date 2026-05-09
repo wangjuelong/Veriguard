@@ -2,31 +2,31 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
 import { fetchMe } from '../../../actions/Application';
-import { fetchLessonsCategories, fetchLessonsQuestions, fetchScenario } from '../../../actions/attack_chains/scenario-actions';
-import { type ScenariosHelper } from '../../../actions/attack_chains/scenario-helper';
+import { fetchLessonsCategories, fetchLessonsQuestions, fetchAttackChain } from '../../../actions/attack_chains/attack_chain-actions';
+import { type AttackChainsHelper } from '../../../actions/attack_chains/attack_chain-helper';
 import { type UserHelper } from '../../../actions/helper';
 import { ViewLessonContext, type ViewLessonContextType } from '../../../admin/components/common/Context';
 import { useHelper } from '../../../store';
-import { type Scenario } from '../../../utils/api-types';
+import { type AttackChain } from '../../../utils/api-types';
 import { useQueryParameter } from '../../../utils/Environment';
 import { useAppDispatch } from '../../../utils/hooks';
-import useScenarioPermissions from '../../../utils/permissions/useScenarioPermissions';
+import useAttackChainPermissions from '../../../utils/permissions/useAttackChainPermissions';
 import LessonsPreview from './LessonsPreview';
 
-const ScenarioViewLessons = () => {
+const AttackChainViewLessons = () => {
   const dispatch = useAppDispatch();
   const [preview] = useQueryParameter(['preview']);
   const [userId] = useQueryParameter(['user']);
-  const { scenarioId } = useParams() as { scenarioId: Scenario['scenario_id'] };
+  const { scenarioId } = useParams() as { scenarioId: AttackChain['attack_chain_id'] };
   const isPreview = preview === 'true';
 
-  const processToGenericSource = (scenario: Scenario | undefined) => {
-    if (!scenario) return undefined;
+  const processToGenericSource = (attack_chain: AttackChain | undefined) => {
+    if (!attack_chain) return undefined;
     return {
       id: scenarioId,
-      type: 'scenario',
-      name: scenario.scenario_name,
-      subtitle: scenario.scenario_subtitle,
+      type: 'attack_chain',
+      name: attack_chain.attack_chain_name,
+      subtitle: attack_chain.attack_chain_subtitle,
       userId,
       isPlayerViewAvailable: false,
     };
@@ -37,15 +37,15 @@ const ScenarioViewLessons = () => {
     source,
     lessonsCategories,
     lessonsQuestions,
-  } = useHelper((helper: ScenariosHelper & UserHelper) => {
+  } = useHelper((helper: AttackChainsHelper & UserHelper) => {
     const currentUser = helper.getMe();
-    const scenarioData = helper.getScenario(scenarioId);
+    const scenarioData = helper.getAttackChain(scenarioId);
     return {
       me: currentUser,
-      scenario: scenarioData,
+      attack_chain: scenarioData,
       source: processToGenericSource(scenarioData),
-      lessonsCategories: helper.getScenarioLessonsCategories(scenarioId),
-      lessonsQuestions: helper.getScenarioLessonsQuestions(scenarioId),
+      lessonsCategories: helper.getAttackChainLessonsCategories(scenarioId),
+      lessonsQuestions: helper.getAttackChainLessonsQuestions(scenarioId),
     };
   });
 
@@ -54,14 +54,14 @@ const ScenarioViewLessons = () => {
   useEffect(() => {
     dispatch(fetchMe());
     if (isPreview) {
-      dispatch(fetchScenario(scenarioId));
+      dispatch(fetchAttackChain(scenarioId));
       dispatch(fetchLessonsCategories(scenarioId));
       dispatch(fetchLessonsQuestions(scenarioId));
     }
   }, [dispatch, scenarioId, userId, finalUserId]);
 
-  // Pass the full scenario because the scenario is never loaded in the store at this point
-  const permissions = useScenarioPermissions(scenarioId);
+  // Pass the full attack_chain because the attack_chain is never loaded in the store at this point
+  const permissions = useAttackChainPermissions(scenarioId);
 
   const context: ViewLessonContextType = {};
 
@@ -82,4 +82,4 @@ const ScenarioViewLessons = () => {
   );
 };
 
-export default ScenarioViewLessons;
+export default AttackChainViewLessons;

@@ -1,25 +1,25 @@
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import {
-  exerciseInjectsResultOutput,
-  fetchExerciseExpectationResult,
+  exerciseAttackChainNodesResultOutput,
+  fetchAttackChainRunExpectationResult,
   fetchLessonsAnswers,
   fetchLessonsCategories,
   fetchLessonsQuestions,
-  fetchPlayersByExercise,
-} from '../../../../../actions/attack_chain_runs/exercise-action';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise, fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
+  fetchPlayersByAttackChainRun,
+} from '../../../../../actions/attack_chain_runs/attack_chain_run-action';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRun, fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
 import { type UserHelper } from '../../../../../actions/helper';
 import { fetchReportFromSimulation } from '../../../../../actions/reports/report-actions';
 import { type ReportsHelper } from '../../../../../actions/reports/report-helper';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
 import { useHelper } from '../../../../../store';
 import {
-  type Exercise,
+  type AttackChainRun,
   type ExpectationResultsByType,
-  type InjectResultOutput,
+  type AttackChainNodeResultOutput,
   type LessonsAnswer,
   type LessonsCategory,
   type LessonsQuestion,
@@ -32,10 +32,10 @@ import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import ReportInformationType from './ReportInformationType';
 
-export interface ExerciseReportData {
-  injects: InjectResultOutput[];
+export interface AttackChainRunReportData {
+  nodes: AttackChainNodeResultOutput[];
   exerciseExpectationResults: ExpectationResultsByType[];
-  exercise: Exercise;
+  attack_chain_run: AttackChainRun;
   lessonsCategories: LessonsCategory[];
   lessonsQuestions: LessonsQuestion[];
   lessonsAnswers: LessonsAnswer[];
@@ -49,34 +49,34 @@ interface ReturnType {
   report: Report;
   displayModule: (moduleType: ReportInformationType) => boolean;
   setReloadReportDataCount: Dispatch<SetStateAction<number>>;
-  reportData: ExerciseReportData;
+  reportData: AttackChainRunReportData;
 }
 
-const useExerciseReportData = (reportId: Report['report_id'], exerciseId: Exercise['exercise_id']): ReturnType => {
+const useAttackChainRunReportData = (reportId: Report['report_id'], exerciseId: AttackChainRun['attack_chain_run_id']): ReturnType => {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
   const [reloadReportDataCount, setReloadReportDataCount] = useState(0);
   const [exerciseExpectationResults, setResults] = useState<ExpectationResultsByType[]>([]);
-  const [injects, setInjects] = useState<InjectResultOutput[]>([]);
+  const [nodes, setAttackChainNodes] = useState<AttackChainNodeResultOutput[]>([]);
 
   const {
     report,
-    exercise,
+    attack_chain_run,
     lessonsCategories,
     lessonsQuestions,
     lessonsAnswers,
     teams,
     teamsMap,
     usersMap,
-  } = useHelper((helper: InjectHelper & ReportsHelper & ExercisesHelper & TeamsHelper & UserHelper) => {
+  } = useHelper((helper: AttackChainNodeHelper & ReportsHelper & AttackChainRunsHelper & TeamsHelper & UserHelper) => {
     return {
       report: helper.getReport(reportId),
-      exercise: helper.getExercise(exerciseId),
-      lessonsCategories: helper.getExerciseLessonsCategories(exerciseId),
-      lessonsQuestions: helper.getExerciseLessonsQuestions(exerciseId),
-      lessonsAnswers: helper.getExerciseLessonsAnswers(exerciseId),
+      attack_chain_run: helper.getAttackChainRun(exerciseId),
+      lessonsCategories: helper.getAttackChainRunLessonsCategories(exerciseId),
+      lessonsQuestions: helper.getAttackChainRunLessonsQuestions(exerciseId),
+      lessonsAnswers: helper.getAttackChainRunLessonsAnswers(exerciseId),
       teamsMap: helper.getTeamsMap(),
-      teams: helper.getExerciseTeams(exerciseId),
+      teams: helper.getAttackChainRunTeams(exerciseId),
       usersMap: helper.getUsersMap(),
     };
   });
@@ -95,32 +95,32 @@ const useExerciseReportData = (reportId: Report['report_id'], exerciseId: Exerci
     if (reloadReportDataCount > 0) {
       setLoading(true);
       const fetchPromises = [];
-      fetchPromises.push(dispatch(fetchExercise(exerciseId)));
-      fetchPromises.push(dispatch(fetchExerciseTeams(exerciseId)));
+      fetchPromises.push(dispatch(fetchAttackChainRun(exerciseId)));
+      fetchPromises.push(dispatch(fetchAttackChainRunTeams(exerciseId)));
       if (displayModule(ReportInformationType.PLAYER_SURVEYS)) {
         fetchPromises.push(
           dispatch(fetchLessonsQuestions(exerciseId)),
           dispatch(fetchLessonsAnswers(exerciseId)),
           dispatch(fetchLessonsCategories(exerciseId)),
-          dispatch(fetchPlayersByExercise(exerciseId)),
+          dispatch(fetchPlayersByAttackChainRun(exerciseId)),
         );
       }
       if (displayModule(ReportInformationType.SCORE_DETAILS)) {
-        fetchPromises.push(fetchExerciseExpectationResult(exerciseId).then(result => setResults(result.data)));
+        fetchPromises.push(fetchAttackChainRunExpectationResult(exerciseId).then(result => setResults(result.data)));
       }
 
       if (displayModule(ReportInformationType.INJECT_RESULT)) {
-        fetchPromises.push(exerciseInjectsResultOutput(exerciseId).then((result) => {
-          // Sort the injects by tracking_sent_date
-          const sortedInjects = result.data.sort((a: InjectResultOutput, b: InjectResultOutput) => {
-            const dateA = a.inject_status?.tracking_sent_date;
-            const dateB = b.inject_status?.tracking_sent_date;
+        fetchPromises.push(exerciseAttackChainNodesResultOutput(exerciseId).then((result) => {
+          // Sort the nodes by tracking_sent_date
+          const sortedAttackChainNodes = result.data.sort((a: AttackChainNodeResultOutput, b: AttackChainNodeResultOutput) => {
+            const dateA = a.node_status?.tracking_sent_date;
+            const dateB = b.node_status?.tracking_sent_date;
             if ((dateA === undefined || dateA === null) && (dateB !== undefined && dateB !== null)) return 1;
             if ((dateA !== undefined && dateA !== null) && (dateB === undefined || dateB === null)) return -1;
             if ((dateA === undefined || dateA === null) && (dateB === undefined || dateB === null)) return 0;
             return dateA!.localeCompare(dateB!); // non-null assertion since we've checked above
           });
-          setInjects(sortedInjects);
+          setAttackChainNodes(sortedAttackChainNodes);
         }));
       }
       Promise.all(fetchPromises).then(() => {
@@ -135,9 +135,9 @@ const useExerciseReportData = (reportId: Report['report_id'], exerciseId: Exerci
     displayModule,
     setReloadReportDataCount,
     reportData: {
-      injects,
+      nodes,
       exerciseExpectationResults,
-      exercise,
+      attack_chain_run,
       lessonsCategories,
       lessonsQuestions,
       lessonsAnswers,
@@ -148,4 +148,4 @@ const useExerciseReportData = (reportId: Report['report_id'], exerciseId: Exerci
   };
 };
 
-export default useExerciseReportData;
+export default useAttackChainRunReportData;

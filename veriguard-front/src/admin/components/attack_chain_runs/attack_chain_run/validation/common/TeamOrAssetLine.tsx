@@ -7,19 +7,19 @@ import { fetchSimulationAssetGroups } from '../../../../../../actions/asset_grou
 import { type AssetGroupsHelper } from '../../../../../../actions/asset_groups/assetgroup-helper';
 import { type EndpointHelper } from '../../../../../../actions/assets/asset-helper';
 import { fetchSimulationEndpoints } from '../../../../../../actions/assets/endpoint-actions';
-import { fetchExerciseTeams } from '../../../../../../actions/AttackChainRun';
-import { fetchExerciseChallenges } from '../../../../../../actions/challenge-action';
-import { fetchExerciseArticles } from '../../../../../../actions/channels/article-action';
+import { fetchAttackChainRunTeams } from '../../../../../../actions/AttackChainRun';
+import { fetchAttackChainRunChallenges } from '../../../../../../actions/challenge-action';
+import { fetchAttackChainRunArticles } from '../../../../../../actions/channels/article-action';
 import { type ArticlesHelper } from '../../../../../../actions/channels/article-helper';
 import { type ChannelsHelper } from '../../../../../../actions/channels/channel-helper';
 import { type Contract } from '../../../../../../actions/contract/contract';
 import { type ChallengeHelper } from '../../../../../../actions/helper';
 import { type TeamsHelper } from '../../../../../../actions/teams/team-helper';
 import { useHelper } from '../../../../../../store';
-import { type AssetGroup, type Endpoint, type Inject, type Team } from '../../../../../../utils/api-types';
+import { type AssetGroup, type Endpoint, type AttackChainNode, type Team } from '../../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../../utils/hooks';
 import useDataLoader from '../../../../../../utils/hooks/useDataLoader';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import ChallengeExpectation from '../expectations/ChallengeExpectation';
 import ChannelExpectation from '../expectations/ChannelExpectation';
 import ManualExpectations from '../expectations/ManualExpectations';
@@ -37,18 +37,18 @@ const useStyles = makeStyles()(() => ({
 
 interface Props {
   exerciseId: string;
-  inject: Inject;
+  node: AttackChainNode;
   injectContract: Contract;
-  expectationsByInject: InjectExpectationsStore[];
+  expectationsByAttackChainNode: AttackChainNodeExpectationsStore[];
   id: string;
-  expectations: InjectExpectationsStore[];
+  expectations: AttackChainNodeExpectationsStore[];
 }
 
 const TeamOrAssetLine: FunctionComponent<Props> = ({
   exerciseId,
-  inject,
+  node,
   injectContract,
-  expectationsByInject,
+  expectationsByAttackChainNode,
   id,
   expectations,
 }) => {
@@ -75,9 +75,9 @@ const TeamOrAssetLine: FunctionComponent<Props> = ({
     };
   });
   useDataLoader(() => {
-    dispatch(fetchExerciseTeams(exerciseId));
-    dispatch(fetchExerciseArticles(exerciseId));
-    dispatch(fetchExerciseChallenges(exerciseId));
+    dispatch(fetchAttackChainRunTeams(exerciseId));
+    dispatch(fetchAttackChainRunArticles(exerciseId));
+    dispatch(fetchAttackChainRunChallenges(exerciseId));
     dispatch(fetchSimulationEndpoints(exerciseId));
     dispatch(fetchSimulationAssetGroups(exerciseId));
   });
@@ -86,13 +86,13 @@ const TeamOrAssetLine: FunctionComponent<Props> = ({
   const asset: Endpoint = assetsMap[id];
   const assetGroup: AssetGroup = assetGroupsMap[id];
 
-  const groupByExpectationName = (es: InjectExpectationsStore[]) => {
+  const groupByExpectationName = (es: AttackChainNodeExpectationsStore[]) => {
     return es.reduce((group, expectation) => {
-      const { inject_expectation_name } = expectation;
-      if (inject_expectation_name) {
-        const values = group.get(inject_expectation_name) ?? [];
+      const { node_expectation_name } = expectation;
+      if (node_expectation_name) {
+        const values = group.get(node_expectation_name) ?? [];
         values.push(expectation);
-        group.set(inject_expectation_name, values);
+        group.set(node_expectation_name, values);
       }
       return group;
     }, new Map());
@@ -122,7 +122,7 @@ const TeamOrAssetLine: FunctionComponent<Props> = ({
         {Array.from(groupByExpectationName(expectations)).map(([expectationName, es]) => {
           if (es === 'ARTICLE') {
             const expectation = es[0];
-            const article = articlesMap[expectation.inject_expectation_article] || {};
+            const article = articlesMap[expectation.node_expectation_article] || {};
             const channel = channelsMap[article.article_channel] || {};
             return (
               <ChannelExpectation key={expectationName} channel={channel} article={article} expectation={expectation} />
@@ -130,7 +130,7 @@ const TeamOrAssetLine: FunctionComponent<Props> = ({
           }
           if (es === 'CHALLENGE') {
             const expectation = es[0];
-            const challenge = challengesMap[expectation.inject_expectation_challenge] || {};
+            const challenge = challengesMap[expectation.node_expectation_challenge] || {};
             return (
               <ChallengeExpectation key={expectationName} challenge={challenge} expectation={expectation} />
             );
@@ -147,7 +147,7 @@ const TeamOrAssetLine: FunctionComponent<Props> = ({
               );
             }
             if (assetGroup) {
-              const relatedExpectations = expectationsByInject.filter(e => assetGroup.asset_group_assets?.includes(e.inject_expectation_asset ?? '')) ?? [];
+              const relatedExpectations = expectationsByAttackChainNode.filter(e => assetGroup.asset_group_assets?.includes(e.node_expectation_asset ?? '')) ?? [];
 
               return (
                 <TechnicalExpectationAssetGroup
@@ -163,7 +163,7 @@ const TeamOrAssetLine: FunctionComponent<Props> = ({
             return (<div key={expectationName}></div>);
           }
           return (
-            <ManualExpectations key={expectationName} inject={inject} expectations={es} />
+            <ManualExpectations key={expectationName} node={node} expectations={es} />
           );
         })}
       </List>

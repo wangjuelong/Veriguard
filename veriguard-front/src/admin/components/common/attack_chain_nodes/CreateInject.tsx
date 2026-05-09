@@ -13,7 +13,7 @@ import {
 } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectOutputType, type InjectStore } from '../../../../actions/attack_chain_nodes/Inject';
+import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../../../actions/attack_chain_nodes/AttackChainNode';
 import { type AttackPatternHelper } from '../../../../actions/attack_patterns/attackpattern-helper';
 import type { DomainHelper } from '../../../../actions/helper';
 import { type InjectorHelper } from '../../../../actions/injectors/injector-helper';
@@ -34,7 +34,7 @@ import {
   type AtomicTestingInput,
   type AttackPattern, type Domain,
   type FilterGroup,
-  type InjectInput,
+  type AttackChainNodeInput,
   type InjectorContract, type InjectorContractDomainCountOutput,
   type InjectorContractFullOutput,
   type KillChainPhase,
@@ -46,14 +46,14 @@ import useEntityToggle from '../../../../utils/hooks/useEntityToggle';
 import computeAttackPatterns from '../../../../utils/injector_contract/InjectorContractUtils';
 import { isNotEmptyField } from '../../../../utils/utils';
 import { buildOrderedDomains } from '../../workspaces/custom_dashboards/widgets/viz/domains/SecurityDomainsWidgetUtils';
-import { InjectContext } from '../Context';
+import { AttackChainNodeContext } from '../Context';
 import buildIconBarElements from '../domains/DomainsIcons';
 import IconBar from '../domains/IconBar';
 import BulkToolBar from '../toolBar/BulkToolBar';
 import { type ToolTasks } from '../toolBar/BulkToolBar-model';
-import InjectForm from './form/InjectForm';
-import InjectCardComponent from './InjectCardComponent';
-import InjectIcon from './InjectIcon';
+import AttackChainNodeForm from './form/AttackChainNodeForm';
+import AttackChainNodeCardComponent from './AttackChainNodeCardComponent';
+import AttackChainNodeIcon from './AttackChainNodeIcon';
 
 const useStyles = makeStyles()(theme => ({
   itemHead: { textTransform: 'uppercase' },
@@ -84,34 +84,34 @@ const inlineStyles: Record<string, CSSProperties> = {
 
 interface Props {
   title: string;
-  onCreateInject: (data: InjectInput | AtomicTestingInput) => Promise<void>;
-  onCreateInjects?: (data: InjectOutputType[]) => void;
+  onCreateAttackChainNode: (data: AttackChainNodeInput | AtomicTestingInput) => Promise<void>;
+  onCreateAttackChainNodes?: (data: AttackChainNodeOutputType[]) => void;
   isAtomic?: boolean;
   open?: boolean;
   handleClose: () => void;
-  presetInjectDuration?: number;
-  articlesFromExerciseOrScenario?: Article[];
+  presetAttackChainNodeDuration?: number;
+  articlesFromAttackChainRunOrAttackChain?: Article[];
   uriVariable?: string;
-  variablesFromExerciseOrScenario?: Variable[];
+  variablesFromAttackChainRunOrAttackChain?: Variable[];
 }
 
-const CreateInject: FunctionComponent<Props> = ({
+const CreateAttackChainNode: FunctionComponent<Props> = ({
   title,
-  onCreateInject,
-  onCreateInjects,
+  onCreateAttackChainNode,
+  onCreateAttackChainNodes,
   open = false,
   handleClose,
   isAtomic = false,
-  presetInjectDuration = 0,
-  articlesFromExerciseOrScenario = [],
+  presetAttackChainNodeDuration = 0,
+  articlesFromAttackChainRunOrAttackChain = [],
   uriVariable = '',
-  variablesFromExerciseOrScenario = [],
+  variablesFromAttackChainRunOrAttackChain = [],
 }) => {
   // Standard hooks
   const { classes } = useStyles();
   const theme = useTheme();
   const { t, tPick } = useFormatter();
-  const injectContext = useContext(InjectContext);
+  const injectContext = useContext(AttackChainNodeContext);
 
   // Fetching data
   const {
@@ -322,41 +322,41 @@ const CreateInject: FunctionComponent<Props> = ({
     setSelectedContract(null);
   };
 
-  const onCreateMultipleInjectsInject = async (data: InjectInput[]) => {
-    await injectContext.onAddMultipleInjects(data).then(
+  const onCreateMultipleAttackChainNodesAttackChainNode = async (data: AttackChainNodeInput[]) => {
+    await injectContext.onAddMultipleAttackChainNodes(data).then(
       (result: {
         result: string[];
-        entities: { injects: Record<string, InjectStore> };
+        entities: { nodes: Record<string, AttackChainNodeStore> };
       }) => {
-        if (onCreateInjects && result.entities) {
-          const created: InjectOutputType[] = [];
+        if (onCreateAttackChainNodes && result.entities) {
+          const created: AttackChainNodeOutputType[] = [];
           result.result.map((r: string) => {
-            created.push(result.entities.injects[r]);
+            created.push(result.entities.nodes[r]);
           });
-          onCreateInjects(created);
+          onCreateAttackChainNodes(created);
         }
         handleCloseDrawer();
       });
   };
 
-  const buildQuickInject = (elements: Record<string, InjectorContractFullOutput>) => {
-    const quickInjects: InjectInput[] = [];
+  const buildQuickAttackChainNode = (elements: Record<string, InjectorContractFullOutput>) => {
+    const quickAttackChainNodes: AttackChainNodeInput[] = [];
     for (const [_k, v] of Object.entries(elements)) {
-      const quickInject: InjectInput = {
-        inject_title: tPick(v.injector_contract_labels),
-        inject_injector_contract: v.injector_contract_id,
-        inject_depends_duration: presetInjectDuration,
+      const quickAttackChainNode: AttackChainNodeInput = {
+        node_title: tPick(v.injector_contract_labels),
+        node_injector_contract: v.injector_contract_id,
+        node_depends_duration: presetAttackChainNodeDuration,
       };
-      quickInjects.push(quickInject);
+      quickAttackChainNodes.push(quickAttackChainNode);
     }
-    onCreateMultipleInjectsInject(quickInjects);
+    onCreateMultipleAttackChainNodesAttackChainNode(quickAttackChainNodes);
   };
 
   const toolTasks: ToolTasks[] = [
     {
       type: 'info',
       icon: () => (<Add />),
-      function: () => buildQuickInject(selectedElements),
+      function: () => buildQuickAttackChainNode(selectedElements),
     },
   ];
 
@@ -562,7 +562,7 @@ const CreateInject: FunctionComponent<Props> = ({
                         )}
 
                         <ListItemIcon style={{ minWidth: 56 }}>
-                          <InjectIcon
+                          <AttackChainNodeIcon
                             variant="list"
                             type={
                               contract.injector_contract_payload_type
@@ -609,9 +609,9 @@ const CreateInject: FunctionComponent<Props> = ({
                 overflowX: 'hidden',
               }}
               >
-                <InjectCardComponent
+                <AttackChainNodeCardComponent
                   avatar={selectedContract ? (
-                    <InjectIcon
+                    <AttackChainNodeIcon
                       type={selectedContract.injector_contract_payload_type ?? selectedContract.injector_contract_injector_type}
                       isPayload={isNotEmptyField(selectedContract?.injector_contract_payload_type)}
                     />
@@ -634,35 +634,35 @@ const CreateInject: FunctionComponent<Props> = ({
                       <HighlightOffOutlined />
                     </IconButton>
                   )}
-                  content={selectedContract?.injector_contract_labels ? tPick(selectedContract?.injector_contract_labels) : t('Select an inject in the left panel')}
+                  content={selectedContract?.injector_contract_labels ? tPick(selectedContract?.injector_contract_labels) : t('Select an node in the left panel')}
                 />
-                <InjectForm
+                <AttackChainNodeForm
                   handleClose={handleClose}
                   disabled={!selectedContract}
                   isAtomic={isAtomic}
                   isCreation
-                  defaultInject={{
-                    inject_id: '',
-                    inject_title: tPick(selectedContract?.injector_contract_labels),
-                    inject_description: '',
-                    inject_depends_duration: presetInjectDuration,
-                    inject_injector_contract: {
+                  defaultAttackChainNode={{
+                    node_id: '',
+                    node_title: tPick(selectedContract?.injector_contract_labels),
+                    node_description: '',
+                    node_depends_duration: presetAttackChainNodeDuration,
+                    node_injector_contract: {
                       injector_contract_id: selectedContract?.injector_contract_id ?? '',
                       injector_contract_arch: selectedContract?.injector_contract_arch,
                       injector_contract_platforms: selectedContract?.injector_contract_platforms,
                     } as InjectorContract,
-                    inject_type: selectedContract?.injector_contract_content?.config?.type,
-                    inject_teams: [],
-                    inject_assets: [],
-                    inject_asset_groups: [],
-                    inject_documents: [],
-                    inject_content: { expectations: selectedContract?.injector_contract_content.fields.find(f => f.type == 'expectation')?.predefinedExpectations },
+                    node_type: selectedContract?.injector_contract_content?.config?.type,
+                    node_teams: [],
+                    node_assets: [],
+                    node_asset_groups: [],
+                    node_documents: [],
+                    node_content: { expectations: selectedContract?.injector_contract_content.fields.find(f => f.type == 'expectation')?.predefinedExpectations },
                   }}
                   injectorContractContent={selectedContract?.injector_contract_content}
-                  onSubmitInject={onCreateInject}
-                  articlesFromExerciseOrScenario={articlesFromExerciseOrScenario}
+                  onSubmitAttackChainNode={onCreateAttackChainNode}
+                  articlesFromAttackChainRunOrAttackChain={articlesFromAttackChainRunOrAttackChain}
                   uriVariable={uriVariable}
-                  variablesFromExerciseOrScenario={variablesFromExerciseOrScenario}
+                  variablesFromAttackChainRunOrAttackChain={variablesFromAttackChainRunOrAttackChain}
                 />
               </div>
             </Slide>
@@ -670,7 +670,7 @@ const CreateInject: FunctionComponent<Props> = ({
           {
             numberOfSelectedElements > 0 && (
               <BulkToolBar
-                info={t('Bulk select lets you add multiple injects. They\'ll show as "missing content" until configured')}
+                info={t('Bulk select lets you add multiple nodes. They\'ll show as "missing content" until configured')}
                 numberOfSelectedElements={numberOfSelectedElements}
                 handleClearSelectedElements={handleClearSelectedElements}
                 toolTasks={toolTasks}
@@ -683,4 +683,4 @@ const CreateInject: FunctionComponent<Props> = ({
   );
 };
 
-export default CreateInject;
+export default CreateAttackChainNode;

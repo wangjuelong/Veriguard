@@ -2,9 +2,9 @@ import { type Dispatch } from 'redux';
 
 import { delReferential, getReferential, postReferential, putReferential, simpleCall, simplePostCall } from '../../utils/Action';
 import {
-  type Exercise,
-  type ExercisesGlobalScoresInput,
-  type InjectsImportInput,
+  type AttackChainRun,
+  type AttackChainRunsGlobalScoresInput,
+  type AttackChainNodesImportInput,
   type LessonsAnswerCreateInput,
   type LessonsCategoryCreateInput,
   type LessonsCategoryTeamsInput,
@@ -16,54 +16,54 @@ import {
   type WidgetToEntitiesInput,
 } from '../../utils/api-types';
 import { MESSAGING$ } from '../../utils/Environment';
-import { scenario } from '../attack_chains/scenario-schema';
+import { attack_chain } from '../attack_chains/attack_chain-schema';
 import * as schema from '../Schema';
 
 export const EXERCISE_URI = '/api/attack_chain_runs';
 
-export const fetchExerciseExpectationResult = (exerciseId: Exercise['exercise_id']) => {
+export const fetchAttackChainRunExpectationResult = (exerciseId: AttackChainRun['attack_chain_run_id']) => {
   const uri = `${EXERCISE_URI}/${exerciseId}/results`;
   return simpleCall(uri);
 };
 
-export const fetchPlayersByExercise = (exerciseId: Exercise['exercise_id']) => (dispatch: Dispatch) => {
+export const fetchPlayersByAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id']) => (dispatch: Dispatch) => {
   const uri = `${EXERCISE_URI}/${exerciseId}/players`;
   return getReferential(schema.arrayOfUsers, uri)(dispatch);
 };
 
-export const fetchExerciseInjectExpectationResults = (exerciseId: Exercise['exercise_id']) => {
-  const uri = `${EXERCISE_URI}/${exerciseId}/injects/results-by-attack-patterns`;
+export const fetchAttackChainRunAttackChainNodeExpectationResults = (exerciseId: AttackChainRun['attack_chain_run_id']) => {
+  const uri = `${EXERCISE_URI}/${exerciseId}/nodes/results-by-attack-patterns`;
   return simpleCall(uri);
 };
 
-export const searchExerciseInjects = (exerciseId: Exercise['exercise_id'], searchPaginationInput: SearchPaginationInput) => {
+export const searchAttackChainRunAttackChainNodes = (exerciseId: AttackChainRun['attack_chain_run_id'], searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
-  const uri = `${EXERCISE_URI}/${exerciseId}/injects/search`;
+  const uri = `${EXERCISE_URI}/${exerciseId}/nodes/search`;
   return simplePostCall(uri, data);
 };
 
-export const exerciseInjectsResultOutput = (exerciseId: Exercise['exercise_id']) => {
-  const uri = `${EXERCISE_URI}/${exerciseId}/injects/results`;
+export const exerciseAttackChainNodesResultOutput = (exerciseId: AttackChainRun['attack_chain_run_id']) => {
+  const uri = `${EXERCISE_URI}/${exerciseId}/nodes/results`;
   return simpleCall(uri);
 };
 
 // -- IMPORT --
 
-export const importXlsForExercise = (exerciseId: Exercise['exercise_id'], importId: string, input: InjectsImportInput) => {
+export const importXlsForAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id'], importId: string, input: AttackChainNodesImportInput) => {
   const uri = `${EXERCISE_URI}/${exerciseId}/xls/${importId}/import`;
   return simplePostCall(uri, input)
     .then((response) => {
-      const injectCount = response.data.total_injects;
+      const injectCount = response.data.total_nodes;
       if (injectCount === 0) {
-        MESSAGING$.notifySuccess('No inject imported');
+        MESSAGING$.notifySuccess('No node imported');
       } else {
-        MESSAGING$.notifySuccess(`${injectCount} inject imported`);
+        MESSAGING$.notifySuccess(`${injectCount} node imported`);
       }
       return response;
     });
 };
 
-export const dryImportXlsForExercise = (exerciseId: Exercise['exercise_id'], importId: string, input: InjectsImportInput) => {
+export const dryImportXlsForAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id'], importId: string, input: AttackChainNodesImportInput) => {
   const uri = `${EXERCISE_URI}/${exerciseId}/xls/${importId}/dry`;
   return simplePostCall(uri, input)
     .then((response) => {
@@ -73,7 +73,7 @@ export const dryImportXlsForExercise = (exerciseId: Exercise['exercise_id'], imp
 
 // -- OPTION --
 
-export const searchExerciseLinkedToFindingsAsOption = (searchText: string = '', sourceId: string = '') => {
+export const searchAttackChainRunLinkedToFindingsAsOption = (searchText: string = '', sourceId: string = '') => {
   const params = {
     searchText,
     sourceId,
@@ -81,7 +81,7 @@ export const searchExerciseLinkedToFindingsAsOption = (searchText: string = '', 
   return simpleCall(`${EXERCISE_URI}/findings/options`, { params });
 };
 
-export const searchExerciseByIdAsOption = (ids: string[]) => {
+export const searchAttackChainRunByIdAsOption = (ids: string[]) => {
   return simplePostCall(`${EXERCISE_URI}/options`, ids);
 };
 
@@ -158,17 +158,17 @@ export const fetchLessonsAnswers = (exerciseId: string) => (dispatch: Dispatch) 
 };
 
 export const fetchPlayerLessonsCategories = (exerciseId: string, userId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/player/lessons/exercise/${exerciseId}/lessons_categories?userId=${userId}`;
+  const uri = `/api/player/lessons/attack_chain_run/${exerciseId}/lessons_categories?userId=${userId}`;
   return getReferential(schema.arrayOfLessonsCategories, uri)(dispatch);
 };
 
 export const fetchPlayerLessonsQuestions = (exerciseId: string, userId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/player/lessons/exercise/${exerciseId}/lessons_questions?userId=${userId}`;
+  const uri = `/api/player/lessons/attack_chain_run/${exerciseId}/lessons_questions?userId=${userId}`;
   return getReferential(schema.arrayOfLessonsQuestions, uri)(dispatch);
 };
 
 export const fetchPlayerLessonsAnswers = (exerciseId: string, userId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/player/lessons/exercise/${exerciseId}/lessons_answers?userId=${userId}`;
+  const uri = `/api/player/lessons/attack_chain_run/${exerciseId}/lessons_answers?userId=${userId}`;
   return getReferential(schema.arrayOfLessonsAnswers, uri)(dispatch);
 };
 
@@ -179,17 +179,17 @@ export const addLessonsAnswers = (
   data: LessonsAnswerCreateInput,
   userId: string,
 ) => (dispatch: Dispatch) => {
-  const uri = `/api/player/lessons/exercise/${exerciseId}/lessons_categories/${lessonsCategoryId}/lessons_questions/${lessonsQuestionId}/lessons_answers?userId=${userId}`;
+  const uri = `/api/player/lessons/attack_chain_run/${exerciseId}/lessons_categories/${lessonsCategoryId}/lessons_questions/${lessonsQuestionId}/lessons_answers?userId=${userId}`;
   return postReferential(schema.arrayOfLessonsAnswers, uri, data)(dispatch);
 };
 
-export const fetchExercisesGlobalScores = (exercisesGlobalScoresInput: ExercisesGlobalScoresInput) => {
+export const fetchAttackChainRunsGlobalScores = (exercisesGlobalScoresInput: AttackChainRunsGlobalScoresInput) => {
   const data = exercisesGlobalScoresInput;
   const uri = `${EXERCISE_URI}/global-scores`;
   return simplePostCall(uri, data);
 };
 
-export const checkExerciseTagRules = (exerciseId: string, newTagIds: string[]) => {
+export const checkAttackChainRunTagRules = (exerciseId: string, newTagIds: string[]) => {
   const uri = `/api/attack_chain_runs/${exerciseId}/check-rules`;
   const input = { new_tags: newTagIds };
   return simplePostCall(uri, input);
@@ -200,9 +200,9 @@ export const updateCustomDashboard = (exerciseId: string, customDashboardId: str
   return putReferential(schema.lessonsQuestion, uri, {})(dispatch);
 };
 
-export const fetchScenarioFromSimulation = (simulationId: string) => (dispatch: Dispatch) => {
-  const uri = `/api/attack_chain_runs/${simulationId}/scenario`;
-  return getReferential(scenario, uri)(dispatch);
+export const fetchAttackChainFromSimulation = (simulationId: string) => (dispatch: Dispatch) => {
+  const uri = `/api/attack_chain_runs/${simulationId}/attack_chain`;
+  return getReferential(attack_chain, uri)(dispatch);
 };
 
 export const fetchCustomDashboardFromSimulation = (simulationId: string) => {

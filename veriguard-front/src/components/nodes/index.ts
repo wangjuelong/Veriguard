@@ -1,7 +1,7 @@
 import { type NodeTypes } from '@xyflow/react';
 
-import NodeInjectExport from './NodeInject';
+import NodeAttackChainNodeExport from './NodeAttackChainNode';
 
-const nodeTypes: NodeTypes = { inject: NodeInjectExport };
+const nodeTypes: NodeTypes = { node: NodeAttackChainNodeExport };
 
 export default nodeTypes;

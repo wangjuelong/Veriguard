@@ -1,17 +1,17 @@
-import { findScenarioAssetGroupsByIds } from '../../../actions/asset_groups/assetgroup-action';
-import { findScenarioEndpointsByIds } from '../../../actions/assets/endpoint-actions';
-import type { Scenario } from '../../api-types';
+import { findAttackChainAssetGroupsByIds } from '../../../actions/asset_groups/assetgroup-action';
+import { findAttackChainEndpointsByIds } from '../../../actions/assets/endpoint-actions';
+import type { AttackChain } from '../../api-types';
 import type { EndpointContextType } from './EndpointContext';
 
-const endpointContextForScenario = (scenarioId: Scenario['scenario_id']): EndpointContextType => {
+const endpointContextForAttackChain = (scenarioId: AttackChain['attack_chain_id']): EndpointContextType => {
   return {
     async fetchEndpointsByIds(endpointIds: string[]) {
-      return findScenarioEndpointsByIds(scenarioId, endpointIds);
+      return findAttackChainEndpointsByIds(scenarioId, endpointIds);
     },
     async fetchAssetGroupsByIds(assetGroupIds: string[]) {
-      return findScenarioAssetGroupsByIds(scenarioId, assetGroupIds);
+      return findAttackChainAssetGroupsByIds(scenarioId, assetGroupIds);
     },
   };
 };
 
-export default endpointContextForScenario;
+export default endpointContextForAttackChain;

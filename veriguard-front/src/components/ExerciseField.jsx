@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExercises } from '../actions/AttackChainRun';
+import { fetchAttackChainRuns } from '../actions/AttackChainRun';
 import { useHelper } from '../store';
 import useDataLoader from '../utils/hooks/useDataLoader';
 import Autocomplete from './Autocomplete';
@@ -24,17 +24,17 @@ const useStyles = makeStyles()(() => ({
 /**
  * @deprecated The component use old form library react-final-form
  */
-const ExerciseField = (props) => {
+const AttackChainRunField = (props) => {
   const { classes } = useStyles();
   const dispatch = useDispatch();
-  const exercises = useHelper(helper => helper.getExercises());
+  const attack_chain_runs = useHelper(helper => helper.getAttackChainRuns());
   useDataLoader(() => {
-    dispatch(fetchExercises());
+    dispatch(fetchAttackChainRuns());
   });
   const { name, onKeyDown, style, label, placeholder } = props;
-  const exerciseOptions = (exercises || []).map(n => ({
-    id: n.exercise_id,
-    label: n.exercise_name,
+  const exerciseOptions = (attack_chain_runs || []).map(n => ({
+    id: n.attack_chain_run_id,
+    label: n.attack_chain_run_name,
   }));
   return (
     <Autocomplete
@@ -61,4 +61,4 @@ const ExerciseField = (props) => {
   );
 };
 
-export default ExerciseField;
+export default AttackChainRunField;

@@ -2,11 +2,11 @@ import { Paper, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { useFormatter } from '../../../../../../components/i18n';
-import { type InjectStatusOutput } from '../../../../../../utils/api-types';
+import { type AttackChainNodeStatusOutput } from '../../../../../../utils/api-types';
 import ExecutionTime from './ExecutionTime';
 import MainTraces from './MainTraces';
 
-type Props = { injectStatus: InjectStatusOutput };
+type Props = { injectStatus: AttackChainNodeStatusOutput };
 
 const GlobalExecutionTraces = ({ injectStatus }: Props) => {
   const { t } = useFormatter();

@@ -4,7 +4,7 @@ import { type CSSProperties, type FunctionComponent, type ReactNode, useEffect, 
 import { Link } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchExercisesGlobalScores } from '../../../actions/attack_chain_runs/exercise-action';
+import { fetchAttackChainRunsGlobalScores } from '../../../actions/attack_chain_runs/attack_chain_run-action';
 import { type QueryableHelpers } from '../../../components/common/queryable/QueryableHelpers';
 import SortHeadersComponentV2 from '../../../components/common/queryable/sort/SortHeadersComponentV2';
 import useBodyItemsStyles from '../../../components/common/queryable/style/style';
@@ -14,9 +14,9 @@ import ItemTags from '../../../components/ItemTags';
 import ItemTargets from '../../../components/ItemTargets';
 import Loader from '../../../components/Loader';
 import PaginatedListLoader from '../../../components/PaginatedListLoader';
-import { type ExercisesGlobalScoresOutput, type ExerciseSimple, type ExpectationResultsByType } from '../../../utils/api-types';
+import { type AttackChainRunsGlobalScoresOutput, type AttackChainRunSimple, type ExpectationResultsByType } from '../../../utils/api-types';
 import AtomicTestingResult from '../atomic_testings/atomic_testing/AtomicTestingResult';
-import ExerciseStatus from './attack_chain_run/ExerciseStatus';
+import AttackChainRunStatus from './attack_chain_run/AttackChainRunStatus';
 
 const useStyles = makeStyles()(() => ({
   itemHead: { textTransform: 'uppercase' },
@@ -24,55 +24,55 @@ const useStyles = makeStyles()(() => ({
 }));
 
 const getInlineStyles = (variant: string): Record<string, CSSProperties> => ({
-  exercise_name: { width: variant === 'reduced-view' ? '15%' : '15%' },
-  exercise_start_date: { width: variant === 'reduced-view' ? '12%' : '13%' },
-  exercise_status: { width: variant === 'reduced-view' ? '12%' : '10%' },
-  exercise_targets: {
+  attack_chain_run_name: { width: variant === 'reduced-view' ? '15%' : '15%' },
+  attack_chain_run_start_date: { width: variant === 'reduced-view' ? '12%' : '13%' },
+  attack_chain_run_status: { width: variant === 'reduced-view' ? '12%' : '10%' },
+  attack_chain_run_targets: {
     width: variant === 'reduced-view' ? '15%' : '17%',
     cursor: 'default',
   },
-  exercise_global_score: {
+  attack_chain_run_global_score: {
     width: variant === 'reduced-view' ? '18%' : '12%',
     cursor: 'default',
   },
-  exercise_tags: {
+  attack_chain_run_tags: {
     width: variant === 'reduced-view' ? '12%' : '17%',
     cursor: 'default',
   },
-  exercise_updated_at: { width: variant === 'reduced-view' ? '12%' : '13%' },
+  attack_chain_run_updated_at: { width: variant === 'reduced-view' ? '12%' : '13%' },
 });
 
 function getGlobalScoreComponent(
-  exercise: ExerciseSimple,
+  attack_chain_run: AttackChainRunSimple,
 ) {
-  return (<AtomicTestingResult expectations={exercise.exercise_global_score} />);
+  return (<AtomicTestingResult expectations={attack_chain_run.attack_chain_run_global_score} />);
 }
 
 function getGlobalScoreComponentAsync(
-  exercise: ExerciseSimple,
+  attack_chain_run: AttackChainRunSimple,
   loadingGlobalScores: boolean,
   globalScores: Record<string, ExpectationResultsByType[]> | undefined,
 ) {
   return (
     <>
       {(loadingGlobalScores) && <Loader variant="inElement" size="xs" />}
-      {(!loadingGlobalScores && globalScores) && <AtomicTestingResult expectations={globalScores[exercise.exercise_id]} />}
+      {(!loadingGlobalScores && globalScores) && <AtomicTestingResult expectations={globalScores[attack_chain_run.attack_chain_run_id]} />}
     </>
   );
 }
 
 interface Props {
-  exercises: ExerciseSimple[];
+  attack_chain_runs: AttackChainRunSimple[];
   queryableHelpers?: QueryableHelpers;
   hasHeader?: boolean;
   variant?: string;
-  secondaryAction?: (exercise: ExerciseSimple) => ReactNode;
+  secondaryAction?: (attack_chain_run: AttackChainRunSimple) => ReactNode;
   loading: boolean;
   isGlobalScoreAsync?: boolean;
 }
 
 const SimulationList: FunctionComponent<Props> = ({
-  exercises = [],
+  attack_chain_runs = [],
   queryableHelpers,
   hasHeader = true,
   variant = 'list',
@@ -90,69 +90,69 @@ const SimulationList: FunctionComponent<Props> = ({
   const [globalScores, setGlobalScores] = useState<Record<string, ExpectationResultsByType[]>>();
   const fetchGlobalScores = (exerciseIds: string[]) => {
     setLoadingGlobalScores(true);
-    fetchExercisesGlobalScores({ exercise_ids: exerciseIds })
-      .then((result: { data: ExercisesGlobalScoresOutput }) => setGlobalScores(result.data.global_scores_by_exercise_ids))
+    fetchAttackChainRunsGlobalScores({ attack_chain_run_ids: exerciseIds })
+      .then((result: { data: AttackChainRunsGlobalScoresOutput }) => setGlobalScores(result.data.global_scores_by_attack_chain_run_ids))
       .finally(() => setLoadingGlobalScores(false));
   };
 
   useEffect(() => {
-    if (exercises.length > 0) {
-      fetchGlobalScores(exercises.map(exercise => exercise.exercise_id));
+    if (attack_chain_runs.length > 0) {
+      fetchGlobalScores(attack_chain_runs.map(attack_chain_run => attack_chain_run.attack_chain_run_id));
     }
-  }, [exercises]);
+  }, [attack_chain_runs]);
 
   // Headers
   const headers: Header[] = [
     {
-      field: 'exercise_name',
+      field: 'attack_chain_run_name',
       label: 'Name',
       isSortable: true,
-      value: (exercise: ExerciseSimple) => <>{exercise.exercise_name}</>,
+      value: (attack_chain_run: AttackChainRunSimple) => <>{attack_chain_run.attack_chain_run_name}</>,
     },
     {
-      field: 'exercise_start_date',
+      field: 'attack_chain_run_start_date',
       label: 'Start date',
       isSortable: true,
-      value: (exercise: ExerciseSimple) => {
-        if (!exercise.exercise_start_date) {
+      value: (attack_chain_run: AttackChainRunSimple) => {
+        if (!attack_chain_run.attack_chain_run_start_date) {
           return '-';
         }
-        return <>{(variant === 'reduced-view' ? vnsdt(exercise.exercise_start_date) : nsdt(exercise.exercise_start_date))}</>;
+        return <>{(variant === 'reduced-view' ? vnsdt(attack_chain_run.attack_chain_run_start_date) : nsdt(attack_chain_run.attack_chain_run_start_date))}</>;
       },
     },
     {
-      field: 'exercise_status',
+      field: 'attack_chain_run_status',
       label: 'Status',
       isSortable: true,
-      value: (exercise: ExerciseSimple) => <ExerciseStatus variant="list" exerciseStartDate={exercise.exercise_start_date} exerciseStatus={exercise.exercise_status} />,
+      value: (attack_chain_run: AttackChainRunSimple) => <AttackChainRunStatus variant="list" exerciseStartDate={attack_chain_run.attack_chain_run_start_date} exerciseStatus={attack_chain_run.attack_chain_run_status} />,
     },
     {
-      field: 'exercise_targets',
+      field: 'attack_chain_run_targets',
       label: 'Target',
       isSortable: false,
-      value: (exercise: ExerciseSimple) => <ItemTargets variant={variant} targets={exercise.exercise_targets} />,
+      value: (attack_chain_run: AttackChainRunSimple) => <ItemTargets variant={variant} targets={attack_chain_run.attack_chain_run_targets} />,
     },
     {
-      field: 'exercise_global_score',
+      field: 'attack_chain_run_global_score',
       label: 'Global score',
       isSortable: false,
-      value: (exercise: ExerciseSimple) => isGlobalScoreAsync ? getGlobalScoreComponentAsync(exercise, loadingGlobalScores, globalScores) : getGlobalScoreComponent(exercise),
+      value: (attack_chain_run: AttackChainRunSimple) => isGlobalScoreAsync ? getGlobalScoreComponentAsync(attack_chain_run, loadingGlobalScores, globalScores) : getGlobalScoreComponent(attack_chain_run),
     },
     {
-      field: 'exercise_tags',
+      field: 'attack_chain_run_tags',
       label: 'Tags',
       isSortable: false,
-      value: (exercise: ExerciseSimple) => <ItemTags variant={variant} tags={exercise.exercise_tags} />,
+      value: (attack_chain_run: AttackChainRunSimple) => <ItemTags variant={variant} tags={attack_chain_run.attack_chain_run_tags} />,
     },
     {
-      field: 'exercise_updated_at',
+      field: 'attack_chain_run_updated_at',
       label: 'Updated',
       isSortable: true,
-      value: (exercise: ExerciseSimple) => {
-        if (!exercise.exercise_updated_at) {
+      value: (attack_chain_run: AttackChainRunSimple) => {
+        if (!attack_chain_run.attack_chain_run_updated_at) {
           return '-';
         }
-        return <>{(variant === 'reduced-view' ? vnsdt(exercise.exercise_updated_at) : nsdt(exercise.exercise_updated_at))}</>;
+        return <>{(variant === 'reduced-view' ? vnsdt(attack_chain_run.attack_chain_run_updated_at) : nsdt(attack_chain_run.attack_chain_run_updated_at))}</>;
       },
     },
   ];
@@ -182,17 +182,17 @@ const SimulationList: FunctionComponent<Props> = ({
       {
         loading
           ? <PaginatedListLoader Icon={HubOutlined} headers={headers} headerStyles={inlineStyles} />
-          : exercises.map((exercise: ExerciseSimple) => (
+          : attack_chain_runs.map((attack_chain_run: AttackChainRunSimple) => (
               <ListItem
-                key={exercise.exercise_id}
-                secondaryAction={secondaryAction && secondaryAction(exercise)}
+                key={attack_chain_run.attack_chain_run_id}
+                secondaryAction={secondaryAction && secondaryAction(attack_chain_run)}
                 disablePadding
                 divider
               >
                 <ListItemButton
                   classes={{ root: classes.item }}
                   component={Link}
-                  to={`/admin/attack_chain_runs/${exercise.exercise_id}`}
+                  to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}`}
                 >
                   <ListItemIcon>
                     <HubOutlined color="primary" />
@@ -208,7 +208,7 @@ const SimulationList: FunctionComponent<Props> = ({
                               ...inlineStyles[header.field],
                             }}
                           >
-                            {header.value?.(exercise)}
+                            {header.value?.(attack_chain_run)}
                           </div>
                         ))}
                       </div>

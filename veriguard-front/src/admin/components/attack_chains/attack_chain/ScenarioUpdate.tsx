@@ -1,90 +1,90 @@
 import { type FunctionComponent, useState } from 'react';
 
-import { checkScenarioTagRules, updateScenario } from '../../../../actions/attack_chains/scenario-actions';
+import { checkAttackChainTagRules, updateAttackChain } from '../../../../actions/attack_chains/attack_chain-actions';
 import DialogApplyTagRule from '../../../../components/common/DialogApplyTagRule';
 import Drawer from '../../../../components/common/Drawer';
 import { useFormatter } from '../../../../components/i18n';
 import {
-  type CheckScenarioRulesOutput,
-  type Scenario,
-  type UpdateScenarioInput,
+  type CheckAttackChainRulesOutput,
+  type AttackChain,
+  type UpdateAttackChainInput,
 } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
-import useScenarioPermissions from '../../../../utils/permissions/useScenarioPermissions';
-import ScenarioForm from '../ScenarioForm';
+import useAttackChainPermissions from '../../../../utils/permissions/useAttackChainPermissions';
+import AttackChainForm from '../AttackChainForm';
 
 interface Props {
-  scenario: Scenario;
+  attack_chain: AttackChain;
   open: boolean;
   handleClose: () => void;
 }
 
-const ScenarioUpdate: FunctionComponent<Props> = ({
-  scenario,
+const AttackChainUpdate: FunctionComponent<Props> = ({
+  attack_chain,
   open,
   handleClose,
 }) => {
   // Standard hooks
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
-  const permissions = useScenarioPermissions(scenario.scenario_id);
+  const permissions = useAttackChainPermissions(attack_chain.attack_chain_id);
 
   // apply rule dialog
   const [openApplyRule, setOpenApplyRule] = useState(false);
   const handleOpenApplyRule = () => setOpenApplyRule(true);
   const handleCloseApplyRule = () => setOpenApplyRule(false);
 
-  // Scenario form
+  // AttackChain form
   const initialValues = (({
-    scenario_name,
-    scenario_subtitle,
-    scenario_description,
-    scenario_category,
-    scenario_main_focus,
-    scenario_severity,
-    scenario_tags,
-    scenario_external_reference,
-    scenario_external_url,
-    scenario_message_header,
-    scenario_message_footer,
-    scenario_mail_from,
-    scenario_mails_reply_to,
-    scenario_custom_dashboard,
+    attack_chain_name,
+    attack_chain_subtitle,
+    attack_chain_description,
+    attack_chain_category,
+    attack_chain_main_focus,
+    attack_chain_severity,
+    attack_chain_tags,
+    attack_chain_external_reference,
+    attack_chain_external_url,
+    attack_chain_message_header,
+    attack_chain_message_footer,
+    attack_chain_mail_from,
+    attack_chain_mails_reply_to,
+    attack_chain_custom_dashboard,
   }) => ({
-    scenario_name,
-    scenario_subtitle: scenario_subtitle ?? '',
-    scenario_category: scenario_category ?? 'attack-scenario',
-    scenario_main_focus: scenario_main_focus ?? 'incident-response',
-    scenario_severity: scenario_severity ?? 'high',
-    scenario_description: scenario_description ?? '',
-    scenario_tags: scenario_tags ?? [],
-    scenario_external_reference: scenario_external_reference ?? '',
-    scenario_external_url: scenario_external_url ?? '',
-    scenario_message_header: scenario_message_header ?? '',
-    scenario_message_footer: scenario_message_footer ?? '',
-    scenario_mail_from: scenario_mail_from ?? '',
-    scenario_mails_reply_to: scenario_mails_reply_to ?? [],
-    scenario_custom_dashboard: scenario_custom_dashboard ?? '',
-  }))(scenario);
+    attack_chain_name,
+    attack_chain_subtitle: attack_chain_subtitle ?? '',
+    attack_chain_category: attack_chain_category ?? 'attack-attack_chain',
+    attack_chain_main_focus: attack_chain_main_focus ?? 'incident-response',
+    attack_chain_severity: attack_chain_severity ?? 'high',
+    attack_chain_description: attack_chain_description ?? '',
+    attack_chain_tags: attack_chain_tags ?? [],
+    attack_chain_external_reference: attack_chain_external_reference ?? '',
+    attack_chain_external_url: attack_chain_external_url ?? '',
+    attack_chain_message_header: attack_chain_message_header ?? '',
+    attack_chain_message_footer: attack_chain_message_footer ?? '',
+    attack_chain_mail_from: attack_chain_mail_from ?? '',
+    attack_chain_mails_reply_to: attack_chain_mails_reply_to ?? [],
+    attack_chain_custom_dashboard: attack_chain_custom_dashboard ?? '',
+  }))(attack_chain);
 
-  const [scenarioFormData, setScenarioFormData] = useState<UpdateScenarioInput>(initialValues);
+  const [scenarioFormData, setAttackChainFormData] = useState<UpdateAttackChainInput>(initialValues);
 
-  const submitScenarioUpdate = (data: UpdateScenarioInput) => {
-    dispatch(updateScenario(scenario.scenario_id, data));
+  const submitAttackChainUpdate = (data: UpdateAttackChainInput) => {
+    dispatch(updateAttackChain(attack_chain.attack_chain_id, data));
     handleClose();
   };
 
-  const submitEdit = (data: UpdateScenarioInput) => {
-    setScenarioFormData(data);
+  const submitEdit = (data: UpdateAttackChainInput) => {
+    setAttackChainFormData(data);
 
-    // before updating the scenario we are checking if tag rules could apply
+    // before updating the attack_chain we are checking if tag rules could apply
     // -> if yes we ask the user to apply or not apply the rules at the update
-    checkScenarioTagRules(scenario.scenario_id, data.scenario_tags ?? []).then(
-      (result: { data: CheckScenarioRulesOutput }) => {
+    checkAttackChainTagRules(attack_chain.attack_chain_id, data.attack_chain_tags ?? []).then(
+      (result: { data: CheckAttackChainRulesOutput }) => {
         if (result.data.rules_found) {
           handleOpenApplyRule();
         } else {
-          submitScenarioUpdate(data);
+          submitAttackChainUpdate(data);
         }
       },
     );
@@ -92,7 +92,7 @@ const ScenarioUpdate: FunctionComponent<Props> = ({
 
   const handleTagRuleChoice = (shouldApply: boolean) => {
     scenarioFormData.apply_tag_rule = shouldApply;
-    submitScenarioUpdate(scenarioFormData);
+    submitAttackChainUpdate(scenarioFormData);
     handleCloseApplyRule();
   };
 
@@ -101,9 +101,9 @@ const ScenarioUpdate: FunctionComponent<Props> = ({
       <Drawer
         open={open}
         handleClose={handleClose}
-        title={t('Update the scenario')}
+        title={t('Update the attack_chain')}
       >
-        <ScenarioForm
+        <AttackChainForm
           initialValues={initialValues}
           editing
           disabled={permissions.readOnly}
@@ -121,4 +121,4 @@ const ScenarioUpdate: FunctionComponent<Props> = ({
   );
 };
 
-export default ScenarioUpdate;
+export default AttackChainUpdate;

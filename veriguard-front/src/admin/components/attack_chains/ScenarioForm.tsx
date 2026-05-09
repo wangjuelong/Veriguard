@@ -11,20 +11,20 @@ import SelectField from '../../../components/fields/SelectField';
 import TagField from '../../../components/fields/TagField';
 import TextField from '../../../components/fields/TextField';
 import { useFormatter } from '../../../components/i18n';
-import { type ScenarioInput } from '../../../utils/api-types';
+import { type AttackChainInput } from '../../../utils/api-types';
 import { zodImplement } from '../../../utils/Zod';
 import { scenarioCategories } from './constants';
 
 interface Props {
-  onSubmit: (data: ScenarioInput, isScenarioAssistantChecked?: boolean) => void;
+  onSubmit: (data: AttackChainInput, isAttackChainAssistantChecked?: boolean) => void;
   handleClose: () => void;
   editing?: boolean;
   disabled?: boolean;
-  initialValues: ScenarioInput;
+  initialValues: AttackChainInput;
   isCreation?: boolean;
 }
 
-const ScenarioForm: FunctionComponent<Props> = ({
+const AttackChainForm: FunctionComponent<Props> = ({
   onSubmit,
   handleClose,
   editing,
@@ -36,31 +36,31 @@ const ScenarioForm: FunctionComponent<Props> = ({
   const theme = useTheme();
   const { t } = useFormatter();
   const [inputValue, setInputValue] = useState('');
-  const [isScenarioAssistantChecked, setIsScenarioAssistantChecked] = useState(false);
+  const [isAttackChainAssistantChecked, setIsAttackChainAssistantChecked] = useState(false);
 
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
-  } = useForm<ScenarioInput>({
+  } = useForm<AttackChainInput>({
     mode: 'onTouched',
     resolver: zodResolver(
-      zodImplement<ScenarioInput>().with({
-        scenario_name: z.string().min(1, { message: t('Should not be empty') }),
-        scenario_category: z.string().optional(),
-        scenario_main_focus: z.string().optional(),
-        scenario_severity: z.enum(['low', 'medium', 'high', 'critical']).optional(),
-        scenario_subtitle: z.string().optional(),
-        scenario_description: z.string().optional(),
-        scenario_tags: z.string().array().optional(),
-        scenario_external_reference: z.string().optional(),
-        scenario_external_url: z.string().optional(),
-        scenario_mail_from: z.string().email(t('Should be a valid email address')).optional(),
-        scenario_mails_reply_to: z.array(z.string().email(t('Should be a valid email address'))).optional(),
-        scenario_message_header: z.string().optional(),
-        scenario_message_footer: z.string().optional(),
-        scenario_custom_dashboard: z.string().optional(),
+      zodImplement<AttackChainInput>().with({
+        attack_chain_name: z.string().min(1, { message: t('Should not be empty') }),
+        attack_chain_category: z.string().optional(),
+        attack_chain_main_focus: z.string().optional(),
+        attack_chain_severity: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+        attack_chain_subtitle: z.string().optional(),
+        attack_chain_description: z.string().optional(),
+        attack_chain_tags: z.string().array().optional(),
+        attack_chain_external_reference: z.string().optional(),
+        attack_chain_external_url: z.string().optional(),
+        attack_chain_mail_from: z.string().email(t('Should be a valid email address')).optional(),
+        attack_chain_mails_reply_to: z.array(z.string().email(t('Should be a valid email address'))).optional(),
+        attack_chain_message_header: z.string().optional(),
+        attack_chain_message_footer: z.string().optional(),
+        attack_chain_custom_dashboard: z.string().optional(),
       }),
     ),
     defaultValues: initialValues,
@@ -90,7 +90,7 @@ const ScenarioForm: FunctionComponent<Props> = ({
           marginTop: theme.spacing(2),
         }}
         id="scenarioForm"
-        onSubmit={handleSubmit((data: ScenarioInput) => onSubmit(data, isScenarioAssistantChecked))}
+        onSubmit={handleSubmit((data: AttackChainInput) => onSubmit(data, isAttackChainAssistantChecked))}
       >
         {currentTab === 'General' && (
           <>
@@ -98,9 +98,9 @@ const ScenarioForm: FunctionComponent<Props> = ({
               variant="standard"
               fullWidth
               label={t('Name')}
-              error={!!errors.scenario_name}
-              helperText={errors.scenario_name?.message}
-              inputProps={register('scenario_name')}
+              error={!!errors.attack_chain_name}
+              helperText={errors.attack_chain_name?.message}
+              inputProps={register('attack_chain_name')}
               InputLabelProps={{ required: true }}
               control={control}
             />
@@ -113,11 +113,11 @@ const ScenarioForm: FunctionComponent<Props> = ({
               <SelectField
                 variant="standard"
                 fullWidth={true}
-                name="scenario_category"
+                name="attack_chain_category"
                 label={t('Category')}
-                error={!!errors.scenario_category}
+                error={!!errors.attack_chain_category}
                 control={control}
-                defaultValue={initialValues.scenario_category}
+                defaultValue={initialValues.attack_chain_category}
               >
                 {Array.from(scenarioCategories).map(([key, value]) => (
                   <MenuItem key={key} value={key}>
@@ -128,11 +128,11 @@ const ScenarioForm: FunctionComponent<Props> = ({
               <SelectField
                 variant="standard"
                 fullWidth={true}
-                name="scenario_main_focus"
+                name="attack_chain_main_focus"
                 label={t('Main focus')}
-                error={!!errors.scenario_main_focus}
+                error={!!errors.attack_chain_main_focus}
                 control={control}
-                defaultValue={initialValues.scenario_main_focus}
+                defaultValue={initialValues.attack_chain_main_focus}
               >
                 <MenuItem key="endpoint-protection" value="endpoint-protection">
                   {t('Endpoint Protection')}
@@ -157,11 +157,11 @@ const ScenarioForm: FunctionComponent<Props> = ({
             <SelectField
               variant="standard"
               fullWidth={true}
-              name="scenario_severity"
+              name="attack_chain_severity"
               label={t('Severity')}
-              error={!!errors.scenario_severity}
+              error={!!errors.attack_chain_severity}
               control={control}
-              defaultValue={initialValues.scenario_severity}
+              defaultValue={initialValues.attack_chain_severity}
             >
               <MenuItem key="low" value="low">
                 {t('Low')}
@@ -182,14 +182,14 @@ const ScenarioForm: FunctionComponent<Props> = ({
               multiline
               rows={5}
               label={t('Description')}
-              error={!!errors.scenario_description}
-              helperText={errors.scenario_description?.message}
-              inputProps={register('scenario_description')}
+              error={!!errors.attack_chain_description}
+              helperText={errors.attack_chain_description?.message}
+              inputProps={register('attack_chain_description')}
               control={control}
             />
             <Controller
               control={control}
-              name="scenario_tags"
+              name="attack_chain_tags"
               render={({ field: { onChange, value }, fieldState: { error } }) => (
                 <TagField
                   label={t('Tags')}
@@ -203,11 +203,11 @@ const ScenarioForm: FunctionComponent<Props> = ({
               <FormControlLabel
                 control={(
                   <Checkbox
-                    checked={isScenarioAssistantChecked}
-                    onChange={() => setIsScenarioAssistantChecked(!isScenarioAssistantChecked)}
+                    checked={isAttackChainAssistantChecked}
+                    onChange={() => setIsAttackChainAssistantChecked(!isAttackChainAssistantChecked)}
                   />
                 )}
-                label={t('Use the scenario assistant')}
+                label={t('Use the attack_chain assistant')}
               />
             )}
           </>
@@ -218,24 +218,24 @@ const ScenarioForm: FunctionComponent<Props> = ({
               variant="standard"
               fullWidth
               label={t('Sender email address')}
-              error={!!errors.scenario_mail_from}
+              error={!!errors.attack_chain_mail_from}
               helperText={
-                errors.scenario_mail_from
-                  ? errors.scenario_mail_from?.message
+                errors.attack_chain_mail_from
+                  ? errors.attack_chain_mail_from?.message
                   : (
                       <span
                         style={{ color: theme.palette.warning.main }}
                       >
-                        {t('If you remove the default email address, the email reception for this simulation / scenario will be disabled.')}
+                        {t('If you remove the default email address, the email reception for this attack_chain_run / attack_chain will be disabled.')}
                       </span>
                     )
               }
-              inputProps={register('scenario_mail_from')}
+              inputProps={register('attack_chain_mail_from')}
               disabled={disabled}
             />
             <Controller
               control={control}
-              name="scenario_mails_reply_to"
+              name="attack_chain_mails_reply_to"
               render={({ field, fieldState }) => {
                 return (
                   <Autocomplete
@@ -278,7 +278,7 @@ const ScenarioForm: FunctionComponent<Props> = ({
                         variant="standard"
                         label={t('Reply to')}
                         error={!!fieldState.error}
-                        helperText={errors.scenario_mails_reply_to?.find ? errors.scenario_mails_reply_to?.find(value => value != null)?.message ?? '' : ''}
+                        helperText={errors.attack_chain_mails_reply_to?.find ? errors.attack_chain_mails_reply_to?.find(value => value != null)?.message ?? '' : ''}
                       />
                     )}
                   />
@@ -289,18 +289,18 @@ const ScenarioForm: FunctionComponent<Props> = ({
               variant="standard"
               fullWidth
               label={t('Messages header')}
-              error={!!errors.scenario_message_header}
-              helperText={errors.scenario_message_header && errors.scenario_message_header?.message}
-              inputProps={register('scenario_message_header')}
+              error={!!errors.attack_chain_message_header}
+              helperText={errors.attack_chain_message_header && errors.attack_chain_message_header?.message}
+              inputProps={register('attack_chain_message_header')}
               disabled={disabled}
             />
             <MuiTextField
               variant="standard"
               fullWidth
               label={t('Messages footer')}
-              error={!!errors.scenario_message_footer}
-              helperText={errors.scenario_message_footer && errors.scenario_message_footer?.message}
-              inputProps={register('scenario_message_footer')}
+              error={!!errors.attack_chain_message_footer}
+              helperText={errors.attack_chain_message_footer && errors.attack_chain_message_footer?.message}
+              inputProps={register('attack_chain_message_footer')}
               disabled={disabled}
             />
           </>
@@ -333,5 +333,5 @@ const ScenarioForm: FunctionComponent<Props> = ({
 }
 ;
 
-export default ScenarioForm;
+export default AttackChainForm;
 ;

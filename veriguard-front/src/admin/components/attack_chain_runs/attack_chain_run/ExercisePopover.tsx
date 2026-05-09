@@ -1,8 +1,8 @@
 import { type FunctionComponent, useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { checkExerciseTagRules } from '../../../../actions/attack_chain_runs/exercise-action';
-import { deleteExercise, duplicateExercise, updateExercise } from '../../../../actions/AttackChainRun';
+import { checkAttackChainRunTagRules } from '../../../../actions/attack_chain_runs/attack_chain_run-action';
+import { deleteAttackChainRun, duplicateAttackChainRun, updateAttackChainRun } from '../../../../actions/AttackChainRun';
 import ButtonPopover from '../../../../components/common/ButtonPopover';
 import DialogApplyTagRule from '../../../../components/common/DialogApplyTagRule';
 import DialogDelete from '../../../../components/common/DialogDelete';
@@ -11,28 +11,28 @@ import Drawer from '../../../../components/common/Drawer';
 import ExportOptionsDialog from '../../../../components/common/export/ExportOptionsDialog';
 import { useFormatter } from '../../../../components/i18n';
 import {
-  type CheckScenarioRulesOutput,
-  type Exercise,
-  type UpdateExerciseInput,
+  type CheckAttackChainRulesOutput,
+  type AttackChainRun,
+  type UpdateAttackChainRunInput,
 } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import { AbilityContext } from '../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
 import useSimulationPermissions from '../../../../utils/permissions/useSimulationPermissions';
-import ExerciseForm from './ExerciseForm';
-import ExerciseReports from './reports/ExerciseReports';
+import AttackChainRunForm from './AttackChainRunForm';
+import AttackChainRunReports from './reports/AttackChainRunReports';
 
-export type ExerciseActionPopover = 'Duplicate' | 'Update' | 'Delete' | 'Export' | 'Access reports';
+export type AttackChainRunActionPopover = 'Duplicate' | 'Update' | 'Delete' | 'Export' | 'Access reports';
 
-interface ExercisePopoverProps {
-  exercise: Exercise;
-  actions: ExerciseActionPopover[];
+interface AttackChainRunPopoverProps {
+  attack_chain_run: AttackChainRun;
+  actions: AttackChainRunActionPopover[];
   onDelete?: (result: string) => void;
   inList?: boolean;
 }
 
-const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
-  exercise,
+const AttackChainRunPopover: FunctionComponent<AttackChainRunPopoverProps> = ({
+  attack_chain_run,
   actions = [],
   onDelete,
   inList = false,
@@ -41,23 +41,23 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
   const { t } = useFormatter();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const permissions = useSimulationPermissions(exercise.exercise_id, exercise);
+  const permissions = useSimulationPermissions(attack_chain_run.attack_chain_run_id, attack_chain_run);
   const ability = useContext(AbilityContext);
 
   // Form
-  const initialValues: UpdateExerciseInput = {
-    exercise_name: exercise.exercise_name,
-    exercise_subtitle: exercise.exercise_subtitle ?? '',
-    exercise_description: exercise.exercise_description,
-    exercise_category: exercise.exercise_category ?? 'attack-scenario',
-    exercise_main_focus: exercise.exercise_main_focus ?? 'incident-response',
-    exercise_severity: exercise.exercise_severity ?? 'high',
-    exercise_tags: exercise.exercise_tags ?? [],
-    exercise_mail_from: exercise.exercise_mail_from ?? '',
-    exercise_mails_reply_to: exercise.exercise_mails_reply_to ?? [],
-    exercise_message_header: exercise.exercise_message_header ?? '',
-    exercise_message_footer: exercise.exercise_message_footer ?? '',
-    exercise_custom_dashboard: exercise.exercise_custom_dashboard ?? '',
+  const initialValues: UpdateAttackChainRunInput = {
+    attack_chain_run_name: attack_chain_run.attack_chain_run_name,
+    attack_chain_run_subtitle: attack_chain_run.attack_chain_run_subtitle ?? '',
+    attack_chain_run_description: attack_chain_run.attack_chain_run_description,
+    attack_chain_run_category: attack_chain_run.attack_chain_run_category ?? 'attack-attack_chain',
+    attack_chain_run_main_focus: attack_chain_run.attack_chain_run_main_focus ?? 'incident-response',
+    attack_chain_run_severity: attack_chain_run.attack_chain_run_severity ?? 'high',
+    attack_chain_run_tags: attack_chain_run.attack_chain_run_tags ?? [],
+    attack_chain_run_mail_from: attack_chain_run.attack_chain_run_mail_from ?? '',
+    attack_chain_run_mails_reply_to: attack_chain_run.attack_chain_run_mails_reply_to ?? [],
+    attack_chain_run_message_header: attack_chain_run.attack_chain_run_message_header ?? '',
+    attack_chain_run_message_footer: attack_chain_run.attack_chain_run_message_footer ?? '',
+    attack_chain_run_custom_dashboard: attack_chain_run.attack_chain_run_custom_dashboard ?? '',
     apply_tag_rule: false,
   };
 
@@ -65,7 +65,7 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
   const [openEdit, setOpenEdit] = useState(false);
   const handleOpenEdit = () => setOpenEdit(true);
   const handleCloseEdit = () => setOpenEdit(false);
-  const [exerciseFormData, setExerciseFormData] = useState<UpdateExerciseInput>(initialValues);
+  const [exerciseFormData, setAttackChainRunFormData] = useState<UpdateAttackChainRunInput>(initialValues);
 
   // Delete
   const [openDelete, setOpenDelete] = useState(false);
@@ -73,9 +73,9 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
   const handleCloseDelete = () => setOpenDelete(false);
 
   const submitDelete = () => {
-    dispatch(deleteExercise(exercise.exercise_id)).then(() => {
+    dispatch(deleteAttackChainRun(attack_chain_run.attack_chain_run_id)).then(() => {
       handleCloseDelete();
-      if (onDelete) onDelete(exercise.exercise_id);
+      if (onDelete) onDelete(attack_chain_run.attack_chain_run_id);
     });
   };
 
@@ -85,9 +85,9 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
   const handleCloseDuplicate = () => setOpenDuplicate(false);
 
   const submitDuplicate = () => {
-    dispatch(duplicateExercise(exercise.exercise_id)).then((result: {
+    dispatch(duplicateAttackChainRun(attack_chain_run.attack_chain_run_id)).then((result: {
       result: string;
-      entities: { exercises: Exercise };
+      entities: { attack_chain_runs: AttackChainRun };
     }) => {
       handleCloseDuplicate();
       navigate(`/admin/attack_chain_runs/${result.result}`);
@@ -111,7 +111,7 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
 
   const submitExport = (withPlayers: boolean, withTeams: boolean, withVariableValues: boolean) => {
     const link = document.createElement('a');
-    link.href = `/api/attack_chain_runs/${exercise.exercise_id}/export?isWithTeams=${withTeams}&isWithPlayers=${withPlayers}&isWithVariableValues=${withVariableValues}`;
+    link.href = `/api/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/export?isWithTeams=${withTeams}&isWithPlayers=${withPlayers}&isWithVariableValues=${withVariableValues}`;
     link.click();
     handleCloseExport();
   };
@@ -145,41 +145,41 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
     userRight: permissions.canManage,
   });
 
-  const submitExerciseUpdate = (data: UpdateExerciseInput) => {
+  const submitAttackChainRunUpdate = (data: UpdateAttackChainRunInput) => {
     const input = {
-      exercise_name: data.exercise_name,
-      exercise_subtitle: data.exercise_subtitle,
-      exercise_severity: data.exercise_severity,
-      exercise_category: data.exercise_category,
-      exercise_description: data.exercise_description,
-      exercise_main_focus: data.exercise_main_focus,
-      exercise_tags: data.exercise_tags,
-      exercise_mails_reply_to: data.exercise_mails_reply_to,
-      exercise_mail_from: data.exercise_mail_from,
-      exercise_message_header: data.exercise_message_header,
-      exercise_message_footer: data.exercise_message_footer,
-      exercise_custom_dashboard: data.exercise_custom_dashboard,
+      attack_chain_run_name: data.attack_chain_run_name,
+      attack_chain_run_subtitle: data.attack_chain_run_subtitle,
+      attack_chain_run_severity: data.attack_chain_run_severity,
+      attack_chain_run_category: data.attack_chain_run_category,
+      attack_chain_run_description: data.attack_chain_run_description,
+      attack_chain_run_main_focus: data.attack_chain_run_main_focus,
+      attack_chain_run_tags: data.attack_chain_run_tags,
+      attack_chain_run_mails_reply_to: data.attack_chain_run_mails_reply_to,
+      attack_chain_run_mail_from: data.attack_chain_run_mail_from,
+      attack_chain_run_message_header: data.attack_chain_run_message_header,
+      attack_chain_run_message_footer: data.attack_chain_run_message_footer,
+      attack_chain_run_custom_dashboard: data.attack_chain_run_custom_dashboard,
       apply_tag_rule: data.apply_tag_rule,
     };
-    return dispatch(updateExercise(exercise.exercise_id, input)).then(() => handleCloseEdit());
+    return dispatch(updateAttackChainRun(attack_chain_run.attack_chain_run_id, input)).then(() => handleCloseEdit());
   };
 
   const handleTagRuleChoice = (shouldApply: boolean) => {
     exerciseFormData.apply_tag_rule = shouldApply;
-    submitExerciseUpdate(exerciseFormData);
+    submitAttackChainRunUpdate(exerciseFormData);
     handleCloseApplyRule();
   };
 
-  const onSubmit = (data: UpdateExerciseInput) => {
-    setExerciseFormData(data);
-    // before updating the exercise we are checking if tag rules could apply
+  const onSubmit = (data: UpdateAttackChainRunInput) => {
+    setAttackChainRunFormData(data);
+    // before updating the attack_chain_run we are checking if tag rules could apply
     // -> if yes we ask the user to apply or not apply the rules at the update
-    checkExerciseTagRules(exercise.exercise_id, data.exercise_tags ?? []).then(
-      (result: { data: CheckScenarioRulesOutput }) => {
+    checkAttackChainRunTagRules(attack_chain_run.attack_chain_run_id, data.attack_chain_run_tags ?? []).then(
+      (result: { data: CheckAttackChainRulesOutput }) => {
         if (result.data.rules_found) {
           handleOpenApplyRule();
         } else {
-          submitExerciseUpdate(data);
+          submitAttackChainRunUpdate(data);
         }
       },
     );
@@ -190,9 +190,9 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
       <Drawer
         open={openEdit}
         handleClose={handleCloseEdit}
-        title={t('Update simulation')}
+        title={t('Update attack_chain_run')}
       >
-        <ExerciseForm
+        <AttackChainRunForm
           onSubmit={onSubmit}
           initialValues={initialValues}
           disabled={permissions.readOnly}
@@ -213,16 +213,16 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
         handleClose={handleCloseReports}
         title={t('Reports')}
       >
-        <ExerciseReports exerciseId={exercise.exercise_id} exerciseName={exercise.exercise_name} />
+        <AttackChainRunReports exerciseId={attack_chain_run.attack_chain_run_id} exerciseName={attack_chain_run.attack_chain_run_name} />
       </Drawer>
       <DialogDuplicate
         open={openDuplicate}
         handleClose={handleCloseDuplicate}
         handleSubmit={submitDuplicate}
-        text={`${t('Do you want to duplicate this simulation:')} ${exercise.exercise_name} ?`}
+        text={`${t('Do you want to duplicate this attack_chain_run:')} ${attack_chain_run.attack_chain_run_name} ?`}
       />
       <ExportOptionsDialog
-        title={t('Export the simulation')}
+        title={t('Export the attack_chain_run')}
         open={openExport}
         onCancel={handleCloseExport}
         onClose={handleCloseExport}
@@ -232,10 +232,10 @@ const ExercisePopover: FunctionComponent<ExercisePopoverProps> = ({
         open={openDelete}
         handleClose={handleCloseDelete}
         handleSubmit={submitDelete}
-        text={`${t('Do you want to delete this simulation:')} ${exercise.exercise_name} ?`}
+        text={`${t('Do you want to delete this attack_chain_run:')} ${attack_chain_run.attack_chain_run_name} ?`}
       />
     </>
   );
 };
 
-export default ExercisePopover;
+export default AttackChainRunPopover;

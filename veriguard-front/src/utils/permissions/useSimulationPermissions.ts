@@ -1,24 +1,24 @@
 import { useContext } from 'react';
 
-import { type ExercisesHelper } from '../../actions/attack_chain_runs/exercise-helper';
+import { type AttackChainRunsHelper } from '../../actions/attack_chain_runs/attack_chain_run-helper';
 import { type LoggedHelper, type UserHelper } from '../../actions/helper';
 import { useHelper } from '../../store';
-import { type Exercise } from '../api-types';
+import { type AttackChainRun } from '../api-types';
 import { AbilityContext } from './permissionsContext';
 import { ACTIONS, SUBJECTS } from './types';
 
-const useSimulationPermissions = (exerciseId: string, fullExercise?: Exercise) => {
+const useSimulationPermissions = (exerciseId: string, fullAttackChainRun?: AttackChainRun) => {
   const ability = useContext(AbilityContext);
 
-  const { exercise, me, logged } = useHelper((helper: ExercisesHelper & UserHelper & LoggedHelper) => {
+  const { attack_chain_run, me, logged } = useHelper((helper: AttackChainRunsHelper & UserHelper & LoggedHelper) => {
     return {
-      exercise: helper.getExercise(exerciseId),
+      attack_chain_run: helper.getAttackChainRun(exerciseId),
       me: helper.getMe(),
       logged: helper.logged(),
     };
   });
 
-  if ((!fullExercise && !exercise) || !me) {
+  if ((!fullAttackChainRun && !attack_chain_run) || !me) {
     return {
       canAccess: false,
       canManage: false,
@@ -34,7 +34,7 @@ const useSimulationPermissions = (exerciseId: string, fullExercise?: Exercise) =
   const canManage = ability.can(ACTIONS.MANAGE, SUBJECTS.RESOURCE, exerciseId) || ability.can(ACTIONS.MANAGE, SUBJECTS.ASSESSMENT);
   const canLaunch = ability.can(ACTIONS.LAUNCH, SUBJECTS.RESOURCE, exerciseId) || ability.can(ACTIONS.LAUNCH, SUBJECTS.ASSESSMENT);
   const canDelete = ability.can(ACTIONS.DELETE, SUBJECTS.RESOURCE, exerciseId) || ability.can(ACTIONS.DELETE, SUBJECTS.ASSESSMENT);
-  const isRunning = (exercise || fullExercise).exercise_status === 'RUNNING';
+  const isRunning = (attack_chain_run || fullAttackChainRun).attack_chain_run_status === 'RUNNING';
   const readOnly = !canManage;
 
   return {

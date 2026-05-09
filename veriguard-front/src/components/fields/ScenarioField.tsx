@@ -15,7 +15,7 @@ interface Props {
   defaultOptions?: GroupOption[];
 }
 
-const ScenarioField: FunctionComponent<Props> = ({ label, value, onChange, className = '', required = false, error = false, defaultOptions = [] }) => {
+const AttackChainField: FunctionComponent<Props> = ({ label, value, onChange, className = '', required = false, error = false, defaultOptions = [] }) => {
   const { options, searchOptions } = useSearchOptions();
   const searchOptionsConfig = {
     filterKey: SCENARIOS,
@@ -39,4 +39,4 @@ const ScenarioField: FunctionComponent<Props> = ({ label, value, onChange, class
   );
 };
 
-export default ScenarioField;
+export default AttackChainField;

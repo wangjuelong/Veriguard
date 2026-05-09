@@ -13,15 +13,15 @@ import Loader from '../../../../../components/Loader';
 import {
   type Article,
   type AttackPattern,
-  type Inject,
-  type InjectInput,
+  type AttackChainNode,
+  type AttackChainNodeInput,
   type Variable,
 } from '../../../../../utils/api-types';
 import { type ContractElement, type EnhancedContractElement, type InjectorContractConverted } from '../../../../../utils/api-types-custom';
 import { splitDuration } from '../../../../../utils/Time';
 import { PermissionsContext } from '../../Context';
-import { getValidatingRule, isInjectContentType, isRequiredField, isVisibleField } from '../utils';
-import InjectContentForm from './InjectContentForm';
+import { getValidatingRule, isAttackChainNodeContentType, isRequiredField, isVisibleField } from '../utils';
+import AttackChainNodeContentForm from './AttackChainNodeContentForm';
 
 const useStyles = makeStyles()(theme => ({
   injectFormContainer: {
@@ -69,10 +69,10 @@ type FieldValue = string | number | boolean | string[] | AttackPattern[] | objec
   type?: string;
 }[];
 
-type InjectInputForm = Omit<InjectInput, 'inject_depends_duration'> & {
-  inject_depends_duration_days?: string;
-  inject_depends_duration_hours?: string;
-  inject_depends_duration_minutes?: string;
+type AttackChainNodeInputForm = Omit<AttackChainNodeInput, 'node_depends_duration'> & {
+  node_depends_duration_days?: string;
+  node_depends_duration_hours?: string;
+  node_depends_duration_minutes?: string;
 };
 
 interface Props {
@@ -80,27 +80,27 @@ interface Props {
   disabled?: boolean;
   isAtomic: boolean;
   isCreation?: boolean;
-  defaultInject: Inject | Omit<Inject, 'inject_created_at' | 'inject_updated_at'>;
-  onSubmitInject: (data: InjectInput) => Promise<void>;
+  defaultAttackChainNode: AttackChainNode | Omit<AttackChainNode, 'node_created_at' | 'node_updated_at'>;
+  onSubmitAttackChainNode: (data: AttackChainNodeInput) => Promise<void>;
   injectorContractContent?: InjectorContractConverted['convertedContent'];
-  articlesFromExerciseOrScenario: Article[];
+  articlesFromAttackChainRunOrAttackChain: Article[];
   uriVariable: string;
-  variablesFromExerciseOrScenario: Variable[];
+  variablesFromAttackChainRunOrAttackChain: Variable[];
 }
 
-const initialZodSchema = z.object({ inject_content: z.object({}) });
+const initialZodSchema = z.object({ node_content: z.object({}) });
 
-const InjectForm = ({
+const AttackChainNodeForm = ({
   handleClose,
   disabled = false,
   isAtomic,
   isCreation = false,
-  defaultInject = {} as Inject,
+  defaultAttackChainNode = {} as AttackChainNode,
   injectorContractContent,
-  onSubmitInject,
-  articlesFromExerciseOrScenario,
+  onSubmitAttackChainNode,
+  articlesFromAttackChainRunOrAttackChain,
   uriVariable,
-  variablesFromExerciseOrScenario,
+  variablesFromAttackChainRunOrAttackChain,
 }: Props) => {
   const { classes } = useStyles();
   const { t } = useFormatter();
@@ -109,7 +109,7 @@ const InjectForm = ({
   const [fieldsMapByKey, setFieldsMapByKey] = useState<Record<ContractElement['key'], ContractElement>>({});
   const [enhancedFields, setEnhancedFields] = useState<EnhancedContractElement[]>([]);
   const [enhancedFieldsMapByType, setEnhancedFieldsMapByType] = useState<Map<ContractElement['type'], EnhancedContractElement>>(new Map());
-  const [defaultValues, setDefaultValues] = useState<Partial<InjectInputForm>>({});
+  const [defaultValues, setDefaultValues] = useState<Partial<AttackChainNodeInputForm>>({});
   const [mandatoryKeys, setMandatoryKeys] = useState<ZodObject>(initialZodSchema);
   const [mandatoryGroupKeys, setMandatoryGroupKeys] = useState<ZodObject>(initialZodSchema);
   const notDynamicFields = [
@@ -123,16 +123,16 @@ const InjectForm = ({
   ];
 
   const getInitialValues = (): Record<string, FieldValue> => {
-    const duration = splitDuration(defaultInject?.inject_depends_duration || 0);
+    const duration = splitDuration(defaultAttackChainNode?.node_depends_duration || 0);
     const initialValues = {
-      ...defaultInject,
-      inject_content: (defaultInject?.inject_content ?? {}) as Record<string, FieldValue>,
-      inject_tags: defaultInject?.inject_tags || [],
-      inject_depends_duration_days: duration.days,
-      inject_depends_duration_hours: duration.hours,
-      inject_depends_duration_minutes: duration.minutes,
-      inject_all_teams: defaultInject?.inject_all_teams ?? false,
-      inject_teams: defaultInject?.inject_teams ?? [],
+      ...defaultAttackChainNode,
+      node_content: (defaultAttackChainNode?.node_content ?? {}) as Record<string, FieldValue>,
+      node_tags: defaultAttackChainNode?.node_tags || [],
+      node_depends_duration_days: duration.days,
+      node_depends_duration_hours: duration.hours,
+      node_depends_duration_minutes: duration.minutes,
+      node_all_teams: defaultAttackChainNode?.node_all_teams ?? false,
+      node_teams: defaultAttackChainNode?.node_teams ?? [],
     };
 
     // Enrich initialValues with default contract value
@@ -140,9 +140,9 @@ const InjectForm = ({
       injectorContractContent.fields
         .filter(f => !notDynamicFields.includes(f.key))
         .forEach((field: ContractElement) => {
-          if (!initialValues.inject_content[field.key]) {
-            initialValues.inject_content = {
-              ...initialValues.inject_content,
+          if (!initialValues.node_content[field.key]) {
+            initialValues.node_content = {
+              ...initialValues.node_content,
               [field.key]: (field.cardinality === '1' ? field.defaultValue?.[0] : field.defaultValue) || '',
             };
           }
@@ -152,7 +152,7 @@ const InjectForm = ({
             field.type === 'textarea'
             && field.richText
           ) {
-            initialValues.inject_content[field.key] = (initialValues.inject_content[field.key] as string)
+            initialValues.node_content[field.key] = (initialValues.node_content[field.key] as string)
               .replaceAll('<#list challenges as challenge>', '&lt;#list challenges as challenge&gt;')
               .replaceAll('<#list articles as article>', '&lt;#list articles as article&gt;')
               .replaceAll('</#list>', '&lt;/#list&gt;');
@@ -162,7 +162,7 @@ const InjectForm = ({
     return initialValues;
   };
 
-  const formatInjectContentData = (content: Record<string, FieldValue>): object | null => {
+  const formatAttackChainNodeContentData = (content: Record<string, FieldValue>): object | null => {
     const formattedContent = { ...content };
     injectorContractContent?.fields
       .filter(f => !notDynamicFields.includes(f.key))
@@ -186,13 +186,13 @@ const InjectForm = ({
   };
 
   const strictKeys = {
-    inject_title: z.string().min(1, { message: t('This field is required.') }),
-    inject_depends_duration_days: z.string().min(1, { message: t('This field is required.') }).optional(),
-    inject_depends_duration_hours: z.string().min(1, { message: t('This field is required.') }).optional(),
-    inject_depends_duration_minutes: z.string().min(1, { message: t('This field is required.') }).optional(),
+    node_title: z.string().min(1, { message: t('This field is required.') }),
+    node_depends_duration_days: z.string().min(1, { message: t('This field is required.') }).optional(),
+    node_depends_duration_hours: z.string().min(1, { message: t('This field is required.') }).optional(),
+    node_depends_duration_minutes: z.string().min(1, { message: t('This field is required.') }).optional(),
   };
 
-  const methods = useForm<InjectInputForm>({
+  const methods = useForm<AttackChainNodeInputForm>({
     mode: isCreation ? 'onSubmit' : 'all',
     reValidateMode: isCreation ? 'onSubmit' : 'onChange',
     resolver: zodResolver(z.object({
@@ -201,11 +201,11 @@ const InjectForm = ({
     }).check(({ value, issues }) => {
       if (isCreation) return;
 
-      const parsedTeamError = z.object({ inject_teams: z.array(z.string()).min(1, { message: t('Required') }).default([]) }).safeParse(value);
-      const injectTeamsError = parsedTeamError?.error?.issues.find(i => i.path.includes('inject_teams'));
+      const parsedTeamError = z.object({ node_teams: z.array(z.string()).min(1, { message: t('Required') }).default([]) }).safeParse(value);
+      const injectTeamsError = parsedTeamError?.error?.issues.find(i => i.path.includes('node_teams'));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      if (injectTeamsError && !value.inject_all_teams) {
+      if (injectTeamsError && !value.node_all_teams) {
         issues.push({
           ...injectTeamsError,
           message: t('At least one of these fields is required.'),
@@ -218,7 +218,7 @@ const InjectForm = ({
         if (field.mandatoryGroups) {
           const newIssues: (ZodIssue & { currentField?: boolean })[] = [];
           field.mandatoryGroups.forEach((mandatoryField) => {
-            const issue = parsed.error.issues.find(err => isInjectContentType(fieldsMapByKey[mandatoryField].type) ? err.path[1] === mandatoryField : err.path[0] === `inject_${mandatoryField}`);
+            const issue = parsed.error.issues.find(err => isAttackChainNodeContentType(fieldsMapByKey[mandatoryField].type) ? err.path[1] === mandatoryField : err.path[0] === `node_${mandatoryField}`);
             if (issue) {
               newIssues.push({
                 ...issue,
@@ -236,60 +236,60 @@ const InjectForm = ({
     defaultValues: defaultValues,
   });
 
-  const cleanInvisibleFields = (injectValues: InjectInput) => {
+  const cleanInvisibleFields = (injectValues: AttackChainNodeInput) => {
     injectorContractContent?.fields.forEach((fieldContract) => {
       if (isVisibleField(fieldContract, injectorContractContent.fields, injectValues)) {
         return;
       }
 
       const isNotDynamic = notDynamicFields.includes(fieldContract.key);
-      const targetObj = (isNotDynamic ? injectValues : injectValues.inject_content) as Record<string, unknown>;
-      const keyProp = isNotDynamic ? `inject_${fieldContract.key}` : fieldContract.key;
+      const targetObj = (isNotDynamic ? injectValues : injectValues.node_content) as Record<string, unknown>;
+      const keyProp = isNotDynamic ? `node_${fieldContract.key}` : fieldContract.key;
       targetObj[keyProp] = Array.isArray(targetObj[keyProp]) ? [] : '';
     });
   };
 
   const { handleSubmit, reset, subscribe, getValues, setError, clearErrors, trigger, formState: { isSubmitting } } = methods;
-  const onSubmit: SubmitHandler<InjectInputForm> = async (data) => {
+  const onSubmit: SubmitHandler<AttackChainNodeInputForm> = async (data) => {
     // we cannot save, even in draft, without title
-    if (!data.inject_title?.length) {
-      setError('inject_title', { message: t('This field is required.') });
+    if (!data.node_title?.length) {
+      setError('node_title', { message: t('This field is required.') });
       return;
     }
     if (injectorContractContent) {
-      const inject_depends_duration = Number(data.inject_depends_duration_days) * 3600 * 24
-        + Number(data.inject_depends_duration_hours) * 3600
-        + Number(data.inject_depends_duration_minutes) * 60;
+      const node_depends_duration = Number(data.node_depends_duration_days) * 3600 * 24
+        + Number(data.node_depends_duration_hours) * 3600
+        + Number(data.node_depends_duration_minutes) * 60;
       const values = {
-        inject_title: data.inject_title,
-        inject_injector_contract: injectorContractContent.contract_id,
-        inject_description: data.inject_description as string,
-        inject_tags: data.inject_tags,
-        inject_content: formatInjectContentData(data.inject_content as Record<string, FieldValue>),
-        inject_all_teams: data.inject_all_teams,
-        inject_teams: data.inject_all_teams ? [] : data.inject_teams,
-        inject_assets: data.inject_assets,
-        inject_asset_groups: data.inject_asset_groups,
-        inject_documents: data.inject_documents,
-        inject_depends_duration,
-        inject_depends_on: data.inject_depends_on ? data.inject_depends_on : [],
-      } as InjectInput;
+        node_title: data.node_title,
+        node_injector_contract: injectorContractContent.contract_id,
+        node_description: data.node_description as string,
+        node_tags: data.node_tags,
+        node_content: formatAttackChainNodeContentData(data.node_content as Record<string, FieldValue>),
+        node_all_teams: data.node_all_teams,
+        node_teams: data.node_all_teams ? [] : data.node_teams,
+        node_assets: data.node_assets,
+        node_asset_groups: data.node_asset_groups,
+        node_documents: data.node_documents,
+        node_depends_duration,
+        node_depends_on: data.node_depends_on ? data.node_depends_on : [],
+      } as AttackChainNodeInput;
       cleanInvisibleFields(values);
-      await onSubmitInject(values);
+      await onSubmitAttackChainNode(values);
     }
     handleClose();
   };
 
   useEffect(() => {
-    const fieldsToSubscribe: (keyof InjectInputForm)[] = [];
+    const fieldsToSubscribe: (keyof AttackChainNodeInputForm)[] = [];
     injectorContractContent?.fields.forEach((field) => {
       if (field.key === 'teams') {
-        fieldsToSubscribe.push('inject_all_teams');
+        fieldsToSubscribe.push('node_all_teams');
       }
       if (field.mandatoryConditionFields?.length) {
         field.mandatoryConditionFields.forEach((mandatoryConditionField) => {
           const mandatoryConditionFieldType = injectorContractContent?.fields.find(f => f.key === mandatoryConditionField)?.type;
-          const fieldToSubscribe = ((mandatoryConditionFieldType && isInjectContentType(mandatoryConditionFieldType)) ? `inject_content.${mandatoryConditionField}` : `inject_${mandatoryConditionField}`) as (keyof InjectInputForm);
+          const fieldToSubscribe = ((mandatoryConditionFieldType && isAttackChainNodeContentType(mandatoryConditionFieldType)) ? `node_content.${mandatoryConditionField}` : `node_${mandatoryConditionField}`) as (keyof AttackChainNodeInputForm);
           if (fieldsToSubscribe.indexOf(fieldToSubscribe) === -1) {
             fieldsToSubscribe.push(fieldToSubscribe);
           }
@@ -297,7 +297,7 @@ const InjectForm = ({
       } else if (field.visibleConditionFields?.length) {
         field.visibleConditionFields.forEach((visibleConditionField) => {
           const visibleConditionFieldType = injectorContractContent?.fields.find(f => f.key === visibleConditionField)?.type;
-          const fieldToSubscribe = ((visibleConditionFieldType && isInjectContentType(visibleConditionFieldType)) ? `inject_content.${visibleConditionField}` : `inject_${visibleConditionField}`) as (keyof InjectInputForm);
+          const fieldToSubscribe = ((visibleConditionFieldType && isAttackChainNodeContentType(visibleConditionFieldType)) ? `node_content.${visibleConditionField}` : `node_${visibleConditionField}`) as (keyof AttackChainNodeInputForm);
           if (fieldsToSubscribe.indexOf(fieldToSubscribe) === -1) {
             fieldsToSubscribe.push(fieldToSubscribe);
           }
@@ -317,14 +317,14 @@ const InjectForm = ({
         let mandaGroup: ZodObject = initialZodSchema;
 
         injectorContractContent?.fields.forEach((field) => {
-          const isInjectContent = isInjectContentType(field.type);
+          const isAttackChainNodeContent = isAttackChainNodeContentType(field.type);
           const isRequired = isRequiredField(field, injectorContractContent?.fields, values);
           const isVisible = isVisibleField(field, injectorContractContent?.fields, values);
           const enhancedField = {
             ...field,
-            key: isInjectContent ? `inject_content.${field.key}` : `inject_${field.key}`,
+            key: isAttackChainNodeContent ? `node_content.${field.key}` : `node_${field.key}`,
             originalKey: field.key,
-            isInjectContentType: isInjectContent && field.type !== 'expectation',
+            isAttackChainNodeContentType: isAttackChainNodeContent && field.type !== 'expectation',
             isVisible,
             isInMandatoryGroup: !!field.mandatoryGroups?.length,
             mandatoryGroupContractElementLabels: injectorContractContent?.fields.filter(f => field.mandatoryGroups?.includes(f.key)).reduce((acc, f, index) => {
@@ -339,11 +339,11 @@ const InjectForm = ({
           newEnhancedFieldsMapByType.set(field.type, enhancedField);
 
           if (field.key === 'teams') {
-            clearErrors(`inject_teams` as (keyof InjectInputForm));
+            clearErrors(`node_teams` as (keyof AttackChainNodeInputForm));
             manda = z.object({
               ...manda.shape,
-              inject_all_teams: z.boolean(),
-              inject_teams: z.string().array().optional(),
+              node_all_teams: z.boolean(),
+              node_teams: z.string().array().optional(),
             });
             return;
           }
@@ -351,48 +351,48 @@ const InjectForm = ({
           if (!isCreation) {
             if (isRequired) {
               const validatingRule = getValidatingRule(field, t);
-              if (isInjectContent) {
-                clearErrors(`inject_content.${field.key}` as (keyof InjectInputForm));
+              if (isAttackChainNodeContent) {
+                clearErrors(`node_content.${field.key}` as (keyof AttackChainNodeInputForm));
                 manda = z.object({
                   ...manda.shape,
-                  inject_content: z.object({
-                    ...manda.shape.inject_content.shape,
+                  node_content: z.object({
+                    ...manda.shape.node_content.shape,
                     [field.key]: validatingRule,
                   }),
                 });
               } else {
-                clearErrors(`inject_${field.key}` as (keyof InjectInputForm));
+                clearErrors(`node_${field.key}` as (keyof AttackChainNodeInputForm));
                 manda = z.object({
                   ...manda.shape,
-                  [`inject_${field.key}`]: validatingRule,
+                  [`node_${field.key}`]: validatingRule,
                 });
               }
             } else if (field.mandatoryGroups) {
               const validatingRule = getValidatingRule(field, t);
 
-              if (isInjectContent) {
+              if (isAttackChainNodeContent) {
                 mandaGroup = z.object({
                   ...mandaGroup.shape,
-                  inject_content: z.object({
-                    ...mandaGroup.shape.inject_content.shape,
+                  node_content: z.object({
+                    ...mandaGroup.shape.node_content.shape,
                     [field.key]: validatingRule,
                   }),
                 });
                 manda = z.object({
                   ...manda.shape,
-                  inject_content: z.object({
-                    ...manda.shape.inject_content.shape,
+                  node_content: z.object({
+                    ...manda.shape.node_content.shape,
                     [field.key]: z.any(),
                   }),
                 });
               } else {
                 mandaGroup = z.object({
                   ...mandaGroup.shape,
-                  [`inject_${field.key}`]: validatingRule,
+                  [`node_${field.key}`]: validatingRule,
                 });
                 manda = z.object({
                   ...manda.shape,
-                  [`inject_${field.key}`]: z.any(),
+                  [`node_${field.key}`]: z.any(),
                 });
               }
             }
@@ -412,13 +412,13 @@ const InjectForm = ({
   useEffect(() => {
     let unsubscribe;
     if (!isCreation) {
-      const mandatoryGroupFields = (injectorContractContent?.fields.filter(field => field.mandatoryGroups?.length).map(field => isInjectContentType(field.type) ? `inject_content.${field.key}` : `inject_${field.key}`) || []) as (keyof InjectInputForm)[];
+      const mandatoryGroupFields = (injectorContractContent?.fields.filter(field => field.mandatoryGroups?.length).map(field => isAttackChainNodeContentType(field.type) ? `node_content.${field.key}` : `node_${field.key}`) || []) as (keyof AttackChainNodeInputForm)[];
       unsubscribe = subscribe({
         name: mandatoryGroupFields,
         exact: true,
         formState: { values: true },
         callback: () => {
-          trigger(mandatoryGroupFields as (keyof InjectInputForm)[]);
+          trigger(mandatoryGroupFields as (keyof AttackChainNodeInputForm)[]);
         },
       });
     }
@@ -441,7 +441,7 @@ const InjectForm = ({
   }, [injectorContractContent]);
 
   // Update mode:
-  // In update mode, we want to initialize the form with the current inject values,
+  // In update mode, we want to initialize the form with the current node values,
   // but we do NOT want to reset again if injectorContractContent changes later,
   // otherwise user edits would be lost.
   useEffect(() => {
@@ -476,31 +476,31 @@ const InjectForm = ({
         className={classes.injectFormContainer}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <TextFieldController name="inject_title" label={t('Title')} required disabled={isSubmitting || disabled || permissions.readOnly} />
-        <TextFieldController name="inject_description" label={t('Description')} multiline rows={2} disabled={isSubmitting || disabled || permissions.readOnly} />
-        <TagFieldController name="inject_tags" label={t('Tags')} disabled={isSubmitting || disabled || permissions.readOnly} />
+        <TextFieldController name="node_title" label={t('Title')} required disabled={isSubmitting || disabled || permissions.readOnly} />
+        <TextFieldController name="node_description" label={t('Description')} multiline rows={2} disabled={isSubmitting || disabled || permissions.readOnly} />
+        <TagFieldController name="node_tags" label={t('Tags')} disabled={isSubmitting || disabled || permissions.readOnly} />
 
         {!isAtomic && (
           <div className={`${classes.triggerBox} ${isSubmitting || disabled || permissions.readOnly ? classes.triggerBoxColorDisabled : classes.triggerBoxColor}`}>
             <div className={`${classes.triggerText} ${isSubmitting || disabled || permissions.readOnly ? classes.triggerTextColorDisabled : classes.triggerTextColor}`}>{t('Trigger after')}</div>
-            <TextFieldController name="inject_depends_duration_days" label={t('Days')} type="number" disabled={permissions.readOnly} />
-            <TextFieldController name="inject_depends_duration_hours" label={t('Hours')} type="number" disabled={permissions.readOnly} />
-            <TextFieldController name="inject_depends_duration_minutes" label={t('Minutes')} type="number" disabled={permissions.readOnly} />
+            <TextFieldController name="node_depends_duration_days" label={t('Days')} type="number" disabled={permissions.readOnly} />
+            <TextFieldController name="node_depends_duration_hours" label={t('Hours')} type="number" disabled={permissions.readOnly} />
+            <TextFieldController name="node_depends_duration_minutes" label={t('Minutes')} type="number" disabled={permissions.readOnly} />
           </div>
         )}
 
         {injectorContractContent && (
-          <InjectContentForm
+          <AttackChainNodeContentForm
             enhancedFields={enhancedFields}
             enhancedFieldsMapByType={enhancedFieldsMapByType}
             injectorContractVariables={injectorContractContent.variables || []}
             readOnly={isSubmitting || disabled || permissions.readOnly}
-            injectId={defaultInject.inject_id}
+            injectId={defaultAttackChainNode.node_id}
             isAtomic={isAtomic}
             isCreation={isCreation}
             uriVariable={uriVariable}
-            variables={variablesFromExerciseOrScenario}
-            articles={articlesFromExerciseOrScenario}
+            variables={variablesFromAttackChainRunOrAttackChain}
+            articles={articlesFromAttackChainRunOrAttackChain}
           />
         )}
 
@@ -534,4 +534,4 @@ const InjectForm = ({
   );
 };
 
-export default InjectForm;
+export default AttackChainNodeForm;

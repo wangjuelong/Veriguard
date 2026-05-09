@@ -3,25 +3,25 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import { type OrganizationHelper, type UserHelper } from '../../../../../actions/helper';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type InjectExpectation, type Organization } from '../../../../../utils/api-types';
+import { type AttackChainRun, type AttackChainNodeExpectation, type Organization } from '../../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../../utils/Charts';
 import { computeOrganizationsColors } from './DistributionUtils';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
-const ExerciseDistributionScoreByOrganization: FunctionComponent<Props> = ({ exerciseId }) => {
+const AttackChainRunDistributionScoreByOrganization: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
   const { t } = useFormatter();
   const theme = useTheme();
 
   // Fetching data
-  const { injectExpectations, organizations, organizationsMap, usersMap } = useHelper((helper: InjectHelper & OrganizationHelper & UserHelper) => ({
-    injectExpectations: helper.getExerciseInjectExpectations(exerciseId),
+  const { injectExpectations, organizations, organizationsMap, usersMap } = useHelper((helper: AttackChainNodeHelper & OrganizationHelper & UserHelper) => ({
+    injectExpectations: helper.getAttackChainRunAttackChainNodeExpectations(exerciseId),
     organizationsMap: helper.getOrganizationsMap(),
     usersMap: helper.getUsersMap(),
     organizations: helper.getOrganizations(),
@@ -29,20 +29,20 @@ const ExerciseDistributionScoreByOrganization: FunctionComponent<Props> = ({ exe
 
   const organizationsTotalScores = R.pipe(
     R.filter(
-      (n: InjectExpectation) => !R.isEmpty(n.inject_expectation_results)
-        && n.inject_expectation_user !== null,
+      (n: AttackChainNodeExpectation) => !R.isEmpty(n.node_expectation_results)
+        && n.node_expectation_user !== null,
     ),
-    R.map((n: InjectExpectation) => R.assoc(
-      'inject_expectation_user',
-      n.inject_expectation_user ? usersMap[n.inject_expectation_user] : {},
+    R.map((n: AttackChainNodeExpectation) => R.assoc(
+      'node_expectation_user',
+      n.node_expectation_user ? usersMap[n.node_expectation_user] : {},
       n,
     )),
-    R.groupBy(R.path(['inject_expectation_user', 'user_organization'])),
+    R.groupBy(R.path(['node_expectation_user', 'user_organization'])),
     R.toPairs,
-    R.map((n: [string, InjectExpectation[]]) => ({
+    R.map((n: [string, AttackChainNodeExpectation[]]) => ({
       ...organizationsMap[n[0]],
       organization_total_score: R.sum(
-        R.map((o: InjectExpectation) => o.inject_expectation_score, n[1]),
+        R.map((o: AttackChainNodeExpectation) => o.node_expectation_score, n[1]),
       ),
     })),
   )(injectExpectations);
@@ -69,7 +69,7 @@ const ExerciseDistributionScoreByOrganization: FunctionComponent<Props> = ({ exe
     <>
       {organizationsTotalScores.length > 0 ? (
         <Chart
-          id="exercise_distribution_total_score_by_organization"
+          id="attack_chain_run_distribution_total_score_by_organization"
           options={horizontalBarsChartOptions({ theme })}
           series={totalScoreByOrganizationData}
           type="bar"
@@ -78,9 +78,9 @@ const ExerciseDistributionScoreByOrganization: FunctionComponent<Props> = ({ exe
         />
       ) : (
         <Empty
-          id="exercise_distribution_total_score_by_organization"
+          id="attack_chain_run_distribution_total_score_by_organization"
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}
@@ -88,4 +88,4 @@ const ExerciseDistributionScoreByOrganization: FunctionComponent<Props> = ({ exe
   );
 };
 
-export default ExerciseDistributionScoreByOrganization;
+export default AttackChainRunDistributionScoreByOrganization;
