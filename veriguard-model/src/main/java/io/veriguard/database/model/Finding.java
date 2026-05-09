@@ -85,7 +85,7 @@ public class Finding implements Base {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "finding_inject_id")
-  @JsonProperty("finding_inject_id")
+  @JsonProperty("finding_node_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   @Queryable(filterable = true, dynamicValues = true, sortable = true, path = "attackChainNode.id")

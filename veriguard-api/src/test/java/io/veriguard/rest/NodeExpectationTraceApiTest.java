@@ -174,7 +174,7 @@ class NodeExpectationTraceApiTest extends IntegrationTest {
     assertThatJson(response)
         .when(IGNORING_ARRAY_ORDER)
         .whenIgnoringPaths(
-            "inject_expectation_trace_created_at", "inject_expectation_trace_updated_at")
+            "node_expectation_trace_created_at", "node_expectation_trace_updated_at")
         .isArray()
         .containsAll(
             List.of(

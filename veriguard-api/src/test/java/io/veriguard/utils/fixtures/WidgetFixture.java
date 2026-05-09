@@ -87,13 +87,13 @@ public class WidgetFixture {
             List.of("expectation-inject"));
     Filters.Filter filterStatus =
         createFilter(
-            "inject_expectation_status",
+            "node_expectation_status",
             Filters.FilterMode.and,
             Filters.FilterOperator.eq,
             List.of(status.name()));
     Filters.Filter filterType =
         createFilter(
-            "inject_expectation_type",
+            "node_expectation_type",
             Filters.FilterMode.and,
             Filters.FilterOperator.eq,
             List.of(type.name()));

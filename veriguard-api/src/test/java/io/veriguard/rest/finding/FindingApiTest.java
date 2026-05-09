@@ -930,7 +930,7 @@ class FindingApiTest extends IntegrationTest {
             List.of(finding.getTags().stream().findFirst().get().getId())));
     filters.add(
         buildFilter(
-            "finding_inject_id",
+            "finding_node_id",
             Filters.FilterOperator.contains,
             List.of(finding.getAttackChainNode().getId())));
 
@@ -949,12 +949,12 @@ class FindingApiTest extends IntegrationTest {
     if (simulation != null) {
       filters.add(
           buildFilter(
-              "finding_simulation", Filters.FilterOperator.contains, List.of(simulation.getId())));
+              "finding_attack_chain_run", Filters.FilterOperator.contains, List.of(simulation.getId())));
     }
     if (attackChain != null) {
       filters.add(
           buildFilter(
-              "finding_scenario", Filters.FilterOperator.contains, List.of(attackChain.getId())));
+              "finding_attack_chain", Filters.FilterOperator.contains, List.of(attackChain.getId())));
     }
 
     group.setFilters(filters);

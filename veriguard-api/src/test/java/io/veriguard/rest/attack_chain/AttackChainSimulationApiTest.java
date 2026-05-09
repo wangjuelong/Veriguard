@@ -99,7 +99,7 @@ public class AttackChainSimulationApiTest extends IntegrationTest {
                 .getResponse()
                 .getContentAsString();
         assertThatJson(response)
-            .inPath("$.content[*].exercise_id")
+            .inPath("$.content[*].attack_chain_run_id")
             .isArray()
             .containsExactlyInAnyOrderElementsOf(expectedIds);
       }
