@@ -1,10 +1,12 @@
 package io.veriguard.attackchain.execution;
 
+import io.veriguard.database.model.AttackChainLinkExpectation;
 import io.veriguard.database.model.AttackChainNode;
 import io.veriguard.database.model.AttackChainNodeExpectation;
 import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_STATUS;
 import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import io.veriguard.database.model.AttackChainRun;
+import io.veriguard.database.model.LinkExpectationStatus;
 import io.veriguard.database.model.LinkVerdict;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -36,11 +38,29 @@ public class LinkVerdictCalculator {
    * @return 两维 verdict 组成的 record；若 run 为 null 返回两个 N_A
    */
   public LinkVerdictResult compute(AttackChainRun run) {
+    return compute(run, List.of());
+  }
+
+  /**
+   * 扩展形态：DETECTION 维度同时纳入链路级 expectation（spec §3.5 "节点级 + 链路级 都计入 DETECTION"）.
+   *
+   * @param linkExpectations run 的所有 {@link AttackChainLinkExpectation}（调用方负责 fetch）；空 / null
+   *     等价于退化到只看节点级
+   */
+  public LinkVerdictResult compute(
+      AttackChainRun run, List<AttackChainLinkExpectation> linkExpectations) {
     if (run == null) {
       return new LinkVerdictResult(LinkVerdict.N_A, LinkVerdict.N_A);
     }
     VerdictStats prevention = collectStats(run, EXPECTATION_TYPE.PREVENTION);
     VerdictStats detection = collectStats(run, EXPECTATION_TYPE.DETECTION);
+    if (linkExpectations != null) {
+      for (AttackChainLinkExpectation link : linkExpectations) {
+        // PENDING 还没结算的视作 0 命中（spec §3.6 expired 后变 UNKNOWN，跟节点级 PENDING/UNKNOWN 同等地占
+        // 分母不占分子）。SUCCESS 算分子。FAILED / PARTIAL / UNKNOWN 都只占分母。
+        detection = detection.plusOne(link.getStatus() == LinkExpectationStatus.SUCCESS);
+      }
+    }
     return new LinkVerdictResult(prevention.toVerdict(), detection.toVerdict());
   }
 
@@ -86,6 +106,11 @@ public class LinkVerdictCalculator {
         return LinkVerdict.FULL_BLOCKED;
       }
       return LinkVerdict.PARTIAL;
+    }
+
+    /** 累加一条 expectation：分母 +1，命中（SUCCESS）才 +1 分子。 */
+    public VerdictStats plusOne(boolean success) {
+      return new VerdictStats(denominator + 1, numerator + (success ? 1 : 0));
     }
   }
 
