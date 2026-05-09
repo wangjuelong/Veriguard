@@ -1,4 +1,4 @@
-import { type AttackChainNodeExpectation, type AttackChainNodeExpectationResult } from '../../../../../../utils/api-types';
+import { type AttackChainNodeExpectation, type NodeExpectationResult } from '../../../../../../utils/api-types';
 import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import { isManualExpectation } from '../../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 
@@ -52,11 +52,11 @@ export const useIsManuallyUpdatable = (injectExpectation: AttackChainNodeExpecta
 /**
  * Returns a formatted label for the source of an expectation result.
  *
- * @param {AttackChainNodeExpectationResult | null | undefined} expectationResult - The result object containing source information.
+ * @param {NodeExpectationResult | null | undefined} expectationResult - The result object containing source information.
  * @returns {string} The formatted source label, e.g. "sourceName (sourcePlatform)" or "-" if not available.
  */
 export const getSourceLabel = (
-  expectationResult?: AttackChainNodeExpectationResult | null,
+  expectationResult?: NodeExpectationResult | null,
 ): string => {
   const sourceName = expectationResult?.sourceName?.trim();
   const sourcePlatform = expectationResult?.sourcePlatform?.trim();

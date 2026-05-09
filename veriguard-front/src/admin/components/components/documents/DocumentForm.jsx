@@ -1,11 +1,11 @@
 import { Button, CircularProgress } from '@mui/material';
 import { Form } from 'react-final-form';
 
+import AttackChainField from '../../../../components/AttackChainField';
 import AttackChainRunField from '../../../../components/AttackChainRunField';
 import OldTextField from '../../../../components/fields/OldTextField';
 import FileField from '../../../../components/FileField';
 import { useFormatter } from '../../../../components/i18n';
-import AttackChainField from '../../../../components/AttackChainField';
 import TagField from '../../../../components/TagField';
 
 const DocumentForm = (props) => {

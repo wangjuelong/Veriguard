@@ -1,9 +1,9 @@
 import { simpleCall, simpleDelCall, simplePostCall, simplePutCall } from '../../utils/Action';
 import {
+  type AttackChainNodesImportTestInput,
   type ExportMapperInput,
   type ImportMapperAddInput,
   type ImportMapperUpdateInput,
-  type AttackChainNodesImportTestInput,
   type RawPaginationImportMapper,
   type SearchPaginationInput,
 } from '../../utils/api-types';

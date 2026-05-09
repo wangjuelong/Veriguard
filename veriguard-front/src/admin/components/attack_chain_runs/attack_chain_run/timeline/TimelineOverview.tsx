@@ -8,8 +8,6 @@ import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_
 import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
 import { fetchAttackChainRunAttackChainNodes, updateAttackChainNodeForAttackChainRun } from '../../../../../actions/AttackChainNode';
 import { fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
-import { fetchAttackChainRunChallenges } from '../../../../../actions/challenge-action';
-import type { ArticlesHelper } from '../../../../../actions/channels/article-helper';
 import { fetchAttackChainRunDocuments } from '../../../../../actions/documents/documents-actions';
 import { fetchVariablesForAttackChainRun } from '../../../../../actions/variables/variable-actions';
 import type { VariablesHelper } from '../../../../../actions/variables/variable-helper';
@@ -21,7 +19,7 @@ import ProgressBarCountdown from '../../../../../components/ProgressBarCountdown
 import SearchFilter from '../../../../../components/SearchFilter';
 import Timeline from '../../../../../components/Timeline';
 import { useHelper } from '../../../../../store';
-import { type AttackChainRun, type AttackChainNode } from '../../../../../utils/api-types';
+import { type AttackChainNode, type AttackChainRun } from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
 import endpointContextForAttackChainRun from '../../../../../utils/context/endpoint/EndpointContextForAttackChainRun';
 import { useAppDispatch } from '../../../../../utils/hooks';
@@ -31,10 +29,9 @@ import { isNotEmptyField } from '../../../../../utils/utils';
 import AttackChainNodeIcon from '../../../common/attack_chain_nodes/AttackChainNodeIcon';
 import AttackChainNodePopover from '../../../common/attack_chain_nodes/AttackChainNodePopover';
 import UpdateAttackChainNode from '../../../common/attack_chain_nodes/UpdateAttackChainNode';
-import { ArticleContext, ChallengeContext, TeamContext } from '../../../common/Context';
+import { TeamContext } from '../../../common/Context';
 import TagsFilter from '../../../common/filters/TagsFilter';
 import AnimationMenu from '../AnimationMenu';
-import articleContextForAttackChainRun from '../articles/articleContextForAttackChainRun';
 import teamContextForAttackChainRun from '../teams/teamContextForAttackChainRun';
 import AttackChainNodeOverTimeArea from './AttackChainNodeOverTimeArea';
 import AttackChainNodeOverTimeLine from './AttackChainNodeOverTimeLine';
@@ -67,14 +64,12 @@ const TimelineOverview = () => {
     attack_chain_run,
     nodes,
     teams,
-    articles,
     variables,
-  } = useHelper((helper: AttackChainNodeHelper & AttackChainRunsHelper & ArticlesHelper & VariablesHelper) => {
+  } = useHelper((helper: AttackChainNodeHelper & AttackChainRunsHelper & VariablesHelper) => {
     return {
       attack_chain_run: helper.getAttackChainRun(exerciseId),
       nodes: helper.getAttackChainRunAttackChainNodes(exerciseId),
       teams: helper.getAttackChainRunTeams(exerciseId),
-      articles: helper.getAttackChainRunArticles(exerciseId),
       variables: helper.getAttackChainRunVariables(exerciseId),
     };
   });
@@ -107,9 +102,7 @@ const TimelineOverview = () => {
   };
 
   const teamContext = teamContextForAttackChainRun(exerciseId, []);
-  const articleContext = articleContextForAttackChainRun(exerciseId);
   const endpointContext = endpointContextForAttackChainRun(exerciseId);
-  const challengeContext = { fetchChallenges: () => dispatch(fetchAttackChainRunChallenges(exerciseId)) };
 
   return (
     <div>
@@ -301,25 +294,20 @@ const TimelineOverview = () => {
         </Paper>
       </div>
       {selectedAttackChainNodeId && (
-        <ArticleContext.Provider value={articleContext}>
-          <TeamContext.Provider value={teamContext}>
-            <EndpointContext.Provider value={endpointContext}>
-              <ChallengeContext.Provider value={challengeContext}>
-                <UpdateAttackChainNode
-                  open
-                  handleClose={() => setSelectedAttackChainNodeId(null)}
-                  onUpdateAttackChainNode={onUpdateAttackChainNode}
-                  injectId={selectedAttackChainNodeId}
-                  isAtomic={false}
-                  nodes={nodes}
-                  articlesFromAttackChainRunOrAttackChain={articles}
-                  uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
-                  variablesFromAttackChainRunOrAttackChain={variables}
-                />
-              </ChallengeContext.Provider>
-            </EndpointContext.Provider>
-          </TeamContext.Provider>
-        </ArticleContext.Provider>
+        <TeamContext.Provider value={teamContext}>
+          <EndpointContext.Provider value={endpointContext}>
+            <UpdateAttackChainNode
+              open
+              handleClose={() => setSelectedAttackChainNodeId(null)}
+              onUpdateAttackChainNode={onUpdateAttackChainNode}
+              injectId={selectedAttackChainNodeId}
+              isAtomic={false}
+              nodes={nodes}
+              uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
+              variablesFromAttackChainRunOrAttackChain={variables}
+            />
+          </EndpointContext.Provider>
+        </TeamContext.Provider>
       )}
     </div>
   );

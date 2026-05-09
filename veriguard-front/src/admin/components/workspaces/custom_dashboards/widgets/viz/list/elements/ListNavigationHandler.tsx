@@ -9,9 +9,9 @@ import {
   ENDPOINT_BASE_URL,
 } from '../../../../../../../../constants/BaseUrls';
 import {
+  type EsAttackChainNode, type EsAttackChainNodeExpectation,
   type EsBase,
   type EsFinding,
-  type EsAttackChainNode, type EsAttackChainNodeExpectation,
   type EsVulnerableEndpoint,
 } from '../../../../../../../../utils/api-types';
 import { getTargetTypeFromAttackChainNodeExpectation } from './ListColumnConfig';

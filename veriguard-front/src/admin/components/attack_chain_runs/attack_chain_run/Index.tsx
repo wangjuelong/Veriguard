@@ -16,17 +16,17 @@ import { type AttackChainRun as AttackChainRunType } from '../../../../utils/api
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
 import { INHERITED_CONTEXT } from '../../../../utils/permissions/types';
-import useSimulationPermissions from '../../../../utils/permissions/useSimulationPermissions';
-import { DocumentContext, type DocumentContextType, AttackChainNodeContext, PermissionsContext, type PermissionsContextType } from '../../common/Context';
+import useSimulationPermissions from '../../../../utils/permissions/useAttackChainRunPermissions';
+import { AttackChainNodeContext, DocumentContext, type DocumentContextType, PermissionsContext, type PermissionsContextType } from '../../common/Context';
 import injectContextForAttackChainRun from './AttackChainRunContext';
 import AttackChainRunDatePopover from './AttackChainRunDatePopover';
 import AttackChainRunHeader from './AttackChainRunHeader';
 
-const Simulation = lazy(() => import('./overview/SimulationComponent'));
-const Lessons = lazy(() => import('./lessons/SimulationLessons'));
-const SimulationFindings = lazy(() => import('./findings/SimulationFindings'));
-const SimulationAnalysis = lazy(() => import('./analysis/SimulationAnalysis'));
-const SimulationDefinition = lazy(() => import('./SimulationDefinition'));
+const Simulation = lazy(() => import('./overview/AttackChainRunComponent'));
+const Lessons = lazy(() => import('./lessons/AttackChainRunLessons'));
+const SimulationFindings = lazy(() => import('./findings/AttackChainRunFindings'));
+const SimulationAnalysis = lazy(() => import('./analysis/AttackChainRunAnalysis'));
+const SimulationDefinition = lazy(() => import('./AttackChainRunDefinition'));
 const AttackChainNodes = lazy(() => import('./attack_chain_nodes/AttackChainRunAttackChainNodes'));
 const Tests = lazy(() => import('./tests/AttackChainRunTests'));
 const TimelineOverview = lazy(() => import('./timeline/TimelineOverview'));

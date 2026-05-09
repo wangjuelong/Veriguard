@@ -216,7 +216,12 @@ const Mails = () => {
     .filterAndSort(nodes)
     .filter(i => i.node_communications_number > 0);
 
-  const teamContext = teamContextForAttackChainRun(exerciseId, attack_chain_run.attack_chain_run_teams_users, attack_chain_run.attack_chain_run_all_users_number, attack_chain_run.attack_chain_run_users_number);
+  const teamContext = teamContextForAttackChainRun(
+    exerciseId,
+    attack_chain_run.attack_chain_run_teams_users,
+    attack_chain_run.attack_chain_run_all_users_number,
+    attack_chain_run.attack_chain_run_users_number,
+  );
 
   // Rendering
   return (

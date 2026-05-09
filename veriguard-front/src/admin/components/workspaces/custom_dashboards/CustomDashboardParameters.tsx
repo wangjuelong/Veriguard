@@ -2,7 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useContext } from 'react';
 
 import AttackChainField from '../../../../components/fields/AttackChainField';
-import SimulationField from '../../../../components/fields/SimulationField';
+import SimulationField from '../../../../components/fields/AttackChainRunField';
 import { type CustomDashboardParameters as CustomDashboardParametersType } from '../../../../utils/api-types';
 import { CustomDashboardContext } from './CustomDashboardContext';
 import TimeRangeFilters from './TimeRangeFilters';
@@ -37,12 +37,12 @@ const CustomDashboardParameters: FunctionComponent = () => {
 
   // Build parameter fields
   const paramsFields = customDashboard?.custom_dashboard_parameters
-    ?.filter(p => p.custom_dashboards_parameter_type === 'attack_chain' || p.custom_dashboards_parameter_type === 'attack_chain_run')
+    ?.filter(p => p.custom_dashboards_parameter_type === 'attackChain' || p.custom_dashboards_parameter_type === 'simulation')
     .flatMap((p) => {
       const paramOption = customDashboardParameters[p.custom_dashboards_parameter_id];
       if (paramOption?.hidden) return [];
 
-      if (p.custom_dashboards_parameter_type === 'attack_chain') {
+      if (p.custom_dashboards_parameter_type === 'attackChain') {
         return [(
           <AttackChainField
             key={p.custom_dashboards_parameter_id}
@@ -53,7 +53,7 @@ const CustomDashboardParameters: FunctionComponent = () => {
         )];
       }
 
-      if (p.custom_dashboards_parameter_type === 'attack_chain_run') {
+      if (p.custom_dashboards_parameter_type === 'simulation') {
         return [(
           <SimulationField
             key={p.custom_dashboards_parameter_id}

@@ -4,7 +4,7 @@ import { type FunctionComponent, type MouseEvent as ReactMouseEvent, useState } 
 import { Link } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { type AttackPattern, type ExpectationResultsByType, type AttackChainNodeExpectationResultsByAttackPattern, type AttackChainNodeExpectationResultsByType } from '../../../../utils/api-types';
+import { type AttackPattern, type ExpectationResultsByType, type NodeExpectationResultsByAttackPattern, type NodeExpectationResultsByType } from '../../../../utils/api-types';
 import { hexToRGB } from '../../../../utils/Colors';
 import AtomicTestingResult from '../../atomic_testings/atomic_testing/AtomicTestingResult';
 import { type ExpectationResultType, mitreMatrixExpectationTypes } from '../attack_chain_nodes/expectations/Expectation';
@@ -39,7 +39,7 @@ const useStyles = makeStyles()(theme => ({
 interface AttackPatternBoxProps {
   goToLink?: string;
   attackPattern: AttackPattern;
-  injectResult: AttackChainNodeExpectationResultsByAttackPattern | undefined;
+  injectResult: NodeExpectationResultsByAttackPattern | undefined;
   dummy?: boolean;
 }
 
@@ -54,7 +54,7 @@ const AttackPatternBox: FunctionComponent<AttackPatternBoxProps> = ({
   const theme = useTheme();
   const [open, setOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
-  const results: AttackChainNodeExpectationResultsByType[] = injectResult?.node_expectation_results ?? [];
+  const results: NodeExpectationResultsByType[] = injectResult?.node_expectation_results ?? [];
 
   if (dummy) {
     const content = () => (

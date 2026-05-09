@@ -6,14 +6,14 @@ import { searchEndpointAsOption, searchEndpointLinkedToFindingsAsOption } from '
 import { searchSecurityPlatformAsOption } from '../../../../actions/assets/securityPlatform-actions';
 import { searchAttackChainNodeLinkedToFindingsAsOption, searchTargetOptions } from '../../../../actions/attack_chain_nodes/node-action';
 import { searchAttackChainRunLinkedToFindingsAsOption } from '../../../../actions/attack_chain_runs/attack_chain_run-action';
-import { searchSimulationAsOptions } from '../../../../actions/attack_chain_runs/attack_chain_run-action';
+import { searchSimulationAsOptions } from '../../../../actions/attack_chain_runs/attack_chain_run-search-action';
 import { searchAttackChainAsOption, searchAttackChainCategoryAsOption } from '../../../../actions/attack_chains/attack_chain-actions';
 import { searchAttackChainSimulationsAsOption } from '../../../../actions/attack_chains/attack_chain-attack_chain_run-action';
 import { searchAttackPatternsByNameAsOption } from '../../../../actions/AttackPattern';
 import { searchCustomDashboardAsOptions } from '../../../../actions/custom_dashboards/customdashboard-action';
 import { searchDomainsByNameAsOption } from '../../../../actions/domains/domain-actions';
-import { searchInjectorsByNameAsOption } from '../../../../actions/injectors/injector-action';
 import { searchKillChainPhasesByNameAsOption } from '../../../../actions/kill_chain_phases/killChainPhase-action';
+import { searchInjectorsByNameAsOption } from '../../../../actions/node_executors/node_executor-action';
 import { searchOrganizationsByNameAsOption } from '../../../../actions/organizations/organization-actions';
 import { searchTagAsOption } from '../../../../actions/tags/tag-action';
 import { searchTeamsAsOption } from '../../../../actions/teams/team-actions';

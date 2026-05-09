@@ -7,7 +7,7 @@ import Paper from '../../../../../components/common/Paper';
 import { useFormatter } from '../../../../../components/i18n';
 import type { AttackChainNodeResultOverviewOutput, AttackChainNodeTarget } from '../../../../../utils/api-types';
 import { isAgent, isAssetGroups, isPlayer, isTeam } from '../../../../../utils/target/TargetUtils';
-import { type ExpectationResultType, ExpectationType, type AttackChainNodeExpectationsStore } from '../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore, type ExpectationResultType, ExpectationType } from '../../../common/attack_chain_nodes/expectations/Expectation';
 import ExecutionStatusDetail from '../../../common/attack_chain_nodes/status/ExecutionStatusDetail';
 import TerminalViewTab from '../../../common/attack_chain_nodes/status/traces/TerminalViewTab';
 import TabbedView, { type TabConfig } from '../../../settings/groups/grants/ui/TabbedView';

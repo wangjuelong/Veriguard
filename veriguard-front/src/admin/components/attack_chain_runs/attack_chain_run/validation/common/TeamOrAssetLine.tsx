@@ -8,20 +8,13 @@ import { type AssetGroupsHelper } from '../../../../../../actions/asset_groups/a
 import { type EndpointHelper } from '../../../../../../actions/assets/asset-helper';
 import { fetchSimulationEndpoints } from '../../../../../../actions/assets/endpoint-actions';
 import { fetchAttackChainRunTeams } from '../../../../../../actions/AttackChainRun';
-import { fetchAttackChainRunChallenges } from '../../../../../../actions/challenge-action';
-import { fetchAttackChainRunArticles } from '../../../../../../actions/channels/article-action';
-import { type ArticlesHelper } from '../../../../../../actions/channels/article-helper';
-import { type ChannelsHelper } from '../../../../../../actions/channels/channel-helper';
 import { type Contract } from '../../../../../../actions/contract/contract';
-import { type ChallengeHelper } from '../../../../../../actions/helper';
 import { type TeamsHelper } from '../../../../../../actions/teams/team-helper';
 import { useHelper } from '../../../../../../store';
-import { type AssetGroup, type Endpoint, type AttackChainNode, type Team } from '../../../../../../utils/api-types';
+import { type AssetGroup, type AttackChainNode, type Endpoint, type Team } from '../../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../../utils/hooks';
 import useDataLoader from '../../../../../../utils/hooks/useDataLoader';
 import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
-import ChallengeExpectation from '../expectations/ChallengeExpectation';
-import ChannelExpectation from '../expectations/ChannelExpectation';
 import ManualExpectations from '../expectations/ManualExpectations';
 import TechnicalExpectationAsset from '../expectations/TechnicalExpectationAsset';
 import TechnicalExpectationAssetGroup from '../expectations/TechnicalExpectationAssetGroup';
@@ -61,23 +54,15 @@ const TeamOrAssetLine: FunctionComponent<Props> = ({
     teamsMap,
     assetsMap,
     assetGroupsMap,
-    challengesMap,
-    articlesMap,
-    channelsMap,
-  } = useHelper((helper: ArticlesHelper & AssetGroupsHelper & EndpointHelper & ChallengeHelper & ChannelsHelper & TeamsHelper) => {
+  } = useHelper((helper: AssetGroupsHelper & EndpointHelper & TeamsHelper) => {
     return {
-      articlesMap: helper.getArticlesMap(),
       assetsMap: helper.getEndpointsMap(),
       assetGroupsMap: helper.getAssetGroupMaps(),
-      challengesMap: helper.getChallengesMap(),
-      channelsMap: helper.getChannelsMap(),
       teamsMap: helper.getTeamsMap(),
     };
   });
   useDataLoader(() => {
     dispatch(fetchAttackChainRunTeams(exerciseId));
-    dispatch(fetchAttackChainRunArticles(exerciseId));
-    dispatch(fetchAttackChainRunChallenges(exerciseId));
     dispatch(fetchSimulationEndpoints(exerciseId));
     dispatch(fetchSimulationAssetGroups(exerciseId));
   });
@@ -120,21 +105,6 @@ const TeamOrAssetLine: FunctionComponent<Props> = ({
       </ListItem>
       <List component="div" disablePadding>
         {Array.from(groupByExpectationName(expectations)).map(([expectationName, es]) => {
-          if (es === 'ARTICLE') {
-            const expectation = es[0];
-            const article = articlesMap[expectation.node_expectation_article] || {};
-            const channel = channelsMap[article.article_channel] || {};
-            return (
-              <ChannelExpectation key={expectationName} channel={channel} article={article} expectation={expectation} />
-            );
-          }
-          if (es === 'CHALLENGE') {
-            const expectation = es[0];
-            const challenge = challengesMap[expectation.node_expectation_challenge] || {};
-            return (
-              <ChallengeExpectation key={expectationName} challenge={challenge} expectation={expectation} />
-            );
-          }
           if (es === 'PREVENTION' || es === 'DETECTION') {
             const expectation = es[0];
             if (asset) {

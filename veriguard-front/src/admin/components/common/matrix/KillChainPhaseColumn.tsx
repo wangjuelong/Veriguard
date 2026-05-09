@@ -2,7 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
-import { type AttackPattern, type AttackChainNodeExpectationResultsByAttackPattern, type KillChainPhase } from '../../../../utils/api-types';
+import { type AttackPattern, type KillChainPhase, type NodeExpectationResultsByAttackPattern } from '../../../../utils/api-types';
 import AttackPatternBox from './AttackPatternBox';
 
 const useStyles = makeStyles()(() => ({
@@ -17,7 +17,7 @@ interface KillChainPhaseComponentProps {
   goToLink?: string;
   killChainPhase: KillChainPhase;
   attackPatterns: AttackPattern[];
-  injectResults: AttackChainNodeExpectationResultsByAttackPattern[];
+  injectResults: NodeExpectationResultsByAttackPattern[];
   dummy?: boolean;
 }
 

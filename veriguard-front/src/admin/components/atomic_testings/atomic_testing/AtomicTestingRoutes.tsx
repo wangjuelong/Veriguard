@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router';
 import { errorWrapper } from '../../../../components/Error';
 import NotFound from '../../../../components/NotFound';
 import type { AttackChainNodeResultOverviewOutput } from '../../../../utils/api-types';
-import { externalContractTypesWithFindings } from '../../../../utils/injector_contract/InjectorContractUtils';
+import { externalContractTypesWithFindings } from '../../../../utils/node_contract/NodeContractUtils';
 import SnapshotRemediationProvider from '../../payloads/utils/SnapshotRemediationProvider';
 
 interface Props { injectResultOverview: AttackChainNodeResultOverviewOutput }

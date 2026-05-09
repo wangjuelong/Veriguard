@@ -10,7 +10,7 @@ import { fetchPlayers } from '../../../../../actions/users/User';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Communication, type AttackChainRun, type User } from '../../../../../utils/api-types';
+import { type AttackChainRun, type Communication, type User } from '../../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../../utils/Charts';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';

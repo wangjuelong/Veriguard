@@ -1,6 +1,6 @@
-import { type AttackChainNodeDependency } from '../../../utils/api-types';
+import { type AttackChainEdge } from '../../../utils/api-types';
 
-const fromAttackChainNodeDependencyToLabel = (dependency: AttackChainNodeDependency) => {
+const fromAttackChainNodeDependencyToLabel = (dependency: AttackChainEdge) => {
   let label = '';
   if (dependency.dependency_condition?.conditions !== undefined) {
     label = dependency.dependency_condition.conditions

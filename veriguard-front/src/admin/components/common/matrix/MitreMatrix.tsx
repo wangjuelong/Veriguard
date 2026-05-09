@@ -5,7 +5,7 @@ import { makeStyles } from 'tss-react/mui';
 import { type AttackPatternHelper } from '../../../../actions/attack_patterns/attackpattern-helper';
 import { type KillChainPhaseHelper } from '../../../../actions/kill_chain_phases/killchainphase-helper';
 import { useHelper } from '../../../../store';
-import { type AttackPattern, type AttackChainNodeExpectationResultsByAttackPattern, type KillChainPhase } from '../../../../utils/api-types';
+import { type AttackPattern, type KillChainPhase, type NodeExpectationResultsByAttackPattern } from '../../../../utils/api-types';
 import { sortKillChainPhase } from '../../../../utils/kill_chain_phases/kill_chain_phases';
 import KillChainPhaseColumn from './KillChainPhaseColumn';
 import MitreMatrixDummy from './MitreMatrixDummy';
@@ -23,7 +23,7 @@ const useStyles = makeStyles()(() => ({
 
 interface Props {
   goToLink?: string;
-  injectResults: AttackChainNodeExpectationResultsByAttackPattern[];
+  injectResults: NodeExpectationResultsByAttackPattern[];
 }
 
 const MitreMatrix: FunctionComponent<Props> = ({

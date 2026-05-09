@@ -27,7 +27,7 @@ const Home = lazy(() => import('./components/Home'));
 const IndexProfile = lazy(() => import('./components/profile/Index'));
 const FullTextSearch = lazy(() => import('./components/search/FullTextSearch'));
 const Findings = lazy(() => import('./components/findings/Findings'));
-const AttackChainRuns = lazy(() => import('./components/attack_chain_runs/Simulations'));
+const AttackChainRuns = lazy(() => import('./components/attack_chain_runs/AttackChainRuns'));
 const IndexAttackChainRun = lazy(() => import('./components/attack_chain_runs/attack_chain_run/Index'));
 const AtomicTestings = lazy(() => import('./components/atomic_testings/AtomicTestings'));
 const IndexAtomicTesting = lazy(() => import('./components/atomic_testings/atomic_testing/Index'));

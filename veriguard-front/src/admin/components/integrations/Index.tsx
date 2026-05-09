@@ -6,12 +6,12 @@ import { errorWrapper } from '../../../components/Error';
 import Loader from '../../../components/Loader';
 import NotFound from '../../../components/NotFound';
 import ConnectorDetails from './common/ConnectorDetails';
-import InjectorPage from './injectors/InjectorPage';
+import InjectorPage from './node_executors/InjectorPage';
 
 const Catalog = lazy(() => import('./catalog_connectors/Catalog'));
 const CatalogLayout = lazy(() => import('./catalog_connectors/CatalogLayout'));
 
-const InjectorsLayout = lazy(() => import('./injectors/InjectorsLayout'));
+const InjectorsLayout = lazy(() => import('./node_executors/InjectorsLayout'));
 const ExecutorsLayout = lazy(() => import('./executors/ExecutorsLayout'));
 const CollectorsLayout = lazy(() => import('./collectors/CollectorsLayout'));
 const ConnectorList = lazy(() => import('./common/ConnectorList'));

@@ -5,7 +5,7 @@ import { type FunctionComponent } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { useFormatter } from '../../../../components/i18n';
-import { type ExpectationResultsByType, type AttackChainNodeResultOutput } from '../../../../utils/api-types';
+import { type AttackChainNodeResultOutput, type ExpectationResultsByType } from '../../../../utils/api-types';
 import { expectationResultTypes } from '../../common/attack_chain_nodes/expectations/Expectation';
 
 const useStyles = makeStyles()(() => ({

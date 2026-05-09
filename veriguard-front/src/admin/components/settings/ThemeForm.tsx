@@ -54,6 +54,7 @@ const ThemeForm: FunctionComponent<Props> = ({
         logo_login_url: z.string().optional(),
         logo_url: z.string().optional(),
         logo_url_collapsed: z.string().optional(),
+        navigationColor: z.string().optional(),
         navigation_color: z.string().optional(),
         paper_color: z.string().optional(),
         primary_color: z.string().optional(),

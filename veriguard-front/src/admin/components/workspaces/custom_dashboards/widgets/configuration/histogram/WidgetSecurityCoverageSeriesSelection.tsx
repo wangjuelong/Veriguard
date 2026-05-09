@@ -5,7 +5,7 @@ import { type FunctionComponent, useContext, useEffect, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { SIMULATIONS } from '../../../../../../../components/common/queryable/filter/constants';
-import SimulationField from '../../../../../../../components/fields/SimulationField';
+import SimulationField from '../../../../../../../components/fields/AttackChainRunField';
 import { useFormatter } from '../../../../../../../components/i18n';
 import Loader from '../../../../../../../components/Loader';
 import { type AttackChainNodeExpectation, type Series } from '../../../../../../../utils/api-types';

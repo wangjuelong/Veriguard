@@ -6,7 +6,7 @@ import { fetchGroup } from '../../../../../../actions/Group';
 import { type GroupHelper } from '../../../../../../actions/group/group-helper';
 import { useFormatter } from '../../../../../../components/i18n';
 import { useHelper } from '../../../../../../store';
-import { type Grant, type GroupGrantInput, type AttackChainNodeResultOutput } from '../../../../../../utils/api-types';
+import { type AttackChainNodeResultOutput, type Grant, type GroupGrantInput } from '../../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../../utils/hooks';
 import { type TableConfig } from '../ui/TableData';
 

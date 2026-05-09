@@ -31,7 +31,7 @@ import { type AttackChainsHelper } from '../actions/attack_chains/attack_chain-h
 import { type TeamsHelper } from '../actions/teams/team-helper';
 import { AttackChainNodeTestContext, PermissionsContext } from '../admin/components/common/Context';
 import { useHelper } from '../store';
-import { type AttackChainNode, type AttackChainNodeDependency } from '../utils/api-types';
+import { type AttackChainEdge, type AttackChainNode } from '../utils/api-types';
 import handle from '../utils/period/Period';
 import ChainingUtils from './common/chaining/ChainingUtils';
 import CustomTimelineBackground from './CustomTimelineBackground';
@@ -84,7 +84,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
   const { classes } = useStyles();
   const theme = useTheme();
   const { permissions } = useContext(PermissionsContext);
-  const [nodes, setNodes, onNodesChange] = useNodesState<NodeAttackChainNode>([]);
+  const [flowNodes, setFlowNodes, onFlowNodesChange] = useNodesState<NodeAttackChainNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [draggingOnGoing, setDraggingOnGoing] = useState<boolean>(false);
   const [viewportData, setViewportData] = useState<Viewport>();
@@ -356,7 +356,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
       setCurrentUpdatedNode(null);
       setDraggingOnGoing(false);
       calculateAttackChainNodePosition(injectsNodes);
-      setNodes(injectsNodes);
+      setFlowNodes(injectsNodes);
       updateEdges();
     }
   };
@@ -393,7 +393,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
   const nodeDragStop = (_event: ReactMouseEvent, node: NodeAttackChainNode) => {
     const injectFromMap = injectsMap[node.id];
     if (injectFromMap !== undefined) {
-      const node = {
+      const updatedNode = {
         ...injectFromMap,
         node_injector_contract: injectFromMap.node_injector_contract.injector_contract_id,
         node_id: node.id,
@@ -402,8 +402,8 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
           ? injectFromMap.node_depends_on
           : null,
       };
-      onUpdateAttackChainNode([node]);
-      setCurrentUpdatedNode(node);
+      onUpdateAttackChainNode([updatedNode]);
+      setCurrentUpdatedNode(updatedNode);
       setDraggingOnGoing(false);
     }
   };
@@ -412,8 +412,8 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
    * Small function to do some stuff when dragging is starting
    */
   const nodeDragStart = () => {
-    const nodesList = nodes.filter(currentNode => currentNode.type !== 'phantom');
-    setNodes(nodesList);
+    const nodesList = flowNodes.filter(currentNode => currentNode.type !== 'phantom');
+    setFlowNodes(nodesList);
   };
 
   /**
@@ -438,7 +438,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
     const node = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connection.target);
     const injectParent = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connection.source);
     if (node !== undefined && injectParent !== undefined && node.node_depends_duration > injectParent.node_depends_duration) {
-      const newDependsOn: AttackChainNodeDependency = {
+      const newDependsOn: AttackChainEdge = {
         dependency_relationship: {
           node_children_id: node.node_id,
           node_parent_id: injectParent.node_id,
@@ -475,9 +475,9 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
     setDraggingOnGoing(true);
     const { position } = node;
     const { data } = node;
-    const dependsOn = nodes.find(currentNode => (data.node?.node_depends_on !== null
+    const dependsOn = flowNodes.find(currentNode => (data.node?.node_depends_on !== null
       && data.node?.node_depends_on!.find(value => value.dependency_relationship?.node_parent_id === currentNode.id)));
-    const dependsTo = nodes
+    const dependsTo = flowNodes
       .filter(currentNode => (currentNode.data.node?.node_depends_on !== undefined
         && currentNode.data.node?.node_depends_on !== null
         && currentNode.data.node?.node_depends_on.find(value => value.dependency_relationship?.node_parent_id === node.id) !== undefined))
@@ -572,8 +572,8 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
    * @param incrementIndex increment or decrement the index to get the current minutesPerGap
    */
   const updateMinutesPerGap = (incrementIndex: number) => {
-    const nodesList = nodes.filter(currentNode => currentNode.type !== 'phantom');
-    setNodes(nodesList);
+    const nodesList = flowNodes.filter(currentNode => currentNode.type !== 'phantom');
+    setFlowNodes(nodesList);
     setDraggingOnGoing(true);
     setMinutesPerGapIndex(minutesPerGapIndex + incrementIndex);
     setDraggingOnGoing(false);
@@ -609,7 +609,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
           node_depends_on: undefined,
         };
         updates.push(injectToRemoveEdge);
-        const newDependsOn: AttackChainNodeDependency = {
+        const newDependsOn: AttackChainEdge = {
           dependency_relationship: {
             node_children_id: injectToUpdate.node_id,
             node_parent_id: edge.source,
@@ -639,7 +639,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
       const node = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === edge.target);
       const parent = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connectionState.toNode?.id);
       if (node !== undefined && parent !== undefined && parent.node_depends_duration < node.node_depends_duration) {
-        const newDependsOn: AttackChainNodeDependency = {
+        const newDependsOn: AttackChainEdge = {
           dependency_relationship: {
             node_children_id: node.node_id,
             node_parent_id: connectionState.toNode?.id,
@@ -679,9 +679,9 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
         >
           <ReactFlow
             colorMode={theme.palette.mode}
-            nodes={nodes}
+            nodes={flowNodes}
             edges={edges}
-            onNodesChange={onNodesChange}
+            onNodesChange={onFlowNodesChange}
             onEdgesChange={onEdgesChange}
             nodeTypes={nodeTypes}
             nodesDraggable={permissions.canManage}

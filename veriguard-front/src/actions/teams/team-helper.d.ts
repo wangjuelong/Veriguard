@@ -1,4 +1,4 @@
-import { type AttackChainRun, type AttackChain, type Team, type User } from '../../utils/api-types';
+import { type AttackChain, type AttackChainRun, type Team, type User } from '../../utils/api-types';
 
 export interface TeamsHelper {
   getAttackChainRunTeams: (exerciseId: AttackChainRun['attack_chain_run_id']) => Team[];

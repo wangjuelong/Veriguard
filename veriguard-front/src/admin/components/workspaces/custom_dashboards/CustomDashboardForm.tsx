@@ -49,7 +49,7 @@ const CustomDashboardForm: FunctionComponent<Props> = ({
   const parametersSchema = z.object({
     custom_dashboards_parameter_id: z.string().optional(),
     custom_dashboards_parameter_name: z.string().min(1, { message: t('Should not be empty') }),
-    custom_dashboards_parameter_type: z.enum(['attack_chain', 'attack_chain_run', 'timeRange', 'startDate', 'endDate']),
+    custom_dashboards_parameter_type: z.enum(['attackChain', 'simulation', 'timeRange', 'startDate', 'endDate']),
   });
 
   const validationSchema = useMemo(

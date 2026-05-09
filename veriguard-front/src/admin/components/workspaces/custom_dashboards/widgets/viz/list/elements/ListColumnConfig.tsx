@@ -15,8 +15,8 @@ import ItemStatus from '../../../../../../../../components/ItemStatus';
 import ItemTags from '../../../../../../../../components/ItemTags';
 import {
   type AttackPattern,
-  type EsBase,
   type EsAttackChainNodeExpectation,
+  type EsBase,
 } from '../../../../../../../../utils/api-types';
 import { computeAttackChainNodeExpectationLabel } from '../../../../../../../../utils/statusUtils';
 import EndpointListItemFragments from '../../../../../../common/endpoints/EndpointListItemFragments';

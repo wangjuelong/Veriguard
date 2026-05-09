@@ -26,7 +26,7 @@ const AttackPathContextLayer = ({ attackPathsData, widgetId, widgetConfig }: Pro
   const { customDashboard, customDashboardParameters } = useContext(CustomDashboardContext);
 
   const simulationParamIdFromSerie = (((widgetConfig.series[0] || []).filter?.filters || []).find(f => f.key == 'base_attack_chain_run_side')?.values ?? [])[0];
-  const dashboardParameterId = customDashboard?.custom_dashboard_parameters?.find(p => p.custom_dashboards_parameter_type === 'attack_chain_run' && p.custom_dashboards_parameter_id === simulationParamIdFromSerie)?.custom_dashboards_parameter_id;
+  const dashboardParameterId = customDashboard?.custom_dashboard_parameters?.find(p => p.custom_dashboards_parameter_type === 'simulation' && p.custom_dashboards_parameter_id === simulationParamIdFromSerie)?.custom_dashboards_parameter_id;
   const simulationIdContext = dashboardParameterId == simulationParamIdFromSerie ? customDashboardParameters[dashboardParameterId].value : simulationParamIdFromSerie;
 
   const { attack_chain_run } = useHelper((helper: AttackChainRunsHelper) => ({ attack_chain_run: helper.getAttackChainRun(simulationIdContext) }));

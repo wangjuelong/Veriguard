@@ -1,4 +1,4 @@
-import { type AssetGroup, type AttackChainRun, type AttackChain } from '../../utils/api-types';
+import { type AssetGroup, type AttackChain, type AttackChainRun } from '../../utils/api-types';
 
 export interface AssetGroupsHelper {
   getAssetGroups: () => AssetGroup[];

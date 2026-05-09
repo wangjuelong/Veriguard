@@ -7,7 +7,7 @@ import { makeStyles } from 'tss-react/mui';
 import { fetchExpectationTraces } from '../../../../actions/atomic_testings/atomic-testing-actions';
 import Drawer from '../../../../components/common/Drawer';
 import { useFormatter } from '../../../../components/i18n';
-import type { AttackChainNodeExpectationResult, AttackChainNodeExpectationTrace } from '../../../../utils/api-types';
+import type { NodeExpectationResult, NodeExpectationTrace } from '../../../../utils/api-types';
 import { getSourceLabel } from '../../attack_chain_runs/attack_chain_run/validation/expectations/ExpectationUtils';
 import { type AttackChainNodeExpectationsStore } from '../../common/attack_chain_nodes/expectations/Expectation';
 
@@ -16,7 +16,7 @@ const useStyles = makeStyles()(() => ({ flexContainer: { display: 'flex' } }));
 interface Props {
   injectExpectation: AttackChainNodeExpectationsStore;
   sourceId: string;
-  expectationResult: AttackChainNodeExpectationResult | null;
+  expectationResult: NodeExpectationResult | null;
   open: boolean;
   handleClose: () => void;
 }
@@ -31,10 +31,10 @@ const TargetResultsSecurityPlatform: FunctionComponent<Props> = ({
   const { classes } = useStyles();
   const { t, fldt } = useFormatter();
   const theme = useTheme();
-  const [expectationTraces, setExpectationTraces] = useState<AttackChainNodeExpectationTrace[]>([]);
+  const [expectationTraces, setExpectationTraces] = useState<NodeExpectationTrace[]>([]);
 
   useEffect(() => {
-    fetchExpectationTraces(injectExpectation.node_expectation_id, sourceId).then((result: { data: AttackChainNodeExpectationTrace[] }) => setExpectationTraces(result.data ?? []));
+    fetchExpectationTraces(injectExpectation.node_expectation_id, sourceId).then((result: { data: NodeExpectationTrace[] }) => setExpectationTraces(result.data ?? []));
   }, [injectExpectation.node_expectation_id, sourceId]);
 
   return (
@@ -60,7 +60,7 @@ const TargetResultsSecurityPlatform: FunctionComponent<Props> = ({
             </TableHead>
             <TableBody>
               {
-                expectationTraces.map((expectationTrace: AttackChainNodeExpectationTrace) => {
+                expectationTraces.map((expectationTrace: NodeExpectationTrace) => {
                   return (
                     <TableRow
                       key={expectationTrace.node_expectation_trace_id}

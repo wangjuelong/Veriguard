@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-import { type AttackChainRun, type Organization, type AttackChain, type Tag } from '../../utils/api-types';
+import { type AttackChain, type AttackChainRun, type Organization, type Tag } from '../../utils/api-types';
 
 export function createTagMap(numberTags: number): { [key: string]: Tag } {
   const tagMap: { [key: string]: Tag } = {};
@@ -35,7 +35,6 @@ export function createAttackChainRunsMap(numberTags: number): { [key: string]: A
     exerciseMap[id] = {
       attack_chain_run_created_at: faker.date.recent().toISOString(),
       attack_chain_run_id: id,
-      attack_chain_run_mail_from: faker.internet.email(),
       attack_chain_run_name: faker.hacker.phrase(),
       attack_chain_run_status: 'SCHEDULED',
       attack_chain_run_updated_at: faker.date.soon().toISOString(),
@@ -50,8 +49,8 @@ export function createAttackChainMap(numberTags: number): { [key: string]: Attac
     const id = faker.string.uuid();
     scenarioMap[id] = {
       attack_chain_created_at: faker.date.recent().toISOString(),
+      attack_chain_execution_mode: 'STOP_ON_BLOCK',
       attack_chain_id: id,
-      attack_chain_mail_from: faker.internet.email(),
       attack_chain_name: faker.hacker.phrase(),
       attack_chain_updated_at: faker.date.soon().toISOString(),
     };

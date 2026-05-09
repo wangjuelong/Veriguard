@@ -1,5 +1,5 @@
 import countriesJson from '../static/geo/countries.json';
-import { type AttackPattern, type AttackChainRun, type KillChainPhase, type Organization, type AttackChain, type Tag } from './api-types';
+import { type AttackChain, type AttackChainRun, type AttackPattern, type KillChainPhase, type Organization, type Tag } from './api-types';
 
 interface Country {
   code: string;

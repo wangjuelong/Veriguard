@@ -8,7 +8,7 @@ import { type CommunicationHelper } from '../../../../../actions/communications/
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Communication, type AttackChainRun } from '../../../../../utils/api-types';
+import { type AttackChainRun, type Communication } from '../../../../../utils/api-types';
 import { areaChartOptions } from '../../../../../utils/Charts';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';

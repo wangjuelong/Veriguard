@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest';
 
 import { exportData } from '../../utils/Environment';
 import {
+  createAttackChainMap,
   createAttackChainRunsMap,
   createOrganisationsMap,
-  createAttackChainMap,
   createTagMap,
 } from '../fixtures/api-types.fixtures';
 

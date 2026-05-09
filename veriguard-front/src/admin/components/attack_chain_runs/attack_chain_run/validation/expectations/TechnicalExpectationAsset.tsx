@@ -7,7 +7,7 @@ import { makeStyles } from 'tss-react/mui';
 import { type Contract } from '../../../../../../actions/contract/contract';
 import Drawer from '../../../../../../components/common/Drawer';
 import { useFormatter } from '../../../../../../components/i18n';
-import { type AttackChainNodeExpectationResult } from '../../../../../../utils/api-types';
+import { type NodeExpectationResult } from '../../../../../../utils/api-types';
 import { truncate } from '../../../../../../utils/String';
 import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import { typeIcon } from '../../../../common/attack_chain_nodes/expectations/ExpectationUtils';
@@ -43,7 +43,7 @@ const TechnicalExpectationAsset: FunctionComponent<Props> = ({
   const { t } = useFormatter();
 
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<AttackChainNodeExpectationResult | null>(null);
+  const [selected, setSelected] = useState<NodeExpectationResult | null>(null);
 
   const toJsonFormat = (result: string) => {
     try {

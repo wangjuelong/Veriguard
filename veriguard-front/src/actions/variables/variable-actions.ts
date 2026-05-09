@@ -1,7 +1,7 @@
 import { type Dispatch } from 'redux';
 
 import { delReferential, getReferential, postReferential, putReferential } from '../../utils/Action';
-import { type AttackChainRun, type AttackChain, type Variable, type VariableInput } from '../../utils/api-types';
+import { type AttackChain, type AttackChainRun, type Variable, type VariableInput } from '../../utils/api-types';
 import * as schema from '../Schema';
 
 // -- EXERCISES --

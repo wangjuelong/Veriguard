@@ -13,7 +13,7 @@ import SecurityPlatformField from '../../../../../../components/fields/SecurityP
 import { useFormatter } from '../../../../../../components/i18n';
 import ItemStatus from '../../../../../../components/ItemStatus';
 import { useHelper } from '../../../../../../store';
-import { type AttackChainNodeExpectationResult, type SecurityPlatform } from '../../../../../../utils/api-types';
+import { type NodeExpectationResult, type SecurityPlatform } from '../../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../../utils/hooks';
 import useDataLoader from '../../../../../../utils/hooks/useDataLoader';
 import { AbilityContext, Can } from '../../../../../../utils/permissions/permissionsContext';
@@ -34,7 +34,7 @@ const useStyles = makeStyles()(theme => ({
 
 interface FormProps {
   expectation: AttackChainNodeExpectationsStore;
-  result?: AttackChainNodeExpectationResult;
+  result?: NodeExpectationResult;
   sourceIds?: string[];
   onUpdate?: () => void;
 }

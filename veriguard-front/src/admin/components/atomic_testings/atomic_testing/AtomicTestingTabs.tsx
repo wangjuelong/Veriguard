@@ -4,7 +4,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { useFormatter } from '../../../../components/i18n';
 import type { AttackChainNodeResultOverviewOutput } from '../../../../utils/api-types';
-import { externalContractTypesWithFindings } from '../../../../utils/injector_contract/InjectorContractUtils';
+import { externalContractTypesWithFindings } from '../../../../utils/node_contract/NodeContractUtils';
 
 const useStyles = makeStyles()(theme => ({
   item: {

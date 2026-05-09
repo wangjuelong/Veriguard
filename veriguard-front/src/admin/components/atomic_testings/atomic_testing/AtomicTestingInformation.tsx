@@ -49,10 +49,10 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
   }, [injectResultOverviewOutput]);
 
   const documentNames = useMemo(() => {
-    const docs = injectResultOverviewOutput.nodes_documents ?? [];
+    const docs = injectResultOverviewOutput.injects_documents ?? [];
     if (docs.length === 0) return ['-'];
     return docs.map(docId => documentMap[docId]?.document_name ?? '-');
-  }, [injectResultOverviewOutput.nodes_documents, documentMap]);
+  }, [injectResultOverviewOutput.injects_documents, documentMap]);
 
   return (
     <Paper sx={{ p: theme.spacing(2) }} classes={{ root: classes.paper }} variant="outlined">
@@ -126,7 +126,7 @@ const AtomicTestingInformation: FunctionComponent<Props> = ({ injectResultOvervi
           <Typography variant="h3" gutterBottom>
             {t('Tags')}
           </Typography>
-          <ItemTags tags={injectResultOverviewOutput.nodes_tags} limit={10} />
+          <ItemTags tags={injectResultOverviewOutput.node_tags} limit={10} />
         </div>
         <div style={{ gridArea: 'platforms' }}>
           <Typography variant="h3" gutterBottom>

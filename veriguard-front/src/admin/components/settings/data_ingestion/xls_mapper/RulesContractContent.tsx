@@ -22,11 +22,11 @@ import { Controller, type FieldArrayWithId, useFieldArray, type UseFieldArrayRem
 import { makeStyles } from 'tss-react/mui';
 
 import { directFetchInjectorContract } from '../../../../../actions/NodeContracts';
-import { useFormatter } from '../../../../../components/i18n';
 import AttackChainNodeContractComponent from '../../../../../components/AttackChainNodeContractComponent';
+import { useFormatter } from '../../../../../components/i18n';
 import RegexComponent from '../../../../../components/RegexComponent';
 import { type ImportMapperAddInput } from '../../../../../utils/api-types';
-import { type ContractElement, type InjectorContractConverted } from '../../../../../utils/api-types-custom';
+import { type ContractElement, type NodeContractConverted } from '../../../../../utils/api-types-custom';
 
 const useStyles = makeStyles()(() => ({
   rulesArray: {
@@ -123,7 +123,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
 
   useEffect(() => {
     if (methods.getValues(`import_mapper_node_importers.${index}.node_importer_injector_contract`)) {
-      directFetchInjectorContract(methods.getValues(`import_mapper_node_importers.${index}.node_importer_injector_contract`)).then((result: { data: InjectorContractConverted }) => {
+      directFetchInjectorContract(methods.getValues(`import_mapper_node_importers.${index}.node_importer_injector_contract`)).then((result: { data: NodeContractConverted }) => {
         const injectorContract = result.data;
         setInjectorContractLabel(tPick(injectorContract.injector_contract_labels));
         const tmp = injectorContract?.convertedContent?.fields
@@ -134,7 +134,7 @@ const RulesContractContent: FunctionComponent<Props> = ({
   }, []);
 
   const onChangeInjectorContractId = () => {
-    directFetchInjectorContract(methods.getValues(`import_mapper_node_importers.${index}.node_importer_injector_contract`)).then((result: { data: InjectorContractConverted }) => {
+    directFetchInjectorContract(methods.getValues(`import_mapper_node_importers.${index}.node_importer_injector_contract`)).then((result: { data: NodeContractConverted }) => {
       const injectorContract = result.data;
       setInjectorContractLabel(tPick(injectorContract.injector_contract_labels));
       const tmp = injectorContract?.convertedContent?.fields

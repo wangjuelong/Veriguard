@@ -1,22 +1,16 @@
 import { createContext, type ReactElement } from 'react';
 
 import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../../actions/attack_chain_nodes/AttackChainNode';
-import { type FullArticleStore } from '../../../actions/channels/Article';
 import { type Page } from '../../../components/common/queryable/Page';
 import {
-  type Article,
-  type ArticleCreateInput,
-  type ArticleUpdateInput,
-  type Challenge,
-  type Channel,
-  type Evaluation,
-  type EvaluationInput,
-  type ImportTestSummary,
   type AttackChainNode,
   type AttackChainNodeBulkProcessingInput,
   type AttackChainNodeBulkUpdateInputs, type AttackChainNodeInput,
   type AttackChainNodesImportInput,
   type AttackChainNodeTestStatusOutput,
+  type Evaluation,
+  type EvaluationInput,
+  type ImportTestSummary,
   type LessonsAnswer,
   type LessonsAnswerCreateInput,
   type LessonsCategory,
@@ -30,7 +24,6 @@ import {
   type Objective,
   type ObjectiveInput,
   type PublicAttackChainRun,
-  type PublicAttackChain,
   type Report,
   type ReportInput,
   type SearchPaginationInput,
@@ -55,34 +48,10 @@ export type PermissionsContextType = {
   inherited_context: InheritedContext;
 };
 
-export type ArticleContextType = {
-  previewArticleUrl: (article: FullArticleStore) => string;
-  fetchArticles: () => Promise<{
-    result: string[];
-    entities: { articles: Record<string, Article> };
-  }>;
-  fetchChannels: () => Promise<{
-    result: string[];
-    entities: { channels: Record<string, Channel> };
-  }>;
-  fetchDocuments: () => Promise<Document[]>;
-  onAddArticle: (data: ArticleCreateInput) => Promise<{ result: string }>;
-  onUpdateArticle: (article: Article, data: ArticleUpdateInput) => string;
-  onDeleteArticle: (article: Article) => string;
-};
-
-export type ChallengeContextType = {
-  previewChallengeUrl?: () => string;
-  fetchChallenges?: () => Promise<{
-    result: string[];
-    entities: { challenges: Record<string, Challenge> };
-  }>;
-};
-
 export type PreviewChallengeContextType = {
   linkToPlayerMode: string;
   linkToAdministrationMode: string;
-  scenarioOrAttackChainRun: PublicAttackChain | PublicAttackChainRun | undefined;
+  scenarioOrAttackChainRun: PublicAttackChainRun | undefined;
 };
 
 export type AttackChainNodeTestContextType = {
@@ -218,56 +187,6 @@ export const PermissionsContext = createContext<PermissionsContextType>({
     isRunning: false,
   },
   inherited_context: INHERITED_CONTEXT.NONE,
-});
-export const ArticleContext = createContext<ArticleContextType>({
-  fetchArticles(): Promise<{
-    result: string[];
-    entities: { articles: Record<string, Article> };
-  }> {
-    return Promise.resolve({
-      result: [],
-      entities: { articles: {} },
-    });
-  },
-  fetchChannels(): Promise<{
-    result: string[];
-    entities: { channels: Record<string, Channel> };
-  }> {
-    return Promise.resolve({
-      result: [],
-      entities: { channels: {} },
-    });
-  },
-  fetchDocuments(): Promise<Document[]> {
-    return new Promise<Document[]>(() => {
-    });
-  },
-  onAddArticle(_data: ArticleCreateInput): Promise<{ result: string }> {
-    return Promise.resolve({ result: '' });
-  },
-  onDeleteArticle(_article: Article): string {
-    return '';
-  },
-  onUpdateArticle(_article: Article, _data: ArticleUpdateInput): string {
-    return '';
-  },
-  previewArticleUrl(_article: FullArticleStore): string {
-    return '';
-  },
-});
-export const ChallengeContext = createContext<ChallengeContextType>({
-  previewChallengeUrl(): string {
-    return '';
-  },
-  fetchChallenges(): Promise<{
-    result: string[];
-    entities: { challenges: Record<string, Challenge> };
-  }> {
-    return Promise.resolve({
-      result: [],
-      entities: { challenges: {} },
-    });
-  },
 });
 export const PreviewChallengeContext = createContext<PreviewChallengeContextType>({
   linkToPlayerMode: '',

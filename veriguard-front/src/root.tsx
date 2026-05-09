@@ -23,7 +23,7 @@ const RootPublic = lazy(() => import('./public/Root'));
 const IndexPrivate = lazy(() => import('./private/Index'));
 const IndexAdmin = lazy(() => import('./admin/Index'));
 const Comcheck = lazy(() => import('./public/components/comcheck/Comcheck'));
-const SimulationReport = lazy(() => import('./admin/components/attack_chain_runs/attack_chain_run/reports/SimulationReportPage'));
+const SimulationReport = lazy(() => import('./admin/components/attack_chain_runs/attack_chain_run/reports/AttackChainRunReportPage'));
 const AttackChainRunViewLessons = lazy(() => import('./public/components/lessons/AttackChainRunViewLessons'));
 const AttackChainViewLessons = lazy(() => import('./public/components/lessons/AttackChainViewLessons'));
 

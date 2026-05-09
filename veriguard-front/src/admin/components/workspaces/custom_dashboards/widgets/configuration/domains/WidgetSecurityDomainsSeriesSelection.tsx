@@ -76,11 +76,11 @@ const WidgetSecurityDomainsSeriesSelection: FunctionComponent<Props> = ({ onChan
       });
     }
     (customDashboard?.custom_dashboard_parameters ?? []).forEach((p) => {
-      if (p.custom_dashboards_parameter_type === 'attack_chain_run') {
+      if (p.custom_dashboards_parameter_type === 'simulation') {
         const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_attack_chain_run_side');
         setDefaultValues(newDefaultValues);
       }
-      if (p.custom_dashboards_parameter_type === 'attack_chain') {
+      if (p.custom_dashboards_parameter_type === 'attackChain') {
         const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_attack_chain_side');
         setDefaultValues(newDefaultValues);
       }

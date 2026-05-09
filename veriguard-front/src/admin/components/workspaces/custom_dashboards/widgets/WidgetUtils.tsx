@@ -2,11 +2,11 @@ import { AccountTree, List, TableChart, VerifiedUser } from '@mui/icons-material
 import { AlignHorizontalLeft, ChartBar, ChartDonut, ChartLine, Counter } from 'mdi-material-ui';
 
 import {
+  type AttackChainNodeExpectation, type AttackChainRun,
   type CustomDashboardParameters, type DateHistogramWidget, type EsAttackPath, type EsAvgs, type EsBase, type EsCountInterval, type EsSeries,
-  type AttackChainRun,
   type Filter,
   type FilterGroup,
-  type AttackChainNodeExpectation, type Series, type StructuralHistogramWidget,
+  type Series, type StructuralHistogramWidget,
   type Widget,
   type WidgetInput,
 } from '../../../../../utils/api-types';
@@ -133,7 +133,7 @@ export const getWidgetTitle = (widgetTitle: Widget['widget_config']['title'], ty
 export const extractGroupOptionsFromCustomDashboardParameters = (customDashboardParameters: CustomDashboardParameters[] = []) => {
   const groupOptionsMap = new Map<string, GroupOption[]>();
   customDashboardParameters.forEach((p) => {
-    if (p.custom_dashboards_parameter_type === 'attack_chain_run') {
+    if (p.custom_dashboards_parameter_type === 'simulation') {
       const items = groupOptionsMap.get('base_attack_chain_run_side') ?? [];
       const option = createGroupOption(p.custom_dashboards_parameter_id, p.custom_dashboards_parameter_name, 'Parameters');
       if (!items.map(i => i.id).includes(option.id)) groupOptionsMap.set('base_attack_chain_run_side', [...items, option]);

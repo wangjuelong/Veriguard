@@ -16,9 +16,9 @@ import Loader from '../../../../components/Loader';
 import { COLLECTOR_LIST } from '../../../../constants/Entities';
 import { useHelper } from '../../../../store';
 import {
+  type AttackChainNodeResultOverviewOutput,
   type Collector,
   type DetectionRemediationOutput,
-  type AttackChainNodeResultOverviewOutput,
 } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
