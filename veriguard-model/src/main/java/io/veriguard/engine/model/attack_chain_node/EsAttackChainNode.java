@@ -19,11 +19,11 @@ public class EsAttackChainNode extends EsBase {
   /* Except relationships, they should have same name on every model! */
 
   @Queryable(label = "node title")
-  private String inject_title;
+  private String node_title;
 
   @Queryable(label = "node status", filterable = true, refEnumClazz = ExecutionStatus.class)
   @EsQueryable(keyword = true)
-  private String inject_status;
+  private String node_status;
 
   @Queryable(label = "execution date", filterable = true, sortable = true)
   private Instant execution_date;
@@ -32,11 +32,11 @@ public class EsAttackChainNode extends EsBase {
 
   @Queryable(label = "attack_chain", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_scenario_side; // Must finish by _side
+  private String base_attack_chain_side; // Must finish by _side
 
   @Queryable(label = "attack_chain_run", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_simulation_side; // Must finish by _side
+  private String base_attack_chain_run_side; // Must finish by _side
 
   @Queryable(label = "attack patterns", filterable = true)
   @EsQueryable(keyword = true)
@@ -44,7 +44,7 @@ public class EsAttackChainNode extends EsBase {
 
   @Queryable(label = "node children")
   @EsQueryable(keyword = true)
-  private Set<String> base_inject_children_side; // Must finish by _side
+  private Set<String> base_node_children_side; // Must finish by _side
 
   @Queryable(label = "attack patterns children")
   @EsQueryable(keyword = true)
@@ -56,7 +56,7 @@ public class EsAttackChainNode extends EsBase {
 
   @Queryable(label = "node contract")
   @EsQueryable(keyword = true)
-  private String base_inject_contract_side; // Must finish by _side
+  private String base_node_contract_side; // Must finish by _side
 
   @Queryable(label = "tags", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)

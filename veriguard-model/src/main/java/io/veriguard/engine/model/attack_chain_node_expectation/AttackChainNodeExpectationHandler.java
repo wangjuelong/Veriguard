@@ -46,49 +46,49 @@ public class AttackChainNodeExpectationHandler implements Handler<EsAttackChainN
                       attackChainNodeExpectation.getAttack_chain_run_id(),
                       attackChainNodeExpectation.getNode_id()));
               // Specific
-              esAttackChainNodeExpectation.setInject_expectation_name(
+              esAttackChainNodeExpectation.setNode_expectation_name(
                   attackChainNodeExpectation.getNode_expectation_name());
-              esAttackChainNodeExpectation.setInject_expectation_description(
+              esAttackChainNodeExpectation.setNode_expectation_description(
                   attackChainNodeExpectation.getNode_expectation_description());
-              esAttackChainNodeExpectation.setInject_expectation_type(
+              esAttackChainNodeExpectation.setNode_expectation_type(
                   attackChainNodeExpectation.getNode_expectation_type());
-              esAttackChainNodeExpectation.setInject_expectation_results(
+              esAttackChainNodeExpectation.setNode_expectation_results(
                   attackChainNodeExpectation.getNode_expectation_results());
-              esAttackChainNodeExpectation.setInject_title(
+              esAttackChainNodeExpectation.setNode_title(
                   attackChainNodeExpectation.getNode_title());
               esAttackChainNodeExpectation.setExecution_date(
                   attackChainNodeExpectation.getTracking_sent_date());
 
-              esAttackChainNodeExpectation.setInject_expectation_score(
+              esAttackChainNodeExpectation.setNode_expectation_score(
                   attackChainNodeExpectation.getNode_expectation_score());
-              esAttackChainNodeExpectation.setInject_expectation_expected_score(
+              esAttackChainNodeExpectation.setNode_expectation_expected_score(
                   attackChainNodeExpectation.getNode_expectation_expected_score());
-              esAttackChainNodeExpectation.setInject_expectation_expiration_time(
+              esAttackChainNodeExpectation.setNode_expectation_expiration_time(
                   attackChainNodeExpectation.getNode_expiration_time());
-              esAttackChainNodeExpectation.setInject_expectation_group(
+              esAttackChainNodeExpectation.setNode_expectation_group(
                   attackChainNodeExpectation.getNode_expectation_group());
               // Dependencies (see base_dependencies in EsBase)
               List<String> dependencies = new ArrayList<>();
               if (hasText(attackChainNodeExpectation.getAttack_chain_run_id())) {
                 dependencies.add(attackChainNodeExpectation.getAttack_chain_run_id());
-                esAttackChainNodeExpectation.setBase_simulation_side(
+                esAttackChainNodeExpectation.setBase_attack_chain_run_side(
                     attackChainNodeExpectation.getAttack_chain_run_id());
               } else {
-                esAttackChainNodeExpectation.setBase_simulation_side(null);
+                esAttackChainNodeExpectation.setBase_attack_chain_run_side(null);
               }
               if (hasText(attackChainNodeExpectation.getAttack_chain_id())) {
                 dependencies.add(attackChainNodeExpectation.getAttack_chain_id());
-                esAttackChainNodeExpectation.setBase_scenario_side(
+                esAttackChainNodeExpectation.setBase_attack_chain_side(
                     attackChainNodeExpectation.getAttack_chain_id());
               } else {
-                esAttackChainNodeExpectation.setBase_scenario_side(null);
+                esAttackChainNodeExpectation.setBase_attack_chain_side(null);
               }
               if (hasText(attackChainNodeExpectation.getNode_id())) {
                 dependencies.add(attackChainNodeExpectation.getNode_id());
-                esAttackChainNodeExpectation.setBase_inject_side(
+                esAttackChainNodeExpectation.setBase_node_side(
                     attackChainNodeExpectation.getNode_id());
               } else {
-                esAttackChainNodeExpectation.setBase_inject_side(null);
+                esAttackChainNodeExpectation.setBase_node_side(null);
               }
               if (hasText(attackChainNodeExpectation.getUser_id())) {
                 dependencies.add(attackChainNodeExpectation.getUser_id());
@@ -136,7 +136,7 @@ public class AttackChainNodeExpectationHandler implements Handler<EsAttackChainN
               } else {
                 esAttackChainNodeExpectation.setBase_security_platforms_side(Set.of());
               }
-              esAttackChainNodeExpectation.setInject_expectation_status(
+              esAttackChainNodeExpectation.setNode_expectation_status(
                   valueOf(
                       computeStatus(
                           attackChainNodeExpectation.getNode_expectation_score(),

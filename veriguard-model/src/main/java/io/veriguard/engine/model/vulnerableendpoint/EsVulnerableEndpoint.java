@@ -70,11 +70,11 @@ public class EsVulnerableEndpoint extends EsBase {
 
   @Queryable(label = "attack_chain_run", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_simulation_side; // Must finish by _side
+  private String base_attack_chain_run_side; // Must finish by _side
 
   @Queryable(label = "attack_chain", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_scenario_side; // Must finish by _side
+  private String base_attack_chain_side; // Must finish by _side
 
   @Queryable(label = "agents")
   @EsQueryable(keyword = true)

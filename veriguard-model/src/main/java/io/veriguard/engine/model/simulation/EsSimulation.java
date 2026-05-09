@@ -51,7 +51,7 @@ public class EsSimulation extends EsBase {
 
   @Queryable(label = "attack_chain", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_scenario_side; // Must finish by _side
+  private String base_attack_chain_side; // Must finish by _side
 
   // -- SIDE DENORMALIZED --
   // like side but directly names instead of ids in the Set

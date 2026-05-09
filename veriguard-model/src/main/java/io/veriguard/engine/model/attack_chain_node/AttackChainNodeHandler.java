@@ -55,8 +55,8 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
                       attackChainNode.getNode_attackChain(),
                       attackChainNode.getNode_AttackChainRun()));
               // Specific
-              esAttackChainNode.setInject_title(attackChainNode.getNode_title());
-              esAttackChainNode.setInject_status(
+              esAttackChainNode.setNode_title(attackChainNode.getNode_title());
+              esAttackChainNode.setNode_status(
                   attackChainNode.getNode_status_name() != null
                           && !attackChainNode.getNode_status_name().isBlank()
                       ? attackChainNode.getNode_status_name()
@@ -68,16 +68,16 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
               List<String> dependencies = new ArrayList<>();
               if (hasText(attackChainNode.getNode_attackChain())) {
                 dependencies.add(attackChainNode.getNode_attackChain());
-                esAttackChainNode.setBase_scenario_side(attackChainNode.getNode_attackChain());
+                esAttackChainNode.setBase_attack_chain_side(attackChainNode.getNode_attackChain());
               } else {
-                esAttackChainNode.setBase_scenario_side(null);
+                esAttackChainNode.setBase_attack_chain_side(null);
               }
               if (hasText(attackChainNode.getNode_AttackChainRun())) {
                 dependencies.add(attackChainNode.getNode_AttackChainRun());
-                esAttackChainNode.setBase_simulation_side(
+                esAttackChainNode.setBase_attack_chain_run_side(
                     attackChainNode.getNode_AttackChainRun());
               } else {
-                esAttackChainNode.setBase_simulation_side(null);
+                esAttackChainNode.setBase_attack_chain_run_side(null);
               }
               if (!isEmpty(attackChainNode.getNode_attack_patterns())) {
                 esAttackChainNode.setBase_attack_patterns_side(
@@ -86,10 +86,10 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
                 esAttackChainNode.setBase_attack_patterns_side(Set.of());
               }
               if (!isEmpty(attackChainNode.getNode_children())) {
-                esAttackChainNode.setBase_inject_children_side(
+                esAttackChainNode.setBase_node_children_side(
                     attackChainNode.getNode_children());
               } else {
-                esAttackChainNode.setBase_inject_children_side(Set.of());
+                esAttackChainNode.setBase_node_children_side(Set.of());
               }
               if (!isEmpty(attackChainNode.getAttack_patterns_children())) {
                 esAttackChainNode.setBase_attack_patterns_children_side(
@@ -104,10 +104,10 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
                 esAttackChainNode.setBase_kill_chain_phases_side(Set.of());
               }
               if (hasText(attackChainNode.getNode_injector_contract())) {
-                esAttackChainNode.setBase_inject_contract_side(
+                esAttackChainNode.setBase_node_contract_side(
                     attackChainNode.getNode_injector_contract());
               } else {
-                esAttackChainNode.setBase_inject_contract_side(null);
+                esAttackChainNode.setBase_node_contract_side(null);
               }
               if (!isEmpty(attackChainNode.getNode_tags())) {
                 esAttackChainNode.setBase_tags_side(attackChainNode.getNode_tags());

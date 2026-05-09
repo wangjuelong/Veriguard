@@ -24,38 +24,38 @@ public class EsAttackChainNodeExpectation extends EsBase {
       filterable = true,
       refEnumClazz = EXPECTATION_TYPE.class)
   @EsQueryable(keyword = true)
-  private String inject_expectation_type;
+  private String node_expectation_type;
 
   @Queryable(label = "inject expectation name")
-  private String inject_expectation_name;
+  private String node_expectation_name;
 
   @Queryable(label = "inject title of the inject expectation")
-  private String inject_title;
+  private String node_title;
 
   @Queryable(label = "inject expectation description")
-  private String inject_expectation_description;
+  private String node_expectation_description;
 
   @Queryable(label = "inject expectation results")
-  private String inject_expectation_results;
+  private String node_expectation_results;
 
   @Queryable(label = "inject expectation score", filterable = true)
-  private Double inject_expectation_score;
+  private Double node_expectation_score;
 
   @Queryable(label = "inject expectation expected score", filterable = true)
-  private Double inject_expectation_expected_score;
+  private Double node_expectation_expected_score;
 
   @Queryable(label = "inject expectation expiration time")
-  private Long inject_expectation_expiration_time;
+  private Long node_expectation_expiration_time;
 
   @Queryable(label = "inject expectation is group")
-  private Boolean inject_expectation_group;
+  private Boolean node_expectation_group;
 
   @Queryable(
       label = "inject expectation status",
       filterable = true,
       refEnumClazz = EXPECTATION_STATUS.class)
   @EsQueryable(keyword = true)
-  private String inject_expectation_status;
+  private String node_expectation_status;
 
   @Queryable(label = "execution date", filterable = true, sortable = true)
   private Instant execution_date;
@@ -64,15 +64,15 @@ public class EsAttackChainNodeExpectation extends EsBase {
 
   @Queryable(label = "attack_chain_run", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_simulation_side; // Must finish by _side
+  private String base_attack_chain_run_side; // Must finish by _side
 
   @Queryable(label = "attack_chain", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_scenario_side; // Must finish by _side
+  private String base_attack_chain_side; // Must finish by _side
 
   @Queryable(label = "node")
   @EsQueryable(keyword = true)
-  private String base_inject_side; // Must finish by _side
+  private String base_node_side; // Must finish by _side
 
   @Queryable(label = "user")
   @EsQueryable(keyword = true)

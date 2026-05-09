@@ -228,7 +228,7 @@ class DashboardApiTest extends IntegrationTest {
       // filters
       Filters.FilterGroup filterGroup = config.getPerspective().getFilter();
       Filters.Filter simulationFilter = new Filters.Filter();
-      simulationFilter.setKey("base_simulation_side");
+      simulationFilter.setKey("base_attack_chain_run_side");
       simulationFilter.setMode(Filters.FilterMode.or);
       simulationFilter.setOperator(Filters.FilterOperator.eq);
       simulationFilter.setValues(List.of(paramWrapper.get().getId()));
@@ -858,7 +858,7 @@ class DashboardApiTest extends IntegrationTest {
           .node("es_entities")
           .isArray()
           .hasSize(6)
-          .extracting("base_inject_side")
+          .extracting("base_node_side")
           .containsOnly(
               attackChainNode1.getId(), attackChainNode2.getId(), attackChainNode3.getId());
     }

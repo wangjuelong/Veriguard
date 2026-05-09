@@ -167,7 +167,7 @@ public class AttackChainNodeSearchService {
     // SELECT
     cq.multiselect(
             attackChainNodeRoot.get("id").alias("inject_id"),
-            attackChainNodeRoot.get("title").alias("inject_title"),
+            attackChainNodeRoot.get("title").alias("node_title"),
             attackChainNodeRoot.get("enabled").alias("inject_enabled"),
             attackChainNodeRoot.get("content").alias("inject_content"),
             attackChainNodeRoot.get("allTeams").alias("inject_all_teams"),
@@ -202,7 +202,7 @@ public class AttackChainNodeSearchService {
             tuple ->
                 attackChainNodeMapper.toAttackChainNodeOutput(
                     tuple.get("inject_id", String.class),
-                    tuple.get("inject_title", String.class),
+                    tuple.get("node_title", String.class),
                     tuple.get("inject_enabled", Boolean.class),
                     tuple.get("inject_content", ObjectNode.class),
                     tuple.get("inject_all_teams", Boolean.class),
@@ -462,7 +462,7 @@ public class AttackChainNodeSearchService {
     // SELECT
     cq.multiselect(
             attackChainNodeRoot.get("id").alias("inject_id"),
-            attackChainNodeRoot.get("title").alias("inject_title"),
+            attackChainNodeRoot.get("title").alias("node_title"),
             attackChainNodeRoot.get("updatedAt").alias("inject_updated_at"),
             attackChainNodeRoot.get("content").alias("inject_content"),
             nodeExecutorJoin.get("type").alias("inject_type"),
@@ -544,7 +544,7 @@ public class AttackChainNodeSearchService {
               AttackChainNodeResultOutput attackChainNodeResultOutput =
                   new AttackChainNodeResultOutput();
               attackChainNodeResultOutput.setId(tuple.get("inject_id", String.class));
-              attackChainNodeResultOutput.setTitle(tuple.get("inject_title", String.class));
+              attackChainNodeResultOutput.setTitle(tuple.get("node_title", String.class));
               attackChainNodeResultOutput.setContent(tuple.get("inject_content", ObjectNode.class));
               attackChainNodeResultOutput.setUpdatedAt(
                   tuple.get("inject_updated_at", Instant.class));

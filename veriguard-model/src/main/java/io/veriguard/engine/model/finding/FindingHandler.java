@@ -44,21 +44,21 @@ public class FindingHandler implements Handler<EsFinding> {
               List<String> dependencies = new ArrayList<>();
               if (hasText(finding.getFinding_inject_id())) {
                 dependencies.add(finding.getFinding_inject_id());
-                esFinding.setBase_inject_side(finding.getFinding_inject_id());
+                esFinding.setBase_node_side(finding.getFinding_inject_id());
               } else {
-                esFinding.setBase_inject_side(null);
+                esFinding.setBase_node_side(null);
               }
               if (hasText(finding.getNode_attackChainRun())) {
                 dependencies.add(finding.getNode_attackChainRun());
-                esFinding.setBase_simulation_side(finding.getNode_attackChainRun());
+                esFinding.setBase_attack_chain_run_side(finding.getNode_attackChainRun());
               } else {
-                esFinding.setBase_simulation_side(null);
+                esFinding.setBase_attack_chain_run_side(null);
               }
               if (hasText(finding.getAttack_chain_id())) {
                 dependencies.add(finding.getAttack_chain_id());
-                esFinding.setBase_scenario_side(finding.getAttack_chain_id());
+                esFinding.setBase_attack_chain_side(finding.getAttack_chain_id());
               } else {
-                esFinding.setBase_scenario_side(null);
+                esFinding.setBase_attack_chain_side(null);
               }
               if (hasText(finding.getAsset_id())) {
                 dependencies.add(finding.getAsset_id());

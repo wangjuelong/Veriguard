@@ -62,9 +62,9 @@ public class SimulationHandler implements Handler<EsSimulation> {
                 esSimulation.setBase_teams_side(Set.of());
               }
               if (hasText(simulation.getAttack_chain_id())) {
-                esSimulation.setBase_scenario_side(simulation.getAttack_chain_id());
+                esSimulation.setBase_attack_chain_side(simulation.getAttack_chain_id());
               } else {
-                esSimulation.setBase_scenario_side(null);
+                esSimulation.setBase_attack_chain_side(null);
               }
               return esSimulation;
             })
