@@ -88,7 +88,7 @@ public class V1_DataImporter implements Importer {
     if (contract == null) {
       return null;
     }
-    String content = attackChainNodeNode.get("inject_content").toString();
+    String content = attackChainNodeNode.get("node_content").toString();
     // 二开 移除 Channel/Challenge 注入器 — 不再需要 contract-specific 内容重写。
     return content;
   }
@@ -115,9 +115,9 @@ public class V1_DataImporter implements Importer {
     Map<String, Base> baseIds = new HashMap<>();
 
     String prefix = "node_";
-    if (importNode.has("exercise_information")) {
+    if (importNode.has("attack_chain_run_information")) {
       prefix = "attack_chain_run_";
-    } else if (importNode.has("scenario_information")) {
+    } else if (importNode.has("attack_chain_information")) {
       prefix = "attack_chain_";
     } else if (importNode.has("payload_information")) {
       prefix = "payload_";
@@ -320,20 +320,20 @@ public class V1_DataImporter implements Importer {
 
   private AttackChainRun importAttackChainRun(
       JsonNode importNode, Map<String, Base> baseIds, String suffix) {
-    JsonNode attackChainRunNode = importNode.get("exercise_information");
+    JsonNode attackChainRunNode = importNode.get("attack_chain_run_information");
     if (attackChainRunNode == null) {
       return null;
     }
 
     AttackChainRun attackChainRun = new AttackChainRun();
-    attackChainRun.setName(attackChainRunNode.get("exercise_name").textValue() + suffix);
-    attackChainRun.setDescription(attackChainRunNode.get("exercise_description").textValue());
-    attackChainRun.setSubtitle(attackChainRunNode.get("exercise_subtitle").textValue());
-    attackChainRun.setHeader(attackChainRunNode.get("exercise_message_header").textValue());
-    attackChainRun.setFooter(attackChainRunNode.get("exercise_message_footer").textValue());
-    attackChainRun.setFrom(attackChainRunNode.get("exercise_mail_from").textValue());
+    attackChainRun.setName(attackChainRunNode.get("attack_chain_run_name").textValue() + suffix);
+    attackChainRun.setDescription(attackChainRunNode.get("attack_chain_run_description").textValue());
+    attackChainRun.setSubtitle(attackChainRunNode.get("attack_chain_run_subtitle").textValue());
+    attackChainRun.setHeader(attackChainRunNode.get("attack_chain_run_message_header").textValue());
+    attackChainRun.setFooter(attackChainRunNode.get("attack_chain_run_message_footer").textValue());
+    attackChainRun.setFrom(attackChainRunNode.get("attack_chain_run_mail_from").textValue());
     attackChainRun.setTags(
-        resolveJsonIds(attackChainRunNode, "exercise_tags").stream()
+        resolveJsonIds(attackChainRunNode, "attack_chain_run_tags").stream()
             .map(baseIds::get)
             .map(Tag.class::cast)
             .collect(Collectors.toSet()));
@@ -344,40 +344,40 @@ public class V1_DataImporter implements Importer {
 
   private AttackChain importAttackChain(
       JsonNode importNode, Map<String, Base> baseIds, String suffix) {
-    JsonNode attackChainNode = importNode.get("scenario_information");
+    JsonNode attackChainNode = importNode.get("attack_chain_information");
     if (attackChainNode == null) {
       return null;
     }
 
     AttackChain attackChain = new AttackChain();
-    attackChain.setName(attackChainNode.get("scenario_name").textValue() + suffix);
-    attackChain.setDescription(attackChainNode.get("scenario_description").textValue());
-    attackChain.setSubtitle(attackChainNode.get("scenario_subtitle").textValue());
-    attackChain.setCategory(attackChainNode.get("scenario_category").textValue());
-    attackChain.setMainFocus(attackChainNode.get("scenario_main_focus").textValue());
-    ofNullable(attackChainNode.get("scenario_severity"))
+    attackChain.setName(attackChainNode.get("attack_chain_name").textValue() + suffix);
+    attackChain.setDescription(attackChainNode.get("attack_chain_description").textValue());
+    attackChain.setSubtitle(attackChainNode.get("attack_chain_subtitle").textValue());
+    attackChain.setCategory(attackChainNode.get("attack_chain_category").textValue());
+    attackChain.setMainFocus(attackChainNode.get("attack_chain_main_focus").textValue());
+    ofNullable(attackChainNode.get("attack_chain_severity"))
         .map(JsonNode::textValue)
         .ifPresent(severity -> attackChain.setSeverity(SEVERITY.valueOf(severity)));
-    ofNullable(attackChainNode.get("scenario_recurrence"))
+    ofNullable(attackChainNode.get("attack_chain_recurrence"))
         .map(JsonNode::textValue)
         .ifPresent(attackChain::setRecurrence);
-    ofNullable(attackChainNode.get("scenario_recurrence_start"))
+    ofNullable(attackChainNode.get("attack_chain_recurrence_start"))
         .map(JsonNode::textValue)
         .ifPresent(
             recurrenceStart -> attackChain.setRecurrenceStart(Instant.parse(recurrenceStart)));
-    ofNullable(attackChainNode.get("scenario_recurrence_end"))
+    ofNullable(attackChainNode.get("attack_chain_recurrence_end"))
         .map(JsonNode::textValue)
         .ifPresent(recurrenceEnd -> attackChain.setRecurrenceEnd(Instant.parse(recurrenceEnd)));
-    attackChain.setHeader(attackChainNode.get("scenario_message_header").textValue());
-    attackChain.setFooter(attackChainNode.get("scenario_message_footer").textValue());
-    attackChain.setFrom(attackChainNode.get("scenario_mail_from").textValue());
+    attackChain.setHeader(attackChainNode.get("attack_chain_message_header").textValue());
+    attackChain.setFooter(attackChainNode.get("attack_chain_message_footer").textValue());
+    attackChain.setFrom(attackChainNode.get("attack_chain_mail_from").textValue());
     attackChain.setTags(
-        resolveJsonIds(attackChainNode, "scenario_tags").stream()
+        resolveJsonIds(attackChainNode, "attack_chain_tags").stream()
             .map(baseIds::get)
             .map(Tag.class::cast)
             .collect(Collectors.toSet()));
     attackChain.setDependencies(
-        ofNullable(attackChainNode.get("scenario_dependencies"))
+        ofNullable(attackChainNode.get("attack_chain_dependencies"))
             .filter(JsonNode::isArray)
             .map(
                 dependencies ->
@@ -830,7 +830,7 @@ public class V1_DataImporter implements Importer {
                 jsonNode -> {
                   // List of dependencies of the attackChainNode
                   List<JsonNode> dependsOn =
-                      StreamSupport.stream(jsonNode.get("inject_depends_on").spliterator(), false)
+                      StreamSupport.stream(jsonNode.get("node_depends_on").spliterator(), false)
                           .toList();
 
                   // We return a stream containing all the children of the dependencies of the
@@ -840,7 +840,7 @@ public class V1_DataImporter implements Importer {
                           dependency ->
                               dependency
                                   .get("dependency_relationship")
-                                  .get("inject_children_id")
+                                  .get("node_children_id")
                                   .asText());
                 })
             .toList();
@@ -849,7 +849,7 @@ public class V1_DataImporter implements Importer {
     Stream<JsonNode> attackChainNodesNoParent =
         attackChainNodesStream
             .get()
-            .filter(jsonNode -> !children.contains(jsonNode.get("inject_id").asText()));
+            .filter(jsonNode -> !children.contains(jsonNode.get("node_id").asText()));
 
     importAttackChainNodes(
         baseIds,
@@ -873,18 +873,18 @@ public class V1_DataImporter implements Importer {
     attackChainNodesToAdd.forEach(
         attackChainNodeNode -> {
           String attackChainNodeId = UUID.randomUUID().toString();
-          String id = attackChainNodeNode.get("inject_id").textValue();
-          String title = attackChainNodeNode.get("inject_title").textValue();
-          String description = attackChainNodeNode.get("inject_description").textValue();
-          String country = attackChainNodeNode.get("inject_country").textValue();
-          String city = attackChainNodeNode.get("inject_city").textValue();
+          String id = attackChainNodeNode.get("node_id").textValue();
+          String title = attackChainNodeNode.get("node_title").textValue();
+          String description = attackChainNodeNode.get("node_description").textValue();
+          String country = attackChainNodeNode.get("node_country").textValue();
+          String city = attackChainNodeNode.get("node_city").textValue();
           boolean enabled =
-              ofNullable(attackChainNodeNode.get("inject_enabled"))
+              ofNullable(attackChainNodeNode.get("node_enabled"))
                   .map(JsonNode::booleanValue)
                   .orElse(true);
           String nodeContractIdFromNode = null;
           JsonNode attackChainNodeContractNode =
-              attackChainNodeNode.get("inject_injector_contract");
+              attackChainNodeNode.get("node_injector_contract");
           if (attackChainNodeContractNode != null && !attackChainNodeContractNode.isNull()) {
             nodeContractIdFromNode =
                 attackChainNodeContractNode.get("injector_contract_id").textValue();
@@ -954,8 +954,8 @@ public class V1_DataImporter implements Importer {
           // If contract is not know, attackChainNode can't be imported
           String content =
               handleAttackChainNodeContent(baseIds, nodeContractId, attackChainNodeNode);
-          Long dependsDuration = attackChainNodeNode.get("inject_depends_duration").asLong();
-          boolean allTeams = attackChainNodeNode.get("inject_all_teams").booleanValue();
+          Long dependsDuration = attackChainNodeNode.get("node_depends_duration").asLong();
+          boolean allTeams = attackChainNodeNode.get("node_all_teams").booleanValue();
           if (attackChainRun != null) {
             attackChainNodeRepository.importSaveForAttackChainRun(
                 attackChainNodeId,
@@ -1000,13 +1000,13 @@ public class V1_DataImporter implements Importer {
 
           // Once the attackChainNode has been saved, we deal with the dependencies
           ArrayNode attackChainNodeDependsOn =
-              (ArrayNode) attackChainNodeNode.get("inject_depends_on");
+              (ArrayNode) attackChainNodeNode.get("node_depends_on");
           for (JsonNode dependsOnNode : attackChainNodeDependsOn) {
             // If there are dependencies where the added attackChainNode is the children, we add it
             // to the
             // database
             if (id.equals(
-                dependsOnNode.get("dependency_relationship").get("inject_children_id").asText())) {
+                dependsOnNode.get("dependency_relationship").get("node_children_id").asText())) {
               AttackChainEdgeInput dependency =
                   mapper.convertValue(dependsOnNode, AttackChainEdgeInput.class);
 
@@ -1031,7 +1031,7 @@ public class V1_DataImporter implements Importer {
             }
           }
           // Tags
-          List<String> attackChainNodeTagIds = resolveJsonIds(attackChainNodeNode, "inject_tags");
+          List<String> attackChainNodeTagIds = resolveJsonIds(attackChainNodeNode, "node_tags");
           attackChainNodeTagIds.forEach(
               tagId -> {
                 Base base = baseIds.get(tagId);
@@ -1041,7 +1041,7 @@ public class V1_DataImporter implements Importer {
                 attackChainNodeRepository.addTag(attackChainNodeId, base.getId());
               });
           // Teams
-          List<String> attackChainNodeTeamIds = resolveJsonIds(attackChainNodeNode, "inject_teams");
+          List<String> attackChainNodeTeamIds = resolveJsonIds(attackChainNodeNode, "node_teams");
           attackChainNodeTeamIds.forEach(
               teamId -> {
                 Base base = baseIds.get(teamId);
@@ -1052,7 +1052,7 @@ public class V1_DataImporter implements Importer {
               });
           // Documents
           List<JsonNode> attackChainNodeDocuments =
-              resolveJsonElements(attackChainNodeNode, "inject_documents").toList();
+              resolveJsonElements(attackChainNodeNode, "node_documents").toList();
           attackChainNodeDocuments.forEach(
               jsonNode -> {
                 String docId = jsonNode.get("document_id").textValue();
@@ -1090,7 +1090,7 @@ public class V1_DataImporter implements Importer {
             .filter(
                 jsonNode -> {
                   ArrayNode attackChainNodeDependsOn =
-                      (ArrayNode) jsonNode.get("inject_depends_on");
+                      (ArrayNode) jsonNode.get("node_depends_on");
 
                   // We're getting the parents of this attackChainNode
                   List<String> parents =
@@ -1099,7 +1099,7 @@ public class V1_DataImporter implements Importer {
                               dependency ->
                                   dependency
                                       .get("dependency_relationship")
-                                      .get("inject_parent_id")
+                                      .get("node_parent_id")
                                       .asText())
                           .toList();
 
