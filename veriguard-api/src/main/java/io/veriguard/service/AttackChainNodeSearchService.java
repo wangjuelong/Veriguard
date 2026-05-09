@@ -381,7 +381,7 @@ public class AttackChainNodeSearchService {
         .orElse(emptyList())
         .stream()
         .filter(Objects::nonNull)
-        .collect(Collectors.groupingBy(RawAttackChainNodeExpectation::getInject_id));
+        .collect(Collectors.groupingBy(RawAttackChainNodeExpectation::getNode_id));
   }
 
   private void mapResultsToAttackChainNodes(

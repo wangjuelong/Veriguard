@@ -41,12 +41,12 @@ public class AttackChainSimple {
   public static AttackChainSimple fromRawAttackChain(
       @NotNull final RawAttackChainSimple attackChain) {
     AttackChainSimple simple = new AttackChainSimple();
-    simple.setId(attackChain.getScenario_id());
-    simple.setName(attackChain.getScenario_name());
-    simple.setSubtitle(attackChain.getScenario_subtitle());
-    if (attackChain.getScenario_tags() != null) {
+    simple.setId(attackChain.getAttack_chain_id());
+    simple.setName(attackChain.getAttack_chain_name());
+    simple.setSubtitle(attackChain.getAttack_chain_subtitle());
+    if (attackChain.getAttack_chain_tags() != null) {
       simple.setTags(
-          attackChain.getScenario_tags().stream()
+          attackChain.getAttack_chain_tags().stream()
               .map(
                   (tagId) -> {
                     Tag tag = new Tag();

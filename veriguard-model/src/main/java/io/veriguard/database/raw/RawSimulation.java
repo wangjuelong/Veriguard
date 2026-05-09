@@ -20,182 +20,182 @@ public interface RawSimulation {
    *
    * @return the attackChainRun ID
    */
-  String getExercise_id();
+  String getAttack_chain_run_id();
 
   /**
    * Returns the display name of the attackChainRun.
    *
    * @return the attackChainRun name
    */
-  String getExercise_name();
+  String getAttack_chain_run_name();
 
   /**
    * Returns the description of the attackChainRun.
    *
    * @return the attackChainRun description
    */
-  String getExercise_description();
+  String getAttack_chain_run_description();
 
   /**
    * Returns the current status of the attackChainRun.
    *
    * @return the status (e.g., "SCHEDULED", "RUNNING", "PAUSED", "FINISHED", "CANCELED")
    */
-  String getExercise_status();
+  String getAttack_chain_run_status();
 
   /**
    * Returns the subtitle of the attackChainRun.
    *
    * @return the attackChainRun subtitle
    */
-  String getExercise_subtitle();
+  String getAttack_chain_run_subtitle();
 
   /**
    * Returns the category of the attackChainRun.
    *
    * @return the category name
    */
-  String getExercise_category();
+  String getAttack_chain_run_category();
 
   /**
    * Returns the main focus area of the attackChainRun.
    *
    * @return the main focus
    */
-  String getExercise_main_focus();
+  String getAttack_chain_run_main_focus();
 
   /**
    * Returns the severity level of the attackChainRun.
    *
    * @return the severity level
    */
-  String getExercise_severity();
+  String getAttack_chain_run_severity();
 
   /**
    * Returns the scheduled start date of the attackChainRun.
    *
    * @return the start date
    */
-  Instant getExercise_start_date();
+  Instant getAttack_chain_run_start_date();
 
   /**
    * Returns the end date of the attackChainRun.
    *
    * @return the end date, or {@code null} if not yet finished
    */
-  Instant getExercise_end_date();
+  Instant getAttack_chain_run_end_date();
 
   /**
    * Returns the header text for attackChainRun messages.
    *
    * @return the message header
    */
-  String getExercise_message_header();
+  String getAttack_chain_run_message_header();
 
   /**
    * Returns the footer text for attackChainRun messages.
    *
    * @return the message footer
    */
-  String getExercise_message_footer();
+  String getAttack_chain_run_message_footer();
 
   /**
    * Returns the email address used as sender for attackChainRun communications.
    *
    * @return the "from" email address
    */
-  String getExercise_mail_from();
+  String getAttack_chain_run_mail_from();
 
   /**
    * Returns whether lessons learned responses are anonymized.
    *
    * @return {@code true} if lessons are anonymized, {@code false} otherwise
    */
-  boolean getExercise_lessons_anonymized();
+  boolean getAttack_chain_run_lessons_anonymized();
 
   /**
    * Returns the creation timestamp of the attackChainRun.
    *
    * @return the creation timestamp
    */
-  Instant getExercise_created_at();
+  Instant getAttack_chain_run_created_at();
 
   /**
    * Returns the last update timestamp of the attackChainRun.
    *
    * @return the update timestamp
    */
-  Instant getExercise_updated_at();
+  Instant getAttack_chain_run_updated_at();
 
   /**
    * Returns the timestamp when attackChainNodes were last modified.
    *
    * @return the attackChainNodes update timestamp
    */
-  Instant getExercise_injects_updated_at();
+  Instant getAttack_chain_run_injects_updated_at();
 
   /**
    * Returns the ID of the attackChain this attackChainRun was created from.
    *
    * @return the attackChain ID, or {@code null} if created independently
    */
-  String getScenario_id();
+  String getAttack_chain_id();
 
   /**
    * Returns the ID of the custom dashboard for this attackChainRun.
    *
    * @return the custom dashboard ID, or {@code null} if using default
    */
-  String getExercise_custom_dashboard();
+  String getAttack_chain_run_custom_dashboard();
 
   /**
    * Returns the set of reply-to email addresses for attackChainRun communications.
    *
    * @return set of reply-to email addresses
    */
-  Set<String> getExercise_reply_to();
+  Set<String> getAttack_chain_run_reply_to();
 
   /**
    * Returns the set of tag IDs associated with this attackChainRun.
    *
    * @return set of tag IDs
    */
-  Set<String> getExercise_tags();
+  Set<String> getAttack_chain_run_tags();
 
   /**
    * Returns the set of asset IDs targeted by this attackChainRun.
    *
    * @return set of asset IDs
    */
-  Set<String> getExercise_assets();
+  Set<String> getAttack_chain_run_assets();
 
   /**
    * Returns the set of asset group IDs targeted by this attackChainRun.
    *
    * @return set of asset group IDs
    */
-  Set<String> getExercise_asset_groups();
+  Set<String> getAttack_chain_run_asset_groups();
 
   /**
    * Returns the set of team IDs participating in this attackChainRun.
    *
    * @return set of team IDs
    */
-  Set<String> getExercise_teams();
+  Set<String> getAttack_chain_run_teams();
 
   /**
    * Returns the set of user IDs participating in this attackChainRun.
    *
    * @return set of user IDs
    */
-  Set<String> getExercise_users();
+  Set<String> getAttack_chain_run_users();
 
   /**
    * Returns the set of platforms targeted by this attackChainRun.
    *
    * @return set of platform types
    */
-  Set<String> getExercise_platforms();
+  Set<String> getAttack_chain_run_platforms();
 
   /**
    * Returns the set of lessons answer IDs collected from this attackChainRun.
@@ -216,5 +216,5 @@ public interface RawSimulation {
    *
    * @return list of attackChainNode IDs
    */
-  List<String> getInject_ids();
+  List<String> getNode_ids();
 }

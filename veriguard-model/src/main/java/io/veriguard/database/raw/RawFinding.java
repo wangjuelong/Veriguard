@@ -67,14 +67,14 @@ public interface RawFinding {
    *
    * @return the attackChainRun ID, or {@code null} if from a attackChain
    */
-  String getInject_attackChainRun();
+  String getNode_attackChainRun();
 
   /**
    * Returns the ID of the attackChain this finding belongs to.
    *
    * @return the attackChain ID, or {@code null} if from an attackChainRun
    */
-  String getScenario_id();
+  String getAttack_chain_id();
 
   /**
    * Returns the ID of the asset where this finding was discovered.

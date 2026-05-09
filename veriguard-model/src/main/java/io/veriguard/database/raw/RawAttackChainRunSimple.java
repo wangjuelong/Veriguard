@@ -19,75 +19,75 @@ public interface RawAttackChainRunSimple {
    *
    * @return the attackChainRun ID
    */
-  String getExercise_id();
+  String getAttack_chain_run_id();
 
   /**
    * Returns the current status of the attackChainRun.
    *
    * @return the status (e.g., "SCHEDULED", "RUNNING", "FINISHED")
    */
-  String getExercise_status();
+  String getAttack_chain_run_status();
 
   /**
    * Returns the scheduled start date of the attackChainRun.
    *
    * @return the start date
    */
-  Instant getExercise_start_date();
+  Instant getAttack_chain_run_start_date();
 
   /**
    * Returns the creation timestamp of the attackChainRun.
    *
    * @return the creation timestamp
    */
-  Instant getExercise_created_at();
+  Instant getAttack_chain_run_created_at();
 
   /**
    * Returns the last update timestamp of the attackChainRun.
    *
    * @return the update timestamp
    */
-  Instant getExercise_updated_at();
+  Instant getAttack_chain_run_updated_at();
 
   /**
    * Returns the end date of the attackChainRun.
    *
    * @return the end date, or {@code null} if not yet finished
    */
-  Instant getExercise_end_date();
+  Instant getAttack_chain_run_end_date();
 
   /**
    * Returns the display name of the attackChainRun.
    *
    * @return the attackChainRun name
    */
-  String getExercise_name();
+  String getAttack_chain_run_name();
 
   /**
    * Returns the category of the attackChainRun.
    *
    * @return the category name
    */
-  String getExercise_category();
+  String getAttack_chain_run_category();
 
   /**
    * Returns the subtitle of the attackChainRun.
    *
    * @return the attackChainRun subtitle
    */
-  String getExercise_subtitle();
+  String getAttack_chain_run_subtitle();
 
   /**
    * Returns the set of tag IDs associated with this attackChainRun.
    *
    * @return set of tag IDs
    */
-  Set<String> getExercise_tags();
+  Set<String> getAttack_chain_run_tags();
 
   /**
    * Returns the set of attackChainNode IDs in this attackChainRun.
    *
    * @return set of attackChainNode IDs
    */
-  Set<String> getInject_ids();
+  Set<String> getNode_ids();
 }

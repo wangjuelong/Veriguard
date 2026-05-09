@@ -332,21 +332,21 @@ public class AttackChainService {
       throw new ElementNotFoundException("Scenario not found");
     }
     Set<KillChainPhaseOutput> killChainPhases = new HashSet<>();
-    if (rawAttackChain.getScenario_kill_chain_phases() != null) {
+    if (rawAttackChain.getAttack_chain_kill_chain_phases() != null) {
       try {
         killChainPhases =
             objectMapper.readValue(
-                rawAttackChain.getScenario_kill_chain_phases(), new TypeReference<>() {});
+                rawAttackChain.getAttack_chain_kill_chain_phases(), new TypeReference<>() {});
       } catch (JsonProcessingException e) {
         log.error("Error reading killChainPhases from scenario id {}", attackChainId, e);
       }
     }
     Set<AttackChainTeamUserOutput> attackChainTeamUsers = new HashSet<>();
-    if (rawAttackChain.getScenario_teams_users() != null) {
+    if (rawAttackChain.getAttack_chain_teams_users() != null) {
       try {
         attackChainTeamUsers =
             objectMapper.readValue(
-                rawAttackChain.getScenario_teams_users(), new TypeReference<>() {});
+                rawAttackChain.getAttack_chain_teams_users(), new TypeReference<>() {});
       } catch (JsonProcessingException e) {
         log.error("Error reading scenarioTeamUsers from scenario id {}", attackChainId, e);
       }
@@ -368,8 +368,8 @@ public class AttackChainService {
       @NotBlank final String attackChainExternalReference) {
     Optional<RawAttackChainRunSimple> latestEndedAttackChainRun =
         attackChainRepository.rawAllByExternalReference(attackChainExternalReference).stream()
-            .filter(rawAttackChainRun -> rawAttackChainRun.getExercise_end_date() != null)
-            .max(Comparator.comparing(RawAttackChainRunSimple::getExercise_end_date));
+            .filter(rawAttackChainRun -> rawAttackChainRun.getAttack_chain_run_end_date() != null)
+            .max(Comparator.comparing(RawAttackChainRunSimple::getAttack_chain_run_end_date));
 
     return latestEndedAttackChainRun
         .map(attackChainRunMapper::getAttackChainRunSimple)

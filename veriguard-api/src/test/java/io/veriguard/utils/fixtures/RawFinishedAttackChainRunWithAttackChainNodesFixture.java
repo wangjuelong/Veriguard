@@ -11,12 +11,12 @@ public class RawFinishedAttackChainRunWithAttackChainNodesFixture {
       implements RawFinishedAttackChainRunWithAttackChainNodes {
 
     @Override
-    public Instant getExercise_end_date() {
+    public Instant getAttack_chain_run_end_date() {
       return endDate;
     }
 
     @Override
-    public Set<String> getInject_ids() {
+    public Set<String> getNode_ids() {
       return attackChainNodeIds;
     }
   }

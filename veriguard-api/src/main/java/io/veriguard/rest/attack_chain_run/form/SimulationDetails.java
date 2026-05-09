@@ -153,32 +153,32 @@ public class SimulationDetails {
       List<Objective> objectives) {
     SimulationDetailsBuilder details =
         SimulationDetails.builder()
-            .id(attackChainRun.getExercise_id())
-            .name(attackChainRun.getExercise_name())
-            .description(attackChainRun.getExercise_description())
-            .status(valueOf(attackChainRun.getExercise_status()))
-            .subtitle(attackChainRun.getExercise_subtitle())
-            .category(attackChainRun.getExercise_category())
-            .mainFocus(attackChainRun.getExercise_main_focus())
-            .customDashboard(attackChainRun.getExercise_custom_dashboard());
+            .id(attackChainRun.getAttack_chain_run_id())
+            .name(attackChainRun.getAttack_chain_run_name())
+            .description(attackChainRun.getAttack_chain_run_description())
+            .status(valueOf(attackChainRun.getAttack_chain_run_status()))
+            .subtitle(attackChainRun.getAttack_chain_run_subtitle())
+            .category(attackChainRun.getAttack_chain_run_category())
+            .mainFocus(attackChainRun.getAttack_chain_run_main_focus())
+            .customDashboard(attackChainRun.getAttack_chain_run_custom_dashboard());
 
-    if (attackChainRun.getExercise_severity() != null) {
-      details.severity(SEVERITY.valueOf(attackChainRun.getExercise_severity()));
+    if (attackChainRun.getAttack_chain_run_severity() != null) {
+      details.severity(SEVERITY.valueOf(attackChainRun.getAttack_chain_run_severity()));
     }
     details
-        .start(attackChainRun.getExercise_start_date())
-        .end(attackChainRun.getExercise_end_date())
-        .header(attackChainRun.getExercise_message_header())
-        .footer(attackChainRun.getExercise_message_footer())
-        .from(attackChainRun.getExercise_mail_from());
-    if (attackChainRun.getExercise_reply_to() != null) {
-      details.replyTo(attackChainRun.getExercise_reply_to().stream().toList());
+        .start(attackChainRun.getAttack_chain_run_start_date())
+        .end(attackChainRun.getAttack_chain_run_end_date())
+        .header(attackChainRun.getAttack_chain_run_message_header())
+        .footer(attackChainRun.getAttack_chain_run_message_footer())
+        .from(attackChainRun.getAttack_chain_run_mail_from());
+    if (attackChainRun.getAttack_chain_run_reply_to() != null) {
+      details.replyTo(attackChainRun.getAttack_chain_run_reply_to().stream().toList());
     }
     details
-        .lessonsAnonymized(attackChainRun.getExercise_lessons_anonymized())
-        .attackChain(attackChainRun.getScenario_id())
-        .createAt(attackChainRun.getExercise_created_at())
-        .updatedAt(attackChainRun.getExercise_updated_at());
+        .lessonsAnonymized(attackChainRun.getAttack_chain_run_lessons_anonymized())
+        .attackChain(attackChainRun.getAttack_chain_id())
+        .createAt(attackChainRun.getAttack_chain_run_created_at())
+        .updatedAt(attackChainRun.getAttack_chain_run_updated_at());
     if (attackChainRunTeamsUsers != null) {
       details
           .attackChainRunTeamUsers(new HashSet<>(attackChainRunTeamsUsers))
@@ -189,12 +189,12 @@ public class SimulationDetails {
                   .count());
     }
     details
-        .tags(new HashSet<>(attackChainRun.getExercise_tags()))
-        .users(attackChainRun.getExercise_users())
+        .tags(new HashSet<>(attackChainRun.getAttack_chain_run_tags()))
+        .users(attackChainRun.getAttack_chain_run_users())
         .objectives(objectives)
         .lessonsAnswersNumber(
             attackChainRun.getLessons_answers().stream().distinct().toList().size())
-        .allUsersNumber(attackChainRun.getExercise_users().stream().distinct().toList().size())
+        .allUsersNumber(attackChainRun.getAttack_chain_run_users().stream().distinct().toList().size())
         .logsNumber(attackChainRun.getLogs().stream().distinct().toList().size());
 
     return details.build();

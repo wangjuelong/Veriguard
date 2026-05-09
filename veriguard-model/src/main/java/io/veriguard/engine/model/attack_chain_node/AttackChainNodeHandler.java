@@ -37,57 +37,57 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
             attackChainNode -> {
               EsAttackChainNode esAttackChainNode = new EsAttackChainNode();
               // Base
-              esAttackChainNode.setBase_id(attackChainNode.getInject_id());
-              esAttackChainNode.setBase_representative(attackChainNode.getInject_title());
-              esAttackChainNode.setBase_created_at(attackChainNode.getInject_created_at());
+              esAttackChainNode.setBase_id(attackChainNode.getNode_id());
+              esAttackChainNode.setBase_representative(attackChainNode.getNode_title());
+              esAttackChainNode.setBase_created_at(attackChainNode.getNode_created_at());
 
               if (attackChainNode.getInjector_contract_updated_at() != null
                   && attackChainNode
                       .getInjector_contract_updated_at()
-                      .isAfter(attackChainNode.getInject_updated_at())) {
+                      .isAfter(attackChainNode.getNode_updated_at())) {
                 esAttackChainNode.setBase_updated_at(
                     attackChainNode.getInjector_contract_updated_at());
               } else {
-                esAttackChainNode.setBase_updated_at(attackChainNode.getInject_updated_at());
+                esAttackChainNode.setBase_updated_at(attackChainNode.getNode_updated_at());
               }
               esAttackChainNode.setBase_restrictions(
                   buildRestrictions(
-                      attackChainNode.getInject_attackChain(),
-                      attackChainNode.getInject_AttackChainRun()));
+                      attackChainNode.getNode_attackChain(),
+                      attackChainNode.getNode_AttackChainRun()));
               // Specific
-              esAttackChainNode.setInject_title(attackChainNode.getInject_title());
+              esAttackChainNode.setInject_title(attackChainNode.getNode_title());
               esAttackChainNode.setInject_status(
-                  attackChainNode.getInject_status_name() != null
-                          && !attackChainNode.getInject_status_name().isBlank()
-                      ? attackChainNode.getInject_status_name()
+                  attackChainNode.getNode_status_name() != null
+                          && !attackChainNode.getNode_status_name().isBlank()
+                      ? attackChainNode.getNode_status_name()
                       : ExecutionStatus.DRAFT.name());
               esAttackChainNode.setBase_platforms_side_denormalized(
-                  attackChainNode.getInject_platforms());
+                  attackChainNode.getNode_platforms());
               esAttackChainNode.setExecution_date(attackChainNode.getTracking_sent_date());
               // Dependencies (see base_dependencies in EsBase)
               List<String> dependencies = new ArrayList<>();
-              if (hasText(attackChainNode.getInject_attackChain())) {
-                dependencies.add(attackChainNode.getInject_attackChain());
-                esAttackChainNode.setBase_scenario_side(attackChainNode.getInject_attackChain());
+              if (hasText(attackChainNode.getNode_attackChain())) {
+                dependencies.add(attackChainNode.getNode_attackChain());
+                esAttackChainNode.setBase_scenario_side(attackChainNode.getNode_attackChain());
               } else {
                 esAttackChainNode.setBase_scenario_side(null);
               }
-              if (hasText(attackChainNode.getInject_AttackChainRun())) {
-                dependencies.add(attackChainNode.getInject_AttackChainRun());
+              if (hasText(attackChainNode.getNode_AttackChainRun())) {
+                dependencies.add(attackChainNode.getNode_AttackChainRun());
                 esAttackChainNode.setBase_simulation_side(
-                    attackChainNode.getInject_AttackChainRun());
+                    attackChainNode.getNode_AttackChainRun());
               } else {
                 esAttackChainNode.setBase_simulation_side(null);
               }
-              if (!isEmpty(attackChainNode.getInject_attack_patterns())) {
+              if (!isEmpty(attackChainNode.getNode_attack_patterns())) {
                 esAttackChainNode.setBase_attack_patterns_side(
-                    attackChainNode.getInject_attack_patterns());
+                    attackChainNode.getNode_attack_patterns());
               } else {
                 esAttackChainNode.setBase_attack_patterns_side(Set.of());
               }
-              if (!isEmpty(attackChainNode.getInject_children())) {
+              if (!isEmpty(attackChainNode.getNode_children())) {
                 esAttackChainNode.setBase_inject_children_side(
-                    attackChainNode.getInject_children());
+                    attackChainNode.getNode_children());
               } else {
                 esAttackChainNode.setBase_inject_children_side(Set.of());
               }
@@ -97,36 +97,36 @@ public class AttackChainNodeHandler implements Handler<EsAttackChainNode> {
               } else {
                 esAttackChainNode.setBase_attack_patterns_children_side(Set.of());
               }
-              if (!isEmpty(attackChainNode.getInject_kill_chain_phases())) {
+              if (!isEmpty(attackChainNode.getNode_kill_chain_phases())) {
                 esAttackChainNode.setBase_kill_chain_phases_side(
-                    attackChainNode.getInject_kill_chain_phases());
+                    attackChainNode.getNode_kill_chain_phases());
               } else {
                 esAttackChainNode.setBase_kill_chain_phases_side(Set.of());
               }
-              if (hasText(attackChainNode.getInject_injector_contract())) {
+              if (hasText(attackChainNode.getNode_injector_contract())) {
                 esAttackChainNode.setBase_inject_contract_side(
-                    attackChainNode.getInject_injector_contract());
+                    attackChainNode.getNode_injector_contract());
               } else {
                 esAttackChainNode.setBase_inject_contract_side(null);
               }
-              if (!isEmpty(attackChainNode.getInject_tags())) {
-                esAttackChainNode.setBase_tags_side(attackChainNode.getInject_tags());
+              if (!isEmpty(attackChainNode.getNode_tags())) {
+                esAttackChainNode.setBase_tags_side(attackChainNode.getNode_tags());
               } else {
                 esAttackChainNode.setBase_tags_side(Set.of());
               }
-              if (!isEmpty(attackChainNode.getInject_assets())) {
-                esAttackChainNode.setBase_assets_side(attackChainNode.getInject_assets());
+              if (!isEmpty(attackChainNode.getNode_assets())) {
+                esAttackChainNode.setBase_assets_side(attackChainNode.getNode_assets());
               } else {
                 esAttackChainNode.setBase_assets_side(Set.of());
               }
-              if (!isEmpty(attackChainNode.getInject_asset_groups())) {
+              if (!isEmpty(attackChainNode.getNode_asset_groups())) {
                 esAttackChainNode.setBase_asset_groups_side(
-                    attackChainNode.getInject_asset_groups());
+                    attackChainNode.getNode_asset_groups());
               } else {
                 esAttackChainNode.setBase_asset_groups_side(Set.of());
               }
-              if (!isEmpty(attackChainNode.getInject_teams())) {
-                esAttackChainNode.setBase_teams_side(attackChainNode.getInject_teams());
+              if (!isEmpty(attackChainNode.getNode_teams())) {
+                esAttackChainNode.setBase_teams_side(attackChainNode.getNode_teams());
               } else {
                 esAttackChainNode.setBase_teams_side(Set.of());
               }

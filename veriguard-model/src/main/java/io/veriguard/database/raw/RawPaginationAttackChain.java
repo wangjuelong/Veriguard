@@ -10,15 +10,15 @@ import lombok.Data;
 @Data
 public class RawPaginationAttackChain {
 
-  private String scenario_id;
-  private String scenario_name;
-  private String scenario_description;
-  private SEVERITY scenario_severity;
-  private String scenario_category;
-  private String scenario_recurrence;
-  private Instant scenario_updated_at;
-  private Set<String> scenario_tags;
-  private Set<String> scenario_platforms;
+  private String attack_chain_id;
+  private String attack_chain_name;
+  private String attack_chain_description;
+  private SEVERITY attack_chain_severity;
+  private String attack_chain_category;
+  private String attack_chain_recurrence;
+  private Instant attack_chain_updated_at;
+  private Set<String> attack_chain_tags;
+  private Set<String> attack_chain_platforms;
 
   public RawPaginationAttackChain(
       String id,
@@ -30,15 +30,15 @@ public class RawPaginationAttackChain {
       Instant updatedAt,
       String[] tags,
       String[] platforms) {
-    this.scenario_id = id;
-    this.scenario_name = name;
-    this.scenario_description = description;
-    this.scenario_severity = severity;
-    this.scenario_category = category;
-    this.scenario_recurrence = recurrence;
-    this.scenario_updated_at = updatedAt;
-    this.scenario_tags = tags != null ? new HashSet<>(Arrays.asList(tags)) : new HashSet<>();
-    this.scenario_platforms =
+    this.attack_chain_id = id;
+    this.attack_chain_name = name;
+    this.attack_chain_description = description;
+    this.attack_chain_severity = severity;
+    this.attack_chain_category = category;
+    this.attack_chain_recurrence = recurrence;
+    this.attack_chain_updated_at = updatedAt;
+    this.attack_chain_tags = tags != null ? new HashSet<>(Arrays.asList(tags)) : new HashSet<>();
+    this.attack_chain_platforms =
         platforms != null ? new HashSet<>(Arrays.asList(platforms)) : new HashSet<>();
   }
 }

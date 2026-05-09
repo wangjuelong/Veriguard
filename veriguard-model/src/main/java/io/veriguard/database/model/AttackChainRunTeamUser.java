@@ -90,13 +90,13 @@ public class AttackChainRunTeamUser {
     attackChainRunTeamUser.setTeam(new Team());
     attackChainRunTeamUser.getTeam().setId(rawAttackChainRunTeamUser.getTeam_id());
     attackChainRunTeamUser.setAttackChainRun(new AttackChainRun());
-    attackChainRunTeamUser.getAttackChainRun().setId(rawAttackChainRunTeamUser.getExercise_id());
+    attackChainRunTeamUser.getAttackChainRun().setId(rawAttackChainRunTeamUser.getAttack_chain_run_id());
     attackChainRunTeamUser.setUser(new User());
     attackChainRunTeamUser.getUser().setId(rawAttackChainRunTeamUser.getUser_id());
     attackChainRunTeamUser.setCompositeId(new AttackChainRunTeamUserId());
     attackChainRunTeamUser
         .getCompositeId()
-        .setAttackChainRunId(rawAttackChainRunTeamUser.getExercise_id());
+        .setAttackChainRunId(rawAttackChainRunTeamUser.getAttack_chain_run_id());
     attackChainRunTeamUser.getCompositeId().setTeamId(rawAttackChainRunTeamUser.getTeam_id());
     attackChainRunTeamUser.getCompositeId().setUserId(rawAttackChainRunTeamUser.getUser_id());
     return attackChainRunTeamUser;

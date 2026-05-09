@@ -28,41 +28,41 @@ public class SimulationHandler implements Handler<EsSimulation> {
             simulation -> {
               EsSimulation esSimulation = new EsSimulation();
               // Base
-              esSimulation.setBase_id(simulation.getExercise_id());
-              esSimulation.setStatus(simulation.getExercise_status());
-              esSimulation.setBase_created_at(simulation.getExercise_created_at());
-              esSimulation.setBase_updated_at(simulation.getExercise_injects_updated_at());
-              esSimulation.setName(simulation.getExercise_name());
-              esSimulation.setExecution_date(simulation.getExercise_start_date());
+              esSimulation.setBase_id(simulation.getAttack_chain_run_id());
+              esSimulation.setStatus(simulation.getAttack_chain_run_status());
+              esSimulation.setBase_created_at(simulation.getAttack_chain_run_created_at());
+              esSimulation.setBase_updated_at(simulation.getAttack_chain_run_injects_updated_at());
+              esSimulation.setName(simulation.getAttack_chain_run_name());
+              esSimulation.setExecution_date(simulation.getAttack_chain_run_start_date());
 
-              esSimulation.setBase_representative(simulation.getExercise_name());
+              esSimulation.setBase_representative(simulation.getAttack_chain_run_name());
               esSimulation.setBase_restrictions(
-                  buildRestrictions(simulation.getExercise_id(), simulation.getScenario_id()));
+                  buildRestrictions(simulation.getAttack_chain_run_id(), simulation.getAttack_chain_id()));
               // Specific
-              esSimulation.setBase_platforms_side_denormalized(simulation.getExercise_platforms());
+              esSimulation.setBase_platforms_side_denormalized(simulation.getAttack_chain_run_platforms());
               // Dependencies (see base_dependencies in EsBase)
-              if (!isEmpty(simulation.getExercise_tags())) {
-                esSimulation.setBase_tags_side(simulation.getExercise_tags());
+              if (!isEmpty(simulation.getAttack_chain_run_tags())) {
+                esSimulation.setBase_tags_side(simulation.getAttack_chain_run_tags());
               } else {
                 esSimulation.setBase_tags_side(Set.of());
               }
-              if (!isEmpty(simulation.getExercise_assets())) {
-                esSimulation.setBase_assets_side(simulation.getExercise_assets());
+              if (!isEmpty(simulation.getAttack_chain_run_assets())) {
+                esSimulation.setBase_assets_side(simulation.getAttack_chain_run_assets());
               } else {
                 esSimulation.setBase_assets_side(Set.of());
               }
-              if (!isEmpty(simulation.getExercise_asset_groups())) {
-                esSimulation.setBase_asset_groups_side(simulation.getExercise_asset_groups());
+              if (!isEmpty(simulation.getAttack_chain_run_asset_groups())) {
+                esSimulation.setBase_asset_groups_side(simulation.getAttack_chain_run_asset_groups());
               } else {
                 esSimulation.setBase_asset_groups_side(Set.of());
               }
-              if (!isEmpty(simulation.getExercise_teams())) {
-                esSimulation.setBase_teams_side(simulation.getExercise_teams());
+              if (!isEmpty(simulation.getAttack_chain_run_teams())) {
+                esSimulation.setBase_teams_side(simulation.getAttack_chain_run_teams());
               } else {
                 esSimulation.setBase_teams_side(Set.of());
               }
-              if (hasText(simulation.getScenario_id())) {
-                esSimulation.setBase_scenario_side(simulation.getScenario_id());
+              if (hasText(simulation.getAttack_chain_id())) {
+                esSimulation.setBase_scenario_side(simulation.getAttack_chain_id());
               } else {
                 esSimulation.setBase_scenario_side(null);
               }

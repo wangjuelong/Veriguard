@@ -29,7 +29,7 @@ public class TeamHelper {
     Set<RawAttackChainNode> rawAttackChainNodeTeams =
         attackChainNodeRepository.findRawAttackChainNodeTeams(attackChainNodeIds, teamId);
     return rawAttackChainNodeTeams.stream()
-        .map(RawAttackChainNode::getInject_id)
+        .map(RawAttackChainNode::getNode_id)
         .collect(Collectors.toSet());
   }
 }

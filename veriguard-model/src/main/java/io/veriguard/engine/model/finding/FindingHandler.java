@@ -35,7 +35,7 @@ public class FindingHandler implements Handler<EsFinding> {
               esFinding.setBase_representative(finding.getFinding_value());
               esFinding.setBase_created_at(finding.getFinding_created_at());
               esFinding.setBase_updated_at(finding.getFinding_updated_at());
-              esFinding.setBase_restrictions(buildRestrictions(finding.getScenario_id()));
+              esFinding.setBase_restrictions(buildRestrictions(finding.getAttack_chain_id()));
               // Specific
               esFinding.setFinding_type(finding.getFinding_type());
               esFinding.setFinding_field(finding.getFinding_field());
@@ -48,15 +48,15 @@ public class FindingHandler implements Handler<EsFinding> {
               } else {
                 esFinding.setBase_inject_side(null);
               }
-              if (hasText(finding.getInject_attackChainRun())) {
-                dependencies.add(finding.getInject_attackChainRun());
-                esFinding.setBase_simulation_side(finding.getInject_attackChainRun());
+              if (hasText(finding.getNode_attackChainRun())) {
+                dependencies.add(finding.getNode_attackChainRun());
+                esFinding.setBase_simulation_side(finding.getNode_attackChainRun());
               } else {
                 esFinding.setBase_simulation_side(null);
               }
-              if (hasText(finding.getScenario_id())) {
-                dependencies.add(finding.getScenario_id());
-                esFinding.setBase_scenario_side(finding.getScenario_id());
+              if (hasText(finding.getAttack_chain_id())) {
+                dependencies.add(finding.getAttack_chain_id());
+                esFinding.setBase_scenario_side(finding.getAttack_chain_id());
               } else {
                 esFinding.setBase_scenario_side(null);
               }

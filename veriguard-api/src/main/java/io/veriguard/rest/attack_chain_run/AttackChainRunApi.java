@@ -523,7 +523,7 @@ public class AttackChainRunApi extends RestBehavior {
     // We get the attackChainNodes linked to this attackChainRun
     List<RawAttackChainNode> rawAttackChainNodes =
         attackChainNodeRepository.findRawByIds(
-            rawSimulation.getInject_ids().stream().distinct().toList());
+            rawSimulation.getNode_ids().stream().distinct().toList());
     // We get the tuple attackChainRun/team/user
     List<RawAttackChainRunTeamUser> listRawAttackChainRunTeamUsers =
         attackChainRunTeamUserRepository.rawByAttackChainRunIds(List.of(attackChainRunId));
@@ -548,7 +548,7 @@ public class AttackChainRunApi extends RestBehavior {
                         rawAttackChainNodes.stream()
                             .flatMap(
                                 rawAttackChainNode ->
-                                    rawAttackChainNode.getInject_kill_chain_phases().stream())
+                                    rawAttackChainNode.getNode_kill_chain_phases().stream())
                             .toList())
                     .spliterator(),
                 false)
@@ -586,12 +586,12 @@ public class AttackChainRunApi extends RestBehavior {
         fromRawAttackChainRun(rawSimulation, listAttackChainRunTeamUsers, objectives);
     detail.setPlatforms(
         rawAttackChainNodes.stream()
-            .flatMap(attackChainNode -> attackChainNode.getInject_platforms().stream())
+            .flatMap(attackChainNode -> attackChainNode.getNode_platforms().stream())
             .distinct()
             .toList());
     detail.setCommunicationsNumber(
         rawAttackChainNodes.stream()
-            .mapToLong(rawAttackChainNode -> rawAttackChainNode.getInject_communications().size())
+            .mapToLong(rawAttackChainNode -> rawAttackChainNode.getNode_communications().size())
             .sum());
     detail.setKillChainPhases(killChainPhase);
     if (rawGrants.get(Grant.GRANT_TYPE.OBSERVER.name()) != null) {
