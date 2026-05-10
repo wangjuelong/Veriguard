@@ -2,10 +2,13 @@ import { Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Handle, type Node, type NodeProps, type OnConnect, Position, type XYPosition } from '@xyflow/react';
 import moment from 'moment';
-import { memo, type MouseEvent } from 'react';
+import { memo, type MouseEvent, useContext } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../actions/attack_chain_nodes/AttackChainNode';
+import { computeNodeBadgeState } from '../../admin/components/attack_chains/attack_chain/editor/attackChainNodeEditAdapters';
+import { AttackChainNodeSettingsContext } from '../../admin/components/attack_chains/attack_chain/editor/AttackChainNodeSettingsContext';
+import NodeBadge from '../../admin/components/attack_chains/attack_chain/editor/NodeBadge';
 import AttackChainNodeIcon from '../../admin/components/common/attack_chain_nodes/AttackChainNodeIcon';
 import AttackChainNodePopover from '../../admin/components/common/attack_chain_nodes/AttackChainNodePopover';
 import { isNotEmptyField } from '../../utils/utils';
@@ -40,6 +43,13 @@ const useStyles = makeStyles()(theme => ({
     top: 10,
     right: 10,
     color: theme.palette.text.secondary,
+  },
+  badgeSlot: {
+    position: 'absolute',
+    top: 6,
+    left: 40,
+    zIndex: 11,
+    cursor: 'pointer',
   },
   label: {
     margin: '0 0 0 5px',
@@ -113,6 +123,7 @@ const NodeAttackChainNodeComponent = ({ data }: NodeProps<NodeAttackChainNode>) 
   const { classes } = useStyles();
   const theme = useTheme();
   const { ft, fld } = useFormatter();
+  const settingsContext = useContext(AttackChainNodeSettingsContext);
 
   /**
    * Converts the duration in second to a string representing the relative time
@@ -186,6 +197,18 @@ const NodeAttackChainNodeComponent = ({ data }: NodeProps<NodeAttackChainNode>) 
           }
         />
       </div>
+      {settingsContext && data.node && (
+        <div
+          className={classes.badgeSlot}
+          onClick={preventClick}
+          role="presentation"
+        >
+          <NodeBadge
+            state={computeNodeBadgeState(data.node)}
+            onClick={() => settingsContext.openNodeSettings(data.node!)}
+          />
+        </div>
+      )}
       {data.startDate !== undefined ? (
         <div
           className={classes.triggerTime}
