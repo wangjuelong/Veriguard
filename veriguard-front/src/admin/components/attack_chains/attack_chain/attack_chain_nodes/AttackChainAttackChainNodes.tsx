@@ -1,8 +1,15 @@
-import { type FunctionComponent, useState } from 'react';
+/* eslint-disable i18next/no-literal-string -- Phase 12b-B 二开 UI 硬编码中文，未来统一 i18n 清洗。 */
+import { Settings as SettingsIcon } from '@mui/icons-material';
+import { Box, Button, Stack } from '@mui/material';
+import { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
 import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
-import { fetchAttackChainTeams } from '../../../../../actions/attack_chains/attack_chain-actions';
+import {
+  fetchAttackChain,
+  fetchAttackChainTeams,
+  updateAttackChainSettings,
+} from '../../../../../actions/attack_chains/attack_chain-actions';
 import { type AttackChainsHelper } from '../../../../../actions/attack_chains/attack_chain-helper';
 import { fetchAttackChainAttackChainNodesSimple } from '../../../../../actions/attack_chains/attack_chain-node-actions';
 import { fetchAttackChainDocuments } from '../../../../../actions/documents/documents-actions';
@@ -10,8 +17,14 @@ import { testAttackChainNode } from '../../../../../actions/node_test/attack_cha
 import type { TeamsHelper } from '../../../../../actions/teams/team-helper';
 import { fetchVariablesForAttackChain } from '../../../../../actions/variables/variable-actions';
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
+import { initSorting } from '../../../../../components/common/queryable/Page';
+import { buildSearchPagination } from '../../../../../components/common/queryable/QueryableUtils';
 import { useHelper } from '../../../../../store';
-import { type AttackChain } from '../../../../../utils/api-types';
+import { simplePostCall } from '../../../../../utils/Action';
+import {
+  type AttackChain,
+  type PageValidationParameterSetOutput,
+} from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
 import endpointContextForAttackChain from '../../../../../utils/context/endpoint/EndpointContextForAttackChain';
 import { useAppDispatch } from '../../../../../utils/hooks';
@@ -23,7 +36,14 @@ import {
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
+import AttackChainSettingsDrawer from '../editor/AttackChainSettingsDrawer';
+import { type AttackChainSettingsValue, type ParameterSetOption } from '../editor/attackChainEditorTypes';
+import { toApiInput, toParameterSetOption, toSettingsValue } from '../editor/attackChainSettingsAdapters';
 import teamContextForAttackChain from '../teams/teamContextForAttackChain';
+
+const PARAMETER_SET_FETCH_SIZE = 100;
+
+const VALIDATION_PARAMETER_SET_SEARCH_URI = '/api/validation_parameter_sets/search';
 
 const AttackChainAttackChainNodes: FunctionComponent = () => {
   // Standard hooks
@@ -72,11 +92,46 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
       testAttackChainNode: testAttackChainNode,
     };
 
+  // -- 攻击编排链路级设置 drawer (Phase 12b-B3) --
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [parameterSetOptions, setParameterSetOptions] = useState<ParameterSetOption[]>([]);
+  const loadParameterSetOptions = useCallback(async () => {
+    const response: { data: PageValidationParameterSetOutput } = await simplePostCall(
+      VALIDATION_PARAMETER_SET_SEARCH_URI,
+      buildSearchPagination({
+        size: PARAMETER_SET_FETCH_SIZE,
+        sorts: initSorting('parameter_set_name', 'ASC'),
+      }),
+    );
+    setParameterSetOptions((response.data.content ?? []).map(toParameterSetOption));
+  }, []);
+  useEffect(() => {
+    if (settingsOpen && parameterSetOptions.length === 0) {
+      loadParameterSetOptions();
+    }
+  }, [settingsOpen, parameterSetOptions.length, loadParameterSetOptions]);
+
+  const handleSettingsSubmit = async (value: AttackChainSettingsValue) => {
+    await dispatch(updateAttackChainSettings(scenarioId, toApiInput(value)));
+    setSettingsOpen(false);
+    await dispatch(fetchAttackChain(scenarioId));
+  };
+
   return (
     <ViewModeContext.Provider value={viewMode}>
       <TeamContext.Provider value={teamContext}>
         <EndpointContext.Provider value={endpointContext}>
           <AttackChainNodeTestContext.Provider value={injectTestContext}>
+            <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<SettingsIcon fontSize="small" />}
+                onClick={() => setSettingsOpen(true)}
+              >
+                链路设置
+              </Button>
+            </Stack>
             <AttackChainNodes
               teams={teams}
               variables={variables}
@@ -84,6 +139,18 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
               setViewMode={handleViewMode}
               availableButtons={availableButtons}
             />
+            {settingsOpen && (
+              <Box>
+                <AttackChainSettingsDrawer
+                  open
+                  initialValue={toSettingsValue(attack_chain)}
+                  parameterSetOptions={parameterSetOptions}
+                  availableConnectorIds={[]}
+                  onCancel={() => setSettingsOpen(false)}
+                  onSubmit={handleSettingsSubmit}
+                />
+              </Box>
+            )}
           </AttackChainNodeTestContext.Provider>
         </EndpointContext.Provider>
       </TeamContext.Provider>
