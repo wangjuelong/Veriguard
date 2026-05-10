@@ -52,6 +52,20 @@ const createMock = vi.fn(async (_input: unknown) => ({ data: {} }));
 const updateMock = vi.fn(async (_id: string, _input: unknown) => ({ data: {} }));
 const deleteMock = vi.fn(async (_id: string) => ({ data: {} }));
 const duplicateMock = vi.fn(async (_id: string, _name: string) => ({ data: {} }));
+const fetchSocConnectorsMock = vi.fn(async () => ({
+  data: [
+    {
+      connector_id: 'elastic',
+      display_name: 'Elastic SIEM',
+      status: 'HEALTHY' as const,
+    },
+    {
+      connector_id: 'splunk',
+      display_name: 'Splunk',
+      status: 'DISABLED' as const,
+    },
+  ],
+}));
 
 vi.mock('../../../../actions/validation_parameter_sets/parameter-set-actions', () => ({
   searchValidationParameterSets: (input: unknown) => searchMock(input),
@@ -59,6 +73,11 @@ vi.mock('../../../../actions/validation_parameter_sets/parameter-set-actions', (
   updateValidationParameterSet: (id: string, input: unknown) => updateMock(id, input),
   deleteValidationParameterSet: (id: string) => deleteMock(id),
   duplicateValidationParameterSet: (id: string, name: string) => duplicateMock(id, name),
+}));
+vi.mock('../../../../actions/soc_connectors/soc-connector-actions', () => ({
+  fetchSocConnectors: () => fetchSocConnectorsMock(),
+  refreshSocConnector: vi.fn(),
+  fetchSocConnectorRules: vi.fn(),
 }));
 
 // eslint-disable-next-line import/first -- mock must be defined before importing SUT
@@ -133,5 +152,20 @@ describe('ValidationParameterSets index', () => {
     });
     const payload = createMock.mock.calls[0]?.[0] as { parameter_set_name: string } | undefined;
     expect(payload?.parameter_set_name).toBe('冒烟测试');
+  });
+
+  test('opening the dialog fetches SOC connectors and only HEALTHY ones reach the picker', async () => {
+    render(<ValidationParameterSets />);
+    await screen.findByText('模板严格');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }));
+    await screen.findByText('新建参数集');
+
+    await waitFor(() => {
+      expect(fetchSocConnectorsMock).toHaveBeenCalled();
+    });
+    // "新增规则" button is enabled when at least one HEALTHY connector exists
+    const addRuleButton = screen.getByRole('button', { name: /新增规则/ });
+    expect(addRuleButton).not.toBeDisabled();
   });
 });

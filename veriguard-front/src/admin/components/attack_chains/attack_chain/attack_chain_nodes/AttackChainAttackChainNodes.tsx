@@ -14,6 +14,10 @@ import { type AttackChainsHelper } from '../../../../../actions/attack_chains/at
 import { fetchAttackChainAttackChainNodesSimple } from '../../../../../actions/attack_chains/attack_chain-node-actions';
 import { fetchAttackChainDocuments } from '../../../../../actions/documents/documents-actions';
 import { testAttackChainNode } from '../../../../../actions/node_test/attack_chain-node-test-actions';
+import {
+  fetchSocConnectors,
+  type SocConnectorOutputDto,
+} from '../../../../../actions/soc_connectors/soc-connector-actions';
 import type { TeamsHelper } from '../../../../../actions/teams/team-helper';
 import { fetchVariablesForAttackChain } from '../../../../../actions/variables/variable-actions';
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
@@ -36,9 +40,9 @@ import {
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
-import AttackChainSettingsDrawer from '../editor/AttackChainSettingsDrawer';
 import { type AttackChainSettingsValue, type ParameterSetOption } from '../editor/attackChainEditorTypes';
 import { toApiInput, toParameterSetOption, toSettingsValue } from '../editor/attackChainSettingsAdapters';
+import AttackChainSettingsDrawer from '../editor/AttackChainSettingsDrawer';
 import teamContextForAttackChain from '../teams/teamContextForAttackChain';
 
 const PARAMETER_SET_FETCH_SIZE = 100;
@@ -95,6 +99,7 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
   // -- 攻击编排链路级设置 drawer (Phase 12b-B3) --
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [parameterSetOptions, setParameterSetOptions] = useState<ParameterSetOption[]>([]);
+  const [healthyConnectorIds, setHealthyConnectorIds] = useState<string[]>([]);
   const loadParameterSetOptions = useCallback(async () => {
     const response: { data: PageValidationParameterSetOutput } = await simplePostCall(
       VALIDATION_PARAMETER_SET_SEARCH_URI,
@@ -105,11 +110,27 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
     );
     setParameterSetOptions((response.data.content ?? []).map(toParameterSetOption));
   }, []);
+  const loadHealthyConnectorIds = useCallback(async () => {
+    const response: { data: SocConnectorOutputDto[] } = await fetchSocConnectors();
+    const healthy = (response.data ?? [])
+      .filter(c => c.status === 'HEALTHY')
+      .map(c => c.connector_id);
+    setHealthyConnectorIds(healthy);
+  }, []);
   useEffect(() => {
     if (settingsOpen && parameterSetOptions.length === 0) {
       loadParameterSetOptions();
     }
-  }, [settingsOpen, parameterSetOptions.length, loadParameterSetOptions]);
+    if (settingsOpen && healthyConnectorIds.length === 0) {
+      loadHealthyConnectorIds();
+    }
+  }, [
+    settingsOpen,
+    parameterSetOptions.length,
+    healthyConnectorIds.length,
+    loadParameterSetOptions,
+    loadHealthyConnectorIds,
+  ]);
 
   const handleSettingsSubmit = async (value: AttackChainSettingsValue) => {
     await dispatch(updateAttackChainSettings(scenarioId, toApiInput(value)));
@@ -145,7 +166,7 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
                   open
                   initialValue={toSettingsValue(attack_chain)}
                   parameterSetOptions={parameterSetOptions}
-                  availableConnectorIds={[]}
+                  availableConnectorIds={healthyConnectorIds}
                   onCancel={() => setSettingsOpen(false)}
                   onSubmit={handleSettingsSubmit}
                 />
