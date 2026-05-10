@@ -97,6 +97,31 @@ class LinkExpectationServiceTest {
     verify(repository, never()).save(any());
   }
 
+  // ---- findByRun ----
+
+  @Test
+  @DisplayName("findByRun: 委托 repository.findByAttackChainRunId")
+  void findByRun_delegates_to_repository() {
+    AttackChainRun run = run();
+    AttackChainLinkExpectation a = expectation(run, rule("elastic", "r1"));
+    AttackChainLinkExpectation b = expectation(run, rule("elastic", "r2"));
+    when(repository.findByAttackChainRunId(run.getId())).thenReturn(List.of(a, b));
+
+    List<AttackChainLinkExpectation> result = service.findByRun(run.getId());
+
+    assertThat(result).containsExactly(a, b);
+    verify(repository, never()).save(any());
+  }
+
+  @Test
+  @DisplayName("findByRun: null / blank id → 空列表，不查 repository")
+  void findByRun_null_or_blank_id() {
+    assertThat(service.findByRun(null)).isEmpty();
+    assertThat(service.findByRun("")).isEmpty();
+    assertThat(service.findByRun("   ")).isEmpty();
+    verify(repository, never()).findByAttackChainRunId(anyString());
+  }
+
   // ---- evaluateForRun ----
 
   @Test
