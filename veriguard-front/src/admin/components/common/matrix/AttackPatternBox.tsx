@@ -7,8 +7,9 @@ import { makeStyles } from 'tss-react/mui';
 import { type AttackPattern, type ExpectationResultsByType, type NodeExpectationResultsByAttackPattern, type NodeExpectationResultsByType } from '../../../../utils/api-types';
 import { hexToRGB } from '../../../../utils/Colors';
 import AtomicTestingResult from '../../atomic_testings/atomic_testing/AtomicTestingResult';
-import { NODE_LAYER_STATUS_STYLE, type NodeLayerStatus } from '../../attack_chain_runs/attack_chain_run/runtime/attackChainRuntimeTypes';
+import { NODE_LAYER_STATUS_STYLE } from '../../attack_chain_runs/attack_chain_run/runtime/attackChainRuntimeTypes';
 import { type ExpectationResultType, mitreMatrixExpectationTypes } from '../attack_chain_nodes/expectations/Expectation';
+import aggregateLayerStatus from './aggregateLayerStatus';
 import { type MatrixColoringScheme, type MatrixVerdictDimension } from './MitreMatrix';
 
 const useStyles = makeStyles()(theme => ({
@@ -63,20 +64,6 @@ const AttackPatternBox: FunctionComponent<AttackPatternBoxProps> = ({
   const results: NodeExpectationResultsByType[] = injectResult?.node_expectation_results ?? [];
   const isCovered = results.length > 0;
 
-  const aggregateLayerStatus = (): NodeLayerStatus => {
-    if (!isCovered) return 'N_A';
-    const targetType = verdictDimension === 'prevention' ? 'PREVENTION' : 'DETECTION';
-    const layerResults = results
-      .flatMap(r => r.results ?? [])
-      .filter(er => er.type === targetType)
-      .map(er => er.avgResult);
-    if (layerResults.length === 0) return 'N_A';
-    if (layerResults.every(s => s === 'SUCCESS')) return 'SUCCESS';
-    if (layerResults.every(s => s === 'FAILED')) return 'FAILED';
-    if (layerResults.every(s => s === 'PENDING' || s === 'UNKNOWN')) return 'PENDING';
-    return 'PARTIAL';
-  };
-
   let boxBackground: string | undefined;
   let boxColor: string | undefined;
   let boxBorderStyle: 'solid' | 'dashed' | undefined;
@@ -86,7 +73,7 @@ const AttackPatternBox: FunctionComponent<AttackPatternBoxProps> = ({
       boxBackground = isCovered ? NODE_LAYER_STATUS_STYLE.SUCCESS.background : NODE_LAYER_STATUS_STYLE.N_A.background;
       boxColor = isCovered ? NODE_LAYER_STATUS_STYLE.SUCCESS.color : NODE_LAYER_STATUS_STYLE.N_A.color;
     } else {
-      const status = aggregateLayerStatus();
+      const status = aggregateLayerStatus(results, verdictDimension);
       const style = NODE_LAYER_STATUS_STYLE[status];
       boxBackground = style.background;
       boxColor = style.color;
