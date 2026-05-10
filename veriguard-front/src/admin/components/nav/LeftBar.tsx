@@ -35,35 +35,39 @@ const LeftBar = () => {
     {
       userRight: true,
       items: [
+        // 攻击编排（PRD §2.4 / spec §6.1）—— B 系列五个并列入口收纳为单顶层 + 4 子项.
         {
           path: `/admin/attack_chains`,
           icon: () => (<MovieFilterOutlined />),
-          label: 'AttackChains',
+          label: 'Attack chain orchestration',
+          href: 'attack_chains',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
-        },
-        {
-          path: `/admin/attack_chain_runs`,
-          icon: () => (<HubOutlined />),
-          label: 'Simulations',
-          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
-        },
-        {
-          path: `/admin/atomic_testings`,
-          icon: () => (<Target />),
-          label: 'Atomic testings',
-          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
-        },
-        {
-          path: `/admin/validation_parameter_sets`,
-          icon: () => (<TuneOutlined />),
-          label: 'Validation parameter sets',
-          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
-        },
-        {
-          path: `/admin/integrations/soc_connectors`,
-          icon: () => (<ShieldOutlined />),
-          label: 'SOC connectors',
-          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
+          subItems: [
+            {
+              link: '/admin/attack_chains',
+              label: 'AttackChains',
+              icon: () => (<MovieFilterOutlined fontSize="small" />),
+              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
+            },
+            {
+              link: '/admin/attack_chain_runs',
+              label: 'Simulations',
+              icon: () => (<HubOutlined fontSize="small" />),
+              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
+            },
+            {
+              link: '/admin/validation_parameter_sets',
+              label: 'Validation parameter sets',
+              icon: () => (<TuneOutlined fontSize="small" />),
+              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
+            },
+            {
+              link: '/admin/integrations/soc_connectors',
+              label: 'SOC connectors',
+              icon: () => (<ShieldOutlined fontSize="small" />),
+              userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
+            },
+          ],
         },
       ],
     },
@@ -145,6 +149,13 @@ const LeftBar = () => {
     {
       userRight: true,
       items: [
+        // Atomic testings 不在 spec §6.1 攻击编排子项里（OpenBAS 原生功能），保留为独立顶层避免回归.
+        {
+          path: `/admin/atomic_testings`,
+          icon: () => (<Target />),
+          label: 'Atomic testings',
+          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
+        },
         {
           path: `/admin/payloads`,
           icon: () => (<SubscriptionsOutlined />),
