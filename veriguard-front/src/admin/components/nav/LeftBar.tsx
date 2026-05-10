@@ -1,4 +1,4 @@
-import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, SubscriptionsOutlined, VerifiedUserOutlined } from '@mui/icons-material';
+import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, SubscriptionsOutlined, TuneOutlined, VerifiedUserOutlined } from '@mui/icons-material';
 import { Binoculars, NewspaperVariantMultipleOutline, SecurityNetwork, SelectGroup, Target } from 'mdi-material-ui';
 import { useContext } from 'react';
 
@@ -51,6 +51,12 @@ const LeftBar = () => {
           path: `/admin/atomic_testings`,
           icon: () => (<Target />),
           label: 'Atomic testings',
+          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
+        },
+        {
+          path: `/admin/validation_parameter_sets`,
+          icon: () => (<TuneOutlined />),
+          label: 'Validation parameter sets',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
         },
       ],

@@ -33,6 +33,7 @@ const AtomicTestings = lazy(() => import('./components/atomic_testings/AtomicTes
 const IndexAtomicTesting = lazy(() => import('./components/atomic_testings/atomic_testing/Index'));
 const AttackChains = lazy(() => import('./components/attack_chains/AttackChains'));
 const IndexAttackChain = lazy(() => import('./components/attack_chains/attack_chain/Index'));
+const ValidationParameterSets = lazy(() => import('./components/validation_parameter_sets/Index'));
 const Assets = lazy(() => import('./components/assets/Index'));
 const Teams = lazy(() => import('./components/teams/Index'));
 const IndexComponents = lazy(() => import('./components/components/Index'));
@@ -177,6 +178,18 @@ const Index = () => {
                     resourceURIParamName: 'scenarioId',
                   }]}
                   Component={errorWrapper(IndexAttackChain)()}
+                />
+              )}
+            />
+            <Route
+              path="validation_parameter_sets"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.ASSESSMENT,
+                  }]}
+                  Component={errorWrapper(ValidationParameterSets)()}
                 />
               )}
             />
