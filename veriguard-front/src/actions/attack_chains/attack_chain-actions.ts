@@ -63,6 +63,34 @@ export const updateAttackChain = (
   return putReferential(attack_chain, uri, data)(dispatch);
 };
 
+/**
+ * Wire-format snapshot for PUT /api/attack_chains/{id}/settings (Phase 12b-B3).
+ *
+ * Mirrors backend io.veriguard.rest.attack_chain.form.AttackChainSettingsInput;
+ * not yet regenerated into api-types.d.ts. Kept here as a thin transport DTO
+ * so the editor settings drawer can submit V3 orchestration fields without
+ * touching the existing UpdateAttackChainInput surface (which covers basic
+ * info: name / description / mail / tags).
+ */
+export interface AttackChainSettingsInputDto {
+  attack_chain_execution_mode: 'STOP_ON_BLOCK' | 'CONTINUE';
+  attack_chain_validation_parameter_set_id: string | null;
+  attack_chain_soc_correlation_rules: {
+    connector_id: string;
+    rule_id: string;
+    display_name: string;
+    match_window_seconds: number;
+  }[];
+}
+
+export const updateAttackChainSettings = (
+  scenarioId: AttackChain['attack_chain_id'],
+  data: AttackChainSettingsInputDto,
+) => (dispatch: Dispatch) => {
+  const uri = `${SCENARIO_URI}/${scenarioId}/settings`;
+  return putReferential(attack_chain, uri, data)(dispatch);
+};
+
 export const deleteAttackChain = (scenarioId: AttackChain['attack_chain_id']) => (dispatch: Dispatch) => {
   const uri = `${SCENARIO_URI}/${scenarioId}`;
   return delReferential(uri, attack_chain.key, scenarioId)(dispatch);
