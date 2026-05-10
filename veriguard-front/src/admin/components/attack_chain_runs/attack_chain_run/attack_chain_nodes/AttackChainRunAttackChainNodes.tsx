@@ -1,11 +1,18 @@
+/* eslint-disable i18next/no-literal-string -- Phase 12b-B4 二开 UI 中文文案，未来 i18n 清洗。 */
 import { BarChartOutlined, ReorderOutlined, ViewTimelineOutlined } from '@mui/icons-material';
-import { GridLegacy, Paper, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
-import { type FunctionComponent, useState } from 'react';
+import { Drawer, GridLegacy, Paper, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
+import { type FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
+import {
+  type AttackChainLinkExpectationWire,
+  fetchLinkExpectationsForAttackChainRun,
+} from '../../../../../actions/attack_chain_runs/attack_chain_run-action';
 import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
-import { fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
+import { fetchAttackChainRunAttackChainNodes } from '../../../../../actions/AttackChainNode';
+import { fetchAttackChainRunAttackChainNodeExpectations, fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
 import { fetchAttackChainRunDocuments } from '../../../../../actions/documents/documents-actions';
 import { testAttackChainNode } from '../../../../../actions/node_test/attack_chain_run-node-test-actions';
 import { type TeamsHelper } from '../../../../../actions/teams/team-helper';
@@ -13,7 +20,7 @@ import { fetchVariablesForAttackChainRun } from '../../../../../actions/variable
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type AttackChainRun } from '../../../../../utils/api-types';
+import { type AttackChainNode, type AttackChainNodeExpectation, type AttackChainRun } from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
 import endpointContextForAttackChainRun from '../../../../../utils/context/endpoint/EndpointContextForAttackChainRun';
 import { useAppDispatch } from '../../../../../utils/hooks';
@@ -31,6 +38,12 @@ import AttackChainRunDistributionScoreByTeamInPercentage from '../overview/Attac
 import AttackChainRunDistributionScoreOverTimeByInjectorContract from '../overview/AttackChainRunDistributionScoreOverTimeByNodeContract';
 import AttackChainRunDistributionScoreOverTimeByTeam from '../overview/AttackChainRunDistributionScoreOverTimeByTeam';
 import AttackChainRunDistributionScoreOverTimeByTeamInPercentage from '../overview/AttackChainRunDistributionScoreOverTimeByTeamInPercentage';
+import LinkExpectationPanel from '../runtime/LinkExpectationPanel';
+import { toLinkExpectationItems } from '../runtime/linkExpectationsAdapter';
+import { buildRuntimeNodeMap, type RuntimeNodeInput } from '../runtime/runtimeNodeAdapter';
+import { RuntimeNodeContext } from '../runtime/RuntimeNodeContext';
+import VerdictBanner from '../runtime/VerdictBanner';
+import toVerdictBannerData from '../runtime/verdictBannerAdapter';
 import teamContextForAttackChainRun from '../teams/teamContextForAttackChainRun';
 
 const useStyles = makeStyles()(() => ({
@@ -60,12 +73,14 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
     setViewMode(mode);
   };
 
-  const { attack_chain_run, teams, variables } = useHelper(
-    (helper: AttackChainRunsHelper & VariablesHelper & TeamsHelper) => {
+  const { attack_chain_run, teams, variables, attack_chain_nodes, node_expectations } = useHelper(
+    (helper: AttackChainRunsHelper & VariablesHelper & TeamsHelper & AttackChainNodeHelper) => {
       return {
         attack_chain_run: helper.getAttackChainRun(exerciseId),
         teams: helper.getAttackChainRunTeams(exerciseId),
         variables: helper.getAttackChainRunVariables(exerciseId),
+        attack_chain_nodes: helper.getAttackChainRunAttackChainNodes(exerciseId),
+        node_expectations: helper.getAttackChainRunAttackChainNodeExpectations(exerciseId),
       };
     },
   );
@@ -73,7 +88,55 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
     dispatch(fetchAttackChainRunTeams(exerciseId));
     dispatch(fetchVariablesForAttackChainRun(exerciseId));
     dispatch(fetchAttackChainRunDocuments(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodes(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodeExpectations(exerciseId));
   });
+
+  // 链路级 SOC expectation —— simpleCall 不进 redux helper，本地 state 维护.
+  const [linkExpectations, setLinkExpectations] = useState<AttackChainLinkExpectationWire[]>([]);
+  const [panelOpen, setPanelOpen] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetchLinkExpectationsForAttackChainRun(exerciseId)
+      .then((response) => {
+        if (cancelled || !response) return;
+        const data = (response as { data?: AttackChainLinkExpectationWire[] }).data;
+        setLinkExpectations(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        // simpleCall 已 notifyErrorHandler；不二次显示
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [exerciseId]);
+
+  const runtimeNodeInputs = useMemo<RuntimeNodeInput[]>(() => {
+    const list: AttackChainNode[] = attack_chain_nodes ?? [];
+    return list.map((node): RuntimeNodeInput => ({
+      nodeId: node.node_id,
+      title: node.node_title,
+      subtitle: node.node_injector_contract?.injector_contract_id,
+      nodeState: node.node_node_state,
+      repeatCount: node.node_repeat_count,
+      currentIteration: node.node_current_iteration,
+    }));
+  }, [attack_chain_nodes]);
+
+  const runtimeMap = useMemo(() => {
+    const expectations: AttackChainNodeExpectation[] = node_expectations ?? [];
+    return buildRuntimeNodeMap(runtimeNodeInputs, expectations);
+  }, [runtimeNodeInputs, node_expectations]);
+
+  const verdictData = useMemo(
+    () => toVerdictBannerData(attack_chain_run, runtimeMap, linkExpectations),
+    [attack_chain_run, runtimeMap, linkExpectations],
+  );
+
+  const linkExpectationItems = useMemo(
+    () => toLinkExpectationItems(linkExpectations),
+    [linkExpectations],
+  );
 
   const teamContext = teamContextForAttackChainRun(
     exerciseId,
@@ -92,19 +155,37 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
   return (
     <ViewModeContext.Provider value={viewMode}>
       {(viewMode === 'list' || viewMode === 'chain') && (
-        <TeamContext.Provider value={teamContext}>
-          <EndpointContext.Provider value={endpointContext}>
-            <AttackChainNodeTestContext.Provider value={injectTestContext}>
-              <AttackChainNodes
-                setViewMode={handleViewMode}
-                availableButtons={availableButtons}
-                teams={teams}
-                variables={variables}
-                uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
-              />
-            </AttackChainNodeTestContext.Provider>
-          </EndpointContext.Provider>
-        </TeamContext.Provider>
+        <RuntimeNodeContext.Provider value={{ runtimeByNodeId: runtimeMap }}>
+          <VerdictBanner data={verdictData} onClickDetection={() => setPanelOpen(true)} />
+          <TeamContext.Provider value={teamContext}>
+            <EndpointContext.Provider value={endpointContext}>
+              <AttackChainNodeTestContext.Provider value={injectTestContext}>
+                <AttackChainNodes
+                  setViewMode={handleViewMode}
+                  availableButtons={availableButtons}
+                  teams={teams}
+                  variables={variables}
+                  uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
+                />
+              </AttackChainNodeTestContext.Provider>
+            </EndpointContext.Provider>
+          </TeamContext.Provider>
+          <Drawer
+            anchor="right"
+            open={panelOpen}
+            onClose={() => setPanelOpen(false)}
+            PaperProps={{
+              sx: {
+                width: {
+                  xs: '100%',
+                  sm: 420,
+                },
+              },
+            }}
+          >
+            <LinkExpectationPanel items={linkExpectationItems} />
+          </Drawer>
+        </RuntimeNodeContext.Provider>
       )}
       {viewMode === 'distribution' && (
         <div style={{ marginTop: -12 }}>
