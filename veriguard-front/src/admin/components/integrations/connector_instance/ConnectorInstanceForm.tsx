@@ -16,7 +16,7 @@ import {
   type CreateConnectorInstanceInput,
 } from '../../../../utils/api-types';
 import { type ContractType, type EnhancedContractElement } from '../../../../utils/api-types-custom';
-import InjectContentFieldComponent from '../../common/attack_chain_nodes/form/InjectContentFieldComponent';
+import AttackChainNodeContentFieldComponent from '../../common/attack_chain_nodes/form/AttackChainNodeContentFieldComponent';
 
 interface Props {
   catalogConnectorSlug: string;
@@ -164,7 +164,7 @@ const ConnectorInstanceForm = ({
   const formatCatalogConnectorConfigurationToObject = (definition: CatalogConnectorConfiguration, index: number, required: boolean): EnhancedContractElement => {
     return {
       originalKey: `connector_instance_configurations.${index}.configuration_value`,
-      isInjectContentType: false,
+      isAttackChainNodeContentType: false,
       isVisible: true,
       isInMandatoryGroup: false,
       mandatoryGroupContractElementLabels: '',
@@ -258,7 +258,7 @@ const ConnectorInstanceForm = ({
               gap: theme.spacing(2),
             }}
           >
-            <InjectContentFieldComponent
+            <AttackChainNodeContentFieldComponent
               key={field.id}
               field={formatCatalogConnectorConfigurationToObject(definition, index, true)}
               readOnly={disabled}
@@ -299,7 +299,7 @@ const ConnectorInstanceForm = ({
                       gap: theme.spacing(2),
                     }}
                   >
-                    <InjectContentFieldComponent
+                    <AttackChainNodeContentFieldComponent
                       key={field.id}
                       field={formatCatalogConnectorConfigurationToObject(definition, index, false)}
                       readOnly={disabled}

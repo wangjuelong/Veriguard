@@ -4,7 +4,7 @@ import { type FunctionComponent, type MouseEvent as ReactMouseEvent, useState } 
 import { Link } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { type AttackPattern, type ExpectationResultsByType, type InjectExpectationResultsByAttackPattern, type InjectExpectationResultsByType } from '../../../../utils/api-types';
+import { type AttackPattern, type ExpectationResultsByType, type NodeExpectationResultsByAttackPattern, type NodeExpectationResultsByType } from '../../../../utils/api-types';
 import { hexToRGB } from '../../../../utils/Colors';
 import AtomicTestingResult from '../../atomic_testings/atomic_testing/AtomicTestingResult';
 import { type ExpectationResultType, mitreMatrixExpectationTypes } from '../attack_chain_nodes/expectations/Expectation';
@@ -39,7 +39,7 @@ const useStyles = makeStyles()(theme => ({
 interface AttackPatternBoxProps {
   goToLink?: string;
   attackPattern: AttackPattern;
-  injectResult: InjectExpectationResultsByAttackPattern | undefined;
+  injectResult: NodeExpectationResultsByAttackPattern | undefined;
   dummy?: boolean;
 }
 
@@ -54,7 +54,7 @@ const AttackPatternBox: FunctionComponent<AttackPatternBoxProps> = ({
   const theme = useTheme();
   const [open, setOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
-  const results: InjectExpectationResultsByType[] = injectResult?.inject_expectation_results ?? [];
+  const results: NodeExpectationResultsByType[] = injectResult?.node_expectation_results ?? [];
 
   if (dummy) {
     const content = () => (
@@ -148,16 +148,16 @@ const AttackPatternBox: FunctionComponent<AttackPatternBoxProps> = ({
         {results?.map((result, idx) => {
           const content = () => (
             <>
-              <ListItemText primary={result.inject_title} />
+              <ListItemText primary={result.node_title} />
               <AtomicTestingResult expectations={result.results ?? []} />
             </>
           );
           if (goToLink) {
             return (
               <MenuItem
-                key={`inject-result-${idx}`}
+                key={`node-result-${idx}`}
                 component={Link}
-                to={goToLink + '/' + result.inject_id}
+                to={goToLink + '/' + result.node_id}
                 style={{
                   display: 'flex',
                   gap: 8,
@@ -169,7 +169,7 @@ const AttackPatternBox: FunctionComponent<AttackPatternBoxProps> = ({
           }
           return (
             <MenuItem
-              key={`inject-result-${idx}`}
+              key={`node-result-${idx}`}
               style={{
                 display: 'flex',
                 gap: 8,

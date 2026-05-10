@@ -1,11 +1,11 @@
-import { type InjectExpectation } from '../../../../../utils/api-types';
+import { type AttackChainNodeExpectation } from '../../../../../utils/api-types';
 
-export interface InjectExpectationsStore extends Omit<InjectExpectation, 'inject_expectation_team' | 'inject_expectation_user' | 'inject_expectation_article' | 'inject_expectation_challenge' | 'inject_expectation_asset'> {
-  inject_expectation_team: string | undefined;
-  inject_expectation_user: string | undefined;
-  inject_expectation_article: string | undefined;
-  inject_expectation_challenge: string | undefined;
-  inject_expectation_asset: string | undefined;
+export interface AttackChainNodeExpectationsStore extends Omit<AttackChainNodeExpectation, 'node_expectation_team' | 'node_expectation_user' | 'node_expectation_article' | 'node_expectation_challenge' | 'node_expectation_asset'> {
+  node_expectation_team: string | undefined;
+  node_expectation_user: string | undefined;
+  node_expectation_article: string | undefined;
+  node_expectation_challenge: string | undefined;
+  node_expectation_asset: string | undefined;
 }
 
 export interface ExpectationInput {

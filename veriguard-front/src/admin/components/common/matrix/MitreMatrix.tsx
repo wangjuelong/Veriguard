@@ -5,7 +5,7 @@ import { makeStyles } from 'tss-react/mui';
 import { type AttackPatternHelper } from '../../../../actions/attack_patterns/attackpattern-helper';
 import { type KillChainPhaseHelper } from '../../../../actions/kill_chain_phases/killchainphase-helper';
 import { useHelper } from '../../../../store';
-import { type AttackPattern, type InjectExpectationResultsByAttackPattern, type KillChainPhase } from '../../../../utils/api-types';
+import { type AttackPattern, type KillChainPhase, type NodeExpectationResultsByAttackPattern } from '../../../../utils/api-types';
 import { sortKillChainPhase } from '../../../../utils/kill_chain_phases/kill_chain_phases';
 import KillChainPhaseColumn from './KillChainPhaseColumn';
 import MitreMatrixDummy from './MitreMatrixDummy';
@@ -23,7 +23,7 @@ const useStyles = makeStyles()(() => ({
 
 interface Props {
   goToLink?: string;
-  injectResults: InjectExpectationResultsByAttackPattern[];
+  injectResults: NodeExpectationResultsByAttackPattern[];
 }
 
 const MitreMatrix: FunctionComponent<Props> = ({
@@ -48,8 +48,8 @@ const MitreMatrix: FunctionComponent<Props> = ({
   // Attack Pattern
   const resultAttackPatternIds = R.uniq(
     injectResults
-      .filter(injectResult => !!injectResult.inject_attack_pattern)
-      .flatMap(injectResult => injectResult.inject_attack_pattern) as unknown as string[],
+      .filter(injectResult => !!injectResult.node_attack_pattern)
+      .flatMap(injectResult => injectResult.node_attack_pattern) as unknown as string[],
   );
   const resultAttackPatterns: AttackPattern[] = resultAttackPatternIds.map((attackPatternId: string) => attackPatternMap[attackPatternId])
     .filter((attackPattern: AttackPattern) => !!attackPattern);

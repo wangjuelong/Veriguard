@@ -1,9 +1,9 @@
 import { simpleCall, simpleDelCall, simplePostCall, simplePutCall } from '../../utils/Action';
 import {
+  type AttackChainNodesImportTestInput,
   type ExportMapperInput,
   type ImportMapperAddInput,
   type ImportMapperUpdateInput,
-  type InjectsImportTestInput,
   type RawPaginationImportMapper,
   type SearchPaginationInput,
 } from '../../utils/api-types';
@@ -46,7 +46,7 @@ export const storeXlsFile = (file: File) => {
   return simplePostCall(uri, formData);
 };
 
-export const testXlsFile = (importId: string, input: InjectsImportTestInput) => {
+export const testXlsFile = (importId: string, input: AttackChainNodesImportTestInput) => {
   const uri = `${XLS_MAPPER_URI}/store/${importId}`;
   return simplePostCall(uri, input);
 };

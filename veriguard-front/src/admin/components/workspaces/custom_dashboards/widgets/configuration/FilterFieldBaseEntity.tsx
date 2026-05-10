@@ -16,7 +16,7 @@ interface Props {
   error?: boolean;
 }
 
-const ENTITIES = ['expectation-inject', 'finding', 'endpoint', 'vulnerable-endpoint', 'inject', 'scenario', 'simulation'];
+const ENTITIES = ['expectation-node', 'finding', 'endpoint', 'vulnerable-endpoint', 'node', 'attack_chain', 'attack_chain_run'];
 
 const FilterFieldBaseEntity: FunctionComponent<Props> = ({
   value,

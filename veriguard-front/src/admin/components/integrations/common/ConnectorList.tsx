@@ -7,7 +7,7 @@ import { fetchCatalogConnectors } from '../../../../actions/catalog/catalog-acti
 import { type CatalogConnectorsHelper } from '../../../../actions/catalog/catalog-helper';
 import { type CollectorHelper } from '../../../../actions/collectors/collector-helper';
 import type { ExecutorHelper } from '../../../../actions/executors/executor-helper';
-import { type InjectorHelper } from '../../../../actions/injectors/injector-helper';
+import { type InjectorHelper } from '../../../../actions/node_executors/node_executor-helper';
 import useDialog from '../../../../components/common/dialog/useDialog';
 import { useFormatter } from '../../../../components/i18n';
 import SearchFilter from '../../../../components/SearchFilter';
@@ -17,7 +17,7 @@ import type {
   CatalogConnectorOutput,
   CollectorOutput,
   ExecutorOutput,
-  InjectorOutput,
+  NodeExecutorOutput,
 } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
@@ -59,7 +59,7 @@ const ConnectorList = () => {
   const createInstanceDrawer = useDialog();
 
   // Select the appropriate connectors based on connector type
-  const getRawConnectors = (): (CollectorOutput | ExecutorOutput | InjectorOutput)[] => {
+  const getRawConnectors = (): (CollectorOutput | ExecutorOutput | NodeExecutorOutput)[] => {
     switch (connectorType) {
       case 'executor':
         return executors;
@@ -74,7 +74,7 @@ const ConnectorList = () => {
 
   const rawConnectors = getRawConnectors();
   const connectors = normalizeSingle
-    ? rawConnectors.map((c: CollectorOutput | ExecutorOutput | InjectorOutput) => normalizeSingle(c))
+    ? rawConnectors.map((c: CollectorOutput | ExecutorOutput | NodeExecutorOutput) => normalizeSingle(c))
     : rawConnectors;
 
   const canMigrate = (connector: ConnectorOutput) => {

@@ -3,20 +3,20 @@ import * as R from 'ramda';
 import { type FunctionComponent } from 'react';
 import Chart from 'react-apexcharts';
 
-import { fetchExerciseCommunications } from '../../../../../actions/Communication';
+import { fetchAttackChainRunCommunications } from '../../../../../actions/Communication';
 import { type CommunicationHelper } from '../../../../../actions/communications/communication-helper';
 import { type UserHelper } from '../../../../../actions/helper';
 import { fetchPlayers } from '../../../../../actions/users/User';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type Communication, type Exercise, type User } from '../../../../../utils/api-types';
+import { type AttackChainRun, type Communication, type User } from '../../../../../utils/api-types';
 import { horizontalBarsChartOptions } from '../../../../../utils/Charts';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import { resolveUserName } from '../../../../../utils/String';
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
 const MailDistributionByPlayer: FunctionComponent<Props> = ({ exerciseId }) => {
   // Standard hooks
@@ -26,11 +26,11 @@ const MailDistributionByPlayer: FunctionComponent<Props> = ({ exerciseId }) => {
 
   // Fetching data
   const { communications, usersMap } = useHelper((helper: CommunicationHelper & UserHelper) => ({
-    communications: helper.getExerciseCommunications(exerciseId),
+    communications: helper.getAttackChainRunCommunications(exerciseId),
     usersMap: helper.getUsersMap(),
   }));
   useDataLoader(() => {
-    dispatch(fetchExerciseCommunications(exerciseId));
+    dispatch(fetchAttackChainRunCommunications(exerciseId));
     dispatch(fetchPlayers());
   });
 
@@ -77,7 +77,7 @@ const MailDistributionByPlayer: FunctionComponent<Props> = ({ exerciseId }) => {
       ) : (
         <Empty
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}

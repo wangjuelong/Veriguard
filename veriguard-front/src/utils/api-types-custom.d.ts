@@ -65,7 +65,7 @@ export interface ContractElement {
 
 export type EnhancedContractElement = ContractElement & {
   originalKey: string;
-  isInjectContentType: boolean;
+  isAttackChainNodeContentType: boolean;
   isVisible: boolean;
   isInMandatoryGroup: boolean;
   mandatoryGroupContractElementLabels: string;
@@ -76,7 +76,7 @@ export type EnhancedContractElement = ContractElement & {
   };
 };
 
-export type InjectorContractConverted = Omit<InjectorContract, 'convertedContent'> & {
+export type NodeContractConverted = Omit<NodeContract, 'convertedContent'> & {
   convertedContent: {
     fields: ContractElement[];
     contract_id: string;

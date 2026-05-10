@@ -23,9 +23,9 @@ const RootPublic = lazy(() => import('./public/Root'));
 const IndexPrivate = lazy(() => import('./private/Index'));
 const IndexAdmin = lazy(() => import('./admin/Index'));
 const Comcheck = lazy(() => import('./public/components/comcheck/Comcheck'));
-const SimulationReport = lazy(() => import('./admin/components/attack_chain_runs/attack_chain_run/reports/SimulationReportPage'));
-const ExerciseViewLessons = lazy(() => import('./public/components/lessons/ExerciseViewLessons'));
-const ScenarioViewLessons = lazy(() => import('./public/components/lessons/ScenarioViewLessons'));
+const SimulationReport = lazy(() => import('./admin/components/attack_chain_runs/attack_chain_run/reports/AttackChainRunReportPage'));
+const AttackChainRunViewLessons = lazy(() => import('./public/components/lessons/AttackChainRunViewLessons'));
+const AttackChainViewLessons = lazy(() => import('./public/components/lessons/AttackChainViewLessons'));
 
 const Root = () => {
   const { logged, me, settings } = useHelper((helper: LoggedHelper) => {
@@ -88,9 +88,9 @@ const Root = () => {
                   <Route path="admin/*" element={errorWrapper(IndexAdmin)()} />
                   {/* Routes from /public/Index that need to be accessible for logged user are duplicated here */}
                   <Route path="comcheck/:statusId" element={errorWrapper(Comcheck)()} />
-                  <Route path="lessons/simulation/:exerciseId" element={errorWrapper(ExerciseViewLessons)()} />
-                  <Route path="lessons/scenario/:scenarioId" element={errorWrapper(ScenarioViewLessons)()} />
-                  <Route path="reports/:reportId/exercise/:exerciseId" element={errorWrapper(SimulationReport)()} />
+                  <Route path="lessons/attack_chain_run/:exerciseId" element={errorWrapper(AttackChainRunViewLessons)()} />
+                  <Route path="lessons/attack_chain/:scenarioId" element={errorWrapper(AttackChainViewLessons)()} />
+                  <Route path="reports/:reportId/attack_chain_run/:exerciseId" element={errorWrapper(SimulationReport)()} />
 
                   {/* Not found */}
                   <Route path="*" element={<NotFound />} />

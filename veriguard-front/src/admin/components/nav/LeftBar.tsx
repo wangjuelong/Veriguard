@@ -1,5 +1,5 @@
-import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, RowingOutlined, SchoolOutlined, SettingsOutlined, SubscriptionsOutlined, VerifiedUserOutlined } from '@mui/icons-material';
-import { Binoculars, NewspaperVariantMultipleOutline, PostOutline, SecurityNetwork, SelectGroup, Target } from 'mdi-material-ui';
+import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, SubscriptionsOutlined, VerifiedUserOutlined } from '@mui/icons-material';
+import { Binoculars, NewspaperVariantMultipleOutline, SecurityNetwork, SelectGroup, Target } from 'mdi-material-ui';
 import { useContext } from 'react';
 
 import LeftMenu from '../../../components/common/menu/leftmenu/LeftMenu';
@@ -38,7 +38,7 @@ const LeftBar = () => {
         {
           path: `/admin/attack_chains`,
           icon: () => (<MovieFilterOutlined />),
-          label: 'Scenarios',
+          label: 'AttackChains',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
         },
         {

@@ -3,15 +3,13 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { type InjectStore } from '../../../../../actions/attack_chain_nodes/Inject';
-import { type InjectHelper } from '../../../../../actions/attack_chain_nodes/inject-helper';
-import { type ExercisesHelper } from '../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExerciseInjects, updateInjectForExercise } from '../../../../../actions/AttackChainNode';
-import { fetchExerciseTeams } from '../../../../../actions/AttackChainRun';
-import { fetchExerciseChallenges } from '../../../../../actions/challenge-action';
-import type { ArticlesHelper } from '../../../../../actions/channels/article-helper';
-import { fetchExerciseDocuments } from '../../../../../actions/documents/documents-actions';
-import { fetchVariablesForExercise } from '../../../../../actions/variables/variable-actions';
+import { type AttackChainNodeStore } from '../../../../../actions/attack_chain_nodes/AttackChainNode';
+import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
+import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRunAttackChainNodes, updateAttackChainNodeForAttackChainRun } from '../../../../../actions/AttackChainNode';
+import { fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
+import { fetchAttackChainRunDocuments } from '../../../../../actions/documents/documents-actions';
+import { fetchVariablesForAttackChainRun } from '../../../../../actions/variables/variable-actions';
 import type { VariablesHelper } from '../../../../../actions/variables/variable-helper';
 import { BACK_LABEL, BACK_URI } from '../../../../../components/Breadcrumbs';
 import Empty from '../../../../../components/Empty';
@@ -21,23 +19,22 @@ import ProgressBarCountdown from '../../../../../components/ProgressBarCountdown
 import SearchFilter from '../../../../../components/SearchFilter';
 import Timeline from '../../../../../components/Timeline';
 import { useHelper } from '../../../../../store';
-import { type Exercise, type Inject } from '../../../../../utils/api-types';
+import { type AttackChainNode, type AttackChainRun } from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
-import endpointContextForExercise from '../../../../../utils/context/endpoint/EndpointContextForExercise';
+import endpointContextForAttackChainRun from '../../../../../utils/context/endpoint/EndpointContextForAttackChainRun';
 import { useAppDispatch } from '../../../../../utils/hooks';
 import useDataLoader from '../../../../../utils/hooks/useDataLoader';
 import useSearchAndFilter from '../../../../../utils/SortingFiltering';
 import { isNotEmptyField } from '../../../../../utils/utils';
-import InjectIcon from '../../../common/attack_chain_nodes/InjectIcon';
-import InjectPopover from '../../../common/attack_chain_nodes/InjectPopover';
-import UpdateInject from '../../../common/attack_chain_nodes/UpdateInject';
-import { ArticleContext, ChallengeContext, TeamContext } from '../../../common/Context';
+import AttackChainNodeIcon from '../../../common/attack_chain_nodes/AttackChainNodeIcon';
+import AttackChainNodePopover from '../../../common/attack_chain_nodes/AttackChainNodePopover';
+import UpdateAttackChainNode from '../../../common/attack_chain_nodes/UpdateAttackChainNode';
+import { TeamContext } from '../../../common/Context';
 import TagsFilter from '../../../common/filters/TagsFilter';
 import AnimationMenu from '../AnimationMenu';
-import articleContextForExercise from '../articles/articleContextForExercise';
-import teamContextForExercise from '../teams/teamContextForExercise';
-import InjectOverTimeArea from './InjectOverTimeArea';
-import InjectOverTimeLine from './InjectOverTimeLine';
+import teamContextForAttackChainRun from '../teams/teamContextForAttackChainRun';
+import AttackChainNodeOverTimeArea from './AttackChainNodeOverTimeArea';
+import AttackChainNodeOverTimeLine from './AttackChainNodeOverTimeLine';
 
 const useStyles = makeStyles()(theme => ({
   item: { height: 50 },
@@ -59,57 +56,53 @@ const TimelineOverview = () => {
   const { classes } = useStyles();
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const { exerciseId } = useParams() as { exerciseId: Exercise['exercise_id'] };
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
   const { t, fndt } = useFormatter();
-  const [selectedInjectId, setSelectedInjectId] = useState<string | null>(null);
+  const [selectedAttackChainNodeId, setSelectedAttackChainNodeId] = useState<string | null>(null);
 
   const {
-    exercise,
-    injects,
+    attack_chain_run,
+    nodes,
     teams,
-    articles,
     variables,
-  } = useHelper((helper: InjectHelper & ExercisesHelper & ArticlesHelper & VariablesHelper) => {
+  } = useHelper((helper: AttackChainNodeHelper & AttackChainRunsHelper & VariablesHelper) => {
     return {
-      exercise: helper.getExercise(exerciseId),
-      injects: helper.getExerciseInjects(exerciseId),
-      teams: helper.getExerciseTeams(exerciseId),
-      articles: helper.getExerciseArticles(exerciseId),
-      variables: helper.getExerciseVariables(exerciseId),
+      attack_chain_run: helper.getAttackChainRun(exerciseId),
+      nodes: helper.getAttackChainRunAttackChainNodes(exerciseId),
+      teams: helper.getAttackChainRunTeams(exerciseId),
+      variables: helper.getAttackChainRunVariables(exerciseId),
     };
   });
 
   // Fetching Data
   useDataLoader(() => {
-    dispatch(fetchExerciseInjects(exerciseId));
-    dispatch(fetchExerciseTeams(exerciseId));
-    dispatch(fetchVariablesForExercise(exerciseId));
-    dispatch(fetchExerciseDocuments(exerciseId));
+    dispatch(fetchAttackChainRunAttackChainNodes(exerciseId));
+    dispatch(fetchAttackChainRunTeams(exerciseId));
+    dispatch(fetchVariablesForAttackChainRun(exerciseId));
+    dispatch(fetchAttackChainRunDocuments(exerciseId));
   });
 
   // Sort
   const searchColumns = ['title', 'description', 'content'];
   const filtering = useSearchAndFilter(
-    'inject',
+    'node',
     'depends_duration',
     searchColumns,
   );
 
-  const isEnable = (inject: InjectStore): boolean => !!inject.inject_enabled;
-  const filteredInjects: InjectStore[] = filtering.filterAndSort(injects.filter((inject: InjectStore) => isEnable(inject)));
-  const pendingInjects: InjectStore[] = filtering.filterAndSort(filteredInjects.filter((inject: InjectStore) => inject.inject_status === null));
-  const processedInjects: InjectStore[] = filtering.filterAndSort(filteredInjects.filter((i: InjectStore) => i.inject_status !== null));
+  const isEnable = (node: AttackChainNodeStore): boolean => !!node.node_enabled;
+  const filteredAttackChainNodes: AttackChainNodeStore[] = filtering.filterAndSort(nodes.filter((node: AttackChainNodeStore) => isEnable(node)));
+  const pendingAttackChainNodes: AttackChainNodeStore[] = filtering.filterAndSort(filteredAttackChainNodes.filter((node: AttackChainNodeStore) => node.node_status === null));
+  const processedAttackChainNodes: AttackChainNodeStore[] = filtering.filterAndSort(filteredAttackChainNodes.filter((i: AttackChainNodeStore) => i.node_status !== null));
 
-  const onUpdateInject = async (inject: Inject) => {
-    if (selectedInjectId) {
-      await dispatch(updateInjectForExercise(exerciseId, selectedInjectId, inject));
+  const onUpdateAttackChainNode = async (node: AttackChainNode) => {
+    if (selectedAttackChainNodeId) {
+      await dispatch(updateAttackChainNodeForAttackChainRun(exerciseId, selectedAttackChainNodeId, node));
     }
   };
 
-  const teamContext = teamContextForExercise(exerciseId, []);
-  const articleContext = articleContextForExercise(exerciseId);
-  const endpointContext = endpointContextForExercise(exerciseId);
-  const challengeContext = { fetchChallenges: () => dispatch(fetchExerciseChallenges(exerciseId)) };
+  const teamContext = teamContextForAttackChainRun(exerciseId, []);
+  const endpointContext = endpointContextForAttackChainRun(exerciseId);
 
   return (
     <div>
@@ -127,9 +120,9 @@ const TimelineOverview = () => {
         />
       </div>
       <Timeline
-        injects={filteredInjects}
+        nodes={filteredAttackChainNodes}
         teams={teams}
-        onSelectInject={(id: string) => setSelectedInjectId(id)}
+        onSelectAttackChainNode={(id: string) => setSelectedAttackChainNodeId(id)}
       />
       <div className="clearfix" />
       <div style={{
@@ -139,19 +132,19 @@ const TimelineOverview = () => {
         gridTemplateColumns: '1fr 1fr',
       }}
       >
-        <Typography variant="h4">{t('Pending injects')}</Typography>
-        <Typography variant="h4">{t('Processed injects')}</Typography>
+        <Typography variant="h4">{t('Pending nodes')}</Typography>
+        <Typography variant="h4">{t('Processed nodes')}</Typography>
         <Paper variant="outlined">
-          {pendingInjects.length > 0 ? (
+          {pendingAttackChainNodes.length > 0 ? (
             <List style={{ paddingTop: theme.spacing(0) }}>
-              {pendingInjects.map((inject: InjectStore) => {
+              {pendingAttackChainNodes.map((node: AttackChainNodeStore) => {
                 return (
                   <ListItem
-                    key={inject.inject_id}
+                    key={node.node_id}
                     secondaryAction={(
-                      <InjectPopover
-                        inject={inject}
-                        setSelectedInjectId={setSelectedInjectId}
+                      <AttackChainNodePopover
+                        node={node}
+                        setSelectedAttackChainNodeId={setSelectedAttackChainNodeId}
                         canDone
                         canTriggerNow
                       />
@@ -161,16 +154,16 @@ const TimelineOverview = () => {
                       dense
                       classes={{ root: classes.item }}
                       divider
-                      onClick={() => setSelectedInjectId(inject.inject_id)}
+                      onClick={() => setSelectedAttackChainNodeId(node.node_id)}
                     >
                       <ListItemIcon>
-                        <InjectIcon
-                          isPayload={isNotEmptyField(inject.inject_injector_contract?.injector_contract_payload)}
+                        <AttackChainNodeIcon
+                          isPayload={isNotEmptyField(node.node_injector_contract?.injector_contract_payload)}
                           type={
-                            inject.inject_injector_contract?.injector_contract_payload
-                              ? inject.inject_injector_contract.injector_contract_payload?.payload_collector_type
-                              || inject.inject_injector_contract.injector_contract_payload?.payload_type
-                              : inject.inject_type
+                            node.node_injector_contract?.injector_contract_payload
+                              ? node.node_injector_contract.injector_contract_payload?.payload_collector_type
+                              || node.node_injector_contract.injector_contract_payload?.payload_type
+                              : node.node_type
                           }
                           variant="inline"
                         />
@@ -181,16 +174,16 @@ const TimelineOverview = () => {
                             <div
                               className={classes.bodyItem}
                             >
-                              {inject.inject_title}
+                              {node.node_title}
                             </div>
                             <div
                               className={classes.bodyItem}
                             >
                               <ProgressBarCountdown
-                                date={inject.inject_date}
+                                date={node.node_date}
                                 paused={
-                                  exercise?.exercise_status === 'PAUSED'
-                                  || exercise?.exercise_status === 'CANCELED'
+                                  attack_chain_run?.attack_chain_run_status === 'PAUSED'
+                                  || attack_chain_run?.attack_chain_run_status === 'CANCELED'
                                 }
                               />
                             </div>
@@ -201,7 +194,7 @@ const TimelineOverview = () => {
                                 fontSize: 12,
                               }}
                             >
-                              {fndt(inject.inject_date)}
+                              {fndt(node.node_date)}
                             </div>
                           </div>
                         )}
@@ -212,29 +205,29 @@ const TimelineOverview = () => {
               })}
             </List>
           ) : (
-            <Empty message={t('No pending injects in this simulation.')} />
+            <Empty message={t('No pending nodes in this attack_chain_run.')} />
           )}
         </Paper>
         <Paper variant="outlined">
-          {processedInjects.length > 0 ? (
+          {processedAttackChainNodes.length > 0 ? (
             <List style={{ paddingTop: 0 }}>
-              {processedInjects.map((inject: InjectStore) => (
-                <ListItem key={inject.inject_id}>
+              {processedAttackChainNodes.map((node: AttackChainNodeStore) => (
+                <ListItem key={node.node_id}>
                   <ListItemButton
                     dense
                     classes={{ root: classes.item }}
                     divider
                     component={Link}
-                    to={`/admin/attack_chain_runs/${exerciseId}/injects/${inject.inject_id}?${BACK_LABEL}=Animation&${BACK_URI}=/admin/attack_chain_runs/${exerciseId}/animation/timeline`}
+                    to={`/admin/attack_chain_runs/${exerciseId}/nodes/${node.node_id}?${BACK_LABEL}=Animation&${BACK_URI}=/admin/attack_chain_runs/${exerciseId}/animation/timeline`}
                   >
                     <ListItemIcon>
-                      <InjectIcon
-                        isPayload={isNotEmptyField(inject.inject_injector_contract?.injector_contract_payload)}
+                      <AttackChainNodeIcon
+                        isPayload={isNotEmptyField(node.node_injector_contract?.injector_contract_payload)}
                         type={
-                          inject.inject_injector_contract?.injector_contract_payload
-                            ? inject.inject_injector_contract.injector_contract_payload?.payload_collector_type
-                            || inject.inject_injector_contract.injector_contract_payload?.payload_type
-                            : inject.inject_type
+                          node.node_injector_contract?.injector_contract_payload
+                            ? node.node_injector_contract.injector_contract_payload?.payload_collector_type
+                            || node.node_injector_contract.injector_contract_payload?.payload_type
+                            : node.node_type
                         }
                         variant="inline"
                       />
@@ -245,16 +238,16 @@ const TimelineOverview = () => {
                           <div
                             className={classes.bodyItem}
                           >
-                            {inject.inject_title}
+                            {node.node_title}
                           </div>
                           <div
                             className={classes.bodyItem}
                           >
                             <ItemStatus
-                              key={inject.inject_id}
+                              key={node.node_id}
                               variant="inList"
-                              label={inject.inject_status?.status_name ? t(inject.inject_status.status_name) : 'No Status'}
-                              status={inject.inject_status?.status_name}
+                              label={node.node_status?.status_name ? t(node.node_status.status_name) : 'No Status'}
+                              status={node.node_status?.status_name}
                             />
                           </div>
                           <div
@@ -264,11 +257,11 @@ const TimelineOverview = () => {
                               fontSize: 12,
                             }}
                           >
-                            {fndt(inject.inject_status?.tracking_sent_date)}
+                            {fndt(node.node_status?.tracking_sent_date)}
                             {' '}
                             {
-                              inject.inject_status?.tracking_sent_date && inject.inject_status.tracking_end_date
-                              && ((new Date(inject.inject_status.tracking_end_date).getTime() - new Date(inject.inject_status.tracking_sent_date).getTime()) / 1000).toFixed(2)
+                              node.node_status?.tracking_sent_date && node.node_status.tracking_end_date
+                              && ((new Date(node.node_status.tracking_end_date).getTime() - new Date(node.node_status.tracking_sent_date).getTime()) / 1000).toFixed(2)
                             }
                             {t('s')}
                           </div>
@@ -280,7 +273,7 @@ const TimelineOverview = () => {
               ))}
             </List>
           ) : (
-            <Empty message={t('No processed injects in this simulation.')} />
+            <Empty message={t('No processed nodes in this attack_chain_run.')} />
           )}
         </Paper>
       </div>
@@ -291,35 +284,30 @@ const TimelineOverview = () => {
         gridTemplateColumns: '1fr 1fr',
       }}
       >
-        <Typography variant="h4">{t('Sent injects over time')}</Typography>
-        <Typography variant="h4">{t('Sent injects over time')}</Typography>
+        <Typography variant="h4">{t('Sent nodes over time')}</Typography>
+        <Typography variant="h4">{t('Sent nodes over time')}</Typography>
         <Paper variant="outlined">
-          <InjectOverTimeArea injects={filteredInjects} />
+          <AttackChainNodeOverTimeArea nodes={filteredAttackChainNodes} />
         </Paper>
         <Paper variant="outlined">
-          <InjectOverTimeLine injects={filteredInjects} />
+          <AttackChainNodeOverTimeLine nodes={filteredAttackChainNodes} />
         </Paper>
       </div>
-      {selectedInjectId && (
-        <ArticleContext.Provider value={articleContext}>
-          <TeamContext.Provider value={teamContext}>
-            <EndpointContext.Provider value={endpointContext}>
-              <ChallengeContext.Provider value={challengeContext}>
-                <UpdateInject
-                  open
-                  handleClose={() => setSelectedInjectId(null)}
-                  onUpdateInject={onUpdateInject}
-                  injectId={selectedInjectId}
-                  isAtomic={false}
-                  injects={injects}
-                  articlesFromExerciseOrScenario={articles}
-                  uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
-                  variablesFromExerciseOrScenario={variables}
-                />
-              </ChallengeContext.Provider>
-            </EndpointContext.Provider>
-          </TeamContext.Provider>
-        </ArticleContext.Provider>
+      {selectedAttackChainNodeId && (
+        <TeamContext.Provider value={teamContext}>
+          <EndpointContext.Provider value={endpointContext}>
+            <UpdateAttackChainNode
+              open
+              handleClose={() => setSelectedAttackChainNodeId(null)}
+              onUpdateAttackChainNode={onUpdateAttackChainNode}
+              injectId={selectedAttackChainNodeId}
+              isAtomic={false}
+              nodes={nodes}
+              uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
+              variablesFromAttackChainRunOrAttackChain={variables}
+            />
+          </EndpointContext.Provider>
+        </TeamContext.Provider>
       )}
     </div>
   );

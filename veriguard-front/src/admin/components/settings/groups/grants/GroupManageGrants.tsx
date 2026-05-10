@@ -4,8 +4,8 @@ import Drawer from '../../../../../components/common/Drawer';
 import { useFormatter } from '../../../../../components/i18n';
 import { type Group } from '../../../../../utils/api-types';
 import GroupManageAtomicTestingGrants from './atomic_testings/GroupManageAtomicTestingGrants';
-import GroupManageSimulationGrants from './attack_chain_runs/GroupManageSimulationGrants';
-import GroupManageScenarioGrants from './attack_chains/GroupManageScenarioGrants';
+import GroupManageSimulationGrants from './attack_chain_runs/GroupManageAttackChainRunGrants';
+import GroupManageAttackChainGrants from './attack_chains/GroupManageAttackChainGrants';
 import GroupManagePayloadGrants from './payloads/GroupManagePayloadGrants';
 import TabbedView from './ui/TabbedView';
 
@@ -33,10 +33,10 @@ const GroupManageGrants: FunctionComponent<GroupManageGrantsProps> = ({
       <TabbedView
         tabs={[
           {
-            key: 'Scenarios',
-            label: t('Scenarios'),
+            key: 'AttackChains',
+            label: t('AttackChains'),
             component: (
-              <GroupManageScenarioGrants groupId={group.group_id} onGrantChange={fetchAndUpdateGroup} />
+              <GroupManageAttackChainGrants groupId={group.group_id} onGrantChange={fetchAndUpdateGroup} />
             ),
           },
           {

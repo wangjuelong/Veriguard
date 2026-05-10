@@ -61,8 +61,8 @@ const escape = (value: unknown): string | undefined => value?.toString()
 
 type TagsMap = Record<string, { tag_name?: string } | undefined>;
 type OrganizationsMap = Record<string, { organization_name?: string } | undefined>;
-type ExercisesMap = Record<string, { exercise_name?: string } | undefined>;
-type ScenariosMap = Record<string, { scenario_name?: string } | undefined>;
+type AttackChainRunsMap = Record<string, { attack_chain_run_name?: string } | undefined>;
+type AttackChainsMap = Record<string, { attack_chain_name?: string } | undefined>;
 
 export const exportData = <T extends object>(
   type: string,
@@ -70,8 +70,8 @@ export const exportData = <T extends object>(
   data: T[],
   tagsMap: TagsMap = {},
   organizationsMap: OrganizationsMap = {},
-  exercisesMap: ExercisesMap = {},
-  scenariosMap: ScenariosMap = {},
+  exercisesMap: AttackChainRunsMap = {},
+  scenariosMap: AttackChainsMap = {},
 ): Record<string, string | undefined>[] => {
   return data
     .map(d => R.pick(keys, d as Record<string, unknown>) as Record<string, unknown>)
@@ -91,20 +91,20 @@ export const exportData = <T extends object>(
         );
       }
 
-      const exercisesKey = `${type}_exercises`;
+      const exercisesKey = `${type}_attack_chain_runs`;
       if (entry[exercisesKey]) {
         entry = R.assoc(
           exercisesKey,
-          (entry[exercisesKey] as string[]).map(e => exercisesMap[e]?.exercise_name).filter(x => !!x),
+          (entry[exercisesKey] as string[]).map(e => exercisesMap[e]?.attack_chain_run_name).filter(x => !!x),
           entry,
         );
       }
 
-      const scenariosKey = `${type}_scenarios`;
+      const scenariosKey = `${type}_attack_chains`;
       if (entry[scenariosKey]) {
         entry = R.assoc(
           scenariosKey,
-          (entry[scenariosKey] as string[]).map(e => scenariosMap[e]?.scenario_name).filter(x => !!x),
+          (entry[scenariosKey] as string[]).map(e => scenariosMap[e]?.attack_chain_name).filter(x => !!x),
           entry,
         );
       }
@@ -118,10 +118,10 @@ export const exportData = <T extends object>(
         );
       }
 
-      if (entry.inject_content) {
+      if (entry.node_content) {
         entry = R.assoc(
-          'inject_content',
-          JSON.stringify(entry.inject_content),
+          'node_content',
+          JSON.stringify(entry.node_content),
           entry,
         );
       }

@@ -6,7 +6,7 @@ import { MESSAGING$ } from '../../utils/Environment';
 import * as schema from '../Schema';
 
 const ATOMIC_TESTING_URI = '/api/atomic-testings';
-const EXPECTATION_TRACE_URI = '/api/inject-expectations-traces';
+const EXPECTATION_TRACE_URI = '/api/node-expectations-traces';
 
 export const searchAtomicTestings = (searchPaginationInput: SearchPaginationInput) => {
   const data = searchPaginationInput;
@@ -14,7 +14,7 @@ export const searchAtomicTestings = (searchPaginationInput: SearchPaginationInpu
   return simplePostCall(uri, data);
 };
 
-export const fetchInjectResultOverviewOutput = (injectId: string) => {
+export const fetchAttackChainNodeResultOverviewOutput = (injectId: string) => {
   const uri = `${ATOMIC_TESTING_URI}/${injectId}`;
   return simpleCall(uri);
 };

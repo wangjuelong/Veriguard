@@ -1,5 +1,5 @@
 import countriesJson from '../static/geo/countries.json';
-import { type AttackPattern, type Exercise, type KillChainPhase, type Organization, type Scenario, type Tag } from './api-types';
+import { type AttackChain, type AttackChainRun, type AttackPattern, type KillChainPhase, type Organization, type Tag } from './api-types';
 
 interface Country {
   code: string;
@@ -72,28 +72,28 @@ export const killChainPhaseOptions = (
   );
 
 export const exerciseOptions = (
-  exercise_ids: string[],
-  exercisesMap: Record<string, Exercise>,
-) => (exercise_ids ?? [])
+  attack_chain_run_ids: string[],
+  exercisesMap: Record<string, AttackChainRun>,
+) => (attack_chain_run_ids ?? [])
   .map(exerciseId => exercisesMap[exerciseId])
   .filter(exerciseItem => exerciseItem !== undefined)
   .map(
     exerciseItem => ({
-      id: exerciseItem.exercise_id,
-      label: exerciseItem.exercise_name,
+      id: exerciseItem.attack_chain_run_id,
+      label: exerciseItem.attack_chain_run_name,
     }) as Option,
   );
 
 export const scenarioOptions = (
-  scenario_ids: string[],
-  scenariosMap: Record<string, Scenario>,
-) => (scenario_ids ?? [])
+  attack_chain_ids: string[],
+  scenariosMap: Record<string, AttackChain>,
+) => (attack_chain_ids ?? [])
   .map(scenarioId => scenariosMap[scenarioId])
   .filter(scenarioItem => scenarioItem !== undefined)
   .map(
     scenarioItem => ({
-      id: scenarioItem.scenario_id,
-      label: scenarioItem.scenario_name,
+      id: scenarioItem.attack_chain_id,
+      label: scenarioItem.attack_chain_name,
     }) as Option,
   );
 

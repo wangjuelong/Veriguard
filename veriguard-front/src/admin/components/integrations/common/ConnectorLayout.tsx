@@ -8,7 +8,7 @@ import { type CollectorHelper } from '../../../../actions/collectors/collector-h
 import { fetchConnectorInstance } from '../../../../actions/connector_instances/connector-instance-actions';
 import type { ConnectorInstanceHelper } from '../../../../actions/connector_instances/connector-instance-helper';
 import type { ExecutorHelper } from '../../../../actions/executors/executor-helper';
-import { type InjectorHelper } from '../../../../actions/injectors/injector-helper';
+import { type InjectorHelper } from '../../../../actions/node_executors/node_executor-helper';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';

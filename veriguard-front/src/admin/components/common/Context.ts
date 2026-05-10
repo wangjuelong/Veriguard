@@ -1,22 +1,16 @@
 import { createContext, type ReactElement } from 'react';
 
-import { type InjectOutputType, type InjectStore } from '../../../actions/attack_chain_nodes/Inject';
-import { type FullArticleStore } from '../../../actions/channels/Article';
+import { type AttackChainNodeOutputType, type AttackChainNodeStore } from '../../../actions/attack_chain_nodes/AttackChainNode';
 import { type Page } from '../../../components/common/queryable/Page';
 import {
-  type Article,
-  type ArticleCreateInput,
-  type ArticleUpdateInput,
-  type Challenge,
-  type Channel,
+  type AttackChainNode,
+  type AttackChainNodeBulkProcessingInput,
+  type AttackChainNodeBulkUpdateInputs, type AttackChainNodeInput,
+  type AttackChainNodesImportInput,
+  type AttackChainNodeTestStatusOutput,
   type Evaluation,
   type EvaluationInput,
   type ImportTestSummary,
-  type Inject,
-  type InjectBulkProcessingInput,
-  type InjectBulkUpdateInputs, type InjectInput,
-  type InjectsImportInput,
-  type InjectTestStatusOutput,
   type LessonsAnswer,
   type LessonsAnswerCreateInput,
   type LessonsCategory,
@@ -29,8 +23,7 @@ import {
   type LessonsSendInput,
   type Objective,
   type ObjectiveInput,
-  type PublicExercise,
-  type PublicScenario,
+  type PublicAttackChainRun,
   type Report,
   type ReportInput,
   type SearchPaginationInput,
@@ -55,44 +48,20 @@ export type PermissionsContextType = {
   inherited_context: InheritedContext;
 };
 
-export type ArticleContextType = {
-  previewArticleUrl: (article: FullArticleStore) => string;
-  fetchArticles: () => Promise<{
-    result: string[];
-    entities: { articles: Record<string, Article> };
-  }>;
-  fetchChannels: () => Promise<{
-    result: string[];
-    entities: { channels: Record<string, Channel> };
-  }>;
-  fetchDocuments: () => Promise<Document[]>;
-  onAddArticle: (data: ArticleCreateInput) => Promise<{ result: string }>;
-  onUpdateArticle: (article: Article, data: ArticleUpdateInput) => string;
-  onDeleteArticle: (article: Article) => string;
-};
-
-export type ChallengeContextType = {
-  previewChallengeUrl?: () => string;
-  fetchChallenges?: () => Promise<{
-    result: string[];
-    entities: { challenges: Record<string, Challenge> };
-  }>;
-};
-
 export type PreviewChallengeContextType = {
   linkToPlayerMode: string;
   linkToAdministrationMode: string;
-  scenarioOrExercise: PublicScenario | PublicExercise | undefined;
+  scenarioOrAttackChainRun: PublicAttackChainRun | undefined;
 };
 
-export type InjectTestContextType = {
+export type AttackChainNodeTestContextType = {
   contextId: string;
   url?: string;
-  searchInjectTests?: (contextId: string, searchPaginationInput: SearchPaginationInput) => Promise<{ data: Page<InjectTestStatusOutput> }>;
-  fetchInjectTestStatus?: (testId: string) => Promise<{ data: InjectTestStatusOutput }>;
-  testInject?: (contextId: string, injectId: string) => Promise<{ data: InjectTestStatusOutput }>;
-  bulkTestInjects?: (contextId: string, data: InjectBulkProcessingInput) => Promise<{ data: InjectTestStatusOutput[] }>;
-  deleteInjectTest?: (contextId: string, testId: string) => void;
+  searchAttackChainNodeTests?: (contextId: string, searchPaginationInput: SearchPaginationInput) => Promise<{ data: Page<AttackChainNodeTestStatusOutput> }>;
+  fetchAttackChainNodeTestStatus?: (testId: string) => Promise<{ data: AttackChainNodeTestStatusOutput }>;
+  testAttackChainNode?: (contextId: string, injectId: string) => Promise<{ data: AttackChainNodeTestStatusOutput }>;
+  bulkTestAttackChainNodes?: (contextId: string, data: AttackChainNodeBulkProcessingInput) => Promise<{ data: AttackChainNodeTestStatusOutput[] }>;
+  deleteAttackChainNodeTest?: (contextId: string, testId: string) => void;
 };
 
 export type DocumentContextType = {
@@ -101,11 +70,11 @@ export type DocumentContextType = {
       id: string;
       label: string;
     }[];
-    document_exercises: {
+    document_attack_chain_runs: {
       id: string;
       label: string;
     }[];
-    document_scenarios: {
+    document_attack_chains: {
       id: string;
       label: string;
     }[];
@@ -144,43 +113,43 @@ export type TeamContextType = {
   allUsersNumber?: number;
 };
 
-export type InjectContextType = {
-  injects: InjectOutputType[];
-  setInjects: (input: InjectOutputType[]) => void;
-  searchInjects: (input: SearchPaginationInput) => Promise<{ data: Page<InjectOutputType> }>;
-  onAddInject: (inject: Inject) => Promise<{
+export type AttackChainNodeContextType = {
+  nodes: AttackChainNodeOutputType[];
+  setAttackChainNodes: (input: AttackChainNodeOutputType[]) => void;
+  searchAttackChainNodes: (input: SearchPaginationInput) => Promise<{ data: Page<AttackChainNodeOutputType> }>;
+  onAddAttackChainNode: (node: AttackChainNode) => Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }>;
-  onAddMultipleInjects: (inputs: InjectInput[]) => Promise<{
+  onAddMultipleAttackChainNodes: (inputs: AttackChainNodeInput[]) => Promise<{
     result: string[];
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }>;
-  onBulkUpdateInject: (param: InjectBulkUpdateInputs) => Promise<Inject[] | void>;
-  onUpdateInject: (injectId: Inject['inject_id'], inject: Inject) => Promise<{
+  onBulkUpdateAttackChainNode: (param: AttackChainNodeBulkUpdateInputs) => Promise<AttackChainNode[] | void>;
+  onUpdateAttackChainNode: (injectId: AttackChainNode['node_id'], node: AttackChainNode) => Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }>;
-  onUpdateInjectTrigger?: (injectId: Inject['inject_id']) => Promise<{
+  onUpdateAttackChainNodeTrigger?: (injectId: AttackChainNode['node_id']) => Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }>;
-  onUpdateInjectActivation: (injectId: Inject['inject_id'], injectEnabled: { inject_enabled: boolean }) => Promise<{
+  onUpdateAttackChainNodeActivation: (injectId: AttackChainNode['node_id'], injectEnabled: { node_enabled: boolean }) => Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }>;
-  onInjectDone?: (injectId: Inject['inject_id']) => Promise<{
+  onAttackChainNodeDone?: (injectId: AttackChainNode['node_id']) => Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }>;
-  onDeleteInject: (injectId: Inject['inject_id']) => Promise<void>;
-  onImportInjectFromJson?: (file: File) => Promise<void>;
-  onImportInjectFromXls?: (importId: string, input: InjectsImportInput) => Promise<ImportTestSummary>;
-  onDryImportInjectFromXls?: (importId: string, input: InjectsImportInput) => Promise<ImportTestSummary>;
-  onBulkDeleteInjects: (param: InjectBulkProcessingInput) => Promise<Inject[]>;
-  bulkTestInjects: (param: InjectBulkProcessingInput) => Promise<{
+  onDeleteAttackChainNode: (injectId: AttackChainNode['node_id']) => Promise<void>;
+  onImportAttackChainNodeFromJson?: (file: File) => Promise<void>;
+  onImportAttackChainNodeFromXls?: (importId: string, input: AttackChainNodesImportInput) => Promise<ImportTestSummary>;
+  onDryImportAttackChainNodeFromXls?: (importId: string, input: AttackChainNodesImportInput) => Promise<ImportTestSummary>;
+  onBulkDeleteAttackChainNodes: (param: AttackChainNodeBulkProcessingInput) => Promise<AttackChainNode[]>;
+  bulkTestAttackChainNodes: (param: AttackChainNodeBulkProcessingInput) => Promise<{
     uri: string;
-    data: InjectTestStatusOutput[];
+    data: AttackChainNodeTestStatusOutput[];
   }>;
 };
 export type LessonContextType = {
@@ -219,74 +188,24 @@ export const PermissionsContext = createContext<PermissionsContextType>({
   },
   inherited_context: INHERITED_CONTEXT.NONE,
 });
-export const ArticleContext = createContext<ArticleContextType>({
-  fetchArticles(): Promise<{
-    result: string[];
-    entities: { articles: Record<string, Article> };
-  }> {
-    return Promise.resolve({
-      result: [],
-      entities: { articles: {} },
-    });
-  },
-  fetchChannels(): Promise<{
-    result: string[];
-    entities: { channels: Record<string, Channel> };
-  }> {
-    return Promise.resolve({
-      result: [],
-      entities: { channels: {} },
-    });
-  },
-  fetchDocuments(): Promise<Document[]> {
-    return new Promise<Document[]>(() => {
-    });
-  },
-  onAddArticle(_data: ArticleCreateInput): Promise<{ result: string }> {
-    return Promise.resolve({ result: '' });
-  },
-  onDeleteArticle(_article: Article): string {
-    return '';
-  },
-  onUpdateArticle(_article: Article, _data: ArticleUpdateInput): string {
-    return '';
-  },
-  previewArticleUrl(_article: FullArticleStore): string {
-    return '';
-  },
-});
-export const ChallengeContext = createContext<ChallengeContextType>({
-  previewChallengeUrl(): string {
-    return '';
-  },
-  fetchChallenges(): Promise<{
-    result: string[];
-    entities: { challenges: Record<string, Challenge> };
-  }> {
-    return Promise.resolve({
-      result: [],
-      entities: { challenges: {} },
-    });
-  },
-});
 export const PreviewChallengeContext = createContext<PreviewChallengeContextType>({
   linkToPlayerMode: '',
   linkToAdministrationMode: '',
-  scenarioOrExercise: {
+  scenarioOrAttackChainRun: {
     description: '',
     id: '',
     name: '',
   },
 });
 
-export const InjectTestContext = createContext<InjectTestContextType>({
+export const AttackChainNodeTestContext = createContext<AttackChainNodeTestContextType>({
   contextId: '',
   url: '',
-  searchInjectTests: undefined,
-  fetchInjectTestStatus: undefined,
-  testInject: undefined,
-  bulkTestInjects: undefined,
-  deleteInjectTest: undefined,
+  searchAttackChainNodeTests: undefined,
+  fetchAttackChainNodeTestStatus: undefined,
+  testAttackChainNode: undefined,
+  bulkTestAttackChainNodes: undefined,
+  deleteAttackChainNodeTest: undefined,
 });
 export const DocumentContext = createContext<DocumentContextType>({
   onInitDocument(): {
@@ -294,18 +213,18 @@ export const DocumentContext = createContext<DocumentContextType>({
       id: string;
       label: string;
     }[];
-    document_exercises: {
+    document_attack_chain_runs: {
       id: string;
       label: string;
     }[];
-    document_scenarios: {
+    document_attack_chains: {
       id: string;
       label: string;
     }[];
   } {
     return {
-      document_exercises: [],
-      document_scenarios: [],
+      document_attack_chain_runs: [],
+      document_attack_chains: [],
       document_tags: [],
     };
   },
@@ -340,93 +259,93 @@ export const TeamContext = createContext<TeamContextType>({
     });
   },
 });
-export const InjectContext = createContext<InjectContextType>({
-  injects: [],
-  setInjects: () => {
+export const AttackChainNodeContext = createContext<AttackChainNodeContextType>({
+  nodes: [],
+  setAttackChainNodes: () => {
   },
-  searchInjects(_: SearchPaginationInput): Promise<{ data: Page<InjectOutputType> }> {
-    return new Promise<{ data: Page<InjectOutputType> }>(() => {
+  searchAttackChainNodes(_: SearchPaginationInput): Promise<{ data: Page<AttackChainNodeOutputType> }> {
+    return new Promise<{ data: Page<AttackChainNodeOutputType> }>(() => {
     });
   },
-  onAddInject(_inject: Inject): Promise<{
+  onAddAttackChainNode(_node: AttackChainNode): Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }> {
     return Promise.resolve({
       result: '',
-      entities: { injects: {} },
+      entities: { nodes: {} },
     });
   },
-  onAddMultipleInjects(_inputs: InjectInput[]): Promise<{
+  onAddMultipleAttackChainNodes(_inputs: AttackChainNodeInput[]): Promise<{
     result: string[];
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }> {
     return Promise.resolve({
       result: [],
-      entities: { injects: {} },
+      entities: { nodes: {} },
     });
   },
-  onBulkUpdateInject(_param: InjectBulkUpdateInputs): Promise<Inject[] | void> {
+  onBulkUpdateAttackChainNode(_param: AttackChainNodeBulkUpdateInputs): Promise<AttackChainNode[] | void> {
     return Promise.resolve([]);
   },
-  onUpdateInject(_injectId: Inject['inject_id'], _inject: Inject): Promise<{
+  onUpdateAttackChainNode(_injectId: AttackChainNode['node_id'], _node: AttackChainNode): Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }> {
     return Promise.resolve({
       result: '',
-      entities: { injects: {} },
+      entities: { nodes: {} },
     });
   },
-  onUpdateInjectTrigger(_injectId: Inject['inject_id']): Promise<{
+  onUpdateAttackChainNodeTrigger(_injectId: AttackChainNode['node_id']): Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }> {
     return Promise.resolve({
       result: '',
-      entities: { injects: {} },
+      entities: { nodes: {} },
     });
   },
-  onUpdateInjectActivation(_injectId: Inject['inject_id'], _injectEnabled: { inject_enabled: boolean }): Promise<{
+  onUpdateAttackChainNodeActivation(_injectId: AttackChainNode['node_id'], _injectEnabled: { node_enabled: boolean }): Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }> {
     return Promise.resolve({
       result: '',
-      entities: { injects: {} },
+      entities: { nodes: {} },
     });
   },
-  onInjectDone(_injectId: Inject['inject_id']): Promise<{
+  onAttackChainNodeDone(_injectId: AttackChainNode['node_id']): Promise<{
     result: string;
-    entities: { injects: Record<string, InjectStore> };
+    entities: { nodes: Record<string, AttackChainNodeStore> };
   }> {
     return Promise.resolve({
       result: '',
-      entities: { injects: {} },
+      entities: { nodes: {} },
     });
   },
-  onDeleteInject(_injectId: Inject['inject_id']): Promise<void> {
+  onDeleteAttackChainNode(_injectId: AttackChainNode['node_id']): Promise<void> {
     return Promise.resolve();
   },
-  onImportInjectFromXls(_importId: string, _input: InjectsImportInput): Promise<ImportTestSummary> {
+  onImportAttackChainNodeFromXls(_importId: string, _input: AttackChainNodesImportInput): Promise<ImportTestSummary> {
     return new Promise<ImportTestSummary>(() => {
     });
   },
-  onDryImportInjectFromXls(_importId: string, _input: InjectsImportInput): Promise<ImportTestSummary> {
+  onDryImportAttackChainNodeFromXls(_importId: string, _input: AttackChainNodesImportInput): Promise<ImportTestSummary> {
     return new Promise<ImportTestSummary>(() => {
     });
   },
-  onBulkDeleteInjects(_param: InjectBulkProcessingInput): Promise<Inject[]> {
-    return new Promise<Inject[]>(() => {
+  onBulkDeleteAttackChainNodes(_param: AttackChainNodeBulkProcessingInput): Promise<AttackChainNode[]> {
+    return new Promise<AttackChainNode[]>(() => {
     });
   },
-  bulkTestInjects(_param: InjectBulkProcessingInput): Promise<{
+  bulkTestAttackChainNodes(_param: AttackChainNodeBulkProcessingInput): Promise<{
     uri: string;
-    data: InjectTestStatusOutput[];
+    data: AttackChainNodeTestStatusOutput[];
   }> {
     return new Promise<{
       uri: string;
-      data: InjectTestStatusOutput[];
+      data: AttackChainNodeTestStatusOutput[];
     }>(() => {
     });
   },

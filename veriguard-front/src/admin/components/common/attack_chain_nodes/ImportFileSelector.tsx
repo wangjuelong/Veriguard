@@ -76,7 +76,7 @@ const ImportFileSelector: FunctionComponent<Props> = ({
       {loading && <Loader variant="inElement" />}
       {!loading
         && (
-          <form id="importUploadInjectForm" onSubmit={handleSubmitWithoutPropagation}>
+          <form id="importUploadAttackChainNodeForm" onSubmit={handleSubmitWithoutPropagation}>
             <div className={classes.container}>
               <Controller
                 control={control}

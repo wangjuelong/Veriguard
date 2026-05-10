@@ -12,7 +12,7 @@ const renderIcon = (category: string, size: 'small' | 'medium' | 'large' | 'inhe
   switch (category) {
     case 'global-crisis':
       return <CrisisAlertOutlined fontSize={size ?? 'medium'} style={{ marginRight: 10 }} />;
-    case 'attack-scenario':
+    case 'attack-attack_chain':
       return <BlurLinearOutlined fontSize={size ?? 'medium'} style={{ marginRight: 10 }} />;
     case 'media-pressure':
       return <NewspaperOutlined fontSize={size ?? 'medium'} style={{ marginRight: 10 }} />;

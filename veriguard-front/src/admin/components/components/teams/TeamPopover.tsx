@@ -1,7 +1,7 @@
 import { Button, Dialog as MuiDialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { type FunctionComponent, useContext, useState } from 'react';
 
-import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
+import { type AttackChainRunsHelper } from '../../../../actions/attack_chain_runs/attack_chain_run-helper';
 import { type OrganizationHelper, type TagHelper } from '../../../../actions/helper';
 import { type TeamInputForm } from '../../../../actions/teams/Team';
 import { deleteTeam, updateTeam } from '../../../../actions/teams/team-actions';
@@ -25,7 +25,7 @@ interface TeamPopoverProps {
   managePlayers?: () => void;
   disabled?: boolean;
   openEditOnInit?: boolean;
-  onRemoveTeamFromInject?: (teamId: string) => void;
+  onRemoveTeamFromAttackChainNode?: (teamId: string) => void;
   onUpdate?: (result: Team) => void;
   onDelete?: (result: string) => void;
 }
@@ -35,7 +35,7 @@ const TeamPopover: FunctionComponent<TeamPopoverProps> = ({
   managePlayers,
   disabled,
   openEditOnInit = false,
-  onRemoveTeamFromInject = null,
+  onRemoveTeamFromAttackChainNode = null,
   onUpdate,
   onDelete,
 }) => {
@@ -45,7 +45,7 @@ const TeamPopover: FunctionComponent<TeamPopoverProps> = ({
 
   const { organizationsMap, tagsMap } = useHelper(
     (
-      helper: ExercisesHelper & TeamsHelper & OrganizationHelper & TagHelper,
+      helper: AttackChainRunsHelper & TeamsHelper & OrganizationHelper & TagHelper,
     ) => {
       return {
         organizationsMap: helper.getOrganizationsMap(),
@@ -59,7 +59,7 @@ const TeamPopover: FunctionComponent<TeamPopoverProps> = ({
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(openEditOnInit);
   const [openRemove, setOpenRemove] = useState(false);
-  const [openRemoveFromInject, setOpenRemoveFromInject] = useState(false);
+  const [openRemoveFromAttackChainNode, setOpenRemoveFromAttackChainNode] = useState(false);
 
   // Edition
   const handleOpenEdit = () => {
@@ -121,15 +121,15 @@ const TeamPopover: FunctionComponent<TeamPopoverProps> = ({
   };
 
   // Remove
-  const handleOpenRemoveFromInject = () => {
-    setOpenRemoveFromInject(true);
+  const handleOpenRemoveFromAttackChainNode = () => {
+    setOpenRemoveFromAttackChainNode(true);
   };
 
-  const handleCloseRemoveFromInject = () => setOpenRemoveFromInject(false);
+  const handleCloseRemoveFromAttackChainNode = () => setOpenRemoveFromAttackChainNode(false);
 
-  const submitRemoveFromInject = () => {
-    onRemoveTeamFromInject!(team.team_id);
-    handleCloseRemoveFromInject();
+  const submitRemoveFromAttackChainNode = () => {
+    onRemoveTeamFromAttackChainNode!(team.team_id);
+    handleCloseRemoveFromAttackChainNode();
   };
 
   const initialValues: TeamInputForm = {
@@ -153,14 +153,14 @@ const TeamPopover: FunctionComponent<TeamPopoverProps> = ({
     action: () => managePlayers(),
     userRight: ability.can(ACTIONS.MANAGE, SUBJECTS.TEAMS_AND_PLAYERS),
   });
-  if (onRemoveTeam && !onRemoveTeamFromInject && !team.team_contextual) entries.push({
+  if (onRemoveTeam && !onRemoveTeamFromAttackChainNode && !team.team_contextual) entries.push({
     label: 'Remove from the context',
     action: () => handleOpenRemove(),
     userRight: true,
   });
-  if (onRemoveTeamFromInject) entries.push({
-    label: 'Remove from the inject',
-    action: () => handleOpenRemoveFromInject(),
+  if (onRemoveTeamFromAttackChainNode) entries.push({
+    label: 'Remove from the node',
+    action: () => handleOpenRemoveFromAttackChainNode(),
     userRight: true,
   });
   entries.push({
@@ -209,19 +209,19 @@ const TeamPopover: FunctionComponent<TeamPopoverProps> = ({
         </DialogActions>
       </MuiDialog>
       <MuiDialog
-        open={openRemoveFromInject}
+        open={openRemoveFromAttackChainNode}
         slots={{ transition: Transition }}
-        onClose={handleCloseRemoveFromInject}
+        onClose={handleCloseRemoveFromAttackChainNode}
         slotProps={{ paper: { elevation: 1 } }}
       >
         <DialogContent>
           <DialogContentText>
-            {t('Do you want to remove the team from this inject?')}
+            {t('Do you want to remove the team from this node?')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseRemoveFromInject}>{t('Cancel')}</Button>
-          <Button color="secondary" onClick={submitRemoveFromInject}>
+          <Button onClick={handleCloseRemoveFromAttackChainNode}>{t('Cancel')}</Button>
+          <Button color="secondary" onClick={submitRemoveFromAttackChainNode}>
             {t('Remove')}
           </Button>
         </DialogActions>

@@ -48,7 +48,7 @@ const PayloadInfoPaper = ({ payloadOutput }: Props) => {
           {t('Platforms')}
         </Typography>
         {(payloadOutput.payload_platforms ?? []).length === 0 ? (
-          <PlatformIcon platform={t('No inject in this scenario')} tooltip width={25} />
+          <PlatformIcon platform={t('No node in this attack_chain')} tooltip width={25} />
         ) : payloadOutput.payload_platforms?.map(
           platform => <PlatformIcon marginRight={theme.spacing(2)} key={platform} platform={platform} tooltip width={25} />,
         )}

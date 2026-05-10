@@ -5,7 +5,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import colorStyles from '../../../../../../components/Color';
 import { useFormatter } from '../../../../../../components/i18n';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 
 const useStyles = makeStyles()(() => ({
   chipInList: {
@@ -22,36 +22,36 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-interface Props { expectation: InjectExpectationsStore }
+interface Props { expectation: AttackChainNodeExpectationsStore }
 
 const ResultChip: FunctionComponent<Props> = ({ expectation }) => {
   // Standard hooks
   const { classes } = useStyles();
   const { t } = useFormatter();
 
-  const result = !R.isEmpty(expectation.inject_expectation_results);
+  const result = !R.isEmpty(expectation.node_expectation_results);
 
   const isFail = () => {
     return result
-      && (expectation.inject_expectation_type === 'PREVENTION'
-        && expectation.inject_expectation_expected_score !== expectation.inject_expectation_score);
+      && (expectation.node_expectation_type === 'PREVENTION'
+        && expectation.node_expectation_expected_score !== expectation.node_expectation_score);
   };
 
   const label = () => {
     if (result) {
       if (isFail()) {
-        return `${t('Failed')} (${expectation.inject_expectation_score})`;
+        return `${t('Failed')} (${expectation.node_expectation_score})`;
       }
-      return `${t('Validated')} (${expectation.inject_expectation_score})`;
+      return `${t('Validated')} (${expectation.node_expectation_score})`;
     }
 
-    if (expectation.inject_expectation_type === 'ARTICLE') {
+    if (expectation.node_expectation_type === 'ARTICLE') {
       return t('Pending reading');
     }
-    if (expectation.inject_expectation_type === 'CHALLENGE') {
+    if (expectation.node_expectation_type === 'CHALLENGE') {
       return t('Pending submission');
     }
-    if (expectation.inject_expectation_type === 'PREVENTION' || expectation.inject_expectation_type === 'DETECTION') {
+    if (expectation.node_expectation_type === 'PREVENTION' || expectation.node_expectation_type === 'DETECTION') {
       return t('Pending');
     }
 
@@ -71,7 +71,7 @@ const ResultChip: FunctionComponent<Props> = ({ expectation }) => {
     <>
       <Chip
         classes={{ root: classes.points }}
-        label={expectation.inject_expectation_expected_score}
+        label={expectation.node_expectation_expected_score}
       />
       <Chip
         classes={{ root: classes.chipInList }}

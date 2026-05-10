@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/prefer-default-export
-export enum TechnicalScenarioSimulationEnum {
-  Scenario = 'SCENARIO',
+export enum TechnicalAttackChainSimulationEnum {
+  AttackChain = 'SCENARIO',
   Simulation = 'SIMULATION',
 }

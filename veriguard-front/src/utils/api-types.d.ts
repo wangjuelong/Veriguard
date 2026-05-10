@@ -24,9 +24,9 @@ export interface Agent {
   agent_executor?: string;
   agent_external_reference?: string;
   agent_id: string;
-  agent_inject?: string;
   /** @format date-time */
   agent_last_seen?: string;
+  agent_node?: string;
   agent_parent?: string;
   agent_privilege: "admin" | "standard";
   agent_process_name?: string;
@@ -48,6 +48,7 @@ export interface AgentExecutorOutput {
 
 /** List of primary agents */
 export interface AgentOutput {
+  active?: boolean;
   /** Indicates whether the endpoint is active. The endpoint is considered active if it was seen in the last 3 minutes. */
   agent_active?: boolean;
   /** Agent deployment mode */
@@ -184,68 +185,13 @@ export interface AiResult {
   chunk_id?: string;
 }
 
-export interface Article {
-  article_author?: string;
-  article_channel: string;
-  /** @format int32 */
-  article_comments?: number;
-  article_content?: string;
-  /** @format date-time */
-  article_created_at: string;
-  article_documents?: string[];
-  article_exercise?: string;
-  article_id: string;
-  article_is_scheduled?: boolean;
-  /** @format int32 */
-  article_likes?: number;
-  article_name?: string;
-  article_scenario?: string;
-  /** @format int32 */
-  article_shares?: number;
-  /** @format date-time */
-  article_updated_at: string;
-  /** @format date-time */
-  article_virtual_publication?: string;
-  listened?: boolean;
-}
-
-export interface ArticleCreateInput {
-  article_author?: string;
-  article_channel: string;
-  /** @format int32 */
-  article_comments?: number;
-  article_content?: string;
-  article_documents?: string[];
-  /** @format int32 */
-  article_likes?: number;
-  article_name: string;
-  article_published?: boolean;
-  /** @format int32 */
-  article_shares?: number;
-}
-
-export interface ArticleUpdateInput {
-  article_author?: string;
-  article_channel: string;
-  /** @format int32 */
-  article_comments?: number;
-  article_content?: string;
-  article_documents?: string[];
-  /** @format int32 */
-  article_likes?: number;
-  article_name: string;
-  article_published?: boolean;
-  /** @format int32 */
-  article_shares?: number;
-}
-
 export interface AssetAgentJob {
   asset_agent_agent?: string;
   /** @deprecated */
   asset_agent_asset?: string;
   asset_agent_command: string;
   asset_agent_id: string;
-  asset_agent_inject?: string;
+  asset_agent_node?: string;
   listened?: boolean;
 }
 
@@ -255,7 +201,6 @@ export interface AssetGroup {
   asset_group_created_at: string;
   asset_group_description?: string;
   asset_group_dynamic_assets?: string[];
-  /** Filter object to search within filterable attributes */
   asset_group_dynamic_filter: FilterGroup;
   asset_group_external_reference?: string;
   asset_group_id: string;
@@ -268,7 +213,6 @@ export interface AssetGroup {
 
 export interface AssetGroupInput {
   asset_group_description?: string;
-  /** Filter object to search within filterable attributes */
   asset_group_dynamic_filter?: FilterGroup;
   asset_group_name: string;
   asset_group_tags?: string[];
@@ -278,7 +222,6 @@ export interface AssetGroupOutput {
   /** @uniqueItems true */
   asset_group_assets?: string[];
   asset_group_description?: string;
-  /** Filter object to search within filterable attributes */
   asset_group_dynamic_filter?: FilterGroup;
   asset_group_id: string;
   asset_group_name: string;
@@ -334,7 +277,7 @@ export interface AssetGroupTarget {
 }
 
 /** Full contract */
-export interface AtomicInjectorContractOutput {
+export interface AtomicNodeContractOutput {
   convertedContent?: object;
   injector_contract_content: string;
   injector_contract_id: string;
@@ -353,20 +296,943 @@ export interface AtomicInjectorContractOutput {
 }
 
 export interface AtomicTestingInput {
-  inject_all_teams?: boolean;
-  inject_asset_groups?: string[];
-  inject_assets?: string[];
-  inject_content?: object;
-  inject_description?: string;
-  inject_documents?: InjectDocumentInput[];
-  inject_injector_contract?: string;
-  inject_tags?: string[];
-  inject_teams?: string[];
-  inject_title: string;
+  node_all_teams?: boolean;
+  node_asset_groups?: string[];
+  node_assets?: string[];
+  node_content?: object;
+  node_description?: string;
+  node_documents?: AttackChainNodeDocumentInput[];
+  node_injector_contract?: string;
+  node_tags?: string[];
+  node_teams?: string[];
+  node_title: string;
 }
 
 export interface AtomicTestingUpdateTagsInput {
   atomic_tags?: string[];
+}
+
+export interface AttackCatalogOutput {
+  custom_case_types?: string[];
+  generated_templates?: UseCaseTemplateOutput[];
+  host_attack_types?: AttackTypeOutput[];
+  minimum_attack_type_requirement_met?: boolean;
+  multiple_tuple_per_case_supported?: boolean;
+  /** @format int32 */
+  total_use_case_templates?: number;
+  traffic_attack_types?: AttackTypeOutput[];
+}
+
+export interface AttackChain {
+  /** @format int64 */
+  attack_chain_all_users_number?: number;
+  attack_chain_category?: string;
+  /** @format int64 */
+  attack_chain_communications_number?: number;
+  /** @format date-time */
+  attack_chain_created_at: string;
+  attack_chain_custom_dashboard?: string;
+  attack_chain_dependencies?: "STARTERPACK"[];
+  attack_chain_description?: string;
+  attack_chain_documents?: string[];
+  attack_chain_execution_mode: "STOP_ON_BLOCK" | "CONTINUE";
+  attack_chain_external_reference?: string;
+  attack_chain_external_url?: string;
+  attack_chain_id: string;
+  attack_chain_kill_chain_phases?: KillChainPhase[];
+  attack_chain_lessons_anonymized?: boolean;
+  attack_chain_lessons_categories?: string[];
+  attack_chain_main_focus?: string;
+  attack_chain_name: string;
+  attack_chain_nodes?: string[];
+  attack_chain_nodes_statistics?: Record<string, number>;
+  attack_chain_observers?: string[];
+  attack_chain_planners?: string[];
+  attack_chain_platforms?: (
+    | "Linux"
+    | "Windows"
+    | "MacOS"
+    | "Container"
+    | "Service"
+    | "Generic"
+    | "Internal"
+    | "Unknown"
+  )[];
+  attack_chain_recurrence?: string;
+  /** @format date-time */
+  attack_chain_recurrence_end?: string;
+  /** @format date-time */
+  attack_chain_recurrence_start?: string;
+  attack_chain_runs?: string[];
+  attack_chain_severity?: "low" | "medium" | "high" | "critical";
+  attack_chain_soc_correlation_rules?: SocCorrelationRuleRef[];
+  attack_chain_subtitle?: string;
+  attack_chain_tags?: string[];
+  attack_chain_teams?: string[];
+  attack_chain_teams_users?: AttackChainTeamUser[];
+  attack_chain_type_affinity?: string;
+  /** @format date-time */
+  attack_chain_updated_at: string;
+  attack_chain_users?: string[];
+  /** @format int64 */
+  attack_chain_users_number?: number;
+  /** @format uuid */
+  attack_chain_validation_parameter_set_id?: string;
+  listened?: boolean;
+}
+
+/** Inject dependencies of the inject */
+export interface AttackChainEdge {
+  dependency_condition?: AttackChainEdgeCondition;
+  /** @format date-time */
+  dependency_created_at?: string;
+  dependency_relationship?: AttackChainEdgeId;
+  /** @format date-time */
+  dependency_updated_at?: string;
+  /** @format uuid */
+  edge_id?: string;
+  node_children_id?: string;
+  node_parent_id?: string;
+}
+
+export interface AttackChainEdgeCondition {
+  conditions?: Condition[];
+  mode: "and" | "or";
+}
+
+export interface AttackChainEdgeId {
+  node_children_id?: string;
+  node_parent_id?: string;
+}
+
+export interface AttackChainEdgeIdInput {
+  node_children_id?: string;
+  node_parent_id?: string;
+}
+
+export interface AttackChainEdgeInput {
+  dependency_condition?: AttackChainEdgeCondition;
+  dependency_relationship?: AttackChainEdgeIdInput;
+}
+
+export interface AttackChainInput {
+  attack_chain_category?: string;
+  attack_chain_custom_dashboard?: string;
+  attack_chain_description?: string;
+  attack_chain_external_reference?: string;
+  attack_chain_external_url?: string;
+  attack_chain_mail_from?: string;
+  attack_chain_mails_reply_to?: string[];
+  attack_chain_main_focus?: string;
+  attack_chain_message_footer?: string;
+  attack_chain_message_header?: string;
+  attack_chain_name: string;
+  attack_chain_severity?: "low" | "medium" | "high" | "critical";
+  attack_chain_subtitle?: string;
+  attack_chain_tags?: string[];
+}
+
+export interface AttackChainNode {
+  footer?: string;
+  header?: string;
+  listened?: boolean;
+  node_all_teams?: boolean;
+  node_asset_groups?: string[];
+  node_assets?: string[];
+  node_attack_chain?: string;
+  node_attack_chain_run?: string;
+  node_attack_patterns?: AttackPattern[];
+  node_city?: string;
+  node_collect_status?: "COLLECTING" | "COMPLETED";
+  node_communications?: string[];
+  /** @format int64 */
+  node_communications_not_ack_number?: number;
+  /** @format int64 */
+  node_communications_number?: number;
+  node_content?: object;
+  /** @uniqueItems true */
+  node_contract_domains?: Domain[];
+  node_country?: string;
+  /** @format date-time */
+  node_created_at: string;
+  /**
+   * @format int32
+   * @min 0
+   */
+  node_current_iteration?: number;
+  /** @format date-time */
+  node_date?: string;
+  /**
+   * @format int64
+   * @min 0
+   */
+  node_depends_duration: number;
+  node_depends_on?: AttackChainEdge[];
+  node_description?: string;
+  node_documents?: string[];
+  node_enabled?: boolean;
+  node_expectations?: string[];
+  node_id: string;
+  /** Injector contract of the inject */
+  node_injector_contract?: NodeContract;
+  node_kill_chain_phases?: KillChainPhase[];
+  node_node_state?:
+    | "PENDING"
+    | "SCHEDULED"
+    | "RUNNING"
+    | "SETTLED"
+    | "SKIPPED"
+    | "FAILED";
+  node_ready?: boolean;
+  /**
+   * @format int32
+   * @min 1
+   */
+  node_repeat_count?: number;
+  /**
+   * @format int64
+   * @min 0
+   */
+  node_repeat_interval_seconds?: number;
+  /** @format date-time */
+  node_sent_at?: string;
+  node_status?: AttackChainNodeStatus;
+  node_tags?: string[];
+  node_teams?: string[];
+  node_testable?: boolean;
+  node_title: string;
+  /** @format date-time */
+  node_trigger_now_date?: string;
+  node_type?: string;
+  /** @format date-time */
+  node_updated_at: string;
+  node_user?: string;
+  /** @format int64 */
+  node_users_number?: number;
+  /** @format uuid */
+  node_validation_parameter_set_id?: string;
+}
+
+export interface AttackChainNodeBulkProcessingInput {
+  attack_chain_run_or_attack_chain_id?: string;
+  node_ids_to_ignore?: string[];
+  node_ids_to_process?: string[];
+  search_pagination_input?: SearchPaginationInput;
+}
+
+export interface AttackChainNodeBulkUpdateInputs {
+  attack_chain_run_or_attack_chain_id?: string;
+  node_ids_to_ignore?: string[];
+  node_ids_to_process?: string[];
+  search_pagination_input?: SearchPaginationInput;
+  update_operations?: AttackChainNodeBulkUpdateOperation[];
+}
+
+export interface AttackChainNodeBulkUpdateOperation {
+  field?: "assets" | "asset_groups" | "teams";
+  operation?: "add" | "remove" | "replace";
+  values?: string[];
+}
+
+export interface AttackChainNodeDocumentInput {
+  document_attached?: boolean;
+  document_id?: string;
+}
+
+export interface AttackChainNodeExecutionInput {
+  execution_action?:
+    | "prerequisite_check"
+    | "prerequisite_execution"
+    | "cleanup_execution"
+    | "command_execution"
+    | "dns_resolution"
+    | "file_execution"
+    | "file_drop"
+    | "complete";
+  /**
+   * Duration of the execution in miliseconds
+   * @format int32
+   */
+  execution_duration?: number;
+  execution_message: string;
+  execution_output_raw?: string;
+  execution_output_structured?: string;
+  execution_status: string;
+}
+
+export interface AttackChainNodeExpectation {
+  listened?: boolean;
+  node_expectation_agent?: string;
+  node_expectation_asset?: string;
+  node_expectation_asset_group?: string;
+  node_expectation_attack_chain_run?: string;
+  /** @format date-time */
+  node_expectation_created_at?: string;
+  node_expectation_description?: string;
+  /** @format double */
+  node_expectation_expected_score: number;
+  node_expectation_group?: boolean;
+  node_expectation_id: string;
+  node_expectation_name?: string;
+  node_expectation_node?: string;
+  node_expectation_results?: NodeExpectationResult[];
+  /** @format double */
+  node_expectation_score?: number;
+  node_expectation_signatures?: NodeExpectationSignature[];
+  node_expectation_status?:
+    | "FAILED"
+    | "PENDING"
+    | "PARTIAL"
+    | "UNKNOWN"
+    | "SUCCESS";
+  node_expectation_team?: string;
+  node_expectation_traces?: NodeExpectationTrace[];
+  node_expectation_type:
+    | "TEXT"
+    | "DOCUMENT"
+    | "ARTICLE"
+    | "CHALLENGE"
+    | "MANUAL"
+    | "PREVENTION"
+    | "DETECTION"
+    | "VULNERABILITY";
+  /** @format date-time */
+  node_expectation_updated_at?: string;
+  node_expectation_user?: string;
+  /** @format int64 */
+  node_expiration_time: number;
+  target_id?: string;
+}
+
+/** Represents a single inject expectation with agent name */
+export interface AttackChainNodeExpectationAgentOutput {
+  node_expectation_agent?: string;
+  node_expectation_agent_name?: string;
+  node_expectation_asset?: string;
+  /** @format date-time */
+  node_expectation_created_at?: string;
+  node_expectation_group?: boolean;
+  node_expectation_id: string;
+  node_expectation_name?: string;
+  node_expectation_results?: NodeExpectationResult[];
+  /** @format double */
+  node_expectation_score?: number;
+  node_expectation_status?:
+    | "FAILED"
+    | "PENDING"
+    | "PARTIAL"
+    | "UNKNOWN"
+    | "SUCCESS";
+  node_expectation_type:
+    | "TEXT"
+    | "DOCUMENT"
+    | "ARTICLE"
+    | "CHALLENGE"
+    | "MANUAL"
+    | "PREVENTION"
+    | "DETECTION"
+    | "VULNERABILITY";
+  /** @format int64 */
+  node_expiration_time: number;
+}
+
+export interface AttackChainNodeExpectationBulkUpdateInput {
+  inputs: Record<string, AttackChainNodeExpectationUpdateInput>;
+}
+
+/** Expectations */
+export interface AttackChainNodeExpectationSimple {
+  node_expectation_id: string;
+  node_expectation_name?: string;
+}
+
+export interface AttackChainNodeExpectationUpdateInput {
+  collector_id: string;
+  is_success: boolean;
+  metadata?: Record<string, string>;
+  result: string;
+}
+
+export interface AttackChainNodeExportFromSearchRequestInput {
+  attack_chain_run_or_attack_chain_id?: string;
+  node_ids_to_ignore?: string[];
+  node_ids_to_process?: string[];
+  options?: ExportOptionsInput;
+  search_pagination_input?: SearchPaginationInput;
+}
+
+export interface AttackChainNodeExportRequestInput {
+  nodes?: AttackChainNodeExportTarget[];
+  options?: ExportOptionsInput;
+}
+
+export interface AttackChainNodeExportTarget {
+  node_id?: string;
+}
+
+export interface AttackChainNodeImporter {
+  listened?: boolean;
+  /** @format date-time */
+  node_importer_created_at?: string;
+  node_importer_id: string;
+  node_importer_injector_contract: string;
+  node_importer_rule_attributes?: RuleAttribute[];
+  node_importer_type_value: string;
+  /** @format date-time */
+  node_importer_updated_at?: string;
+}
+
+export interface AttackChainNodeImporterAddInput {
+  node_importer_injector_contract: string;
+  node_importer_rule_attributes?: RuleAttributeAddInput[];
+  node_importer_type_value: string;
+}
+
+export interface AttackChainNodeImporterUpdateInput {
+  node_importer_id?: string;
+  node_importer_injector_contract: string;
+  node_importer_rule_attributes?: RuleAttributeUpdateInput[];
+  node_importer_type_value: string;
+}
+
+export interface AttackChainNodeIndividualExportRequestInput {
+  options?: ExportOptionsInput;
+}
+
+export interface AttackChainNodeInput {
+  node_all_teams?: boolean;
+  node_asset_groups?: string[];
+  node_assets?: string[];
+  node_city?: string;
+  node_content?: object;
+  node_country?: string;
+  /** @format int64 */
+  node_depends_duration?: number;
+  node_depends_on?: AttackChainEdgeInput[];
+  node_description?: string;
+  node_documents?: AttackChainNodeDocumentInput[];
+  node_enabled?: boolean;
+  node_injector_contract?: string;
+  node_tags?: string[];
+  node_teams?: string[];
+  node_title: string;
+}
+
+export interface AttackChainNodeOutput {
+  node_asset_groups?: string[];
+  node_assets?: string[];
+  /** Scenario ID of the inject */
+  node_attack_chain?: string;
+  /** Simulation ID of the inject */
+  node_attack_chain_run?: string;
+  node_content?: object;
+  /**
+   * Domain of the inject
+   * @uniqueItems true
+   */
+  node_contract_domains?: Domain[];
+  /**
+   * Depend duration of the inject
+   * @format int64
+   * @min 0
+   */
+  node_depends_duration: number;
+  node_depends_on?: AttackChainEdge[];
+  /** Enabled state of the inject */
+  node_enabled?: boolean;
+  node_healthchecks?: HealthCheck[];
+  /** ID of the inject */
+  node_id: string;
+  /** Injector contract of the inject */
+  node_injector_contract?: NodeContract;
+  /** Ready state of the inject */
+  node_ready?: boolean;
+  /** @uniqueItems true */
+  node_tags?: string[];
+  node_teams?: string[];
+  /** Testable state of the inject */
+  node_testable?: boolean;
+  /** Title of the inject */
+  node_title: string;
+  /** Type of the inject */
+  node_type?: string;
+  ready?: boolean;
+}
+
+export interface AttackChainNodeReceptionInput {
+  /** @format int32 */
+  tracking_total_count?: number;
+}
+
+export interface AttackChainNodeResultOutput {
+  /** Domain of the inject */
+  node_contract_domains?: string[];
+  /** Result of expectations */
+  node_expectation_results: ExpectationResultsByType[];
+  /** Id of inject */
+  node_id: string;
+  /** Injector contract */
+  node_injector_contract?: NodeContractSimple;
+  /** status */
+  node_status?: AttackChainNodeStatusSimple;
+  node_targets?: TargetSimple[];
+  /** Title of inject */
+  node_title: string;
+  /** Type of inject */
+  node_type?: string;
+  /**
+   * Timestamp when the inject was last updated
+   * @format date-time
+   */
+  node_updated_at: string;
+}
+
+export interface AttackChainNodeResultOverviewOutput {
+  /** Documents */
+  injects_documents?: string[];
+  /** Tags */
+  injects_tags?: string[];
+  node_content?: object;
+  /** Description of inject */
+  node_description?: string;
+  /** Result of expectations */
+  node_expectation_results: ExpectationResultsByType[];
+  /** Expectations */
+  node_expectations?: AttackChainNodeExpectationSimple[];
+  /** Id of inject */
+  node_id: string;
+  /** Full contract */
+  node_injector_contract?: AtomicNodeContractOutput;
+  /** Kill chain phases */
+  node_kill_chain_phases?: KillChainPhaseSimple[];
+  /** Indicates whether the inject is ready for use */
+  node_ready?: boolean;
+  /** status */
+  node_status?: AttackChainNodeStatusSimple;
+  /**
+   * Tags
+   * @uniqueItems true
+   */
+  node_tags?: string[];
+  /** Title of inject */
+  node_title: string;
+  /** Type of inject */
+  node_type?: string;
+  /**
+   * Timestamp when the inject was last updated
+   * @format date-time
+   */
+  node_updated_at?: string;
+  ready?: boolean;
+}
+
+export interface AttackChainNodeResultPayloadExecutionOutput {
+  execution_traces: Record<string, ExecutionTraceOutput[]>;
+  payload_command_blocks: PayloadCommandBlock[];
+}
+
+/** Inject linked to finding */
+export interface AttackChainNodeSimple {
+  /** Inject Id */
+  node_id: string;
+  /** Inject Title */
+  node_title: string;
+}
+
+export interface AttackChainNodeStatus {
+  listened?: boolean;
+  status_id?: string;
+  status_name:
+    | "SUCCESS"
+    | "PARTIAL"
+    | "ERROR"
+    | "MAYBE_PREVENTED"
+    | "MAYBE_PARTIAL_PREVENTED"
+    | "DRAFT"
+    | "QUEUING"
+    | "EXECUTING"
+    | "PENDING";
+  status_payload_output?: StatusPayload;
+  status_traces?: ExecutionTrace[];
+  /** @format date-time */
+  tracking_end_date?: string;
+  /** @format date-time */
+  tracking_sent_date?: string;
+}
+
+export interface AttackChainNodeStatusOutput {
+  status_id: string;
+  status_main_traces?: ExecutionTraceOutput[];
+  status_name?: string;
+  /** @format date-time */
+  tracking_end_date?: string;
+  /** @format date-time */
+  tracking_sent_date?: string;
+}
+
+/** status */
+export interface AttackChainNodeStatusSimple {
+  status_id: string;
+  status_name?: string;
+  /** @format date-time */
+  tracking_end_date?: string;
+  /** @format date-time */
+  tracking_sent_date?: string;
+}
+
+export type AttackChainNodeTarget = BaseAttackChainNodeTarget &
+  (
+    | BaseAttackChainNodeTargetTargetTypeMapping<
+        "ASSETS_GROUPS",
+        AssetGroupTarget
+      >
+    | BaseAttackChainNodeTargetTargetTypeMapping<"ASSETS", EndpointTarget>
+    | BaseAttackChainNodeTargetTargetTypeMapping<"TEAMS", TeamTarget>
+    | BaseAttackChainNodeTargetTargetTypeMapping<"PLAYERS", PlayerTarget>
+    | BaseAttackChainNodeTargetTargetTypeMapping<"AGENT", AgentTarget>
+  );
+
+export interface AttackChainNodeTeamsInput {
+  node_teams?: string[];
+}
+
+export interface AttackChainNodeTestStatusOutput {
+  node_id: string;
+  node_title: string;
+  node_type?: string;
+  status_id: string;
+  status_main_traces?: ExecutionTraceOutput[];
+  status_name?: string;
+  /** @format date-time */
+  tracking_end_date?: string;
+  /** @format date-time */
+  tracking_sent_date?: string;
+}
+
+export interface AttackChainNodeUpdateActivationInput {
+  node_enabled?: boolean;
+}
+
+export interface AttackChainNodeUpdateStatusInput {
+  message?: string;
+  status?: string;
+}
+
+export interface AttackChainNodesImportInput {
+  import_mapper_id: string;
+  /** @format date-time */
+  launch_date?: string;
+  sheet_name: string;
+  /** @format int32 */
+  timezone_offset: number;
+}
+
+export interface AttackChainNodesImportTestInput {
+  import_mapper: ImportMapperAddInput;
+  sheet_name: string;
+  /** @format int32 */
+  timezone_offset: number;
+}
+
+export interface AttackChainOutput {
+  /**
+   * Total number of users of the scenario
+   * @format int64
+   */
+  attack_chain_all_users_number?: number;
+  /** Category of the scenario */
+  attack_chain_category?: string;
+  /**
+   * Creation date of the scenario
+   * @format date-time
+   */
+  attack_chain_created_at: string;
+  /** Custom dashboard of the scenario */
+  attack_chain_custom_dashboard?: string;
+  /** @uniqueItems true */
+  attack_chain_dependencies?: string[];
+  /** Description of the scenario */
+  attack_chain_description?: string;
+  /** External URL of the scenario */
+  attack_chain_external_url?: string;
+  /** ID of the scenario */
+  attack_chain_id: string;
+  /** @uniqueItems true */
+  attack_chain_kill_chain_phases?: KillChainPhaseOutput[];
+  /** From value of the scenario */
+  attack_chain_mail_from: string;
+  /** Main focus value of the scenario */
+  attack_chain_main_focus?: string;
+  /** Footer of the scenario */
+  attack_chain_message_footer?: string;
+  /** Header of the scenario */
+  attack_chain_message_header?: string;
+  /** Name of the scenario */
+  attack_chain_name: string;
+  /** @uniqueItems true */
+  attack_chain_platforms?: string[];
+  /** Recurrence of the scenario */
+  attack_chain_recurrence?: string;
+  /**
+   * Recurrence end date of the scenario
+   * @format date-time
+   */
+  attack_chain_recurrence_end?: string;
+  /**
+   * Recurrence start date of the scenario
+   * @format date-time
+   */
+  attack_chain_recurrence_start?: string;
+  /** @uniqueItems true */
+  attack_chain_runs?: string[];
+  /** Severity of the scenario */
+  attack_chain_severity?: string;
+  /** Subtitle of the scenario */
+  attack_chain_subtitle?: string;
+  /** @uniqueItems true */
+  attack_chain_tags?: string[];
+  /** @uniqueItems true */
+  attack_chain_teams_users?: AttackChainTeamUserOutput[];
+  /** Type affinity of the scenario */
+  attack_chain_type_affinity?: string;
+  /**
+   * Update date of the scenario
+   * @format date-time
+   */
+  attack_chain_updated_at: string;
+  /**
+   * Active total number of users of the scenario
+   * @format int64
+   */
+  attack_chain_users_number?: number;
+  /** Lesson anonymized state of the scenario */
+  lessonsAnonymized?: boolean;
+}
+
+export interface AttackChainRecurrenceInput {
+  attack_chain_recurrence?: string;
+  /** @format date-time */
+  attack_chain_recurrence_end?: string;
+  /** @format date-time */
+  attack_chain_recurrence_start?: string;
+}
+
+export interface AttackChainRun {
+  /** @format int64 */
+  attack_chain_run_all_users_number?: number;
+  attack_chain_run_attack_chain?: string;
+  attack_chain_run_category?: string;
+  /** @format int64 */
+  attack_chain_run_communications_number?: number;
+  /** @format date-time */
+  attack_chain_run_created_at: string;
+  attack_chain_run_custom_dashboard?: string;
+  attack_chain_run_description?: string;
+  attack_chain_run_documents?: string[];
+  /** @format date-time */
+  attack_chain_run_end_date?: string;
+  attack_chain_run_id: string;
+  attack_chain_run_kill_chain_phases?: KillChainPhase[];
+  attack_chain_run_lessons_anonymized?: boolean;
+  /** @format int64 */
+  attack_chain_run_lessons_answers_number?: number;
+  attack_chain_run_lessons_categories?: string[];
+  attack_chain_run_logo_dark?: string;
+  attack_chain_run_logo_light?: string;
+  /** @format int64 */
+  attack_chain_run_logs_number?: number;
+  attack_chain_run_main_focus?: string;
+  attack_chain_run_name: string;
+  /** @format date-time */
+  attack_chain_run_next_node_date?: string;
+  attack_chain_run_next_possible_status?: (
+    | "SCHEDULED"
+    | "CANCELED"
+    | "RUNNING"
+    | "PAUSED"
+    | "FINISHED"
+    | "STOPPED_ON_BLOCK"
+  )[];
+  attack_chain_run_nodes?: string[];
+  attack_chain_run_nodes_statistics?: Record<string, number>;
+  attack_chain_run_observers?: string[];
+  attack_chain_run_pauses?: string[];
+  attack_chain_run_planners?: string[];
+  attack_chain_run_platforms?: (
+    | "Linux"
+    | "Windows"
+    | "MacOS"
+    | "Container"
+    | "Service"
+    | "Generic"
+    | "Internal"
+    | "Unknown"
+  )[];
+  /** @format double */
+  attack_chain_run_score?: number;
+  attack_chain_run_severity?: "low" | "medium" | "high" | "critical";
+  /** @format date-time */
+  attack_chain_run_start_date?: string;
+  attack_chain_run_status:
+    | "SCHEDULED"
+    | "CANCELED"
+    | "RUNNING"
+    | "PAUSED"
+    | "FINISHED"
+    | "STOPPED_ON_BLOCK";
+  attack_chain_run_subtitle?: string;
+  attack_chain_run_tags?: string[];
+  attack_chain_run_teams?: string[];
+  attack_chain_run_teams_users?: AttackChainRunTeamUser[];
+  /** @format date-time */
+  attack_chain_run_updated_at: string;
+  attack_chain_run_users?: string[];
+  /** @format int64 */
+  attack_chain_run_users_number?: number;
+  attack_chain_run_variables?: string[];
+  /** @format date-time */
+  attack_chain_run_verdict_computed_at?: string;
+  attack_chain_run_verdict_detection?:
+    | "FULL_BREACH"
+    | "FULL_BLOCKED"
+    | "PARTIAL"
+    | "PENDING"
+    | "N_A";
+  attack_chain_run_verdict_prevention?:
+    | "FULL_BREACH"
+    | "FULL_BLOCKED"
+    | "PARTIAL"
+    | "PENDING"
+    | "N_A";
+  listened?: boolean;
+}
+
+/** Simulation linked to inject */
+export interface AttackChainRunSimple {
+  /** Exercise Category */
+  attack_chain_run_category?: string;
+  attack_chain_run_global_score: ExpectationResultsByType[];
+  /** Exercise Id */
+  attack_chain_run_id: string;
+  /** Exercise Name */
+  attack_chain_run_name: string;
+  /**
+   * Exercise Start Date
+   * @format date-time
+   */
+  attack_chain_run_start_date?: string;
+  /** Exercise status */
+  attack_chain_run_status?:
+    | "SCHEDULED"
+    | "CANCELED"
+    | "RUNNING"
+    | "PAUSED"
+    | "FINISHED"
+    | "STOPPED_ON_BLOCK";
+  /** Exercise Subtitle */
+  attack_chain_run_subtitle?: string;
+  /**
+   * Tags
+   * @uniqueItems true
+   */
+  attack_chain_run_tags?: string[];
+  attack_chain_run_targets?: TargetSimple[];
+  /**
+   * Exercise Update Date
+   * @format date-time
+   */
+  attack_chain_run_updated_at?: string;
+}
+
+export interface AttackChainRunTeamPlayersEnableInput {
+  attack_chain_run_team_players?: string[];
+}
+
+export interface AttackChainRunTeamUser {
+  attack_chain_run_id?: string;
+  team_id?: string;
+  user_id?: string;
+}
+
+export interface AttackChainRunUpdateLogoInput {
+  attack_chain_run_logo_dark?: string;
+  attack_chain_run_logo_light?: string;
+}
+
+export interface AttackChainRunUpdateStartDateInput {
+  /** @format date-time */
+  attack_chain_run_start_date?: string;
+}
+
+export interface AttackChainRunUpdateStatusInput {
+  attack_chain_run_status?:
+    | "SCHEDULED"
+    | "CANCELED"
+    | "RUNNING"
+    | "PAUSED"
+    | "FINISHED"
+    | "STOPPED_ON_BLOCK";
+}
+
+export interface AttackChainRunUpdateTagsInput {
+  apply_tag_rule?: boolean;
+  attack_chain_run_tags?: string[];
+}
+
+export interface AttackChainRunUpdateTeamsInput {
+  attack_chain_run_teams?: string[];
+}
+
+export interface AttackChainRunsGlobalScoresInput {
+  attack_chain_run_ids: string[];
+}
+
+export interface AttackChainRunsGlobalScoresOutput {
+  global_scores_by_attack_chain_run_ids: Record<
+    string,
+    ExpectationResultsByType[]
+  >;
+}
+
+/** Scenario linked to inject */
+export interface AttackChainSimple {
+  attack_chain_id?: string;
+  attack_chain_name?: string;
+  attack_chain_subtitle?: string;
+  attack_chain_tags?: string[];
+}
+
+export interface AttackChainStatistic {
+  simulations_results_latest: SimulationsResultsLatest;
+}
+
+export interface AttackChainTeamPlayersEnableInput {
+  attack_chain_team_players?: string[];
+}
+
+export interface AttackChainTeamUser {
+  attack_chain_id?: string;
+  team_id?: string;
+  user_id?: string;
+}
+
+/** Enabled users of the scenario */
+export interface AttackChainTeamUserOutput {
+  /** ID of the scenario */
+  attack_chain_id?: string;
+  /** ID of the team */
+  team_id?: string;
+  /** ID of the user */
+  user_id?: string;
+}
+
+export interface AttackChainUpdateTagsInput {
+  apply_tag_rule?: boolean;
+  attack_chain_tags?: string[];
+}
+
+export interface AttackChainUpdateTeamsInput {
+  attack_chain_teams?: string[];
 }
 
 export interface AttackPattern {
@@ -415,6 +1281,14 @@ export interface AttackPatternUpsertInput {
   ignore_dependencies?: boolean;
 }
 
+export interface AttackTypeOutput {
+  attack_type?: string;
+  prd_required?: boolean;
+  surface?: string;
+  /** @format int32 */
+  template_count?: number;
+}
+
 export type AverageConfiguration = UtilRequiredKeys<
   WidgetConfiguration,
   "series" | "widget_configuration_type" | "time_range" | "date_attribute"
@@ -422,23 +1296,7 @@ export type AverageConfiguration = UtilRequiredKeys<
   field: Record<string, string>;
 };
 
-interface BaseEsBase {
-  /** @format date-time */
-  base_created_at?: string;
-  base_dependencies?: string[];
-  base_entity?: string;
-  base_id?: string;
-  base_representative?: string;
-  base_restrictions?: string[];
-  /** @format date-time */
-  base_updated_at?: string;
-}
-
-type BaseEsBaseBaseEntityMapping<Key, Type> = {
-  base_entity: Key;
-} & Type;
-
-interface BaseInjectTarget {
+interface BaseAttackChainNodeTarget {
   target_detection_status?:
     | "FAILED"
     | "PENDING"
@@ -476,11 +1334,27 @@ interface BaseInjectTarget {
     | "SUCCESS";
 }
 
-type BaseInjectTargetTargetTypeMapping<Key, Type> = {
+type BaseAttackChainNodeTargetTargetTypeMapping<Key, Type> = {
   target_type: Key;
 } & Type;
 
-interface BaseInjectorContractBaseOutput {
+interface BaseEsBase {
+  /** @format date-time */
+  base_created_at?: string;
+  base_dependencies?: string[];
+  base_entity?: string;
+  base_id?: string;
+  base_representative?: string;
+  base_restrictions?: string[];
+  /** @format date-time */
+  base_updated_at?: string;
+}
+
+type BaseEsBaseBaseEntityMapping<Key, Type> = {
+  base_entity: Key;
+} & Type;
+
+interface BaseNodeContractBaseOutput {
   /** Injector contract external Id */
   injector_contract_external_id?: string;
   injector_contract_has_full_details?: boolean;
@@ -493,7 +1367,7 @@ interface BaseInjectorContractBaseOutput {
   injector_contract_updated_at: string;
 }
 
-type BaseInjectorContractBaseOutputInjectorContractHasFullDetailsMapping<
+type BaseNodeContractBaseOutputInjectorContractHasFullDetailsMapping<
   Key,
   Type,
 > = {
@@ -632,6 +1506,31 @@ export interface CalderaSettings {
   executor_caldera_public_url?: string;
 }
 
+export interface CapabilityMatrixOutput {
+  modules?: CapabilityModuleOutput[];
+  summary?: CapabilitySummaryOutput;
+}
+
+export interface CapabilityModuleOutput {
+  acceptance_ready?: boolean;
+  controls?: string[];
+  external_integrations_required?: string[];
+  implementation_state?: string;
+  module_key?: string;
+  module_name?: string;
+}
+
+export interface CapabilitySummaryOutput {
+  /** @format int32 */
+  acceptance_ready_count?: number;
+  /** @format int32 */
+  external_integration_count?: number;
+  /** @format int32 */
+  prd_module_count?: number;
+  /** @format int32 */
+  total_use_case_templates?: number;
+}
+
 export interface CatalogConnector {
   /** Connector class name */
   catalog_connector_class_name?: string;
@@ -690,6 +1589,9 @@ export interface CatalogConnector {
   /** Connector title */
   connector_title: string;
   listened?: boolean;
+  managerSupported?: boolean;
+  playbookSupported?: boolean;
+  verified?: boolean;
 }
 
 export interface CatalogConnectorConfiguration {
@@ -755,69 +1657,6 @@ export interface CatalogConnectorSimpleOutput {
   catalog_connector_short_description?: string;
 }
 
-export interface Challenge {
-  challenge_category?: string;
-  challenge_content?: string;
-  /** @format date-time */
-  challenge_created_at: string;
-  challenge_documents?: string[];
-  challenge_exercises?: string[];
-  challenge_flags: ChallengeFlag[];
-  challenge_id: string;
-  /** @format int32 */
-  challenge_max_attempts?: number;
-  challenge_name: string;
-  challenge_scenarios?: string[];
-  /** @format double */
-  challenge_score?: number;
-  challenge_tags?: string[];
-  /** @format date-time */
-  challenge_updated_at: string;
-  /** @format date-time */
-  challenge_virtual_publication?: string;
-  listened?: boolean;
-}
-
-export interface ChallengeFlag {
-  flag_challenge?: string;
-  /** @format date-time */
-  flag_created_at?: string;
-  flag_id?: string;
-  flag_type?: "VALUE" | "VALUE_CASE" | "REGEXP";
-  /** @format date-time */
-  flag_updated_at?: string;
-  flag_value?: string;
-  listened?: boolean;
-}
-
-export interface ChallengeInformation {
-  /** @format int32 */
-  challenge_attempt?: number;
-  challenge_detail?: PublicChallenge;
-  challenge_expectation?: InjectExpectation;
-}
-
-export interface ChallengeInput {
-  challenge_category?: string;
-  challenge_content?: string;
-  challenge_documents?: string[];
-  challenge_flags: FlagInput[];
-  /** @format int32 */
-  challenge_max_attempts?: number;
-  challenge_name: string;
-  /** @format double */
-  challenge_score?: number;
-  challenge_tags?: string[];
-}
-
-export interface ChallengeResult {
-  result?: boolean;
-}
-
-export interface ChallengeTryInput {
-  challenge_value: string;
-}
-
 export interface ChangePasswordInput {
   /** The new password */
   password: string;
@@ -825,72 +1664,22 @@ export interface ChangePasswordInput {
   password_validation: string;
 }
 
-export interface Channel {
-  /** @format date-time */
-  channel_created_at: string;
-  channel_description?: string;
-  channel_id: string;
-  channel_logo_dark?: string;
-  channel_logo_light?: string;
-  channel_mode?: string;
-  channel_name?: string;
-  channel_primary_color_dark?: string;
-  channel_primary_color_light?: string;
-  channel_secondary_color_dark?: string;
-  channel_secondary_color_light?: string;
-  channel_type?: string;
-  /** @format date-time */
-  channel_updated_at: string;
-  listened?: boolean;
-  logos?: Document[];
-}
-
-export interface ChannelCreateInput {
-  channel_description: string;
-  channel_name: string;
-  channel_type: string;
-}
-
-export interface ChannelReader {
-  channel_articles?: Article[];
-  channel_exercise?: Exercise;
-  channel_id?: string;
-  channel_information?: Channel;
-  channel_scenario?: Scenario;
-}
-
-export interface ChannelUpdateInput {
-  channel_description: string;
-  channel_mode?: string;
-  channel_name: string;
-  channel_primary_color_dark?: string;
-  channel_primary_color_light?: string;
-  channel_secondary_color_dark?: string;
-  channel_secondary_color_light?: string;
-  channel_type: string;
-}
-
-export interface ChannelUpdateLogoInput {
-  channel_logo_dark?: string;
-  channel_logo_light?: string;
-}
-
-export interface CheckExerciseRulesInput {
-  /** List of tag that will be applied to the simulation */
-  new_tags?: string[];
-}
-
-export interface CheckExerciseRulesOutput {
-  /** Are there rules that can be applied? */
-  rules_found: boolean;
-}
-
-export interface CheckScenarioRulesInput {
+export interface CheckAttackChainRulesInput {
   /** List of tag that will be applied to the scenario */
   new_tags?: string[];
 }
 
-export interface CheckScenarioRulesOutput {
+export interface CheckAttackChainRulesOutput {
+  /** Are there rules that can be applied? */
+  rules_found: boolean;
+}
+
+export interface CheckAttackChainRunRulesInput {
+  /** List of tag that will be applied to the simulation */
+  new_tags?: string[];
+}
+
+export interface CheckAttackChainRunRulesOutput {
   /** Are there rules that can be applied? */
   rules_found: boolean;
 }
@@ -944,9 +1733,9 @@ export interface CollectorUpdateInput {
 }
 
 export interface Comcheck {
+  comcheck_attack_chain_run?: string;
   /** @format date-time */
   comcheck_end_date: string;
-  comcheck_exercise?: string;
   comcheck_id: string;
   comcheck_message?: string;
   comcheck_name?: string;
@@ -1046,13 +1835,13 @@ export interface Communication {
   communication_ack?: boolean;
   communication_animation?: boolean;
   communication_attachments?: string[];
+  communication_attack_chain_run?: string;
   communication_content?: string;
   communication_content_html?: string;
-  communication_exercise?: string;
   communication_from: string;
   communication_id: string;
-  communication_inject?: string;
   communication_message_id: string;
+  communication_node?: string;
   /** @format date-time */
   communication_received_at: string;
   /** @format date-time */
@@ -1096,6 +1885,7 @@ export interface ConnectorInstanceConfiguration {
   connector_instance_configuration_is_encrypted?: boolean;
   connector_instance_configuration_key: string;
   connector_instance_configuration_value: JsonNode;
+  encrypted?: boolean;
   listened?: boolean;
 }
 
@@ -1112,6 +1902,7 @@ export interface ConnectorInstanceHealthInput {
    * @format date-time
    */
   connector_instance_started_at?: string;
+  inRebootLoop?: boolean;
 }
 
 export interface ConnectorInstanceLog {
@@ -1160,6 +1951,7 @@ export interface ConnectorInstancePersisted {
   /** @format date-time */
   connector_instance_started_at?: string;
   hashIdentity?: string;
+  inRebootLoop?: boolean;
   listened?: boolean;
 }
 
@@ -1197,6 +1989,7 @@ export interface ContractOutputElement {
     | "kerberoastable_account";
   /** @format date-time */
   contract_output_element_updated_at: string;
+  finding?: boolean;
   listened?: boolean;
 }
 
@@ -1240,6 +2033,7 @@ export interface ContractOutputElementInput {
     | "account_with_password_not_required"
     | "asreproastable_account"
     | "kerberoastable_account";
+  finding?: boolean;
 }
 
 /** Represents the rules for parsing the output of an execution. */
@@ -1281,30 +2075,30 @@ export interface ContractOutputElementSimple {
     | "kerberoastable_account";
 }
 
-export interface CreateConnectorInstanceInput {
-  catalog_connector_id: string;
-  connector_instance_configurations?: ConfigurationInput[];
-}
-
-export interface CreateExerciseInput {
-  exercise_category?: string;
-  exercise_custom_dashboard?: string;
-  exercise_description?: string;
-  exercise_mail_from?: string;
-  exercise_mails_reply_to?: string[];
-  exercise_main_focus?: string;
-  exercise_message_footer?: string;
-  exercise_message_header?: string;
+export interface CreateAttackChainRunInput {
+  attack_chain_run_category?: string;
+  attack_chain_run_custom_dashboard?: string;
+  attack_chain_run_description?: string;
+  attack_chain_run_mail_from?: string;
+  attack_chain_run_mails_reply_to?: string[];
+  attack_chain_run_main_focus?: string;
+  attack_chain_run_message_footer?: string;
+  attack_chain_run_message_header?: string;
   /**
    * @minLength 0
    * @maxLength 255
    */
-  exercise_name: string;
-  exercise_severity?: string;
+  attack_chain_run_name: string;
+  attack_chain_run_severity?: string;
   /** @format date-time */
-  exercise_start_date?: string | null;
-  exercise_subtitle?: string;
-  exercise_tags?: string[];
+  attack_chain_run_start_date?: string | null;
+  attack_chain_run_subtitle?: string;
+  attack_chain_run_tags?: string[];
+}
+
+export interface CreateConnectorInstanceInput {
+  catalog_connector_id: string;
+  connector_instance_configurations?: ConfigurationInput[];
 }
 
 export interface CreateNotificationRuleInput {
@@ -1364,7 +2158,7 @@ export interface CustomDashboardParameters {
     | "timeRange"
     | "startDate"
     | "endDate"
-    | "scenario";
+    | "attackChain";
   listened?: boolean;
 }
 
@@ -1376,7 +2170,7 @@ export interface CustomDashboardParametersInput {
     | "timeRange"
     | "startDate"
     | "endDate"
-    | "scenario";
+    | "attackChain";
 }
 
 /** Payload to create a CVE */
@@ -1604,13 +2398,13 @@ export interface DetectionRemediationOutput {
   detection_remediation_values: string;
 }
 
-export interface DirectInjectInput {
-  inject_content?: object;
-  inject_description?: string;
-  inject_documents?: InjectDocumentInput[];
-  inject_injector_contract?: string;
-  inject_title?: string;
-  inject_users?: string[];
+export interface DirectAttackChainNodeInput {
+  node_content?: object;
+  node_description?: string;
+  node_documents?: AttackChainNodeDocumentInput[];
+  node_injector_contract?: string;
+  node_title?: string;
+  node_users?: string[];
 }
 
 export interface DnsResolution {
@@ -1693,19 +2487,11 @@ export interface DocumentRelationsOutput {
   /** @uniqueItems true */
   atomicTestings?: RelatedEntityOutput[];
   /** @uniqueItems true */
-  challenges?: RelatedEntityOutput[];
-  /** @uniqueItems true */
-  channels?: RelatedEntityOutput[];
-  /** @uniqueItems true */
   payloads?: RelatedEntityOutput[];
-  /** @uniqueItems true */
-  scenarioArticles?: RelatedEntityOutput[];
   /** @uniqueItems true */
   scenarioInjects?: RelatedEntityOutput[];
   /** @uniqueItems true */
   securityPlatforms?: RelatedEntityOutput[];
-  /** @uniqueItems true */
-  simulationArticles?: RelatedEntityOutput[];
   /** @uniqueItems true */
   simulationInjects?: RelatedEntityOutput[];
   /** @uniqueItems true */
@@ -1742,6 +2528,10 @@ export interface DomainBaseInput {
   domain_name: string;
 }
 
+export interface DuplicateRequest {
+  newName: string;
+}
+
 export interface Endpoint {
   asset_agents?: Agent[];
   /** @format date-time */
@@ -1769,6 +2559,7 @@ export interface Endpoint {
     | "Internal"
     | "Unknown";
   endpoint_seen_ip?: string;
+  eoL?: boolean;
   listened?: boolean;
 }
 
@@ -1793,6 +2584,7 @@ export interface EndpointInput {
     | "Generic"
     | "Internal"
     | "Unknown";
+  eol?: boolean;
 }
 
 export interface EndpointOutput {
@@ -1875,6 +2667,7 @@ export interface EndpointOverviewOutput {
     | "Unknown";
   /** Seen IP */
   endpoint_seen_ip?: string;
+  eol?: boolean;
 }
 
 export interface EndpointRegisterInput {
@@ -1888,6 +2681,7 @@ export interface EndpointRegisterInput {
   asset_external_reference: string;
   asset_name: string;
   asset_tags?: string[];
+  elevated?: boolean;
   endpoint_agent_version?: string;
   endpoint_arch: "x86_64" | "arm64" | "Unknown";
   endpoint_hostname?: string;
@@ -1904,7 +2698,9 @@ export interface EndpointRegisterInput {
     | "Generic"
     | "Internal"
     | "Unknown";
+  eol?: boolean;
   seenIp?: string;
+  service?: boolean;
 }
 
 /** Endpoint linked to finding */
@@ -1991,14 +2787,115 @@ export interface EsAssetGroup {
   name?: string;
 }
 
+export interface EsAttackChain {
+  /** @uniqueItems true */
+  base_asset_groups_side?: string[];
+  /** @uniqueItems true */
+  base_assets_side?: string[];
+  /** @format date-time */
+  base_created_at?: string;
+  base_dependencies?: string[];
+  base_entity?: string;
+  base_id?: string;
+  /** @uniqueItems true */
+  base_platforms_side_denormalized?: string[];
+  base_representative?: string;
+  base_restrictions?: string[];
+  /** @uniqueItems true */
+  base_tags_side?: string[];
+  /** @uniqueItems true */
+  base_teams_side?: string[];
+  /** @format date-time */
+  base_updated_at?: string;
+  name?: string;
+  status?: string;
+}
+
+export interface EsAttackChainNode {
+  /** @uniqueItems true */
+  base_asset_groups_side?: string[];
+  /** @uniqueItems true */
+  base_assets_side?: string[];
+  base_attack_chain_run_side?: string;
+  base_attack_chain_side?: string;
+  /** @uniqueItems true */
+  base_attack_patterns_children_side?: string[];
+  /** @uniqueItems true */
+  base_attack_patterns_side?: string[];
+  /** @format date-time */
+  base_created_at?: string;
+  base_dependencies?: string[];
+  base_entity?: string;
+  base_id?: string;
+  /** @uniqueItems true */
+  base_kill_chain_phases_side?: string[];
+  /** @uniqueItems true */
+  base_node_children_side?: string[];
+  base_node_contract_side?: string;
+  /** @uniqueItems true */
+  base_platforms_side_denormalized?: string[];
+  base_representative?: string;
+  base_restrictions?: string[];
+  /** @uniqueItems true */
+  base_tags_side?: string[];
+  /** @uniqueItems true */
+  base_teams_side?: string[];
+  /** @format date-time */
+  base_updated_at?: string;
+  /** @format date-time */
+  execution_date?: string;
+  node_status?: string;
+  node_title?: string;
+}
+
+export interface EsAttackChainNodeExpectation {
+  base_asset_group_side?: string;
+  base_asset_side?: string;
+  base_attack_chain_run_side?: string;
+  base_attack_chain_side?: string;
+  /** @uniqueItems true */
+  base_attack_patterns_side?: string[];
+  /** @format date-time */
+  base_created_at?: string;
+  base_dependencies?: string[];
+  base_entity?: string;
+  base_id?: string;
+  base_node_side?: string;
+  base_representative?: string;
+  base_restrictions?: string[];
+  /** @uniqueItems true */
+  base_security_domains_side?: string[];
+  /** @uniqueItems true */
+  base_security_platforms_side?: string[];
+  base_team_side?: string;
+  /** @format date-time */
+  base_updated_at?: string;
+  base_user_side?: string;
+  /** @format date-time */
+  execution_date?: string;
+  node_expectation_description?: string;
+  /** @format double */
+  node_expectation_expected_score?: number;
+  /** @format int64 */
+  node_expectation_expiration_time?: number;
+  node_expectation_group?: boolean;
+  node_expectation_name?: string;
+  node_expectation_results?: string;
+  /** @format double */
+  node_expectation_score?: number;
+  node_expectation_status?: string;
+  node_expectation_type?: string;
+  node_title?: string;
+}
+
 export interface EsAttackPath {
+  /** @uniqueItems true */
+  attackChainNodeIds?: string[];
   /** @uniqueItems true */
   attackPatternChildrenIds?: string[];
   attackPatternExternalId: string;
   attackPatternId: string;
   attackPatternName: string;
-  /** @uniqueItems true */
-  injectIds?: string[];
   killChainPhases?: KillChainPhaseObject[];
   /** @format int64 */
   value?: number;
@@ -2033,10 +2930,13 @@ export type EsBase = BaseEsBase &
     | BaseEsBaseBaseEntityMapping<"attack-pattern", EsAttackPattern>
     | BaseEsBaseBaseEntityMapping<"endpoint", EsEndpoint>
     | BaseEsBaseBaseEntityMapping<"finding", EsFinding>
-    | BaseEsBaseBaseEntityMapping<"inject", EsInject>
-    | BaseEsBaseBaseEntityMapping<"expectation-inject", EsInjectExpectation>
-    | BaseEsBaseBaseEntityMapping<"simulation", EsSimulation>
-    | BaseEsBaseBaseEntityMapping<"scenario", EsScenario>
+    | BaseEsBaseBaseEntityMapping<"node", EsAttackChainNode>
+    | BaseEsBaseBaseEntityMapping<
+        "expectation-inject",
+        EsAttackChainNodeExpectation
+      >
+    | BaseEsBaseBaseEntityMapping<"attack_chain_run", EsSimulation>
+    | BaseEsBaseBaseEntityMapping<"attack_chain", EsAttackChain>
     | BaseEsBaseBaseEntityMapping<"tag", EsTag>
     | BaseEsBaseBaseEntityMapping<"vulnerable-endpoint", EsVulnerableEndpoint>
     | BaseEsBaseBaseEntityMapping<"team", EsTeam>
@@ -2060,6 +2960,10 @@ export interface EsDomainsAvgData {
 }
 
 export interface EsEndpoint {
+  /** @uniqueItems true */
+  base_attack_chain_run_side?: string[];
+  /** @uniqueItems true */
+  base_attack_chain_side?: string[];
   /** @format date-time */
   base_created_at?: string;
   base_dependencies?: string[];
@@ -2069,10 +2973,6 @@ export interface EsEndpoint {
   base_id?: string;
   base_representative?: string;
   base_restrictions?: string[];
-  /** @uniqueItems true */
-  base_scenario_side?: string[];
-  /** @uniqueItems true */
-  base_simulation_side?: string[];
   /** @uniqueItems true */
   base_tags_side?: string[];
   /** @format date-time */
@@ -2092,123 +2992,22 @@ export interface EsEndpoint {
 }
 
 export interface EsFinding {
+  base_attack_chain_run_side?: string;
+  base_attack_chain_side?: string;
   /** @format date-time */
   base_created_at?: string;
   base_dependencies?: string[];
   base_endpoint_side?: string;
   base_entity?: string;
   base_id?: string;
-  base_inject_side?: string;
+  base_node_side?: string;
   base_representative?: string;
   base_restrictions?: string[];
-  base_scenario_side?: string;
-  base_simulation_side?: string;
   /** @format date-time */
   base_updated_at?: string;
   finding_field?: string;
   finding_type?: string;
   finding_value?: string;
-}
-
-export interface EsInject {
-  /** @uniqueItems true */
-  base_asset_groups_side?: string[];
-  /** @uniqueItems true */
-  base_assets_side?: string[];
-  /** @uniqueItems true */
-  base_attack_patterns_children_side?: string[];
-  /** @uniqueItems true */
-  base_attack_patterns_side?: string[];
-  /** @format date-time */
-  base_created_at?: string;
-  base_dependencies?: string[];
-  base_entity?: string;
-  base_id?: string;
-  /** @uniqueItems true */
-  base_inject_children_side?: string[];
-  base_inject_contract_side?: string;
-  /** @uniqueItems true */
-  base_kill_chain_phases_side?: string[];
-  /** @uniqueItems true */
-  base_platforms_side_denormalized?: string[];
-  base_representative?: string;
-  base_restrictions?: string[];
-  base_scenario_side?: string;
-  base_simulation_side?: string;
-  /** @uniqueItems true */
-  base_tags_side?: string[];
-  /** @uniqueItems true */
-  base_teams_side?: string[];
-  /** @format date-time */
-  base_updated_at?: string;
-  /** @format date-time */
-  execution_date?: string;
-  inject_status?: string;
-  inject_title?: string;
-}
-
-export interface EsInjectExpectation {
-  base_asset_group_side?: string;
-  base_asset_side?: string;
-  /** @uniqueItems true */
-  base_attack_patterns_side?: string[];
-  /** @format date-time */
-  base_created_at?: string;
-  base_dependencies?: string[];
-  base_entity?: string;
-  base_id?: string;
-  base_inject_side?: string;
-  base_representative?: string;
-  base_restrictions?: string[];
-  base_scenario_side?: string;
-  /** @uniqueItems true */
-  base_security_domains_side?: string[];
-  /** @uniqueItems true */
-  base_security_platforms_side?: string[];
-  base_simulation_side?: string;
-  base_team_side?: string;
-  /** @format date-time */
-  base_updated_at?: string;
-  base_user_side?: string;
-  /** @format date-time */
-  execution_date?: string;
-  inject_expectation_description?: string;
-  /** @format double */
-  inject_expectation_expected_score?: number;
-  /** @format int64 */
-  inject_expectation_expiration_time?: number;
-  inject_expectation_group?: boolean;
-  inject_expectation_name?: string;
-  inject_expectation_results?: string;
-  /** @format double */
-  inject_expectation_score?: number;
-  inject_expectation_status?: string;
-  inject_expectation_type?: string;
-  inject_title?: string;
-}
-
-export interface EsScenario {
-  /** @uniqueItems true */
-  base_asset_groups_side?: string[];
-  /** @uniqueItems true */
-  base_assets_side?: string[];
-  /** @format date-time */
-  base_created_at?: string;
-  base_dependencies?: string[];
-  base_entity?: string;
-  base_id?: string;
-  /** @uniqueItems true */
-  base_platforms_side_denormalized?: string[];
-  base_representative?: string;
-  base_restrictions?: string[];
-  /** @uniqueItems true */
-  base_tags_side?: string[];
-  /** @uniqueItems true */
-  base_teams_side?: string[];
-  /** @format date-time */
-  base_updated_at?: string;
-  name?: string;
-  status?: string;
 }
 
 export interface EsSearch {
@@ -2267,6 +3066,7 @@ export interface EsSimulation {
   base_asset_groups_side?: string[];
   /** @uniqueItems true */
   base_assets_side?: string[];
+  base_attack_chain_side?: string;
   /** @format date-time */
   base_created_at?: string;
   base_dependencies?: string[];
@@ -2276,7 +3076,6 @@ export interface EsSimulation {
   base_platforms_side_denormalized?: string[];
   base_representative?: string;
   base_restrictions?: string[];
-  base_scenario_side?: string;
   /** @uniqueItems true */
   base_tags_side?: string[];
   /** @uniqueItems true */
@@ -2318,6 +3117,8 @@ export interface EsTeam {
 export interface EsVulnerableEndpoint {
   /** @uniqueItems true */
   base_agents_side?: string[];
+  base_attack_chain_run_side?: string;
+  base_attack_chain_side?: string;
   /** @format date-time */
   base_created_at?: string;
   base_dependencies?: string[];
@@ -2327,8 +3128,6 @@ export interface EsVulnerableEndpoint {
   base_id?: string;
   base_representative?: string;
   base_restrictions?: string[];
-  base_scenario_side?: string;
-  base_simulation_side?: string;
   /** @uniqueItems true */
   base_tags_side?: string[];
   /** @format date-time */
@@ -2420,6 +3219,8 @@ export interface Executable {
 
 export interface ExecutionTrace {
   agent?: string;
+  attackChainNodeStatus?: string;
+  attackChainNodeTestStatus?: string;
   execution_action?:
     | "START"
     | "PREREQUISITE_CHECK"
@@ -2454,8 +3255,6 @@ export interface ExecutionTrace {
   execution_trace_id: string;
   /** @format date-time */
   execution_updated_at: string;
-  injectStatus?: string;
-  injectTestStatus?: string;
   listened?: boolean;
 }
 
@@ -2545,161 +3344,6 @@ export interface ExecutorOutput {
 export interface ExecutorUpdateInput {
   /** @format date-time */
   executor_last_execution?: string;
-}
-
-export interface Exercise {
-  /** @format int64 */
-  exercise_all_users_number?: number;
-  exercise_articles?: string[];
-  exercise_category?: string;
-  /** @format int64 */
-  exercise_communications_number?: number;
-  /** @format date-time */
-  exercise_created_at: string;
-  exercise_custom_dashboard?: string;
-  exercise_description?: string;
-  exercise_documents?: string[];
-  /** @format date-time */
-  exercise_end_date?: string;
-  exercise_id: string;
-  exercise_injects?: string[];
-  exercise_injects_statistics?: Record<string, number>;
-  exercise_kill_chain_phases?: KillChainPhase[];
-  exercise_lessons_anonymized?: boolean;
-  /** @format int64 */
-  exercise_lessons_answers_number?: number;
-  exercise_lessons_categories?: string[];
-  exercise_logo_dark?: string;
-  exercise_logo_light?: string;
-  /** @format int64 */
-  exercise_logs_number?: number;
-  exercise_mail_from: string;
-  exercise_mails_reply_to?: string[];
-  exercise_main_focus?: string;
-  exercise_message_footer?: string;
-  exercise_message_header?: string;
-  exercise_name: string;
-  /** @format date-time */
-  exercise_next_inject_date?: string;
-  exercise_next_possible_status?: (
-    | "SCHEDULED"
-    | "CANCELED"
-    | "RUNNING"
-    | "PAUSED"
-    | "FINISHED"
-  )[];
-  exercise_observers?: string[];
-  exercise_pauses?: string[];
-  exercise_planners?: string[];
-  exercise_platforms?: (
-    | "Linux"
-    | "Windows"
-    | "MacOS"
-    | "Container"
-    | "Service"
-    | "Generic"
-    | "Internal"
-    | "Unknown"
-  )[];
-  exercise_scenario?: string;
-  /** @format double */
-  exercise_score?: number;
-  exercise_severity?: "low" | "medium" | "high" | "critical";
-  /** @format date-time */
-  exercise_start_date?: string;
-  exercise_status: "SCHEDULED" | "CANCELED" | "RUNNING" | "PAUSED" | "FINISHED";
-  exercise_subtitle?: string;
-  exercise_tags?: string[];
-  exercise_teams?: string[];
-  exercise_teams_users?: ExerciseTeamUser[];
-  /** @format date-time */
-  exercise_updated_at: string;
-  exercise_users?: string[];
-  /** @format int64 */
-  exercise_users_number?: number;
-  exercise_variables?: string[];
-  listened?: boolean;
-}
-
-export interface ExerciseSimple {
-  /** Exercise Category */
-  exercise_category?: string;
-  exercise_global_score: ExpectationResultsByType[];
-  /** Exercise Id */
-  exercise_id: string;
-  /** Exercise Name */
-  exercise_name: string;
-  /**
-   * Exercise Start Date
-   * @format date-time
-   */
-  exercise_start_date?: string;
-  /** Exercise status */
-  exercise_status?:
-    | "SCHEDULED"
-    | "CANCELED"
-    | "RUNNING"
-    | "PAUSED"
-    | "FINISHED";
-  /** Exercise Subtitle */
-  exercise_subtitle?: string;
-  /**
-   * Tags
-   * @uniqueItems true
-   */
-  exercise_tags?: string[];
-  exercise_targets?: TargetSimple[];
-  /**
-   * Exercise Update Date
-   * @format date-time
-   */
-  exercise_updated_at?: string;
-}
-
-export interface ExerciseTeamPlayersEnableInput {
-  exercise_team_players?: string[];
-}
-
-export interface ExerciseTeamUser {
-  exercise_id?: string;
-  team_id?: string;
-  user_id?: string;
-}
-
-export interface ExerciseUpdateLogoInput {
-  exercise_logo_dark?: string;
-  exercise_logo_light?: string;
-}
-
-export interface ExerciseUpdateStartDateInput {
-  /** @format date-time */
-  exercise_start_date?: string;
-}
-
-export interface ExerciseUpdateStatusInput {
-  exercise_status?:
-    | "SCHEDULED"
-    | "CANCELED"
-    | "RUNNING"
-    | "PAUSED"
-    | "FINISHED";
-}
-
-export interface ExerciseUpdateTagsInput {
-  apply_tag_rule?: boolean;
-  exercise_tags?: string[];
-}
-
-export interface ExerciseUpdateTeamsInput {
-  exercise_teams?: string[];
-}
-
-export interface ExercisesGlobalScoresInput {
-  exercise_ids: string[];
-}
-
-export interface ExercisesGlobalScoresOutput {
-  global_scores_by_exercise_ids: Record<string, ExpectationResultsByType[]>;
 }
 
 export interface Expectation {
@@ -2823,7 +3467,6 @@ export interface Filter {
   values?: string[];
 }
 
-/** Filter object to search within filterable attributes */
 export interface FilterGroup {
   filters?: Filter[];
   mode: "and" | "or";
@@ -2833,16 +3476,16 @@ export interface Finding {
   /** @uniqueItems true */
   finding_asset_groups?: AssetGroup[];
   finding_assets?: string[];
+  finding_attack_chain?: AttackChain;
+  finding_attack_chain_run?: AttackChainRun;
   /** @format date-time */
   finding_created_at: string;
   finding_field: string;
   finding_id: string;
-  finding_inject_id?: string;
   /** @deprecated */
   finding_labels?: string[];
   finding_name?: string;
-  finding_scenario?: Scenario;
-  finding_simulation?: Exercise;
+  finding_node_id?: string;
   finding_tags?: string[];
   finding_teams?: string[];
   finding_type:
@@ -2875,8 +3518,8 @@ export interface Finding {
 
 export interface FindingInput {
   finding_field: string;
-  finding_inject_id?: string;
   finding_labels?: string[];
+  finding_node_id?: string;
   finding_type:
     | "text"
     | "number"
@@ -2901,11 +3544,6 @@ export interface FindingInput {
   finding_value: string;
 }
 
-export interface FlagInput {
-  flag_type: string;
-  flag_value: string;
-}
-
 export type FlatConfiguration = UtilRequiredKeys<
   WidgetConfiguration,
   "series" | "widget_configuration_type" | "time_range" | "date_attribute"
@@ -2926,19 +3564,19 @@ export interface FullTextSearchResult {
   tags?: Tag[];
 }
 
-export interface GetExercisesInput {
-  exercise_ids?: string[];
+export interface GetAttackChainRunsInput {
+  attack_chain_run_ids?: string[];
 }
 
-export interface GetScenariosInput {
-  scenario_ids?: string[];
+export interface GetAttackChainsInput {
+  attack_chain_ids?: string[];
 }
 
 export interface GlobalScoreBySimulationEndDate {
+  /** @format date-time */
+  attack_chain_run_end_date: string;
   /** @format float */
   global_score_success_percentage: number;
-  /** @format date-time */
-  simulation_end_date: string;
 }
 
 export interface Grant {
@@ -3019,26 +3657,26 @@ export interface ImportMapper {
   /** @format date-time */
   import_mapper_created_at?: string;
   import_mapper_id: string;
-  import_mapper_inject_importers?: InjectImporter[];
-  import_mapper_inject_type_column: string;
   import_mapper_name: string;
+  import_mapper_node_importers?: AttackChainNodeImporter[];
+  import_mapper_node_type_column: string;
   /** @format date-time */
   import_mapper_updated_at?: string;
   listened?: boolean;
 }
 
 export interface ImportMapperAddInput {
-  import_mapper_inject_importers: InjectImporterAddInput[];
-  /** @pattern ^[A-Z]{1,2}$ */
-  import_mapper_inject_type_column: string;
   import_mapper_name: string;
+  import_mapper_node_importers: AttackChainNodeImporterAddInput[];
+  /** @pattern ^[A-Z]{1,2}$ */
+  import_mapper_node_type_column: string;
 }
 
 export interface ImportMapperUpdateInput {
-  import_mapper_inject_importers: InjectImporterUpdateInput[];
-  /** @pattern ^[A-Z]{1,2}$ */
-  import_mapper_inject_type_column: string;
   import_mapper_name: string;
+  import_mapper_node_importers: AttackChainNodeImporterUpdateInput[];
+  /** @pattern ^[A-Z]{1,2}$ */
+  import_mapper_node_type_column: string;
 }
 
 export interface ImportMessage {
@@ -3062,876 +3700,11 @@ export interface ImportPostSummary {
 export interface ImportTestSummary {
   import_message?: ImportMessage[];
   /** @deprecated */
-  injects?: InjectOutput[];
+  nodes?: AttackChainNodeOutput[];
   /** @format int32 */
   total_injects?: number;
   /** @format int32 */
   total_rows_analysed?: number;
-}
-
-export interface Inject {
-  footer?: string;
-  header?: string;
-  inject_all_teams?: boolean;
-  inject_asset_groups?: string[];
-  inject_assets?: string[];
-  inject_attack_patterns?: AttackPattern[];
-  inject_city?: string;
-  inject_collect_status?: "COLLECTING" | "COMPLETED";
-  inject_communications?: string[];
-  /** @format int64 */
-  inject_communications_not_ack_number?: number;
-  /** @format int64 */
-  inject_communications_number?: number;
-  inject_content?: object;
-  /** @uniqueItems true */
-  inject_contract_domains?: Domain[];
-  inject_country?: string;
-  /** @format date-time */
-  inject_created_at: string;
-  /** @format date-time */
-  inject_date?: string;
-  /**
-   * @format int64
-   * @min 0
-   */
-  inject_depends_duration: number;
-  inject_depends_on?: InjectDependency[];
-  inject_description?: string;
-  inject_documents?: string[];
-  inject_enabled?: boolean;
-  inject_exercise?: string;
-  inject_expectations?: string[];
-  inject_id: string;
-  /** Injector contract of the inject */
-  inject_injector_contract?: InjectorContract;
-  inject_kill_chain_phases?: KillChainPhase[];
-  inject_ready?: boolean;
-  inject_scenario?: string;
-  /** @format date-time */
-  inject_sent_at?: string;
-  inject_status?: InjectStatus;
-  inject_tags?: string[];
-  inject_teams?: string[];
-  inject_testable?: boolean;
-  inject_title: string;
-  /** @format date-time */
-  inject_trigger_now_date?: string;
-  inject_type?: string;
-  /** @format date-time */
-  inject_updated_at: string;
-  inject_user?: string;
-  /** @format int64 */
-  inject_users_number?: number;
-  listened?: boolean;
-}
-
-/** Input model for automatically generating injects, based on the provided attack pattern IDs and target asset or asset group IDs. */
-export interface InjectAssistantInput {
-  /** List of asset group IDs to target. Either asset_ids or asset_group_ids must be provided. */
-  asset_group_ids?: string[];
-  /** List of asset IDs to target. Either asset_ids or asset_group_ids must be provided. */
-  asset_ids?: string[];
-  /** List of attack pattern used to generate injects */
-  attack_pattern_ids: string[];
-  /**
-   * Number of injects to generate for each TTP
-   * @format int32
-   */
-  inject_by_ttp_number: number;
-}
-
-export interface InjectBulkProcessingInput {
-  inject_ids_to_ignore?: string[];
-  inject_ids_to_process?: string[];
-  search_pagination_input?: SearchPaginationInput;
-  simulation_or_scenario_id?: string;
-}
-
-export interface InjectBulkUpdateInputs {
-  inject_ids_to_ignore?: string[];
-  inject_ids_to_process?: string[];
-  search_pagination_input?: SearchPaginationInput;
-  simulation_or_scenario_id?: string;
-  update_operations?: InjectBulkUpdateOperation[];
-}
-
-export interface InjectBulkUpdateOperation {
-  field?: "assets" | "asset_groups" | "teams";
-  operation?: "add" | "remove" | "replace";
-  values?: string[];
-}
-
-/** Inject dependencies of the inject */
-export interface InjectDependency {
-  dependency_condition?: InjectDependencyCondition;
-  /** @format date-time */
-  dependency_created_at?: string;
-  dependency_relationship?: InjectDependencyId;
-  /** @format date-time */
-  dependency_updated_at?: string;
-}
-
-export interface InjectDependencyCondition {
-  conditions?: Condition[];
-  mode: "and" | "or";
-}
-
-export interface InjectDependencyId {
-  inject_children_id?: string;
-  inject_parent_id?: string;
-}
-
-export interface InjectDependencyIdInput {
-  inject_children_id?: string;
-  inject_parent_id?: string;
-}
-
-export interface InjectDependencyInput {
-  dependency_condition?: InjectDependencyCondition;
-  dependency_relationship?: InjectDependencyIdInput;
-}
-
-export interface InjectDocumentInput {
-  document_attached?: boolean;
-  document_id?: string;
-}
-
-export interface InjectExecutionInput {
-  execution_action?:
-    | "prerequisite_check"
-    | "prerequisite_execution"
-    | "cleanup_execution"
-    | "command_execution"
-    | "dns_resolution"
-    | "file_execution"
-    | "file_drop"
-    | "complete";
-  /**
-   * Duration of the execution in miliseconds
-   * @format int32
-   */
-  execution_duration?: number;
-  execution_message: string;
-  execution_output_raw?: string;
-  execution_output_structured?: string;
-  execution_status: string;
-}
-
-export interface InjectExpectation {
-  inject_expectation_agent?: string;
-  inject_expectation_article?: string;
-  inject_expectation_asset?: string;
-  inject_expectation_asset_group?: string;
-  inject_expectation_challenge?: string;
-  /** @format date-time */
-  inject_expectation_created_at?: string;
-  inject_expectation_description?: string;
-  inject_expectation_exercise?: string;
-  /** @format double */
-  inject_expectation_expected_score: number;
-  inject_expectation_group?: boolean;
-  inject_expectation_id: string;
-  inject_expectation_inject?: string;
-  inject_expectation_name?: string;
-  inject_expectation_results?: InjectExpectationResult[];
-  /** @format double */
-  inject_expectation_score?: number;
-  inject_expectation_signatures?: InjectExpectationSignature[];
-  inject_expectation_status?:
-    | "FAILED"
-    | "PENDING"
-    | "PARTIAL"
-    | "UNKNOWN"
-    | "SUCCESS";
-  inject_expectation_team?: string;
-  inject_expectation_traces?: InjectExpectationTrace[];
-  inject_expectation_type:
-    | "TEXT"
-    | "DOCUMENT"
-    | "ARTICLE"
-    | "CHALLENGE"
-    | "MANUAL"
-    | "PREVENTION"
-    | "DETECTION"
-    | "VULNERABILITY";
-  /** @format date-time */
-  inject_expectation_updated_at?: string;
-  inject_expectation_user?: string;
-  /** @format int64 */
-  inject_expiration_time: number;
-  listened?: boolean;
-  target_id?: string;
-}
-
-/** Represents a single inject expectation with agent name */
-export interface InjectExpectationAgentOutput {
-  inject_expectation_agent?: string;
-  inject_expectation_agent_name?: string;
-  inject_expectation_asset?: string;
-  /** @format date-time */
-  inject_expectation_created_at?: string;
-  inject_expectation_group?: boolean;
-  inject_expectation_id: string;
-  inject_expectation_name?: string;
-  inject_expectation_results?: InjectExpectationResult[];
-  /** @format double */
-  inject_expectation_score?: number;
-  inject_expectation_status?:
-    | "FAILED"
-    | "PENDING"
-    | "PARTIAL"
-    | "UNKNOWN"
-    | "SUCCESS";
-  inject_expectation_type:
-    | "TEXT"
-    | "DOCUMENT"
-    | "ARTICLE"
-    | "CHALLENGE"
-    | "MANUAL"
-    | "PREVENTION"
-    | "DETECTION"
-    | "VULNERABILITY";
-  /** @format int64 */
-  inject_expiration_time: number;
-}
-
-export interface InjectExpectationBulkUpdateInput {
-  inputs: Record<string, InjectExpectationUpdateInput>;
-}
-
-export interface InjectExpectationResult {
-  date?: string;
-  metadata?: Record<string, string>;
-  result: string;
-  /** @format double */
-  score?: number;
-  sourceAssetId?: string;
-  sourceId?: string;
-  sourceName?: string;
-  sourcePlatform?: string;
-  sourceType?: string;
-}
-
-export interface InjectExpectationResultsByAttackPattern {
-  inject_attack_pattern?: string;
-  inject_expectation_results?: InjectExpectationResultsByType[];
-}
-
-export interface InjectExpectationResultsByType {
-  inject_id?: string;
-  inject_title?: string;
-  results?: ExpectationResultsByType[];
-}
-
-export interface InjectExpectationSignature {
-  type?: string;
-  value?: string;
-}
-
-/** Expectations */
-export interface InjectExpectationSimple {
-  inject_expectation_id: string;
-  inject_expectation_name?: string;
-}
-
-export interface InjectExpectationTrace {
-  inject_expectation_trace_alert_link?: string;
-  inject_expectation_trace_alert_name?: string;
-  /** @format date-time */
-  inject_expectation_trace_created_at: string;
-  /** @format date-time */
-  inject_expectation_trace_date?: string;
-  inject_expectation_trace_expectation?: string;
-  inject_expectation_trace_id: string;
-  inject_expectation_trace_source_id?: string;
-  /** @format date-time */
-  inject_expectation_trace_updated_at: string;
-  listened?: boolean;
-}
-
-export interface InjectExpectationTraceBulkInsertInput {
-  expectation_traces: InjectExpectationTraceInput[];
-}
-
-export interface InjectExpectationTraceInput {
-  inject_expectation_trace_alert_link: string;
-  inject_expectation_trace_alert_name: string;
-  /** @format date-time */
-  inject_expectation_trace_date: string;
-  inject_expectation_trace_expectation: string;
-  inject_expectation_trace_source_id: string;
-}
-
-export interface InjectExpectationUpdateInput {
-  collector_id: string;
-  is_success: boolean;
-  metadata?: Record<string, string>;
-  result: string;
-}
-
-export interface InjectExportFromSearchRequestInput {
-  inject_ids_to_ignore?: string[];
-  inject_ids_to_process?: string[];
-  options?: ExportOptionsInput;
-  search_pagination_input?: SearchPaginationInput;
-  simulation_or_scenario_id?: string;
-}
-
-export interface InjectExportRequestInput {
-  injects?: InjectExportTarget[];
-  options?: ExportOptionsInput;
-}
-
-export interface InjectExportTarget {
-  inject_id?: string;
-}
-
-export interface InjectImporter {
-  /** @format date-time */
-  inject_importer_created_at?: string;
-  inject_importer_id: string;
-  inject_importer_injector_contract: string;
-  inject_importer_rule_attributes?: RuleAttribute[];
-  inject_importer_type_value: string;
-  /** @format date-time */
-  inject_importer_updated_at?: string;
-  listened?: boolean;
-}
-
-export interface InjectImporterAddInput {
-  inject_importer_injector_contract: string;
-  inject_importer_rule_attributes?: RuleAttributeAddInput[];
-  inject_importer_type_value: string;
-}
-
-export interface InjectImporterUpdateInput {
-  inject_importer_id?: string;
-  inject_importer_injector_contract: string;
-  inject_importer_rule_attributes?: RuleAttributeUpdateInput[];
-  inject_importer_type_value: string;
-}
-
-export interface InjectIndividualExportRequestInput {
-  options?: ExportOptionsInput;
-}
-
-export interface InjectInput {
-  inject_all_teams?: boolean;
-  inject_asset_groups?: string[];
-  inject_assets?: string[];
-  inject_city?: string;
-  inject_content?: object;
-  inject_country?: string;
-  /** @format int64 */
-  inject_depends_duration?: number;
-  inject_depends_on?: InjectDependencyInput[];
-  inject_description?: string;
-  inject_documents?: InjectDocumentInput[];
-  inject_enabled?: boolean;
-  inject_injector_contract?: string;
-  inject_tags?: string[];
-  inject_teams?: string[];
-  inject_title: string;
-}
-
-export interface InjectOutput {
-  inject_asset_groups?: string[];
-  inject_assets?: string[];
-  inject_content?: object;
-  /**
-   * Domain of the inject
-   * @uniqueItems true
-   */
-  inject_contract_domains?: Domain[];
-  /**
-   * Depend duration of the inject
-   * @format int64
-   * @min 0
-   */
-  inject_depends_duration: number;
-  inject_depends_on?: InjectDependency[];
-  /** Enabled state of the inject */
-  inject_enabled?: boolean;
-  /** Simulation ID of the inject */
-  inject_exercise?: string;
-  inject_healthchecks?: HealthCheck[];
-  /** ID of the inject */
-  inject_id: string;
-  /** Injector contract of the inject */
-  inject_injector_contract?: InjectorContract;
-  /** Ready state of the inject */
-  inject_ready?: boolean;
-  /** Scenario ID of the inject */
-  inject_scenario?: string;
-  /** @uniqueItems true */
-  inject_tags?: string[];
-  inject_teams?: string[];
-  /** Testable state of the inject */
-  inject_testable?: boolean;
-  /** Title of the inject */
-  inject_title: string;
-  /** Type of the inject */
-  inject_type?: string;
-}
-
-export interface InjectReceptionInput {
-  /** @format int32 */
-  tracking_total_count?: number;
-}
-
-export interface InjectResultOutput {
-  /** Domain of the inject */
-  inject_contract_domains?: string[];
-  /** Result of expectations */
-  inject_expectation_results: ExpectationResultsByType[];
-  /** Id of inject */
-  inject_id: string;
-  /** Injector contract */
-  inject_injector_contract?: InjectorContractSimple;
-  /** status */
-  inject_status?: InjectStatusSimple;
-  inject_targets?: TargetSimple[];
-  /** Title of inject */
-  inject_title: string;
-  /** Type of inject */
-  inject_type?: string;
-  /**
-   * Timestamp when the inject was last updated
-   * @format date-time
-   */
-  inject_updated_at: string;
-}
-
-export interface InjectResultOverviewOutput {
-  inject_content?: object;
-  /** Description of inject */
-  inject_description?: string;
-  /** Result of expectations */
-  inject_expectation_results: ExpectationResultsByType[];
-  /** Expectations */
-  inject_expectations?: InjectExpectationSimple[];
-  /** Id of inject */
-  inject_id: string;
-  /** Full contract */
-  inject_injector_contract?: AtomicInjectorContractOutput;
-  /** Kill chain phases */
-  inject_kill_chain_phases?: KillChainPhaseSimple[];
-  /** Indicates whether the inject is ready for use */
-  inject_ready?: boolean;
-  /** status */
-  inject_status?: InjectStatusSimple;
-  /**
-   * Tags
-   * @uniqueItems true
-   */
-  inject_tags?: string[];
-  /** Title of inject */
-  inject_title: string;
-  /** Type of inject */
-  inject_type?: string;
-  /**
-   * Timestamp when the inject was last updated
-   * @format date-time
-   */
-  inject_updated_at?: string;
-  /** Documents */
-  injects_documents?: string[];
-  /** Tags */
-  injects_tags?: string[];
-}
-
-export interface InjectResultPayloadExecutionOutput {
-  execution_traces: Record<string, ExecutionTraceOutput[]>;
-  payload_command_blocks: PayloadCommandBlock[];
-}
-
-/** Inject linked to finding */
-export interface InjectSimple {
-  /** Inject Id */
-  inject_id: string;
-  /** Inject Title */
-  inject_title: string;
-}
-
-export interface InjectStatus {
-  listened?: boolean;
-  status_id?: string;
-  status_name:
-    | "SUCCESS"
-    | "PARTIAL"
-    | "ERROR"
-    | "MAYBE_PREVENTED"
-    | "MAYBE_PARTIAL_PREVENTED"
-    | "DRAFT"
-    | "QUEUING"
-    | "EXECUTING"
-    | "PENDING";
-  status_payload_output?: StatusPayload;
-  status_traces?: ExecutionTrace[];
-  /** @format date-time */
-  tracking_end_date?: string;
-  /** @format date-time */
-  tracking_sent_date?: string;
-}
-
-export interface InjectStatusOutput {
-  status_id: string;
-  status_main_traces?: ExecutionTraceOutput[];
-  status_name?: string;
-  /** @format date-time */
-  tracking_end_date?: string;
-  /** @format date-time */
-  tracking_sent_date?: string;
-}
-
-/** status */
-export interface InjectStatusSimple {
-  status_id: string;
-  status_name?: string;
-  /** @format date-time */
-  tracking_end_date?: string;
-  /** @format date-time */
-  tracking_sent_date?: string;
-}
-
-export type InjectTarget = BaseInjectTarget &
-  (
-    | BaseInjectTargetTargetTypeMapping<"ASSETS_GROUPS", AssetGroupTarget>
-    | BaseInjectTargetTargetTypeMapping<"ASSETS", EndpointTarget>
-    | BaseInjectTargetTargetTypeMapping<"TEAMS", TeamTarget>
-    | BaseInjectTargetTargetTypeMapping<"PLAYERS", PlayerTarget>
-    | BaseInjectTargetTargetTypeMapping<"AGENT", AgentTarget>
-  );
-
-export interface InjectTeamsInput {
-  inject_teams?: string[];
-}
-
-export interface InjectTestStatusOutput {
-  inject_id: string;
-  inject_title: string;
-  inject_type?: string;
-  status_id: string;
-  status_main_traces?: ExecutionTraceOutput[];
-  status_name?: string;
-  /** @format date-time */
-  tracking_end_date?: string;
-  /** @format date-time */
-  tracking_sent_date?: string;
-}
-
-export interface InjectUpdateActivationInput {
-  inject_enabled?: boolean;
-}
-
-export interface InjectUpdateStatusInput {
-  message?: string;
-  status?: string;
-}
-
-export interface Injector {
-  injector_category?: string;
-  /** @format date-time */
-  injector_created_at: string;
-  injector_custom_contracts?: boolean;
-  injector_dependencies?: (
-    | "SMTP"
-    | "IMAP"
-    | "NUCLEI"
-    | "NMAP"
-    | "NETEXEC"
-    | "Veriguard Email"
-    | "Veriguard Implant"
-  )[];
-  injector_executor_clear_commands?: Record<string, string>;
-  injector_executor_commands?: Record<string, string>;
-  injector_external?: boolean;
-  injector_id: string;
-  injector_name: string;
-  injector_payloads?: boolean;
-  injector_type: string;
-  /** @format date-time */
-  injector_updated_at: string;
-  listened?: boolean;
-}
-
-export interface InjectorConnection {
-  host?: string;
-  pass?: string;
-  /** @format int32 */
-  port?: number;
-  use_ssl?: boolean;
-  user?: string;
-  vhost?: string;
-}
-
-/** Injector contract of the inject */
-export interface InjectorContract {
-  convertedContent?: object;
-  injector_contract_arch?: "x86_64" | "arm64" | "ALL_ARCHITECTURES";
-  injector_contract_atomic_testing?: boolean;
-  injector_contract_attack_patterns?: string[];
-  injector_contract_content: string;
-  /** @format date-time */
-  injector_contract_created_at: string;
-  injector_contract_custom?: boolean;
-  /** @uniqueItems true */
-  injector_contract_domains?: Domain[];
-  injector_contract_external_id?: string;
-  injector_contract_id: string;
-  injector_contract_import_available?: boolean;
-  injector_contract_injector: string;
-  injector_contract_injector_type?: string;
-  injector_contract_injector_type_name?: string;
-  injector_contract_labels?: Record<string, string>;
-  injector_contract_manual?: boolean;
-  injector_contract_needs_executor?: boolean;
-  injector_contract_payload?: Payload;
-  injector_contract_platforms?: (
-    | "Linux"
-    | "Windows"
-    | "MacOS"
-    | "Container"
-    | "Service"
-    | "Generic"
-    | "Internal"
-    | "Unknown"
-  )[];
-  /** @format date-time */
-  injector_contract_updated_at: string;
-  injector_contract_vulnerabilities?: string[];
-  listened?: boolean;
-}
-
-export interface InjectorContractAddInput {
-  contract_attack_patterns_external_ids?: string[];
-  contract_attack_patterns_ids?: string[];
-  contract_content: string;
-  /** @uniqueItems true */
-  contract_domains: InjectorContractDomainDTO[];
-  contract_id: string;
-  contract_labels?: Record<string, string>;
-  contract_manual?: boolean;
-  contract_platforms?: string[];
-  contract_vulnerability_external_ids?: string[];
-  contract_vulnerability_ids?: string[];
-  external_contract_id?: string;
-  injector_id: string;
-  is_atomic_testing?: boolean;
-}
-
-export type InjectorContractBaseOutput = BaseInjectorContractBaseOutput &
-  (
-    | BaseInjectorContractBaseOutputInjectorContractHasFullDetailsMapping<
-        "false",
-        InjectorContractBaseOutput
-      >
-    | BaseInjectorContractBaseOutputInjectorContractHasFullDetailsMapping<
-        "true",
-        InjectorContractFullOutput
-      >
-  );
-
-export interface InjectorContractDomainCountOutput {
-  /**
-   * Total number of observations linked to this domain
-   * @format int64
-   * @example 42
-   */
-  count: number;
-  /**
-   * The domain name extracted from Veriguard
-   * @example "Endpoints"
-   */
-  domain: string;
-}
-
-export interface InjectorContractDomainDTO {
-  domain_color: string;
-  domain_id: string;
-  domain_name: string;
-}
-
-export interface InjectorContractFullOutput {
-  injector_contract_arch?: "x86_64" | "arm64" | "ALL_ARCHITECTURES";
-  /** Attack pattern IDs */
-  injector_contract_attack_patterns?: string[];
-  /** Content */
-  injector_contract_content: string;
-  /** Domain IDs */
-  injector_contract_domains: string[];
-  /** Injector contract external Id */
-  injector_contract_external_id?: string;
-  injector_contract_has_full_details?: boolean;
-  /** Injector contract Id */
-  injector_contract_id: string;
-  /** Injector name */
-  injector_contract_injector_name?: string;
-  /** Injector type */
-  injector_contract_injector_type?: string;
-  /** Labels */
-  injector_contract_labels?: Record<string, string>;
-  /** Payload type */
-  injector_contract_payload_type?: string;
-  /** Platforms */
-  injector_contract_platforms?: (
-    | "Linux"
-    | "Windows"
-    | "MacOS"
-    | "Container"
-    | "Service"
-    | "Generic"
-    | "Internal"
-    | "Unknown"
-  )[];
-  /**
-   * Timestamp when the injector contract was last updated
-   * @format date-time
-   */
-  injector_contract_updated_at: string;
-}
-
-export interface InjectorContractInput {
-  contract_attack_patterns_external_ids?: string[];
-  contract_content: string;
-  /** @uniqueItems true */
-  contract_domains?: InjectorContractDomainDTO[];
-  contract_id: string;
-  contract_labels?: Record<string, string>;
-  contract_manual?: boolean;
-  contract_platforms?: (
-    | "Linux"
-    | "Windows"
-    | "MacOS"
-    | "Container"
-    | "Service"
-    | "Generic"
-    | "Internal"
-    | "Unknown"
-  )[];
-  is_atomic_testing?: boolean;
-}
-
-export interface InjectorContractSearchPaginationInput {
-  /** Filter object to search within filterable attributes */
-  filterGroup?: FilterGroup;
-  include_full_details?: boolean;
-  /**
-   * Page number to get
-   * @format int32
-   * @min 0
-   */
-  page: number;
-  /**
-   * Element number by page
-   * @format int32
-   * @max 1000
-   */
-  size: number;
-  /** List of sort fields : a field is composed of a property (for instance "label" and an optional direction ("asc" is assumed if no direction is specified) : ("desc", "asc") */
-  sorts?: SortField[];
-  /** Text to search within searchable attributes */
-  textSearch?: string;
-}
-
-/** Injector contract */
-export interface InjectorContractSimple {
-  convertedContent?: object;
-  injector_contract_content: string;
-  injector_contract_domains?: string[];
-  injector_contract_id: string;
-  injector_contract_labels: Record<string, string>;
-  injector_contract_payload?: PayloadSimple;
-  injector_contract_platforms?: (
-    | "Linux"
-    | "Windows"
-    | "MacOS"
-    | "Container"
-    | "Service"
-    | "Generic"
-    | "Internal"
-    | "Unknown"
-  )[];
-}
-
-export interface InjectorContractUpdateInput {
-  contract_attack_patterns_ids?: string[];
-  contract_content: string;
-  /** @uniqueItems true */
-  contract_domains?: InjectorContractDomainDTO[];
-  contract_labels?: Record<string, string>;
-  contract_manual?: boolean;
-  contract_platforms?: string[];
-  contract_vulnerability_external_ids?: string[];
-  contract_vulnerability_ids?: string[];
-  is_atomic_testing?: boolean;
-}
-
-export interface InjectorContractUpdateMappingInput {
-  contract_attack_patterns_ids?: string[];
-  /** Set list of domains */
-  contract_domains: string[];
-  contract_vulnerability_ids?: string[];
-}
-
-export interface InjectorCreateInput {
-  injector_category?: string;
-  injector_contracts?: InjectorContractInput[];
-  injector_custom_contracts?: boolean;
-  injector_executor_clear_commands?: Record<string, string>;
-  injector_executor_commands?: Record<string, string>;
-  injector_id: string;
-  injector_name: string;
-  injector_payloads?: boolean;
-  injector_type: string;
-}
-
-/** Injector output */
-export interface InjectorOutput {
-  /** Catalog simple output */
-  catalog?: CatalogConnectorSimpleOutput;
-  connector_instance?: ConnectorInstanceOutput;
-  existing_injector?: boolean;
-  injector_external?: boolean;
-  /** Injector id */
-  injector_id: string;
-  injector_name: string;
-  injector_type: string;
-  /** @format date-time */
-  injector_updated_at?: string;
-  is_verified?: boolean;
-}
-
-export interface InjectorRegistration {
-  connection?: InjectorConnection;
-  listen?: string;
-}
-
-export interface InjectorUpdateInput {
-  injector_category?: string;
-  injector_contracts?: InjectorContractInput[];
-  injector_custom_contracts?: boolean;
-  injector_executor_clear_commands?: Record<string, string>;
-  injector_executor_commands?: Record<string, string>;
-  injector_name: string;
-  injector_payloads?: boolean;
-}
-
-export interface InjectsImportInput {
-  import_mapper_id: string;
-  /** @format date-time */
-  launch_date?: string;
-  sheet_name: string;
-  /** @format int32 */
-  timezone_offset: number;
-}
-
-export interface InjectsImportTestInput {
-  import_mapper: ImportMapperAddInput;
-  sheet_name: string;
-  /** @format int32 */
-  timezone_offset: number;
 }
 
 export interface JsonApiDocumentResourceObject {
@@ -4021,9 +3794,9 @@ export interface KillChainPhaseUpsertInput {
 }
 
 export interface LessonsAnswer {
+  lessons_answer_attack_chain_run?: string;
   /** @format date-time */
   lessons_answer_created_at: string;
-  lessons_answer_exercise?: string;
   lessons_answer_negative?: string;
   lessons_answer_positive?: string;
   lessons_answer_question: string;
@@ -4044,15 +3817,15 @@ export interface LessonsAnswerCreateInput {
 }
 
 export interface LessonsCategory {
+  lessons_category_attack_chain?: string;
+  lessons_category_attack_chain_run?: string;
   /** @format date-time */
   lessons_category_created_at: string;
   lessons_category_description?: string;
-  lessons_category_exercise?: string;
   lessons_category_name: string;
   /** @format int32 */
   lessons_category_order?: number;
   lessons_category_questions?: string[];
-  lessons_category_scenario?: string;
   lessons_category_teams?: string[];
   /** @format date-time */
   lessons_category_updated_at: string;
@@ -4085,15 +3858,15 @@ export interface LessonsInput {
 
 export interface LessonsQuestion {
   lessons_question_answers?: string[];
+  lessons_question_attack_chain?: string;
+  lessons_question_attack_chain_run?: string;
   lessons_question_category: string;
   lessons_question_content: string;
   /** @format date-time */
   lessons_question_created_at: string;
-  lessons_question_exercise?: string;
   lessons_question_explanation?: string;
   /** @format int32 */
   lessons_question_order?: number;
-  lessons_question_scenario?: string;
   /** @format date-time */
   lessons_question_updated_at: string;
   lessonsquestion_id: string;
@@ -4178,30 +3951,6 @@ export interface LessonsTemplateQuestionInput {
   lessons_template_question_order: number;
 }
 
-/** Platform licensing information */
-export interface License {
-  license_creator?: string;
-  license_customer?: string;
-  /** @format date-time */
-  license_expiration_date?: string;
-  /** @format int64 */
-  license_extra_expiration_days?: number;
-  license_is_by_configuration?: boolean;
-  license_is_enterprise?: boolean;
-  license_is_expired?: boolean;
-  license_is_extra_expiration?: boolean;
-  license_is_global?: boolean;
-  license_is_platform_match?: boolean;
-  license_is_prevention?: boolean;
-  license_is_valid_cert?: boolean;
-  license_is_valid_product?: boolean;
-  license_is_validated?: boolean;
-  license_platform?: string;
-  /** @format date-time */
-  license_start_date?: string;
-  license_type?: "trial" | "nfr" | "standard" | "lts";
-}
-
 export type ListConfiguration = UtilRequiredKeys<
   WidgetConfiguration,
   "series" | "widget_configuration_type" | "time_range" | "date_attribute"
@@ -4217,17 +3966,16 @@ export type ListConfiguration = UtilRequiredKeys<
 };
 
 export interface ListPerspective {
-  /** Filter object to search within filterable attributes */
   filter?: FilterGroup;
   name?: string;
 }
 
 export interface Log {
   listened?: boolean;
+  log_attack_chain_run?: string;
   log_content: string;
   /** @format date-time */
   log_created_at: string;
-  log_exercise?: string;
   log_id: string;
   log_tags?: string[];
   log_title: string;
@@ -4349,6 +4097,355 @@ export interface NetworkTraffic {
     | "NETWORK_TRAFFIC";
 }
 
+/** Injector contract of the inject */
+export interface NodeContract {
+  atomicTesting?: boolean;
+  convertedContent?: object;
+  importAvailable?: boolean;
+  injector_contract_arch?: "x86_64" | "arm64" | "ALL_ARCHITECTURES";
+  injector_contract_atomic_testing?: boolean;
+  injector_contract_attack_patterns?: string[];
+  injector_contract_content: string;
+  /** @format date-time */
+  injector_contract_created_at: string;
+  injector_contract_custom?: boolean;
+  /** @uniqueItems true */
+  injector_contract_domains?: Domain[];
+  injector_contract_external_id?: string;
+  injector_contract_id: string;
+  injector_contract_import_available?: boolean;
+  injector_contract_injector: string;
+  injector_contract_injector_type?: string;
+  injector_contract_injector_type_name?: string;
+  injector_contract_labels?: Record<string, string>;
+  injector_contract_manual?: boolean;
+  injector_contract_needs_executor?: boolean;
+  injector_contract_payload?: Payload;
+  injector_contract_platforms?: (
+    | "Linux"
+    | "Windows"
+    | "MacOS"
+    | "Container"
+    | "Service"
+    | "Generic"
+    | "Internal"
+    | "Unknown"
+  )[];
+  /** @format date-time */
+  injector_contract_updated_at: string;
+  injector_contract_vulnerabilities?: string[];
+  listened?: boolean;
+}
+
+export interface NodeContractAddInput {
+  atomicTesting?: boolean;
+  contract_attack_patterns_external_ids?: string[];
+  contract_attack_patterns_ids?: string[];
+  contract_content: string;
+  /** @uniqueItems true */
+  contract_domains: NodeContractDomainDTO[];
+  contract_id: string;
+  contract_labels?: Record<string, string>;
+  contract_manual?: boolean;
+  contract_platforms?: string[];
+  contract_vulnerability_external_ids?: string[];
+  contract_vulnerability_ids?: string[];
+  external_contract_id?: string;
+  injector_id: string;
+  is_atomic_testing?: boolean;
+}
+
+export type NodeContractBaseOutput = BaseNodeContractBaseOutput &
+  (
+    | BaseNodeContractBaseOutputInjectorContractHasFullDetailsMapping<
+        "false",
+        NodeContractBaseOutput
+      >
+    | BaseNodeContractBaseOutputInjectorContractHasFullDetailsMapping<
+        "true",
+        NodeContractFullOutput
+      >
+  );
+
+export interface NodeContractDomainCountOutput {
+  /**
+   * Total number of observations linked to this domain
+   * @format int64
+   * @example 42
+   */
+  count: number;
+  /**
+   * The domain name extracted from Veriguard
+   * @example "Endpoints"
+   */
+  domain: string;
+}
+
+export interface NodeContractDomainDTO {
+  domain_color: string;
+  domain_id: string;
+  domain_name: string;
+}
+
+export interface NodeContractFullOutput {
+  injector_contract_arch?: "x86_64" | "arm64" | "ALL_ARCHITECTURES";
+  /** Attack pattern IDs */
+  injector_contract_attack_patterns?: string[];
+  /** Content */
+  injector_contract_content: string;
+  /** Domain IDs */
+  injector_contract_domains: string[];
+  /** Injector contract external Id */
+  injector_contract_external_id?: string;
+  injector_contract_has_full_details?: boolean;
+  /** Injector contract Id */
+  injector_contract_id: string;
+  /** Injector name */
+  injector_contract_injector_name?: string;
+  /** Injector type */
+  injector_contract_injector_type?: string;
+  /** Labels */
+  injector_contract_labels?: Record<string, string>;
+  /** Payload type */
+  injector_contract_payload_type?: string;
+  /** Platforms */
+  injector_contract_platforms?: (
+    | "Linux"
+    | "Windows"
+    | "MacOS"
+    | "Container"
+    | "Service"
+    | "Generic"
+    | "Internal"
+    | "Unknown"
+  )[];
+  /**
+   * Timestamp when the injector contract was last updated
+   * @format date-time
+   */
+  injector_contract_updated_at: string;
+}
+
+export interface NodeContractInput {
+  atomicTesting?: boolean;
+  contract_attack_patterns_external_ids?: string[];
+  contract_content: string;
+  /** @uniqueItems true */
+  contract_domains?: NodeContractDomainDTO[];
+  contract_id: string;
+  contract_labels?: Record<string, string>;
+  contract_manual?: boolean;
+  contract_platforms?: (
+    | "Linux"
+    | "Windows"
+    | "MacOS"
+    | "Container"
+    | "Service"
+    | "Generic"
+    | "Internal"
+    | "Unknown"
+  )[];
+  is_atomic_testing?: boolean;
+}
+
+export interface NodeContractSearchPaginationInput {
+  filterGroup?: FilterGroup;
+  include_full_details?: boolean;
+  /**
+   * Page number to get
+   * @format int32
+   * @min 0
+   */
+  page: number;
+  /**
+   * Element number by page
+   * @format int32
+   * @max 1000
+   */
+  size: number;
+  /** List of sort fields : a field is composed of a property (for instance "label" and an optional direction ("asc" is assumed if no direction is specified) : ("desc", "asc") */
+  sorts?: SortField[];
+  /** Text to search within searchable attributes */
+  textSearch?: string;
+}
+
+/** Injector contract */
+export interface NodeContractSimple {
+  convertedContent?: object;
+  injector_contract_content: string;
+  injector_contract_domains?: string[];
+  injector_contract_id: string;
+  injector_contract_labels: Record<string, string>;
+  injector_contract_payload?: PayloadSimple;
+  injector_contract_platforms?: (
+    | "Linux"
+    | "Windows"
+    | "MacOS"
+    | "Container"
+    | "Service"
+    | "Generic"
+    | "Internal"
+    | "Unknown"
+  )[];
+}
+
+export interface NodeContractUpdateInput {
+  atomicTesting?: boolean;
+  contract_attack_patterns_ids?: string[];
+  contract_content: string;
+  /** @uniqueItems true */
+  contract_domains?: NodeContractDomainDTO[];
+  contract_labels?: Record<string, string>;
+  contract_manual?: boolean;
+  contract_platforms?: string[];
+  contract_vulnerability_external_ids?: string[];
+  contract_vulnerability_ids?: string[];
+  is_atomic_testing?: boolean;
+}
+
+export interface NodeContractUpdateMappingInput {
+  contract_attack_patterns_ids?: string[];
+  /** Set list of domains */
+  contract_domains: string[];
+  contract_vulnerability_ids?: string[];
+}
+
+export interface NodeExecutor {
+  injector_category?: string;
+  /** @format date-time */
+  injector_created_at: string;
+  injector_custom_contracts?: boolean;
+  injector_dependencies?: (
+    | "SMTP"
+    | "IMAP"
+    | "NUCLEI"
+    | "NMAP"
+    | "NETEXEC"
+    | "Veriguard Email"
+    | "Veriguard Implant"
+  )[];
+  injector_executor_clear_commands?: Record<string, string>;
+  injector_executor_commands?: Record<string, string>;
+  injector_external?: boolean;
+  injector_id: string;
+  injector_name: string;
+  injector_payloads?: boolean;
+  injector_type: string;
+  /** @format date-time */
+  injector_updated_at: string;
+  listened?: boolean;
+}
+
+export interface NodeExecutorConnection {
+  host?: string;
+  pass?: string;
+  /** @format int32 */
+  port?: number;
+  use_ssl?: boolean;
+  user?: string;
+  vhost?: string;
+}
+
+export interface NodeExecutorCreateInput {
+  injector_category?: string;
+  injector_contracts?: NodeContractInput[];
+  injector_custom_contracts?: boolean;
+  injector_executor_clear_commands?: Record<string, string>;
+  injector_executor_commands?: Record<string, string>;
+  injector_id: string;
+  injector_name: string;
+  injector_payloads?: boolean;
+  injector_type: string;
+}
+
+/** Injector output */
+export interface NodeExecutorOutput {
+  /** Catalog simple output */
+  catalog?: CatalogConnectorSimpleOutput;
+  connector_instance?: ConnectorInstanceOutput;
+  existing_injector?: boolean;
+  injector_external?: boolean;
+  /** Injector id */
+  injector_id: string;
+  injector_name: string;
+  injector_type: string;
+  /** @format date-time */
+  injector_updated_at?: string;
+  is_verified?: boolean;
+}
+
+export interface NodeExecutorRegistration {
+  connection?: NodeExecutorConnection;
+  listen?: string;
+}
+
+export interface NodeExecutorUpdateInput {
+  injector_category?: string;
+  injector_contracts?: NodeContractInput[];
+  injector_custom_contracts?: boolean;
+  injector_executor_clear_commands?: Record<string, string>;
+  injector_executor_commands?: Record<string, string>;
+  injector_name: string;
+  injector_payloads?: boolean;
+}
+
+export interface NodeExpectationResult {
+  date?: string;
+  metadata?: Record<string, string>;
+  result: string;
+  /** @format double */
+  score?: number;
+  sourceAssetId?: string;
+  sourceId?: string;
+  sourceName?: string;
+  sourcePlatform?: string;
+  sourceType?: string;
+}
+
+export interface NodeExpectationResultsByAttackPattern {
+  node_attack_pattern?: string;
+  node_expectation_results?: NodeExpectationResultsByType[];
+}
+
+export interface NodeExpectationResultsByType {
+  node_id?: string;
+  node_title?: string;
+  results?: ExpectationResultsByType[];
+}
+
+export interface NodeExpectationSignature {
+  type?: string;
+  value?: string;
+}
+
+export interface NodeExpectationTrace {
+  listened?: boolean;
+  node_expectation_trace_alert_link?: string;
+  node_expectation_trace_alert_name?: string;
+  /** @format date-time */
+  node_expectation_trace_created_at: string;
+  /** @format date-time */
+  node_expectation_trace_date?: string;
+  node_expectation_trace_expectation?: string;
+  node_expectation_trace_id: string;
+  node_expectation_trace_source_id?: string;
+  /** @format date-time */
+  node_expectation_trace_updated_at: string;
+}
+
+export interface NodeExpectationTraceBulkInsertInput {
+  expectation_traces: NodeExpectationTraceInput[];
+}
+
+export interface NodeExpectationTraceInput {
+  node_expectation_trace_alert_link: string;
+  node_expectation_trace_alert_name: string;
+  /** @format date-time */
+  node_expectation_trace_date: string;
+  node_expectation_trace_expectation: string;
+  node_expectation_trace_source_id: string;
+}
+
 export interface NotificationRuleOutput {
   /** ID of the notification rule */
   notification_rule_id: string;
@@ -4373,15 +4470,15 @@ export interface OAuthProvider {
 
 export interface Objective {
   listened?: boolean;
+  objective_attack_chain?: string;
+  objective_attack_chain_run?: string;
   /** @format date-time */
   objective_created_at: string;
   objective_description?: string;
   objective_evaluations?: string[];
-  objective_exercise?: string;
   objective_id: string;
   /** @format int32 */
   objective_priority?: number;
-  objective_scenario?: string;
   /** @format double */
   objective_score?: number;
   objective_title?: string;
@@ -4401,17 +4498,25 @@ export interface Option {
   label?: string;
 }
 
+export interface OrchestrationSchemaOutput {
+  chain_result_states?: string[];
+  dependency_logic?: string[];
+  execution_modes?: string[];
+  node_policy_fields?: string[];
+  soc_rule_match_fields?: string[];
+}
+
 export interface Organization {
-  injects?: Inject[];
+  attackChainNodes?: AttackChainNode[];
   listened?: boolean;
   /** @format date-time */
   organization_created_at: string;
   organization_description?: string;
   organization_id: string;
   organization_injects?: string[];
-  /** @format int64 */
-  organization_injects_number?: number;
   organization_name: string;
+  /** @format int64 */
+  organization_nodes_number?: number;
   organization_tags?: string[];
   /** @format date-time */
   organization_updated_at: string;
@@ -4488,6 +4593,82 @@ export interface PageAggregatedFindingOutput {
 
 export interface PageAssetGroupOutput {
   content?: AssetGroupOutput[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  number?: number;
+  /** @format int32 */
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  size?: number;
+  sort?: SortObject[];
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+}
+
+export interface PageAttackChainNodeResultOutput {
+  content?: AttackChainNodeResultOutput[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  number?: number;
+  /** @format int32 */
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  size?: number;
+  sort?: SortObject[];
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+}
+
+export interface PageAttackChainNodeTarget {
+  content?: AttackChainNodeTarget[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  number?: number;
+  /** @format int32 */
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  size?: number;
+  sort?: SortObject[];
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+}
+
+export interface PageAttackChainNodeTestStatusOutput {
+  content?: AttackChainNodeTestStatusOutput[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  number?: number;
+  /** @format int32 */
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  size?: number;
+  sort?: SortObject[];
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+}
+
+export interface PageAttackChainRunSimple {
+  content?: AttackChainRunSimple[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -4600,25 +4781,6 @@ export interface PageEndpointTargetOutput {
   totalPages?: number;
 }
 
-export interface PageExerciseSimple {
-  content?: ExerciseSimple[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  number?: number;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  /** @format int32 */
-  size?: number;
-  sort?: SortObject[];
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-}
-
 export interface PageFullTextSearchResult {
   content?: FullTextSearchResult[];
   empty?: boolean;
@@ -4640,82 +4802,6 @@ export interface PageFullTextSearchResult {
 
 export interface PageGroup {
   content?: Group[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  number?: number;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  /** @format int32 */
-  size?: number;
-  sort?: SortObject[];
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-}
-
-export interface PageInjectResultOutput {
-  content?: InjectResultOutput[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  number?: number;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  /** @format int32 */
-  size?: number;
-  sort?: SortObject[];
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-}
-
-export interface PageInjectTarget {
-  content?: InjectTarget[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  number?: number;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  /** @format int32 */
-  size?: number;
-  sort?: SortObject[];
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-}
-
-export interface PageInjectTestStatusOutput {
-  content?: InjectTestStatusOutput[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  number?: number;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  /** @format int32 */
-  size?: number;
-  sort?: SortObject[];
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-}
-
-export interface PageInjectorContractBaseOutput {
-  content?: InjectorContractBaseOutput[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -4773,6 +4859,25 @@ export interface PageLessonsTemplate {
 
 export interface PageMitigation {
   content?: Mitigation[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  number?: number;
+  /** @format int32 */
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  size?: number;
+  sort?: SortObject[];
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+}
+
+export interface PageNodeContractBaseOutput {
+  content?: NodeContractBaseOutput[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -4866,6 +4971,25 @@ export interface PagePlayerOutput {
   totalPages?: number;
 }
 
+export interface PageRawPaginationAttackChain {
+  content?: RawPaginationAttackChain[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  number?: number;
+  /** @format int32 */
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  size?: number;
+  sort?: SortObject[];
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+}
+
 export interface PageRawPaginationDocument {
   content?: RawPaginationDocument[];
   empty?: boolean;
@@ -4887,25 +5011,6 @@ export interface PageRawPaginationDocument {
 
 export interface PageRawPaginationImportMapper {
   content?: RawPaginationImportMapper[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  number?: number;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  /** @format int32 */
-  size?: number;
-  sort?: SortObject[];
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-}
-
-export interface PageRawPaginationScenario {
-  content?: RawPaginationScenario[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -5039,6 +5144,25 @@ export interface PageTeamOutput {
 
 export interface PageUserOutput {
   content?: UserOutput[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  number?: number;
+  /** @format int32 */
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  size?: number;
+  sort?: SortObject[];
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+}
+
+export interface PageValidationParameterSetOutput {
+  content?: ValidationParameterSetOutput[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -5252,7 +5376,7 @@ export interface PayloadUpsertInput {
    * Update list of domains
    * @uniqueItems true
    */
-  payload_domains: InjectorContractDomainDTO[];
+  payload_domains: NodeContractDomainDTO[];
   payload_elevation_required?: boolean;
   payload_execution_arch?: "x86_64" | "arm64" | "ALL_ARCHITECTURES";
   payload_expectations: (
@@ -5372,6 +5496,10 @@ export interface PlatformSettings {
   platform_ai_model?: string;
   /** Type of AI (mistralai or openai) */
   platform_ai_type?: string;
+  /** Default scenario dashboard of the platform */
+  platform_attack_chain_dashboard?: string;
+  /** Default simulation dashboard of the platform */
+  platform_attack_chain_run_dashboard?: string;
   /** Map of the messages to display on the screen by their level (the level available are DEBUG, INFO, WARN, ERROR, FATAL) */
   platform_banner_by_level?: Record<string, string[]>;
   /** Base URL of the platform */
@@ -5384,8 +5512,6 @@ export interface PlatformSettings {
   platform_id?: string;
   /** Language of the platform */
   platform_lang: string;
-  /** Platform licensing information */
-  platform_license?: License;
   /** Definition of the dark theme */
   platform_light_theme?: ThemeInput;
   /** Name of the platform */
@@ -5394,10 +5520,6 @@ export interface PlatformSettings {
   platform_openid_providers?: OAuthProvider[];
   /** Policies of the platform */
   platform_policies?: PolicyInput;
-  /** Default scenario dashboard of the platform */
-  platform_scenario_dashboard?: string;
-  /** Default simulation dashboard of the platform */
-  platform_simulation_dashboard?: string;
   /** Theme of the platform */
   platform_theme: string;
   /** Current version of the platform */
@@ -5410,32 +5532,6 @@ export interface PlatformSettings {
   rabbitmq_version?: string;
   /** SMTP Service availability */
   smtp_service_available?: string;
-  /** True if telemetry manager enable */
-  telemetry_manager_enable?: boolean;
-  /** True if connection with XTM Hub is enabled */
-  xtm_hub_enable?: boolean;
-  /** XTM Hub last connectivity check */
-  xtm_hub_last_connectivity_check?: string;
-  /** True if xtmhub backend is reachable */
-  xtm_hub_reachable?: boolean;
-  /** XTM Hub registration date */
-  xtm_hub_registration_date?: string;
-  /** XTM Hub registration status */
-  xtm_hub_registration_status?: string;
-  /** XTM Hub registration user id */
-  xtm_hub_registration_user_id?: string;
-  /** XTM Hub registration user name */
-  xtm_hub_registration_user_name?: string;
-  /** XTM Hub should send connectivity email */
-  xtm_hub_should_send_connectivity_email?: string;
-  /** XTM Hub token */
-  xtm_hub_token?: string;
-  /** Url of XTM Hub */
-  xtm_hub_url?: string;
-  /** True if connection with OpenCTI is enabled */
-  xtm_opencti_enable?: boolean;
-  /** Url of OpenCTI */
-  xtm_opencti_url?: string;
 }
 
 export interface PlayerInput {
@@ -5519,6 +5615,7 @@ export interface PolicyInput {
 }
 
 export interface PropertySchemaDTO {
+  array?: boolean;
   schema_property_entity: string;
   schema_property_has_dynamic_value?: boolean;
   schema_property_label: string;
@@ -5542,29 +5639,7 @@ export interface PropertySchemaDTO {
   schema_property_values?: string[];
 }
 
-export interface PublicChallenge {
-  challenge_category?: string;
-  challenge_content?: string;
-  challenge_documents?: string[];
-  challenge_flags?: PublicChallengeFlag[];
-  challenge_id?: string;
-  /** @format int32 */
-  challenge_max_attempts?: number;
-  challenge_name?: string;
-  /** @format double */
-  challenge_score?: number;
-  challenge_tags?: string[];
-  /** @format date-time */
-  challenge_virtual_publication?: string;
-}
-
-export interface PublicChallengeFlag {
-  flag_challenge?: string;
-  flag_id?: string;
-  flag_type?: "VALUE" | "VALUE_CASE" | "REGEXP";
-}
-
-export interface PublicExercise {
+export interface PublicAttackChainRun {
   description?: string;
   id?: string;
   name?: string;
@@ -5603,12 +5678,6 @@ export interface PublicPlatformSettings {
   platform_whitemark?: string;
 }
 
-export interface PublicScenario {
-  description?: string;
-  id?: string;
-  name?: string;
-}
-
 export interface RawAttackPattern {
   /** @format date-time */
   attack_pattern_created_at?: string;
@@ -5627,23 +5696,38 @@ export interface RawAttackPattern {
 }
 
 export interface RawDocument {
+  document_attackChainRuns?: string[];
+  document_attackChains?: string[];
   document_description?: string;
-  document_exercises?: string[];
   document_id?: string;
   document_name?: string;
-  document_scenarios?: string[];
   document_tags?: string[];
   document_target?: string;
   document_type?: string;
 }
 
+export interface RawPaginationAttackChain {
+  attack_chain_category?: string;
+  attack_chain_description?: string;
+  attack_chain_id?: string;
+  attack_chain_name?: string;
+  /** @uniqueItems true */
+  attack_chain_platforms?: string[];
+  attack_chain_recurrence?: string;
+  attack_chain_severity?: "low" | "medium" | "high" | "critical";
+  /** @uniqueItems true */
+  attack_chain_tags?: string[];
+  /** @format date-time */
+  attack_chain_updated_at?: string;
+}
+
 export interface RawPaginationDocument {
+  document_attackChainRuns?: string[];
+  document_attackChains?: string[];
   document_can_be_deleted?: boolean;
   document_description?: string;
-  document_exercises?: string[];
   document_id?: string;
   document_name?: string;
-  document_scenarios?: string[];
   document_tags?: string[];
   document_type?: string;
 }
@@ -5655,21 +5739,6 @@ export interface RawPaginationImportMapper {
   import_mapper_name?: string;
   /** @format date-time */
   import_mapper_updated_at?: string;
-}
-
-export interface RawPaginationScenario {
-  scenario_category?: string;
-  scenario_description?: string;
-  scenario_id?: string;
-  scenario_name?: string;
-  /** @uniqueItems true */
-  scenario_platforms?: string[];
-  scenario_recurrence?: string;
-  scenario_severity?: "low" | "medium" | "high" | "critical";
-  /** @uniqueItems true */
-  scenario_tags?: string[];
-  /** @format date-time */
-  scenario_updated_at?: string;
 }
 
 export interface RawUser {
@@ -5731,15 +5800,16 @@ export interface RelatedFindingOutput {
    * @uniqueItems true
    */
   finding_assets: EndpointSimple[];
+  /** Scenario linked to inject */
+  finding_attack_chain?: AttackChainSimple;
+  /** Simulation linked to inject */
+  finding_attack_chain_run?: AttackChainRunSimple;
   /** @format date-time */
   finding_created_at: string;
   /** Finding Id */
   finding_id: string;
   /** Inject linked to finding */
-  finding_inject: InjectSimple;
-  /** Scenario linked to inject */
-  finding_scenario?: ScenarioSimple;
-  finding_simulation?: ExerciseSimple;
+  finding_node: AttackChainNodeSimple;
   /**
    * Represents the data type being extracted.
    * @example "text, number, port, portscan, ipv4, ipv6, credentials, cve"
@@ -5779,16 +5849,27 @@ export interface RenewTokenInput {
 
 export interface Report {
   listened?: boolean;
+  report_attack_chain_run?: string;
   /** @format date-time */
   report_created_at: string;
-  report_exercise?: string;
   report_global_observation?: string;
   report_id: string;
   report_informations?: ReportInformation[];
-  report_injects_comments?: ReportInjectComment[];
   report_name: string;
+  report_nodes_comments?: ReportAttackChainNodeComment[];
   /** @format date-time */
   report_updated_at: string;
+}
+
+export interface ReportAttackChainNodeComment {
+  node_id?: string;
+  report_id?: string;
+  report_node_comment?: string;
+}
+
+export interface ReportAttackChainNodeCommentInput {
+  node_id: string;
+  report_node_comment?: string;
 }
 
 export interface ReportInformation {
@@ -5814,17 +5895,6 @@ export interface ReportInformationInput {
     | "GLOBAL_OBSERVATION"
     | "PLAYER_SURVEYS"
     | "EXERCISE_DETAILS";
-}
-
-export interface ReportInjectComment {
-  inject_id?: string;
-  report_id?: string;
-  report_inject_comment?: string;
-}
-
-export interface ReportInjectCommentInput {
-  inject_id: string;
-  report_inject_comment?: string;
 }
 
 export interface ReportInput {
@@ -5935,214 +6005,50 @@ export interface RuleAttributeUpdateInput {
   rule_attribute_name: string;
 }
 
-export interface Scenario {
-  listened?: boolean;
-  /** @format int64 */
-  scenario_all_users_number?: number;
-  scenario_articles?: string[];
-  scenario_category?: string;
-  /** @format int64 */
-  scenario_communications_number?: number;
-  /** @format date-time */
-  scenario_created_at: string;
-  scenario_custom_dashboard?: string;
-  scenario_dependencies?: "STARTERPACK"[];
-  scenario_description?: string;
-  scenario_documents?: string[];
-  scenario_exercises?: string[];
-  scenario_external_reference?: string;
-  scenario_external_url?: string;
-  scenario_id: string;
-  scenario_injects?: string[];
-  scenario_injects_statistics?: Record<string, number>;
-  scenario_kill_chain_phases?: KillChainPhase[];
-  scenario_lessons_anonymized?: boolean;
-  scenario_lessons_categories?: string[];
-  scenario_mail_from: string;
-  scenario_mails_reply_to?: string[];
-  scenario_main_focus?: string;
-  scenario_message_footer?: string;
-  scenario_message_header?: string;
-  scenario_name: string;
-  scenario_observers?: string[];
-  scenario_planners?: string[];
-  scenario_platforms?: (
-    | "Linux"
-    | "Windows"
-    | "MacOS"
-    | "Container"
-    | "Service"
-    | "Generic"
-    | "Internal"
-    | "Unknown"
+export interface SandboxInput {
+  sandbox_auto_restore_enabled?: boolean;
+  sandbox_description?: string;
+  sandbox_name: string;
+  sandbox_network_policy: "DENY_ALL" | "ALLOWLIST" | "ISOLATED_LAB" | "CUSTOM";
+  sandbox_network_rules: VeriguardSandboxNetworkRule[];
+  sandbox_status: "ACTIVE" | "INACTIVE";
+  sandbox_supported_sample_types: (
+    | "RANSOMWARE"
+    | "MINER"
+    | "WORM"
+    | "MALICIOUS_DRIVER"
+    | "PRIVILEGE_ESCALATION"
+    | "ACCOUNT_THEFT"
+    | "PROXY_EXECUTION"
+    | "SECURITY_COMPONENT_BYPASS"
   )[];
-  scenario_recurrence?: string;
+}
+
+export interface SandboxOutput {
+  sandbox_auto_restore_enabled?: boolean;
   /** @format date-time */
-  scenario_recurrence_end?: string;
+  sandbox_created_at?: string;
+  sandbox_description?: string;
+  sandbox_id?: string;
+  sandbox_name?: string;
+  sandbox_network_policy?: "DENY_ALL" | "ALLOWLIST" | "ISOLATED_LAB" | "CUSTOM";
+  sandbox_network_rules?: VeriguardSandboxNetworkRule[];
+  sandbox_status?: "ACTIVE" | "INACTIVE";
+  sandbox_supported_sample_types?: (
+    | "RANSOMWARE"
+    | "MINER"
+    | "WORM"
+    | "MALICIOUS_DRIVER"
+    | "PRIVILEGE_ESCALATION"
+    | "ACCOUNT_THEFT"
+    | "PROXY_EXECUTION"
+    | "SECURITY_COMPONENT_BYPASS"
+  )[];
   /** @format date-time */
-  scenario_recurrence_start?: string;
-  scenario_severity?: "low" | "medium" | "high" | "critical";
-  scenario_subtitle?: string;
-  scenario_tags?: string[];
-  scenario_teams?: string[];
-  scenario_teams_users?: ScenarioTeamUser[];
-  scenario_type_affinity?: string;
-  /** @format date-time */
-  scenario_updated_at: string;
-  scenario_users?: string[];
-  /** @format int64 */
-  scenario_users_number?: number;
-}
-
-export interface ScenarioChallengesReader {
-  scenario_challenges?: ChallengeInformation[];
-  scenario_id?: string;
-  scenario_information?: PublicScenario;
-}
-
-export interface ScenarioInput {
-  scenario_category?: string;
-  scenario_custom_dashboard?: string;
-  scenario_description?: string;
-  scenario_external_reference?: string;
-  scenario_external_url?: string;
-  scenario_mail_from?: string;
-  scenario_mails_reply_to?: string[];
-  scenario_main_focus?: string;
-  scenario_message_footer?: string;
-  scenario_message_header?: string;
-  scenario_name: string;
-  scenario_severity?: "low" | "medium" | "high" | "critical";
-  scenario_subtitle?: string;
-  scenario_tags?: string[];
-}
-
-export interface ScenarioOutput {
-  /** Lesson anonymized state of the scenario */
-  lessonsAnonymized?: boolean;
-  /**
-   * Total number of users of the scenario
-   * @format int64
-   */
-  scenario_all_users_number?: number;
-  /** Category of the scenario */
-  scenario_category?: string;
-  /**
-   * Creation date of the scenario
-   * @format date-time
-   */
-  scenario_created_at: string;
-  /** Custom dashboard of the scenario */
-  scenario_custom_dashboard?: string;
-  /** @uniqueItems true */
-  scenario_dependencies?: string[];
-  /** Description of the scenario */
-  scenario_description?: string;
-  /** @uniqueItems true */
-  scenario_exercises?: string[];
-  /** External URL of the scenario */
-  scenario_external_url?: string;
-  /** ID of the scenario */
-  scenario_id: string;
-  /** @uniqueItems true */
-  scenario_kill_chain_phases?: KillChainPhaseOutput[];
-  /** From value of the scenario */
-  scenario_mail_from: string;
-  /** Main focus value of the scenario */
-  scenario_main_focus?: string;
-  /** Footer of the scenario */
-  scenario_message_footer?: string;
-  /** Header of the scenario */
-  scenario_message_header?: string;
-  /** Name of the scenario */
-  scenario_name: string;
-  /** @uniqueItems true */
-  scenario_platforms?: string[];
-  /** Recurrence of the scenario */
-  scenario_recurrence?: string;
-  /**
-   * Recurrence end date of the scenario
-   * @format date-time
-   */
-  scenario_recurrence_end?: string;
-  /**
-   * Recurrence start date of the scenario
-   * @format date-time
-   */
-  scenario_recurrence_start?: string;
-  /** Severity of the scenario */
-  scenario_severity?: string;
-  /** Subtitle of the scenario */
-  scenario_subtitle?: string;
-  /** @uniqueItems true */
-  scenario_tags?: string[];
-  /** @uniqueItems true */
-  scenario_teams_users?: ScenarioTeamUserOutput[];
-  /** Type affinity of the scenario */
-  scenario_type_affinity?: string;
-  /**
-   * Update date of the scenario
-   * @format date-time
-   */
-  scenario_updated_at: string;
-  /**
-   * Active total number of users of the scenario
-   * @format int64
-   */
-  scenario_users_number?: number;
-}
-
-export interface ScenarioRecurrenceInput {
-  scenario_recurrence?: string;
-  /** @format date-time */
-  scenario_recurrence_end?: string;
-  /** @format date-time */
-  scenario_recurrence_start?: string;
-}
-
-/** Scenario linked to inject */
-export interface ScenarioSimple {
-  scenario_id?: string;
-  scenario_name?: string;
-  scenario_subtitle?: string;
-  scenario_tags?: string[];
-}
-
-export interface ScenarioStatistic {
-  simulations_results_latest: SimulationsResultsLatest;
-}
-
-export interface ScenarioTeamPlayersEnableInput {
-  scenario_team_players?: string[];
-}
-
-export interface ScenarioTeamUser {
-  scenario_id?: string;
-  team_id?: string;
-  user_id?: string;
-}
-
-/** Enabled users of the scenario */
-export interface ScenarioTeamUserOutput {
-  /** ID of the scenario */
-  scenario_id?: string;
-  /** ID of the team */
-  team_id?: string;
-  /** ID of the user */
-  user_id?: string;
-}
-
-export interface ScenarioUpdateTagsInput {
-  apply_tag_rule?: boolean;
-  scenario_tags?: string[];
-}
-
-export interface ScenarioUpdateTeamsInput {
-  scenario_teams?: string[];
+  sandbox_updated_at?: string;
 }
 
 export interface SearchPaginationInput {
-  /** Filter object to search within filterable attributes */
   filterGroup?: FilterGroup;
   /**
    * Page number to get
@@ -6180,7 +6086,7 @@ export interface SecurityPlatform {
   listened?: boolean;
   security_platform_logo_dark?: string;
   security_platform_logo_light?: string;
-  security_platform_traces?: InjectExpectationTrace[];
+  security_platform_traces?: NodeExpectationTrace[];
   security_platform_type: "EDR" | "XDR" | "SIEM" | "SOAR" | "NDR" | "ISPM";
 }
 
@@ -6205,14 +6111,8 @@ export interface SecurityPlatformUpsertInput {
 }
 
 export interface Series {
-  /** Filter object to search within filterable attributes */
   filter?: FilterGroup;
   name?: string;
-}
-
-export interface SettingsEnterpriseEditionUpdateInput {
-  /** cert of enterprise edition */
-  platform_enterprise_license?: string;
 }
 
 export interface SettingsPlatformWhitemarkUpdateInput {
@@ -6221,74 +6121,74 @@ export interface SettingsPlatformWhitemarkUpdateInput {
 }
 
 export interface SettingsUpdateInput {
+  /** Default scenario dashboard of the platform */
+  platform_attack_chain_dashboard?: string;
+  /** Default simulation dashboard of the platform */
+  platform_attack_chain_run_dashboard?: string;
   /** Default home dashboard of the platform */
   platform_home_dashboard?: string;
   /** Language of the platform */
   platform_lang: string;
   /** Name of the platform */
   platform_name: string;
-  /** Default scenario dashboard of the platform */
-  platform_scenario_dashboard?: string;
-  /** Default simulation dashboard of the platform */
-  platform_simulation_dashboard?: string;
   /** Theme of the platform */
   platform_theme: string;
 }
 
-export interface SimulationChallengesReader {
-  exercise_challenges?: ChallengeInformation[];
-  exercise_id?: string;
-  exercise_information?: PublicExercise;
-}
-
 export interface SimulationDetails {
   /** @format int64 */
-  exercise_all_users_number?: number;
-  exercise_category?: string;
+  attack_chain_run_all_users_number?: number;
+  attack_chain_run_attack_chain?: string;
+  attack_chain_run_category?: string;
   /** @format int64 */
-  exercise_communications_number?: number;
+  attack_chain_run_communications_number?: number;
   /** @format date-time */
-  exercise_created_at?: string;
-  exercise_custom_dashboard?: string;
-  exercise_description?: string;
+  attack_chain_run_created_at?: string;
+  attack_chain_run_custom_dashboard?: string;
+  attack_chain_run_description?: string;
   /** @format date-time */
-  exercise_end_date?: string;
-  exercise_id: string;
-  exercise_kill_chain_phases?: KillChainPhase[];
-  exercise_lessons_anonymized?: boolean;
+  attack_chain_run_end_date?: string;
+  attack_chain_run_id: string;
+  attack_chain_run_kill_chain_phases?: KillChainPhase[];
+  attack_chain_run_lessons_anonymized?: boolean;
   /** @format int64 */
-  exercise_lessons_answers_number?: number;
+  attack_chain_run_lessons_answers_number?: number;
   /** @format int64 */
-  exercise_logs_number?: number;
-  exercise_mail_from: string;
-  exercise_mails_reply_to?: string[];
-  exercise_main_focus?: string;
-  exercise_message_footer?: string;
-  exercise_message_header?: string;
-  exercise_name: string;
+  attack_chain_run_logs_number?: number;
+  attack_chain_run_mail_from: string;
+  attack_chain_run_mails_reply_to?: string[];
+  attack_chain_run_main_focus?: string;
+  attack_chain_run_message_footer?: string;
+  attack_chain_run_message_header?: string;
+  attack_chain_run_name: string;
   /** @uniqueItems true */
-  exercise_observers?: string[];
+  attack_chain_run_observers?: string[];
   /** @uniqueItems true */
-  exercise_planners?: string[];
-  exercise_platforms?: string[];
-  exercise_scenario?: string;
+  attack_chain_run_planners?: string[];
+  attack_chain_run_platforms?: string[];
   /** @format double */
-  exercise_score?: number;
-  exercise_severity?: "low" | "medium" | "high" | "critical";
+  attack_chain_run_score?: number;
+  attack_chain_run_severity?: "low" | "medium" | "high" | "critical";
   /** @format date-time */
-  exercise_start_date?: string;
-  exercise_status: "SCHEDULED" | "CANCELED" | "RUNNING" | "PAUSED" | "FINISHED";
-  exercise_subtitle?: string;
+  attack_chain_run_start_date?: string;
+  attack_chain_run_status:
+    | "SCHEDULED"
+    | "CANCELED"
+    | "RUNNING"
+    | "PAUSED"
+    | "FINISHED"
+    | "STOPPED_ON_BLOCK";
+  attack_chain_run_subtitle?: string;
   /** @uniqueItems true */
-  exercise_tags?: string[];
+  attack_chain_run_tags?: string[];
   /** @uniqueItems true */
-  exercise_teams_users?: ExerciseTeamUser[];
+  attack_chain_run_teams_users?: AttackChainRunTeamUser[];
   /** @format date-time */
-  exercise_updated_at?: string;
+  attack_chain_run_updated_at?: string;
   /** @uniqueItems true */
-  exercise_users?: string[];
+  attack_chain_run_users?: string[];
   /** @format int64 */
-  exercise_users_number?: number;
+  attack_chain_run_users_number?: number;
 }
 
 export interface SimulationsResultsLatest {
@@ -6296,6 +6196,14 @@ export interface SimulationsResultsLatest {
     string,
     GlobalScoreBySimulationEndDate[]
   >;
+}
+
+export interface SocCorrelationRuleRef {
+  connector_id?: string;
+  display_name?: string;
+  /** @format int32 */
+  match_window_seconds?: number;
+  rule_id?: string;
 }
 
 /** List of sort fields : a field is composed of a property (for instance "label" and an optional direction ("asc" is assumed if no direction is specified) : ("desc", "asc") */
@@ -6429,6 +6337,11 @@ export interface TagUpdateInput {
   tag_name: string;
 }
 
+export interface TargetRef {
+  target_id?: string;
+  target_type?: "ASSET" | "ASSET_GROUP";
+}
+
 export interface TargetSimple {
   target_id: string;
   target_name?: string;
@@ -6444,6 +6357,19 @@ export interface TargetSimple {
 
 export interface Team {
   listened?: boolean;
+  team_attack_chain_nodes?: string[];
+  /**
+   * Number of injects of all scenarios of the team
+   * @format int64
+   */
+  team_attack_chain_nodes_number?: number;
+  team_attack_chain_run_nodes?: string[];
+  /**
+   * Number of injects of all simulations of the team
+   * @format int64
+   */
+  team_attack_chain_run_nodes_number?: number;
+  team_attack_chain_runs_users?: string[];
   /** List of communications of this team */
   team_communications?: Communication[];
   /** True if the team is contextual (exists only in the scenario/simulation it is linked to) */
@@ -6455,29 +6381,24 @@ export interface Team {
   team_created_at: string;
   /** Description of the team */
   team_description?: string;
-  team_exercise_injects?: string[];
-  /**
-   * Number of injects of all simulations of the team
-   * @format int64
-   */
-  team_exercise_injects_number?: number;
   team_exercises?: string[];
-  team_exercises_users?: string[];
   /** ID of the team */
   team_id: string;
-  team_inject_expectations?: string[];
+  /** Name of the team */
+  team_name: string;
+  team_node_expectations?: string[];
   /**
    * Number of expectations linked to this team
    * @format int64
    */
-  team_injects_expectations_number?: number;
+  team_nodes_expectations_number?: number;
   /**
    * Total expected score of expectations linked to this team
    * @format double
    */
-  team_injects_expectations_total_expected_score: number;
+  team_nodes_expectations_total_expected_score: number;
   /** Total expected score of expectations by simulation linked to this team */
-  team_injects_expectations_total_expected_score_by_exercise: Record<
+  team_nodes_expectations_total_expected_score_by_attack_chain_run: Record<
     string,
     number
   >;
@@ -6485,19 +6406,14 @@ export interface Team {
    * Total score of expectations linked to this team
    * @format double
    */
-  team_injects_expectations_total_score: number;
+  team_nodes_expectations_total_score: number;
   /** Total score of expectations by simulation linked to this team */
-  team_injects_expectations_total_score_by_exercise: Record<string, number>;
-  /** Name of the team */
-  team_name: string;
+  team_nodes_expectations_total_score_by_attack_chain_run: Record<
+    string,
+    number
+  >;
   /** Organization of the team */
   team_organization?: string;
-  team_scenario_injects?: string[];
-  /**
-   * Number of injects of all scenarios of the team
-   * @format int64
-   */
-  team_scenario_injects_number?: number;
   team_scenarios?: string[];
   team_tags?: string[];
   /**
@@ -6635,6 +6551,7 @@ export interface ThemeInput {
   logo_url?: string;
   /** 'true' if the logo needs to be collapsed */
   logo_url_collapsed?: string;
+  navigationColor?: string;
   /** Navigation color of the theme */
   navigation_color?: string;
   /** Paper color of the theme */
@@ -6658,29 +6575,47 @@ export interface UpdateAssetsOnAssetGroupInput {
   asset_group_assets?: string[];
 }
 
-export interface UpdateConnectorInstanceRequestedStatus {
-  /** The connector instance current status */
-  connector_instance_requested_status: "starting" | "stopping";
+export interface UpdateAttackChainInput {
+  apply_tag_rule?: boolean;
+  attack_chain_category?: string;
+  attack_chain_custom_dashboard?: string;
+  attack_chain_description?: string;
+  attack_chain_external_reference?: string;
+  attack_chain_external_url?: string;
+  attack_chain_mail_from?: string;
+  attack_chain_mails_reply_to?: string[];
+  attack_chain_main_focus?: string;
+  attack_chain_message_footer?: string;
+  attack_chain_message_header?: string;
+  attack_chain_name: string;
+  attack_chain_severity?: "low" | "medium" | "high" | "critical";
+  attack_chain_subtitle?: string;
+  attack_chain_tags?: string[];
 }
 
-export interface UpdateExerciseInput {
+export interface UpdateAttackChainRunInput {
   apply_tag_rule?: boolean;
-  exercise_category?: string;
-  exercise_custom_dashboard?: string;
-  exercise_description?: string;
-  exercise_mail_from?: string;
-  exercise_mails_reply_to?: string[];
-  exercise_main_focus?: string;
-  exercise_message_footer?: string;
-  exercise_message_header?: string;
+  attack_chain_run_category?: string;
+  attack_chain_run_custom_dashboard?: string;
+  attack_chain_run_description?: string;
+  attack_chain_run_mail_from?: string;
+  attack_chain_run_mails_reply_to?: string[];
+  attack_chain_run_main_focus?: string;
+  attack_chain_run_message_footer?: string;
+  attack_chain_run_message_header?: string;
   /**
    * @minLength 0
    * @maxLength 255
    */
-  exercise_name: string;
-  exercise_severity?: string;
-  exercise_subtitle?: string;
-  exercise_tags?: string[];
+  attack_chain_run_name: string;
+  attack_chain_run_severity?: string;
+  attack_chain_run_subtitle?: string;
+  attack_chain_run_tags?: string[];
+}
+
+export interface UpdateConnectorInstanceRequestedStatus {
+  /** The connector instance current status */
+  connector_instance_requested_status: "starting" | "stopping";
 }
 
 export interface UpdateMePasswordInput {
@@ -6700,24 +6635,6 @@ export interface UpdateProfileInput {
   user_lastname: string;
   user_organization?: string;
   user_theme: string;
-}
-
-export interface UpdateScenarioInput {
-  apply_tag_rule?: boolean;
-  scenario_category?: string;
-  scenario_custom_dashboard?: string;
-  scenario_description?: string;
-  scenario_external_reference?: string;
-  scenario_external_url?: string;
-  scenario_mail_from?: string;
-  scenario_mails_reply_to?: string[];
-  scenario_main_focus?: string;
-  scenario_message_footer?: string;
-  scenario_message_header?: string;
-  scenario_name: string;
-  scenario_severity?: "low" | "medium" | "high" | "critical";
-  scenario_subtitle?: string;
-  scenario_tags?: string[];
 }
 
 export interface UpdateUserInfoInput {
@@ -6758,11 +6675,20 @@ export interface UpdateUsersTeamInput {
   team_users?: string[];
 }
 
+export interface UseCaseTemplateOutput {
+  attack_type?: string;
+  executor_kind?: string;
+  mapped_custom_case_type?: string;
+  supports_multiple_tuples?: boolean;
+  surface?: string;
+  template_id?: string;
+}
+
 export interface User {
   /** Secondary phone number of the user */
   user_phone2?: string;
   listened?: boolean;
-  team_exercises_users?: string[];
+  team_attack_chain_runs_users?: string[];
   /** True if the user is admin */
   user_admin?: boolean;
   /** @uniqueItems true */
@@ -6911,16 +6837,63 @@ export interface ValidationErrorBag {
   message?: string;
 }
 
+export interface ValidationParameterSetInput {
+  parameter_set_default_targets?: TargetRef[];
+  parameter_set_description?: string;
+  /**
+   * @format int32
+   * @min 0
+   */
+  parameter_set_detection_expected_score?: number;
+  /** @format int32 */
+  parameter_set_detection_expiration_seconds?: number;
+  parameter_set_name: string;
+  /**
+   * @format int32
+   * @min 0
+   */
+  parameter_set_prevention_expected_score?: number;
+  /** @format int32 */
+  parameter_set_prevention_expiration_seconds?: number;
+  parameter_set_soc_correlation_rules?: SocCorrelationRuleRef[];
+  /** @uniqueItems true */
+  parameter_set_tag_ids?: string[];
+}
+
+export interface ValidationParameterSetOutput {
+  /** @format date-time */
+  parameter_set_created_at?: string;
+  parameter_set_default_targets?: TargetRef[];
+  parameter_set_description?: string;
+  /** @format int32 */
+  parameter_set_detection_expected_score?: number;
+  /** @format int32 */
+  parameter_set_detection_expiration_seconds?: number;
+  /** @format uuid */
+  parameter_set_id?: string;
+  parameter_set_is_template?: boolean;
+  parameter_set_name?: string;
+  /** @format int32 */
+  parameter_set_prevention_expected_score?: number;
+  /** @format int32 */
+  parameter_set_prevention_expiration_seconds?: number;
+  parameter_set_soc_correlation_rules?: SocCorrelationRuleRef[];
+  /** @uniqueItems true */
+  parameter_set_tag_ids?: string[];
+  /** @format date-time */
+  parameter_set_updated_at?: string;
+}
+
 export interface Variable {
   listened?: boolean;
+  variable_attack_chain?: string;
+  variable_attack_chain_run?: string;
   /** @format date-time */
   variable_created_at: string;
   variable_description?: string;
-  variable_exercise?: string;
   variable_id: string;
   /** @pattern ^[a-z_]+$ */
   variable_key: string;
-  variable_scenario?: string;
   variable_type: "String" | "Object";
   /** @format date-time */
   variable_updated_at: string;
@@ -6932,6 +6905,14 @@ export interface VariableInput {
   /** @pattern ^[a-z_]+$ */
   variable_key: string;
   variable_value?: string;
+}
+
+export interface VeriguardSandboxNetworkRule {
+  rule_action: "ALLOW" | "DENY";
+  rule_cidr: string;
+  rule_direction: "INGRESS" | "EGRESS";
+  rule_ports: string;
+  rule_protocol: string;
 }
 
 export interface ViolationErrorBag {
@@ -7252,14 +7233,4 @@ export interface XtmComposerRegisterInput {
 export interface XtmComposerUpdateStatusInput {
   /** The connector instance current status */
   connector_instance_current_status: "started" | "stopped";
-}
-
-export interface XtmHubContactUsInput {
-  /** The message sent */
-  message: string;
-}
-
-export interface XtmHubRegisterInput {
-  /** The registration token */
-  token: string;
 }

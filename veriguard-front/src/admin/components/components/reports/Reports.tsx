@@ -23,7 +23,7 @@ const Reports: FunctionComponent<Props> = ({ reports, navigateToReportPage }) =>
         padding: 20,
       }}
       >
-        <i>{t('There is no report for this simulation yet')}</i>
+        <i>{t('There is no report for this attack_chain_run yet')}</i>
       </div>
     );
   }

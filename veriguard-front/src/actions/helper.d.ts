@@ -1,12 +1,12 @@
 import {
+  type AttackChain,
+  type AttackChainChallengesReader,
+  type AttackChainRun,
   type Challenge,
   type Document,
   type Domain,
-  type Exercise,
   type Organization,
   type PlatformSettings,
-  type Scenario,
-  type ScenarioChallengesReader,
   type SimulationChallengesReader,
   type Tag,
   type Token,
@@ -45,8 +45,8 @@ export interface LoggedHelper {
 export interface ChallengeHelper {
   getChallengesMap: () => Record<string, Challenge>;
   getChallenges: () => Challenge[];
-  getExerciseChallenges: (exerciseId: Exercise['exercise_id']) => Challenge[];
-  getScenarioChallenges: (scenarioId: Scenario['scenario_id']) => Challenge[];
+  getAttackChainRunChallenges: (exerciseId: AttackChainRun['attack_chain_run_id']) => Challenge[];
+  getAttackChainChallenges: (scenarioId: AttackChain['attack_chain_id']) => Challenge[];
 }
 
 export interface DocumentHelper {
@@ -56,6 +56,6 @@ export interface DocumentHelper {
 
 export interface MeTokensHelper { getMeTokens: () => Token[] }
 
-export interface SimulationChallengesReaderHelper { getSimulationChallengesReader: (exerciseId: SimulationChallengesReader['exercise_id']) => SimulationChallengesReader }
+export interface SimulationChallengesReaderHelper { getSimulationChallengesReader: (exerciseId: SimulationChallengesReader['attack_chain_run_id']) => SimulationChallengesReader }
 
-export interface ScenarioChallengesReaderHelper { getScenarioChallengesReader: (scenarioId: SimulationChallengesReader['scenario_id']) => ScenarioChallengesReader }
+export interface AttackChainChallengesReaderHelper { getAttackChainChallengesReader: (scenarioId: SimulationChallengesReader['attack_chain_id']) => AttackChainChallengesReader }

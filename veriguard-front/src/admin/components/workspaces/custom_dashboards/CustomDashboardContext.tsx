@@ -58,7 +58,7 @@ export const CustomDashboardContext = createContext<CustomDashboardContextType>(
   fetchEntities: entities,
   fetchEntitiesRuntime: widgetToEntitiesRuntime,
   fetchAttackPaths: attackPaths,
-  contextId: undefined, // Simulation or scenario id
+  contextId: undefined, // Simulation or attack_chain id
   canChooseDashboard: false,
   handleSelectNewDashboard: undefined,
 

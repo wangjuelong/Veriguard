@@ -3,8 +3,8 @@ import { type FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { type AttackPatternHelper } from '../../../../actions/attack_patterns/attackpattern-helper';
-import { type InjectorContractHelper } from '../../../../actions/injector_contracts/injector-contract-helper';
 import { type KillChainPhaseHelper } from '../../../../actions/kill_chain_phases/killchainphase-helper';
+import { type NodeContractHelper } from '../../../../actions/node_contracts/node-contract-helper';
 import { fetchInjectorsContracts } from '../../../../actions/NodeContracts';
 import { type FilterHelpers } from '../../../../components/common/queryable/filter/FilterHelpers';
 import { buildEmptyFilter } from '../../../../components/common/queryable/filter/FilterUtils';
@@ -14,7 +14,7 @@ import { type AttackPattern, type KillChainPhase } from '../../../../utils/api-t
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
 
-interface InjectorContractLight {
+interface NodeContractLight {
   injector_contract_id: string;
   injector_contract_attack_patterns_external_id?: string[];
 }
@@ -39,7 +39,7 @@ export const MITRE_FILTER_KEY = 'injector_contract_attack_patterns';
 interface KillChainPhaseComponentProps {
   killChainPhase: KillChainPhase;
   attackPatterns: AttackPattern[];
-  injectorsContratLight: InjectorContractLight[];
+  injectorsContratLight: NodeContractLight[];
   selectedAttackPatternIds?: Set<string>;
   onAttackPatternClick: (attackPattern: AttackPattern) => void;
 }
@@ -144,7 +144,7 @@ const MitreFilter: FunctionComponent<MitreFilterProps> = ({
   const dispatch = useAppDispatch();
 
   // Fetching data
-  const { attackPatterns, killChainPhases, injectorsContracts } = useHelper((helper: AttackPatternHelper & KillChainPhaseHelper & InjectorContractHelper) => ({
+  const { attackPatterns, killChainPhases, injectorsContracts } = useHelper((helper: AttackPatternHelper & KillChainPhaseHelper & NodeContractHelper) => ({
     attackPatterns: helper.getAttackPatterns(),
     killChainPhases: helper.getKillChainPhases(),
     injectorsContracts: helper.getInjectorContracts(),

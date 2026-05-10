@@ -78,7 +78,7 @@ const FilterAutocomplete: FunctionComponent<Props> = ({
             variant="outlined"
             size="small"
             placeholder={domains
-              ? t('Please choose a scenario or simulation, or leave this field blank to include all scenarios and atomic tests')
+              ? t('Please choose a attack_chain or attack_chain_run, or leave this field blank to include all attack_chains and atomic tests')
               : t('Add filter')}
             style={style}
             sx={{

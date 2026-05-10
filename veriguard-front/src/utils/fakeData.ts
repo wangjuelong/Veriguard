@@ -166,7 +166,7 @@ export const exercisesTimeSeriesFakeData = [
 
 export const categoriesLabelsFakeData = [
   'Global Crisis',
-  'Attack Scenario',
+  'Attack AttackChain',
   'Media Pressure',
   'Data Exfiltration',
   'Capture The Flag',

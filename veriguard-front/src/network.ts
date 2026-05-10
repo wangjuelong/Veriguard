@@ -36,7 +36,7 @@ export const api = <T>(schema?: Schema<T> | null): AxiosInstance => {
     withCredentials: true,
   });
 
-  // Intercept REQUEST to inject CSRF token
+  // Intercept REQUEST to node CSRF token
   instance.interceptors.request.use(async (config) => {
     const method = (config.method ?? 'GET').toUpperCase();
     const mutating = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method);

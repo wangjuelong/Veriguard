@@ -18,7 +18,7 @@ const ParametersTab = () => {
     name: 'custom_dashboard_parameters',
   });
 
-  const items: Item<CustomDashboardParametersInput['custom_dashboards_parameter_type']>[] = createItems(['scenario', 'simulation']);
+  const items: Item<CustomDashboardParametersInput['custom_dashboards_parameter_type']>[] = createItems(['attackChain', 'simulation']);
   const handleAddParameter = (type: CustomDashboardParametersInput['custom_dashboards_parameter_type']) => {
     if (type) {
       append({
@@ -49,7 +49,7 @@ const ParametersTab = () => {
       </div>
       {fields
         .map((field, index) => (
-          (field.custom_dashboards_parameter_type === 'simulation' || field.custom_dashboards_parameter_type === 'scenario') && (
+          (field.custom_dashboards_parameter_type === 'simulation' || field.custom_dashboards_parameter_type === 'attackChain') && (
             <Box
               key={field.id}
               sx={{

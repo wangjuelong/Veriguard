@@ -33,7 +33,7 @@ const ReportComment: FunctionComponent<Props> = ({ initialComment, saveComment, 
         )}
 
       <Dialog
-        title={t('Update inject comment')}
+        title={t('Update node comment')}
         open={openEdit}
         handleClose={() => setOpenEdit(false)}
       >

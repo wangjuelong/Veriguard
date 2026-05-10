@@ -27,7 +27,7 @@ interface ItemStatusProps {
   label: string;
   status?: string | null;
   variant?: 'inList';
-  isInject?: boolean;
+  isAttackChainNode?: boolean;
 }
 
 const ItemStatus: FunctionComponent<ItemStatusProps> = ({

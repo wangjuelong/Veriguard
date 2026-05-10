@@ -19,7 +19,7 @@ import { useAppDispatch } from '../utils/hooks';
 import useDataLoader from '../utils/hooks/useDataLoader';
 import ProtectedRoute from '../utils/permissions/ProtectedRoute';
 import { ACTIONS, SUBJECTS } from '../utils/permissions/types';
-import InjectIndex from './components/attack_chain_runs/attack_chain_run/attack_chain_nodes/InjectIndex';
+import AttackChainNodeIndex from './components/attack_chain_runs/attack_chain_run/attack_chain_nodes/AttackChainNodeIndex';
 import LeftBar from './components/nav/LeftBar';
 import TopBar from './components/nav/TopBar';
 
@@ -27,12 +27,12 @@ const Home = lazy(() => import('./components/Home'));
 const IndexProfile = lazy(() => import('./components/profile/Index'));
 const FullTextSearch = lazy(() => import('./components/search/FullTextSearch'));
 const Findings = lazy(() => import('./components/findings/Findings'));
-const Exercises = lazy(() => import('./components/attack_chain_runs/Simulations'));
-const IndexExercise = lazy(() => import('./components/attack_chain_runs/attack_chain_run/Index'));
+const AttackChainRuns = lazy(() => import('./components/attack_chain_runs/AttackChainRuns'));
+const IndexAttackChainRun = lazy(() => import('./components/attack_chain_runs/attack_chain_run/Index'));
 const AtomicTestings = lazy(() => import('./components/atomic_testings/AtomicTestings'));
 const IndexAtomicTesting = lazy(() => import('./components/atomic_testings/atomic_testing/Index'));
-const Scenarios = lazy(() => import('./components/attack_chains/Scenarios'));
-const IndexScenario = lazy(() => import('./components/attack_chains/attack_chain/Index'));
+const AttackChains = lazy(() => import('./components/attack_chains/AttackChains'));
+const IndexAttackChain = lazy(() => import('./components/attack_chains/attack_chain/Index'));
 const Assets = lazy(() => import('./components/assets/Index'));
 const Teams = lazy(() => import('./components/teams/Index'));
 const IndexComponents = lazy(() => import('./components/components/Index'));
@@ -113,7 +113,7 @@ const Index = () => {
                 />
               )}
             />
-            <Route path="attack_chain_runs" element={errorWrapper(Exercises)()} />
+            <Route path="attack_chain_runs" element={errorWrapper(AttackChainRuns)()} />
             <Route
               path="attack_chain_runs/:exerciseId/*"
               element={(
@@ -126,12 +126,12 @@ const Index = () => {
                     subject: SUBJECTS.RESOURCE,
                     resourceURIParamName: 'exerciseId',
                   }]}
-                  Component={errorWrapper(IndexExercise)()}
+                  Component={errorWrapper(IndexAttackChainRun)()}
                 />
               )}
             />
             <Route
-              path="attack_chain_runs/:exerciseId/injects/:injectId/*"
+              path="attack_chain_runs/:exerciseId/nodes/:injectId/*"
               element={(
                 <ProtectedRoute
                   checks={[{
@@ -142,7 +142,7 @@ const Index = () => {
                     subject: SUBJECTS.RESOURCE,
                     resourceURIParamName: 'exerciseId',
                   }]}
-                  Component={errorWrapper(InjectIndex)()}
+                  Component={errorWrapper(AttackChainNodeIndex)()}
                 />
               )}
             />
@@ -163,7 +163,7 @@ const Index = () => {
                 />
               )}
             />
-            <Route path="attack_chains" element={errorWrapper(Scenarios)()} />
+            <Route path="attack_chains" element={errorWrapper(AttackChains)()} />
             <Route
               path="attack_chains/:scenarioId/*"
               element={(
@@ -176,7 +176,7 @@ const Index = () => {
                     subject: SUBJECTS.RESOURCE,
                     resourceURIParamName: 'scenarioId',
                   }]}
-                  Component={errorWrapper(IndexScenario)()}
+                  Component={errorWrapper(IndexAttackChain)()}
                 />
               )}
             />

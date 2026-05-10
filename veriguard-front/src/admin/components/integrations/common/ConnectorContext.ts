@@ -4,14 +4,14 @@ import { type Dispatch } from 'redux';
 
 import { fetchCollector, fetchCollectorRelatedIds, fetchCollectors } from '../../../../actions/Collector';
 import { fetchExecutor, fetchExecutorRelatedIds, fetchExecutors } from '../../../../actions/executors/executor-action';
-import { fetchInjector, fetchInjectorRelatedIds, fetchInjectors } from '../../../../actions/injectors/injector-action';
+import { fetchInjector, fetchInjectorRelatedIds, fetchInjectors } from '../../../../actions/node_executors/node_executor-action';
 import type {
   CatalogConnectorOutput, CatalogConnectorSimpleOutput,
   Collector,
   CollectorOutput, ConnectorIds,
   ConnectorInstanceOutput,
   ExecutorOutput,
-  InjectorOutput,
+  NodeExecutorOutput,
 } from '../../../../utils/api-types';
 
 export interface ConnectorOutput {
@@ -44,7 +44,7 @@ export interface ConnectorContextType<T> {
   normalizeSingle: (data: T) => ConnectorOutput;
 }
 
-export const injectorConfig: ConnectorContextType<InjectorOutput> = {
+export const injectorConfig: ConnectorContextType<NodeExecutorOutput> = {
   connectorType: 'injector',
   apiRequest: {
     fetchAll: () => fetchInjectors(true),
@@ -52,7 +52,7 @@ export const injectorConfig: ConnectorContextType<InjectorOutput> = {
     getRelatedIds: (id: string) => fetchInjectorRelatedIds(id),
   },
   routes: {
-    list: '/admin/integrations/injectors',
+    list: '/admin/integrations/node_executors',
     detail: (id: string) => `/admin/integrations/injectors/${id}`,
   },
   logoUrl: (type: string) => `/api/images/injectors/${type}`,
@@ -118,17 +118,17 @@ export const executorConfig: ConnectorContextType<ExecutorOutput> = {
   }),
 };
 
-export const ConnectorContext = createContext<ConnectorContextType<InjectorOutput | CollectorOutput | ExecutorOutput>>({
+export const ConnectorContext = createContext<ConnectorContextType<NodeExecutorOutput | CollectorOutput | ExecutorOutput>>({
   connectorType: 'collector',
   logoUrl: _type => '',
   apiRequest: {
     fetchAll: () => async (_dispatch: Dispatch) => [],
-    fetchSingle: (_id: string) => async (_dispatch: Dispatch) => Promise.resolve({}) as Promise<InjectorOutput | CollectorOutput | ExecutorOutput>,
+    fetchSingle: (_id: string) => async (_dispatch: Dispatch) => Promise.resolve({}) as Promise<NodeExecutorOutput | CollectorOutput | ExecutorOutput>,
     getRelatedIds: (_id: string) => Promise.resolve({ data: {} }) as Promise<AxiosResponse<ConnectorIds>>,
   },
   routes: {
     list: '/admin/integrations',
     detail: (_id: string) => '/admin/integrations',
   },
-  normalizeSingle: (_data: InjectorOutput | CollectorOutput | ExecutorOutput) => ({} as ConnectorOutput),
+  normalizeSingle: (_data: NodeExecutorOutput | CollectorOutput | ExecutorOutput) => ({} as ConnectorOutput),
 });

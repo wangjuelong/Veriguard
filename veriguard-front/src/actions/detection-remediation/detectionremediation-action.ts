@@ -8,7 +8,7 @@ export const postDetectionRemediationAIRulesByPayload = (collectorType: string, 
   return simplePostCall(uri, payloadInput);
 };
 
-export const postDetectionRemediationAIRulesByInject = (injectId: string, collectorType: string) => {
-  const uri = `${DETECTION_REMEDIATION_URI}/rules/inject/${injectId}/collector/${collectorType}`;
+export const postDetectionRemediationAIRulesByAttackChainNode = (injectId: string, collectorType: string) => {
+  const uri = `${DETECTION_REMEDIATION_URI}/rules/node/${injectId}/collector/${collectorType}`;
   return simplePostCall(uri);
 };

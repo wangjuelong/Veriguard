@@ -4,7 +4,7 @@ import type {
   CatalogConnectorOutput,
   CollectorOutput,
   ExecutorOutput,
-  InjectorOutput,
+  NodeExecutorOutput,
 } from '../../../../utils/api-types';
 import {
   collectorConfig,
@@ -26,7 +26,7 @@ const ConnectorProvider = ({ children, type }: Props) => {
   };
 
   return (
-    <ConnectorContext.Provider value={config[type] as ConnectorContextType<InjectorOutput | CollectorOutput | ExecutorOutput>}>
+    <ConnectorContext.Provider value={config[type] as ConnectorContextType<NodeExecutorOutput | CollectorOutput | ExecutorOutput>}>
       {children}
     </ConnectorContext.Provider>
   );

@@ -12,12 +12,12 @@ import ExpandableText from '../../../../../../components/common/ExpandableText';
 import Paper from '../../../../../../components/common/Paper';
 import { useFormatter } from '../../../../../../components/i18n';
 import { useHelper } from '../../../../../../store';
-import { type Inject, type User } from '../../../../../../utils/api-types';
+import { type AttackChainNode, type User } from '../../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../../utils/hooks';
 import useDataLoader from '../../../../../../utils/hooks/useDataLoader';
 import { computeStatusStyle } from '../../../../../../utils/statusUtils';
 import { computeLabel, resolveUserName, truncate } from '../../../../../../utils/String';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 import { FAILED } from '../../../../common/attack_chain_nodes/expectations/ExpectationUtils';
 import { PermissionsContext } from '../../../../common/Context';
 import ManualExpectationsValidationForm from './ManualExpectationsValidationForm';
@@ -61,12 +61,12 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface Props {
-  inject: Inject;
-  expectations: InjectExpectationsStore[];
+  node: AttackChainNode;
+  expectations: AttackChainNodeExpectationsStore[];
 }
 
 const ManualExpectations: FunctionComponent<Props> = ({
-  inject,
+  node,
   expectations,
 }) => {
   const { classes } = useStyles();
@@ -74,7 +74,7 @@ const ManualExpectations: FunctionComponent<Props> = ({
   const { permissions } = useContext(PermissionsContext);
 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [currentExpectations, setCurrentExpectations] = useState<InjectExpectationsStore[] | null>(null);
+  const [currentExpectations, setCurrentExpectations] = useState<AttackChainNodeExpectationsStore[] | null>(null);
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const { usersMap }: { usersMap: Record<string, User> } = useHelper((helper: UserHelper) => {
@@ -86,8 +86,8 @@ const ManualExpectations: FunctionComponent<Props> = ({
     dispatch(fetchPlayers());
   });
 
-  const handleItemClick = (expectationsToUpdate: InjectExpectationsStore[]) => {
-    setSelectedItem(expectationsToUpdate[0]?.inject_expectation_name || null);
+  const handleItemClick = (expectationsToUpdate: AttackChainNodeExpectationsStore[]) => {
+    setSelectedItem(expectationsToUpdate[0]?.node_expectation_name || null);
     setCurrentExpectations(expectationsToUpdate);
   };
   const handleItemClose = () => {
@@ -99,9 +99,9 @@ const ManualExpectations: FunctionComponent<Props> = ({
     setExpanded(isExpanded ? panel : false);
   };
 
-  const parentExpectation = expectations.filter(e => !e.inject_expectation_user)[0];
-  const childrenExpectations = expectations.filter(e => e.inject_expectation_user);
-  const validatedCount = expectations.filter(v => !R.isEmpty(v.inject_expectation_results)).length;
+  const parentExpectation = expectations.filter(e => !e.node_expectation_user)[0];
+  const childrenExpectations = expectations.filter(e => e.node_expectation_user);
+  const validatedCount = expectations.filter(v => !R.isEmpty(v.node_expectation_results)).length;
   const isAllValidated = validatedCount === expectations.length;
 
   let label;
@@ -110,21 +110,21 @@ const ManualExpectations: FunctionComponent<Props> = ({
     label = t('Pending validation');
     style = colorStyles.orange;
   } else {
-    const results = parentExpectation.inject_expectation_results ?? [];
+    const results = parentExpectation.node_expectation_results ?? [];
     const hasFailed = results.some(result => result?.result === FAILED);
 
     if (hasFailed) {
-      label = `${t('Failed')} (${parentExpectation.inject_expectation_score})`;
+      label = `${t('Failed')} (${parentExpectation.node_expectation_score})`;
       style = colorStyles.red;
     } else {
-      label = `${t('Success')} (${parentExpectation.inject_expectation_score})`;
+      label = `${t('Success')} (${parentExpectation.node_expectation_score})`;
       style = colorStyles.green;
     }
   }
 
-  const targetLabel = (expectationToProcess: InjectExpectationsStore) => {
-    if (expectationToProcess.inject_expectation_user && usersMap[expectationToProcess.inject_expectation_user]) {
-      return truncate(resolveUserName(usersMap[expectationToProcess.inject_expectation_user]), 22);
+  const targetLabel = (expectationToProcess: AttackChainNodeExpectationsStore) => {
+    if (expectationToProcess.node_expectation_user && usersMap[expectationToProcess.node_expectation_user]) {
+      return truncate(resolveUserName(usersMap[expectationToProcess.node_expectation_user]), 22);
     }
     return t('Unknown');
   };
@@ -134,12 +134,12 @@ const ManualExpectations: FunctionComponent<Props> = ({
       <List component="div" disablePadding>
         {expectations.length > 0 && (
           <ListItemButton
-            key={expectations[0].inject_expectation_name}
+            key={expectations[0].node_expectation_name}
             divider
             sx={{ pl: 8 }}
             classes={{ root: classes.item }}
             onClick={() => handleItemClick(expectations)}
-            selected={selectedItem === expectations[0].inject_expectation_name}
+            selected={selectedItem === expectations[0].node_expectation_name}
           >
             <ListItemIcon>
               <AssignmentTurnedIn fontSize="small" />
@@ -147,15 +147,15 @@ const ManualExpectations: FunctionComponent<Props> = ({
             <ListItemText
               primary={(
                 <div className={classes.container}>
-                  <Tooltip title={expectations[0].inject_expectation_description}>
+                  <Tooltip title={expectations[0].node_expectation_description}>
                     <span>
-                      {expectations[0].inject_expectation_name ?? 'Manual Expectation'}
+                      {expectations[0].node_expectation_name ?? 'Manual Expectation'}
                     </span>
                   </Tooltip>
                   <div className={classes.chip}>
                     <Chip
                       classes={{ root: classes.validationType }}
-                      label={expectations[0].inject_expectation_group ? 'At least one player' : 'All players'}
+                      label={expectations[0].node_expectation_group ? 'At least one player' : 'All players'}
                     />
                     <Chip
                       classes={{ root: classes.chipInList }}
@@ -172,7 +172,7 @@ const ManualExpectations: FunctionComponent<Props> = ({
       <Drawer
         open={currentExpectations !== null}
         handleClose={() => handleItemClose()}
-        title={t('Expectations of ') + inject.inject_title}
+        title={t('Expectations of ') + node.node_title}
       >
         <>
           <Alert
@@ -186,7 +186,7 @@ const ManualExpectations: FunctionComponent<Props> = ({
             <AlertTitle>
               <ExpandableText
                 source={
-                  expectations[0].inject_expectation_group
+                  expectations[0].node_expectation_group
                     ? t('At least one player (per team) must validate the expectation')
                     : t('All players (per team) must validate the expectation')
                 }
@@ -234,11 +234,11 @@ const ManualExpectations: FunctionComponent<Props> = ({
           }}
           >
             {childrenExpectations.map((e) => {
-              const panelId = `panel-${e.inject_expectation_id}`;
+              const panelId = `panel-${e.node_expectation_id}`;
 
               return (
                 <Accordion
-                  key={e.inject_expectation_id}
+                  key={e.node_expectation_id}
                   expanded={expanded === panelId}
                   onChange={handleChange(panelId)}
                   style={{
@@ -275,11 +275,11 @@ const ManualExpectations: FunctionComponent<Props> = ({
                         alignItems: 'center',
                       }}
                       >
-                        <Chip label={e.inject_expectation_score ?? 0} style={{ marginRight: 8 }} />
+                        <Chip label={e.node_expectation_score ?? 0} style={{ marginRight: 8 }} />
                         <Chip
                           classes={{ root: classes.chipStatusAcc }}
-                          style={computeStatusStyle(e.inject_expectation_status)}
-                          label={t(computeLabel(e.inject_expectation_status))}
+                          style={computeStatusStyle(e.node_expectation_status)}
+                          label={t(computeLabel(e.node_expectation_status))}
                         />
                       </div>
                     </div>

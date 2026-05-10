@@ -1,8 +1,8 @@
-import { type Exercise, type Scenario, type Team, type User } from '../../utils/api-types';
+import { type AttackChain, type AttackChainRun, type Team, type User } from '../../utils/api-types';
 
 export interface TeamsHelper {
-  getExerciseTeams: (exerciseId: Exercise['exercise_id']) => Team[];
-  getScenarioTeams: (scenarioId: Scenario['scenario_id']) => Team[];
+  getAttackChainRunTeams: (exerciseId: AttackChainRun['attack_chain_run_id']) => Team[];
+  getAttackChainTeams: (scenarioId: AttackChain['attack_chain_id']) => Team[];
   getTeam: (teamId: Team['team_id']) => Team;
   getTeams: () => Team[];
   getTeamsMap: () => Record<string, Team>;

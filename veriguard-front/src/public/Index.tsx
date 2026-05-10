@@ -9,8 +9,8 @@ import Reset from './components/login/Reset';
 
 const Login = lazy(() => import('./components/login/Login'));
 const Comcheck = lazy(() => import('./components/comcheck/Comcheck'));
-const ExerciseViewLessons = lazy(() => import('./components/lessons/ExerciseViewLessons'));
-const ScenarioViewLessons = lazy(() => import('./components/lessons/ScenarioViewLessons'));
+const AttackChainRunViewLessons = lazy(() => import('./components/lessons/AttackChainRunViewLessons'));
+const AttackChainViewLessons = lazy(() => import('./components/lessons/AttackChainViewLessons'));
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -37,8 +37,8 @@ const Index = () => {
           <Routes>
             <Route path="comcheck/:statusId" element={errorWrapper(Comcheck)()} />
             <Route path="reset" element={errorWrapper(Reset)()} />
-            <Route path="lessons/simulation/:exerciseId" element={errorWrapper(ExerciseViewLessons)()} />
-            <Route path="lessons/scenario/:scenarioId" element={errorWrapper(ScenarioViewLessons)()} />
+            <Route path="lessons/attack_chain_run/:exerciseId" element={errorWrapper(AttackChainRunViewLessons)()} />
+            <Route path="lessons/attack_chain/:scenarioId" element={errorWrapper(AttackChainViewLessons)()} />
             <Route path="*" element={<Login />} />
           </Routes>
         </Suspense>

@@ -68,7 +68,7 @@ const ExportOptionsDialog: FunctionComponent<ExportOptionsProps> = ({
             <TableBody>
               <TableRow>
                 <TableCell>
-                  {t('Injects (including attached files)')}
+                  {t('AttackChainNodes (including attached files)')}
                 </TableCell>
                 <TableCell style={{ textAlign: 'center' }}>
                   <Checkbox checked={true} disabled={true} />

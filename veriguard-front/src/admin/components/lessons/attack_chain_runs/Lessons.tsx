@@ -25,7 +25,7 @@ import { makeStyles } from 'tss-react/mui';
 import { fetchLessonsTemplates } from '../../../../actions/Lessons';
 import Transition from '../../../../components/common/Transition';
 import { useFormatter } from '../../../../components/i18n';
-import { type Inject, type LessonsAnswer, type LessonsCategory, type LessonsQuestion, type LessonsSendInput, type LessonsTemplate, type Objective, type Team, type User } from '../../../../utils/api-types';
+import { type AttackChainNode, type LessonsAnswer, type LessonsCategory, type LessonsQuestion, type LessonsSendInput, type LessonsTemplate, type Objective, type Team, type User } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import { AbilityContext, Can } from '../../../../utils/permissions/permissionsContext';
 import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
@@ -84,7 +84,7 @@ interface GenericSource {
 interface Props {
   source: GenericSource;
   objectives: Objective[];
-  injects: Inject[];
+  nodes: AttackChainNode[];
   teamsMap: Record<string, Team>;
   teams: Team[];
   lessonsCategories: LessonsCategory[];
@@ -97,7 +97,7 @@ interface Props {
 const Lessons: FunctionComponent<Props> = ({
   source,
   objectives,
-  injects,
+  nodes,
   teams,
   teamsMap,
   lessonsCategories,
@@ -376,14 +376,14 @@ const Lessons: FunctionComponent<Props> = ({
           }
         </Typography>
         <Typography variant="h4" style={{ alignContent: 'center' }}>
-          {t('Crisis intensity (injects by hour)')}
+          {t('Crisis intensity (nodes by hour)')}
         </Typography>
         <LessonsObjectives
           objectives={objectives}
           setSelectedObjective={setSelectedObjective}
           source={source}
         />
-        <CrysisIntensity injects={injects} />
+        <CrysisIntensity nodes={nodes} />
       </div>
       <div style={{ marginTop: theme.spacing(3) }}>
         <LessonsCategories
@@ -552,9 +552,9 @@ const Lessons: FunctionComponent<Props> = ({
               subject: t('[{exerciseName}] Lessons learned questionnaire', { exerciseName: source.name }),
               body: `${t('Hello')},<br /><br />${t(
                 // eslint-disable-next-line no-template-curly-in-string
-                'We would like thank your for your participation in this simulation. You are kindly requested to fill this lessons learned questionnaire: <a href="${lessons_uri}">${lessons_uri}</a>.',
+                'We would like thank your for your participation in this attack_chain_run. You are kindly requested to fill this lessons learned questionnaire: <a href="${lessons_uri}">${lessons_uri}</a>.',
               )}<br /><br />${t('Best regards')},<br />${t(
-                'The simulation control team',
+                'The attack_chain_run control team',
               )}`,
             }}
             handleClose={() => setOpenSendLessons(false)}

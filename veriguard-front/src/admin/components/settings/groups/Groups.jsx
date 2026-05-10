@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchScenarios } from '../../../../actions/attack_chains/scenario-actions';
-import { fetchExercises } from '../../../../actions/AttackChainRun';
+import { fetchAttackChains } from '../../../../actions/attack_chains/attack_chain-actions';
+import { fetchAttackChainRuns } from '../../../../actions/AttackChainRun';
 import { searchGroups } from '../../../../actions/Group';
 import { fetchOrganizations } from '../../../../actions/Organization';
 import { fetchRoles } from '../../../../actions/roles/roles-actions';
@@ -82,8 +82,8 @@ const Groups = () => {
     dispatch(fetchOrganizations());
     dispatch(fetchUsers());
     dispatch(fetchRoles());
-    dispatch(fetchExercises());
-    dispatch(fetchScenarios());
+    dispatch(fetchAttackChainRuns());
+    dispatch(fetchAttackChains());
   });
 
   // Headers

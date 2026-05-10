@@ -12,9 +12,9 @@ const useEntityIcon = (entity: string) => {
       return (<GroupsOutlined color="primary" />);
     case 'Organization':
       return (<DomainOutlined color="primary" />);
-    case 'Scenario':
+    case 'AttackChain':
       return (<MovieFilterOutlined color="primary" />);
-    case 'Exercise':
+    case 'AttackChainRun':
       return (<Kayaking color="primary" />);
     default:
       return null;

@@ -1,3 +1,3 @@
 import { type Comcheck } from '../../utils/api-types';
 
-export interface ComCheckHelper { getExerciseComchecks: (exerciseId: string) => Comcheck[] }
+export interface ComCheckHelper { getAttackChainRunComchecks: (exerciseId: string) => Comcheck[] }

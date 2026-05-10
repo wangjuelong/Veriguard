@@ -36,8 +36,8 @@ const MapperForm: FunctionComponent<Props> = ({
   editing,
   initialValues = {
     import_mapper_name: '',
-    import_mapper_inject_type_column: '',
-    import_mapper_inject_importers: [],
+    import_mapper_node_type_column: '',
+    import_mapper_node_importers: [],
   },
 }) => {
   // Standard hooks
@@ -52,9 +52,9 @@ const MapperForm: FunctionComponent<Props> = ({
   });
 
   const importerZodObject = z.object({
-    inject_importer_type_value: z.string().min(1, { message: t('Should not be empty') }),
-    inject_importer_injector_contract: z.string().min(1, { message: t('Should not be empty') }),
-    inject_importer_rule_attributes: z.array(ruleAttributeZodObject).optional(),
+    node_importer_type_value: z.string().min(1, { message: t('Should not be empty') }),
+    node_importer_injector_contract: z.string().min(1, { message: t('Should not be empty') }),
+    node_importer_rule_attributes: z.array(ruleAttributeZodObject).optional(),
   });
 
   const methods = useForm<ImportMapperAddInput>({
@@ -62,9 +62,9 @@ const MapperForm: FunctionComponent<Props> = ({
     resolver: zodResolver(
       zodImplement<ImportMapperAddInput>().with({
         import_mapper_name: z.string().min(1, { message: t('Should not be empty') }),
-        import_mapper_inject_importers: z.array(importerZodObject)
-          .min(1, { message: t('At least one inject type is required') }),
-        import_mapper_inject_type_column: z.string()
+        import_mapper_node_importers: z.array(importerZodObject)
+          .min(1, { message: t('At least one node type is required') }),
+        import_mapper_node_type_column: z.string()
           .min(1, { message: t('Should not be empty') }),
       }),
     ),
@@ -75,7 +75,7 @@ const MapperForm: FunctionComponent<Props> = ({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'import_mapper_inject_importers',
+    name: 'import_mapper_node_importers',
   });
 
   const [openTest, setOpenTest] = useState(false);
@@ -96,10 +96,10 @@ const MapperForm: FunctionComponent<Props> = ({
         <div style={{ marginTop: 20 }}>
           <Controller
             control={control}
-            name="import_mapper_inject_type_column"
+            name="import_mapper_node_type_column"
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <RegexComponent
-                label={t('Inject type column')}
+                label={t('AttackChainNode type column')}
                 fieldValue={value}
                 onChange={onChange}
                 required={true}
@@ -110,16 +110,16 @@ const MapperForm: FunctionComponent<Props> = ({
         </div>
         <div className={classes.importerStyle}>
           <Typography variant="h3" sx={{ m: 0 }}>
-            {t('Representation for inject type')}
+            {t('Representation for node type')}
           </Typography>
           <IconButton
             color="secondary"
             aria-label="Add"
             onClick={() => {
               append({
-                inject_importer_type_value: '',
-                inject_importer_injector_contract: '',
-                inject_importer_rule_attributes: [],
+                node_importer_type_value: '',
+                node_importer_injector_contract: '',
+                node_importer_rule_attributes: [],
               });
             }}
             size="large"
@@ -127,7 +127,7 @@ const MapperForm: FunctionComponent<Props> = ({
             <Add fontSize="small" />
           </IconButton>
           <div>
-            <span className={classes.importersErrorMessage}>{methods.formState.errors.import_mapper_inject_importers?.message}</span>
+            <span className={classes.importersErrorMessage}>{methods.formState.errors.import_mapper_node_importers?.message}</span>
           </div>
         </div>
 

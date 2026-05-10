@@ -32,7 +32,7 @@ const Healthchecks = ({ healthchecks, scenarioId }: Props) => {
         break;
       }
       case 'INJECT': {
-        navigate(`/admin/attack_chains/${scenarioId}/injects`);
+        navigate(`/admin/attack_chains/${scenarioId}/nodes`);
         break;
       }
       case 'TEAMS': {
@@ -68,7 +68,7 @@ const Healthchecks = ({ healthchecks, scenarioId }: Props) => {
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography variant="h6" sx={{ color: theme.palette.warning.main }}>
-            {t('Scenario configuration')}
+            {t('AttackChain configuration')}
           </Typography>
         </AccordionSummary>
         <AccordionDetails style={{
@@ -79,7 +79,7 @@ const Healthchecks = ({ healthchecks, scenarioId }: Props) => {
           {orderedHealthchecks.map((healthcheck: HealthCheck, index: number) => {
             return (
               <div
-                key={'scenario-healthcheck-' + index}
+                key={'attack_chain-healthcheck-' + index}
                 style={{
                   alignItems: 'center',
                   display: 'flex',

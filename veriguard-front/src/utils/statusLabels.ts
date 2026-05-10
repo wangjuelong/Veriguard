@@ -42,10 +42,10 @@ const statusTooltipMap: Record<string, string> = {
   COMMAND_NOT_FOUND: 'The command was not found on the target. Ensure the tool is installed and available in the system PATH.',
   COMMAND_CANNOT_BE_EXECUTED: 'The command exists but cannot be executed. Check file permissions and ensure the binary has execute rights.',
   PREREQUISITE_FAILED: 'A prerequisite check failed before the main command could run. Review prerequisite dependencies and ensure they are met on the target.',
-  INVALID_USAGE: 'The command was invoked with incorrect arguments or syntax. Verify the inject parameters and command.',
+  INVALID_USAGE: 'The command was invoked with incorrect arguments or syntax. Verify the node parameters and command.',
   TIMEOUT: 'The agent did not complete execution within the allowed time threshold. Consider investigating target performance.',
-  INTERRUPTED: 'The inject was interrupted before completion. This may be caused by a system signal, user intervention, or resource constraint.',
-  AGENT_INACTIVE: 'This agent was not active during the inject execution. Check your asset connectivity.',
+  INTERRUPTED: 'The node was interrupted before completion. This may be caused by a system signal, user intervention, or resource constraint.',
+  AGENT_INACTIVE: 'This agent was not active during the node execution. Check your asset connectivity.',
 };
 
 /**

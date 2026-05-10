@@ -16,7 +16,7 @@ export const isNone = (date: moment.MomentInput) => {
 
 // @Deprecated
 const inject18n = <P extends object>(WrappedComponent: ComponentType<P>) => {
-  const InjectIntl = (props: P & { children?: ReactNode }) => {
+  const AttackChainNodeIntl = (props: P & { children?: ReactNode }) => {
     const intl = useIntl();
     const translate = (message: string, values?: Record<string, string>) => intl.formatMessage({ id: message }, values);
     const formatNumber = (number: number | '') => {
@@ -165,7 +165,7 @@ const inject18n = <P extends object>(WrappedComponent: ComponentType<P>) => {
     );
   };
 
-  return InjectIntl;
+  return AttackChainNodeIntl;
 };
 
 export type Translate = {

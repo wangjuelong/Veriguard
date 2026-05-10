@@ -7,20 +7,20 @@ import { z } from 'zod';
 
 import { type SecurityPlatformHelper } from '../../../../../../actions/assets/asset-helper';
 import { fetchSecurityPlatforms } from '../../../../../../actions/assets/securityPlatform-actions';
-import { updateInjectExpectation } from '../../../../../../actions/AttackChainRun';
+import { updateAttackChainNodeExpectation } from '../../../../../../actions/AttackChainRun';
 import ExpandableText from '../../../../../../components/common/ExpandableText';
 import SecurityPlatformField from '../../../../../../components/fields/SecurityPlatformField';
 import { useFormatter } from '../../../../../../components/i18n';
 import ItemStatus from '../../../../../../components/ItemStatus';
 import { useHelper } from '../../../../../../store';
-import { type InjectExpectationResult, type SecurityPlatform } from '../../../../../../utils/api-types';
+import { type NodeExpectationResult, type SecurityPlatform } from '../../../../../../utils/api-types';
 import { useAppDispatch } from '../../../../../../utils/hooks';
 import useDataLoader from '../../../../../../utils/hooks/useDataLoader';
 import { AbilityContext, Can } from '../../../../../../utils/permissions/permissionsContext';
 import RestrictionAccess from '../../../../../../utils/permissions/RestrictionAccess';
 import { ACTIONS, SUBJECTS } from '../../../../../../utils/permissions/types';
 import { zodImplement } from '../../../../../../utils/Zod';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 
 const useStyles = makeStyles()(theme => ({
   marginTop_2: { marginTop: theme.spacing(2) },
@@ -33,8 +33,8 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface FormProps {
-  expectation: InjectExpectationsStore;
-  result?: InjectExpectationResult;
+  expectation: AttackChainNodeExpectationsStore;
+  result?: NodeExpectationResult;
   sourceIds?: string[];
   onUpdate?: () => void;
 }
@@ -53,7 +53,7 @@ const DetectionPreventionExpectationsValidationForm: FunctionComponent<FormProps
     expectation_score: number;
     security_platform: string;
   }) => {
-    dispatch(updateInjectExpectation(expectation.inject_expectation_id, {
+    dispatch(updateAttackChainNodeExpectation(expectation.node_expectation_id, {
       ...data,
       source_id: data.security_platform,
       source_type: 'security-platform',
@@ -81,7 +81,7 @@ const DetectionPreventionExpectationsValidationForm: FunctionComponent<FormProps
       security_platform: z.string().min(1, { message: t('Should not be empty') }),
     })),
     defaultValues: {
-      expectation_score: result?.score ?? expectation.inject_expectation_expected_score ?? 0,
+      expectation_score: result?.score ?? expectation.node_expectation_expected_score ?? 0,
       security_platform: result?.sourceId ?? '',
     },
   });
@@ -97,10 +97,10 @@ const DetectionPreventionExpectationsValidationForm: FunctionComponent<FormProps
         </div>
       )}
       <Typography variant="h3">{t('Name')}</Typography>
-      {expectation.inject_expectation_name}
+      {expectation.node_expectation_name}
       <div className={classes.marginTop_2}>
         <Typography variant="h3">{t('Description')}</Typography>
-        <ExpandableText source={expectation.inject_expectation_description} limit={120} />
+        <ExpandableText source={expectation.node_expectation_description} limit={120} />
       </div>
 
       <Can not I={ACTIONS.ACCESS} a={SUBJECTS.SECURITY_PLATFORMS}>
@@ -130,7 +130,7 @@ const DetectionPreventionExpectationsValidationForm: FunctionComponent<FormProps
         label={t('Score')}
         type="number"
         error={!!errors.expectation_score}
-        helperText={errors.expectation_score && errors.expectation_score?.message ? errors.expectation_score?.message : `${t('Expected score:')} ${expectation.inject_expectation_expected_score}`}
+        helperText={errors.expectation_score && errors.expectation_score?.message ? errors.expectation_score?.message : `${t('Expected score:')} ${expectation.node_expectation_expected_score}`}
         inputProps={register('expectation_score')}
       />
 

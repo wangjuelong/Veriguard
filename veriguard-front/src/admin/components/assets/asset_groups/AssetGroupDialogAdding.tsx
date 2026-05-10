@@ -104,7 +104,7 @@ const AssetGroupDialogAdding: FunctionComponent<Props> = ({
         },
       }}
     >
-      <DialogTitle>{t('Modify asset groups in this inject')}</DialogTitle>
+      <DialogTitle>{t('Modify asset groups in this node')}</DialogTitle>
       <DialogContent>
         <Box sx={{ marginTop: 2 }}>
           <SelectList

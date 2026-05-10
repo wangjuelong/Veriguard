@@ -7,26 +7,26 @@ import Empty from '../../../../components/Empty';
 import { useFormatter } from '../../../../components/i18n';
 import { areaChartOptions } from '../../../../utils/Charts';
 
-const CrysisIntensity = ({ injects }) => {
+const CrysisIntensity = ({ nodes }) => {
   const theme = useTheme();
   const { t, nsdt } = useFormatter();
   const injectsData = R.pipe(
-    R.filter(n => n.inject_sent_at !== null),
+    R.filter(n => n.node_sent_at !== null),
     R.map((n) => {
-      const date = new Date(n.inject_sent_at);
+      const date = new Date(n.node_sent_at);
       date.setHours(0, 0, 0, 0);
-      return R.assoc('inject_sent_at_date', date.toISOString(), n);
+      return R.assoc('node_sent_at_date', date.toISOString(), n);
     }),
-    R.groupBy(R.prop('inject_sent_at_date')),
+    R.groupBy(R.prop('node_sent_at_date')),
     R.toPairs,
     R.map(n => ({
       x: n[0],
       y: n[1].length,
     })),
-  )(injects);
+  )(nodes);
   const chartData = [
     {
-      name: t('Number of injects'),
+      name: t('Number of nodes'),
       data: injectsData,
     },
   ];
@@ -43,7 +43,7 @@ const CrysisIntensity = ({ injects }) => {
       ) : (
         <Empty
           message={t(
-            'No data to display or the simulation has not started yet',
+            'No data to display or the attack_chain_run has not started yet',
           )}
         />
       )}

@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { makeStyles } from 'tss-react/mui';
 import { z } from 'zod';
 
-import { updateInjectExpectation } from '../../../../../../actions/AttackChainRun';
+import { updateAttackChainNodeExpectation } from '../../../../../../actions/AttackChainRun';
 import { type UserHelper } from '../../../../../../actions/helper';
 import { fetchTeams } from '../../../../../../actions/teams/team-actions';
 import { type TeamsHelper } from '../../../../../../actions/teams/team-helper';
@@ -28,7 +28,7 @@ import useDataLoader from '../../../../../../utils/hooks/useDataLoader';
 import { computeStatusStyle } from '../../../../../../utils/statusUtils';
 import { computeLabel, resolveUserName, truncate } from '../../../../../../utils/String';
 import { zodImplement } from '../../../../../../utils/Zod';
-import { type InjectExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
+import { type AttackChainNodeExpectationsStore } from '../../../../common/attack_chain_nodes/expectations/Expectation';
 
 const useStyles = makeStyles()(theme => ({
   marginTop_2: { marginTop: theme.spacing(2) },
@@ -48,7 +48,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 interface FormProps {
-  expectation: InjectExpectationsStore;
+  expectation: AttackChainNodeExpectationsStore;
   onUpdate?: () => void;
   withSummary?: boolean;
   isDisabled?: boolean;
@@ -74,7 +74,7 @@ const ManualExpectationsValidationForm: FunctionComponent<FormProps> = ({ expect
     dispatch(fetchTeams());
   });
   const onSubmit = (data: { expectation_score: number }) => {
-    dispatch(updateInjectExpectation(expectation.inject_expectation_id, {
+    dispatch(updateAttackChainNodeExpectation(expectation.node_expectation_id, {
       ...data,
       source_id: 'ui',
       source_type: 'ui',
@@ -94,18 +94,18 @@ const ManualExpectationsValidationForm: FunctionComponent<FormProps> = ({ expect
   } = useForm<{ expectation_score: number }>({
     mode: 'onTouched',
     resolver: zodResolver(zodImplement<{ expectation_score: number }>().with({ expectation_score: z.coerce.number() })),
-    defaultValues: { expectation_score: expectation.inject_expectation_score ?? expectation.inject_expectation_expected_score ?? 0 },
+    defaultValues: { expectation_score: expectation.node_expectation_score ?? expectation.node_expectation_expected_score ?? 0 },
   });
   useEffect(() => {
-    reset({ expectation_score: expectation.inject_expectation_score ?? expectation.inject_expectation_expected_score ?? 0 });
+    reset({ expectation_score: expectation.node_expectation_score ?? expectation.node_expectation_expected_score ?? 0 });
   }, [expectation, reset]);
 
-  const targetLabel = (expectationToProcess: InjectExpectationsStore) => {
-    if (expectationToProcess.inject_expectation_user && usersMap[expectationToProcess.inject_expectation_user]) {
-      return truncate(resolveUserName(usersMap[expectationToProcess.inject_expectation_user]), 22);
+  const targetLabel = (expectationToProcess: AttackChainNodeExpectationsStore) => {
+    if (expectationToProcess.node_expectation_user && usersMap[expectationToProcess.node_expectation_user]) {
+      return truncate(resolveUserName(usersMap[expectationToProcess.node_expectation_user]), 22);
     }
-    if (expectationToProcess.inject_expectation_team) {
-      return teamsMap[expectationToProcess.inject_expectation_team]?.team_name;
+    if (expectationToProcess.node_expectation_team) {
+      return teamsMap[expectationToProcess.node_expectation_team]?.team_name;
     }
     return t('Unknown');
   };
@@ -116,11 +116,11 @@ const ManualExpectationsValidationForm: FunctionComponent<FormProps> = ({ expect
         {withSummary && (
           <Chip
             classes={{ root: classes.chipInList }}
-            style={computeStatusStyle(expectation.inject_expectation_status)}
-            label={t(computeLabel(expectation.inject_expectation_status))}
+            style={computeStatusStyle(expectation.node_expectation_status)}
+            label={t(computeLabel(expectation.node_expectation_status))}
           />
         )}
-        {withSummary && (<Typography variant="h3">{expectation.inject_expectation_user ? t('Player') : t('Team')}</Typography>)}
+        {withSummary && (<Typography variant="h3">{expectation.node_expectation_user ? t('Player') : t('Team')}</Typography>)}
         {withSummary && targetLabel(expectation)}
         <Grid container spacing={3} className={withSummary ? classes.marginTop_2 : classes.scoreAcc}>
           <Grid size={{ xs: 6 }}>
@@ -131,7 +131,7 @@ const ManualExpectationsValidationForm: FunctionComponent<FormProps> = ({ expect
               type="number"
               error={!!errors.expectation_score}
               disabled={isDisabled}
-              helperText={errors.expectation_score && errors.expectation_score?.message ? errors.expectation_score?.message : `${t('Expected score:')} ${expectation.inject_expectation_expected_score}`}
+              helperText={errors.expectation_score && errors.expectation_score?.message ? errors.expectation_score?.message : `${t('Expected score:')} ${expectation.node_expectation_expected_score}`}
               {...register('expectation_score')}
               InputProps={{
                 inputProps: {
@@ -144,7 +144,7 @@ const ManualExpectationsValidationForm: FunctionComponent<FormProps> = ({ expect
           <Grid size={{ xs: 6 }}>
             <Select
               fullWidth
-              value={watch('expectation_score') < expectation.inject_expectation_expected_score ? 'Failed' : 'Success'}
+              value={watch('expectation_score') < expectation.node_expectation_expected_score ? 'Failed' : 'Success'}
               onChange={event => setValue('expectation_score', event.target.value === 'Success' ? 100 : 0)}
               renderValue={(value) => {
                 return value;
@@ -161,7 +161,7 @@ const ManualExpectationsValidationForm: FunctionComponent<FormProps> = ({ expect
           size="small"
           value={watch('expectation_score')}
           onChange={(_, value) => setValue('expectation_score', value as number)}
-          style={{ color: watch('expectation_score') < expectation.inject_expectation_expected_score ? theme.palette.error.main : theme.palette.success.main }}
+          style={{ color: watch('expectation_score') < expectation.node_expectation_expected_score ? theme.palette.error.main : theme.palette.success.main }}
           sx={{ width: '99%' }}
           disabled={isDisabled}
         />

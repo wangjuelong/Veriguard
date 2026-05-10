@@ -60,7 +60,7 @@ const WidgetSecurityDomainsSeriesSelection: FunctionComponent<Props> = ({ onChan
       setPropertyOptionsLoading(true);
       engineSchemas([entity]).then((response: { data: PropertySchemaDTO[] }) => {
         const available = getAuthorizedPerspectives().get(entity) ?? [];
-        const newOptions = response.data.filter(property => property.schema_property_name === 'base_simulation_side' || property.schema_property_name === 'base_scenario_side')
+        const newOptions = response.data.filter(property => property.schema_property_name === 'base_attack_chain_run_side' || property.schema_property_name === 'base_attack_chain_side')
           .filter(property => available.includes(property.schema_property_name))
           .map(property => (
             {
@@ -77,11 +77,11 @@ const WidgetSecurityDomainsSeriesSelection: FunctionComponent<Props> = ({ onChan
     }
     (customDashboard?.custom_dashboard_parameters ?? []).forEach((p) => {
       if (p.custom_dashboards_parameter_type === 'simulation') {
-        const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_simulation_side');
+        const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_attack_chain_run_side');
         setDefaultValues(newDefaultValues);
       }
-      if (p.custom_dashboards_parameter_type === 'scenario') {
-        const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_scenario_side');
+      if (p.custom_dashboards_parameter_type === 'attackChain') {
+        const newDefaultValues = getDefaultValuesForType(defaultValues, p, 'base_attack_chain_side');
         setDefaultValues(newDefaultValues);
       }
     });

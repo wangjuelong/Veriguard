@@ -10,27 +10,27 @@ const Findings = () => {
   const { t } = useFormatter();
 
   const additionalFilterNames = [
-    'finding_inject_id',
-    'finding_scenario',
-    'finding_simulation',
+    'finding_node_id',
+    'finding_attack_chain',
+    'finding_attack_chain_run',
   ];
 
   const additionalHeaders = [
     {
-      field: 'finding_scenario',
-      label: 'Scenario',
+      field: 'finding_attack_chain',
+      label: 'AttackChain',
       isSortable: false,
       value: (finding: RelatedFindingOutput) => <FindingContextLink finding={finding} type={SCENARIO} />,
     },
     {
-      field: 'finding_simulation',
+      field: 'finding_attack_chain_run',
       label: 'Simulation',
       isSortable: false,
       value: (finding: RelatedFindingOutput) => <FindingContextLink finding={finding} type={SIMULATION} />,
     },
     {
-      field: 'finding_inject',
-      label: 'Inject',
+      field: 'finding_node',
+      label: 'AttackChainNode',
       isSortable: false,
       value: (finding: RelatedFindingOutput) => <FindingContextLink finding={finding} type={INJECT} />,
     },

@@ -1,8 +1,8 @@
 import { useTheme } from '@mui/material/styles';
 import { type FunctionComponent, useContext } from 'react';
 
-import ScenarioField from '../../../../components/fields/ScenarioField';
-import SimulationField from '../../../../components/fields/SimulationField';
+import AttackChainField from '../../../../components/fields/AttackChainField';
+import SimulationField from '../../../../components/fields/AttackChainRunField';
 import { type CustomDashboardParameters as CustomDashboardParametersType } from '../../../../utils/api-types';
 import { CustomDashboardContext } from './CustomDashboardContext';
 import TimeRangeFilters from './TimeRangeFilters';
@@ -37,14 +37,14 @@ const CustomDashboardParameters: FunctionComponent = () => {
 
   // Build parameter fields
   const paramsFields = customDashboard?.custom_dashboard_parameters
-    ?.filter(p => p.custom_dashboards_parameter_type === 'scenario' || p.custom_dashboards_parameter_type === 'simulation')
+    ?.filter(p => p.custom_dashboards_parameter_type === 'attackChain' || p.custom_dashboards_parameter_type === 'simulation')
     .flatMap((p) => {
       const paramOption = customDashboardParameters[p.custom_dashboards_parameter_id];
       if (paramOption?.hidden) return [];
 
-      if (p.custom_dashboards_parameter_type === 'scenario') {
+      if (p.custom_dashboards_parameter_type === 'attackChain') {
         return [(
-          <ScenarioField
+          <AttackChainField
             key={p.custom_dashboards_parameter_id}
             label={p.custom_dashboards_parameter_name}
             value={paramOption?.value}

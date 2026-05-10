@@ -3,35 +3,35 @@ import { type FunctionComponent, lazy, Suspense, useEffect, useState } from 'rea
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchScenarioFromSimulation } from '../../../../actions/attack_chain_runs/exercise-action';
-import { type ExercisesHelper } from '../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise } from '../../../../actions/AttackChainRun';
+import { fetchAttackChainFromSimulation } from '../../../../actions/attack_chain_runs/attack_chain_run-action';
+import { type AttackChainRunsHelper } from '../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRun } from '../../../../actions/AttackChainRun';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
 import { errorWrapper } from '../../../../components/Error';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
 import NotFound from '../../../../components/NotFound';
 import { useHelper } from '../../../../store';
-import { type Exercise as ExerciseType } from '../../../../utils/api-types';
+import { type AttackChainRun as AttackChainRunType } from '../../../../utils/api-types';
 import { useAppDispatch } from '../../../../utils/hooks';
 import useDataLoader from '../../../../utils/hooks/useDataLoader';
 import { INHERITED_CONTEXT } from '../../../../utils/permissions/types';
-import useSimulationPermissions from '../../../../utils/permissions/useSimulationPermissions';
-import { DocumentContext, type DocumentContextType, InjectContext, PermissionsContext, type PermissionsContextType } from '../../common/Context';
-import injectContextForExercise from './ExerciseContext';
-import ExerciseDatePopover from './ExerciseDatePopover';
-import ExerciseHeader from './ExerciseHeader';
+import useSimulationPermissions from '../../../../utils/permissions/useAttackChainRunPermissions';
+import { AttackChainNodeContext, DocumentContext, type DocumentContextType, PermissionsContext, type PermissionsContextType } from '../../common/Context';
+import injectContextForAttackChainRun from './AttackChainRunContext';
+import AttackChainRunDatePopover from './AttackChainRunDatePopover';
+import AttackChainRunHeader from './AttackChainRunHeader';
 
-const Simulation = lazy(() => import('./overview/SimulationComponent'));
-const Lessons = lazy(() => import('./lessons/SimulationLessons'));
-const SimulationFindings = lazy(() => import('./findings/SimulationFindings'));
-const SimulationAnalysis = lazy(() => import('./analysis/SimulationAnalysis'));
-const SimulationDefinition = lazy(() => import('./SimulationDefinition'));
-const Injects = lazy(() => import('./attack_chain_nodes/ExerciseInjects'));
-const Tests = lazy(() => import('./tests/ExerciseTests'));
+const Simulation = lazy(() => import('./overview/AttackChainRunComponent'));
+const Lessons = lazy(() => import('./lessons/AttackChainRunLessons'));
+const SimulationFindings = lazy(() => import('./findings/AttackChainRunFindings'));
+const SimulationAnalysis = lazy(() => import('./analysis/AttackChainRunAnalysis'));
+const SimulationDefinition = lazy(() => import('./AttackChainRunDefinition'));
+const AttackChainNodes = lazy(() => import('./attack_chain_nodes/AttackChainRunAttackChainNodes'));
+const Tests = lazy(() => import('./tests/AttackChainRunTests'));
 const TimelineOverview = lazy(() => import('./timeline/TimelineOverview'));
 const Mails = lazy(() => import('./mails/Mails'));
-const MailsInject = lazy(() => import('./mails/Inject'));
+const MailsAttackChainNode = lazy(() => import('./mails/AttackChainNode'));
 const Logs = lazy(() => import('./logs/Logs'));
 const Chat = lazy(() => import('./chat/Chat'));
 const Validations = lazy(() => import('./validation/Validations'));
@@ -45,37 +45,37 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-const IndexComponent: FunctionComponent<{ exercise: ExerciseType }> = ({ exercise }) => {
+const IndexComponent: FunctionComponent<{ attack_chain_run: AttackChainRunType }> = ({ attack_chain_run }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { t, fldt } = useFormatter();
   const location = useLocation();
   const { classes } = useStyles();
   const permissionsContext: PermissionsContextType = {
-    permissions: useSimulationPermissions(exercise.exercise_id, exercise),
+    permissions: useSimulationPermissions(attack_chain_run.attack_chain_run_id, attack_chain_run),
     inherited_context: INHERITED_CONTEXT.SIMULATION,
   };
   const documentContext: DocumentContextType = {
     onInitDocument: () => ({
       document_tags: [],
-      document_scenarios: [],
-      document_exercises: exercise
+      document_attack_chains: [],
+      document_attack_chain_runs: attack_chain_run
         ? [{
-            id: exercise.exercise_id,
-            label: exercise.exercise_name,
+            id: attack_chain_run.attack_chain_run_id,
+            label: attack_chain_run.attack_chain_run_name,
           }]
         : [],
     }),
   };
 
   let tabValue = location.pathname;
-  if (location.pathname.includes(`/admin/attack_chain_runs/${exercise.exercise_id}/definition`)) {
-    tabValue = `/admin/attack_chain_runs/${exercise.exercise_id}/definition`;
-  } else if (location.pathname.includes(`/admin/attack_chain_runs/${exercise.exercise_id}/animation`)) {
-    tabValue = `/admin/attack_chain_runs/${exercise.exercise_id}/animation`;
-  } else if (location.pathname.includes(`/admin/attack_chain_runs/${exercise.exercise_id}/results`)) {
-    tabValue = `/admin/attack_chain_runs/${exercise.exercise_id}/results`;
-  } else if (location.pathname.includes(`/admin/attack_chain_runs/${exercise.exercise_id}/tests`)) {
-    tabValue = `/admin/attack_chain_runs/${exercise.exercise_id}/tests`;
+  if (location.pathname.includes(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/definition`)) {
+    tabValue = `/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/definition`;
+  } else if (location.pathname.includes(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/animation`)) {
+    tabValue = `/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/animation`;
+  } else if (location.pathname.includes(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/results`)) {
+    tabValue = `/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/results`;
+  } else if (location.pathname.includes(`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/tests`)) {
+    tabValue = `/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/tests`;
   }
 
   return (
@@ -91,12 +91,12 @@ const IndexComponent: FunctionComponent<{ exercise: ExerciseType }> = ({ exercis
                 link: '/admin/attack_chain_runs',
               },
               {
-                label: exercise.exercise_name,
+                label: attack_chain_run.attack_chain_run_name,
                 current: true,
               },
             ]}
           />
-          <ExerciseHeader onLoading={setIsLoading} isLoading={isLoading} />
+          <AttackChainRunHeader onLoading={setIsLoading} isLoading={isLoading} />
           {isLoading
             ? <Loader />
             : (
@@ -111,57 +111,57 @@ const IndexComponent: FunctionComponent<{ exercise: ExerciseType }> = ({ exercis
                     <Tabs value={tabValue}>
                       <Tab
                         component={Link}
-                        to={`/admin/attack_chain_runs/${exercise.exercise_id}`}
-                        value={`/admin/attack_chain_runs/${exercise.exercise_id}`}
+                        to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}`}
+                        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}`}
                         label={t('Overview')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/definition`}
-                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/definition`}
+                        to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/definition`}
+                        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/definition`}
                         label={t('Definition')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/injects`}
-                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/injects`}
-                        label={t('Injects')}
+                        to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes`}
+                        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/nodes`}
+                        label={t('AttackChainNodes')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/tests`}
-                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/tests`}
+                        to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/tests`}
+                        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/tests`}
                         label={t('Tests')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/animation`}
-                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/animation`}
+                        to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/animation`}
+                        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/animation`}
                         label={t('Animation')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/lessons`}
-                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/lessons`}
+                        to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/lessons`}
+                        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/lessons`}
                         label={t('Lessons learned')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/findings`}
-                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/findings`}
+                        to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/findings`}
+                        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/findings`}
                         label={t('Findings')}
                       />
                       <Tab
                         component={Link}
-                        to={`/admin/attack_chain_runs/${exercise.exercise_id}/analysis`}
-                        value={`/admin/attack_chain_runs/${exercise.exercise_id}/analysis`}
+                        to={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/analysis`}
+                        value={`/admin/attack_chain_runs/${attack_chain_run.attack_chain_run_id}/analysis`}
                         label={t('Analysis')}
                       />
                     </Tabs>
                     {permissionsContext.permissions.canManage && (
                       <div className={classes.scheduling}>
-                        <ExerciseDatePopover exercise={exercise} />
-                        {exercise.exercise_start_date ? fldt(exercise.exercise_start_date) : t('Manual')}
+                        <AttackChainRunDatePopover attack_chain_run={attack_chain_run} />
+                        {attack_chain_run.attack_chain_run_start_date ? fldt(attack_chain_run.attack_chain_run_start_date) : t('Manual')}
                       </div>
                     )}
                   </Box>
@@ -169,12 +169,12 @@ const IndexComponent: FunctionComponent<{ exercise: ExerciseType }> = ({ exercis
                     <Routes>
                       <Route path="" element={errorWrapper(Simulation)()} />
                       <Route path="definition" element={errorWrapper(SimulationDefinition)()} />
-                      <Route path="injects" element={errorWrapper(Injects)()} />
+                      <Route path="nodes" element={errorWrapper(AttackChainNodes)()} />
                       <Route path="tests/:statusId?" element={errorWrapper(Tests)()} />
                       <Route path="animation" element={<Navigate to="timeline" replace={true} />} />
                       <Route path="animation/timeline" element={errorWrapper(TimelineOverview)()} />
                       <Route path="animation/mails" element={errorWrapper(Mails)()} />
-                      <Route path="animation/mails/:injectId" element={errorWrapper(MailsInject)()} />
+                      <Route path="animation/mails/:injectId" element={errorWrapper(MailsAttackChainNode)()} />
                       <Route path="animation/logs" element={errorWrapper(Logs)()} />
                       <Route path="animation/chat" element={errorWrapper(Chat)()} />
                       <Route path="animation/validations" element={errorWrapper(Validations)()} />
@@ -200,37 +200,37 @@ const Index = () => {
   const { t } = useFormatter();
   const dispatch = useAppDispatch();
   // Fetching data
-  const { exerciseId } = useParams() as { exerciseId: ExerciseType['exercise_id'] };
-  const { exercise } = useHelper((helper: ExercisesHelper) => ({ exercise: helper.getExercise(exerciseId) }));
+  const { exerciseId } = useParams() as { exerciseId: AttackChainRunType['attack_chain_run_id'] };
+  const { attack_chain_run } = useHelper((helper: AttackChainRunsHelper) => ({ attack_chain_run: helper.getAttackChainRun(exerciseId) }));
   useDataLoader(() => {
     setLoading(true);
-    dispatch(fetchExercise(exerciseId)).finally(() => {
+    dispatch(fetchAttackChainRun(exerciseId)).finally(() => {
       setLoading(false);
     });
   }, [exerciseId]);
 
   useEffect(() => {
-    if (!exercise) return;
+    if (!attack_chain_run) return;
     setLoading(true);
-    if (!exercise.exercise_scenario) {
+    if (!attack_chain_run.attack_chain_run_attack_chain) {
       setPristine(false);
       setLoading(false);
     } else {
-      dispatch(fetchScenarioFromSimulation(exercise.exercise_id))
+      dispatch(fetchAttackChainFromSimulation(attack_chain_run.attack_chain_run_id))
         .finally(() => {
           setPristine(false);
           setLoading(false);
         });
     }
-  }, [exercise]);
+  }, [attack_chain_run]);
 
-  const exerciseInjectContext = injectContextForExercise(exercise);
+  const exerciseAttackChainNodeContext = injectContextForAttackChainRun(attack_chain_run);
 
   // avoid to show loader if something trigger useDataLoader
   if (pristine && loading) {
     return <Loader />;
   }
-  if (!loading && !exercise) {
+  if (!loading && !attack_chain_run) {
     return (
       <Alert severity="warning">
         <AlertTitle>{t('Warning')}</AlertTitle>
@@ -239,9 +239,9 @@ const Index = () => {
     );
   }
   return (
-    <InjectContext.Provider value={exerciseInjectContext}>
-      <IndexComponent exercise={exercise} />
-    </InjectContext.Provider>
+    <AttackChainNodeContext.Provider value={exerciseAttackChainNodeContext}>
+      <IndexComponent attack_chain_run={attack_chain_run} />
+    </AttackChainNodeContext.Provider>
   );
 };
 

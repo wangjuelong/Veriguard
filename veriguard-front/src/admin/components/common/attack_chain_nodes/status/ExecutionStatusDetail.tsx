@@ -2,7 +2,7 @@ import { Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 
-import { getInjectTracesFromInjectAndTarget } from '../../../../../actions/attack_chain_nodes/inject-action';
+import { getAttackChainNodeTracesFromAttackChainNodeAndTarget } from '../../../../../actions/attack_chain_nodes/node-action';
 import Empty from '../../../../../components/Empty';
 import { useFormatter } from '../../../../../components/i18n';
 import Loader from '../../../../../components/Loader';
@@ -36,7 +36,7 @@ const ExecutionStatusDetail = ({ injectId, target }: Props) => {
     if (!target?.id || !target.targetType) return;
     setLoading(true);
     try {
-      const result = await getInjectTracesFromInjectAndTarget(injectId, target.id, target.targetType);
+      const result = await getAttackChainNodeTracesFromAttackChainNodeAndTarget(injectId, target.id, target.targetType);
       setTraces(result.data || []);
     } finally {
       setLoading(false);

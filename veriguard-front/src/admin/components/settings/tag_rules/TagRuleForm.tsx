@@ -12,7 +12,7 @@ import { ACTIONS, SUBJECTS } from '../../../../utils/permissions/types';
 import { zodImplement } from '../../../../utils/Zod';
 import AssetGroupPopover from '../../assets/asset_groups/AssetGroupPopover';
 import AssetGroupsList from '../../assets/asset_groups/AssetGroupsList';
-import InjectAddAssetGroups from '../../attack_chain_runs/attack_chain_run/attack_chain_nodes/asset_groups/InjectAddAssetGroups';
+import AttackChainNodeAddAssetGroups from '../../attack_chain_runs/attack_chain_run/attack_chain_nodes/asset_groups/AttackChainNodeAddAssetGroups';
 import { PermissionsContext } from '../../common/Context';
 
 interface Props {
@@ -120,7 +120,7 @@ const TagRuleForm: FunctionComponent<Props> = ({
                 )}
               />
               <Can I={ACTIONS.ACCESS} a={SUBJECTS.ASSETS}>
-                <InjectAddAssetGroups
+                <AttackChainNodeAddAssetGroups
                   assetGroupIds={assetGroupIds}
                   onSubmit={(result) => {
                     onChange(result);

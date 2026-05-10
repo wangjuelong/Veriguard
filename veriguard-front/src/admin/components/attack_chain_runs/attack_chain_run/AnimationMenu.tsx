@@ -9,7 +9,7 @@ import type { LoggedHelper } from '../../../../actions/helper';
 import { useFormatter } from '../../../../components/i18n';
 import { computeBannerSettings } from '../../../../public/components/systembanners/utils';
 import { useHelper } from '../../../../store';
-import { type Exercise } from '../../../../utils/api-types';
+import { type AttackChainRun } from '../../../../utils/api-types';
 
 const useStyles = makeStyles()(theme => ({
   drawer: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-interface Props { exerciseId: Exercise['exercise_id'] }
+interface Props { exerciseId: AttackChainRun['attack_chain_run_id'] }
 
 const AnimationMenu: FunctionComponent<Props> = ({ exerciseId }) => {
   const location = useLocation();

@@ -3,13 +3,13 @@ import { Suspense, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { interval } from 'rxjs';
 
-import { fetchInjectResultOverviewOutput } from '../../../../actions/atomic_testings/atomic-testing-actions';
+import { fetchAttackChainNodeResultOverviewOutput } from '../../../../actions/atomic_testings/atomic-testing-actions';
 import { useFormatter } from '../../../../components/i18n';
 import Loader from '../../../../components/Loader';
-import { type InjectResultOverviewOutput } from '../../../../utils/api-types';
+import { type AttackChainNodeResultOverviewOutput } from '../../../../utils/api-types';
 import { FIVE_SECONDS } from '../../../../utils/Time';
 import { TeamContext } from '../../common/Context';
-import { InjectResultOverviewOutputContext } from '../InjectResultOverviewOutputContext';
+import { AttackChainNodeResultOverviewOutputContext } from '../AttackChainNodeResultOverviewOutputContext';
 import AtomicTestingHeader from './AtomicTestingHeader';
 import AtomicTestingRoutes from './AtomicTestingRoutes';
 import teamContextForAtomicTesting from './context/TeamContextForAtomicTesting';
@@ -18,16 +18,16 @@ const interval$ = interval(FIVE_SECONDS);
 
 const Index = () => {
   const { t } = useFormatter();
-  const { injectId } = useParams() as { injectId: InjectResultOverviewOutput['inject_id'] };
+  const { injectId } = useParams() as { injectId: AttackChainNodeResultOverviewOutput['node_id'] };
 
   const [pristine, setPristine] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [injectResultOverviewOutput, setInjectResultOverviewOutput] = useState<InjectResultOverviewOutput>();
+  const [injectResultOverviewOutput, setAttackChainNodeResultOverviewOutput] = useState<AttackChainNodeResultOverviewOutput>();
 
   useEffect(() => {
     setLoading(true);
-    fetchInjectResultOverviewOutput(injectId).then((result: { data: InjectResultOverviewOutput }) => {
-      setInjectResultOverviewOutput(result.data);
+    fetchAttackChainNodeResultOverviewOutput(injectId).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+      setAttackChainNodeResultOverviewOutput(result.data);
     }).finally(() => {
       setLoading(false);
       setPristine(false);
@@ -37,9 +37,9 @@ const Index = () => {
   useEffect(() => {
     const subscription = interval$.subscribe(() => {
       setLoading(true);
-      fetchInjectResultOverviewOutput(injectId).then((result: { data: InjectResultOverviewOutput }) => {
-        if (result.data.inject_updated_at !== injectResultOverviewOutput?.inject_updated_at) {
-          setInjectResultOverviewOutput(result.data);
+      fetchAttackChainNodeResultOverviewOutput(injectId).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+        if (result.data.node_updated_at !== injectResultOverviewOutput?.node_updated_at) {
+          setAttackChainNodeResultOverviewOutput(result.data);
         }
       }).catch(() => {
         subscription.unsubscribe();
@@ -53,9 +53,9 @@ const Index = () => {
     };
   }, [injectResultOverviewOutput]);
 
-  const updateInjectResultOverviewOutput = () => {
-    fetchInjectResultOverviewOutput(injectId).then((result: { data: InjectResultOverviewOutput }) => {
-      setInjectResultOverviewOutput(result.data);
+  const updateAttackChainNodeResultOverviewOutput = () => {
+    fetchAttackChainNodeResultOverviewOutput(injectId).then((result: { data: AttackChainNodeResultOverviewOutput }) => {
+      setAttackChainNodeResultOverviewOutput(result.data);
     });
   };
 
@@ -72,16 +72,16 @@ const Index = () => {
 
   return (
     <TeamContext.Provider value={teamContextForAtomicTesting()}>
-      <InjectResultOverviewOutputContext.Provider value={{
+      <AttackChainNodeResultOverviewOutputContext.Provider value={{
         injectResultOverviewOutput,
-        updateInjectResultOverviewOutput,
+        updateAttackChainNodeResultOverviewOutput,
       }}
       >
-        <AtomicTestingHeader injectResultOverview={injectResultOverviewOutput} setInjectResultOverview={setInjectResultOverviewOutput} />
+        <AtomicTestingHeader injectResultOverview={injectResultOverviewOutput} setAttackChainNodeResultOverview={setAttackChainNodeResultOverviewOutput} />
         <Suspense fallback={<Loader />}>
           <AtomicTestingRoutes injectResultOverview={injectResultOverviewOutput} />
         </Suspense>
-      </InjectResultOverviewOutputContext.Provider>
+      </AttackChainNodeResultOverviewOutputContext.Provider>
     </TeamContext.Provider>
   );
 };

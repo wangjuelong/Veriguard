@@ -254,17 +254,17 @@ const AttackPath = ({ data, widgetId, simulationId, simulationStartDate = null, 
       const initSearchPaginationInput: SearchPaginationInput = {
         page: 0,
         size: 20,
-        sorts: initSorting('inject_updated_at', 'DESC'),
+        sorts: initSorting('node_updated_at', 'DESC'),
         filterGroup: {
           mode: 'or',
           filters: [
-            buildFilter('inject_attack_patterns', [(node.data as { attackPath: EsAttackPath }).attackPath.attackPatternId], 'contains'),
+            buildFilter('node_attack_patterns', [(node.data as { attackPath: EsAttackPath }).attackPath.attackPatternId], 'contains'),
           ],
         },
       };
       const params = qs.stringify({
         ...initSearchPaginationInput,
-        key: 'simulation-injects-results',
+        key: 'attack_chain_run-nodes-results',
       }, { allowEmptyArrays: true });
       const encodedParams = btoa(params);
       navigate('/admin/attack_chain_runs/' + simulationId + '?query=' + encodedParams);

@@ -5,10 +5,10 @@ import { type FunctionComponent, useContext, useEffect, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { SIMULATIONS } from '../../../../../../../components/common/queryable/filter/constants';
-import SimulationField from '../../../../../../../components/fields/SimulationField';
+import SimulationField from '../../../../../../../components/fields/AttackChainRunField';
 import { useFormatter } from '../../../../../../../components/i18n';
 import Loader from '../../../../../../../components/Loader';
-import { type InjectExpectation, type Series } from '../../../../../../../utils/api-types';
+import { type AttackChainNodeExpectation, type Series } from '../../../../../../../utils/api-types';
 import type { GroupOption } from '../../../../../../../utils/Option';
 import { CustomDashboardContext } from '../../../CustomDashboardContext';
 import { extractGroupOptionsFromCustomDashboardParameters, getSeries, updateSimulationFilterOnSeries } from '../../WidgetUtils';
@@ -32,16 +32,16 @@ const perspectives: {
   icon: () => SvgIconComponent;
   title: string;
   description: string;
-  type: InjectExpectation['inject_expectation_type'];
+  type: AttackChainNodeExpectation['node_expectation_type'];
 }[] = [{
   icon: () => TrackChangesOutlined,
   title: 'Detection',
-  description: 'Focus your widget on injects detected by your security system',
+  description: 'Focus your widget on nodes detected by your security system',
   type: 'DETECTION',
 }, {
   icon: () => ShieldOutlined,
   title: 'Prevention',
-  description: 'Focus your widget on injects prevented by your security system',
+  description: 'Focus your widget on nodes prevented by your security system',
   type: 'PREVENTION',
 }];
 
@@ -67,7 +67,7 @@ const WidgetSecurityCoverageSeriesSelection: FunctionComponent<Props> = ({ value
   useEffect(() => {
     setDefaultSimulationOptions(extractGroupOptionsFromCustomDashboardParameters(customDashboard?.custom_dashboard_parameters ?? []));
     if (value.length > 0 && value[0].filter?.filters) {
-      const simulationId = value[0].filter.filters.find(f => f.key === 'base_simulation_side')?.values?.[0];
+      const simulationId = value[0].filter.filters.find(f => f.key === 'base_attack_chain_run_side')?.values?.[0];
       setSimulationId(simulationId);
     }
     setLoader(false);
@@ -129,7 +129,7 @@ const WidgetSecurityCoverageSeriesSelection: FunctionComponent<Props> = ({ value
         onChange={onSimulationChange}
         searchOptionsConfig={{
           filterKey: SIMULATIONS,
-          defaultValues: defaultSimulationOptions.get('base_simulation_side'),
+          defaultValues: defaultSimulationOptions.get('base_attack_chain_run_side'),
         }}
       />
     </div>

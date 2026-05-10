@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import { useContext, useState } from 'react';
 
-import { type ExercisesHelper } from '../../../../../../../actions/attack_chain_runs/exercise-helper';
-import { fetchExercise } from '../../../../../../../actions/AttackChainRun';
+import { type AttackChainRunsHelper } from '../../../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { fetchAttackChainRun } from '../../../../../../../actions/AttackChainRun';
 import { useFormatter } from '../../../../../../../components/i18n';
 import Loader from '../../../../../../../components/Loader';
 import { useHelper } from '../../../../../../../store';
@@ -25,18 +25,18 @@ const AttackPathContextLayer = ({ attackPathsData, widgetId, widgetConfig }: Pro
 
   const { customDashboard, customDashboardParameters } = useContext(CustomDashboardContext);
 
-  const simulationParamIdFromSerie = (((widgetConfig.series[0] || []).filter?.filters || []).find(f => f.key == 'base_simulation_side')?.values ?? [])[0];
+  const simulationParamIdFromSerie = (((widgetConfig.series[0] || []).filter?.filters || []).find(f => f.key == 'base_attack_chain_run_side')?.values ?? [])[0];
   const dashboardParameterId = customDashboard?.custom_dashboard_parameters?.find(p => p.custom_dashboards_parameter_type === 'simulation' && p.custom_dashboards_parameter_id === simulationParamIdFromSerie)?.custom_dashboards_parameter_id;
   const simulationIdContext = dashboardParameterId == simulationParamIdFromSerie ? customDashboardParameters[dashboardParameterId].value : simulationParamIdFromSerie;
 
-  const { exercise } = useHelper((helper: ExercisesHelper) => ({ exercise: helper.getExercise(simulationIdContext) }));
+  const { attack_chain_run } = useHelper((helper: AttackChainRunsHelper) => ({ attack_chain_run: helper.getAttackChainRun(simulationIdContext) }));
 
   useDataLoader(() => {
     if (!simulationIdContext) {
       return;
     }
     setLoading(true);
-    dispatch(fetchExercise(simulationIdContext)).finally(() => {
+    dispatch(fetchAttackChainRun(simulationIdContext)).finally(() => {
       setLoading(false);
     });
   }, []);
@@ -52,14 +52,14 @@ const AttackPathContextLayer = ({ attackPathsData, widgetId, widgetConfig }: Pro
       }}
       >
         <Typography variant="h5" sx={{ textAlign: 'center' }}>
-          {t('You must set a simulation')}
+          {t('You must set a attack_chain_run')}
         </Typography>
 
       </div>
     );
   }
 
-  if (loading || !exercise) {
+  if (loading || !attack_chain_run) {
     return <Loader />;
   }
 
@@ -68,8 +68,8 @@ const AttackPathContextLayer = ({ attackPathsData, widgetId, widgetConfig }: Pro
       data={attackPathsData}
       widgetId={widgetId}
       simulationId={simulationIdContext}
-      simulationStartDate={exercise?.exercise_start_date}
-      simulationEndDate={exercise?.exercise_end_date}
+      simulationStartDate={attack_chain_run?.attack_chain_run_start_date}
+      simulationEndDate={attack_chain_run?.attack_chain_run_end_date}
     />
   );
 };

@@ -8,7 +8,7 @@ import useTabs from '../../../components/common/tabs/useTabs';
 import { useFormatter } from '../../../components/i18n';
 import { type AggregatedFindingOutput, type RelatedFindingOutput, type SearchPaginationInput, type VulnerabilityOutput } from '../../../utils/api-types';
 import GeneralVulnerabilityInfoTab from '../settings/vulnerabilities/GeneralVulnerabilityInfoTab';
-import RelatedInjectsTab from '../settings/vulnerabilities/RelatedInjectsTab';
+import RelatedAttackChainNodesTab from '../settings/vulnerabilities/RelatedAttackChainNodesTab';
 import RemediationInfoTab from '../settings/vulnerabilities/RemediationInfoTab';
 import { type VulnerabilityStatus } from '../settings/vulnerabilities/VulnerabilityDetail';
 import VulnerabilityTabPanel from '../settings/vulnerabilities/VulnerabilityTabPanel';
@@ -59,15 +59,15 @@ const FindingDetail = ({
         key: 'General',
         label: t('General'),
       }, {
-        key: 'Related Injects',
-        label: t('Related Injects'),
+        key: 'Related AttackChainNodes',
+        label: t('Related AttackChainNodes'),
       }, {
         key: 'Remediation',
         label: t('Remediation'),
       }]
     : [{
-        key: 'Related Injects',
-        label: t('Related Injects'),
+        key: 'Related AttackChainNodes',
+        label: t('Related AttackChainNodes'),
       }];
   const { currentTab, handleChangeTab } = useTabs(tabEntries[0].key);
 
@@ -79,9 +79,9 @@ const FindingDetail = ({
             <GeneralVulnerabilityInfoTab vulnerability={vulnerability!} />
           </VulnerabilityTabPanel>
         );
-      case 'Related Injects':
+      case 'Related AttackChainNodes':
         return (
-          <RelatedInjectsTab
+          <RelatedAttackChainNodesTab
             searchFindings={searchFindings}
             contextId={contextId}
             finding={selectedFinding}
