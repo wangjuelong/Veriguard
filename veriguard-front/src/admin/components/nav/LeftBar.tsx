@@ -1,4 +1,4 @@
-import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, SubscriptionsOutlined, TuneOutlined, VerifiedUserOutlined } from '@mui/icons-material';
+import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, ShieldOutlined, SubscriptionsOutlined, TuneOutlined, VerifiedUserOutlined } from '@mui/icons-material';
 import { Binoculars, NewspaperVariantMultipleOutline, SecurityNetwork, SelectGroup, Target } from 'mdi-material-ui';
 import { useContext } from 'react';
 
@@ -58,6 +58,12 @@ const LeftBar = () => {
           icon: () => (<TuneOutlined />),
           label: 'Validation parameter sets',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
+        },
+        {
+          path: `/admin/integrations/soc_connectors`,
+          icon: () => (<ShieldOutlined />),
+          label: 'SOC connectors',
+          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
         },
       ],
     },
