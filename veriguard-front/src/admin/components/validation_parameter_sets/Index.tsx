@@ -3,6 +3,10 @@ import { Box, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import {
+  fetchSocConnectors,
+  type SocConnectorOutputDto,
+} from '../../../actions/soc_connectors/soc-connector-actions';
+import {
   createValidationParameterSet,
   deleteValidationParameterSet,
   duplicateValidationParameterSet,
@@ -120,6 +124,7 @@ interface EditingState {
 const ValidationParameterSets = () => {
   const [parameterSets, setParameterSets] = useState<ValidationParameterSetSummary[]>([]);
   const [editing, setEditing] = useState<EditingState | null>(null);
+  const [healthyConnectorIds, setHealthyConnectorIds] = useState<string[]>([]);
 
   const refresh = useCallback(async () => {
     const response: { data: PageValidationParameterSetOutput } = await searchValidationParameterSets(
@@ -131,9 +136,23 @@ const ValidationParameterSets = () => {
     setParameterSets((response.data.content ?? []).map(toSummary));
   }, []);
 
+  const loadHealthyConnectorIds = useCallback(async () => {
+    const response: { data: SocConnectorOutputDto[] } = await fetchSocConnectors();
+    const healthy = (response.data ?? [])
+      .filter(c => c.status === 'HEALTHY')
+      .map(c => c.connector_id);
+    setHealthyConnectorIds(healthy);
+  }, []);
+
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  useEffect(() => {
+    if (editing && healthyConnectorIds.length === 0) {
+      loadHealthyConnectorIds();
+    }
+  }, [editing, healthyConnectorIds.length, loadHealthyConnectorIds]);
 
   const handleCreate = () => {
     setEditing({
@@ -206,7 +225,7 @@ const ValidationParameterSets = () => {
           open
           mode={editing.mode}
           initialValue={editing.initialValue}
-          availableConnectorIds={[]}
+          availableConnectorIds={healthyConnectorIds}
           onCancel={() => setEditing(null)}
           onSubmit={handleSubmit}
         />
