@@ -29,6 +29,7 @@ import { type AttackChainNodeHelper } from '../actions/attack_chain_nodes/node-h
 import { type AttackChainRunsHelper } from '../actions/attack_chain_runs/attack_chain_run-helper';
 import { type AttackChainsHelper } from '../actions/attack_chains/attack_chain-helper';
 import { type TeamsHelper } from '../actions/teams/team-helper';
+import { AttackChainEdgeConditionContext } from '../admin/components/attack_chains/attack_chain/editor/AttackChainEdgeConditionContext';
 import { AttackChainNodeTestContext, PermissionsContext } from '../admin/components/common/Context';
 import { useHelper } from '../store';
 import { type AttackChainEdge, type AttackChainNode } from '../utils/api-types';
@@ -102,6 +103,14 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
   const reactFlow = useReactFlow();
 
   const { contextId } = useContext(AttackChainNodeTestContext);
+  const edgeConditionContext = useContext(AttackChainEdgeConditionContext);
+
+  // Phase 12b-B3.5b：编辑器树里点 edge → 打开 ConditionEdgePopover；运行画布树里 context = null，整段 no-op。
+  const handleEdgeClick = (event: ReactMouseEvent<Element>, edge: Edge) => {
+    if (!edgeConditionContext) return;
+    if (!permissions.canManage) return;
+    edgeConditionContext.openEdgeCondition(edge.id, event.currentTarget as HTMLElement);
+  };
 
   const { injectsMap, teams, assets, assetGroups, attack_chain, attack_chain_run }
     = useHelper((helper: AttackChainRunsHelper & AttackChainNodeHelper & TeamsHelper & EndpointHelper & AssetGroupsHelper & AttackChainsHelper) => ({
@@ -438,22 +447,13 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
     const node = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connection.target);
     const injectParent = nodes.find(currentAttackChainNode => currentAttackChainNode.node_id === connection.source);
     if (node !== undefined && injectParent !== undefined && node.node_depends_duration > injectParent.node_depends_duration) {
+      // 新建边时不挂条件 —— 评估器对 null condition 返回 true（"父节点执行完成即可"），
+      // 用户后续点 edge 打开 ConditionEdgePopover 再加 PREVENTION/DETECTION/MANUAL 条件。
       const newDependsOn: AttackChainEdge = {
         dependency_relationship: {
           node_children_id: node.node_id,
           node_parent_id: injectParent.node_id,
         },
-        dependency_condition:
-          {
-            mode: 'and',
-            conditions: [
-              {
-                key: 'Execution',
-                operator: 'eq',
-                value: true,
-              },
-            ],
-          },
       };
 
       const injectToUpdate = {
@@ -614,17 +614,6 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
             node_children_id: injectToUpdate.node_id,
             node_parent_id: edge.source,
           },
-          dependency_condition:
-              {
-                mode: 'and',
-                conditions: [
-                  {
-                    key: 'Execution',
-                    operator: 'eq',
-                    value: true,
-                  },
-                ],
-              },
         };
         const injectToUpdateEdge = {
           ...injectsMap[injectToUpdate.node_id],
@@ -644,17 +633,6 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
             node_children_id: node.node_id,
             node_parent_id: connectionState.toNode?.id,
           },
-          dependency_condition:
-              {
-                mode: 'and',
-                conditions: [
-                  {
-                    key: 'Execution',
-                    operator: 'eq',
-                    value: true,
-                  },
-                ],
-              },
         };
         const injectToUpdate = {
           ...injectsMap[node.node_id],
@@ -698,6 +676,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
             onConnect={connect}
             onEdgeMouseEnter={hideNewNode}
             onEdgeMouseLeave={showNewNode}
+            onEdgeClick={handleEdgeClick}
             defaultEdgeOptions={defaultEdgeOptions}
             connectionLineType={ConnectionLineType.SmoothStep}
             onMouseMove={onMouseMove}

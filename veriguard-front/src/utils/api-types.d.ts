@@ -395,10 +395,15 @@ export interface AttackChainEdge {
   node_parent_id?: string;
 }
 
-export interface AttackChainEdgeCondition {
-  conditions?: Condition[];
-  mode: "and" | "or";
-}
+/**
+ * 边条件（spec §3.4，V3 起 sealed 递归）—— Phase 12b-B3.5b 把旧扁平 AttackChainEdgeCondition
+ * 完全替换。Jackson 用 {@code @JsonTypeInfo(use=NAME, property="type")} 序列化，前端直接消费
+ * 这个 union（手动维护 —— `yarn generate-types-from-api` 重生成时同名替换即可）。
+ */
+export type AttackChainEdgeCondition =
+  | { type: "eq"; dimension: "PREVENTION" | "DETECTION" | "MANUAL"; status: "ANY_SUCCESS" | "ANY_FAILED" | "ALL_SUCCESS" | "ALL_FAILED" | "SETTLED" }
+  | { type: "and"; children: AttackChainEdgeCondition[] }
+  | { type: "or"; children: AttackChainEdgeCondition[] };
 
 export interface AttackChainEdgeId {
   node_children_id?: string;
@@ -1850,12 +1855,6 @@ export interface Communication {
   communication_to: string;
   communication_users?: string[];
   listened?: boolean;
-}
-
-export interface Condition {
-  key: string;
-  operator: "eq";
-  value?: boolean;
 }
 
 /** Connector Instance configuration */

@@ -30,7 +30,6 @@ import { PermissionsContext } from '../Context';
 import AttackChainNodeCardComponent from './AttackChainNodeCardComponent';
 import AttackChainNodeIcon from './AttackChainNodeIcon';
 import AttackChainNodeForm from './form/AttackChainNodeForm';
-import UpdateAttackChainNodeLogicalChains from './UpdateAttackChainNodeLogicalChains';
 
 interface Props {
   open: boolean;
@@ -67,7 +66,7 @@ const UpdateAttackChainNode: React.FC<Props> = ({
   const ability = useContext(AbilityContext);
 
   // Setup tabs
-  const [availableTabs, setAvailableTabs] = useState<string[]>(['AttackChainNode details', 'Logical chains']);
+  const [availableTabs, setAvailableTabs] = useState<string[]>(['AttackChainNode details']);
   const [activeTab, setActiveTab] = useState<string>(availableTabs[0]);
 
   // Fetching data
@@ -81,7 +80,7 @@ const UpdateAttackChainNode: React.FC<Props> = ({
     dispatch(fetchAttackChainNode(injectId)).then(() => {
       const payloadId = node?.node_injector_contract?.injector_contract_payload?.payload_id;
       if (payloadId) {
-        setAvailableTabs(['AttackChainNode details', 'Payload info', 'Logical chains']);
+        setAvailableTabs(['AttackChainNode details', 'Payload info']);
       }
       setIsAttackChainNodeLoading(false);
     });
@@ -208,22 +207,6 @@ const UpdateAttackChainNode: React.FC<Props> = ({
           </TabPanel>
         )}
 
-        {/* Logical chains */}
-        <TabPanel value="Logical chains" keepMounted className={classes.tabPanel}>
-          {injectFormContent}
-          {!isAttackChainNodeLoading && !isAtomic && (
-            <UpdateAttackChainNodeLogicalChains
-              node={node}
-              handleClose={handleClose}
-              onUpdateAttackChainNode={massUpdateAttackChainNode}
-              nodes={nodes}
-              isDisabled={
-                !permissions.canManage
-                && ability.cannot(ACTIONS.MANAGE, SUBJECTS.RESOURCE, injectId)
-              }
-            />
-          )}
-        </TabPanel>
       </TabContext>
     </Drawer>
   );

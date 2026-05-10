@@ -46,11 +46,11 @@ public class AttackChainEdge {
   @Schema(type = "string")
   private AttackChainNode attackChainNodeChildren;
 
-  // -- 兼容旧 JSON wire format 的 condition 字段 --
+  // -- 边条件（spec §3.4，V3 起 sealed 递归 EdgeCondition；Phase 12b-B3.5b 起完全替换旧扁平 AttackChainEdgeCondition） --
   @Column(name = "edge_condition")
   @JsonProperty("dependency_condition")
   @Type(JsonType.class)
-  private AttackChainEdgeConditions.AttackChainEdgeCondition attackChainEdgeCondition;
+  private EdgeCondition attackChainEdgeCondition;
 
   @CreationTimestamp
   @Column(name = "edge_created_at")

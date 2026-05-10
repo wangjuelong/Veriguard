@@ -43,13 +43,6 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.core.env.Environment;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.EvaluationException;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.SpelParseException;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -75,6 +68,7 @@ public class AttackChainNodesExecutionJob implements Job {
   private final SecurityCoverageSendJobService securityCoverageSendJobService;
   private final io.veriguard.attackchain.execution.LinkVerdictCalculator linkVerdictCalculator;
   private final io.veriguard.attackchain.execution.LinkExpectationService linkExpectationService;
+  private final io.veriguard.attackchain.execution.EdgeConditionEvaluator edgeConditionEvaluator;
   private final io.veriguard.database.repository.AttackChainLinkExpectationRepository
       attackChainLinkExpectationRepository;
 
@@ -231,167 +225,141 @@ public class AttackChainNodesExecutionJob implements Job {
       throws ErrorMessagesPreExecutionException {
     List<AttackChainEdge> attackChainEdges =
         attackChainEdgesRepository.findParents(List.of(attackChainNode.getId()));
-    if (!attackChainEdges.isEmpty()) {
-      List<AttackChainNode> parents =
-          attackChainEdges.stream()
-              .map(attackChainEdge -> attackChainEdge.getCompositeId().getAttackChainNodeParent())
-              .toList();
+    if (attackChainEdges.isEmpty()) {
+      return;
+    }
 
-      Map<String, Boolean> mapCondition =
-          getStringBooleanMap(parents, attackChainRunId, attackChainEdges);
+    List<String> errorMessages = new ArrayList<>();
+    for (AttackChainEdge attackChainEdge : attackChainEdges) {
+      AttackChainNode parent = attackChainEdge.getCompositeId().getAttackChainNodeParent();
 
-      List<String> errorMessages = new ArrayList<>();
-
-      for (AttackChainEdge attackChainEdge : attackChainEdges) {
-        List<String> availableKeys =
-            new ArrayList<>(
-                StreamSupport.stream(
-                        Spliterators.spliteratorUnknownSize(
-                            attackChainEdge
-                                .getCompositeId()
-                                .getAttackChainNodeParent()
-                                .getContent()
-                                .get("expectations")
-                                .elements(),
-                            0),
-                        false)
-                    .map(
-                        jsonNode -> {
-                          if (jsonNode
-                              .get("expectation_type")
-                              .asText()
-                              .equals(AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL.name())) {
-                            return jsonNode.get("expectation_name").asText().toLowerCase();
-                          }
-                          return jsonNode.get("expectation_type").asText().toLowerCase();
-                        })
-                    .toList());
-        availableKeys.add("execution");
-
-        if (attackChainEdge.getAttackChainEdgeCondition().getConditions().stream()
-            .allMatch(condition -> availableKeys.contains(condition.getKey().toLowerCase()))) {
-          String expressionToEvaluate = attackChainEdge.getAttackChainEdgeCondition().toString();
-          List<String> conditions =
-              attackChainEdge.getAttackChainEdgeCondition().getConditions().stream()
-                  .map(AttackChainEdgeConditions.Condition::toString)
-                  .toList();
-          for (String condition : conditions) {
-            expressionToEvaluate =
-                expressionToEvaluate.replaceAll(
-                    condition.split("==")[0].trim(),
-                    String.format("#this['%s']", condition.split("==")[0].trim()));
-          }
-
-          ExpressionParser parser = new SpelExpressionParser();
-
-          EvaluationContext context = SimpleEvaluationContext.forReadOnlyDataBinding().build();
-          try {
-            Expression exp = parser.parseExpression(expressionToEvaluate);
-            boolean canBeExecuted =
-                Boolean.TRUE.equals(exp.getValue(context, mapCondition, Boolean.class));
-            if (!canBeExecuted) {
-              if (errorMessages.isEmpty()) {
-                errorMessages.add(
-                    "This inject depends on other injects expectations that are not met. The following conditions were not as expected : ");
-              }
-              errorMessages.addAll(
-                  labelFromCondition(
-                      attackChainEdge.getCompositeId().getAttackChainNodeParent(),
-                      attackChainEdge.getAttackChainEdgeCondition()));
-            }
-
-          } catch (EvaluationException | SpelParseException e) {
-            log.warn(e.getMessage(), e);
-            errorMessages.add(
-                "There was an error during the evaluation of the condition of the inject");
-          }
-        } else {
-          log.warn("A key in the conditions didn't match any expectations");
-          errorMessages.add("A key in the conditions didn't match any expectations");
+      // 父节点尚未执行完（QUEUING / DRAFT / EXECUTING / PENDING）→ 视作 PENDING，
+      // 任何 typed eq 条件都返回 false（matchesGroup(null, ...) 短路）。
+      if (!isParentExecutionSettled(parent)) {
+        if (errorMessages.isEmpty()) {
+          errorMessages.add(
+              "This inject depends on other injects expectations that are not met. The following conditions were not as expected : ");
         }
+        errorMessages.addAll(
+            labelFromCondition(parent, attackChainEdge.getAttackChainEdgeCondition()));
+        continue;
       }
-      if (!errorMessages.isEmpty()) {
-        throw new ErrorMessagesPreExecutionException(errorMessages);
+
+      io.veriguard.attackchain.execution.NodeFinalStatus parentStatus =
+          computeParentFinalStatus(parent, attackChainRunId);
+
+      boolean canBeExecuted =
+          edgeConditionEvaluator.evaluate(
+              attackChainEdge.getAttackChainEdgeCondition(), parentStatus);
+      if (!canBeExecuted) {
+        if (errorMessages.isEmpty()) {
+          errorMessages.add(
+              "This inject depends on other injects expectations that are not met. The following conditions were not as expected : ");
+        }
+        errorMessages.addAll(
+            labelFromCondition(parent, attackChainEdge.getAttackChainEdgeCondition()));
       }
     }
+    if (!errorMessages.isEmpty()) {
+      throw new ErrorMessagesPreExecutionException(errorMessages);
+    }
+  }
+
+  /** 父节点是否已结束执行（任何非 not-ready 状态都视作 settled，包括 ERROR / FINISHED）. */
+  private boolean isParentExecutionSettled(AttackChainNode parent) {
+    return parent.getStatus().isPresent()
+        && !executionStatusesNotReady.contains(parent.getStatus().get().getName());
   }
 
   /**
-   * Get a map containing the expectations and if they are met or not
+   * 把父节点的多个 expectation 聚合成 {@link io.veriguard.attackchain.execution.NodeFinalStatus} —— 每个维度（PREVENTION /
+   * DETECTION / MANUAL）一个 EXPECTATION_STATUS：
    *
-   * @param parents the parents attackChainNodes
-   * @param attackChainRunId the id of the attackChainRun
-   * @param attackChainEdges the list of dependencies
-   * @return a map of expectations and their value
+   * <ul>
+   *   <li>无该维度 expectation → null（视作未结算）
+   *   <li>所有 expectation 都 SUCCESS → SUCCESS
+   *   <li>所有都 FAILED → FAILED
+   *   <li>任一 PENDING / UNKNOWN → PENDING
+   *   <li>其余（混合 SUCCESS/FAILED 或含 PARTIAL）→ PARTIAL
+   * </ul>
+   *
+   * <p>评估器的 SETTLED group 会接受 SUCCESS / FAILED / PARTIAL；ANY_SUCCESS / ALL_SUCCESS 只在 SUCCESS 通过；
+   * ANY_FAILED / ALL_FAILED 只在 FAILED 通过 —— 与节点级单值聚合后语义一致。
    */
-  private @NotNull Map<String, Boolean> getStringBooleanMap(
-      List<AttackChainNode> parents,
-      String attackChainRunId,
-      List<AttackChainEdge> attackChainEdges) {
-    Map<String, Boolean> mapCondition =
-        attackChainEdges.stream()
-            .flatMap(
-                attackChainEdge ->
-                    attackChainEdge.getAttackChainEdgeCondition().getConditions().stream())
-            .collect(
-                Collectors.toMap(AttackChainEdgeConditions.Condition::getKey, condition -> false));
-
-    parents.forEach(
-        parent -> {
-          mapCondition.put(
-              "Execution",
-              parent.getStatus().isPresent()
-                  && !ExecutionStatus.ERROR.equals(parent.getStatus().get().getName())
-                  && !executionStatusesNotReady.contains(parent.getStatus().get().getName()));
-
-          List<AttackChainNodeExpectation> expectations =
-              attackChainNodeExpectationRepository.findAllForAttackChainRunAndAttackChainNode(
-                  attackChainRunId, parent.getId());
-          expectations.forEach(
-              attackChainNodeExpectation -> {
-                String name =
-                    StringUtils.capitalize(
-                        attackChainNodeExpectation.getType().toString().toLowerCase());
-                if (attackChainNodeExpectation
-                    .getType()
-                    .equals(AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL)) {
-                  name = attackChainNodeExpectation.getName();
-                }
-                if (AttackChainNodeExpectation.EXPECTATION_TYPE.CHALLENGE.equals(
-                        attackChainNodeExpectation.getType())
-                    || AttackChainNodeExpectation.EXPECTATION_TYPE.ARTICLE.equals(
-                        attackChainNodeExpectation.getType())) {
-                  if (attackChainNodeExpectation.getUser() == null
-                      && attackChainNodeExpectation.getScore() != null) {
-                    mapCondition.put(
-                        name,
-                        attackChainNodeExpectation.getScore()
-                            >= attackChainNodeExpectation.getExpectedScore());
-                  }
-                } else {
-                  mapCondition.put(
-                      name,
-                      expectationStatusesSuccess.contains(
-                          attackChainNodeExpectation.getResponse()));
-                }
-              });
-        });
-    return mapCondition;
+  private io.veriguard.attackchain.execution.NodeFinalStatus computeParentFinalStatus(
+      AttackChainNode parent, String attackChainRunId) {
+    List<AttackChainNodeExpectation> expectations =
+        attackChainNodeExpectationRepository.findAllForAttackChainRunAndAttackChainNode(
+            attackChainRunId, parent.getId());
+    return new io.veriguard.attackchain.execution.NodeFinalStatus(
+        aggregateDimension(expectations, AttackChainNodeExpectation.EXPECTATION_TYPE.PREVENTION),
+        aggregateDimension(expectations, AttackChainNodeExpectation.EXPECTATION_TYPE.DETECTION),
+        aggregateDimension(expectations, AttackChainNodeExpectation.EXPECTATION_TYPE.MANUAL));
   }
 
-  private List<String> labelFromCondition(
-      AttackChainNode attackChainNodeParent,
-      AttackChainEdgeConditions.AttackChainEdgeCondition condition) {
-    List<String> result = new ArrayList<>();
-    for (AttackChainEdgeConditions.Condition conditionElement : condition.getConditions()) {
-      result.add(
-          String.format(
-              "Inject '%s' - %s is %s",
-              attackChainNodeParent.getTitle(),
-              conditionElement.getKey(),
-              conditionElement.isValue()));
+  private AttackChainNodeExpectation.EXPECTATION_STATUS aggregateDimension(
+      List<AttackChainNodeExpectation> expectations,
+      AttackChainNodeExpectation.EXPECTATION_TYPE dimension) {
+    List<AttackChainNodeExpectation.EXPECTATION_STATUS> statuses =
+        expectations.stream()
+            .filter(e -> dimension.equals(e.getType()))
+            .map(AttackChainNodeExpectation::getResponse)
+            .toList();
+    if (statuses.isEmpty()) {
+      return null;
     }
+    boolean anyPending =
+        statuses.stream()
+            .anyMatch(
+                s ->
+                    s == null
+                        || s == AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING
+                        || s == AttackChainNodeExpectation.EXPECTATION_STATUS.UNKNOWN);
+    if (anyPending) {
+      return AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING;
+    }
+    boolean allSuccess =
+        statuses.stream()
+            .allMatch(s -> s == AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+    if (allSuccess) {
+      return AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS;
+    }
+    boolean allFailed =
+        statuses.stream()
+            .allMatch(s -> s == AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED);
+    if (allFailed) {
+      return AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED;
+    }
+    return AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL;
+  }
+
+  private List<String> labelFromCondition(AttackChainNode attackChainNodeParent, EdgeCondition condition) {
+    List<String> result = new ArrayList<>();
+    if (condition == null) {
+      return result;
+    }
+    appendLabels(condition, attackChainNodeParent.getTitle(), result);
     return result;
+  }
+
+  private void appendLabels(EdgeCondition condition, String parentTitle, List<String> sink) {
+    switch (condition) {
+      case EdgeCondition.Eq eq ->
+          sink.add(
+              String.format(
+                  "Inject '%s' - %s is %s",
+                  parentTitle, eq.dimension(), eq.status()));
+      case EdgeCondition.And and -> {
+        if (and.children() != null) {
+          and.children().forEach(c -> appendLabels(c, parentTitle, sink));
+        }
+      }
+      case EdgeCondition.Or or -> {
+        if (or.children() != null) {
+          or.children().forEach(c -> appendLabels(c, parentTitle, sink));
+        }
+      }
+    }
   }
 
   public void updateAttackChainRun(String attackChainRunId) {
