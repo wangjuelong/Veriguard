@@ -83,7 +83,7 @@ public class EsAttackPathService {
    */
   public String extractSimulationIdFromSeriesFilter(StructuralHistogramWidget widget) {
     return widget.getSeries().getFirst().getFilter().getFilters().stream()
-        .filter(f -> "base_simulation_side".equals(f.getKey()))
+        .filter(f -> "base_attack_chain_run_side".equals(f.getKey()))
         .findFirst()
         .map(f -> f.getValues().getFirst())
         .orElseThrow();
@@ -101,7 +101,7 @@ public class EsAttackPathService {
       String simulationId,
       Map<String, String> parameters,
       Map<String, CustomDashboardParameters> definitionParameters) {
-    Map<String, List<String>> filterMap = Map.of("base_simulation_side", List.of(simulationId));
+    Map<String, List<String>> filterMap = Map.of("base_attack_chain_run_side", List.of(simulationId));
     ListConfiguration config = esService.createListConfiguration("inject", filterMap);
     config.setDateAttribute("inject_created_at");
     config.setTimeRange(CustomDashboardTimeRange.ALL_TIME);

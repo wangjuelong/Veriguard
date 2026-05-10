@@ -153,7 +153,7 @@ public class Team implements Base {
       fetch = FetchType.LAZY,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  @JsonProperty("team_exercises_users")
+  @JsonProperty("team_attack_chain_runs_users")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<AttackChainRunTeamUser> attackChainRunTeamUsers = new ArrayList<>();
 
@@ -169,7 +169,7 @@ public class Team implements Base {
           @Schema(
               description = "List of inject IDs from all simulations of the team",
               type = "string"))
-  @JsonProperty("team_exercise_injects")
+  @JsonProperty("team_attack_chain_run_nodes")
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<AttackChainNode> getAttackChainRunsAttackChainNodes() {
     Predicate<AttackChainNode> selectedAttackChainNode =
@@ -186,7 +186,7 @@ public class Team implements Base {
         .toList();
   }
 
-  @JsonProperty("team_exercise_injects_number")
+  @JsonProperty("team_attack_chain_run_nodes_number")
   @Schema(description = "Number of injects of all simulations of the team")
   public long getAttackChainRunsAttackChainNodesNumber() {
     return getAttackChainRunsAttackChainNodes().size();
@@ -197,7 +197,7 @@ public class Team implements Base {
           @Schema(
               description = "List of inject IDs from all scenarios of the team",
               type = "string"))
-  @JsonProperty("team_scenario_injects")
+  @JsonProperty("team_attack_chain_nodes")
   @JsonSerialize(using = MultiIdListSerializer.class)
   public List<AttackChainNode> getAttackChainsAttackChainNodes() {
     Predicate<AttackChainNode> selectedAttackChainNode =
@@ -214,7 +214,7 @@ public class Team implements Base {
         .toList();
   }
 
-  @JsonProperty("team_scenario_injects_number")
+  @JsonProperty("team_attack_chain_nodes_number")
   @Schema(description = "Number of injects of all scenarios of the team")
   public long getAttackChainsAttackChainNodesNumber() {
     return getAttackChainsAttackChainNodes().size();
@@ -225,16 +225,16 @@ public class Team implements Base {
           @Schema(description = "List of expectations id linked to this team", type = "string"))
   @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("team_inject_expectations")
+  @JsonProperty("team_node_expectations")
   private List<AttackChainNodeExpectation> attackChainNodeExpectations = new ArrayList<>();
 
-  @JsonProperty("team_injects_expectations_number")
+  @JsonProperty("team_nodes_expectations_number")
   @Schema(description = "Number of expectations linked to this team")
   public long getAttackChainNodeExpectationsNumber() {
     return getAttackChainNodeExpectations().size();
   }
 
-  @JsonProperty("team_injects_expectations_total_score")
+  @JsonProperty("team_nodes_expectations_total_score")
   @NotNull
   @Schema(description = "Total score of expectations linked to this team")
   public double getAttackChainNodeExpectationsTotalScore() {
@@ -244,7 +244,7 @@ public class Team implements Base {
         .sum();
   }
 
-  @JsonProperty("team_injects_expectations_total_score_by_exercise")
+  @JsonProperty("team_nodes_expectations_total_score_by_attack_chain_run")
   @NotNull
   @Schema(description = "Total score of expectations by simulation linked to this team")
   public Map<String, Double> getAttackChainNodeExpectationsTotalScoreByAttackChainRun() {
@@ -259,7 +259,7 @@ public class Team implements Base {
                 Collectors.summingDouble(AttackChainNodeExpectation::getScore)));
   }
 
-  @JsonProperty("team_injects_expectations_total_expected_score")
+  @JsonProperty("team_nodes_expectations_total_expected_score")
   @NotNull
   @Schema(description = "Total expected score of expectations linked to this team")
   public double getAttackChainNodeExpectationsTotalExpectedScore() {
@@ -269,7 +269,7 @@ public class Team implements Base {
         .sum();
   }
 
-  @JsonProperty("team_injects_expectations_total_expected_score_by_exercise")
+  @JsonProperty("team_nodes_expectations_total_expected_score_by_attack_chain_run")
   @NotNull
   @Schema(description = "Total expected score of expectations by simulation linked to this team")
   public Map<String, Double> getAttackChainNodeExpectationsTotalExpectedScoreByAttackChainRun() {

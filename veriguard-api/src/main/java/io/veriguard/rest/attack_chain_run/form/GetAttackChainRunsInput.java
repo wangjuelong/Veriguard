@@ -7,6 +7,6 @@ import lombok.Data;
 
 @Data
 public class GetAttackChainRunsInput {
-  @JsonProperty("exercise_ids")
+  @JsonProperty("attack_chain_run_ids")
   private List<String> attackChainRunIds = new ArrayList<>();
 }

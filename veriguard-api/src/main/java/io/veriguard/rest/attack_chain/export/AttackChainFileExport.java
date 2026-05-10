@@ -17,34 +17,34 @@ public class AttackChainFileExport {
   @JsonProperty("export_version")
   private int version;
 
-  @JsonProperty("scenario_information")
+  @JsonProperty("attack_chain_information")
   private AttackChain attackChain;
 
-  @JsonProperty("scenario_teams")
+  @JsonProperty("attack_chain_teams")
   private List<Team> teams = new ArrayList<>();
 
-  @JsonProperty("scenario_objectives")
+  @JsonProperty("attack_chain_objectives")
   private List<Objective> objectives = new ArrayList<>();
 
-  @JsonProperty("scenario_users")
+  @JsonProperty("attack_chain_users")
   private List<User> users = new ArrayList<>();
 
-  @JsonProperty("scenario_organizations")
+  @JsonProperty("attack_chain_organizations")
   private List<Organization> organizations = new ArrayList<>();
 
-  @JsonProperty("scenario_injects")
+  @JsonProperty("attack_chain_nodes")
   private List<AttackChainNode> attackChainNodes = new ArrayList<>();
 
-  @JsonProperty("scenario_tags")
+  @JsonProperty("attack_chain_tags")
   private List<Tag> tags = new ArrayList<>();
 
-  @JsonProperty("scenario_documents")
+  @JsonProperty("attack_chain_documents")
   private List<Document> documents = new ArrayList<>();
 
-  @JsonProperty("scenario_lessons_categories")
+  @JsonProperty("attack_chain_lessons_categories")
   private List<LessonsCategory> lessonsCategories = new ArrayList<>();
 
-  @JsonProperty("scenario_lessons_questions")
+  @JsonProperty("attack_chain_lessons_questions")
   private List<LessonsQuestion> lessonsQuestions = new ArrayList<>();
 
   @JsonIgnore public static final String SCENARIO_VARIABLES = "scenario_variables";

@@ -62,51 +62,51 @@ public class AttackChainNode implements GrantableBase, Injection {
   @Column(name = ID_COLUMN_NAME)
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   @NotBlank
   private String id;
 
   @Getter
   @Queryable(filterable = true, searchable = true, sortable = true)
   @Column(name = "node_title")
-  @JsonProperty("inject_title")
+  @JsonProperty("node_title")
   @NotBlank
   private String title;
 
   @Getter
   @Column(name = "node_description")
-  @JsonProperty("inject_description")
+  @JsonProperty("node_description")
   private String description;
 
   @Getter
   @Column(name = "node_country")
-  @JsonProperty("inject_country")
+  @JsonProperty("node_country")
   private String country;
 
   @Getter
   @Column(name = "node_city")
-  @JsonProperty("inject_city")
+  @JsonProperty("node_city")
   private String city;
 
   @Getter
   @Column(name = "node_enabled")
-  @JsonProperty("inject_enabled")
+  @JsonProperty("node_enabled")
   private boolean enabled = true;
 
   @Getter
   @Column(name = "node_trigger_now_date")
-  @JsonProperty("inject_trigger_now_date")
+  @JsonProperty("node_trigger_now_date")
   private Instant triggerNowDate;
 
   @Getter
   @Column(name = "node_content")
   @Convert(converter = ContentConverter.class)
-  @JsonProperty("inject_content")
+  @JsonProperty("node_content")
   private ObjectNode content;
 
   @Getter
   @Column(name = "node_created_at")
-  @JsonProperty("inject_created_at")
+  @JsonProperty("node_created_at")
   @NotNull
   @CreationTimestamp
   private Instant createdAt = now();
@@ -114,21 +114,21 @@ public class AttackChainNode implements GrantableBase, Injection {
   @Getter
   @Column(name = "node_updated_at")
   @Queryable(filterable = true, sortable = true)
-  @JsonProperty("inject_updated_at")
+  @JsonProperty("node_updated_at")
   @NotNull
   @UpdateTimestamp
   private Instant updatedAt = now();
 
   @Getter
   @Column(name = "node_all_teams")
-  @JsonProperty("inject_all_teams")
+  @JsonProperty("node_all_teams")
   private boolean allTeams;
 
   @Getter
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "node_attack_chain_run_id")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("inject_exercise")
+  @JsonProperty("node_attack_chain_run")
   @Schema(type = "string")
   private AttackChainRun attackChainRun;
 
@@ -136,7 +136,7 @@ public class AttackChainNode implements GrantableBase, Injection {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "node_attack_chain_id")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("inject_scenario")
+  @JsonProperty("node_attack_chain")
   @Schema(type = "string")
   private AttackChain attackChain;
 
@@ -146,7 +146,7 @@ public class AttackChainNode implements GrantableBase, Injection {
       fetch = FetchType.EAGER,
       orphanRemoval = true,
       cascade = CascadeType.ALL)
-  @JsonProperty("inject_depends_on")
+  @JsonProperty("node_depends_on")
   private List<AttackChainEdge> dependsOn = new ArrayList<>();
 
   // UpdatedAt now used to sync with linked object
@@ -157,7 +157,7 @@ public class AttackChainNode implements GrantableBase, Injection {
 
   @Getter
   @Column(name = "node_depends_duration")
-  @JsonProperty("inject_depends_duration")
+  @JsonProperty("node_depends_duration")
   @NotNull
   @Min(value = 0L, message = "The value must be positive")
   @Queryable(sortable = true)
@@ -165,7 +165,7 @@ public class AttackChainNode implements GrantableBase, Injection {
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "node_contract_id")
-  @JsonProperty("inject_injector_contract")
+  @JsonProperty("node_injector_contract")
   @Queryable(filterable = true, dynamicValues = true, path = "nodeContract.nodeExecutor.id")
   private NodeContract nodeContract;
 
@@ -173,19 +173,19 @@ public class AttackChainNode implements GrantableBase, Injection {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "node_user")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("inject_user")
+  @JsonProperty("node_user")
   @Schema(type = "string")
   private User user;
 
   // CascadeType.ALL is required here because attackChainNode status are embedded
   @OneToOne(mappedBy = "attackChainNode", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonProperty("inject_status")
+  @JsonProperty("node_status")
   @Queryable(filterable = true, sortable = true)
   private AttackChainNodeStatus status;
 
   @Column(name = "node_collect_status", nullable = false)
   @Enumerated(EnumType.STRING)
-  @JsonProperty("inject_collect_status")
+  @JsonProperty("node_collect_status")
   @Getter
   private CollectExecutionStatus collectExecutionStatus = COLLECTING;
 
@@ -193,30 +193,30 @@ public class AttackChainNode implements GrantableBase, Injection {
 
   @Getter
   @Column(name = "repeat_count", nullable = false)
-  @JsonProperty("inject_repeat_count")
+  @JsonProperty("node_repeat_count")
   @Min(value = 1L)
   private int repeatCount = 1;
 
   @Getter
   @Column(name = "repeat_interval_seconds", nullable = false)
-  @JsonProperty("inject_repeat_interval_seconds")
+  @JsonProperty("node_repeat_interval_seconds")
   @Min(value = 0L)
   private long repeatIntervalSeconds = 0L;
 
   @Getter
   @Column(name = "validation_parameter_set_id")
-  @JsonProperty("inject_validation_parameter_set_id")
+  @JsonProperty("node_validation_parameter_set_id")
   private UUID validationParameterSetId;
 
   @Getter
   @Column(name = "node_state")
   @Enumerated(EnumType.STRING)
-  @JsonProperty("inject_node_state")
+  @JsonProperty("node_node_state")
   private NodeState nodeState;
 
   @Getter
   @Column(name = "current_iteration", nullable = false)
-  @JsonProperty("inject_current_iteration")
+  @JsonProperty("node_current_iteration")
   @Min(value = 0L)
   private int currentIteration = 0;
 
@@ -234,7 +234,7 @@ public class AttackChainNode implements GrantableBase, Injection {
       joinColumns = @JoinColumn(name = "node_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   @JsonSerialize(using = MultiIdSetSerializer.class)
-  @JsonProperty("inject_tags")
+  @JsonProperty("node_tags")
   @Queryable(filterable = true, dynamicValues = true)
   private Set<Tag> tags = new HashSet<>();
 
@@ -252,7 +252,7 @@ public class AttackChainNode implements GrantableBase, Injection {
       joinColumns = @JoinColumn(name = "node_id"),
       inverseJoinColumns = @JoinColumn(name = "team_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("inject_teams")
+  @JsonProperty("node_teams")
   @Queryable(filterable = true, dynamicValues = true, path = "teams.id")
   private List<Team> teams = new ArrayList<>();
 
@@ -270,7 +270,7 @@ public class AttackChainNode implements GrantableBase, Injection {
       joinColumns = @JoinColumn(name = "node_id"),
       inverseJoinColumns = @JoinColumn(name = "asset_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("inject_assets")
+  @JsonProperty("node_assets")
   @Queryable(filterable = true, dynamicValues = true, path = "assets.id")
   private List<Asset> assets = new ArrayList<>();
 
@@ -288,7 +288,7 @@ public class AttackChainNode implements GrantableBase, Injection {
       joinColumns = @JoinColumn(name = "node_id"),
       inverseJoinColumns = @JoinColumn(name = "asset_group_id"))
   @JsonSerialize(using = MultiIdListSerializer.class)
-  @JsonProperty("inject_asset_groups")
+  @JsonProperty("node_asset_groups")
   @Queryable(filterable = true, dynamicValues = true, path = "assetGroups.id")
   private List<AssetGroup> assetGroups = new ArrayList<>();
 
@@ -306,7 +306,7 @@ public class AttackChainNode implements GrantableBase, Injection {
       fetch = FetchType.EAGER,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  @JsonProperty("inject_documents")
+  @JsonProperty("node_documents")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<AttackChainNodeDocument> documents = new ArrayList<>();
 
@@ -318,7 +318,7 @@ public class AttackChainNode implements GrantableBase, Injection {
       fetch = FetchType.EAGER,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  @JsonProperty("inject_communications")
+  @JsonProperty("node_communications")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<Communication> communications = new ArrayList<>();
 
@@ -330,7 +330,7 @@ public class AttackChainNode implements GrantableBase, Injection {
       fetch = FetchType.EAGER,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  @JsonProperty("inject_expectations")
+  @JsonProperty("node_expectations")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<AttackChainNodeExpectation> expectations = new ArrayList<>();
 
@@ -390,7 +390,7 @@ public class AttackChainNode implements GrantableBase, Injection {
     this.setCollectExecutionStatus(COLLECTING);
   }
 
-  @JsonProperty("inject_users_number")
+  @JsonProperty("node_users_number")
   public long getNumberOfTargetUsers() {
     if (this.getAttackChainRun() == null) {
       return 0L;
@@ -404,7 +404,7 @@ public class AttackChainNode implements GrantableBase, Injection {
         .orElse(0L);
   }
 
-  @JsonProperty("inject_ready")
+  @JsonProperty("node_ready")
   public boolean isReady() {
     return NodeModelHelper.isReady(
         getNodeContract().orElse(null),
@@ -421,7 +421,7 @@ public class AttackChainNode implements GrantableBase, Injection {
         source, speed, getDependsDuration(), getAttackChainRun());
   }
 
-  @JsonProperty("inject_date")
+  @JsonProperty("node_date")
   public Optional<Instant> getDate() {
     // If a trigger now was executed for this attackChainNode linked to an attackChainRun, we ignore
     // pauses and we
@@ -467,24 +467,24 @@ public class AttackChainNode implements GrantableBase, Injection {
     return ofNullable(this.status);
   }
 
-  @JsonProperty("inject_communications_number")
+  @JsonProperty("node_communications_number")
   public long getCommunicationsNumber() {
     return this.getCommunications().size();
   }
 
-  @JsonProperty("inject_communications_not_ack_number")
+  @JsonProperty("node_communications_not_ack_number")
   public long getCommunicationsNotAckNumber() {
     return this.getCommunications().stream()
         .filter(communication -> !communication.getAck())
         .count();
   }
 
-  @JsonProperty("inject_sent_at")
+  @JsonProperty("node_sent_at")
   public Instant getSentAt() {
     return NodeModelHelper.getSentAt(this.getStatus());
   }
 
-  @JsonProperty("inject_kill_chain_phases")
+  @JsonProperty("node_kill_chain_phases")
   @Queryable(
       filterable = true,
       dynamicValues = true,
@@ -500,13 +500,13 @@ public class AttackChainNode implements GrantableBase, Injection {
         .orElseGet(ArrayList::new);
   }
 
-  @JsonProperty("inject_attack_patterns")
+  @JsonProperty("node_attack_patterns")
   @Queryable(filterable = true, dynamicValues = true, path = "nodeContract.attackPatterns.id")
   public List<AttackPattern> getAttackPatterns() {
     return getNodeContract().map(NodeContract::getAttackPatterns).orElseGet(ArrayList::new);
   }
 
-  @JsonProperty("inject_type")
+  @JsonProperty("node_type")
   @Queryable(filterable = true, path = "nodeContract.labels", clazz = Map.class)
   private String getType() {
     return getNodeContract()
@@ -516,13 +516,13 @@ public class AttackChainNode implements GrantableBase, Injection {
   }
 
   @JsonIgnore
-  @JsonProperty("inject_platforms")
+  @JsonProperty("node_platforms")
   @Queryable(filterable = true, path = "nodeContract.platforms", clazz = String[].class)
   private Endpoint.PLATFORM_TYPE[] getPlatforms() {
     return getNodeContract().map(NodeContract::getPlatforms).orElse(new Endpoint.PLATFORM_TYPE[0]);
   }
 
-  @JsonProperty("inject_contract_domains")
+  @JsonProperty("node_contract_domains")
   @Queryable(
       filterable = true,
       paths = {"injectorContract.domains.id", "injectorContract.payload.domains.id"},
@@ -537,7 +537,7 @@ public class AttackChainNode implements GrantableBase, Injection {
     return this.attackChainRun == null && this.attackChain == null;
   }
 
-  @JsonProperty("inject_testable")
+  @JsonProperty("node_testable")
   public boolean getAttackChainNodeTestable() {
     return VALID_TESTABLE_TYPES.contains(this.getType());
   }

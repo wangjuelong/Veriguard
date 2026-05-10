@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AttackChainRunUpdateLogoInput {
 
-  @JsonProperty("exercise_logo_dark")
+  @JsonProperty("attack_chain_run_logo_dark")
   private String logoDark;
 
-  @JsonProperty("exercise_logo_light")
+  @JsonProperty("attack_chain_run_logo_light")
   private String logoLight;
 
   public String getLogoDark() {

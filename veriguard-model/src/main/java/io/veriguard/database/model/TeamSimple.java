@@ -66,7 +66,7 @@ public class TeamSimple {
           "True if the team is contextual (exists only in the scenario/simulation it is linked to)")
   private Boolean contextual;
 
-  @JsonProperty("team_exercises_users")
+  @JsonProperty("team_attack_chain_runs_users")
   @Schema(description = "List of 3-tuple linking simulation IDs and user IDs to this team ID")
   private Set<AttackChainRunTeamUser> attackChainRunTeamUsers = new HashSet<>();
 
@@ -77,21 +77,21 @@ public class TeamSimple {
   }
 
   // region transient
-  @JsonProperty("team_exercise_injects")
+  @JsonProperty("team_attack_chain_run_nodes")
   @Schema(description = "List of inject IDs from all simulations of the team")
   private Set<String> attackChainRunsAttackChainNodes;
 
-  @JsonProperty("team_exercise_injects_number")
+  @JsonProperty("team_attack_chain_run_nodes_number")
   @Schema(description = "Number of injects of all simulations of the team")
   public long getAttackChainRunsAttackChainNodesNumber() {
     return this.attackChainRunsAttackChainNodes.size();
   }
 
-  @JsonProperty("team_scenario_injects")
+  @JsonProperty("team_attack_chain_nodes")
   @Schema(description = "List of inject IDs from all scenarios of the team")
   Set<String> attackChainsAttackChainNodes = new HashSet<>();
 
-  @JsonProperty("team_scenario_injects_number")
+  @JsonProperty("team_attack_chain_nodes_number")
   @Schema(description = "Number of injects of all scenarios of the team")
   public long getAttackChainsAttackChainNodesNumber() {
     return this.attackChainsAttackChainNodes.size();
@@ -100,7 +100,7 @@ public class TeamSimple {
   @JsonIgnore
   private List<AttackChainNodeExpectation> attackChainNodeExpectations = new ArrayList<>();
 
-  @JsonProperty("team_inject_expectations")
+  @JsonProperty("team_node_expectations")
   @Schema(description = "List of expectation ids linked to this team")
   private Set<String> getAttackChainNodeExpectationsAsStringList() {
     return getAttackChainNodeExpectations().stream()
@@ -108,13 +108,13 @@ public class TeamSimple {
         .collect(Collectors.toSet());
   }
 
-  @JsonProperty("team_injects_expectations_number")
+  @JsonProperty("team_nodes_expectations_number")
   @Schema(description = "Number of expectations linked to this team")
   public long getAttackChainNodeExpectationsNumber() {
     return getAttackChainNodeExpectations().size();
   }
 
-  @JsonProperty("team_injects_expectations_total_score")
+  @JsonProperty("team_nodes_expectations_total_score")
   @NotNull
   @Schema(description = "Total score of expectations linked to this team")
   public double getAttackChainNodeExpectationsTotalScore() {
@@ -124,7 +124,7 @@ public class TeamSimple {
         .sum();
   }
 
-  @JsonProperty("team_injects_expectations_total_score_by_exercise")
+  @JsonProperty("team_nodes_expectations_total_score_by_attack_chain_run")
   @NotNull
   @Schema(description = "Total score of expectations by simulation linked to this team")
   public Map<String, Double> getAttackChainNodeExpectationsTotalScoreByAttackChainRun() {
@@ -139,7 +139,7 @@ public class TeamSimple {
                 Collectors.summingDouble(AttackChainNodeExpectation::getScore)));
   }
 
-  @JsonProperty("team_injects_expectations_total_expected_score")
+  @JsonProperty("team_nodes_expectations_total_expected_score")
   @NotNull
   @Schema(description = "Total expected score of expectations linked to this team")
   public double getAttackChainNodeExpectationsTotalExpectedScore() {
@@ -149,7 +149,7 @@ public class TeamSimple {
         .sum();
   }
 
-  @JsonProperty("team_injects_expectations_total_expected_score_by_exercise")
+  @JsonProperty("team_nodes_expectations_total_expected_score_by_attack_chain_run")
   @NotNull
   @Schema(description = "Total expected score of expectations by simulation linked to this team")
   public Map<String, Double> getAttackChainNodeExpectationsTotalExpectedScoreByAttackChainRun() {

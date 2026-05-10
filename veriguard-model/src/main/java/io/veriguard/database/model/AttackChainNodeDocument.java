@@ -22,7 +22,7 @@ public class AttackChainNodeDocument {
   @ManyToOne(fetch = FetchType.EAGER)
   @MapsId("attackChainNodeId")
   @JoinColumn(name = "node_id")
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   private AttackChainNode attackChainNode;

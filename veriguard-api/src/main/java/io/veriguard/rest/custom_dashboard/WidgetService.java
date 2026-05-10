@@ -158,7 +158,7 @@ public class WidgetService {
             AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS.name());
     WidgetUtils.setOrAddFilterByKey(
         listAttackChainNodeExpectationsConfig.getPerspective().getFilter(),
-        "inject_expectation_status",
+        "node_expectation_status",
         statusFilters,
         Filters.FilterOperator.contains);
     return listAttackChainNodeExpectationsConfig;

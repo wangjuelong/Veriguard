@@ -18,22 +18,22 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DirectAttackChainNodeInput {
 
-  @JsonProperty("inject_title")
+  @JsonProperty("node_title")
   private String title;
 
-  @JsonProperty("inject_description")
+  @JsonProperty("node_description")
   private String description;
 
-  @JsonProperty("inject_injector_contract")
+  @JsonProperty("node_injector_contract")
   private String nodeContract;
 
-  @JsonProperty("inject_content")
+  @JsonProperty("node_content")
   private ObjectNode content;
 
-  @JsonProperty("inject_users")
+  @JsonProperty("node_users")
   private List<String> userIds = new ArrayList<>();
 
-  @JsonProperty("inject_documents")
+  @JsonProperty("node_documents")
   private List<AttackChainNodeDocumentInput> documents = new ArrayList<>();
 
   public AttackChainNode toAttackChainNode(@NotNull final NodeContract nodeContract) {

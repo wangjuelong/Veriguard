@@ -13,38 +13,38 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Indexable(index = "inject", label = "Inject")
+@Indexable(index = "nodes", label = "AttackChainNode")
 public class EsAttackChainNode extends EsBase {
   /* Every attribute must be uniq, so prefixed with the entity type! */
   /* Except relationships, they should have same name on every model! */
 
-  @Queryable(label = "inject title")
-  private String inject_title;
+  @Queryable(label = "node title")
+  private String node_title;
 
-  @Queryable(label = "inject status", filterable = true, refEnumClazz = ExecutionStatus.class)
+  @Queryable(label = "node status", filterable = true, refEnumClazz = ExecutionStatus.class)
   @EsQueryable(keyword = true)
-  private String inject_status;
+  private String node_status;
 
   @Queryable(label = "execution date", filterable = true, sortable = true)
   private Instant execution_date;
 
   // -- SIDE --
 
-  @Queryable(label = "scenario", filterable = true, dynamicValues = true)
+  @Queryable(label = "attack_chain", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_scenario_side; // Must finish by _side
+  private String base_attack_chain_side; // Must finish by _side
 
-  @Queryable(label = "simulation", filterable = true, dynamicValues = true)
+  @Queryable(label = "attack_chain_run", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_simulation_side; // Must finish by _side
+  private String base_attack_chain_run_side; // Must finish by _side
 
   @Queryable(label = "attack patterns", filterable = true)
   @EsQueryable(keyword = true)
   private Set<String> base_attack_patterns_side; // Must finish by _side
 
-  @Queryable(label = "inject children")
+  @Queryable(label = "node children")
   @EsQueryable(keyword = true)
-  private Set<String> base_inject_children_side; // Must finish by _side
+  private Set<String> base_node_children_side; // Must finish by _side
 
   @Queryable(label = "attack patterns children")
   @EsQueryable(keyword = true)
@@ -54,9 +54,9 @@ public class EsAttackChainNode extends EsBase {
   @EsQueryable(keyword = true)
   private Set<String> base_kill_chain_phases_side; // Must finish by _side
 
-  @Queryable(label = "inject contract")
+  @Queryable(label = "node contract")
   @EsQueryable(keyword = true)
-  private String base_inject_contract_side; // Must finish by _side
+  private String base_node_contract_side; // Must finish by _side
 
   @Queryable(label = "tags", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)

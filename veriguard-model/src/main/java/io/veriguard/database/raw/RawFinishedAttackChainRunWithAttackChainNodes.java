@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.Set;
 
 public interface RawFinishedAttackChainRunWithAttackChainNodes {
-  Instant getExercise_end_date();
+  Instant getAttack_chain_run_end_date();
 
-  Set<String> getInject_ids();
+  Set<String> getNode_ids();
 }

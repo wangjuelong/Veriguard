@@ -10,25 +10,25 @@ import lombok.Data;
 @Data
 public class NodeExpectationTraceInput {
 
-  @JsonProperty("inject_expectation_trace_expectation")
+  @JsonProperty("node_expectation_trace_expectation")
   @Schema(type = "string")
   @NotBlank
   private String attackChainNodeExpectationId;
 
   @NotBlank
-  @JsonProperty("inject_expectation_trace_source_id")
+  @JsonProperty("node_expectation_trace_source_id")
   @Schema(type = "string")
   private String sourceId;
 
   @NotBlank
-  @JsonProperty("inject_expectation_trace_alert_name")
+  @JsonProperty("node_expectation_trace_alert_name")
   private String alertName;
 
   @NotBlank
-  @JsonProperty("inject_expectation_trace_alert_link")
+  @JsonProperty("node_expectation_trace_alert_link")
   private String alertLink;
 
   @NotNull
-  @JsonProperty("inject_expectation_trace_date")
+  @JsonProperty("node_expectation_trace_date")
   private Instant alertDate;
 }

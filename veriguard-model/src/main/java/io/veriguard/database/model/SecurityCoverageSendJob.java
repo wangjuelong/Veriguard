@@ -32,7 +32,7 @@ public class SecurityCoverageSendJob implements Base {
 
   @OneToOne
   @JoinColumn(name = "security_coverage_send_job_simulation", nullable = false)
-  @JsonProperty("security_coverage_send_job_simulation")
+  @JsonProperty("security_coverage_send_job_attack_chain_run")
   private AttackChainRun simulation;
 
   @UpdateTimestamp

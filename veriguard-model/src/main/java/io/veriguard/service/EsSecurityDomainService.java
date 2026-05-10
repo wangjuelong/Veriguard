@@ -19,8 +19,8 @@ public class EsSecurityDomainService {
   public AverageConfiguration setFieldsForQuery(AverageConfiguration config) {
     Map<String, String> fields = new HashMap<>();
     fields.put("domainField", "base_security_domains_side");
-    fields.put("typeField", "inject_expectation_type");
-    fields.put("statusField", "inject_expectation_status");
+    fields.put("typeField", "node_expectation_type");
+    fields.put("statusField", "node_expectation_status");
     config.setField(fields);
     return config;
   }

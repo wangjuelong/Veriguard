@@ -23,10 +23,10 @@ import lombok.Setter;
 @Setter
 public class SimpleRawAttackChainNodeExpectation implements RawAttackChainNodeExpectation {
 
-  private String inject_expectation_id;
-  private String inject_expectation_type;
-  private Double inject_expectation_score;
-  private Double inject_expectation_expected_score;
+  private String node_expectation_id;
+  private String node_expectation_type;
+  private Double node_expectation_score;
+  private Double node_expectation_expected_score;
   private String team_id;
   private String team_name;
   private String user_id;
@@ -41,19 +41,19 @@ public class SimpleRawAttackChainNodeExpectation implements RawAttackChainNodeEx
   private String asset_group_id;
   private String asset_group_name;
   private List<String> asset_ids;
-  private String scenario_id;
-  private String exercise_id;
-  private String inject_id;
-  private Boolean inject_expectation_group;
-  private Instant inject_expectation_created_at;
-  private String inject_expectation_name;
-  public String inject_expectation_description;
-  public String inject_expectation_results;
-  public Long inject_expiration_time;
-  public Instant inject_expectation_updated_at;
+  private String attack_chain_id;
+  private String attack_chain_run_id;
+  private String node_id;
+  private Boolean node_expectation_group;
+  private Instant node_expectation_created_at;
+  private String node_expectation_name;
+  public String node_expectation_description;
+  public String node_expectation_results;
+  public Long node_expiration_time;
+  public Instant node_expectation_updated_at;
   public Set<String> attack_pattern_ids;
   public Set<String> domain_ids;
   public Set<String> security_platform_ids;
-  private String inject_title;
+  private String node_title;
   private Instant tracking_sent_date;
 }

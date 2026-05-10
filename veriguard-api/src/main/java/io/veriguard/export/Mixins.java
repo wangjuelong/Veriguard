@@ -133,7 +133,7 @@ public class Mixins {
   @JsonIncludeProperties(
       value = {
         "inject_id",
-        "inject_title",
+        "node_title",
         "inject_description",
         "inject_country",
         "inject_city",

@@ -34,72 +34,72 @@ public class RawAttackChainNodeExpectationFixture {
       implements RawAttackChainNodeExpectation {
 
     @Override
-    public String getInject_expectation_id() {
+    public String getNode_expectation_id() {
       return attackChainNodeExpectationId;
     }
 
     @Override
-    public String getInject_expectation_name() {
+    public String getNode_expectation_name() {
       return attackChainNodeExpectationName;
     }
 
     @Override
-    public String getInject_title() {
+    public String getNode_title() {
       return attackChainNodeExpectationName;
     }
 
     @Override
-    public String getInject_expectation_description() {
+    public String getNode_expectation_description() {
       return attackChainNodeExpectationDescription;
     }
 
     @Override
-    public String getInject_expectation_type() {
+    public String getNode_expectation_type() {
       return expectationType;
     }
 
     @Override
-    public String getInject_expectation_results() {
+    public String getNode_expectation_results() {
       return expectationResults;
     }
 
     @Override
-    public Double getInject_expectation_score() {
+    public Double getNode_expectation_score() {
       return expectationScore;
     }
 
     @Override
-    public Double getInject_expectation_expected_score() {
+    public Double getNode_expectation_expected_score() {
       return expectationExpectedScore;
     }
 
     @Override
-    public Long getInject_expiration_time() {
+    public Long getNode_expiration_time() {
       return attackChainNodeExpirationTime;
     }
 
     @Override
-    public Boolean getInject_expectation_group() {
+    public Boolean getNode_expectation_group() {
       return expectationGroup;
     }
 
     @Override
-    public Instant getInject_expectation_created_at() {
+    public Instant getNode_expectation_created_at() {
       return createdAt;
     }
 
     @Override
-    public Instant getInject_expectation_updated_at() {
+    public Instant getNode_expectation_updated_at() {
       return updatedAt;
     }
 
     @Override
-    public String getExercise_id() {
+    public String getAttack_chain_run_id() {
       return attackChainRunId;
     }
 
     @Override
-    public String getInject_id() {
+    public String getNode_id() {
       return attackChainNodeId;
     }
 
@@ -144,7 +144,7 @@ public class RawAttackChainNodeExpectationFixture {
     }
 
     @Override
-    public String getScenario_id() {
+    public String getAttack_chain_id() {
       return attackChainId;
     }
 

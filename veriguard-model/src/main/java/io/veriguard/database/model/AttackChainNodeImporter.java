@@ -26,20 +26,20 @@ public class AttackChainNodeImporter implements Base {
 
   @Id
   @Column(name = "importer_id")
-  @JsonProperty("inject_importer_id")
+  @JsonProperty("node_importer_id")
   @GeneratedValue
   @UuidGenerator
   @NotNull
   private UUID id;
 
   @Column(name = "importer_import_type_value")
-  @JsonProperty("inject_importer_type_value")
+  @JsonProperty("node_importer_type_value")
   @NotBlank
   private String importTypeValue;
 
   @OneToOne
   @JoinColumn(name = "importer_injector_contract_id")
-  @JsonProperty("inject_importer_injector_contract")
+  @JsonProperty("node_importer_injector_contract")
   @JsonSerialize(using = MonoIdSerializer.class)
   @NotNull
   @Schema(type = "string")
@@ -47,17 +47,17 @@ public class AttackChainNodeImporter implements Base {
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @JoinColumn(name = "attribute_inject_importer_id", nullable = false)
-  @JsonProperty("inject_importer_rule_attributes")
+  @JsonProperty("node_importer_rule_attributes")
   private List<RuleAttribute> ruleAttributes = new ArrayList<>();
 
   @CreationTimestamp
   @Column(name = "importer_created_at")
-  @JsonProperty("inject_importer_created_at")
+  @JsonProperty("node_importer_created_at")
   private Instant creationDate;
 
   @UpdateTimestamp
   @Column(name = "importer_updated_at")
-  @JsonProperty("inject_importer_updated_at")
+  @JsonProperty("node_importer_updated_at")
   private Instant updateDate;
 
   @Override

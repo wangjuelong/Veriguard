@@ -13,16 +13,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Indexable(index = "simulation", label = "Simulation")
+@Indexable(index = "attack_chain_runs", label = "AttackChainRun")
 public class EsSimulation extends EsBase {
   /* Every attribute must be uniq, so prefixed with the entity type! */
   /* Except relationships, they should have same name on every model! */
 
-  @Queryable(label = "simulation name", filterable = true)
+  @Queryable(label = "attack_chain_run name", filterable = true)
   private String name;
 
   @Queryable(
-      label = "simulation status",
+      label = "attack_chain_run status",
       filterable = true,
       refEnumClazz = AttackChainRunStatus.class)
   @EsQueryable(keyword = true)
@@ -49,9 +49,9 @@ public class EsSimulation extends EsBase {
   @EsQueryable(keyword = true)
   private Set<String> base_teams_side; // Must finish by _side
 
-  @Queryable(label = "scenario", filterable = true, dynamicValues = true)
+  @Queryable(label = "attack_chain", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_scenario_side; // Must finish by _side
+  private String base_attack_chain_side; // Must finish by _side
 
   // -- SIDE DENORMALIZED --
   // like side but directly names instead of ids in the Set

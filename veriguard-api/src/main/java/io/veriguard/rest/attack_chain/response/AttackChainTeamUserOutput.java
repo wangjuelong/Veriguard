@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AttackChainTeamUserOutput {
 
-  @JsonProperty("scenario_id")
+  @JsonProperty("attack_chain_id")
   @Schema(description = "ID of the scenario")
   private String attackChainId;
 

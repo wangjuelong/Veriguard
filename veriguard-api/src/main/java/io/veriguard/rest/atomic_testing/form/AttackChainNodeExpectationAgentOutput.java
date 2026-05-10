@@ -21,41 +21,41 @@ import lombok.Data;
 public class AttackChainNodeExpectationAgentOutput {
 
   @NotNull
-  @JsonProperty("inject_expectation_type")
+  @JsonProperty("node_expectation_type")
   private AttackChainNodeExpectation.EXPECTATION_TYPE type;
 
   @NotBlank
-  @JsonProperty("inject_expectation_id")
+  @JsonProperty("node_expectation_id")
   private String id;
 
-  @JsonProperty("inject_expectation_name")
+  @JsonProperty("node_expectation_name")
   private String name;
 
-  @JsonProperty("inject_expectation_results")
+  @JsonProperty("node_expectation_results")
   private List<NodeExpectationResult> results;
 
-  @JsonProperty("inject_expectation_score")
+  @JsonProperty("node_expectation_score")
   private Double score;
 
-  @JsonProperty("inject_expectation_status")
+  @JsonProperty("node_expectation_status")
   public AttackChainNodeExpectation.EXPECTATION_STATUS status;
 
-  @JsonProperty("inject_expiration_time")
+  @JsonProperty("node_expiration_time")
   @NotNull
   private Long expirationTime;
 
-  @JsonProperty("inject_expectation_created_at")
+  @JsonProperty("node_expectation_created_at")
   private Instant createdAt;
 
-  @JsonProperty("inject_expectation_group")
+  @JsonProperty("node_expectation_group")
   private boolean expectationGroup;
 
-  @JsonProperty("inject_expectation_asset")
+  @JsonProperty("node_expectation_asset")
   private String assetId; // id
 
-  @JsonProperty("inject_expectation_agent")
+  @JsonProperty("node_expectation_agent")
   private String agentId; // id
 
-  @JsonProperty("inject_expectation_agent_name")
+  @JsonProperty("node_expectation_agent_name")
   private String agentName;
 }

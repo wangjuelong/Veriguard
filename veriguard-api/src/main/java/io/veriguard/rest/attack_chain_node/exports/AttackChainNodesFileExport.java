@@ -20,10 +20,10 @@ import org.hibernate.Hibernate;
 @Getter
 @JsonInclude(NON_NULL)
 public class AttackChainNodesFileExport extends FileExportBase {
-  @JsonProperty("inject_information")
+  @JsonProperty("node_information")
   private List<AttackChainNode> attackChainNodes;
 
-  @JsonProperty("inject_documents")
+  @JsonProperty("node_documents")
   private List<Document> getDocuments() throws IOException {
     List<Document> documents = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class AttackChainNodesFileExport extends FileExportBase {
     return documents;
   }
 
-  @JsonProperty("inject_tags")
+  @JsonProperty("node_tags")
   private List<Tag> getTags() throws IOException {
     List<Tag> allTags = new ArrayList<>();
     allTags.addAll(this.getTeams().stream().flatMap(team -> team.getTags().stream()).toList());
@@ -85,7 +85,7 @@ public class AttackChainNodesFileExport extends FileExportBase {
     return allTags;
   }
 
-  @JsonProperty("inject_teams")
+  @JsonProperty("node_teams")
   private List<Team> getTeams() {
     return ExportOptions.has(ExportOptions.WITH_TEAMS, this.exportOptionsMask)
         ? attackChainNodes.stream()
@@ -94,14 +94,14 @@ public class AttackChainNodesFileExport extends FileExportBase {
         : List.of();
   }
 
-  @JsonProperty("inject_users")
+  @JsonProperty("node_users")
   private List<User> getUsers() {
     return ExportOptions.has(ExportOptions.WITH_PLAYERS, this.exportOptionsMask)
         ? this.getTeams().stream().flatMap(team -> team.getUsers().stream()).toList()
         : List.of();
   }
 
-  @JsonProperty("inject_organizations")
+  @JsonProperty("node_organizations")
   private List<Organization> getOrganizations() {
     List<Organization> orgs = new ArrayList<>();
     orgs.addAll(

@@ -70,7 +70,7 @@ public class LessonsAnswer implements Base {
   private Integer score;
 
   // region transient
-  @JsonProperty("lessons_answer_exercise")
+  @JsonProperty("lessons_answer_attack_chain_run")
   public String getAttackChainRun() {
     if (getQuestion() == null || getQuestion().getCategory() == null) {
       return null;

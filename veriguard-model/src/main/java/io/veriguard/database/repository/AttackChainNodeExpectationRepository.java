@@ -224,29 +224,29 @@ public interface AttackChainNodeExpectationRepository
           """
     WITH inject_expectation_data AS (
       SELECT
-      ie.node_expectation_id AS inject_expectation_id,
-      ie.node_expectation_name AS inject_expectation_name,
-      ie.node_expectation_description AS inject_expectation_description,
-      ie.node_expectation_type AS inject_expectation_type,
-      ie.node_expectation_results AS inject_expectation_results,
-      ie.node_expectation_score AS inject_expectation_score,
-      ie.node_expectation_expected_score AS inject_expectation_expected_score,
-      ie.node_expectation_expiration_time AS inject_expiration_time,
-      ie.node_expectation_group AS inject_expectation_group,
-      ie.node_expectation_created_at AS inject_expectation_created_at,
-      GREATEST(ie.node_expectation_updated_at, max(i.node_updated_at), max(ic.injector_contract_updated_at)) as inject_expectation_updated_at,
-      ie.run_id AS exercise_id,
-      ie.node_id AS inject_id,
+      ie.node_expectation_id AS node_expectation_id,
+      ie.node_expectation_name AS node_expectation_name,
+      ie.node_expectation_description AS node_expectation_description,
+      ie.node_expectation_type AS node_expectation_type,
+      ie.node_expectation_results AS node_expectation_results,
+      ie.node_expectation_score AS node_expectation_score,
+      ie.node_expectation_expected_score AS node_expectation_expected_score,
+      ie.node_expectation_expiration_time AS node_expiration_time,
+      ie.node_expectation_group AS node_expectation_group,
+      ie.node_expectation_created_at AS node_expectation_created_at,
+      GREATEST(ie.node_expectation_updated_at, max(i.node_updated_at), max(ic.injector_contract_updated_at)) as node_expectation_updated_at,
+      ie.run_id AS attack_chain_run_id,
+      ie.node_id AS node_id,
       ie.user_id,
       ie.team_id,
       ie.agent_id,
       ie.asset_id,
       ie.asset_group_id,
-      i.node_title as inject_title,
+      i.node_title as node_title,
       MAX(ins.tracking_sent_date) AS tracking_sent_date,
       array_agg(DISTINCT ap.attack_pattern_id) FILTER ( WHERE ap.attack_pattern_id IS NOT NULL ) AS attack_pattern_ids,
       coalesce(array_agg(DISTINCT p_d.domain_id) FILTER (WHERE p_d.domain_id IS NOT NULL ),array_agg(DISTINCT ic_d.domain_id) FILTER (WHERE ic_d.domain_id IS NOT NULL )) domain_ids,
-      MAX(se.attack_chain_id) AS scenario_id,
+      MAX(se.attack_chain_id) AS attack_chain_id,
       array_agg(DISTINCT c.collector_security_platform) FILTER ( WHERE c.collector_security_platform IS NOT NULL ) ||
       array_agg(DISTINCT a.asset_id) FILTER ( WHERE a.asset_id IS NOT NULL ) AS security_platform_ids
     FROM attack_chain_node_expectations ie
@@ -272,8 +272,8 @@ public interface AttackChainNodeExpectationRepository
       i.node_title
     )
     SELECT * FROM inject_expectation_data ied
-    WHERE ied.inject_expectation_updated_at > :from AND ied.agent_id IS NULL
-    ORDER BY ied.inject_expectation_updated_at ASC
+    WHERE ied.node_expectation_updated_at > :from AND ied.agent_id IS NULL
+    ORDER BY ied.node_expectation_updated_at ASC
     LIMIT 500
     """,
       nativeQuery = true)

@@ -106,7 +106,7 @@ public class AttackChainStatisticService {
         .map(
             attackChainRun ->
                 new FinishedAttackChainRunWithAttackChainNodes(
-                    attackChainRun.getExercise_end_date(), attackChainRun.getInject_ids()))
+                    attackChainRun.getAttack_chain_run_end_date(), attackChainRun.getNode_ids()))
         .sorted(Collections.reverseOrder())
         .toList();
   }

@@ -1,14 +1,14 @@
 {
-  "exercise_information": {
-    "exercise_name": "Test Exercise",
-    "exercise_description": "Description",
-    "exercise_subtitle": "Subtitle",
-    "exercise_message_header": "Header",
-    "exercise_message_footer": "Footer",
-    "exercise_mail_from": "mail@example.com",
-    "exercise_tags": []
+  "attack_chain_run_information": {
+    "attack_chain_run_name": "Test Exercise",
+    "attack_chain_run_description": "Description",
+    "attack_chain_run_subtitle": "Subtitle",
+    "attack_chain_run_message_header": "Header",
+    "attack_chain_run_message_footer": "Footer",
+    "attack_chain_run_mail_from": "mail@example.com",
+    "attack_chain_run_tags": []
   },
-  "exercise_teams": [
+  "attack_chain_run_teams": [
     {
       "team_id": "0801be02-2aef-472e-a0b2-29f464a61c55",
       "team_name": "Animation team",
@@ -34,7 +34,7 @@
       ]
     }
   ],
-  "exercise_users": [
+  "attack_chain_run_users": [
     {
       "user_id": "984f481b-73c6-407a-9036-d48e306d409d",
       "user_firstname": "Romuald",
@@ -46,7 +46,7 @@
       ]
     }
   ],
-  "exercise_organizations": [
+  "attack_chain_run_organizations": [
     {
       "organization_id": "e2a24b52-fd3e-4678-8f9e-c44d6d6a39c3",
       "organization_name": "Filigran"
@@ -56,9 +56,11 @@
       "organization_name": "Filigran"
     }
   ],
-  "exercise_tags" : [ {
-    "tag_id" : "5783bfdf-aaf4-4818-976e-a8ad3e46e8eb",
-    "tag_name" : "Crisis exercise",
-    "tag_color" : "#bc42d4"
-  } ]
+  "attack_chain_run_tags": [
+    {
+      "tag_id": "5783bfdf-aaf4-4818-976e-a8ad3e46e8eb",
+      "tag_name": "Crisis exercise",
+      "tag_color": "#bc42d4"
+    }
+  ]
 }

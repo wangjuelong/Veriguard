@@ -20,25 +20,25 @@ import lombok.Setter;
 public class AttackChainNodeResultOverviewOutput {
 
   @Schema(description = "Id of inject")
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   @NotBlank
   private String id;
 
   @Schema(description = "Title of inject")
-  @JsonProperty("inject_title")
+  @JsonProperty("node_title")
   @NotBlank
   private String title;
 
   @Schema(description = "Description of inject")
-  @JsonProperty("inject_description")
+  @JsonProperty("node_description")
   private String description;
 
   @Schema(description = "Content of inject")
-  @JsonProperty("inject_content")
+  @JsonProperty("node_content")
   private ObjectNode content;
 
   @Schema(description = "Type of inject")
-  @JsonProperty("inject_type")
+  @JsonProperty("node_type")
   private String type;
 
   @Schema(description = "Tags")
@@ -50,38 +50,38 @@ public class AttackChainNodeResultOverviewOutput {
   private List<String> documentIds;
 
   @Schema(description = "Full contract")
-  @JsonProperty("inject_injector_contract")
+  @JsonProperty("node_injector_contract")
   private AtomicNodeContractOutput nodeContract;
 
   @Schema(description = "status")
-  @JsonProperty("inject_status")
+  @JsonProperty("node_status")
   private AttackChainNodeStatusSimple status;
 
   @Schema(description = "Expectations")
-  @JsonProperty("inject_expectations")
+  @JsonProperty("node_expectations")
   private List<AttackChainNodeExpectationSimple> expectations;
 
   @Schema(description = "Kill chain phases")
-  @JsonProperty("inject_kill_chain_phases")
+  @JsonProperty("node_kill_chain_phases")
   private List<KillChainPhaseSimple> killChainPhases;
 
   @Schema(description = "Tags")
-  @JsonProperty("inject_tags")
+  @JsonProperty("node_tags")
   private Set<String> tags;
 
   @Schema(description = "Indicates whether the inject is ready for use")
-  @JsonProperty("inject_ready")
+  @JsonProperty("node_ready")
   private boolean isReady;
 
   @Schema(description = "Timestamp when the inject was last updated")
-  @JsonProperty("inject_updated_at")
+  @JsonProperty("node_updated_at")
   private Instant updatedAt;
 
   // -- COMPUTED ATTRIBUTES --
 
   @Builder.Default
   @Schema(description = "Result of expectations")
-  @JsonProperty("inject_expectation_results")
+  @JsonProperty("node_expectation_results")
   @NotNull
   private List<ExpectationResultsByType> expectationResultByTypes = new ArrayList<>();
 }

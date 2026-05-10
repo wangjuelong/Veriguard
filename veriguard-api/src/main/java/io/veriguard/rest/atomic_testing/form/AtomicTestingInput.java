@@ -14,33 +14,33 @@ import lombok.Setter;
 public class AtomicTestingInput {
 
   @NotBlank
-  @JsonProperty("inject_title")
+  @JsonProperty("node_title")
   private String title;
 
-  @JsonProperty("inject_description")
+  @JsonProperty("node_description")
   private String description;
 
-  @JsonProperty("inject_injector_contract")
+  @JsonProperty("node_injector_contract")
   private String nodeContract;
 
-  @JsonProperty("inject_content")
+  @JsonProperty("node_content")
   private ObjectNode content;
 
-  @JsonProperty("inject_teams")
+  @JsonProperty("node_teams")
   private List<String> teams = new ArrayList<>();
 
-  @JsonProperty("inject_assets")
+  @JsonProperty("node_assets")
   private List<String> assets = new ArrayList<>();
 
-  @JsonProperty("inject_asset_groups")
+  @JsonProperty("node_asset_groups")
   private List<String> assetGroups = new ArrayList<>();
 
-  @JsonProperty("inject_documents")
+  @JsonProperty("node_documents")
   private List<AttackChainNodeDocumentInput> documents = new ArrayList<>();
 
-  @JsonProperty("inject_all_teams")
+  @JsonProperty("node_all_teams")
   private boolean allTeams;
 
-  @JsonProperty("inject_tags")
+  @JsonProperty("node_tags")
   private List<String> tagIds = new ArrayList<>();
 }

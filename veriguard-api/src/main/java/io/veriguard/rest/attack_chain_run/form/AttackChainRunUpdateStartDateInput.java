@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 public class AttackChainRunUpdateStartDateInput {
-  @JsonProperty("exercise_start_date")
+  @JsonProperty("attack_chain_run_start_date")
   @FutureOrPresent(message = NOW_FUTURE_MESSAGE)
   private Instant start;
 

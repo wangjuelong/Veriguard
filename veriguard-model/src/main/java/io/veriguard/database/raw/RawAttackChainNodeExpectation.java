@@ -19,98 +19,98 @@ public interface RawAttackChainNodeExpectation {
    *
    * @return the expectation ID
    */
-  String getInject_expectation_id();
+  String getNode_expectation_id();
 
   /**
    * Returns the display name of the expectation.
    *
    * @return the expectation name
    */
-  String getInject_expectation_name();
+  String getNode_expectation_name();
 
   /**
    * Returns the title of the associated attackChainNode.
    *
    * @return the attackChainNode title
    */
-  String getInject_title();
+  String getNode_title();
 
   /**
    * Returns the description of what is expected.
    *
    * @return the expectation description
    */
-  String getInject_expectation_description();
+  String getNode_expectation_description();
 
   /**
    * Returns the type of expectation.
    *
    * @return the expectation type (e.g., "DETECTION", "PREVENTION", "MANUAL")
    */
-  String getInject_expectation_type();
+  String getNode_expectation_type();
 
   /**
    * Returns the evaluation results as a serialized string.
    *
    * @return the results data
    */
-  String getInject_expectation_results();
+  String getNode_expectation_results();
 
   /**
    * Returns the actual score achieved for this expectation.
    *
    * @return the achieved score, or {@code null} if not yet evaluated
    */
-  Double getInject_expectation_score();
+  Double getNode_expectation_score();
 
   /**
    * Returns the expected/target score for this expectation.
    *
    * @return the expected score
    */
-  Double getInject_expectation_expected_score();
+  Double getNode_expectation_expected_score();
 
   /**
    * Returns the expiration time in milliseconds for this expectation.
    *
    * @return the expiration time
    */
-  Long getInject_expiration_time();
+  Long getNode_expiration_time();
 
   /**
    * Returns whether this is a group-level expectation.
    *
    * @return {@code true} if this is a group expectation, {@code false} for individual expectations
    */
-  Boolean getInject_expectation_group();
+  Boolean getNode_expectation_group();
 
   /**
    * Returns the creation timestamp of the expectation.
    *
    * @return the creation timestamp
    */
-  Instant getInject_expectation_created_at();
+  Instant getNode_expectation_created_at();
 
   /**
    * Returns the last update timestamp of the expectation.
    *
    * @return the update timestamp
    */
-  Instant getInject_expectation_updated_at();
+  Instant getNode_expectation_updated_at();
 
   /**
    * Returns the ID of the attackChainRun this expectation belongs to.
    *
    * @return the attackChainRun ID, or {@code null} if part of a attackChain only
    */
-  String getExercise_id();
+  String getAttack_chain_run_id();
 
   /**
    * Returns the ID of the attackChainNode this expectation is for.
    *
    * @return the attackChainNode ID
    */
-  String getInject_id();
+  String getNode_id();
 
   /**
    * Returns the ID of the user this expectation targets.
@@ -173,7 +173,7 @@ public interface RawAttackChainNodeExpectation {
    *
    * @return the attackChain ID, or {@code null} if part of an attackChainRun only
    */
-  String getScenario_id();
+  String getAttack_chain_id();
 
   /**
    * Returns the timestamp when the attackChainNode was sent/executed.

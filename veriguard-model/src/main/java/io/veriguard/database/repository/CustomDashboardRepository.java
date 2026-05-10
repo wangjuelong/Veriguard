@@ -35,12 +35,12 @@ public interface CustomDashboardRepository
       value =
           """
       select cd.* from custom_dashboards cd
-      join scenarios s on s.scenario_custom_dashboard = cd.custom_dashboard_id
-      where s.scenario_id = :resourceId
+      join scenarios s on s.attack_chain_custom_dashboard = cd.custom_dashboard_id
+      where s.attack_chain_id = :resourceId
       union
       select cd.* from custom_dashboards cd
-      join exercises e on e.exercise_custom_dashboard = cd.custom_dashboard_id
-      where e.exercise_id = :resourceId
+      join exercises e on e.attack_chain_run_custom_dashboard = cd.custom_dashboard_id
+      where e.attack_chain_run_id = :resourceId
       """,
       nativeQuery = true)
   Optional<CustomDashboard> findByResourceId(String resourceId);

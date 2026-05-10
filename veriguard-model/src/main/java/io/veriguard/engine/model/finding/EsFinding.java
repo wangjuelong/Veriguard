@@ -28,17 +28,17 @@ public class EsFinding extends EsBase {
 
   // -- SIDE --
 
-  @Queryable(label = "inject", filterable = true)
+  @Queryable(label = "node", filterable = true)
   @EsQueryable(keyword = true)
-  private String base_inject_side; // Must finish by _side
+  private String base_node_side; // Must finish by _side
 
-  @Queryable(label = "simulation", filterable = true, dynamicValues = true)
+  @Queryable(label = "attack_chain_run", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_simulation_side; // Must finish by _side
+  private String base_attack_chain_run_side; // Must finish by _side
 
-  @Queryable(label = "scenario", filterable = true, dynamicValues = true)
+  @Queryable(label = "attack_chain", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)
-  private String base_scenario_side; // Must finish by _side
+  private String base_attack_chain_side; // Must finish by _side
 
   @Queryable(label = "endpoint", filterable = true, dynamicValues = true)
   @EsQueryable(keyword = true)

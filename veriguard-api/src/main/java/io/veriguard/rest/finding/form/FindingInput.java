@@ -29,7 +29,7 @@ public class FindingInput {
 
   // -- RELATION --
 
-  @JsonProperty("finding_inject_id")
+  @JsonProperty("finding_node_id")
   private String attackChainNodeId;
 
   // -- METHOD --

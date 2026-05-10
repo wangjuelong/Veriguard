@@ -114,25 +114,25 @@ public class NodeExpectationResultUtils {
   public static List<Double> getScoresFromRaw(
       List<EXPECTATION_TYPE> types, List<RawAttackChainNodeExpectation> expectations) {
     return expectations.stream()
-        .filter(e -> types.contains(EXPECTATION_TYPE.valueOf(e.getInject_expectation_type())))
+        .filter(e -> types.contains(EXPECTATION_TYPE.valueOf(e.getNode_expectation_type())))
         .map(
             rawAttackChainNodeExpectation -> {
-              if (rawAttackChainNodeExpectation.getInject_expectation_score() == null) {
+              if (rawAttackChainNodeExpectation.getNode_expectation_score() == null) {
                 return null;
               }
               if (rawAttackChainNodeExpectation.getTeam_id() != null) {
-                if (rawAttackChainNodeExpectation.getInject_expectation_score()
-                    >= rawAttackChainNodeExpectation.getInject_expectation_expected_score()) {
+                if (rawAttackChainNodeExpectation.getNode_expectation_score()
+                    >= rawAttackChainNodeExpectation.getNode_expectation_expected_score()) {
                   return 1.0;
                 } else {
                   return 0.0;
                 }
               } else {
-                if (rawAttackChainNodeExpectation.getInject_expectation_score()
-                    >= rawAttackChainNodeExpectation.getInject_expectation_expected_score()) {
+                if (rawAttackChainNodeExpectation.getNode_expectation_score()
+                    >= rawAttackChainNodeExpectation.getNode_expectation_expected_score()) {
                   return 1.0;
                 }
-                if (rawAttackChainNodeExpectation.getInject_expectation_score() == 0) {
+                if (rawAttackChainNodeExpectation.getNode_expectation_score() == 0) {
                   return 0.0;
                 }
                 return 0.5;

@@ -16,12 +16,12 @@ import lombok.Data;
 public class AttackChainNodeSimple {
 
   @Schema(description = "Inject Id")
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   @NotBlank
   private String id;
 
   @Schema(description = "Inject Title")
-  @JsonProperty("inject_title")
+  @JsonProperty("node_title")
   @NotBlank
   private String title;
 }

@@ -22,14 +22,14 @@ public class AttackChainNodeBulkProcessingInput {
    * The list of attackChainNodes to process. Must be provided if searchPaginationInput is not
    * provided
    */
-  @JsonProperty("inject_ids_to_process")
+  @JsonProperty("node_ids_to_process")
   private List<String> attackChainNodeIDsToProcess;
 
   /** The list of attackChainNodes to ignore from the search input */
-  @JsonProperty("inject_ids_to_ignore")
+  @JsonProperty("node_ids_to_ignore")
   private List<String> attackChainNodeIDsToIgnore;
 
   /** The simulation or attackChain ID to which the attackChainNodes belong. */
-  @JsonProperty("simulation_or_scenario_id")
+  @JsonProperty("attack_chain_run_or_attack_chain_id")
   private String simulationOrAttackChainId;
 }

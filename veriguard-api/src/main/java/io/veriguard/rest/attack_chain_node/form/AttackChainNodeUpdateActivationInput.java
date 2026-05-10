@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AttackChainNodeUpdateActivationInput {
 
-  @JsonProperty("inject_enabled")
+  @JsonProperty("node_enabled")
   private boolean enabled;
 
   public boolean isEnabled() {

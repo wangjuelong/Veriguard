@@ -15,35 +15,35 @@ public interface RawGlobalAttackChainNodeExpectation {
    *
    * @return the expectation type (e.g., "DETECTION", "PREVENTION", "MANUAL")
    */
-  String getInject_expectation_type();
+  String getNode_expectation_type();
 
   /**
    * Returns the actual score achieved for this expectation.
    *
    * @return the achieved score, or {@code null} if not yet evaluated
    */
-  Double getInject_expectation_score();
+  Double getNode_expectation_score();
 
   /**
    * Returns the expected/target score for this expectation.
    *
    * @return the expected score
    */
-  Double getInject_expectation_expected_score();
+  Double getNode_expectation_expected_score();
 
   /**
    * Returns the ID of the attackChainNode this expectation is associated with.
    *
    * @return the attackChainNode ID
    */
-  String getInject_id();
+  String getNode_id();
 
   /**
    * Returns the title of the associated attackChainNode.
    *
    * @return the attackChainNode title
    */
-  String getInject_title();
+  String getNode_title();
 
   /**
    * Returns the ID of the attack pattern this expectation relates to.

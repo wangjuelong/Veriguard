@@ -761,7 +761,7 @@ public class AttackChainRunService {
         .orElse(emptyList())
         .stream()
         .filter(Objects::nonNull)
-        .collect(Collectors.groupingBy(RawAttackChainNodeExpectation::getExercise_id));
+        .collect(Collectors.groupingBy(RawAttackChainNodeExpectation::getAttack_chain_run_id));
   }
 
   private void setGlobalScore(

@@ -104,7 +104,7 @@ public class Agent implements Base {
   @OneToOne(fetch = FetchType.EAGER)
   @JsonSerialize(using = MonoIdSerializer.class)
   @JoinColumn(name = "agent_inject")
-  @JsonProperty("agent_inject")
+  @JsonProperty("agent_node")
   @Schema(type = "string")
   private AttackChainNode attackChainNode;
 

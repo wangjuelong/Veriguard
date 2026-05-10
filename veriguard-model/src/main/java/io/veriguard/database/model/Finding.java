@@ -85,7 +85,7 @@ public class Finding implements Base {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "finding_inject_id")
-  @JsonProperty("finding_inject_id")
+  @JsonProperty("finding_node_id")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   @Queryable(filterable = true, dynamicValues = true, sortable = true, path = "attackChainNode.id")
@@ -149,7 +149,7 @@ public class Finding implements Base {
   @Transient
   private final ResourceType resourceType = ResourceType.SIMULATION;
 
-  @JsonProperty("finding_simulation")
+  @JsonProperty("finding_attack_chain_run")
   @Queryable(filterable = true, dynamicValues = true, path = "attackChainNode.attackChainRun.id")
   public AttackChainRun getSimulation() {
     if (getAttackChainNode() == null) {
@@ -158,7 +158,7 @@ public class Finding implements Base {
     return getAttackChainNode().getAttackChainRun();
   }
 
-  @JsonProperty("finding_scenario")
+  @JsonProperty("finding_attack_chain")
   @Queryable(
       filterable = true,
       dynamicValues = true,

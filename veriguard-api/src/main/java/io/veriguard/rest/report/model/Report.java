@@ -68,7 +68,7 @@ public class Report implements Base {
       name = "reports_exercises",
       joinColumns = @JoinColumn(name = "report_id"),
       inverseJoinColumns = @JoinColumn(name = "exercise_id"))
-  @JsonProperty("report_exercise")
+  @JsonProperty("report_attack_chain_run")
   @JsonSerialize(using = MonoIdSerializer.class)
   @Schema(type = "string")
   private AttackChainRun attackChainRun;
@@ -78,7 +78,7 @@ public class Report implements Base {
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       fetch = FetchType.EAGER)
-  @JsonProperty("report_injects_comments")
+  @JsonProperty("report_nodes_comments")
   @JsonSerialize(using = MultiModelSerializer.class)
   private List<ReportAttackChainNodeComment> reportAttackChainNodesComments = new ArrayList<>();
 

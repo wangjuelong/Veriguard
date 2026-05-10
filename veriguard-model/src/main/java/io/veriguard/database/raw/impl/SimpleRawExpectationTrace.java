@@ -10,14 +10,14 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SimpleRawExpectationTrace implements RawExpectationTrace {
-  private String inject_expectation_trace_id;
-  private String inject_expectation_trace_expectation;
-  private String inject_expectation_trace_source_id;
-  private String inject_expectation_trace_alert_name;
-  private String inject_expectation_trace_alert_link;
-  private Instant inject_expectation_trace_date;
-  private Instant inject_expectation_trace_created_at;
-  private Instant inject_expectation_trace_updated_at;
+  private String node_expectation_trace_id;
+  private String node_expectation_trace_expectation;
+  private String node_expectation_trace_source_id;
+  private String node_expectation_trace_alert_name;
+  private String node_expectation_trace_alert_link;
+  private Instant node_expectation_trace_date;
+  private Instant node_expectation_trace_created_at;
+  private Instant node_expectation_trace_updated_at;
 
   /**
    * Compute object equality. Two traces are equal if they have the same attackChainNode
@@ -31,15 +31,15 @@ public class SimpleRawExpectationTrace implements RawExpectationTrace {
     if (o == null || getClass() != o.getClass()) return false;
     SimpleRawExpectationTrace that = (SimpleRawExpectationTrace) o;
     return Objects.equals(
-            getInject_expectation_trace_expectation(),
-            that.getInject_expectation_trace_expectation())
+            getNode_expectation_trace_expectation(),
+            that.getNode_expectation_trace_expectation())
         && Objects.equals(
-            getInject_expectation_trace_source_id(), that.getInject_expectation_trace_source_id())
+            getNode_expectation_trace_source_id(), that.getNode_expectation_trace_source_id())
         && Objects.equals(
-            getInject_expectation_trace_alert_name(), that.getInject_expectation_trace_alert_name())
+            getNode_expectation_trace_alert_name(), that.getNode_expectation_trace_alert_name())
         && Objects.equals(
-            getInject_expectation_trace_alert_link(),
-            that.getInject_expectation_trace_alert_link());
+            getNode_expectation_trace_alert_link(),
+            that.getNode_expectation_trace_alert_link());
   }
 
   /**
@@ -50,10 +50,10 @@ public class SimpleRawExpectationTrace implements RawExpectationTrace {
   @Override
   public int hashCode() {
     return Objects.hash(
-        getInject_expectation_trace_expectation(),
-        getInject_expectation_trace_source_id(),
-        getInject_expectation_trace_alert_name(),
-        getInject_expectation_trace_alert_link());
+        getNode_expectation_trace_expectation(),
+        getNode_expectation_trace_source_id(),
+        getNode_expectation_trace_alert_name(),
+        getNode_expectation_trace_alert_link());
   }
 
   /**

@@ -109,7 +109,7 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
           throws Exception {
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.getDefault()
-                .sorts(List.of(SortField.builder().property("exercise_name").build()))
+                .sorts(List.of(SortField.builder().property("attack_chain_run_name").build()))
                 .build();
 
         mvc.perform(
@@ -118,8 +118,8 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
                     .content(asJsonString(searchPaginationInput))
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.content.[0].exercise_name").value("Crisis exercise"))
-            .andExpect(jsonPath("$.content.[1].exercise_name").value("Incident response exercise"));
+            .andExpect(jsonPath("$.content.[0].attack_chain_run_name").value("Crisis exercise"))
+            .andExpect(jsonPath("$.content.[1].attack_chain_run_name").value("Incident response exercise"));
       }
 
       @Test
@@ -132,7 +132,7 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
                 .sorts(
                     List.of(
                         SortField.builder()
-                            .property("exercise_start_date")
+                            .property("attack_chain_run_start_date")
                             .direction("desc")
                             .build()))
                 .build();
@@ -143,8 +143,8 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
                     .content(asJsonString(searchPaginationInput))
                     .with(csrf()))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.content.[1].exercise_name").value("Incident response exercise"))
-            .andExpect(jsonPath("$.content.[0].exercise_name").value("Crisis exercise"));
+            .andExpect(jsonPath("$.content.[1].attack_chain_run_name").value("Incident response exercise"))
+            .andExpect(jsonPath("$.content.[0].attack_chain_run_name").value("Crisis exercise"));
       }
     }
 
@@ -157,7 +157,7 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
       void given_filter_input_by_name_should_return_a_page_of_attackChainRuns_filter_by_name()
           throws Exception {
         SearchPaginationInput searchPaginationInput =
-            PaginationFixture.simpleSearchWithAndOperator("exercise_name", "Crisis", contains);
+            PaginationFixture.simpleSearchWithAndOperator("attack_chain_run_name", "Crisis", contains);
 
         mvc.perform(
                 post(EXERCISE_URI + "/search")
@@ -174,7 +174,7 @@ public class AttackChainRunApiSearchTest extends IntegrationTest {
           throws Exception {
         SearchPaginationInput searchPaginationInput =
             PaginationFixture.simpleSearchWithAndOperator(
-                "exercise_status", valueOf(SCHEDULED), contains);
+                "attack_chain_run_status", valueOf(SCHEDULED), contains);
 
         mvc.perform(
                 post(EXERCISE_URI + "/search")

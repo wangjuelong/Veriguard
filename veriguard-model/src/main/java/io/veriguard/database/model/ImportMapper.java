@@ -37,13 +37,13 @@ public class ImportMapper implements Base {
   private String name;
 
   @Column(name = "mapper_inject_type_column")
-  @JsonProperty("import_mapper_inject_type_column")
+  @JsonProperty("import_mapper_node_type_column")
   @NotNull
   private String attackChainNodeTypeColumn;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @JoinColumn(name = "importer_mapper_id", nullable = false)
-  @JsonProperty("import_mapper_inject_importers")
+  @JsonProperty("import_mapper_node_importers")
   private List<AttackChainNodeImporter> attackChainNodeImporters = new ArrayList<>();
 
   @CreationTimestamp

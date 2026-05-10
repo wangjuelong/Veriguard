@@ -32,38 +32,38 @@ public class AttackChainHandler implements Handler<EsAttackChain> {
             attackChain -> {
               EsAttackChain esAttackChain = new EsAttackChain();
               // Base
-              esAttackChain.setBase_id(attackChain.getScenario_id());
-              esAttackChain.setName(attackChain.getScenario_name());
+              esAttackChain.setBase_id(attackChain.getAttack_chain_id());
+              esAttackChain.setName(attackChain.getAttack_chain_name());
               esAttackChain.setStatus(
-                  attackChain.getScenario_recurrence() != null
+                  attackChain.getAttack_chain_recurrence() != null
                       ? AttackChain.RECURRENCE_STATUS.SCHEDULED.name()
                       : AttackChain.RECURRENCE_STATUS.NOT_PLANNED.name());
-              esAttackChain.setBase_created_at(attackChain.getScenario_created_at());
-              esAttackChain.setBase_updated_at(attackChain.getScenario_injects_updated_at());
+              esAttackChain.setBase_created_at(attackChain.getAttack_chain_created_at());
+              esAttackChain.setBase_updated_at(attackChain.getAttack_chain_injects_updated_at());
 
-              esAttackChain.setBase_representative(attackChain.getScenario_name());
-              esAttackChain.setBase_restrictions(buildRestrictions(attackChain.getScenario_id()));
+              esAttackChain.setBase_representative(attackChain.getAttack_chain_name());
+              esAttackChain.setBase_restrictions(buildRestrictions(attackChain.getAttack_chain_id()));
               // Specific
               esAttackChain.setBase_platforms_side_denormalized(
-                  attackChain.getScenario_platforms());
+                  attackChain.getAttack_chain_platforms());
               // Dependencies (see base_dependencies in EsBase)
-              if (!isEmpty(attackChain.getScenario_tags())) {
-                esAttackChain.setBase_tags_side(attackChain.getScenario_tags());
+              if (!isEmpty(attackChain.getAttack_chain_tags())) {
+                esAttackChain.setBase_tags_side(attackChain.getAttack_chain_tags());
               } else {
                 esAttackChain.setBase_tags_side(Set.of());
               }
-              if (!isEmpty(attackChain.getScenario_assets())) {
-                esAttackChain.setBase_assets_side(attackChain.getScenario_assets());
+              if (!isEmpty(attackChain.getAttack_chain_assets())) {
+                esAttackChain.setBase_assets_side(attackChain.getAttack_chain_assets());
               } else {
                 esAttackChain.setBase_assets_side(Set.of());
               }
-              if (!isEmpty(attackChain.getScenario_asset_groups())) {
-                esAttackChain.setBase_asset_groups_side(attackChain.getScenario_asset_groups());
+              if (!isEmpty(attackChain.getAttack_chain_asset_groups())) {
+                esAttackChain.setBase_asset_groups_side(attackChain.getAttack_chain_asset_groups());
               } else {
                 esAttackChain.setBase_asset_groups_side(Set.of());
               }
-              if (!isEmpty(attackChain.getScenario_teams())) {
-                esAttackChain.setBase_teams_side(attackChain.getScenario_teams());
+              if (!isEmpty(attackChain.getAttack_chain_teams())) {
+                esAttackChain.setBase_teams_side(attackChain.getAttack_chain_teams());
               } else {
                 esAttackChain.setBase_teams_side(Set.of());
               }

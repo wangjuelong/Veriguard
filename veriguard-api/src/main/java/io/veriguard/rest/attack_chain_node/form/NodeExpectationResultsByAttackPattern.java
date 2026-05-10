@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NodeExpectationResultsByAttackPattern {
 
-  @JsonProperty("inject_expectation_results")
+  @JsonProperty("node_expectation_results")
   private List<NodeExpectationResultsByType> results;
 
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("inject_attack_pattern")
+  @JsonProperty("node_attack_pattern")
   @Schema(type = "string")
   private AttackPattern attackPattern;
 
@@ -31,10 +31,10 @@ public class NodeExpectationResultsByAttackPattern {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class NodeExpectationResultsByType {
-    @JsonProperty("inject_id")
+    @JsonProperty("node_id")
     private String attackChainNodeId;
 
-    @JsonProperty("inject_title")
+    @JsonProperty("node_title")
     private String attackChainNodeTitle;
 
     @JsonProperty("results")

@@ -72,7 +72,7 @@ public class Communication implements Base {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "communication_inject")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("communication_inject")
+  @JsonProperty("communication_node")
   @Schema(type = "string")
   private AttackChainNode attackChainNode;
 
@@ -161,7 +161,7 @@ public class Communication implements Base {
     return attachments;
   }
 
-  @JsonProperty("communication_exercise")
+  @JsonProperty("communication_attack_chain_run")
   public String getAttackChainRun() {
     if (this.attackChainNode == null || this.attackChainNode.getAttackChainRun() == null) {
       return StringUtils.EMPTY;

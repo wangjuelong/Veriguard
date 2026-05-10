@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AttackChainNodeExportTarget {
-  @JsonProperty("inject_id")
+  @JsonProperty("node_id")
   private String id;
 }

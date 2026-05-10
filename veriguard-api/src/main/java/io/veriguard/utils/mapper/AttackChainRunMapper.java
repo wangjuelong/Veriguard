@@ -63,19 +63,19 @@ public class AttackChainRunMapper {
 
     AttackChainRunSimple simple = fromRawAttackChainRunSimple(rawAttackChainRun);
 
-    if (rawAttackChainRun.getInject_ids() != null) {
+    if (rawAttackChainRun.getNode_ids() != null) {
       // -- GLOBAL SCORE ---
       simple.setExpectationResultByTypes(
-          resultUtils.computeGlobalExpectationResults(rawAttackChainRun.getInject_ids()));
+          resultUtils.computeGlobalExpectationResults(rawAttackChainRun.getNode_ids()));
 
       // -- TARGETS --
       List<Object[]> teams =
-          teamRepository.teamsByAttackChainRunIds(Set.of(rawAttackChainRun.getExercise_id()));
+          teamRepository.teamsByAttackChainRunIds(Set.of(rawAttackChainRun.getAttack_chain_run_id()));
       List<Object[]> assets =
-          assetRepository.assetsByAttackChainRunIds(Set.of(rawAttackChainRun.getExercise_id()));
+          assetRepository.assetsByAttackChainRunIds(Set.of(rawAttackChainRun.getAttack_chain_run_id()));
       List<Object[]> assetGroups =
           assetGroupRepository.assetGroupsByAttackChainRunIds(
-              Set.of(rawAttackChainRun.getExercise_id()));
+              Set.of(rawAttackChainRun.getAttack_chain_run_id()));
 
       List<TargetSimple> allTargets =
           Stream.concat(
@@ -108,7 +108,7 @@ public class AttackChainRunMapper {
     // -- MAP TO GENERATE TARGETSIMPLEs
     Set<String> attackChainRunIds =
         attackChainRuns.stream()
-            .map(RawAttackChainRunSimple::getExercise_id)
+            .map(RawAttackChainRunSimple::getAttack_chain_run_id)
             .collect(Collectors.toSet());
 
     Map<String, List<Object[]>> teamMap =
@@ -127,7 +127,7 @@ public class AttackChainRunMapper {
         attackChainNodeExpectationRepository
             .rawForComputeGlobalByAttackChainRunIds(attackChainRunIds.toArray(new String[0]))
             .stream()
-            .collect(Collectors.groupingBy(RawAttackChainNodeExpectation::getExercise_id));
+            .collect(Collectors.groupingBy(RawAttackChainNodeExpectation::getAttack_chain_run_id));
 
     List<AttackChainRunSimple> attackChainRunSimples = new ArrayList<>();
 
@@ -135,10 +135,10 @@ public class AttackChainRunMapper {
       AttackChainRunSimple simple =
           getAttackChainRunSimple(
               attackChainRun,
-              teamMap.getOrDefault(attackChainRun.getExercise_id(), emptyList()),
-              assetMap.getOrDefault(attackChainRun.getExercise_id(), emptyList()),
-              assetGroupMap.getOrDefault(attackChainRun.getExercise_id(), emptyList()),
-              expectationMap.getOrDefault(attackChainRun.getExercise_id(), emptyList()));
+              teamMap.getOrDefault(attackChainRun.getAttack_chain_run_id(), emptyList()),
+              assetMap.getOrDefault(attackChainRun.getAttack_chain_run_id(), emptyList()),
+              assetGroupMap.getOrDefault(attackChainRun.getAttack_chain_run_id(), emptyList()),
+              expectationMap.getOrDefault(attackChainRun.getAttack_chain_run_id(), emptyList()));
       attackChainRunSimples.add(simple);
     }
 
@@ -154,11 +154,11 @@ public class AttackChainRunMapper {
 
     AttackChainRunSimple simple = fromRawAttackChainRunSimple(rawAttackChainRun);
 
-    if (rawAttackChainRun.getInject_ids() != null) {
+    if (rawAttackChainRun.getNode_ids() != null) {
       // -- GLOBAL SCORE ---
       simple.setExpectationResultByTypes(
           attackChainNodeExpectationMapper.extractExpectationResultByTypesFromRaw(
-              rawAttackChainRun.getInject_ids(), expectations));
+              rawAttackChainRun.getNode_ids(), expectations));
       // -- TARGETS --
       List<TargetSimple> allTargets =
           Stream.concat(
@@ -180,14 +180,14 @@ public class AttackChainRunMapper {
   private AttackChainRunSimple fromRawAttackChainRunSimple(
       RawAttackChainRunSimple rawAttackChainRun) {
     AttackChainRunSimple simple = new AttackChainRunSimple();
-    simple.setId(rawAttackChainRun.getExercise_id());
-    simple.setName(rawAttackChainRun.getExercise_name());
-    simple.setTagIds(rawAttackChainRun.getExercise_tags());
-    simple.setCategory(rawAttackChainRun.getExercise_category());
-    simple.setSubtitle(rawAttackChainRun.getExercise_subtitle());
-    simple.setStatus(AttackChainRunStatus.valueOf(rawAttackChainRun.getExercise_status()));
-    simple.setStart(rawAttackChainRun.getExercise_start_date());
-    simple.setUpdatedAt(rawAttackChainRun.getExercise_updated_at());
+    simple.setId(rawAttackChainRun.getAttack_chain_run_id());
+    simple.setName(rawAttackChainRun.getAttack_chain_run_name());
+    simple.setTagIds(rawAttackChainRun.getAttack_chain_run_tags());
+    simple.setCategory(rawAttackChainRun.getAttack_chain_run_category());
+    simple.setSubtitle(rawAttackChainRun.getAttack_chain_run_subtitle());
+    simple.setStatus(AttackChainRunStatus.valueOf(rawAttackChainRun.getAttack_chain_run_status()));
+    simple.setStart(rawAttackChainRun.getAttack_chain_run_start_date());
+    simple.setUpdatedAt(rawAttackChainRun.getAttack_chain_run_updated_at());
 
     return simple;
   }

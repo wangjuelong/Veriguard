@@ -38,14 +38,14 @@ public class LessonsCategory implements Base {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "lessons_category_exercise")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("lessons_category_exercise")
+  @JsonProperty("lessons_category_attack_chain_run")
   @Schema(type = "string")
   private AttackChainRun attackChainRun;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "lessons_category_scenario")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("lessons_category_scenario")
+  @JsonProperty("lessons_category_attack_chain")
   @Schema(type = "string")
   private AttackChain attackChain;
 

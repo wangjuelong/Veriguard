@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class AttackChainNodeExportRequestInput {
-  @JsonProperty("injects")
+  @JsonProperty("nodes")
   private List<AttackChainNodeExportTarget> attackChainNodes;
 
   @JsonProperty("options")

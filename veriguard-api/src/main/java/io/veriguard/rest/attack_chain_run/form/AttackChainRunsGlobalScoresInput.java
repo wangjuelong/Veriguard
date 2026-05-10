@@ -5,4 +5,4 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record AttackChainRunsGlobalScoresInput(
-    @JsonProperty("exercise_ids") @NotNull List<String> attackChainRunIds) {}
+    @JsonProperty("attack_chain_run_ids") @NotNull List<String> attackChainRunIds) {}

@@ -90,7 +90,7 @@ public class EsEndpoint extends EsBase {
       })
   @EsQueryable(keyword = true)
   private Set<String>
-      base_simulation_side; // Must finish by _side, no plural (Set) to work as the other generic
+      base_attack_chain_run_side; // Must finish by _side, no plural (Set) to work as the other generic
 
   @Queryable(
       label = "scenario",
@@ -104,5 +104,5 @@ public class EsEndpoint extends EsBase {
       })
   @EsQueryable(keyword = true)
   private Set<String>
-      base_scenario_side; // Must finish by _side, no plural (Set) to work as the other generic
+      base_attack_chain_side; // Must finish by _side, no plural (Set) to work as the other generic
 }

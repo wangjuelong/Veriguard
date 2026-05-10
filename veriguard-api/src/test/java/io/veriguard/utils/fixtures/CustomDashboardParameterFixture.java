@@ -9,14 +9,14 @@ public class CustomDashboardParameterFixture {
 
   public static CustomDashboardParameters createSimulationCustomDashboardParameter() {
     CustomDashboardParameters customDashboardParameters = new CustomDashboardParameters();
-    customDashboardParameters.setName("simulation_param");
+    customDashboardParameters.setName("attack_chain_run_param");
     customDashboardParameters.setType(simulation);
     return customDashboardParameters;
   }
 
   public static CustomDashboardParameters createAttackChainCustomDashboardParameter() {
     CustomDashboardParameters customDashboardParameters = new CustomDashboardParameters();
-    customDashboardParameters.setName("scenario_param");
+    customDashboardParameters.setName("attack_chain_param");
     customDashboardParameters.setType(attackChain);
     return customDashboardParameters;
   }

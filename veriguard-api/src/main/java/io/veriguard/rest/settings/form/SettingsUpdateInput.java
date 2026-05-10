@@ -31,11 +31,11 @@ public class SettingsUpdateInput {
   @Schema(description = "Default home dashboard of the platform")
   private String homeDashboard;
 
-  @JsonProperty("platform_scenario_dashboard")
+  @JsonProperty("platform_attack_chain_dashboard")
   @Schema(description = "Default scenario dashboard of the platform")
   private String attackChainDashboard;
 
-  @JsonProperty("platform_simulation_dashboard")
+  @JsonProperty("platform_attack_chain_run_dashboard")
   @Schema(description = "Default simulation dashboard of the platform")
   private String simulationDashboard;
 }

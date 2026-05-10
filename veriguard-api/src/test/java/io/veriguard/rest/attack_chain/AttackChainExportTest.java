@@ -107,7 +107,7 @@ public class AttackChainExportTest extends IntegrationTest {
 
     assertThatJson(actualJson)
         .when(Option.IGNORING_ARRAY_ORDER)
-        .node("scenario_tags")
+        .node("attack_chain_tags")
         .isArray()
         .isEqualTo(tagsJson);
   }

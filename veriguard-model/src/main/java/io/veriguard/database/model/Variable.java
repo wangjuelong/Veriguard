@@ -82,14 +82,14 @@ public class Variable implements Base {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "variable_exercise")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("variable_exercise")
+  @JsonProperty("variable_attack_chain_run")
   @Schema(type = "string")
   private AttackChainRun attackChainRun;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "variable_scenario")
   @JsonSerialize(using = MonoIdSerializer.class)
-  @JsonProperty("variable_scenario")
+  @JsonProperty("variable_attack_chain")
   @Schema(type = "string")
   private AttackChain attackChain;
 

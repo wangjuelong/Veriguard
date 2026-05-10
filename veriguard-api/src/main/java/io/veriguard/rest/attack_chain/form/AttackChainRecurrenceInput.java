@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 public class AttackChainRecurrenceInput {
 
-  @JsonProperty("scenario_recurrence")
+  @JsonProperty("attack_chain_recurrence")
   private String recurrence;
 
-  @JsonProperty("scenario_recurrence_start")
+  @JsonProperty("attack_chain_recurrence_start")
   private Instant recurrenceStart;
 
-  @JsonProperty("scenario_recurrence_end")
+  @JsonProperty("attack_chain_recurrence_end")
   private Instant recurrenceEnd;
 }

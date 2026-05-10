@@ -25,12 +25,12 @@ public class AttackChainNodeTestStatus extends BaseAttackChainNodeStatus {
 
   @CreationTimestamp
   @Column(name = "status_created_at")
-  @JsonProperty("inject_test_status_created_at")
+  @JsonProperty("node_test_status_created_at")
   private Instant testCreationDate;
 
   @UpdateTimestamp
   @Column(name = "status_updated_at")
-  @JsonProperty("inject_test_status_updated_at")
+  @JsonProperty("node_test_status_updated_at")
   private Instant testUpdateDate;
 
   public static AttackChainNodeTestStatus fromExecutionTest(Execution execution) {

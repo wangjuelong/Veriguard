@@ -15,11 +15,11 @@ import lombok.Setter;
 public class CreateAttackChainRunInput extends AttackChainRunInput {
 
   @Schema(nullable = true)
-  @JsonProperty("exercise_start_date")
+  @JsonProperty("attack_chain_run_start_date")
   @FutureOrPresent(message = NOW_FUTURE_MESSAGE)
   private Instant start;
 
-  @JsonProperty("exercise_custom_dashboard")
+  @JsonProperty("attack_chain_run_custom_dashboard")
   private String customDashboard;
 
   public Instant getStart() {

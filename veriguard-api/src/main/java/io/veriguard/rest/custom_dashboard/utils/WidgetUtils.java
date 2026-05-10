@@ -21,14 +21,14 @@ public final class WidgetUtils {
               "vulnerable_endpoint_findings_summary");
       case "expectation-inject" ->
           List.of(
-              "inject_title",
-              "inject_expectation_type",
-              "inject_expectation_status",
+              "node_title",
+              "node_expectation_type",
+              "node_expectation_status",
               "inject_expectation_source");
       case "finding" -> List.of("finding_value", "finding_type", "base_updated_at");
-      case "inject" -> List.of("inject_title", "base_attack_patterns_side", "execution_date");
-      case "simulation" -> List.of("name", "base_updated_at", "base_tags_side");
-      case "scenario" -> List.of("name", "base_updated_at", "base_tags_side");
+      case "node" -> List.of("node_title", "base_attack_patterns_side", "execution_date");
+      case "attack_chain_run" -> List.of("name", "base_updated_at", "base_tags_side");
+      case "attack_chain" -> List.of("name", "base_updated_at", "base_tags_side");
       default -> List.of("id");
     };
   }
