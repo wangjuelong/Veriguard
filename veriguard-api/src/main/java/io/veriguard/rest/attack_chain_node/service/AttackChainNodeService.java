@@ -690,14 +690,7 @@ public class AttackChainNodeService {
                                     .equals(entry.getRelationship().getAttackChainNodeParentId()))
                         .findFirst();
                 if (existingDependency.isPresent()) {
-                  existingDependency
-                      .get()
-                      .getAttackChainEdgeCondition()
-                      .setConditions(entry.getConditions().getConditions());
-                  existingDependency
-                      .get()
-                      .getAttackChainEdgeCondition()
-                      .setMode(entry.getConditions().getMode());
+                  existingDependency.get().setAttackChainEdgeCondition(entry.getConditions());
                 } else {
                   AttackChainEdge attackChainEdge = new AttackChainEdge();
                   attackChainEdge.setAttackChainNodeChildren(attackChainNode);
@@ -705,14 +698,7 @@ public class AttackChainNodeService {
                       attackChainNodeRepository
                           .findById(entry.getRelationship().getAttackChainNodeParentId())
                           .orElse(null));
-                  attackChainEdge.setAttackChainEdgeCondition(
-                      new AttackChainEdgeConditions.AttackChainEdgeCondition());
-                  attackChainEdge
-                      .getAttackChainEdgeCondition()
-                      .setConditions(entry.getConditions().getConditions());
-                  attackChainEdge
-                      .getAttackChainEdgeCondition()
-                      .setMode(entry.getConditions().getMode());
+                  attackChainEdge.setAttackChainEdgeCondition(entry.getConditions());
                   attackChainNode.getDependsOn().add(attackChainEdge);
                 }
               });

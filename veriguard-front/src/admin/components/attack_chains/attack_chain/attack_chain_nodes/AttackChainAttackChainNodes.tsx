@@ -7,6 +7,7 @@ import { useParams } from 'react-router';
 import { type AttackChainNodeOutputType } from '../../../../../actions/attack_chain_nodes/AttackChainNode';
 import { updateAttackChainNodeSettings } from '../../../../../actions/attack_chain_nodes/node-action';
 import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
+import { updateAttackChainEdgeCondition } from '../../../../../actions/attack_chain_edges/edge-action';
 import {
   fetchAttackChain,
   fetchAttackChainTeams,
@@ -42,15 +43,19 @@ import {
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
+import { AttackChainEdgeConditionContext } from '../editor/AttackChainEdgeConditionContext';
 import {
   type AttackChainNodeEditValue,
   type AttackChainSettingsValue,
+  type EdgeConditionTree,
   type ParameterSetOption,
 } from '../editor/attackChainEditorTypes';
+import { fromEdgeConditionDto, toEdgeConditionDto } from '../editor/attackChainEdgeConditionAdapters';
 import { toNodeEditValue, toNodeSettingsInput } from '../editor/attackChainNodeEditAdapters';
 import { AttackChainNodeSettingsContext } from '../editor/AttackChainNodeSettingsContext';
 import { toApiInput, toParameterSetOption, toSettingsValue } from '../editor/attackChainSettingsAdapters';
 import AttackChainSettingsDrawer from '../editor/AttackChainSettingsDrawer';
+import ConditionEdgePopover from '../editor/ConditionEdgePopover';
 import NodeEditDrawer from '../editor/NodeEditDrawer';
 import teamContextForAttackChain from '../teams/teamContextForAttackChain';
 
@@ -107,8 +112,14 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
 
   // -- 攻击编排链路级设置 drawer (Phase 12b-B3) --
   // -- 节点级 NodeEditDrawer + NodeBadge (Phase 12b-B3.5a) --
+  // -- 边级 ConditionEdgePopover (Phase 12b-B3.5b) --
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [editingNode, setEditingNode] = useState<AttackChainNodeOutputType | null>(null);
+  const [editingEdge, setEditingEdge] = useState<{
+    edgeId: string;
+    anchor: HTMLElement;
+    initialValue: EdgeConditionTree;
+  } | null>(null);
   const [parameterSetOptions, setParameterSetOptions] = useState<ParameterSetOption[]>([]);
   const [healthyConnectorIds, setHealthyConnectorIds] = useState<string[]>([]);
   const loadParameterSetOptions = useCallback(async () => {
@@ -158,12 +169,58 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
     await dispatch(fetchAttackChainAttackChainNodesSimple(scenarioId));
   };
 
+  const allNodes = useHelper((helper: AttackChainNodeHelper) =>
+    helper.getAttackChainAttackChainNodes(scenarioId),
+  );
+
+  const findEdgeCondition = useCallback(
+    (edgeId: string): EdgeConditionTree => {
+      const defaultTree: EdgeConditionTree = {
+        kind: 'group',
+        op: 'AND',
+        children: [],
+      };
+      for (const node of allNodes ?? []) {
+        for (const edge of node.node_depends_on ?? []) {
+          if (edge.edge_id === edgeId) {
+            return edge.dependency_condition
+              ? fromEdgeConditionDto(edge.dependency_condition)
+              : defaultTree;
+          }
+        }
+      }
+      return defaultTree;
+    },
+    [allNodes],
+  );
+
+  const handleOpenEdgeCondition = useCallback(
+    (edgeId: string, anchor: HTMLElement) => {
+      setEditingEdge({
+        edgeId,
+        anchor,
+        initialValue: findEdgeCondition(edgeId),
+      });
+    },
+    [findEdgeCondition],
+  );
+
+  const handleEdgeConditionSubmit = async (value: EdgeConditionTree) => {
+    if (!editingEdge) return;
+    await updateAttackChainEdgeCondition(editingEdge.edgeId, {
+      dependency_condition: toEdgeConditionDto(value),
+    });
+    setEditingEdge(null);
+    await dispatch(fetchAttackChainAttackChainNodesSimple(scenarioId));
+  };
+
   return (
     <ViewModeContext.Provider value={viewMode}>
       <TeamContext.Provider value={teamContext}>
         <EndpointContext.Provider value={endpointContext}>
           <AttackChainNodeTestContext.Provider value={injectTestContext}>
-            <AttackChainNodeSettingsContext.Provider value={{ openNodeSettings: setEditingNode }}>
+            <AttackChainEdgeConditionContext.Provider value={{ openEdgeCondition: handleOpenEdgeCondition }}>
+              <AttackChainNodeSettingsContext.Provider value={{ openNodeSettings: setEditingNode }}>
               <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
                 <Button
                   variant="outlined"
@@ -202,7 +259,17 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
                   onSubmit={handleNodeSettingsSubmit}
                 />
               )}
+              {editingEdge && (
+                <ConditionEdgePopover
+                  open
+                  anchorEl={editingEdge.anchor}
+                  initialValue={editingEdge.initialValue}
+                  onCancel={() => setEditingEdge(null)}
+                  onSubmit={handleEdgeConditionSubmit}
+                />
+              )}
             </AttackChainNodeSettingsContext.Provider>
+            </AttackChainEdgeConditionContext.Provider>
           </AttackChainNodeTestContext.Provider>
         </EndpointContext.Provider>
       </TeamContext.Provider>

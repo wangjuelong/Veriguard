@@ -1,7 +1,9 @@
 package io.veriguard.rest.attack_chain_node.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.database.model.*;
+import io.veriguard.database.model.AttackChainEdge;
+import io.veriguard.database.model.AttackChainNode;
+import io.veriguard.database.model.EdgeCondition;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +15,9 @@ public class AttackChainEdgeInput {
   @JsonProperty("dependency_relationship")
   private AttackChainEdgeIdInput relationship;
 
+  /** sealed 递归 {@link EdgeCondition}（Phase 12b-B3.5b：完全替换旧扁平 AttackChainEdgeCondition）。 */
   @JsonProperty("dependency_condition")
-  private AttackChainEdgeConditions.AttackChainEdgeCondition conditions;
+  private EdgeCondition conditions;
 
   public AttackChainEdge toAttackChainEdge(
       @NotNull final AttackChainNode attackChainNode,

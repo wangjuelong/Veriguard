@@ -210,40 +210,38 @@ class AttackChainNodesExecutionJobTest extends IntegrationTest {
 
   @Test
   @DisplayName(
-      "When auto closing of NON stix-created simulation, DOES NOT trigger stix coverage job")
-  public void shouldRaiseExceptionIfExpectationMalicious() {
+      "Edge with PREVENTION ALL_SUCCESS condition raises ErrorMessagesPreExecutionException when parent is not yet settled")
+  public void checkErrorMessagesPreExecution_parentPending_throws() {
     ReflectionTestUtils.setField(job, "attackChainEdgesRepository", attackChainEdgesRepository);
     AttackChainNode attackChainNode =
         attackChainNodeComposer
             .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
             .get();
     attackChainNode.setId(UUID.randomUUID().toString());
+
+    AttackChainNode parent =
+        attackChainNodeComposer
+            .forAttackChainNode(AttackChainNodeFixture.getDefaultAttackChainNode())
+            .get();
+    parent.setId(UUID.randomUUID().toString());
+
     AttackChainEdge attackChainEdge = new AttackChainEdge();
-    attackChainEdge
-        .getCompositeId()
-        .setAttackChainNodeParent(
-            AttackChainNodeFixture.createAttackChainNodeWithManualExpectation(
-                NodeContractFixture.createDefaultNodeContract(),
-                "parent",
-                "T(java.lang.Runtime).getRuntime().exec('gedit');"));
-    attackChainEdge
-        .getCompositeId()
-        .setAttackChainNodeChildren(AttackChainNodeFixture.getDefaultAttackChainNode());
+    attackChainEdge.getCompositeId().setAttackChainNodeParent(parent);
+    attackChainEdge.getCompositeId().setAttackChainNodeChildren(attackChainNode);
+    // 新 sealed EdgeCondition：PREVENTION 维度要求 ALL_SUCCESS
     attackChainEdge.setAttackChainEdgeCondition(
-        new AttackChainEdgeConditions.AttackChainEdgeCondition());
-    AttackChainEdgeConditions.Condition condition = new AttackChainEdgeConditions.Condition();
-    condition.setOperator(AttackChainEdgeConditions.DependencyOperator.eq);
-    condition.setValue(true);
-    condition.setKey("T(java.lang.Runtime).getRuntime().exec('gedit');");
-    attackChainEdge.getAttackChainEdgeCondition().setConditions(List.of(condition));
+        new EdgeCondition.Eq(
+            EdgeCondition.ExpectationDimension.PREVENTION,
+            EdgeCondition.ExpectationStatusGroup.ALL_SUCCESS));
     when(attackChainEdgesRepository.findParents(any())).thenReturn(List.of(attackChainEdge));
+
     try {
       this.job.checkErrorMessagesPreExecution(UUID.randomUUID().toString(), attackChainNode);
       fail("Should have raised an exception");
     } catch (Exception e) {
       assertThat(e).isInstanceOf(ErrorMessagesPreExecutionException.class);
-      assertThat(e.getMessage())
-          .isEqualTo("There was an error during the evaluation of the condition of the inject");
+      // 父节点没有 status → isParentExecutionSettled = false → 加 PREVENTION 维度的诊断信息
+      assertThat(e.getMessage()).contains("PREVENTION");
     }
   }
 
