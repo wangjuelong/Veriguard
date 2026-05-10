@@ -10,6 +10,10 @@ import { sortKillChainPhase } from '../../../../utils/kill_chain_phases/kill_cha
 import KillChainPhaseColumn from './KillChainPhaseColumn';
 import MitreMatrixDummy from './MitreMatrixDummy';
 
+export type MatrixMode = 'compact' | 'full';
+export type MatrixColoringScheme = 'coverage' | 'verdict';
+export type MatrixVerdictDimension = 'prevention' | 'detection';
+
 const useStyles = makeStyles()(() => ({
   container: {
     width: '100%',
@@ -24,11 +28,17 @@ const useStyles = makeStyles()(() => ({
 interface Props {
   goToLink?: string;
   injectResults: NodeExpectationResultsByAttackPattern[];
+  mode?: MatrixMode;
+  coloringScheme?: MatrixColoringScheme;
+  verdictDimension?: MatrixVerdictDimension;
 }
 
 const MitreMatrix: FunctionComponent<Props> = ({
   goToLink,
   injectResults,
+  mode = 'compact',
+  coloringScheme = 'verdict',
+  verdictDimension = 'prevention',
 }) => {
   // Standard hooks
   const { classes } = useStyles();
@@ -45,34 +55,47 @@ const MitreMatrix: FunctionComponent<Props> = ({
     return <MitreMatrixDummy />;
   }
 
-  // Attack Pattern
-  const resultAttackPatternIds = R.uniq(
-    injectResults
-      .filter(injectResult => !!injectResult.node_attack_pattern)
-      .flatMap(injectResult => injectResult.node_attack_pattern) as unknown as string[],
-  );
-  const resultAttackPatterns: AttackPattern[] = resultAttackPatternIds.map((attackPatternId: string) => attackPatternMap[attackPatternId])
-    .filter((attackPattern: AttackPattern) => !!attackPattern);
-  const getAttackPatterns = (killChainPhase: KillChainPhase) => {
-    return resultAttackPatterns.filter((attackPattern: AttackPattern) => attackPattern.attack_pattern_kill_chain_phases?.includes(killChainPhase.phase_id));
-  };
-  // Kill Chain Phase
-  const resultKillChainPhases = R.uniq(resultAttackPatterns
-    .flatMap(attackPattern => (attackPattern.attack_pattern_kill_chain_phases ?? []))
-    .map((killChainPhaseId: string) => killChainPhaseMap[killChainPhaseId])
-    .filter(killChainPhase => !!killChainPhase));
+  let phases: KillChainPhase[];
+  let patternsByPhase: (phase: KillChainPhase) => AttackPattern[];
+
+  if (mode === 'full') {
+    const allPatterns: AttackPattern[] = Object.values(attackPatternMap);
+    phases = Object.values(killChainPhaseMap);
+    patternsByPhase = (phase: KillChainPhase) =>
+      allPatterns.filter((p: AttackPattern) => p.attack_pattern_kill_chain_phases?.includes(phase.phase_id));
+  } else {
+    // compact: existing logic preserved exactly
+    const resultAttackPatternIds = R.uniq(
+      injectResults
+        .filter(injectResult => !!injectResult.node_attack_pattern)
+        .flatMap(injectResult => injectResult.node_attack_pattern) as unknown as string[],
+    );
+    const resultAttackPatterns: AttackPattern[] = resultAttackPatternIds
+      .map((id: string) => attackPatternMap[id])
+      .filter((p: AttackPattern | undefined): p is AttackPattern => p !== undefined);
+    phases = R.uniq(
+      resultAttackPatterns
+        .flatMap((p: AttackPattern) => p.attack_pattern_kill_chain_phases ?? [])
+        .map((phaseId: string) => killChainPhaseMap[phaseId])
+        .filter((phase): phase is KillChainPhase => !!phase),
+    );
+    patternsByPhase = (phase: KillChainPhase) =>
+      resultAttackPatterns.filter((p: AttackPattern) => p.attack_pattern_kill_chain_phases?.includes(phase.phase_id));
+  }
+
   return (
     <div className={classes.container}>
-      {[...resultKillChainPhases].sort(sortKillChainPhase)
-        .map((killChainPhase: KillChainPhase) => (
-          <KillChainPhaseColumn
-            key={killChainPhase.phase_id}
-            goToLink={goToLink}
-            killChainPhase={killChainPhase}
-            attackPatterns={getAttackPatterns(killChainPhase)}
-            injectResults={injectResults}
-          />
-        ))}
+      {[...phases].sort(sortKillChainPhase).map(phase => (
+        <KillChainPhaseColumn
+          key={phase.phase_id}
+          goToLink={goToLink}
+          killChainPhase={phase}
+          attackPatterns={patternsByPhase(phase)}
+          injectResults={injectResults}
+          coloringScheme={coloringScheme}
+          verdictDimension={verdictDimension}
+        />
+      ))}
     </div>
   );
 };
