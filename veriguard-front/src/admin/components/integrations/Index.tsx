@@ -14,6 +14,7 @@ const CatalogLayout = lazy(() => import('./catalog_connectors/CatalogLayout'));
 const InjectorsLayout = lazy(() => import('./node_executors/InjectorsLayout'));
 const ExecutorsLayout = lazy(() => import('./executors/ExecutorsLayout'));
 const CollectorsLayout = lazy(() => import('./collectors/CollectorsLayout'));
+const SocConnectorsIndex = lazy(() => import('./soc_connectors/Index'));
 const ConnectorList = lazy(() => import('./common/ConnectorList'));
 const ConnectorPage = lazy(() => import('./common/ConnectorPage'));
 
@@ -46,6 +47,8 @@ const Index = () => {
             <Route index element={<ConnectorList />} />
             <Route path=":executorId" element={<ConnectorPage />} />
           </Route>
+
+          <Route path="soc_connectors" element={errorWrapper(SocConnectorsIndex)()} />
 
           {/* Not found */}
           <Route path="*" element={<NotFound />} />
