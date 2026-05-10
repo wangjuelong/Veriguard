@@ -1,4 +1,4 @@
-import { BarChartOutlined, ReorderOutlined, ViewTimelineOutlined } from '@mui/icons-material';
+import { BarChartOutlined, GridOnOutlined, ReorderOutlined, ViewTimelineOutlined } from '@mui/icons-material';
 import { ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 import { type FunctionComponent, useContext } from 'react';
 import { makeStyles } from 'tss-react/mui';
@@ -81,6 +81,19 @@ const AttackChainNodesListButtons: FunctionComponent<Props> = ({
                 aria-label="Distribution view mode"
               >
                 <BarChartOutlined fontSize="small" color="primary" />
+              </ToggleButton>
+            </Tooltip>
+          )}
+        {(!!setViewMode && availableButtons.includes('matrix'))
+          && (
+            <Tooltip title={t('Attack pattern matrix')}>
+              <ToggleButton
+                value="matrix"
+                onClick={() => setViewMode('matrix')}
+                selected={viewModeContext === 'matrix'}
+                aria-label="Attack pattern matrix"
+              >
+                <GridOnOutlined fontSize="small" color={viewModeContext === 'matrix' ? 'inherit' : 'primary'} />
               </ToggleButton>
             </Tooltip>
           )}

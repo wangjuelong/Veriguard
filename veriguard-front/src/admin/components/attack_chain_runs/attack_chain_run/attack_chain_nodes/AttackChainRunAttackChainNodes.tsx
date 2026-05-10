@@ -1,6 +1,6 @@
 /* eslint-disable i18next/no-literal-string -- Phase 12b-B4 二开 UI 中文文案，未来 i18n 清洗。 */
-import { BarChartOutlined, ReorderOutlined, ViewTimelineOutlined } from '@mui/icons-material';
-import { Drawer, GridLegacy, Paper, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
+import { BarChartOutlined, GridOnOutlined, ReorderOutlined, ViewTimelineOutlined } from '@mui/icons-material';
+import { Drawer, GridLegacy, Paper, Stack, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
 import { type FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
@@ -8,6 +8,7 @@ import { makeStyles } from 'tss-react/mui';
 import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import {
   type AttackChainLinkExpectationWire,
+  fetchAttackChainRunAttackChainNodeExpectationResults,
   fetchLinkExpectationsForAttackChainRun,
 } from '../../../../../actions/attack_chain_runs/attack_chain_run-action';
 import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
@@ -20,7 +21,7 @@ import { fetchVariablesForAttackChainRun } from '../../../../../actions/variable
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type AttackChainNode, type AttackChainNodeExpectation, type AttackChainRun } from '../../../../../utils/api-types';
+import { type AttackChainNode, type AttackChainNodeExpectation, type AttackChainRun, type NodeExpectationResultsByAttackPattern } from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
 import endpointContextForAttackChainRun from '../../../../../utils/context/endpoint/EndpointContextForAttackChainRun';
 import { useAppDispatch } from '../../../../../utils/hooks';
@@ -34,6 +35,7 @@ import {
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
+import MitreMatrix from '../../../common/matrix/MitreMatrix';
 import AttackChainRunDistributionScoreByTeamInPercentage from '../overview/AttackChainRunDistributionScoreByTeamInPercentage';
 import AttackChainRunDistributionScoreOverTimeByInjectorContract from '../overview/AttackChainRunDistributionScoreOverTimeByNodeContract';
 import AttackChainRunDistributionScoreOverTimeByTeam from '../overview/AttackChainRunDistributionScoreOverTimeByTeam';
@@ -60,7 +62,7 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
   const { t } = useFormatter();
   const { classes } = useStyles();
   const dispatch = useAppDispatch();
-  const availableButtons = ['chain', 'list', 'distribution'];
+  const availableButtons = ['chain', 'list', 'distribution', 'matrix'];
   const { exerciseId } = useParams() as { exerciseId: AttackChainRun['attack_chain_run_id'] };
 
   const [viewMode, setViewMode] = useState(() => {
@@ -92,6 +94,11 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
     dispatch(fetchAttackChainRunAttackChainNodeExpectations(exerciseId));
   });
 
+  // matrix view state
+  const [matrixMode, setMatrixMode] = useState<'compact' | 'full'>('compact');
+  const [verdictDimension, setVerdictDimension] = useState<'prevention' | 'detection'>('prevention');
+  const [attackPatternResults, setAttackPatternResults] = useState<NodeExpectationResultsByAttackPattern[]>([]);
+
   // 链路级 SOC expectation —— simpleCall 不进 redux helper，本地 state 维护.
   const [linkExpectations, setLinkExpectations] = useState<AttackChainLinkExpectationWire[]>([]);
   const [panelOpen, setPanelOpen] = useState(false);
@@ -110,6 +117,22 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
       cancelled = true;
     };
   }, [exerciseId]);
+
+  useEffect(() => {
+    if (viewMode !== 'matrix') return () => {};
+    let cancelled = false;
+    fetchAttackChainRunAttackChainNodeExpectationResults(exerciseId)
+      .then((result: { data: NodeExpectationResultsByAttackPattern[] }) => {
+        if (cancelled || !result) return;
+        setAttackPatternResults(Array.isArray(result.data) ? result.data : []);
+      })
+      .catch(() => {
+        // simpleCall 已 notifyErrorHandler；不二次显示
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [exerciseId, viewMode]);
 
   const runtimeNodeInputs = useMemo<RuntimeNodeInput[]>(() => {
     const list: AttackChainNode[] = attack_chain_nodes ?? [];
@@ -225,6 +248,16 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
                 <BarChartOutlined fontSize="small" color="inherit" />
               </ToggleButton>
             </Tooltip>
+            <Tooltip title={t('Attack pattern matrix')}>
+              <ToggleButton
+                value="matrix"
+                onClick={() => handleViewMode('matrix')}
+                selected={false}
+                aria-label="Attack pattern matrix"
+              >
+                <GridOnOutlined fontSize="small" color="primary" />
+              </ToggleButton>
+            </Tooltip>
           </ToggleButtonGroup>
           <GridLegacy container spacing={3}>
             <GridLegacy container item spacing={3}>
@@ -322,6 +355,93 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
               </GridLegacy>
             </GridLegacy>
           </GridLegacy>
+        </div>
+      )}
+      {viewMode === 'matrix' && (
+        <div style={{ marginTop: -12 }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              float: 'right',
+              marginBottom: 1,
+            }}
+          >
+            <ToggleButtonGroup
+              size="small"
+              exclusive={true}
+              aria-label="Change view mode"
+            >
+              <Tooltip title={t('List view')}>
+                <ToggleButton
+                  value="list"
+                  onClick={() => handleViewMode('list')}
+                  selected={false}
+                  aria-label="List view mode"
+                >
+                  <ReorderOutlined fontSize="small" color="primary" />
+                </ToggleButton>
+              </Tooltip>
+              <Tooltip title={t('Interactive view')}>
+                <ToggleButton
+                  value="chain"
+                  onClick={() => handleViewMode('chain')}
+                  selected={false}
+                  aria-label="Interactive view mode"
+                >
+                  <ViewTimelineOutlined fontSize="small" color="primary" />
+                </ToggleButton>
+              </Tooltip>
+              <Tooltip title={t('Distribution view')}>
+                <ToggleButton
+                  value="distribution"
+                  onClick={() => handleViewMode('distribution')}
+                  selected={false}
+                  aria-label="Distribution view mode"
+                >
+                  <BarChartOutlined fontSize="small" color="primary" />
+                </ToggleButton>
+              </Tooltip>
+              <Tooltip title={t('Attack pattern matrix')}>
+                <ToggleButton
+                  value="matrix"
+                  onClick={() => handleViewMode('matrix')}
+                  selected={true}
+                  aria-label="Attack pattern matrix"
+                >
+                  <GridOnOutlined fontSize="small" color="inherit" />
+                </ToggleButton>
+              </Tooltip>
+            </ToggleButtonGroup>
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={matrixMode}
+              onChange={(_e, v) => v && setMatrixMode(v)}
+            >
+              <ToggleButton value="compact" aria-label="Compact view">{t('Compact view')}</ToggleButton>
+              <ToggleButton value="full" aria-label="Full ATT&CK matrix">{t('Full ATT&CK matrix')}</ToggleButton>
+            </ToggleButtonGroup>
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={verdictDimension}
+              onChange={(_e, v) => v && setVerdictDimension(v)}
+            >
+              <ToggleButton value="prevention" aria-label="By prevention">{t('By prevention')}</ToggleButton>
+              <ToggleButton value="detection" aria-label="By detection">{t('By detection')}</ToggleButton>
+            </ToggleButtonGroup>
+          </Stack>
+          <Typography variant="h4">{t('Attack pattern matrix')}</Typography>
+          <Paper variant="outlined" sx={{ padding: 2 }}>
+            <MitreMatrix
+              injectResults={attackPatternResults}
+              mode={matrixMode}
+              coloringScheme="verdict"
+              verdictDimension={verdictDimension}
+              goToLink={`/admin/attack_chain_runs/${exerciseId}/nodes`}
+            />
+          </Paper>
         </div>
       )}
     </ViewModeContext.Provider>

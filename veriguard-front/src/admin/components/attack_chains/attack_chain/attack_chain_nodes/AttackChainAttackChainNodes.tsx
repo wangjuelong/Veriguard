@@ -1,13 +1,13 @@
 /* eslint-disable i18next/no-literal-string -- Phase 12b-B 二开 UI 硬编码中文，未来统一 i18n 清洗。 */
-import { Settings as SettingsIcon } from '@mui/icons-material';
-import { Box, Button, Stack } from '@mui/material';
-import { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { GridOnOutlined, ReorderOutlined, Settings as SettingsIcon, ViewTimelineOutlined } from '@mui/icons-material';
+import { Box, Button, Paper, Stack, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
+import { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
+import { updateAttackChainEdgeCondition } from '../../../../../actions/attack_chain_edges/edge-action';
 import { type AttackChainNodeOutputType } from '../../../../../actions/attack_chain_nodes/AttackChainNode';
 import { updateAttackChainNodeSettings } from '../../../../../actions/attack_chain_nodes/node-action';
 import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
-import { updateAttackChainEdgeCondition } from '../../../../../actions/attack_chain_edges/edge-action';
 import {
   fetchAttackChain,
   fetchAttackChainTeams,
@@ -26,6 +26,7 @@ import { fetchVariablesForAttackChain } from '../../../../../actions/variables/v
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
 import { initSorting } from '../../../../../components/common/queryable/Page';
 import { buildSearchPagination } from '../../../../../components/common/queryable/QueryableUtils';
+import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
 import { simplePostCall } from '../../../../../utils/Action';
 import {
@@ -43,6 +44,9 @@ import {
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
+import { toAttackPatternResultsForEditor } from '../../../common/matrix/attackPatternMatrixAdapter';
+import MitreMatrix from '../../../common/matrix/MitreMatrix';
+import { fromEdgeConditionDto, toEdgeConditionDto } from '../editor/attackChainEdgeConditionAdapters';
 import { AttackChainEdgeConditionContext } from '../editor/AttackChainEdgeConditionContext';
 import {
   type AttackChainNodeEditValue,
@@ -50,7 +54,6 @@ import {
   type EdgeConditionTree,
   type ParameterSetOption,
 } from '../editor/attackChainEditorTypes';
-import { fromEdgeConditionDto, toEdgeConditionDto } from '../editor/attackChainEdgeConditionAdapters';
 import { toNodeEditValue, toNodeSettingsInput } from '../editor/attackChainNodeEditAdapters';
 import { AttackChainNodeSettingsContext } from '../editor/AttackChainNodeSettingsContext';
 import { toApiInput, toParameterSetOption, toSettingsValue } from '../editor/attackChainSettingsAdapters';
@@ -65,10 +68,11 @@ const VALIDATION_PARAMETER_SET_SEARCH_URI = '/api/validation_parameter_sets/sear
 
 const AttackChainAttackChainNodes: FunctionComponent = () => {
   // Standard hooks
+  const { t } = useFormatter();
   const dispatch = useAppDispatch();
   const { scenarioId } = useParams() as { scenarioId: AttackChain['attack_chain_id'] };
 
-  const availableButtons = ['chain', 'list'];
+  const availableButtons = ['chain', 'list', 'matrix'];
 
   const { attack_chain, teams, variables } = useHelper(
     (helper: AttackChainNodeHelper & AttackChainsHelper & VariablesHelper & TeamsHelper) => {
@@ -98,6 +102,8 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
     const storedValue = localStorage.getItem('attack_chain_or_attack_chain_run_view_mode');
     return storedValue === null || !availableButtons.includes(storedValue) ? 'list' : storedValue;
   });
+
+  const [matrixMode, setMatrixMode] = useState<'compact' | 'full'>('compact');
 
   const handleViewMode = (mode: string) => {
     setViewMode(mode);
@@ -173,6 +179,11 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
     helper.getAttackChainAttackChainNodes(scenarioId),
   );
 
+  const editorMatrixResults = useMemo(
+    () => toAttackPatternResultsForEditor(allNodes ?? []),
+    [allNodes],
+  );
+
   const findEdgeCondition = useCallback(
     (edgeId: string): EdgeConditionTree => {
       const defaultTree: EdgeConditionTree = {
@@ -207,9 +218,7 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
 
   const handleEdgeConditionSubmit = async (value: EdgeConditionTree) => {
     if (!editingEdge) return;
-    await updateAttackChainEdgeCondition(editingEdge.edgeId, {
-      dependency_condition: toEdgeConditionDto(value),
-    });
+    await updateAttackChainEdgeCondition(editingEdge.edgeId, { dependency_condition: toEdgeConditionDto(value) });
     setEditingEdge(null);
     await dispatch(fetchAttackChainAttackChainNodesSimple(scenarioId));
   };
@@ -221,54 +230,122 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
           <AttackChainNodeTestContext.Provider value={injectTestContext}>
             <AttackChainEdgeConditionContext.Provider value={{ openEdgeCondition: handleOpenEdgeCondition }}>
               <AttackChainNodeSettingsContext.Provider value={{ openNodeSettings: setEditingNode }}>
-              <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<SettingsIcon fontSize="small" />}
-                  onClick={() => setSettingsOpen(true)}
-                >
-                  链路设置
-                </Button>
-              </Stack>
-              <AttackChainNodes
-                teams={teams}
-                variables={variables}
-                uriVariable={`/admin/attack_chains/${scenarioId}/definition`}
-                setViewMode={handleViewMode}
-                availableButtons={availableButtons}
-              />
-              {settingsOpen && (
-                <Box>
-                  <AttackChainSettingsDrawer
-                    open
-                    initialValue={toSettingsValue(attack_chain)}
-                    parameterSetOptions={parameterSetOptions}
-                    availableConnectorIds={healthyConnectorIds}
-                    onCancel={() => setSettingsOpen(false)}
-                    onSubmit={handleSettingsSubmit}
+                <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<SettingsIcon fontSize="small" />}
+                    onClick={() => setSettingsOpen(true)}
+                  >
+                    链路设置
+                  </Button>
+                </Stack>
+                {(viewMode === 'chain' || viewMode === 'list') && (
+                  <AttackChainNodes
+                    teams={teams}
+                    variables={variables}
+                    uriVariable={`/admin/attack_chains/${scenarioId}/definition`}
+                    setViewMode={handleViewMode}
+                    availableButtons={availableButtons}
                   />
-                </Box>
-              )}
-              {editingNode && (
-                <NodeEditDrawer
-                  open
-                  initialValue={toNodeEditValue(editingNode)}
-                  parameterSetOptions={parameterSetOptions}
-                  onCancel={() => setEditingNode(null)}
-                  onSubmit={handleNodeSettingsSubmit}
-                />
-              )}
-              {editingEdge && (
-                <ConditionEdgePopover
-                  open
-                  anchorEl={editingEdge.anchor}
-                  initialValue={editingEdge.initialValue}
-                  onCancel={() => setEditingEdge(null)}
-                  onSubmit={handleEdgeConditionSubmit}
-                />
-              )}
-            </AttackChainNodeSettingsContext.Provider>
+                )}
+                {viewMode === 'matrix' && (
+                  <div style={{ marginTop: -12 }}>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        float: 'right',
+                        marginBottom: 1,
+                      }}
+                    >
+                      <ToggleButtonGroup
+                        size="small"
+                        exclusive
+                        value={matrixMode}
+                        onChange={(_e, v) => v && setMatrixMode(v)}
+                      >
+                        <ToggleButton value="compact" aria-label="Compact view">{t('Compact view')}</ToggleButton>
+                        <ToggleButton value="full" aria-label="Full ATT&CK matrix">{t('Full ATT&CK matrix')}</ToggleButton>
+                      </ToggleButtonGroup>
+                      <ToggleButtonGroup
+                        size="small"
+                        exclusive={true}
+                        aria-label="Change view mode"
+                      >
+                        <Tooltip title={t('List view')}>
+                          <ToggleButton
+                            value="list"
+                            onClick={() => handleViewMode('list')}
+                            selected={false}
+                            aria-label="List view mode"
+                          >
+                            <ReorderOutlined fontSize="small" color="primary" />
+                          </ToggleButton>
+                        </Tooltip>
+                        <Tooltip title={t('Interactive view')}>
+                          <ToggleButton
+                            value="chain"
+                            onClick={() => handleViewMode('chain')}
+                            selected={false}
+                            aria-label="Interactive view mode"
+                          >
+                            <ViewTimelineOutlined fontSize="small" color="primary" />
+                          </ToggleButton>
+                        </Tooltip>
+                        <Tooltip title={t('Attack pattern matrix')}>
+                          <ToggleButton
+                            value="matrix"
+                            onClick={() => handleViewMode('matrix')}
+                            selected={true}
+                            aria-label="Attack pattern matrix"
+                          >
+                            <GridOnOutlined fontSize="small" color="inherit" />
+                          </ToggleButton>
+                        </Tooltip>
+                      </ToggleButtonGroup>
+                    </Stack>
+                    <Typography variant="h4">{t('Attack pattern matrix')}</Typography>
+                    <Paper variant="outlined" sx={{ padding: 2 }}>
+                      <MitreMatrix
+                        injectResults={editorMatrixResults}
+                        mode={matrixMode}
+                        coloringScheme="coverage"
+                      />
+                    </Paper>
+                  </div>
+                )}
+                {settingsOpen && (
+                  <Box>
+                    <AttackChainSettingsDrawer
+                      open
+                      initialValue={toSettingsValue(attack_chain)}
+                      parameterSetOptions={parameterSetOptions}
+                      availableConnectorIds={healthyConnectorIds}
+                      onCancel={() => setSettingsOpen(false)}
+                      onSubmit={handleSettingsSubmit}
+                    />
+                  </Box>
+                )}
+                {editingNode && (
+                  <NodeEditDrawer
+                    open
+                    initialValue={toNodeEditValue(editingNode)}
+                    parameterSetOptions={parameterSetOptions}
+                    onCancel={() => setEditingNode(null)}
+                    onSubmit={handleNodeSettingsSubmit}
+                  />
+                )}
+                {editingEdge && (
+                  <ConditionEdgePopover
+                    open
+                    anchorEl={editingEdge.anchor}
+                    initialValue={editingEdge.initialValue}
+                    onCancel={() => setEditingEdge(null)}
+                    onSubmit={handleEdgeConditionSubmit}
+                  />
+                )}
+              </AttackChainNodeSettingsContext.Provider>
             </AttackChainEdgeConditionContext.Provider>
           </AttackChainNodeTestContext.Provider>
         </EndpointContext.Provider>
