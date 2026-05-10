@@ -2,12 +2,14 @@ package io.veriguard.service.attack_chain;
 
 import static io.veriguard.config.SessionHelper.currentUser;
 import static io.veriguard.database.criteria.GenericCriteria.countQuery;
+import static io.veriguard.database.model.Filters.isEmptyFilterGroup;
 import static io.veriguard.database.specification.AttackChainSpecification.findGrantedFor;
 import static io.veriguard.database.specification.TeamSpecification.fromIds;
 import static io.veriguard.helper.StreamHelper.fromIterable;
 import static io.veriguard.rest.attack_chain.utils.AttackChainUtils.handleCustomFilter;
 import static io.veriguard.service.ImportService.EXPORT_ENTRY_ATTACHMENT;
 import static io.veriguard.service.ImportService.EXPORT_ENTRY_SCENARIO;
+import static io.veriguard.utils.FilterUtilsJpa.computeFilterGroupJpa;
 import static io.veriguard.utils.StringUtils.duplicateString;
 import static io.veriguard.utils.pagination.PaginationUtils.buildPaginationCriteriaBuilder;
 import static io.veriguard.utils.pagination.SortUtilsCriteriaBuilder.toSortCriteriaBuilder;
@@ -117,6 +119,8 @@ public class AttackChainService {
 
   private final AttackChainMapper attackChainMapper;
 
+  private final NodeContractRepository nodeContractRepository;
+
   @Transactional
   public AttackChain createAttackChain(@NotNull final AttackChain attackChain) {
     computeEmails(attackChain);
@@ -134,6 +138,35 @@ public class AttackChainService {
             new ArrayList<>(Arrays.asList(this.veriguardConfig.getDefaultReplyTo())));
       }
     }
+  }
+
+  /**
+   * Computes the set of {@link NodeContract}s that match the attack chain's dynamic filter.
+   *
+   * <p>Mirrors {@code AssetGroupService.computeDynamicAssets}: when the chain has no dynamic filter
+   * (null or empty {@link io.veriguard.database.model.Filters.FilterGroup}) this method
+   * short-circuits and returns an empty list without calling the repository. When a non-empty
+   * filter is present it constructs a JPA {@link Specification} via {@link
+   * io.veriguard.utils.FilterUtilsJpa#computeFilterGroupJpa} and delegates to {@link
+   * NodeContractRepository#findAll(Specification)}.
+   *
+   * <p>Results are re-queried on every invocation (no caching), satisfying the PRD §2.3 第 5 行
+   * "用例更新自动进入" semantics — contracts added or removed from the matching set are reflected in the
+   * next call.
+   *
+   * @param chain the attack chain whose {@code dynamicFilter} field drives the query; may be null
+   * @return the matching contracts, or an empty list when the filter is absent
+   */
+  public List<NodeContract> computeDynamicContracts(final AttackChain chain) {
+    if (chain == null) {
+      return List.of();
+    }
+    Filters.FilterGroup filter = chain.getDynamicFilter();
+    if (isEmptyFilterGroup(filter)) {
+      return List.of();
+    }
+    Specification<NodeContract> spec = computeFilterGroupJpa(filter);
+    return this.nodeContractRepository.findAll(spec);
   }
 
   public List<AttackChainSimple> attackChains() {
