@@ -39,7 +39,7 @@ PRD §2.3 第 4+5 行要求：
 | 实施方案 | **方案 1：AttackChain 加 `dynamicFilter` 字段（与 AssetGroup 同构）** | DRY；OpenBAS 已有先例；零创新风险；PRD 没要求跨 chain 共享 query（不需独立 SavedQuery entity） |
 | 编辑器入口 | **toolbar "Dynamic content (N)" 按钮 → Drawer** | 与已落地的"链路设置" / view-mode toggle 同行排版；N 显示当前匹配数量 |
 | 动态节点视觉区分 | **X. Dashed border + 紫色 + ↻ 角标**（运行画布下叠加 verdict 背景色）| 视觉一眼区分手动 vs 动态；运行时双重信息（border = 动态语义 + 背景 = verdict）|
-| 动态节点 `attack_chain_nodes` 表占位 | **X. 不写表（runtime-only）**| 与 OpenBAS AssetGroup 模式一致（dynamicAssets 永不写 join 表）；避免数据写入混乱 |
+| 动态节点 `attack_chain_nodes` 表占位 | **持久化 + `is_dynamic=true` 标记 + run 结束 cleanup**（A4 design fix 2026-05-11）| 原 "不写表" 假设基于错误的 executor 路径调研。实际 `Executor.execute()` → `AttackChainNodeStatusService.initializeAttackChainNodeStatus()` → `attackChainNodeRepository.findById(...).orElseThrow()` 硬要求节点已持久化。改为写表 + 标记 + cleanup → 复用整套现有 executor/expectation/verdict 链；避免引入并行执行路径（双倍维护成本 + drift 风险） |
 | 1 chain 多个 dynamicFilter | **不支持**（1 chain = 1 filter） | 与 AssetGroup 一致；YAGNI |
 
 ---
@@ -52,15 +52,18 @@ PRD §2.3 第 4+5 行要求：
 
 | 文件 | 类型 | 改动 |
 |---|---|---|
-| `veriguard-api/src/main/resources/db/migration/V4__attack_chain_dynamic_filter.sql` | 新（Flyway 4）| `ALTER TABLE attack_chains ADD COLUMN dynamic_filter JSONB NOT NULL DEFAULT '{"mode":"and","filters":[]}'::jsonb` |
-| `veriguard-model/src/main/java/io/veriguard/database/model/AttackChain.java` | 改 | 加 `@Type(JsonType.class) @Column(name = "dynamic_filter") @JsonProperty("attack_chain_dynamic_filter") @NotNull private FilterGroup dynamicFilter = FilterGroup.defaultFilterGroup();`（同 `AssetGroup.dynamicFilter` 字段定义）+ `@Transient @JsonProperty("attack_chain_dynamic_contracts") private List<NodeContract> dynamicContracts;` |
-| `veriguard-api/src/main/java/io/veriguard/service/attack_chain/AttackChainService.java` | 改 | 加 `computeDynamicContracts(AttackChain): List<NodeContract>`（仿 `AssetGroupService.computeDynamicAssets`，用 `Specification` JPA Criteria 过 NodeContractRepository） |
-| `veriguard-api/src/main/java/io/veriguard/AttackChainNodesExecutionJob.java` | 改 | 启动 chain run 时调 `computeDynamicContracts` → 为每个 contract 生成 runtime 临时执行单元（t=0 平行 / 无依赖 / 默认 1 repeat / 用 contract 默认 expectations） |
-| `veriguard-api/src/main/java/io/veriguard/rest/attack_chain/AttackChainApi.java` | 改 | 加 `PUT /api/attack_chains/{id}/dynamic_filter` 端点（输入 FilterGroup，写 `dynamicFilter` 字段，@RBAC `Action.WRITE` + `ResourceType.ATTACK_CHAIN`） |
+| `veriguard-api/src/main/resources/db/migration/V5__attack_chain_dynamic_filter.sql` | 新（Flyway 5）| `ALTER TABLE attack_chains ADD COLUMN dynamic_filter JSONB NOT NULL DEFAULT '{"mode":"and","filters":[]}'::jsonb`（main 已有 V4__attack_chain_rename_es_reindex，故从 V5 起）|
+| `veriguard-api/src/main/resources/db/migration/V6__attack_chain_node_is_dynamic.sql` | 新（Flyway 6）| `ALTER TABLE attack_chain_nodes ADD COLUMN is_dynamic BOOLEAN NOT NULL DEFAULT FALSE` + 部分索引 `CREATE INDEX idx_attack_chain_nodes_dynamic ON attack_chain_nodes (attack_chain_id) WHERE is_dynamic = TRUE` 加速 cleanup query（A4 design fix）|
+| `veriguard-model/src/main/java/io/veriguard/database/model/AttackChain.java` | 改 | 加 `FilterGroup dynamicFilter` + `@Transient List<NodeContract> dynamicContracts` |
+| `veriguard-model/src/main/java/io/veriguard/database/model/AttackChainNode.java` | 改 | 加 `@Column(name = "is_dynamic") private boolean isDynamic = false`（A4 design fix）|
+| `veriguard-model/src/main/java/io/veriguard/database/repository/AttackChainNodeRepository.java` | 改 | 加 cleanup query：`@Modifying @Query` 删除 `attack_chain_id` + `is_dynamic = true` 匹配的所有动态节点（A4 design fix）|
+| `veriguard-api/src/main/java/io/veriguard/service/attack_chain/AttackChainService.java` | 改 | 加 `computeDynamicContracts(AttackChain): List<NodeContract>` |
+| `veriguard-api/src/main/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJob.java` | 改 | (a) `handleAutoStartAttackChainRuns`：转 RUNNING 前为每个 starting run 派生 + 持久化 dynamic 节点；(b) `handleAutoClosingAttackChainRuns`：转 FINISHED 后调 cleanup 删除该 chain 的所有 is_dynamic=true 节点（A4 design fix）|
+| `veriguard-api/src/main/java/io/veriguard/rest/attack_chain/AttackChainApi.java` | 改 | 加 `PUT /api/attack_chains/{id}/dynamic_filter` 端点 |
 | `veriguard-api/src/main/java/io/veriguard/rest/attack_chain/form/AttackChainDynamicFilterInput.java` | 新（DTO）| record `(@JsonProperty("dynamic_filter") FilterGroup dynamicFilter)` |
-| `veriguard-api/src/test/java/io/veriguard/service/attack_chain/AttackChainServiceDynamicContractsTest.java` | 新 | service 单测 ≥8 场景 |
-| `veriguard-api/src/test/java/io/veriguard/AttackChainNodesExecutionJobDynamicContractsTest.java` | 新 | 执行 job 集成测试 |
-| `veriguard-api/src/test/java/io/veriguard/rest/attack_chain/AttackChainApiDynamicFilterTest.java` | 新 | PUT endpoint 单测（学样 AttackChainEdgeApiTest） |
+| `veriguard-api/src/test/java/io/veriguard/service/attack_chain/AttackChainServiceDynamicContractsTest.java` | 新 | service 单测 8 场景 |
+| `veriguard-api/src/test/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJobDynamicContractsTest.java` | 新 | 执行 job 单测 ≥3 场景：start hook 派生 + save / 空 filter short-circuit / close hook cleanup 调用（A4 design fix）|
+| `veriguard-api/src/test/java/io/veriguard/rest/attack_chain/AttackChainApiDynamicFilterTest.java` | 新 | PUT endpoint 单测 4 场景 |
 
 **前端：**
 
@@ -91,28 +94,38 @@ PRD §2.3 第 4+5 行要求：
   → 编辑器 ChainedTimeline 拿 chain.attack_chain_dynamic_contracts（后端 @Transient 字段）→ 渲染动态节点
 ```
 
-**运行时：**
+**运行时（A4 design fix 2026-05-11）：**
 
 ```
-chain run 启动
-  → AttackChainNodesExecutionJob 拿 chain
-  → service.computeDynamicContracts(chain) 用 Specification 过 NodeContractRepository
-  → 每个 contract → 生成 runtime 临时执行单元（不写 attack_chain_nodes 表）
-    - t=0 平行 / 无依赖 / 默认 1 repeat
-    - expectations 用 contract.injector_contract_default_expectations
-  → 与手动节点同步执行 → 各自生成 NodeExpectation 写入
-  → 运行画布读 chain.attack_chain_dynamic_contracts + 节点 expectations 派生 verdict
+chain run 启动（handleAutoStartAttackChainRuns）
+  → 在 setStatus(RUNNING) 前对每个 starting run：
+    → service.computeDynamicContracts(chain) 用 Specification 过 NodeContractRepository
+    → 每个 contract → new AttackChainNode：
+        - id = "dynamic-${contract_id}-${run_id}"（前缀 + run_id 避免跨 run / 与 UUID 冲突）
+        - is_dynamic = true（V6 加列 + 标记位）
+        - attack_chain = chain / node_injector_contract = contract
+        - depends_duration = 0 / repeat_count = 1 / 无依赖
+      → attackChainNodeRepository.save(node)（持久化，让现有 executor 链可走通）
+  → 现有 executor 链遍历 chain.getAttackChainNodes() → 手动 + 动态节点统一调度
+  → expectation/status/verdict 全链路复用
+
+chain run 结束（handleAutoClosingAttackChainRuns）
+  → setStatus(FINISHED) 之后、instantiateForRun/evaluateForRun 之前：
+    → attackChainNodeRepository.deleteByAttackChainIdAndIsDynamicTrue(chain.id)
+    → 清理本 chain 的所有动态节点（手动节点保留）
 ```
 
 **关键决策：动态节点 ID**
-- 动态节点 runtime ID 格式：`dynamic-${contract_id}`（前缀避免与手动节点 UUID 冲突）
-- 前端 ReactFlow 节点 id 用此格式，可识别为动态节点 → 应用 dashed border 视觉
+- 持久化 ID：`dynamic-${contract_id}-${run_id}`（含 run_id 避免跨 run 同 contract 主键冲突；前缀 `dynamic-` 让前端识别走 dashed border）
+- 前端 ReactFlow 节点 id 同此格式（编辑器画布 view-model adapter 略去 run_id 用 `dynamic-${contract_id}`，因编辑器无 run；运行画布读 persisted node id）
 
 ### 3.3 后端兼容
 
 - `attack_chains.dynamic_filter` 默认 `{"mode":"and","filters":[]}` → 现有 chain 语义不变（filter 空 = 无动态 contracts）
-- `AttackChainNodesExecutionJob` 在 `dynamicFilter` 空时 short-circuit（与现状完全一致）
+- `attack_chain_nodes.is_dynamic` 新列默认 false → 现有手动节点完全不受影响（A4 design fix）
+- `AttackChainNodesExecutionJob` 在 `dynamicFilter` 空时 short-circuit（service.computeDynamicContracts 返 [] → 不 save 任何动态节点 → 不污染表）
 - 现有 chain run 端点 wire format **加新字段** `attack_chain_dynamic_contracts`（@Transient @JsonProperty 派生，nullable），现有 caller 不感知此字段无影响
+- Cleanup hook：run 转 FINISHED 时清；ERROR / TIMEOUT 路径理论上脏数据残留可接受（下次 run 启动时 deleteBy 会覆盖；如要严谨可在 A4 后续追加 ERROR 分支 cleanup）
 
 ---
 
