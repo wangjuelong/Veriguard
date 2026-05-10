@@ -441,6 +441,26 @@ public class AttackChainNodeApi extends RestBehavior {
         attackChainNodeId, agentId);
   }
 
+  // -- 攻击编排节点级设置（PRD §2.4 / spec §6.3.1）--
+
+  @Operation(summary = "Update attack chain node orchestration settings (parameter set / repeat)")
+  @Transactional(rollbackFor = Exception.class)
+  @PutMapping(INJECT_URI + "/{attackChainNodeId}/settings")
+  @RBAC(
+      resourceId = "#attackChainNodeId",
+      actionPerformed = Action.WRITE,
+      resourceType = ResourceType.INJECT)
+  public AttackChainNode updateAttackChainNodeSettings(
+      @PathVariable @NotBlank final String attackChainNodeId,
+      @Valid @RequestBody final AttackChainNodeSettingsInput input) {
+    AttackChainNode attackChainNode =
+        attackChainNodeRepository
+            .findById(attackChainNodeId)
+            .orElseThrow(ElementNotFoundException::new);
+    attackChainNode.setUpdateAttributes(input);
+    return attackChainNodeRepository.save(attackChainNode);
+  }
+
   // -- EXERCISES --
 
   @Transactional(rollbackFor = Exception.class)

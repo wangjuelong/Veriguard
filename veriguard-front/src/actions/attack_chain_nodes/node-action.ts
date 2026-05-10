@@ -1,4 +1,4 @@
-import { simpleCall, simplePostCall } from '../../utils/Action';
+import { simpleCall, simplePostCall, simplePutCall } from '../../utils/Action';
 import {
   type AttackChainNodeExportFromSearchRequestInput,
   type AttackChainNodeExportRequestInput,
@@ -8,6 +8,31 @@ import {
 import { MESSAGING$ } from '../../utils/Environment';
 
 export const INJECT_URI = '/api/attack_chain_nodes';
+
+/**
+ * Wire-format snapshot for PUT /api/attack_chain_nodes/{id}/settings (Phase 12b-B3.5a).
+ *
+ * Mirrors backend io.veriguard.rest.attack_chain_node.form.AttackChainNodeSettingsInput;
+ * not yet regenerated into api-types.d.ts. Kept as a thin transport DTO so the
+ * editor NodeEditDrawer can submit V3 orchestration fields without touching the
+ * existing AttackChainNodeInput surface (which carries inject_content / target /
+ * contract — the execution-time identity of an inject).
+ */
+export interface AttackChainNodeSettingsInputDto {
+  node_title: string;
+  node_description: string | null;
+  node_validation_parameter_set_id: string | null;
+  node_repeat_count: number;
+  node_repeat_interval_seconds: number;
+}
+
+export const updateAttackChainNodeSettings = (
+  attackChainNodeId: string,
+  data: AttackChainNodeSettingsInputDto,
+) => {
+  const uri = `${INJECT_URI}/${attackChainNodeId}/settings`;
+  return simplePutCall(uri, data);
+};
 
 export const exportAttackChainNodeSearch = (data: AttackChainNodeExportFromSearchRequestInput) => {
   const uri = '/api/attack_chain_nodes/search/export';

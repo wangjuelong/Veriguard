@@ -4,6 +4,8 @@ import { Box, Button, Stack } from '@mui/material';
 import { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
+import { type AttackChainNodeOutputType } from '../../../../../actions/attack_chain_nodes/AttackChainNode';
+import { updateAttackChainNodeSettings } from '../../../../../actions/attack_chain_nodes/node-action';
 import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import {
   fetchAttackChain,
@@ -40,9 +42,16 @@ import {
   TeamContext,
   ViewModeContext,
 } from '../../../common/Context';
-import { type AttackChainSettingsValue, type ParameterSetOption } from '../editor/attackChainEditorTypes';
+import {
+  type AttackChainNodeEditValue,
+  type AttackChainSettingsValue,
+  type ParameterSetOption,
+} from '../editor/attackChainEditorTypes';
+import { toNodeEditValue, toNodeSettingsInput } from '../editor/attackChainNodeEditAdapters';
+import { AttackChainNodeSettingsContext } from '../editor/AttackChainNodeSettingsContext';
 import { toApiInput, toParameterSetOption, toSettingsValue } from '../editor/attackChainSettingsAdapters';
 import AttackChainSettingsDrawer from '../editor/AttackChainSettingsDrawer';
+import NodeEditDrawer from '../editor/NodeEditDrawer';
 import teamContextForAttackChain from '../teams/teamContextForAttackChain';
 
 const PARAMETER_SET_FETCH_SIZE = 100;
@@ -97,7 +106,9 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
     };
 
   // -- 攻击编排链路级设置 drawer (Phase 12b-B3) --
+  // -- 节点级 NodeEditDrawer + NodeBadge (Phase 12b-B3.5a) --
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [editingNode, setEditingNode] = useState<AttackChainNodeOutputType | null>(null);
   const [parameterSetOptions, setParameterSetOptions] = useState<ParameterSetOption[]>([]);
   const [healthyConnectorIds, setHealthyConnectorIds] = useState<string[]>([]);
   const loadParameterSetOptions = useCallback(async () => {
@@ -118,14 +129,16 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
     setHealthyConnectorIds(healthy);
   }, []);
   useEffect(() => {
-    if (settingsOpen && parameterSetOptions.length === 0) {
+    const drawerOpen = settingsOpen || editingNode !== null;
+    if (drawerOpen && parameterSetOptions.length === 0) {
       loadParameterSetOptions();
     }
-    if (settingsOpen && healthyConnectorIds.length === 0) {
+    if (drawerOpen && healthyConnectorIds.length === 0) {
       loadHealthyConnectorIds();
     }
   }, [
     settingsOpen,
+    editingNode,
     parameterSetOptions.length,
     healthyConnectorIds.length,
     loadParameterSetOptions,
@@ -138,40 +151,58 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
     await dispatch(fetchAttackChain(scenarioId));
   };
 
+  const handleNodeSettingsSubmit = async (value: AttackChainNodeEditValue) => {
+    if (!editingNode) return;
+    await updateAttackChainNodeSettings(editingNode.node_id, toNodeSettingsInput(value));
+    setEditingNode(null);
+    await dispatch(fetchAttackChainAttackChainNodesSimple(scenarioId));
+  };
+
   return (
     <ViewModeContext.Provider value={viewMode}>
       <TeamContext.Provider value={teamContext}>
         <EndpointContext.Provider value={endpointContext}>
           <AttackChainNodeTestContext.Provider value={injectTestContext}>
-            <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<SettingsIcon fontSize="small" />}
-                onClick={() => setSettingsOpen(true)}
-              >
-                链路设置
-              </Button>
-            </Stack>
-            <AttackChainNodes
-              teams={teams}
-              variables={variables}
-              uriVariable={`/admin/attack_chains/${scenarioId}/definition`}
-              setViewMode={handleViewMode}
-              availableButtons={availableButtons}
-            />
-            {settingsOpen && (
-              <Box>
-                <AttackChainSettingsDrawer
+            <AttackChainNodeSettingsContext.Provider value={{ openNodeSettings: setEditingNode }}>
+              <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<SettingsIcon fontSize="small" />}
+                  onClick={() => setSettingsOpen(true)}
+                >
+                  链路设置
+                </Button>
+              </Stack>
+              <AttackChainNodes
+                teams={teams}
+                variables={variables}
+                uriVariable={`/admin/attack_chains/${scenarioId}/definition`}
+                setViewMode={handleViewMode}
+                availableButtons={availableButtons}
+              />
+              {settingsOpen && (
+                <Box>
+                  <AttackChainSettingsDrawer
+                    open
+                    initialValue={toSettingsValue(attack_chain)}
+                    parameterSetOptions={parameterSetOptions}
+                    availableConnectorIds={healthyConnectorIds}
+                    onCancel={() => setSettingsOpen(false)}
+                    onSubmit={handleSettingsSubmit}
+                  />
+                </Box>
+              )}
+              {editingNode && (
+                <NodeEditDrawer
                   open
-                  initialValue={toSettingsValue(attack_chain)}
+                  initialValue={toNodeEditValue(editingNode)}
                   parameterSetOptions={parameterSetOptions}
-                  availableConnectorIds={healthyConnectorIds}
-                  onCancel={() => setSettingsOpen(false)}
-                  onSubmit={handleSettingsSubmit}
+                  onCancel={() => setEditingNode(null)}
+                  onSubmit={handleNodeSettingsSubmit}
                 />
-              </Box>
-            )}
+              )}
+            </AttackChainNodeSettingsContext.Provider>
           </AttackChainNodeTestContext.Provider>
         </EndpointContext.Provider>
       </TeamContext.Provider>
