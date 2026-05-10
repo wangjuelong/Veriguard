@@ -26,6 +26,43 @@ export const fetchAttackChainRunExpectationResult = (exerciseId: AttackChainRun[
   return simpleCall(uri);
 };
 
+// -- LINK EXPECTATIONS (Phase 12b-B4) --
+// 暂未通过 yarn generate-types-from-api 进 api-types.d.ts，与 B3 / B-soc-wire 一致：
+// 在 action 文件就近 export 与后端 DTO 对齐的 wire-format 类型。
+
+export type LinkExpectationStatusWire = 'PENDING' | 'SUCCESS' | 'PARTIAL' | 'FAILED' | 'UNKNOWN';
+
+export interface LinkExpectationTraceWire {
+  trace_id: string;
+  incident_id: string | null;
+  correlation_rule_name: string | null;
+  triggered_at: string;
+  score_delta: number;
+  raw_payload: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export interface AttackChainLinkExpectationWire {
+  link_expectation_id: string;
+  attack_chain_run_id: string;
+  connector_id: string;
+  rule_id: string;
+  display_name: string | null;
+  match_window_seconds: number;
+  score: number;
+  expected_score: number;
+  status: LinkExpectationStatusWire;
+  expiration_time: string;
+  created_at: string;
+  updated_at: string;
+  traces: LinkExpectationTraceWire[];
+}
+
+export const fetchLinkExpectationsForAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id']) => {
+  const uri = `${EXERCISE_URI}/${exerciseId}/link_expectations`;
+  return simpleCall(uri);
+};
+
 export const fetchPlayersByAttackChainRun = (exerciseId: AttackChainRun['attack_chain_run_id']) => (dispatch: Dispatch) => {
   const uri = `${EXERCISE_URI}/${exerciseId}/players`;
   return getReferential(schema.arrayOfUsers, uri)(dispatch);

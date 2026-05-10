@@ -82,6 +82,18 @@ public class LinkExpectationService {
   }
 
   /**
+   * 只查不写：返回 run 当前已物化的所有 link expectations（含 traces）。
+   *
+   * <p>给前端 GET /api/attack_chain_runs/{id}/link_expectations 端点用。run 还未实例化任何记录 → 空列表。
+   */
+  public List<AttackChainLinkExpectation> findByRun(String attackChainRunId) {
+    if (attackChainRunId == null || attackChainRunId.isBlank()) {
+      return List.of();
+    }
+    return repository.findByAttackChainRunId(attackChainRunId);
+  }
+
+  /**
    * 对 run 的每条 PENDING/PARTIAL link expectation 查 SOC 并按结果终态化。
    *
    * <p>已是 SUCCESS / FAILED / UNKNOWN 的不再查询（终态）。run 没挂模板 / 没 link expectations 直接返回。
