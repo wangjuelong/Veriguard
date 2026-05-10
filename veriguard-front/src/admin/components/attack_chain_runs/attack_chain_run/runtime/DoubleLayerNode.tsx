@@ -2,65 +2,13 @@
 import { Repeat as RepeatIcon } from '@mui/icons-material';
 import { Box, Stack, Tooltip, Typography } from '@mui/material';
 
-import { type DoubleLayerNodeData, type NodeLayerStatus } from './attackChainRuntimeTypes';
+import { type DoubleLayerNodeData, NODE_LAYER_STATUS_STYLE } from './attackChainRuntimeTypes';
 
 interface Props {
   data: DoubleLayerNodeData;
   /** 点击节点触发；通常打开 NodeRunDetailDrawer */
   onClick?: () => void;
 }
-
-/**
- * 状态 → 颜色 + 文案映射（spec §6.3.2）.
- *
- * - 顶部色块：PREVENTION 状态 → 绿/红/橙/灰/灰虚线
- * - 底部色块：DETECTION 状态 → 蓝（DETECTED）/ 灰（NOT_DETECTED）/ "—"（SKIPPED / N_A）
- */
-const STATUS_STYLE: Record<NodeLayerStatus, {
-  preventionLabel: string;
-  detectionLabel: string;
-  background: string;
-  color: string;
-  borderStyle?: 'solid' | 'dashed';
-}> = {
-  SUCCESS: {
-    preventionLabel: '已拦下',
-    detectionLabel: '已检出',
-    background: '#1b5e20',
-    color: '#ffffff',
-  },
-  FAILED: {
-    preventionLabel: '未拦下',
-    detectionLabel: '未检出',
-    background: '#b71c1c',
-    color: '#ffffff',
-  },
-  PARTIAL: {
-    preventionLabel: '部分拦下',
-    detectionLabel: '部分检出',
-    background: '#e65100',
-    color: '#ffffff',
-  },
-  PENDING: {
-    preventionLabel: '等待结算',
-    detectionLabel: '等待结算',
-    background: '#9e9e9e',
-    color: '#ffffff',
-  },
-  SKIPPED: {
-    preventionLabel: '跳过',
-    detectionLabel: '—',
-    background: '#bdbdbd',
-    color: '#000000',
-    borderStyle: 'dashed',
-  },
-  N_A: {
-    preventionLabel: '—',
-    detectionLabel: '—',
-    background: '#eeeeee',
-    color: '#616161',
-  },
-};
 
 /**
  * 节点双层卡（spec §6.3.2）—— ReactFlow 节点 renderer：
@@ -70,8 +18,8 @@ const STATUS_STYLE: Record<NodeLayerStatus, {
  * - 角标：repeat_count > 1 时显示 ↻ current/total
  */
 const DoubleLayerNode = ({ data, onClick }: Props) => {
-  const preventionStyle = STATUS_STYLE[data.preventionStatus];
-  const detectionStyle = STATUS_STYLE[data.detectionStatus];
+  const preventionStyle = NODE_LAYER_STATUS_STYLE[data.preventionStatus];
+  const detectionStyle = NODE_LAYER_STATUS_STYLE[data.detectionStatus];
   const showRepeatBadge = (data.repeatCount ?? 1) > 1;
 
   return (
