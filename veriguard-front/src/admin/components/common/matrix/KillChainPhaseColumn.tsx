@@ -4,6 +4,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { type AttackPattern, type KillChainPhase, type NodeExpectationResultsByAttackPattern } from '../../../../utils/api-types';
 import AttackPatternBox from './AttackPatternBox';
+import { type MatrixColoringScheme, type MatrixVerdictDimension } from './MitreMatrix';
 
 const useStyles = makeStyles()(() => ({
   column: {
@@ -19,6 +20,8 @@ interface KillChainPhaseComponentProps {
   attackPatterns: AttackPattern[];
   injectResults: NodeExpectationResultsByAttackPattern[];
   dummy?: boolean;
+  coloringScheme?: MatrixColoringScheme;
+  verdictDimension?: MatrixVerdictDimension;
 }
 
 const KillChainPhaseColumn: FunctionComponent<KillChainPhaseComponentProps> = ({
@@ -27,6 +30,8 @@ const KillChainPhaseColumn: FunctionComponent<KillChainPhaseComponentProps> = ({
   attackPatterns,
   injectResults,
   dummy,
+  coloringScheme = 'verdict',
+  verdictDimension = 'prevention',
 }) => {
   // Standard hooks
   const { classes } = useStyles();
@@ -65,6 +70,8 @@ const KillChainPhaseColumn: FunctionComponent<KillChainPhaseComponentProps> = ({
               attackPattern={attackPattern}
               injectResult={getAttackChainNodeResult(attackPattern)}
               dummy={dummy}
+              coloringScheme={coloringScheme}
+              verdictDimension={verdictDimension}
             />
           ))}
       </div>
