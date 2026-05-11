@@ -220,15 +220,18 @@ public interface AttackChainNodeRepository
 
   @Modifying
   @Query(
-      value = "insert into attack_chain_nodes_tags (node_id, tag_id) values (:attackChainNodeId, :tagId)",
+      value =
+          "insert into attack_chain_nodes_tags (node_id, tag_id) values (:attackChainNodeId, :tagId)",
       nativeQuery = true)
   void addTag(@Param("attackChainNodeId") String attackChainNodeId, @Param("tagId") String tagId);
 
   @Modifying
   @Query(
-      value = "insert into attack_chain_nodes_teams (node_id, team_id) values (:attackChainNodeId, :teamId)",
+      value =
+          "insert into attack_chain_nodes_teams (node_id, team_id) values (:attackChainNodeId, :teamId)",
       nativeQuery = true)
-  void addTeam(@Param("attackChainNodeId") String attackChainNodeId, @Param("teamId") String teamId);
+  void addTeam(
+      @Param("attackChainNodeId") String attackChainNodeId, @Param("teamId") String teamId);
 
   @Override
   @Query(
@@ -434,7 +437,8 @@ public interface AttackChainNodeRepository
       @Param("sourceId") String sourceId, @Param("title") String title, Pageable pageable);
 
   @Query(
-      value = "SELECT i.node_content FROM attack_chain_nodes i WHERE i.node_id IN :attackChainNodeIds",
+      value =
+          "SELECT i.node_content FROM attack_chain_nodes i WHERE i.node_id IN :attackChainNodeIds",
       nativeQuery = true)
   List<String> findContentsByAttackChainNodeIds(@NotBlank Set<String> attackChainNodeIds);
 
@@ -518,4 +522,19 @@ public interface AttackChainNodeRepository
   @Query("SELECT i FROM AttackChainNode i WHERE i.attackChainRun.id = :simulationId")
   List<AttackChainNode> findAllAttackChainNodeBySimulationId(
       @Param("simulationId") String simulationId);
+
+  /**
+   * 删除指定 attack_chain 的所有 is_dynamic=true 节点（Phase 12c-Biii cleanup hook）.
+   *
+   * <p>由 {@code AttackChainNodesExecutionJob.handleAutoClosingAttackChainRuns} 在 run 转 FINISHED
+   * 时调用，清理本 chain 的动态节点。手动节点（is_dynamic=false）不受影响.
+   *
+   * <p>注意：cleanup 按 attack_chain 而非 attack_chain_run，因动态节点的 FK 关联 chain 不关联 run. 若同 chain 多 run
+   * 并发执行，cleanup 会清理所有动态节点. 已知局限，可接受.
+   */
+  @Modifying
+  @Transactional
+  @Query(
+      "DELETE FROM AttackChainNode n WHERE n.attackChain.id = :attackChainId AND n.isDynamic = true")
+  int deleteByAttackChainIdAndIsDynamicTrue(@Param("attackChainId") String attackChainId);
 }

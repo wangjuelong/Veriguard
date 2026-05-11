@@ -197,7 +197,9 @@ public class AttackChainApi extends RestBehavior {
   // -- 攻击编排链路级设置（PRD §2.4 / spec §6.3.4）--
 
   @PutMapping(SCENARIO_URI + "/{attackChainId}/settings")
-  @Operation(summary = "Update attack chain orchestration settings (execution mode / parameter set / SOC rules)")
+  @Operation(
+      summary =
+          "Update attack chain orchestration settings (execution mode / parameter set / SOC rules)")
   @RBAC(
       resourceId = "#attackChainId",
       actionPerformed = Action.WRITE,
@@ -434,6 +436,20 @@ public class AttackChainApi extends RestBehavior {
     return CheckAttackChainRulesOutput.builder()
         .rulesFound(this.attackChainService.checkIfTagRulesApplies(attackChain, input.getNewTags()))
         .build();
+  }
+
+  @LogExecutionTime
+  @PutMapping(SCENARIO_URI + "/{attackChainId}/dynamic_filter")
+  @RBAC(
+      resourceId = "#attackChainId",
+      actionPerformed = Action.WRITE,
+      resourceType = ResourceType.SCENARIO)
+  public AttackChain updateAttackChainDynamicFilter(
+      @PathVariable @NotBlank final String attackChainId,
+      @Valid @RequestBody final AttackChainDynamicFilterInput input) {
+    AttackChain attackChain = this.attackChainService.attackChain(attackChainId);
+    attackChain.setDynamicFilter(input.dynamicFilter());
+    return this.attackChainService.updateAttackChain(attackChain);
   }
 
   // region asset groups, endpoints, documents and channels

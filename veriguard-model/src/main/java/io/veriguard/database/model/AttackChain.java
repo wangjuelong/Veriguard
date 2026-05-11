@@ -10,11 +10,13 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.database.model.Endpoint.PLATFORM_TYPE;
+import io.veriguard.database.model.Filters.FilterGroup;
 import io.veriguard.helper.AttackChainNodeStatisticsHelper;
 import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.helper.MultiIdListSerializer;
@@ -464,6 +466,33 @@ public class AttackChain implements GrantableBase {
   @JsonProperty("attack_chain_dependencies")
   @Queryable(filterable = true, searchable = true, sortable = true)
   private Dependency[] dependencies;
+
+  // -- DYNAMIC FILTER (Phase 12c-Biii) --
+  // 与 AssetGroup.dynamicFilter 同模式：双轨制（手动节点 + 动态 contracts）.
+  // 当 dynamicFilter 非空时，AttackChainNodesExecutionJob 启动 run 时由
+  // AttackChainService.computeDynamicContracts() 实时派生匹配的 NodeContract，
+  // 每条 contract instantiate 为 runtime 临时执行单元（t=0 平行 / 无依赖 / 默认 1 repeat），
+  // 不写 attack_chain_nodes 表.
+
+  @Type(JsonType.class)
+  @Column(name = "dynamic_filter", columnDefinition = "jsonb")
+  @JsonProperty("attack_chain_dynamic_filter")
+  @NotNull
+  private FilterGroup dynamicFilter = FilterGroup.defaultFilterGroup();
+
+  // 派生字段：service 层运行时填充，不持久化到 DB.
+  // Wire format key 与 attack_chain_dynamic_filter 对称，前端编辑器画布 +
+  // 运行画布读此字段渲染动态节点.
+  @Getter(NONE)
+  @Transient
+  @JsonProperty("attack_chain_dynamic_contracts")
+  private List<NodeContract> dynamicContracts = new ArrayList<>();
+
+  // 显式 getter（@Transient + @Getter(NONE) 时 Lombok 不生成 getter，
+  // 与 AssetGroup.getDynamicAssets() 同模式）.
+  public List<NodeContract> getDynamicContracts() {
+    return this.dynamicContracts;
+  }
 
   @Override
   public boolean equals(Object o) {

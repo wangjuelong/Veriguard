@@ -512,148 +512,219 @@ EOF
 
 ---
 
-## Task A4：`AttackChainNodesExecutionJob` 接动态 contracts 派生
+## Task A4：动态节点持久化 + 执行 + cleanup（A4 design fix 2026-05-11）
 
-**Why:** chain run 启动时由 job 调 service 派生 dynamicContracts → 为每个生成 runtime 临时执行单元（t=0 平行 / 无依赖 / 默认 1 repeat / 不写 attack_chain_nodes 表）。
+**设计修正说明（必读）：** 原 plan A4 假设动态节点 "不写 attack_chain_nodes 表"。但实际 `Executor.execute()` → `AttackChainNodeStatusService.initializeAttackChainNodeStatus()` → `attackChainNodeRepository.findById(...).orElseThrow()` 链路硬要求节点已持久化。改为：**动态节点 save 到表 + is_dynamic=true 标记 + run 结束 cleanup**。这样复用整套现有 executor/expectation/verdict 链，避免引入并行执行路径（双倍维护成本）。spec §3.3 已同步修正。
+
+**Why:** chain run 启动时 job 调 service 派生 dynamicContracts → 为每个 contract 持久化 AttackChainNode (is_dynamic=true) → 现有 executor 链自动消费（手动 + 动态节点同一调度路径）→ run 结束 cleanup 删除本 chain 的所有 is_dynamic=true 节点。
 
 **Files:**
 
+- Create: `veriguard-api/src/main/resources/db/migration/V6__attack_chain_node_is_dynamic.sql`
+- Modify: `veriguard-model/src/main/java/io/veriguard/database/model/AttackChainNode.java`
+- Modify: `veriguard-model/src/main/java/io/veriguard/database/repository/AttackChainNodeRepository.java`
 - Modify: `veriguard-api/src/main/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJob.java`
-- Modify (or Create): `veriguard-api/src/test/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJobTest.java`
+- Create: `veriguard-api/src/test/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJobDynamicContractsTest.java`（独立测试类，避免污染现有 test）
 
 ### Steps
 
-- [ ] **Step A4.1：读现有 job 结构定位插入点**
+- [ ] **Step A4.1：V6 Flyway migration — `attack_chain_nodes.is_dynamic` 列**
 
-```bash
-grep -nE 'public void execute|chain\.\w+|getAttackChainNodes|@Inject\b|private final' veriguard-api/src/main/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJob.java | head -20
+创建 `veriguard-api/src/main/resources/db/migration/V6__attack_chain_node_is_dynamic.sql`：
+
+```sql
+-- V6: Phase 12c-Biii 动态节点持久化标记（A4 design fix 2026-05-11）
+--
+-- 动态节点（由 attack_chains.dynamic_filter 派生）run 启动时 save 到表，
+-- run 结束 cleanup 删除. is_dynamic=true 区分手动 vs 动态.
+-- 部分索引仅覆盖 is_dynamic=true 行（绝大多数行 false，提高 cleanup 删除效率）.
+
+ALTER TABLE attack_chain_nodes
+    ADD COLUMN is_dynamic BOOLEAN NOT NULL DEFAULT FALSE;
+
+CREATE INDEX idx_attack_chain_nodes_dynamic
+    ON attack_chain_nodes (attack_chain_id)
+    WHERE is_dynamic = TRUE;
 ```
 
-理解现有节点遍历逻辑（应该有类似 `chain.getAttackChainNodes().forEach(node -> ...)`）。
+注：实际 attack_chain 关联列名以 V1__Init.sql / V3__attack_chain_module_init.sql 实际为准（`attack_chain_id` 或 `node_attack_chain` 等）— 实施时 grep 确认。
 
-- [ ] **Step A4.2：注入 AttackChainService（或 NodeContractRepository）**
+- [ ] **Step A4.2：AttackChainNode entity 加 `isDynamic` 字段**
 
-如 job 已注入 AttackChainService（看 `private final` 字段），跳过此步。否则加：
+修改 `veriguard-model/src/main/java/io/veriguard/database/model/AttackChainNode.java`，加：
 
 ```java
-private final AttackChainService attackChainService;
+  @Column(name = "is_dynamic", nullable = false)
+  @JsonProperty("node_is_dynamic")
+  private boolean isDynamic = false;
 ```
 
-并加到 ctor 参数。Spring 自动 wire。
+注意：`@Setter` 在 class 顶部已存在 → 自动生成 `setIsDynamic(boolean)`。无需 `@Getter` 单独标 — Lombok 默认 boolean 字段 getter 是 `isIsDynamic()`，但若整 class 用 `@Getter` 就是 `isDynamic()`。看现有 boolean 字段的 getter 模式选择是否加 `@Getter` 注解。
 
-- [ ] **Step A4.3：在节点遍历后追加动态 contracts 派生 + 实例化逻辑**
+- [ ] **Step A4.3：AttackChainNodeRepository 加 cleanup query**
 
-定位 `chain.getAttackChainNodes().forEach(...)`（或类似遍历）后插入：
+修改 `veriguard-model/src/main/java/io/veriguard/database/repository/AttackChainNodeRepository.java`，加：
 
 ```java
-    // PRD §2.3 第 5 行：动态 contracts 派生 + 实例化为 runtime 执行单元.
-    // 与手动节点共存：t=0 平行 / 无依赖 / 默认 1 repeat / 不写 attack_chain_nodes 表.
-    List<NodeContract> dynamicContracts = attackChainService.computeDynamicContracts(chain);
-    for (NodeContract contract : dynamicContracts) {
-      // 为每个 contract 创建 runtime 临时节点（不持久化）
-      AttackChainNode runtimeNode = new AttackChainNode();
-      runtimeNode.setId("dynamic-" + contract.getId());  // 前缀避免与 UUID 节点冲突
-      runtimeNode.setAttackChain(chain);
-      runtimeNode.setNodeInjectorContract(contract);
-      runtimeNode.setNodeDependsDuration(0L);  // t=0
-      runtimeNode.setNodeRepeatCount(1);       // 默认 1 repeat
-      // 不设 dependsOn → 无依赖
-      // 用 contract 默认 expectations
-      executeRuntimeNode(runtimeNode, run);  // 复用现有节点执行逻辑
+  /**
+   * 删除指定 attack_chain 的所有 is_dynamic=true 节点（Phase 12c-Biii cleanup hook）.
+   *
+   * <p>由 {@code AttackChainNodesExecutionJob.handleAutoClosingAttackChainRuns} 在 run
+   * 转 FINISHED 时调用，清理本 chain 的动态节点。手动节点（is_dynamic=false）不受影响.
+   */
+  @Modifying
+  @Transactional
+  @Query("DELETE AttackChainNode n WHERE n.attackChain.id = :attackChainId AND n.isDynamic = true")
+  int deleteByAttackChainIdAndIsDynamicTrue(@Param("attackChainId") String attackChainId);
+```
+
+确保 imports 含 `@Modifying` / `@Query` / `@Param` / `@Transactional`。Spring Data 自动实现。
+
+- [ ] **Step A4.4：ExecutionJob inject AttackChainService（如未注入）**
+
+`AttackChainNodesExecutionJob` 用 `@RequiredArgsConstructor`，在 final 字段区加：
+
+```java
+  private final io.veriguard.service.attack_chain.AttackChainService attackChainService;
+  private final io.veriguard.database.repository.AttackChainNodeRepository attackChainNodeRepository;
+```
+
+（其中 attackChainNodeRepository 用于 save 新动态节点 + cleanup 删除；若 job 已注入，跳过对应行。）
+
+- [ ] **Step A4.5：`handleAutoStartAttackChainRuns` start hook — 派生 + 持久化动态节点**
+
+在 `handleAutoStartAttackChainRuns()` 中，于 `attackChainRunRepository.saveAll(...)` 转 RUNNING 之前，对每个 starting run 派生 + save 动态节点：
+
+```java
+  public void handleAutoStartAttackChainRuns() {
+    List<AttackChainRun> attackChainRuns =
+        attackChainRunRepository.findAllShouldBeInRunningState(now());
+    if (attackChainRuns.isEmpty()) {
+      return;
     }
+
+    // Phase 12c-Biii: 转 RUNNING 前为每个 starting run 派生 + 持久化动态节点.
+    // service.computeDynamicContracts short-circuit 空 filter → 不 save 任何节点.
+    for (AttackChainRun attackChainRun : attackChainRuns) {
+      AttackChain chain = attackChainRun.getAttackChain();
+      if (chain == null) continue;
+      List<NodeContract> dynamicContracts = attackChainService.computeDynamicContracts(chain);
+      for (NodeContract contract : dynamicContracts) {
+        AttackChainNode node = new AttackChainNode();
+        node.setId("dynamic-" + contract.getId() + "-" + attackChainRun.getId());
+        node.setIsDynamic(true);
+        node.setAttackChain(chain);
+        node.setNodeInjectorContract(contract);  // 或字段实际命名（按现有 entity 调）
+        node.setNodeDependsDuration(0L);
+        node.setNodeRepeatCount(1);
+        // 不设 dependsOn → 无依赖
+        // title / content 等 NotBlank 字段需补 — 用 contract.injector_contract_labels.en
+        // 作为 title 默认值
+        node.setTitle("动态: " + safeContractLabel(contract));
+        attackChainNodeRepository.save(node);
+      }
+    }
+
+    attackChainRunRepository.saveAll(
+        attackChainRuns.stream()
+            .peek(
+                attackChainRun -> {
+                  attackChainRun.setStatus(AttackChainRunStatus.RUNNING);
+                  attackChainRun.setUpdatedAt(now());
+                })
+            .toList());
+  }
+
+  private String safeContractLabel(NodeContract contract) {
+    if (contract.getLabels() != null && contract.getLabels().get("en") != null) {
+      return contract.getLabels().get("en");
+    }
+    return contract.getId();
+  }
 ```
 
-注：`executeRuntimeNode(...)` 是现有 job 内的节点执行方法名（按实际命名调整）。如执行逻辑是 inline lambda 内写的，把 lambda body 抽出为 helper 方法以便 dynamic / 手动节点复用。
+注意事项：
+- `AttackChainNode` 哪些字段 `@NotBlank` / `@NotNull` 必须满足（看 entity）—— title 一般是；content 也可能。先 grep `@NotBlank` / `@NotNull` 看必填字段。
+- `setNodeInjectorContract` / `setAttackChain` 等 setter 命名按 entity 实际。
+- 如果 title 为空导致 save 失败，用 contract 的标签字段（OpenBAS NodeContract 一般是 Map<String,String> labels）。
+- 若 `@NotBlank` 字段过多无法满足 → 报告 DONE_WITH_CONCERNS 或 BLOCKED，让我（controller）决定如何 stub 这些字段。
 
-**关键不变量**：runtime node 不写 attack_chain_nodes 表（不调 `nodeRepository.save`）；NodeExpectation 仍写库（按 contract 默认 expectations 创建），但其 `node_expectation_node` 字段引用 `dynamic-${contract_id}`，前端识别。
+- [ ] **Step A4.6：`handleAutoClosingAttackChainRuns` close hook — cleanup**
 
-- [ ] **Step A4.4：写集成测试**
-
-完整测试（增量加到现有 `AttackChainNodesExecutionJobTest.java` 末尾）：
+在 `handleAutoClosingAttackChainRuns()` 中，于 `setStatus(FINISHED)` 之后（在 `instantiateForRun` / `evaluateForRun` 之前），追加 cleanup：
 
 ```java
-  @Test
-  @DisplayName("空 dynamicFilter → 不调 service.computeDynamicContracts，仅跑手动节点")
-  void emptyDynamicFilter_doesNotCallComputeDynamic() {
-    AttackChain chain = new AttackChain();
-    chain.setId(UUID.randomUUID().toString());
-    chain.setDynamicFilter(FilterGroup.defaultFilterGroup());
-    chain.setAttackChainNodes(new ArrayList<>());
-    AttackChainRun run = new AttackChainRun();
-    run.setAttackChain(chain);
-    when(attackChainRunRepository.findById(run.getId())).thenReturn(Optional.of(run));
-    when(attackChainService.computeDynamicContracts(chain)).thenReturn(List.of());
-
-    job.execute(run.getId());
-
-    verify(attackChainService).computeDynamicContracts(chain);
-    // 没有 dynamic contracts → 没有 runtime node 实例化
-    // verify(nodeRepository, never()).save(any()); // 取决于现有 mock 设置
-  }
-
-  @Test
-  @DisplayName("dynamicFilter 派生 2 contracts → 实例化 2 个 runtime 节点 (id=dynamic-{contract_id})")
-  void dynamicContracts_instantiateRuntimeNodes() {
-    AttackChain chain = new AttackChain();
-    chain.setId(UUID.randomUUID().toString());
-    Filter f = Filter.getNewDefaultEqualFilter(
-        "node_contract_attack_patterns", List.of("ap-1"));
-    chain.setDynamicFilter(FilterGroup.filterGroupWithFilters(List.of(f)));
-    chain.setAttackChainNodes(new ArrayList<>());
-    AttackChainRun run = new AttackChainRun();
-    run.setAttackChain(chain);
-
-    NodeContract c1 = new NodeContract();
-    c1.setId("c1");
-    NodeContract c2 = new NodeContract();
-    c2.setId("c2");
-    when(attackChainRunRepository.findById(run.getId())).thenReturn(Optional.of(run));
-    when(attackChainService.computeDynamicContracts(chain)).thenReturn(List.of(c1, c2));
-
-    job.execute(run.getId());
-
-    // 验证 2 contracts 都被处理（具体断言取决于现有 job 内部如何 emit expectations）
-    verify(attackChainService).computeDynamicContracts(chain);
-    // 进一步：捕获 executeRuntimeNode 调用看 node id 前缀 dynamic-
-    ArgumentCaptor<AttackChainNode> captor = ArgumentCaptor.forClass(AttackChainNode.class);
-    verify(/* the executor or expectation writer */).process(captor.capture());
-    List<AttackChainNode> runtimeNodes = captor.getAllValues();
-    assertThat(runtimeNodes).hasSize(2);
-    assertThat(runtimeNodes.get(0).getId()).isEqualTo("dynamic-c1");
-    assertThat(runtimeNodes.get(0).getNodeDependsDuration()).isEqualTo(0L);
-    assertThat(runtimeNodes.get(0).getNodeRepeatCount()).isEqualTo(1);
+  // 在 .peek(attackChainRun -> {...}) lambda 内，setUpdatedAt(now()); 之后，
+  // linkExpectationService.instantiateForRun(...) 之前插入：
+  
+  // Phase 12c-Biii: cleanup 本 chain 的所有动态节点（is_dynamic=true）.
+  // 手动节点不受影响. 走 chain.id 而非 run.id，是因 dynamic 节点 attack_chain_id 关联 chain.
+  if (attackChainRun.getAttackChain() != null) {
+    int deleted = attackChainNodeRepository.deleteByAttackChainIdAndIsDynamicTrue(
+        attackChainRun.getAttackChain().getId());
+    if (deleted > 0) {
+      log.debug("Cleaned up {} dynamic nodes for chain {} run {}",
+          deleted, attackChainRun.getAttackChain().getId(), attackChainRun.getId());
+    }
   }
 ```
 
-注：实际断言对象 (`/* the executor or expectation writer */`) 取决于现有 job 内部 dependency 命名。先看 `AttackChainNodesExecutionJobTest.java` 现有测试的 `verify(...)` 断言对象，沿用同款。
+**重要**：cleanup 按 `attack_chain_id` 而非 `attack_chain_run_id` —— 因 attack_chain_node 实体的 FK 是关联 chain 不是 run。如果同 chain 多 run 并发执行，cleanup 一次会把另一个 run 的动态节点也清掉。可接受方案：(a) 把 dynamic node id 含 run_id 已规避并发主键冲突，但 cleanup 会误删其他 run 的；(b) 通过 attack_chain_node_status.attack_chain_run_id 关联清；(c) 实施时若发现 attack_chain_node 直接关联 run，按 run_id 清更安全。**实施时按实际 schema 决定**。
 
-- [ ] **Step A4.5：跑测试**
+- [ ] **Step A4.7：单测**
+
+创建 `veriguard-api/src/test/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJobDynamicContractsTest.java`（独立测试类，避免和现有 `AttackChainNodesExecutionJobTest`（如存在）冲突）。≥3 场景：
+
+1. **空 filter → 不 save 任何动态节点**：mock service.computeDynamicContracts 返 [] → verify attackChainNodeRepository.save 不被调用
+2. **2 contracts → save 2 动态节点**：mock 返 [c1, c2] → ArgumentCaptor<AttackChainNode> 捕获 2 次 save 调用，断言 id 前缀 `dynamic-` / isDynamic=true / dependsDuration=0 / repeatCount=1
+3. **close hook → 调 deleteByAttackChainIdAndIsDynamicTrue**：mock chain run 转 FINISHED → verify repository.deleteByAttackChainIdAndIsDynamicTrue(chain.getId()) 调用一次
+
+测试用 `@ExtendWith(MockitoExtension.class)` + `@InjectMocks` AttackChainNodesExecutionJob + `@Mock` 所有 final field 依赖（service + repository + 其他）。如 @InjectMocks 失败（@Resource ObjectMapper / @PostConstruct），用 manual ctor 或 ReflectionTestUtils。
+
+- [ ] **Step A4.8：跑测试**
 
 ```bash
-mvn -pl veriguard-api -am test -Dtest='AttackChainNodesExecutionJobTest' -Dsurefire.failIfNoSpecifiedTests=false 2>&1 | grep -E 'Tests run|BUILD' | head
+export JAVA_HOME=/usr/local/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
+mvn -pl veriguard-api -am test -Dtest='AttackChainNodesExecutionJobDynamicContractsTest' -Dsurefire.failIfNoSpecifiedTests=false 2>&1 | grep -E 'Tests run|BUILD' | head
 ```
 
-Expected: 现有测试 + 2 新测试 全 pass + BUILD SUCCESS。
+Expected: `Tests run: 3+, Failures: 0, Errors: 0` + BUILD SUCCESS.
 
-- [ ] **Step A4.6：spotless + commit**
+跑现有相关测试看 regression（如本机无 Postgres，Spring Boot 集成测试会失败，与本改动无关）：
+
+```bash
+mvn -pl veriguard-api -am test -Dtest='AttackChainServiceDynamicContractsTest,LinkExpectationServiceTest' -Dsurefire.failIfNoSpecifiedTests=false 2>&1 | grep 'Tests run' | head
+```
+
+Expected: 8 + 18 passed.
+
+- [ ] **Step A4.9：spotless + commit**
 
 ```bash
 mvn spotless:apply -q
-git add veriguard-api/src/main/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJob.java \
-        veriguard-api/src/test/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJobTest.java
+git add veriguard-api/src/main/resources/db/migration/V6__attack_chain_node_is_dynamic.sql \
+        veriguard-model/src/main/java/io/veriguard/database/model/AttackChainNode.java \
+        veriguard-model/src/main/java/io/veriguard/database/repository/AttackChainNodeRepository.java \
+        veriguard-api/src/main/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJob.java \
+        veriguard-api/src/test/java/io/veriguard/scheduler/jobs/AttackChainNodesExecutionJobDynamicContractsTest.java
 git commit -m "$(cat <<'EOF'
-执行：AttackChainNodesExecutionJob 接动态 contracts 实例化（Phase 12c-Biii Step 4）
+执行：动态节点持久化 + 执行 + cleanup（Phase 12c-Biii Step 4，A4 design fix）
 
-chain run 启动时调 attackChainService.computeDynamicContracts 派生匹配的
-NodeContract，每条 instantiate 为 runtime 临时执行单元（不写 attack_chain_nodes 表）：
-- node id = "dynamic-${contract_id}"（前缀避免与 UUID 节点冲突）
-- t=0 平行（depends_duration=0）/ 无依赖 / 默认 1 repeat
-- 用 contract.injector_contract_default_expectations 写 NodeExpectation
+原 plan 假设 runtime-only 不写表，但 Executor.execute() 强依赖 findById；
+改为持久化 + is_dynamic 标记 + run 结束 cleanup，复用现有 executor 链.
 
-空 dynamicFilter short-circuit（service 内部）→ 现有 chain run 行为零变化.
+- V6 migration：attack_chain_nodes 加 is_dynamic BOOLEAN 列 + 部分索引
+- AttackChainNode entity：加 isDynamic 字段（默认 false）
+- AttackChainNodeRepository：加 deleteByAttackChainIdAndIsDynamicTrue cleanup query
+- AttackChainNodesExecutionJob:
+  - handleAutoStartAttackChainRuns：转 RUNNING 前为每个 starting run
+    派生 + save 动态节点（id="dynamic-${contract_id}-${run_id}" / is_dynamic=true
+    / depends_duration=0 / repeat_count=1）
+  - handleAutoClosingAttackChainRuns：转 FINISHED 后调 cleanup 删除本 chain
+    的所有 is_dynamic=true 节点
 
-集成测试 +2 场景：空 filter 仅跑手动节点 / 动态 filter 派生 2 contracts 实例化
-runtime 节点（断言 id 前缀 + depends_duration + repeat_count）.
+独立测试类 AttackChainNodesExecutionJobDynamicContractsTest 3 场景：
+- 空 filter 不 save / 2 contracts save 2 节点 / close hook 触发 cleanup.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 EOF

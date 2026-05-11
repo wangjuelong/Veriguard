@@ -191,6 +191,12 @@ public class AttackChainNode implements GrantableBase, Injection {
 
   // -- 攻击编排（PRD §2.4 二开新增）--
 
+  /** Phase 12c-Biii: 动态节点标记. true 表示此节点由 dynamic_filter 派生，run 结束后自动 cleanup. */
+  @Getter
+  @Column(name = "is_dynamic", nullable = false)
+  @JsonProperty("node_is_dynamic")
+  private boolean isDynamic = false;
+
   @Getter
   @Column(name = "repeat_count", nullable = false)
   @JsonProperty("node_repeat_count")

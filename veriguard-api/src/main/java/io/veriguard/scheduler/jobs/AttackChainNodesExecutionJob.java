@@ -12,6 +12,7 @@ import io.veriguard.aop.LogExecutionTime;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AttackChainEdgesRepository;
 import io.veriguard.database.repository.AttackChainNodeExpectationRepository;
+import io.veriguard.database.repository.AttackChainNodeRepository;
 import io.veriguard.database.repository.AttackChainRunRepository;
 import io.veriguard.execution.ExecutableNode;
 import io.veriguard.helper.AttackChainNodeHelper;
@@ -23,6 +24,7 @@ import io.veriguard.rest.exception.ElementNotFoundException;
 import io.veriguard.scheduler.jobs.exception.ErrorMessagesPreExecutionException;
 import io.veriguard.service.NotificationEventService;
 import io.veriguard.service.SecurityCoverageSendJobService;
+import io.veriguard.service.attack_chain.AttackChainService;
 import io.veriguard.utils.ExecutionTraceUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
@@ -31,13 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Spliterators;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -71,6 +69,9 @@ public class AttackChainNodesExecutionJob implements Job {
   private final io.veriguard.attackchain.execution.EdgeConditionEvaluator edgeConditionEvaluator;
   private final io.veriguard.database.repository.AttackChainLinkExpectationRepository
       attackChainLinkExpectationRepository;
+  // Phase 12c-Biii: 动态节点持久化 + cleanup
+  private final AttackChainService attackChainService;
+  private final AttackChainNodeRepository attackChainNodeRepository;
 
   private final List<ExecutionStatus> executionStatusesNotReady =
       List.of(
@@ -99,6 +100,33 @@ public class AttackChainNodesExecutionJob implements Job {
     if (attackChainRuns.isEmpty()) {
       return;
     }
+
+    // Phase 12c-Biii: 转 RUNNING 前为每个 starting run 派生 + 持久化动态节点.
+    // computeDynamicContracts short-circuit 空 filter → 不 save 任何节点.
+    // 收集后批量 saveAll，避免 N+1 round-trip（与 attackChainRunRepository.saveAll 同模式）.
+    List<AttackChainNode> dynamicNodesToSave = new ArrayList<>();
+    for (AttackChainRun attackChainRun : attackChainRuns) {
+      AttackChain chain = attackChainRun.getAttackChain();
+      if (chain == null) {
+        continue;
+      }
+      List<NodeContract> dynamicContracts = attackChainService.computeDynamicContracts(chain);
+      for (NodeContract contract : dynamicContracts) {
+        AttackChainNode node = new AttackChainNode();
+        node.setId("dynamic-" + contract.getId() + "-" + attackChainRun.getId());
+        node.setDynamic(true);
+        node.setAttackChain(chain);
+        node.setNodeContract(contract);
+        node.setDependsDuration(0L);
+        node.setRepeatCount(1);
+        node.setTitle("动态: " + safeContractLabel(contract));
+        dynamicNodesToSave.add(node);
+      }
+    }
+    if (!dynamicNodesToSave.isEmpty()) {
+      attackChainNodeRepository.saveAll(dynamicNodesToSave);
+    }
+
     attackChainRunRepository.saveAll(
         attackChainRuns.stream()
             .peek(
@@ -107,6 +135,13 @@ public class AttackChainNodesExecutionJob implements Job {
                   attackChainRun.setUpdatedAt(now());
                 })
             .toList());
+  }
+
+  private String safeContractLabel(NodeContract contract) {
+    if (contract.getLabels() != null && contract.getLabels().get("en") != null) {
+      return contract.getLabels().get("en");
+    }
+    return contract.getId();
   }
 
   public void handleAutoClosingAttackChainRuns() {
@@ -120,6 +155,20 @@ public class AttackChainNodesExecutionJob implements Job {
                       attackChainRun.setStatus(AttackChainRunStatus.FINISHED);
                       attackChainRun.setEnd(now());
                       attackChainRun.setUpdatedAt(now());
+                      // Phase 12c-Biii: cleanup 本 chain 的所有动态节点（is_dynamic=true）.
+                      // 手动节点不受影响. 按 chain.id 而非 run.id，因动态节点 FK 关联 chain.
+                      if (attackChainRun.getAttackChain() != null) {
+                        int deleted =
+                            attackChainNodeRepository.deleteByAttackChainIdAndIsDynamicTrue(
+                                attackChainRun.getAttackChain().getId());
+                        if (deleted > 0) {
+                          log.debug(
+                              "Cleaned up {} dynamic nodes for chain {} run {}",
+                              deleted,
+                              attackChainRun.getAttackChain().getId(),
+                              attackChainRun.getId());
+                        }
+                      }
                       // Phase 7: 链路终态前先物化 + 评估链路级 SOC expectation
                       linkExpectationService.instantiateForRun(attackChainRun);
                       linkExpectationService.evaluateForRun(attackChainRun);
@@ -272,8 +321,8 @@ public class AttackChainNodesExecutionJob implements Job {
   }
 
   /**
-   * 把父节点的多个 expectation 聚合成 {@link io.veriguard.attackchain.execution.NodeFinalStatus} —— 每个维度（PREVENTION /
-   * DETECTION / MANUAL）一个 EXPECTATION_STATUS：
+   * 把父节点的多个 expectation 聚合成 {@link io.veriguard.attackchain.execution.NodeFinalStatus} ——
+   * 每个维度（PREVENTION / DETECTION / MANUAL）一个 EXPECTATION_STATUS：
    *
    * <ul>
    *   <li>无该维度 expectation → null（视作未结算）
@@ -319,21 +368,20 @@ public class AttackChainNodesExecutionJob implements Job {
       return AttackChainNodeExpectation.EXPECTATION_STATUS.PENDING;
     }
     boolean allSuccess =
-        statuses.stream()
-            .allMatch(s -> s == AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
+        statuses.stream().allMatch(s -> s == AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS);
     if (allSuccess) {
       return AttackChainNodeExpectation.EXPECTATION_STATUS.SUCCESS;
     }
     boolean allFailed =
-        statuses.stream()
-            .allMatch(s -> s == AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED);
+        statuses.stream().allMatch(s -> s == AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED);
     if (allFailed) {
       return AttackChainNodeExpectation.EXPECTATION_STATUS.FAILED;
     }
     return AttackChainNodeExpectation.EXPECTATION_STATUS.PARTIAL;
   }
 
-  private List<String> labelFromCondition(AttackChainNode attackChainNodeParent, EdgeCondition condition) {
+  private List<String> labelFromCondition(
+      AttackChainNode attackChainNodeParent, EdgeCondition condition) {
     List<String> result = new ArrayList<>();
     if (condition == null) {
       return result;
@@ -346,9 +394,7 @@ public class AttackChainNodesExecutionJob implements Job {
     switch (condition) {
       case EdgeCondition.Eq eq ->
           sink.add(
-              String.format(
-                  "Inject '%s' - %s is %s",
-                  parentTitle, eq.dimension(), eq.status()));
+              String.format("Inject '%s' - %s is %s", parentTitle, eq.dimension(), eq.status()));
       case EdgeCondition.And and -> {
         if (and.children() != null) {
           and.children().forEach(c -> appendLabels(c, parentTitle, sink));
