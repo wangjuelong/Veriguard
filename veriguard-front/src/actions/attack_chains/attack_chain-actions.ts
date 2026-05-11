@@ -321,3 +321,45 @@ export const widgetToEntitiesByByAttackChain = (scenarioId: string, widgetId: st
 export const attackPathsByAttackChain = (scenarioId: string, widgetId: string, parameters: Record<string, string | undefined>) => {
   return simplePostCall(`/api/attack_chains/${scenarioId}/dashboard/attack-paths/${widgetId}`, parameters);
 };
+
+// -- DYNAMIC FILTER (Phase 12c-Biii) --
+// 与 B3 settings 同 pattern：在 action 文件就近 export wire-format type，
+// 不通过 yarn generate-types-from-api（与已合 B 系列一致）.
+
+/** Filter operator (与后端 io.veriguard.database.model.Filters.FilterOperator 对齐) */
+export type FilterOperatorWire
+  = | 'eq'
+    | 'not_eq'
+    | 'contains'
+    | 'not_contains'
+    | 'starts_with'
+    | 'not_starts_with'
+    | 'empty'
+    | 'not_empty';
+
+/** Filter mode (与后端 FilterMode 对齐) */
+export type FilterModeWire = 'and' | 'or';
+
+export interface FilterWire {
+  key: string;
+  mode: FilterModeWire;
+  values: string[];
+  operator: FilterOperatorWire;
+}
+
+export interface FilterGroupWire {
+  mode: FilterModeWire;
+  filters: FilterWire[];
+}
+
+export interface AttackChainDynamicFilterInputWire { dynamic_filter: FilterGroupWire }
+
+export const updateAttackChainDynamicFilter
+  = (
+    attackChainId: AttackChain['attack_chain_id'],
+    input: AttackChainDynamicFilterInputWire,
+  ) =>
+    (dispatch: Dispatch) => {
+      const uri = `${SCENARIO_URI}/${attackChainId}/dynamic_filter`;
+      return putReferential(attack_chain, uri, input)(dispatch);
+    };
