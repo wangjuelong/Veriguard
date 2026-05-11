@@ -12,6 +12,7 @@ import {
   fetchLinkExpectationsForAttackChainRun,
 } from '../../../../../actions/attack_chain_runs/attack_chain_run-action';
 import { type AttackChainRunsHelper } from '../../../../../actions/attack_chain_runs/attack_chain_run-helper';
+import { type AttackChainWithDynamic } from '../../../../../actions/attack_chains/attack_chain-actions';
 import { fetchAttackChainRunAttackChainNodes } from '../../../../../actions/AttackChainNode';
 import { fetchAttackChainRunAttackChainNodeExpectations, fetchAttackChainRunTeams } from '../../../../../actions/AttackChainRun';
 import { fetchAttackChainRunDocuments } from '../../../../../actions/documents/documents-actions';
@@ -21,7 +22,7 @@ import { fetchVariablesForAttackChainRun } from '../../../../../actions/variable
 import { type VariablesHelper } from '../../../../../actions/variables/variable-helper';
 import { useFormatter } from '../../../../../components/i18n';
 import { useHelper } from '../../../../../store';
-import { type AttackChainNode, type AttackChainNodeExpectation, type AttackChainRun, type NodeExpectationResultsByAttackPattern } from '../../../../../utils/api-types';
+import { type AttackChainNode, type AttackChainNodeExpectation, type AttackChainRun, type NodeContract, type NodeExpectationResultsByAttackPattern } from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
 import endpointContextForAttackChainRun from '../../../../../utils/context/endpoint/EndpointContextForAttackChainRun';
 import { useAppDispatch } from '../../../../../utils/hooks';
@@ -161,6 +162,11 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
     [linkExpectations],
   );
 
+  const dynamicContracts = useMemo<NodeContract[]>(
+    () => (attack_chain_run?.attack_chain as AttackChainWithDynamic | undefined)?.attack_chain_dynamic_contracts ?? [],
+    [attack_chain_run?.attack_chain],
+  );
+
   const teamContext = teamContextForAttackChainRun(
     exerciseId,
     attack_chain_run.attack_chain_run_teams_users,
@@ -189,6 +195,7 @@ const AttackChainRunAttackChainNodes: FunctionComponent = () => {
                   teams={teams}
                   variables={variables}
                   uriVariable={`/admin/attack_chain_runs/${exerciseId}/definition`}
+                  dynamicContracts={dynamicContracts}
                 />
               </AttackChainNodeTestContext.Provider>
             </EndpointContext.Provider>

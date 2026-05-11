@@ -1,5 +1,5 @@
 /* eslint-disable i18next/no-literal-string -- Phase 12b-B 二开 UI 硬编码中文，未来统一 i18n 清洗。 */
-import { GridOnOutlined, ReorderOutlined, Settings as SettingsIcon, ViewTimelineOutlined } from '@mui/icons-material';
+import { GridOnOutlined, ReorderOutlined, Repeat as RepeatIcon, Settings as SettingsIcon, ViewTimelineOutlined } from '@mui/icons-material';
 import { Box, Button, Paper, Stack, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
 import { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
@@ -9,6 +9,7 @@ import { type AttackChainNodeOutputType } from '../../../../../actions/attack_ch
 import { updateAttackChainNodeSettings } from '../../../../../actions/attack_chain_nodes/node-action';
 import { type AttackChainNodeHelper } from '../../../../../actions/attack_chain_nodes/node-helper';
 import {
+  type AttackChainWithDynamic,
   fetchAttackChain,
   fetchAttackChainTeams,
   updateAttackChainSettings,
@@ -31,6 +32,7 @@ import { useHelper } from '../../../../../store';
 import { simplePostCall } from '../../../../../utils/Action';
 import {
   type AttackChain,
+  type NodeContract,
   type PageValidationParameterSetOutput,
 } from '../../../../../utils/api-types';
 import { EndpointContext } from '../../../../../utils/context/endpoint/EndpointContext';
@@ -46,6 +48,7 @@ import {
 } from '../../../common/Context';
 import { toAttackPatternResultsForEditor } from '../../../common/matrix/attackPatternMatrixAdapter';
 import MitreMatrix from '../../../common/matrix/MitreMatrix';
+import AttackChainDynamicFilterDrawer from '../AttackChainDynamicFilterDrawer';
 import { fromEdgeConditionDto, toEdgeConditionDto } from '../editor/attackChainEdgeConditionAdapters';
 import { AttackChainEdgeConditionContext } from '../editor/AttackChainEdgeConditionContext';
 import {
@@ -115,6 +118,19 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
       url: `/admin/attack_chains/${scenarioId}/tests/`,
       testAttackChainNode: testAttackChainNode,
     };
+
+  // -- 动态用例集 filter drawer (Phase 12c-Biii B5) --
+  const [dynamicFilterDrawerOpen, setDynamicFilterDrawerOpen] = useState(false);
+
+  /**
+   * 动态用例列表：来自后端 fetchAttackChain 响应中注入的 attack_chain_dynamic_contracts 字段（二开扩展，
+   * 用 AttackChainWithDynamic 接口集中声明类型，避免每个消费点重复 `as unknown` 穿越）。
+   * useMemo 给 ChainedTimeline 提供稳定引用，避免不必要的 re-render。
+   */
+  const dynamicContracts = useMemo<NodeContract[]>(
+    () => (attack_chain as AttackChainWithDynamic | undefined)?.attack_chain_dynamic_contracts ?? [],
+    [attack_chain],
+  );
 
   // -- 攻击编排链路级设置 drawer (Phase 12b-B3) --
   // -- 节点级 NodeEditDrawer + NodeBadge (Phase 12b-B3.5a) --
@@ -230,7 +246,15 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
           <AttackChainNodeTestContext.Provider value={injectTestContext}>
             <AttackChainEdgeConditionContext.Provider value={{ openEdgeCondition: handleOpenEdgeCondition }}>
               <AttackChainNodeSettingsContext.Provider value={{ openNodeSettings: setEditingNode }}>
-                <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
+                <Stack direction="row" justifyContent="flex-end" spacing={1} sx={{ mb: 1 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<RepeatIcon fontSize="small" />}
+                    onClick={() => setDynamicFilterDrawerOpen(true)}
+                  >
+                    {t('Dynamic content ({n})', { n: dynamicContracts.length })}
+                  </Button>
                   <Button
                     variant="outlined"
                     size="small"
@@ -247,6 +271,7 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
                     uriVariable={`/admin/attack_chains/${scenarioId}/definition`}
                     setViewMode={handleViewMode}
                     availableButtons={availableButtons}
+                    dynamicContracts={dynamicContracts}
                   />
                 )}
                 {viewMode === 'matrix' && (
@@ -315,6 +340,12 @@ const AttackChainAttackChainNodes: FunctionComponent = () => {
                     </Paper>
                   </div>
                 )}
+                <AttackChainDynamicFilterDrawer
+                  attackChain={attack_chain}
+                  open={dynamicFilterDrawerOpen}
+                  onClose={() => setDynamicFilterDrawerOpen(false)}
+                  previewContracts={dynamicContracts}
+                />
                 {settingsOpen && (
                   <Box>
                     <AttackChainSettingsDrawer

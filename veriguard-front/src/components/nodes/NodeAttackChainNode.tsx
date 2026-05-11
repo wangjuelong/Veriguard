@@ -91,6 +91,7 @@ export type NodeAttackChainNode = Node<{
   description?: string;
   isTargeted?: boolean;
   isTargeting?: boolean;
+  isDynamic?: boolean;
   onConnectAttackChainNodes?: OnConnect;
   node?: AttackChainNodeOutputType;
   fixedY?: number;

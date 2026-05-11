@@ -1,8 +1,9 @@
-import { Box } from '@mui/material';
+/* eslint-disable i18next/no-literal-string -- Phase 12c-Biii 二开 UI 中文文案，未来 i18n 清洗。 */
+import { Box, Stack, Typography } from '@mui/material';
 import { Handle, type NodeProps, Position } from '@xyflow/react';
 import { memo, useContext } from 'react';
 
-import { type DoubleLayerNodeData } from '../../admin/components/attack_chain_runs/attack_chain_run/runtime/attackChainRuntimeTypes';
+import { type DoubleLayerNodeData, NODE_LAYER_STATUS_STYLE } from '../../admin/components/attack_chain_runs/attack_chain_run/runtime/attackChainRuntimeTypes';
 import DoubleLayerNode from '../../admin/components/attack_chain_runs/attack_chain_run/runtime/DoubleLayerNode';
 import { RuntimeNodeContext } from '../../admin/components/attack_chain_runs/attack_chain_run/runtime/RuntimeNodeContext';
 import NodeAttackChainNodeComponent, { type NodeAttackChainNode } from './NodeAttackChainNode';
@@ -25,6 +26,90 @@ const FALLBACK_DATA: DoubleLayerNodeData = {
  */
 const NodeAttackChainNodeWrapper = (props: NodeProps<NodeAttackChainNode>) => {
   const runtimeContext = useContext(RuntimeNodeContext);
+
+  if (props.data.isDynamic) {
+    const nodeId = props.data.node?.node_id ?? props.data.key;
+    const runtimeData = runtimeContext?.runtimeByNodeId.get(nodeId);
+    const layerStatus = runtimeData?.preventionStatus ?? null;
+    const verdictBackground = layerStatus
+      ? NODE_LAYER_STATUS_STYLE[layerStatus].background
+      : 'transparent';
+    const verdictColor = layerStatus
+      ? NODE_LAYER_STATUS_STYLE[layerStatus].color
+      : '#bb86fc';
+    return (
+      <Box
+        sx={{
+          position: 'relative',
+          width: 200,
+          padding: '8px 12px',
+          background: verdictBackground,
+          border: '2px dashed',
+          borderColor: '#5e35b1',
+          borderRadius: 1,
+          color: verdictColor,
+          cursor: 'default',
+        }}
+        data-testid="dynamic-node"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: -6,
+            right: -6,
+            background: '#5e35b1',
+            color: '#ffffff',
+            borderRadius: '50%',
+            width: 18,
+            height: 18,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 11,
+          }}
+        >
+          ↻
+        </Box>
+        <Stack>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+              lineHeight: 1.2,
+            }}
+          >
+            {props.data.label}
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              opacity: 0.7,
+              lineHeight: 1.2,
+            }}
+          >
+            动态 (filter)
+          </Typography>
+        </Stack>
+        {props.data.isTargeted && (
+          <Handle
+            type="target"
+            id={`target-${props.data.key}`}
+            position={Position.Left}
+            isConnectable={false}
+          />
+        )}
+        {props.data.isTargeting && (
+          <Handle
+            type="source"
+            id={`source-${props.data.key}`}
+            position={Position.Right}
+            isConnectable={false}
+          />
+        )}
+      </Box>
+    );
+  }
+
   if (!runtimeContext) {
     return <NodeAttackChainNodeComponent {...props} />;
   }

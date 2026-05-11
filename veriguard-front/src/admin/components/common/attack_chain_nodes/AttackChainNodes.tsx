@@ -28,6 +28,7 @@ import {
   type AttackChainNodeExportFromSearchRequestInput,
   type AttackChainNodeInput,
   type AttackChainNodeTestStatusOutput,
+  type NodeContract as NodeContractType,
   type SearchPaginationInput,
   type Team,
   type Variable,
@@ -92,6 +93,8 @@ interface Props {
   teams: Team[];
   variables: Variable[];
   uriVariable: string;
+  /** 动态用例列表（Phase 12c-Biii B5）：传给 ChainedTimeline 渲染动态节点. */
+  dynamicContracts?: NodeContractType[];
 }
 
 const AttackChainNodes: FunctionComponent<Props> = ({
@@ -100,6 +103,7 @@ const AttackChainNodes: FunctionComponent<Props> = ({
   teams,
   variables,
   uriVariable,
+  dynamicContracts = [],
 }) => {
   // Standard hooks
   const { classes } = useStyles();
@@ -561,6 +565,7 @@ const AttackChainNodes: FunctionComponent<Props> = ({
             onCreate={onCreate}
             onUpdate={onUpdate}
             onDelete={onDelete}
+            dynamicContracts={dynamicContracts}
           />
           <div className="clearfix" />
         </div>
