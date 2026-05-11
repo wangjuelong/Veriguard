@@ -21,6 +21,7 @@ import {
   type LessonsInput,
   type LessonsQuestionCreateInput,
   type LessonsQuestionUpdateInput,
+  type NodeContract,
   type SearchPaginationInput,
   type Team,
   type UpdateAttackChainInput,
@@ -353,6 +354,19 @@ export interface FilterGroupWire {
 }
 
 export interface AttackChainDynamicFilterInputWire { dynamic_filter: FilterGroupWire }
+
+/**
+ * AttackChain extended with the 二开 dynamic-filter wire fields (Phase 12c-Biii).
+ *
+ * 后端 fetchAttackChain 在响应中注入 `attack_chain_dynamic_filter`（JSONB
+ * 持久化）+ `attack_chain_dynamic_contracts`（@Transient 派生）。这些字段
+ * 不在生成的 api-types.d.ts 中（来自 OpenAPI），故在此声明扩展接口供前端
+ * 消费方就近 cast，避免在每个调用点重复 `as unknown as Record<...>` 类型穿越.
+ */
+export interface AttackChainWithDynamic extends AttackChain {
+  attack_chain_dynamic_filter?: FilterGroupWire;
+  attack_chain_dynamic_contracts?: NodeContract[];
+}
 
 export const updateAttackChainDynamicFilter
   = (
