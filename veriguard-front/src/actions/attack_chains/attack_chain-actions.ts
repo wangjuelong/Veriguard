@@ -14,6 +14,8 @@ import {
   type AttackChainNodesImportInput,
   type AttackChainRecurrenceInput,
   type AttackChainTeamPlayersEnableInput,
+  type Filter,
+  type FilterGroup,
   type GetAttackChainsInput,
   type LessonsCategoryCreateInput,
   type LessonsCategoryTeamsInput,
@@ -324,10 +326,11 @@ export const attackPathsByAttackChain = (scenarioId: string, widgetId: string, p
 };
 
 // -- DYNAMIC FILTER (Phase 12c-Biii) --
-// 与 B3 settings 同 pattern：在 action 文件就近 export wire-format type，
-// 不通过 yarn generate-types-from-api（与已合 B 系列一致）.
+// Phase 12c-Biii follow-up：原 FilterGroupWire / FilterWire 等是 B1 step 自造的
+// 镜像类型；改用 api-types FilterGroup / Filter 后这些 alias 仅作 backward-compat
+// export 保留，避免破坏潜在 import。
 
-/** Filter operator (与后端 io.veriguard.database.model.Filters.FilterOperator 对齐) */
+/** @deprecated 用 api-types Filter['operator']. 保留以避免破坏 import。 */
 export type FilterOperatorWire
   = | 'eq'
     | 'not_eq'
@@ -338,22 +341,16 @@ export type FilterOperatorWire
     | 'empty'
     | 'not_empty';
 
-/** Filter mode (与后端 FilterMode 对齐) */
+/** @deprecated 用 api-types FilterGroup['mode']. 保留以避免破坏 import。 */
 export type FilterModeWire = 'and' | 'or';
 
-export interface FilterWire {
-  key: string;
-  mode: FilterModeWire;
-  values: string[];
-  operator: FilterOperatorWire;
-}
+/** @deprecated 用 api-types Filter. 保留以避免破坏 import。 */
+export type FilterWire = Filter;
 
-export interface FilterGroupWire {
-  mode: FilterModeWire;
-  filters: FilterWire[];
-}
+/** @deprecated 用 api-types FilterGroup. 保留以避免破坏 import。 */
+export type FilterGroupWire = FilterGroup;
 
-export interface AttackChainDynamicFilterInputWire { dynamic_filter: FilterGroupWire }
+export interface AttackChainDynamicFilterInputWire { dynamic_filter: FilterGroup }
 
 /**
  * AttackChain extended with the 二开 dynamic-filter wire fields (Phase 12c-Biii).
@@ -364,7 +361,7 @@ export interface AttackChainDynamicFilterInputWire { dynamic_filter: FilterGroup
  * 消费方就近 cast，避免在每个调用点重复 `as unknown as Record<...>` 类型穿越.
  */
 export interface AttackChainWithDynamic extends AttackChain {
-  attack_chain_dynamic_filter?: FilterGroupWire;
+  attack_chain_dynamic_filter?: FilterGroup;
   attack_chain_dynamic_contracts?: NodeContract[];
 }
 
