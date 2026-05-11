@@ -19,7 +19,7 @@ import {
   type XYPosition,
 } from '@xyflow/react';
 import moment from 'moment-timezone';
-import { type FunctionComponent, type MouseEvent as ReactMouseEvent, useContext, useEffect, useState } from 'react';
+import { type FunctionComponent, type MouseEvent as ReactMouseEvent, useContext, useEffect, useMemo, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { type AssetGroupsHelper } from '../actions/asset_groups/assetgroup-helper';
@@ -30,9 +30,10 @@ import { type AttackChainRunsHelper } from '../actions/attack_chain_runs/attack_
 import { type AttackChainsHelper } from '../actions/attack_chains/attack_chain-helper';
 import { type TeamsHelper } from '../actions/teams/team-helper';
 import { AttackChainEdgeConditionContext } from '../admin/components/attack_chains/attack_chain/editor/AttackChainEdgeConditionContext';
+import { toDynamicNodeViewModels } from '../admin/components/attack_chains/attack_chain/runtime/dynamicContractsAdapter';
 import { AttackChainNodeTestContext, PermissionsContext } from '../admin/components/common/Context';
 import { useHelper } from '../store';
-import { type AttackChainEdge, type AttackChainNode } from '../utils/api-types';
+import { type AttackChainEdge, type AttackChainNode, type NodeContract } from '../utils/api-types';
 import handle from '../utils/period/Period';
 import ChainingUtils from './common/chaining/ChainingUtils';
 import CustomTimelineBackground from './CustomTimelineBackground';
@@ -58,6 +59,8 @@ const useStyles = makeStyles()(() => ({
 
 interface Props {
   nodes: AttackChainNodeOutputType[];
+  /** Phase 12c-Biii: 动态节点 contracts（默认 [] → 等价于无动态节点，backward compat）. */
+  dynamicContracts?: NodeContract[];
   onSelectedAttackChainNode(node?: AttackChainNodeOutputType): void;
   onTimelineClick(duration: number): void;
   onUpdateAttackChainNode: (data: AttackChainNode[]) => void;
@@ -74,6 +77,7 @@ interface Props {
 
 const ChainedTimelineFlow: FunctionComponent<Props> = ({
   nodes,
+  dynamicContracts = [],
   onSelectedAttackChainNode,
   onTimelineClick,
   onUpdateAttackChainNode,
@@ -99,6 +103,12 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
   const [newNodeCursorClickable, setNewNodeCursorClickable] = useState<boolean>(true);
   const [currentMouseTime, setCurrentMouseTime] = useState<string>('');
   const [connectOnGoing, setConnectOnGoing] = useState<boolean>(false);
+
+  // Phase 12c-Biii: 动态节点 view-model 列表（默认 [] → 无副作用）。
+  const dynamicViewModels = useMemo(
+    () => toDynamicNodeViewModels(dynamicContracts),
+    [dynamicContracts],
+  );
 
   const reactFlow = useReactFlow();
 
@@ -241,6 +251,12 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
     });
 
     reorganizedAttackChainNodes.forEach((nodeAttackChainNode, index) => {
+      // Phase 12c-Biii: 动态节点保持 adapter 给定的固定 y（DYNAMIC_NODE_Y=600），
+      // 不参与手动节点的依赖图布局算法，避免被覆盖为 y=0 与手动节点重叠.
+      if (nodeAttackChainNode.data.isDynamic) {
+        reorganizedAttackChainNodes[index] = nodeAttackChainNode;
+        return;
+      }
       const nodeAttackChainNodePosition = nodeAttackChainNode.position;
       const nodeAttackChainNodeData = nodeAttackChainNode.data;
 
@@ -314,65 +330,87 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
    * Update all nodes
    */
   const updateNodes = () => {
-    if (nodes.length > 0) {
-      const injectsNodes = nodes
-        .sort((a, b) => a.node_depends_duration - b.node_depends_duration)
-        .map((node: AttackChainNodeOutputType) => ({
-          id: `${node.node_id}`,
-          type: 'node',
-          data: {
-            key: node.node_id,
-            label: node.node_title,
-            color: 'green',
-            background:
-                theme.palette.mode === 'dark'
-                  ? '#09101e'
-                  : '#e5e5e5',
-            isTargeted: nodes.find(anyAttackChainNode => anyAttackChainNode.node_id === node.node_id) !== undefined,
-            isTargeting: node.node_depends_on !== undefined,
-            node,
-            fixedY: 0,
-            startDate,
-            onSelectedAttackChainNode,
-            boundingBox: {
-              topLeft: {
-                x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]),
-                y: 0,
-              },
-              bottomRight: {
-                x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]) + nodeWidthClearance,
-                y: nodeHeightClearance,
-              },
+    const manualReactFlowNodes = nodes
+      .sort((a, b) => a.node_depends_duration - b.node_depends_duration)
+      .map((node: AttackChainNodeOutputType) => ({
+        id: `${node.node_id}`,
+        type: 'node',
+        data: {
+          key: node.node_id,
+          label: node.node_title,
+          color: 'green',
+          background:
+              theme.palette.mode === 'dark'
+                ? '#09101e'
+                : '#e5e5e5',
+          isTargeted: nodes.find(anyAttackChainNode => anyAttackChainNode.node_id === node.node_id) !== undefined,
+          isTargeting: node.node_depends_on !== undefined,
+          node,
+          fixedY: 0,
+          startDate,
+          onSelectedAttackChainNode,
+          boundingBox: {
+            topLeft: {
+              x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]),
+              y: 0,
             },
-            targets: node.node_assets!.map(asset => assets[asset]?.asset_name)
-              .concat(node.node_asset_groups!.map(assetGroup => assetGroups[assetGroup]?.asset_group_name))
-              .concat(node.node_teams!.map(team => teams[team]?.team_name)),
-            contextId,
-            onCreate,
-            onUpdate,
-            onDelete,
+            bottomRight: {
+              x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]) + nodeWidthClearance,
+              y: nodeHeightClearance,
+            },
           },
-          position: {
-            x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]),
-            y: 0,
-          },
-        }));
+          targets: node.node_assets!.map(asset => assets[asset]?.asset_name)
+            .concat(node.node_asset_groups!.map(assetGroup => assetGroups[assetGroup]?.asset_group_name))
+            .concat(node.node_teams!.map(team => teams[team]?.team_name)),
+          contextId,
+          onCreate,
+          onUpdate,
+          onDelete,
+        },
+        position: {
+          x: (node.node_depends_duration / 60) * (gapSize / minutesPerGapAllowed[minutesPerGapIndex]),
+          y: 0,
+        },
+      }));
 
-      if (currentUpdatedNode !== null) {
-        injectsNodes.find(node => node.id === currentUpdatedNode.id)!.position.x = currentUpdatedNode.position.x;
+    // Phase 12c-Biii: 动态节点合并（data.isDynamic=true → NodeAttackChainNodeWrapper 切 dashed 渲染）。
+    const dynamicReactFlowNodes: NodeAttackChainNode[] = dynamicViewModels.map(vm => ({
+      id: vm.id,
+      type: 'node',
+      position: vm.position,
+      data: {
+        key: vm.id,
+        label: vm.label,
+        isDynamic: true,
+        isTargeted: false,
+        isTargeting: false,
+        targets: [],
+        onSelectedAttackChainNode: () => {},
+        onCreate: () => {},
+        onUpdate: () => {},
+        onDelete: () => {},
+      },
+    }));
+
+    const injectsNodes = [...manualReactFlowNodes, ...dynamicReactFlowNodes];
+
+    if (nodes.length > 0 && currentUpdatedNode !== null) {
+      const manual = injectsNodes.find(node => node.id === currentUpdatedNode.id);
+      if (manual !== undefined) {
+        manual.position.x = currentUpdatedNode.position.x;
       }
-
-      setCurrentUpdatedNode(null);
-      setDraggingOnGoing(false);
-      calculateAttackChainNodePosition(injectsNodes);
-      setFlowNodes(injectsNodes);
-      updateEdges();
     }
+
+    setCurrentUpdatedNode(null);
+    setDraggingOnGoing(false);
+    calculateAttackChainNodePosition(injectsNodes);
+    setFlowNodes(injectsNodes);
+    updateEdges();
   };
 
   useEffect(() => {
     updateNodes();
-  }, [nodes, minutesPerGapIndex]);
+  }, [nodes, minutesPerGapIndex, dynamicViewModels]);
 
   /**
    * Actions to hide the new node 'button'
@@ -647,7 +685,7 @@ const ChainedTimelineFlow: FunctionComponent<Props> = ({
   };
   return (
     <>
-      {nodes.length > 0 ? (
+      {(nodes.length > 0 || dynamicContracts.length > 0) ? (
         <div
           className={`${classes.container} chainedTimeline`}
           style={{
