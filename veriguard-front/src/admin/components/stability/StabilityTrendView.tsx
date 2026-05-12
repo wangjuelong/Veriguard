@@ -128,7 +128,7 @@ const StabilityTrendView = () => {
     const base = lineChartOptions({
       theme,
       isTimeSeries: true,
-      xFormatter: (val: number) => new Date(val).toLocaleString(),
+      xFormatter: (value: string) => new Date(Number(value)).toLocaleString(),
     });
     return {
       ...base,
@@ -136,9 +136,7 @@ const StabilityTrendView = () => {
         ...base.yaxis,
         min: 0,
         max: 1,
-        labels: {
-          formatter: (val: number) => `${(val * 100).toFixed(1)}%`,
-        },
+        labels: { formatter: (val: number) => `${(val * 100).toFixed(1)}%` },
       },
       tooltip: {
         ...base.tooltip,
@@ -240,7 +238,14 @@ const StabilityTrendView = () => {
           </Typography>
         )}
         {!error && series[0].data.length === 0 && !loading && (
-          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              textAlign: 'center',
+              py: 4,
+            }}
+          >
             暂无数据。任务节点配置 N=2~100 次重复执行后，节点结算时会自动产出稳定性数据点。
           </Typography>
         )}
