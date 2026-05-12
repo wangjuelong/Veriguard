@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant P as 平台
+    participant SCHED as 调度器
+    participant EXEC as 节点执行器
+    participant TARGET as 外部攻击设备
+    participant SIEM as SIEM
+
+    U->>P: 启动链路任务
+    P->>SCHED: 注册任务
+    SCHED->>SCHED: 计算就绪节点（无依赖 / 父节点已完成）
+    loop 每个就绪节点
+        SCHED->>EXEC: 派发节点
+        EXEC->>TARGET: 执行用例
+        TARGET-->>EXEC: 执行结果
+        EXEC->>P: 写入节点期望
+        P->>P: 节点验证结果计算
+        P-->>U: 实时回显
+    end
+    P->>SIEM: 查询链路级告警关联
+    SIEM-->>P: 关联结果
+    P->>P: 链路最终验证结果综合计算
+    P-->>U: 链路最终验证结果

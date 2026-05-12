@@ -1,0 +1,13 @@
+graph LR
+    subgraph 平台主机
+        APP[应用组件]
+        APP -->|结构化日志| LOG[标准输出 / 容器日志]
+        APP -->|健康自检| HEALTH[健康检查通道]
+        APP -->|指标暴露| METRIC[指标通道]
+    end
+
+    subgraph 外部对接
+        LOG --> LOG_PLATFORM[客户日志平台<br/>ELK / Graylog / Loki]
+        HEALTH --> MONITOR[运维监控]
+        METRIC --> METRIC_PLATFORM[客户监控平台<br/>Prometheus + Grafana]
+    end

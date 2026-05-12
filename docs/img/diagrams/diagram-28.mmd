@@ -1,0 +1,20 @@
+graph TB
+    GROUP[资产组]
+
+    subgraph 静态成员
+        S1[资产 A]
+        S2[资产 B]
+        S3[资产 C]
+    end
+
+    subgraph 动态成员
+        FILTER[筛选条件]
+        POOL[(资产清单)]
+        FILTER -.匹配.-> POOL
+        POOL -.实时派生.-> DYN[匹配资产<br/>清单更新自动跟随]
+    end
+
+    GROUP --> S1
+    GROUP --> S2
+    GROUP --> S3
+    GROUP --> FILTER

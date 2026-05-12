@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant SVC as 平台核心服务
+    participant DB as 关系数据库
+    participant MATCH as 用例匹配引擎
+    participant SCHED as 任务调度器
+
+    U->>SVC: 配置动态 filter
+    SVC->>DB: 持久化 filter 条件
+    Note over U,SVC: 任务启动时实时派生
+    U->>SVC: 启动链路任务
+    SVC->>SCHED: 触发任务
+    SCHED->>MATCH: 拉取 filter
+    MATCH->>DB: 基于 filter 匹配用例
+    DB-->>MATCH: 当前匹配用例集
+    MATCH-->>SCHED: 派生临时节点
+    SCHED->>SCHED: 与手动节点统一调度
+    Note over MATCH,SCHED: 用例库更新后<br/>下次任务自动包含新用例

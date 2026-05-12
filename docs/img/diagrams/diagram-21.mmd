@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant P as 平台
+    participant SBX as 沙箱实例
+    participant DEFENSE as 终端安全产品
+
+    P->>SBX: 下发样本执行任务
+    SBX->>SBX: 加载样本，启动执行
+    SBX->>DEFENSE: 样本行为触发终端检测
+    DEFENSE-->>P: 告警事件
+    SBX-->>P: 行为报告（进程 / 文件 / 网络）
+    Note over SBX: 用例执行完毕
+    SBX->>SBX: 自动还原至基线快照
+    SBX-->>P: 还原完成，沙箱重新就绪

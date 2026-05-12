@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant U as 用户
+    participant GW as 接入网关
+    participant AUTH as 认证模块
+    participant AUTHZ as 鉴权模块
+    participant BIZ as 业务逻辑
+
+    U->>GW: 发起请求（含身份凭证）
+    GW->>AUTH: 验证身份
+    AUTH-->>GW: 身份合法
+    GW->>AUTHZ: 检查权限<br/>（动作 + 资源类型 + 资源 ID）
+    AUTHZ->>AUTHZ: 查角色权限
+    AUTHZ->>AUTHZ: 查资源 Grants
+    AUTHZ-->>GW: 授权结果
+    alt 授权通过
+        GW->>BIZ: 执行业务逻辑
+        BIZ-->>U: 返回结果
+    else 授权拒绝
+        GW-->>U: 拒绝访问
+    end

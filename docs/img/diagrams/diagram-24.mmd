@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant P as 平台
+    participant SBX as 沙箱实例
+
+    U->>P: 配置网络策略<br/>（出站白名单、DNS 控制等）
+    P->>P: 持久化策略
+    U->>P: 启动样本执行任务
+    P->>SBX: 下发任务（含网络策略）
+    SBX->>SBX: 应用网络策略
+    SBX->>SBX: 加载样本
+    SBX->>SBX: 执行样本<br/>（受策略约束）
+    SBX-->>P: 行为报告
+    P-->>U: 展示执行结果与告警

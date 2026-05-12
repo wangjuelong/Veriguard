@@ -1,0 +1,14 @@
+graph TB
+    USER[安全运营人员]
+    USER --> DASH[仪表板]
+
+    DASH --> WIDGET1[组件 1]
+    DASH --> WIDGET2[组件 2]
+    DASH --> WIDGETN[组件 N]
+
+    WIDGET1 --> QUERY[数据查询层]
+    WIDGET2 --> QUERY
+    WIDGETN --> QUERY
+
+    QUERY --> DATA[(平台数据)]
+    QUERY -.筛选条件.-> FILTER[仪表板筛选器]

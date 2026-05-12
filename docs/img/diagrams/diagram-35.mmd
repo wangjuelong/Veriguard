@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant P as 平台
+
+    U->>P: 创建空白仪表板
+    P-->>U: 展示画布
+    loop 逐个添加组件
+        U->>P: 从组件库选择组件
+        U->>P: 配置数据源与筛选条件
+        U->>P: 调整组件大小与位置
+    end
+    U->>P: 保存仪表板
+    P->>P: 持久化布局与配置
+    Note over U,P: 后续访问<br/>仪表板按配置实时渲染

@@ -1,0 +1,25 @@
+graph LR
+    subgraph 管理网络 [管理网络 1GE]
+        ADMIN[运维管理终端]
+        USERS[安全运营终端]
+    end
+
+    subgraph 数据平面 [数据平面 10GE / IPv6 双栈]
+        PLATFORM[平台主机]
+        TRAFFIC[流量回放设备]
+        SIEM[客户 SIEM]
+        SANDBOX[沙箱集群]
+    end
+
+    subgraph 业务网络 [被验证业务网络]
+        DUT[网络边界检测设备<br/>NTA / IDS]
+        HOST[被验证主机<br/>HIDS Agent]
+    end
+
+    ADMIN -.1GE.-> PLATFORM
+    USERS -.1GE.-> PLATFORM
+    PLATFORM -.10GE.-> TRAFFIC
+    PLATFORM -.10GE.-> SIEM
+    PLATFORM -.10GE.-> SANDBOX
+    TRAFFIC -.IPv6 流量.-> DUT
+    PLATFORM -.IPv6.-> HOST

@@ -1,0 +1,21 @@
+graph TB
+    CHAIN[攻击链路]
+    NODE1[节点 1<br/>用例 A]
+    NODE2[节点 2<br/>用例 B]
+    NODE3[节点 3<br/>用例 C]
+    EDGE1[边 1-2<br/>含条件]
+    EDGE2[边 1-3<br/>含条件]
+
+    CHAIN --> NODE1
+    CHAIN --> NODE2
+    CHAIN --> NODE3
+    NODE1 --> EDGE1
+    NODE1 --> EDGE2
+    EDGE1 --> NODE2
+    EDGE2 --> NODE3
+
+    CHAIN -.关联.-> PARAM[全局参数集]
+    NODE1 -.可覆盖.-> PARAM
+    CHAIN -.关联.-> SOC[SOC 连接器]
+    NODE1 -.关联.-> EXPECT_NODE[节点期望]
+    CHAIN -.关联.-> EXPECT_LINK[链路期望]

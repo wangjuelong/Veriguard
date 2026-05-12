@@ -1,0 +1,25 @@
+graph TB
+    subgraph 关系型数据
+        PG[PostgreSQL]
+        PG_DESC[用户、资产、用例契约<br/>链路、运行记录、期望<br/>审计日志、配置]
+    end
+
+    subgraph 搜索与分析
+        ES[Elasticsearch]
+        ES_DESC[全文搜索、ATT&CK 聚合<br/>验证结果时间序列<br/>历史数据快查]
+    end
+
+    subgraph 对象存储
+        MINIO[MinIO]
+        MINIO_DESC[样本文件、pcap 流量包<br/>报告附件、导入导出文件]
+    end
+
+    subgraph 异步消息
+        MQ[RabbitMQ]
+        MQ_DESC[任务事件通知<br/>异步处理消息]
+    end
+
+    PG --- PG_DESC
+    ES --- ES_DESC
+    MINIO --- MINIO_DESC
+    MQ --- MQ_DESC

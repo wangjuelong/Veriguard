@@ -1,0 +1,7 @@
+erDiagram
+    ENDPOINT ||--o{ ENDPOINT_TAG : "标签"
+    ASSET ||--o{ ASSET_TAG : "标签"
+    ASSET_GROUP ||--o{ ASSET_GROUP_MEMBER : "静态成员"
+    ASSET_GROUP_MEMBER }o--|| ASSET : ""
+    ASSET_GROUP ||--o| DYNAMIC_FILTER : "动态成员筛选"
+    AGENT ||--|| ENDPOINT : "部署于"

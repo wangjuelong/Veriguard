@@ -1,0 +1,9 @@
+erDiagram
+    NODE_CONTRACT ||--o{ CONTRACT_TAG : "标签"
+    NODE_CONTRACT }o--o{ ATTACK_PATTERN : "ATT&CK 攻击模式"
+    NODE_CONTRACT }o--o{ KILL_CHAIN_PHASE : "杀伤链阶段"
+    NODE_CONTRACT ||--o| PAYLOAD : "关联载荷"
+    NODE_CONTRACT ||--o{ DOCUMENT : "文档附件"
+
+    ATTACK_PATTERN }o--|| KILL_CHAIN_PHASE : "所属杀伤链阶段"
+    ATTACK_PATTERN ||--o{ SUB_TECHNIQUE : "子技术"

@@ -1,0 +1,8 @@
+graph LR
+    REG[注册沙箱实例] --> READY[就绪]
+    READY --> RUN[执行用例]
+    RUN --> RESTORE[环境还原]
+    RESTORE --> READY
+    READY --> MAINT[维护中]
+    MAINT --> READY
+    READY --> RETIRE[注销]

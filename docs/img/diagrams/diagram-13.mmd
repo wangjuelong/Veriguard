@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant P as 平台
+    participant AGENT as 平台 Agent（主机内）
+    participant HIDS as HIDS Agent（主机内）
+    participant SIEM as SIEM
+
+    U->>P: 创建主机验证任务
+    P->>AGENT: 下发用例（如：触发反弹 shell）
+    AGENT->>AGENT: 模拟攻击行为
+    Note over AGENT: 操作系统层<br/>实际产生系统调用 / 文件操作 / 进程行为
+    HIDS->>SIEM: 检测到异常行为，上报告警
+    AGENT-->>P: 上报执行结果
+    P->>SIEM: 查询告警关联
+    SIEM-->>P: 返回告警匹配结果
+    P->>P: 计算验证结果
+    P-->>U: 展示验证结果（HIDS 是否检出 / 是否告警）

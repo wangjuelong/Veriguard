@@ -1,0 +1,12 @@
+graph TB
+    USER[用户]
+    ROLE[角色]
+    PERM[权限点<br/>动作 × 资源类型]
+    GRANT[资源级授权<br/>Grants]
+    RESOURCE[具体资源]
+
+    USER --> ROLE
+    ROLE --> PERM
+    PERM -.适用于.-> RESOURCE
+    USER --> GRANT
+    GRANT -.直接关联.-> RESOURCE

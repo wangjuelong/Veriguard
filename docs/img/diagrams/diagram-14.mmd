@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant P as 平台
+    participant CASE as 用例库
+
+    U->>P: 创建场景，配置筛选条件
+    P->>P: 持久化筛选条件
+    Note over CASE: 用例库持续更新<br/>新增用例符合筛选条件
+    U->>P: 启动验证任务
+    P->>CASE: 按筛选条件实时匹配用例
+    CASE-->>P: 当前匹配的全部用例（含新增）
+    P->>P: 派生用例集执行
+    Note over P: 场景与用例库实时联动<br/>无需手工维护用例列表

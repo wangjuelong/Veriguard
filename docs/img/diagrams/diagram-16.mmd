@@ -1,0 +1,10 @@
+graph TB
+    BASE[自定义用例]
+    BASE --> WEB[Web 攻击包]
+    BASE --> PCAP[pcap 流量包]
+    BASE --> SAMPLE[样本文件]
+    BASE --> CMD[命令]
+    BASE --> EXE[可执行文件 + 命令]
+    BASE --> MAIL[邮件]
+
+    BASE -.通用属性.-> COMMON[ATT&CK 关联<br/>杀伤链阶段<br/>标签<br/>验证参数集<br/>预期结果]

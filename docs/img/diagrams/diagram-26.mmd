@@ -1,0 +1,9 @@
+erDiagram
+    USER ||--o{ USER_ROLE : "持有角色"
+    ROLE ||--o{ USER_ROLE : ""
+    ROLE ||--o{ ROLE_PERMISSION : "拥有权限"
+    PERMISSION ||--o{ ROLE_PERMISSION : ""
+    USER }o--o{ TEAM : "参与"
+    USER ||--o{ GRANT : "直接授权"
+    TEAM ||--o{ GRANT : "团队授权"
+    GRANT }o--|| RESOURCE : "关联资源"

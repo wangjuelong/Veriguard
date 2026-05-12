@@ -1,0 +1,32 @@
+graph TB
+    subgraph 平台
+        UI[主机验证控制台]
+        TASK[主机验证任务管理]
+        CASE[主机用例库]
+        HOST_MGR[主机清单管理]
+        AGENT_PROXY[Agent 接入网关]
+        VERDICT[结果评估]
+    end
+
+    subgraph 被验证主机
+        AGENT[平台 Agent]
+        HIDS[客户既有 HIDS Agent]
+        OS[操作系统]
+    end
+
+    subgraph 外部系统
+        SIEM[SIEM 告警系统]
+    end
+
+    UI --> TASK
+    TASK --> CASE
+    TASK --> HOST_MGR
+    TASK --> AGENT_PROXY
+    AGENT_PROXY -.下发用例.-> AGENT
+    AGENT -.执行攻击行为.-> OS
+    OS -.触发检测.-> HIDS
+    HIDS -.告警.-> SIEM
+    VERDICT -.查询告警.-> SIEM
+    AGENT -.执行结果.-> AGENT_PROXY
+    AGENT_PROXY --> VERDICT
+    VERDICT --> UI

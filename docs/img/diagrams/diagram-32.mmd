@@ -1,0 +1,17 @@
+graph TB
+    USER[安全运营人员]
+    USER --> SELECT[用例选择]
+
+    subgraph 选择方式
+        DIRECT[直接列表选择]
+        FILTER[按筛选条件选择]
+        BATCH[批量导入选择]
+    end
+
+    SELECT --> DIRECT
+    SELECT --> FILTER
+    SELECT --> BATCH
+
+    DIRECT --> SCENARIO[场景 / 链路 / 任务]
+    FILTER --> SCENARIO
+    BATCH --> SCENARIO

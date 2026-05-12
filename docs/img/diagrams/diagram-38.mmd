@@ -1,0 +1,7 @@
+graph LR
+    CREATE[创建] --> PENDING[待开始]
+    PENDING --> RUNNING[运行中]
+    RUNNING --> SUCCESS[已完成]
+    RUNNING --> FAIL[执行失败]
+    PENDING --> CANCEL[已取消]
+    RUNNING --> CANCEL

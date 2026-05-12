@@ -1,0 +1,62 @@
+graph TB
+    subgraph 用户接入层
+        WEB[Web 控制台]
+        EXT[外部系统接入]
+    end
+
+    subgraph 接入网关层
+        GW[统一接入网关<br/>统一权限校验入口]
+        AUTH[认证与鉴权<br/>RBAC + 资源 Grants]
+    end
+
+    subgraph 业务领域层
+        ORCHESTRATOR[攻击编排引擎]
+        SCHEDULER[链路任务调度器]
+        EVALUATOR[期望评估引擎]
+        SOC_CORR[SOC 关联分析]
+        CASE_MATCH[用例匹配引擎]
+        SANDBOX_MGR[沙箱管理服务]
+    end
+
+    subgraph 数据层
+        PG[(PostgreSQL<br/>关系数据)]
+        ES[(Elasticsearch<br/>全文索引 / 聚合)]
+        MINIO[(MinIO<br/>对象存储)]
+        MQ[(RabbitMQ<br/>异步消息)]
+    end
+
+    subgraph 外部集成层
+        TRAFFIC[流量回放设备]
+        HIDS[主机 HIDS Agent]
+        SIEM[SIEM / SOC 告警系统]
+        SANDBOX[沙箱执行环境]
+        C2[攻击控制框架]
+    end
+
+    WEB --> GW
+    EXT --> GW
+    GW --> AUTH
+    AUTH --> ORCHESTRATOR
+    AUTH --> SCHEDULER
+    AUTH --> EVALUATOR
+    AUTH --> SOC_CORR
+    AUTH --> CASE_MATCH
+    AUTH --> SANDBOX_MGR
+
+    ORCHESTRATOR --> PG
+    SCHEDULER --> PG
+    EVALUATOR --> PG
+    SOC_CORR --> ES
+    CASE_MATCH --> PG
+    SANDBOX_MGR --> PG
+
+    SCHEDULER -.-> MQ
+    EVALUATOR -.-> ES
+
+    ORCHESTRATOR --> TRAFFIC
+    ORCHESTRATOR --> HIDS
+    ORCHESTRATOR --> C2
+    SANDBOX_MGR --> SANDBOX
+    SOC_CORR --> SIEM
+
+    GW -.-> MINIO

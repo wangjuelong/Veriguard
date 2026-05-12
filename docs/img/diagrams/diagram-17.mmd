@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant P as 平台
+    participant CASE as 用例库
+
+    U->>P: 启动场景验证任务
+    P->>P: 加载场景定义（手动用例 + 筛选条件）
+    P->>CASE: 按筛选条件实时匹配
+    CASE-->>P: 当前匹配的动态用例集
+    P->>P: 合并手动用例 + 动态用例
+    P->>P: 按场景顺序与维度划分调度执行
+    P-->>U: 实时展示验证进度与结果

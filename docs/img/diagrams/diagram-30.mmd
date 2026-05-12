@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant P as 平台
+    participant POOL as 资产清单
+
+    U->>P: 创建资产组，配置筛选条件
+    P->>P: 持久化筛选条件
+    Note over POOL: 资产清单持续变化<br/>新增 / 下线 / 标签变更
+    U->>P: 启动使用该资产组的验证任务
+    P->>POOL: 按筛选条件实时匹配
+    POOL-->>P: 当前匹配资产集（含新增）
+    P->>P: 作为本次任务目标

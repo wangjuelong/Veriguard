@@ -1,0 +1,23 @@
+erDiagram
+    USER ||--o{ GRANT : "授权"
+    USER }o--o{ TEAM : "参与"
+
+    ATTACK_CHAIN ||--o{ ATTACK_CHAIN_NODE : "包含"
+    ATTACK_CHAIN_NODE }o--|| NODE_CONTRACT : "使用用例"
+    ATTACK_CHAIN_NODE ||--o{ ATTACK_CHAIN_EDGE : "依赖关系"
+    ATTACK_CHAIN ||--o{ ATTACK_CHAIN_RUN : "运行实例"
+    ATTACK_CHAIN ||--o| VALIDATION_PARAMETER_SET : "验证参数"
+
+    ATTACK_CHAIN_RUN ||--o{ NODE_EXPECTATION : "节点期望"
+    ATTACK_CHAIN_RUN ||--o{ LINK_EXPECTATION : "链路期望"
+    LINK_EXPECTATION ||--o{ SOC_CONNECTOR : "关联告警"
+
+    NODE_CONTRACT }o--o{ ATTACK_PATTERN : "ATT&CK 攻击模式"
+    NODE_CONTRACT }o--o{ KILL_CHAIN_PHASE : "杀伤链阶段"
+    NODE_CONTRACT }o--|| PAYLOAD : "执行载荷"
+
+    ASSET_GROUP ||--o{ ASSET : "静态成员"
+    ASSET_GROUP ||--o| DYNAMIC_FILTER : "动态成员"
+    ATTACK_CHAIN_NODE }o--o{ ASSET_GROUP : "目标资产"
+
+    SANDBOX ||--o{ SANDBOX_RUN : "执行记录"

@@ -1,0 +1,8 @@
+erDiagram
+    TASK ||--o{ TASK_NODE_RECORD : "节点执行记录"
+    TASK ||--o{ TASK_EXPECTATION : "期望评估记录"
+    TASK }o--|| SCENARIO_OR_CHAIN : "关联场景 / 链路"
+    TASK }o--|| USER : "创建人"
+
+    TASK_NODE_RECORD }o--|| NODE_CONTRACT : "执行用例"
+    TASK_EXPECTATION }o--o| SOC_ALERT : "关联告警"

@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant U as 用户
+    participant GW as 接入网关
+    participant BIZ as 业务逻辑
+    participant LISTENER as 实体变更监听器
+    participant DB as 数据库
+
+    U->>GW: 发起操作请求
+    GW->>BIZ: 执行业务逻辑
+    BIZ->>DB: 资源变更
+    DB->>LISTENER: 触发实体生命周期事件
+    LISTENER->>LISTENER: 自动收集审计字段<br/>（时间 / 操作主体）
+    LISTENER->>DB: 写入审计字段
+    BIZ-->>GW: 业务结果
+    GW-->>U: 返回结果

@@ -1,0 +1,30 @@
+graph TB
+    subgraph 平台主机 [平台主机 — 2U 机架服务器]
+        subgraph 容器编排
+            C_API[API + 调度器容器]
+            C_WEB[前端静态资源容器]
+            C_PG[(PostgreSQL 容器)]
+            C_ES[(Elasticsearch 容器)]
+            C_MINIO[(MinIO 容器)]
+            C_MQ[(RabbitMQ 容器)]
+        end
+    end
+
+    subgraph 外部组件
+        EXT_TRAFFIC[流量回放设备<br/>独立硬件]
+        EXT_HIDS[被验证主机<br/>HIDS Agent]
+        EXT_SANDBOX[沙箱集群<br/>独立物理机 / 虚拟化]
+        EXT_SIEM[客户既有 SIEM]
+    end
+
+    USERS[安全运营人员] --> C_WEB
+    C_WEB --> C_API
+    C_API --> C_PG
+    C_API --> C_ES
+    C_API --> C_MINIO
+    C_API --> C_MQ
+
+    C_API -.IPv6 双栈.-> EXT_TRAFFIC
+    C_API -.IPv6 双栈.-> EXT_HIDS
+    C_API -.IPv6 双栈.-> EXT_SANDBOX
+    C_API -.API 查询.-> EXT_SIEM

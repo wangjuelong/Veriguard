@@ -1,0 +1,26 @@
+graph TB
+    subgraph 平台
+        UI[流量验证控制台]
+        TASK[流量验证任务管理]
+        CASE[流量用例库]
+        ASSET[资产清单]
+        REPLAY_API[回放控制 API]
+        VERDICT[结果评估]
+    end
+
+    subgraph 外部组件
+        DEVICE[流量回放设备]
+        NTA[NTA / IDS]
+        SIEM[SIEM 告警系统]
+    end
+
+    UI --> TASK
+    TASK --> CASE
+    TASK --> ASSET
+    TASK --> REPLAY_API
+    REPLAY_API --> DEVICE
+    DEVICE -.重放攻击流量.-> NTA
+    NTA -.告警.-> SIEM
+    VERDICT -.查询告警.-> SIEM
+    TASK --> VERDICT
+    VERDICT --> UI

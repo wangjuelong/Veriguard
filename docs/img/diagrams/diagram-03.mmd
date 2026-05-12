@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant W as Web 控制台
+    participant SVC as 平台核心服务
+    participant SCHED as 任务调度器
+    participant EXEC as 节点执行器
+    participant TARGET as 外部攻击设备
+    participant SIEM as SOC 系统
+
+    U->>W: 编辑攻击链路
+    W->>SVC: 保存链路 (节点 + 边)
+    U->>W: 启动任务
+    W->>SVC: 创建链路任务
+    SVC->>SCHED: 注册任务
+    SCHED->>EXEC: 拾取就绪节点
+    EXEC->>TARGET: 派发攻击载荷
+    TARGET-->>EXEC: 执行结果
+    EXEC->>SVC: 写入节点期望
+    SVC->>SIEM: 查询告警关联
+    SIEM-->>SVC: 告警匹配结果
+    SVC->>SVC: 计算验证结果
+    SVC-->>W: 实时回显运行画布
+    W-->>U: 节点状态 + 链路验证结果

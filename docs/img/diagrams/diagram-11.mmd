@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant U as 安全运营人员
+    participant P as 平台
+    participant CASE as 流量用例库
+    participant DEV as 流量回放设备
+    participant NTA as NTA / IDS
+    participant SIEM as SIEM
+
+    U->>P: 创建流量验证任务（选用例、选目标）
+    P->>CASE: 加载用例集
+    P->>DEV: 下发回放指令（含四元组）
+    DEV->>NTA: 重放攻击流量
+    NTA->>SIEM: 产生告警
+    P->>SIEM: 查询告警关联
+    SIEM-->>P: 返回告警匹配结果
+    P->>P: 计算验证结果
+    P-->>U: 展示验证结果、覆盖度、稳定性趋势

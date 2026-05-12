@@ -1,0 +1,20 @@
+graph TB
+    SCENARIO[自定义验证场景]
+
+    subgraph 手动成员
+        M1[用例 A]
+        M2[用例 B]
+        M3[用例 C]
+    end
+
+    subgraph 动态成员
+        FILTER[筛选条件]
+        CASE_LIB[(全量用例库)]
+        FILTER -.匹配.-> CASE_LIB
+        CASE_LIB -.派生.-> M_DYN[匹配的用例集<br/>每次任务实时计算]
+    end
+
+    SCENARIO --> M1
+    SCENARIO --> M2
+    SCENARIO --> M3
+    SCENARIO --> FILTER

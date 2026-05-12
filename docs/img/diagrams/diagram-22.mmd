@@ -1,0 +1,32 @@
+graph TB
+    subgraph 平台
+        UI[沙箱管理控制台]
+        SBX_MGR[沙箱实例管理]
+        SAMPLE[样本库]
+        POLICY[网络策略管理]
+        EXEC[沙箱执行任务]
+        REPORT[行为报告聚合]
+    end
+
+    subgraph 沙箱基础设施
+        SBX1[沙箱实例 A]
+        SBX2[沙箱实例 B]
+        SBXN[沙箱实例 N]
+    end
+
+    subgraph 终端安全产品
+        EDR[EDR / 终端 Agent]
+    end
+
+    UI --> SBX_MGR
+    UI --> SAMPLE
+    UI --> POLICY
+    UI --> EXEC
+    UI --> REPORT
+    EXEC -.下发样本.-> SBX1
+    EXEC -.下发样本.-> SBX2
+    EXEC -.下发样本.-> SBXN
+    POLICY -.下发策略.-> SBX1
+    SBX1 -.行为报告.-> REPORT
+    SBX1 -.触发检测.-> EDR
+    EDR -.告警.-> REPORT
