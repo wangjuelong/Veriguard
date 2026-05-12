@@ -4112,6 +4112,7 @@ export interface NodeContract {
   /** @format date-time */
   injector_contract_created_at: string;
   injector_contract_custom?: boolean;
+  injector_contract_defense_layer?: "boundary" | "traffic" | "application" | "host" | "data";
   /** @uniqueItems true */
   injector_contract_domains?: Domain[];
   injector_contract_external_id?: string;
@@ -4123,6 +4124,8 @@ export interface NodeContract {
   injector_contract_labels?: Record<string, string>;
   injector_contract_manual?: boolean;
   injector_contract_needs_executor?: boolean;
+  injector_contract_network_dependent?: boolean;
+  injector_contract_network_protocol_family?: "ipv4" | "ipv6" | "both";
   injector_contract_payload?: Payload;
   injector_contract_platforms?: (
     | "Linux"
@@ -4134,6 +4137,17 @@ export interface NodeContract {
     | "Internal"
     | "Unknown"
   )[];
+  injector_contract_rollback_steps?: object;
+  injector_contract_software_category?:
+    | "web_component"
+    | "security_product"
+    | "application"
+    | "domestic_commercial"
+    | "cms"
+    | "network_device"
+    | "os"
+    | "database";
+  injector_contract_target_os?: "linux" | "windows" | "both" | "none";
   /** @format date-time */
   injector_contract_updated_at: string;
   injector_contract_vulnerabilities?: string[];

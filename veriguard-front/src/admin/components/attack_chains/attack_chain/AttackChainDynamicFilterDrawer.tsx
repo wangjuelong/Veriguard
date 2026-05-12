@@ -22,6 +22,12 @@ const NODE_CONTRACT_FILTER_KEYS = [
   'injector_contract_kill_chain_phases',
   'injector_contract_domains',
   'injector_contract_injector',
+  // PR A3：6 个新字段中 5 个 filterable（rollback_steps JSONB 不可 filter）
+  'injector_contract_software_category',
+  'injector_contract_defense_layer',
+  'injector_contract_network_protocol_family',
+  'injector_contract_target_os',
+  'injector_contract_network_dependent',
 ];
 
 interface Props {
