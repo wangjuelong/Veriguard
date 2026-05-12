@@ -10,14 +10,18 @@ import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.helper.AgentHelper;
 import io.veriguard.helper.MonoIdSerializer;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 @Getter
 @Setter
@@ -139,6 +143,17 @@ public class Agent implements Base {
   @Column(name = "agent_cleared_at")
   @JsonProperty("agent_cleared_at")
   private Instant clearedAt = now();
+
+  // -- AGENT CAPABILITIES (B-ii PR-A) --
+  // Agent 启动时通过配置文件声明的能力标签列表（如 command_exec / file_drop /
+  // http_attack / pcap_replay 等）。平台据此匹配可下发的 inject 类型.
+  // 默认空数组表示该 Agent 未声明任何能力，可避免现有未升级 Agent 异常.
+
+  @Type(JsonType.class)
+  @Column(name = "agent_capabilities", columnDefinition = "jsonb")
+  @JsonProperty("agent_capabilities")
+  @NotNull
+  private List<String> capabilities = new ArrayList<>();
 
   @Getter(onMethod_ = @JsonIgnore)
   @Transient
