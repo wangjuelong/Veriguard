@@ -33,6 +33,8 @@ export interface Agent {
   /** @format date-time */
   agent_updated_at: string;
   agent_version?: string;
+  /** Agent capabilities (B-ii PR-A): declared capability tags */
+  agent_capabilities?: string[];
   listened?: boolean;
 }
 
@@ -68,6 +70,8 @@ export interface AgentOutput {
   agent_privilege?: "admin" | "standard";
   /** The version of the agent */
   agent_version?: string;
+  /** Agent capabilities (B-ii PR-A): declared capability tags */
+  agent_capabilities?: string[];
 }
 
 export interface AgentTarget {
