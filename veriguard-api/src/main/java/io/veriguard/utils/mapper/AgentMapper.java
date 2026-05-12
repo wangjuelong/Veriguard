@@ -57,7 +57,8 @@ public class AgentMapper {
             .executedByUser(agent.getExecutedByUser())
             .isActive(agent.isActive())
             .agentVersion(agent.getVersion())
-            .lastSeen(agent.getLastSeen());
+            .lastSeen(agent.getLastSeen())
+            .capabilities(agent.getCapabilities());
 
     if (agent.getExecutor() != null) {
       builder.executor(

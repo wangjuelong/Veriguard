@@ -4,10 +4,11 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.veriguard.database.model.*;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.veriguard.database.model.*;
 import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,4 +54,10 @@ public class AgentOutput {
   @Schema(description = "The version of the agent")
   @JsonProperty("agent_version")
   private String agentVersion;
+
+  @Schema(
+      description =
+          "Agent capabilities (B-ii PR-A): declared capability tags like command_exec, http_attack, pcap_replay")
+  @JsonProperty("agent_capabilities")
+  private List<String> capabilities;
 }

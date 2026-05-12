@@ -1,5 +1,5 @@
 import { DevicesOtherOutlined } from '@mui/icons-material';
-import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Chip, List, ListItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { type CSSProperties, type FunctionComponent } from 'react';
 import { makeStyles } from 'tss-react/mui';
@@ -29,16 +29,17 @@ const useStyles = makeStyles()(() => ({
 }));
 
 const inlineStyles: Record<string, CSSProperties> = {
-  agent_executed_by_user: { width: '30%' },
+  agent_executed_by_user: { width: '20%' },
   agent_executor: {
-    width: '15%',
+    width: '12%',
     display: 'flex',
     alignItems: 'center',
     cursor: 'default',
   },
-  agent_privilege: { width: '15%' },
+  agent_privilege: { width: '10%' },
   agent_deployment_mode: { width: '10%' },
-  agent_active: { width: '10%' },
+  agent_capabilities: { width: '20%' },
+  agent_active: { width: '8%' },
   agent_version: { width: '5%' },
   agent_last_seen: { width: '15%' },
 };
@@ -110,6 +111,24 @@ const AgentList: FunctionComponent<Props> = ({ agents }) => {
       isSortable: false,
       value: (agent: AgentOutput) => {
         return (<AgentDeploymentMode variant="list" mode={agent.agent_deployment_mode ?? 'session'} />);
+      },
+    },
+    {
+      field: 'agent_capabilities',
+      label: 'Capabilities',
+      isSortable: false,
+      value: (agent: AgentOutput) => {
+        const caps = agent.agent_capabilities ?? [];
+        if (caps.length === 0) {
+          return <span style={{ opacity: 0.5 }}>{t('None')}</span>;
+        }
+        return (
+          <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
+            {caps.map(cap => (
+              <Chip key={cap} label={cap} size="small" />
+            ))}
+          </Stack>
+        );
       },
     },
     {
