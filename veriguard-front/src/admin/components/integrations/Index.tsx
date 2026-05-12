@@ -15,6 +15,7 @@ const InjectorsLayout = lazy(() => import('./node_executors/InjectorsLayout'));
 const ExecutorsLayout = lazy(() => import('./executors/ExecutorsLayout'));
 const CollectorsLayout = lazy(() => import('./collectors/CollectorsLayout'));
 const SocConnectorsIndex = lazy(() => import('./soc_connectors/Index'));
+const SmtpProfilesIndex = lazy(() => import('./smtp_profiles/SmtpProfiles'));
 const ConnectorList = lazy(() => import('./common/ConnectorList'));
 const ConnectorPage = lazy(() => import('./common/ConnectorPage'));
 
@@ -49,6 +50,8 @@ const Index = () => {
           </Route>
 
           <Route path="soc_connectors" element={errorWrapper(SocConnectorsIndex)()} />
+
+          <Route path="smtp_profiles" element={errorWrapper(SmtpProfilesIndex)()} />
 
           {/* Not found */}
           <Route path="*" element={<NotFound />} />

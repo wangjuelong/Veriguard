@@ -7237,3 +7237,30 @@ export interface XtmComposerUpdateStatusInput {
   /** The connector instance current status */
   connector_instance_current_status: "started" | "stopped";
 }
+
+export interface SmtpProfile {
+  smtp_profile_id: string;
+  smtp_profile_name: string;
+  smtp_profile_host: string;
+  smtp_profile_port: number;
+  smtp_profile_auth_type: 'none' | 'password';
+  smtp_profile_username?: string;
+  smtp_profile_password?: string;
+  smtp_profile_tls_mode: 'none' | 'starttls' | 'tls';
+  smtp_profile_default_from: string;
+  smtp_profile_default_reply_to?: string;
+  smtp_profile_created_at?: string;
+  smtp_profile_updated_at?: string;
+}
+
+export interface SmtpProfileInput {
+  smtp_profile_name: string;
+  smtp_profile_host: string;
+  smtp_profile_port: number;
+  smtp_profile_auth_type: 'none' | 'password';
+  smtp_profile_username?: string;
+  smtp_profile_password?: string;
+  smtp_profile_tls_mode: 'none' | 'starttls' | 'tls';
+  smtp_profile_default_from: string;
+  smtp_profile_default_reply_to?: string;
+}
