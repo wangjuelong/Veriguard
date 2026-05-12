@@ -20,6 +20,7 @@ import io.veriguard.helper.MultiIdSetSerializer;
 import io.veriguard.helper.MultiModelSerializer;
 import io.veriguard.helper.NodeModelHelper;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -197,10 +198,16 @@ public class AttackChainNode implements GrantableBase, Injection {
   @JsonProperty("node_is_dynamic")
   private boolean isDynamic = false;
 
+  /**
+   * 重复执行次数（PR C5 / 招标 §3.3 ★1 + §4.2 ★3）.
+   *
+   * <p>N=1 视为普通验证；2 ≤ N ≤ 100 启用稳定性引擎，节点终态时产出 stability_trend_snapshot 行.
+   */
   @Getter
   @Column(name = "repeat_count", nullable = false)
   @JsonProperty("node_repeat_count")
   @Min(value = 1L)
+  @Max(value = 100L)
   private int repeatCount = 1;
 
   @Getter
