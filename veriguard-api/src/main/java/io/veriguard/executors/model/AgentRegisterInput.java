@@ -5,6 +5,8 @@ import io.veriguard.database.model.Executor;
 import io.veriguard.helper.AgentHelper;
 import io.veriguard.utils.mapper.EndpointMapper;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -28,6 +30,9 @@ public class AgentRegisterInput {
   private String installationMode;
   private String installationDirectory;
   private String serviceName;
+
+  /** B-ii PR-A: Agent 启动时通过配置文件声明的能力标签列表。未上报则为空。 */
+  private List<String> capabilities = new ArrayList<>();
 
   public void setMacAddresses(String[] macAddresses) {
     this.macAddresses = EndpointMapper.setMacAddresses(macAddresses);

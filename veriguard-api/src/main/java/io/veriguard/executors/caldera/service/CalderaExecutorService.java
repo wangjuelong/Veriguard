@@ -190,6 +190,7 @@ public class CalderaExecutorService implements Runnable {
     agent.setProcessName(input.getProcessName());
     agent.setLastSeen(input.getLastSeen());
     agent.setExternalReference(input.getExternalReference());
+    agent.setCapabilities(input.getCapabilities());
     clearAbilityForAgent(agent);
   }
 

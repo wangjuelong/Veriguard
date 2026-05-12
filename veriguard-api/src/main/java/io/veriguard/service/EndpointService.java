@@ -567,6 +567,7 @@ public class EndpointService {
     agent.setAsset(endpoint);
     agent.setLastSeen(input.getLastSeen());
     agent.setExternalReference(input.getExternalReference());
+    agent.setCapabilities(input.getCapabilities());
     // For Veriguard agent
     agent.setVersion(input.getAgentVersion());
   }
