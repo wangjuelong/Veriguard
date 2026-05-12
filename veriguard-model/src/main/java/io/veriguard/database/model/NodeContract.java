@@ -6,15 +6,21 @@ import static lombok.AccessLevel.NONE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLHStoreType;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
 import io.veriguard.database.converter.ContentConverter;
+import io.veriguard.database.model.contract.DefenseLayer;
+import io.veriguard.database.model.contract.NetworkProtocolFamily;
+import io.veriguard.database.model.contract.SoftwareCategory;
+import io.veriguard.database.model.contract.TargetOs;
 import io.veriguard.helper.MonoIdSerializer;
 import io.veriguard.helper.MultiIdListSerializer;
 import io.veriguard.helper.MultiIdSetSerializer;
@@ -178,6 +184,47 @@ public class NodeContract implements Base {
   @JsonProperty("injector_contract_import_available")
   @Queryable(filterable = true)
   private boolean isImportAvailable;
+
+  // -- IPv6 SECURITY VALIDATION FIELDS (A3) --
+
+  @Column(name = "injector_contract_software_category")
+  @Enumerated(EnumType.STRING)
+  @JsonProperty("injector_contract_software_category")
+  @Queryable(filterable = true)
+  @Nullable
+  private SoftwareCategory softwareCategory;
+
+  @Column(name = "injector_contract_defense_layer")
+  @Enumerated(EnumType.STRING)
+  @JsonProperty("injector_contract_defense_layer")
+  @Queryable(filterable = true)
+  @Nullable
+  private DefenseLayer defenseLayer;
+
+  @Column(name = "injector_contract_network_protocol_family")
+  @Enumerated(EnumType.STRING)
+  @JsonProperty("injector_contract_network_protocol_family")
+  @Queryable(filterable = true)
+  @Nullable
+  private NetworkProtocolFamily networkProtocolFamily;
+
+  @Column(name = "injector_contract_target_os")
+  @Enumerated(EnumType.STRING)
+  @JsonProperty("injector_contract_target_os")
+  @Queryable(filterable = true)
+  @Nullable
+  private TargetOs targetOs;
+
+  @Column(name = "injector_contract_network_dependent")
+  @JsonProperty("injector_contract_network_dependent")
+  @Queryable(filterable = true)
+  private boolean networkDependent = false;
+
+  @Type(JsonType.class)
+  @Column(name = "injector_contract_rollback_steps", columnDefinition = "jsonb")
+  @JsonProperty("injector_contract_rollback_steps")
+  @Nullable
+  private JsonNode rollbackSteps;
 
   @Getter(onMethod_ = @JsonIgnore)
   @Transient
