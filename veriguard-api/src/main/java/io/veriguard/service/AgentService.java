@@ -1,5 +1,7 @@
 package io.veriguard.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AgentRepository;
 import jakarta.persistence.EntityManager;
@@ -102,5 +104,29 @@ public class AgentService {
             cb.selectCase()
                 .when(cb.and(cb.isNull(root.get("parent")), cb.equal(root.get(field), value)), 1))
         .alias(alias);
+  }
+
+  private static final ObjectMapper CAPABILITY_JSON_MAPPER = new ObjectMapper();
+
+  /**
+   * 查询声明了指定 capability 的 Agent 列表（B-ii PR-A）.
+   *
+   * <p>null / 空 / 仅空白字符的 capability 返回空列表且不查询数据库（short-circuit）. 否则构造单元素 JSON 数组字符串（如 {@code
+   * ["http_attack"]}）传入 {@link AgentRepository#findByCapability(String)}，通过 PostgreSQL JSONB
+   * containment 运算符 {@code @>} 匹配数组中包含此元素的 Agent.
+   *
+   * @param capability capability 标签名（如 command_exec / http_attack / pcap_replay）
+   * @return 命中的 Agent 列表（保持 repository 返回顺序）
+   */
+  public List<Agent> selectAgentsForCapability(String capability) {
+    if (capability == null || capability.isBlank()) {
+      return List.of();
+    }
+    try {
+      String capabilityJson = CAPABILITY_JSON_MAPPER.writeValueAsString(List.of(capability));
+      return agentRepository.findByCapability(capabilityJson);
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException("Failed to serialize capability to JSON: " + capability, e);
+    }
   }
 }
