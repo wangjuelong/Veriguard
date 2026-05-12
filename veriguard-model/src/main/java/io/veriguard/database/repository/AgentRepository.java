@@ -59,11 +59,10 @@ public interface AgentRepository
   /**
    * 查询声明了指定 capability 的 Agent 列表（B-ii PR-A）.
    *
-   * <p>JSONB 数组包含查询：matches 任何 capabilities 包含 {@code capability} 的 Agent.
-   * 使用 PostgreSQL JSONB {@code @>} 容器运算符判断 string element 是否存在于 array.
+   * <p>JSONB 数组包含查询：matches 任何 capabilities 包含 {@code capability} 的 Agent. 使用 PostgreSQL JSONB
+   * {@code @>} 容器运算符判断 string element 是否存在于 array.
    *
-   * @param capabilityJson JSON 数组字符串（如 {@code ["http_attack"]}），由 service 层
-   *                       构造，避免在 SQL 中拼接用户输入
+   * @param capabilityJson JSON 数组字符串（如 {@code ["http_attack"]}），由 service 层 构造，避免在 SQL 中拼接用户输入
    */
   @Query(
       value =
