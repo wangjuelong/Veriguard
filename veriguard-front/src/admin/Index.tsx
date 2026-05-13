@@ -47,6 +47,7 @@ const CombinationsList = lazy(() => import('./components/combination/Combination
 const CombinationRunCanvas = lazy(() => import('./components/combination/CombinationRunCanvas'));
 const CoverageBaselinesList = lazy(() => import('./components/coverage/CoverageBaselinesList'));
 const CoverageRunCanvas = lazy(() => import('./components/coverage/CoverageRunCanvas'));
+const CoverageRunDetailView = lazy(() => import('./components/coverage/CoverageRunDetailView'));
 const MonitoringJobsList = lazy(() => import('./components/monitoring/MonitoringJobsList'));
 const MonitoringTrendView = lazy(() => import('./components/monitoring/MonitoringTrendView'));
 const IndexSettings = lazy(() => import('./components/settings/Index'));
@@ -288,6 +289,19 @@ const Index = () => {
                     subject: SUBJECTS.PLATFORM_SETTINGS,
                   }]}
                   Component={errorWrapper(CoverageRunCanvas)()}
+                />
+              )}
+            />
+            {/* PR C3 follow-up: 单 run 直链详情（被监控历史表 / 通知中心引用） */}
+            <Route
+              path="coverage/runs/:id"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.PLATFORM_SETTINGS,
+                  }]}
+                  Component={errorWrapper(CoverageRunDetailView)()}
                 />
               )}
             />
