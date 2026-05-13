@@ -104,17 +104,21 @@ public class AttackCombinationApi {
   public AttackCombinationRunOutput createRun(
       @Valid @RequestBody CreateRunBody body,
       @RequestParam(value = "auto_start", defaultValue = "true") boolean autoStart) {
-    return runService.create(
-        new CreateRunRequest(
-            body.name(),
-            body.baseAttackTypes(),
-            body.bypassDimensionIds(),
-            body.assetIds(),
-            body.rateLimitPerSecond(),
-            body.concurrency(),
-            body.maxRetries(),
-            body.timeoutHours()),
-        autoStart);
+    try {
+      return runService.create(
+          new CreateRunRequest(
+              body.name(),
+              body.baseAttackTypes(),
+              body.bypassDimensionIds(),
+              body.assetIds(),
+              body.rateLimitPerSecond(),
+              body.concurrency(),
+              body.maxRetries(),
+              body.timeoutHours()),
+          autoStart);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
   }
 
   @GetMapping(RUNS_URI)

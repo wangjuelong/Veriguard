@@ -28,6 +28,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+
+// (Transactional retained for the @Transactional(readOnly = true) read methods below)
 
 /**
  * 攻击组合任务（run）业务服务 —— IPv6 安全验证系统 §3.6 ★2 PR D2.
@@ -61,22 +64,24 @@ public class AttackCombinationRunService {
   private final BypassDimensionRepository dimensionRepository;
   private final BaseAttackPayloadCatalog payloadCatalog;
   private final CombinationScheduler scheduler;
+  private final TransactionTemplate transactionTemplate;
 
   public AttackCombinationRunService(
       AttackCombinationRunRepository runRepository,
       AttackCombinationResultRepository resultRepository,
       BypassDimensionRepository dimensionRepository,
       BaseAttackPayloadCatalog payloadCatalog,
-      CombinationScheduler scheduler) {
+      CombinationScheduler scheduler,
+      TransactionTemplate transactionTemplate) {
     this.runRepository = runRepository;
     this.resultRepository = resultRepository;
     this.dimensionRepository = dimensionRepository;
     this.payloadCatalog = payloadCatalog;
     this.scheduler = scheduler;
+    this.transactionTemplate = transactionTemplate;
   }
 
   /** 创建任务 + 入 pending 状态 + 默认异步启动. */
-  @Transactional
   public AttackCombinationRunOutput create(CreateRunRequest request, boolean autoStart) {
     validate(request);
 
@@ -95,29 +100,36 @@ public class AttackCombinationRunService {
               + ")");
     }
 
-    int timeoutHours = request.timeoutHours() == null ? 24 : request.timeoutHours();
+    // Persist in its own transaction so the async runner can see it after scheduler.start()
+    String savedId =
+        transactionTemplate.execute(
+            status -> {
+              int timeoutHours = request.timeoutHours() == null ? 24 : request.timeoutHours();
+              AttackCombinationRun run = new AttackCombinationRun();
+              run.setName(request.name());
+              run.setBaseAttackTypes(new ArrayList<>(distinctOrdered(request.baseAttackTypes())));
+              run.setBypassDimensionIds(
+                  new ArrayList<>(distinctOrdered(request.bypassDimensionIds())));
+              run.setAssetIds(new ArrayList<>(distinctOrdered(request.assetIds())));
+              run.setStatus(AttackCombinationRunStatus.pending);
+              run.setTotalCombinations(totalCombinations);
+              run.setTotalResults(totalResults);
+              run.setRateLimitPerSecond(
+                  request.rateLimitPerSecond() == null ? 100 : request.rateLimitPerSecond());
+              run.setConcurrency(request.concurrency() == null ? 16 : request.concurrency());
+              run.setMaxRetries(request.maxRetries() == null ? 3 : request.maxRetries());
+              run.setTimeoutHours(timeoutHours);
+              run.setExpiresAt(Instant.now().plus(timeoutHours, ChronoUnit.HOURS));
+              return runRepository.save(run).getId();
+            });
 
-    AttackCombinationRun run = new AttackCombinationRun();
-    run.setName(request.name());
-    run.setBaseAttackTypes(new ArrayList<>(distinctOrdered(request.baseAttackTypes())));
-    run.setBypassDimensionIds(new ArrayList<>(distinctOrdered(request.bypassDimensionIds())));
-    run.setAssetIds(new ArrayList<>(distinctOrdered(request.assetIds())));
-    run.setStatus(AttackCombinationRunStatus.pending);
-    run.setTotalCombinations(totalCombinations);
-    run.setTotalResults(totalResults);
-    run.setRateLimitPerSecond(
-        request.rateLimitPerSecond() == null ? 100 : request.rateLimitPerSecond());
-    run.setConcurrency(request.concurrency() == null ? 16 : request.concurrency());
-    run.setMaxRetries(request.maxRetries() == null ? 3 : request.maxRetries());
-    run.setTimeoutHours(timeoutHours);
-    run.setExpiresAt(Instant.now().plus(timeoutHours, ChronoUnit.HOURS));
-
-    AttackCombinationRun saved = runRepository.save(run);
     if (autoStart) {
-      scheduler.start(saved.getId());
-      // re-fetch to get updated status (running) before returning
-      saved = runRepository.findById(saved.getId()).orElse(saved);
+      scheduler.start(savedId);
     }
+    AttackCombinationRun saved =
+        runRepository
+            .findById(savedId)
+            .orElseThrow(() -> new IllegalStateException("Just-saved run missing: " + savedId));
     return toOutput(saved);
   }
 

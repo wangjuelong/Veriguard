@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import static java.time.Instant.now;
+
 import java.time.Instant;
 import java.util.UUID;
 import lombok.Getter;
@@ -97,10 +99,12 @@ public class AttackCombinationResult implements Base {
   @CreationTimestamp
   @Column(name = "attack_combination_result_created_at")
   @JsonProperty("attack_combination_result_created_at")
-  private Instant createdAt;
+  @NotNull
+  private Instant createdAt = now();
 
   @UpdateTimestamp
   @Column(name = "attack_combination_result_updated_at")
   @JsonProperty("attack_combination_result_updated_at")
-  private Instant updatedAt;
+  @NotNull
+  private Instant updatedAt = now();
 }
