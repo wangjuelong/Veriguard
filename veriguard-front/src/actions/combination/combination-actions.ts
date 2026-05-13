@@ -11,21 +11,21 @@ const DIMENSIONS_URI = `${COMBINATION_URI}/dimensions`;
 const PREVIEW_URI = `${COMBINATION_URI}/templates/preview`;
 const SEVERITY_CONFIG_URI = `${COMBINATION_URI}/severity-config`;
 
-export type AttackCombinationRunStatus =
-  | 'pending'
-  | 'running'
-  | 'paused'
-  | 'completed'
-  | 'cancelled'
-  | 'failed';
+export type AttackCombinationRunStatus
+  = | 'pending'
+    | 'running'
+    | 'paused'
+    | 'completed'
+    | 'cancelled'
+    | 'failed';
 
-export type AttackCombinationHitState =
-  | 'pending'
-  | 'running'
-  | 'hit'
-  | 'miss'
-  | 'timeout'
-  | 'failed';
+export type AttackCombinationHitState
+  = | 'pending'
+    | 'running'
+    | 'hit'
+    | 'miss'
+    | 'timeout'
+    | 'failed';
 
 export type AttackCombinationClusterDim = 'asset' | 'device';
 
@@ -412,4 +412,3 @@ export const recomputeSeverity = async (
   );
   return response.data as SeverityRecomputeOutput;
 };
-
