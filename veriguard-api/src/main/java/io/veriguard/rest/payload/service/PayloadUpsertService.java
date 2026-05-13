@@ -1,6 +1,7 @@
 package io.veriguard.rest.payload.service;
 
 import static io.veriguard.rest.payload.PayloadUtils.validateArchitecture;
+import static io.veriguard.rest.payload.PayloadUtils.validateWebAttackInput;
 
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AttackPatternRepository;
@@ -58,6 +59,7 @@ public class PayloadUpsertService {
       PayloadUpsertInput input, List<AttackPattern> attackPatterns, Collector collector) {
     PayloadType payloadType = PayloadType.fromString(input.getType());
     validateArchitecture(payloadType.key, input.getExecutionArch());
+    validateWebAttackInput(payloadType, input);
 
     Payload payload = payloadType.getPayloadSupplier().get();
     payloadUtils.copyProperties(input, payload, false);
@@ -94,6 +96,7 @@ public class PayloadUpsertService {
       Collector collector) {
     PayloadType payloadType = PayloadType.fromString(existingPayload.getType());
     validateArchitecture(payloadType.key, input.getExecutionArch());
+    validateWebAttackInput(payloadType, input);
 
     Payload payload = (Payload) Hibernate.unproxy(existingPayload);
     payloadUtils.copyProperties(input, payload, true);

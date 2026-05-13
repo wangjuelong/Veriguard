@@ -115,6 +115,24 @@ public class PayloadUtils {
     }
   }
 
+  /**
+   * Cross-field validation for {@code payload_type=WebAttack}: HTTP method and URL are mandatory.
+   *
+   * <p>No-op for other payload types so existing Command / Executable / etc upserts are not
+   * affected.
+   */
+  public static void validateWebAttackInput(PayloadType payloadType, PayloadUpsertInput input) {
+    if (payloadType != PayloadType.WEB_ATTACK) {
+      return;
+    }
+    if (input.getMethod() == null || input.getMethod().isBlank()) {
+      throw new BadRequestException("WebAttack payload requires web_request_method.");
+    }
+    if (input.getUrl() == null || input.getUrl().isBlank()) {
+      throw new BadRequestException("WebAttack payload requires web_request_url.");
+    }
+  }
+
   public <T extends Payload> void duplicateCommonProperties(
       @NotNull final T origin, @NotNull T duplicate) {
     BeanUtils.copyProperties(

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 import lombok.Data;
 
+// PR B7: WebAttack 子类型字段（method / url / body / headers / cookies / expected_*）
+
 @Data
 public class PayloadUpsertInput {
   @NotBlank(message = MANDATORY_MESSAGE)
@@ -74,6 +76,45 @@ public class PayloadUpsertInput {
 
   @JsonProperty("dns_resolution_hostname")
   private String hostname;
+
+  // -- PR B7: WebAttack subtype fields --
+  // Field names must match WebAttackPayload getters/setters so BeanUtils.copyProperties
+  // (PayloadUtils.copyProperties) auto-binds them. Service layer enforces method/url presence
+  // when payload_type == "WebAttack".
+
+  @JsonProperty("web_request_method")
+  @Schema(nullable = true, description = "HTTP method; required when payload_type=WebAttack")
+  private String method;
+
+  @JsonProperty("web_request_url")
+  @Schema(nullable = true, description = "Target URL; required when payload_type=WebAttack")
+  private String url;
+
+  @JsonProperty("web_request_body")
+  @Schema(nullable = true)
+  private String body;
+
+  @JsonProperty("web_request_body_type")
+  @Schema(nullable = true)
+  private String bodyType;
+
+  @JsonProperty("web_request_timeout_seconds")
+  @Schema(nullable = true)
+  private Integer timeoutSeconds;
+
+  @JsonProperty("web_request_cookies")
+  @Schema(nullable = true, description = "Raw Cookie header (e.g. \"a=1; b=2\")")
+  private String cookies;
+
+  @JsonProperty("web_request_headers")
+  private List<WebRequestHeaderEntry> headers = new ArrayList<>();
+
+  @JsonProperty("expected_status_codes")
+  private List<Integer> expectedStatusCodes = new ArrayList<>();
+
+  @JsonProperty("expected_body_regex")
+  @Schema(nullable = true)
+  private String expectedBodyRegex;
 
   @JsonProperty("payload_arguments")
   private List<PayloadArgument> arguments;

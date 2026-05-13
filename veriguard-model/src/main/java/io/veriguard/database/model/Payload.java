@@ -47,7 +47,8 @@ import org.hibernate.annotations.*;
       Executable.class,
       FileDrop.class,
       DnsResolution.class,
-      NetworkTraffic.class
+      NetworkTraffic.class,
+      WebAttackPayload.class
     },
     discriminatorMapping = {
       @DiscriminatorMapping(value = Command.COMMAND_TYPE, schema = Command.class),
@@ -58,7 +59,10 @@ import org.hibernate.annotations.*;
           schema = DnsResolution.class),
       @DiscriminatorMapping(
           value = NetworkTraffic.NETWORK_TRAFFIC_TYPE,
-          schema = NetworkTraffic.class)
+          schema = NetworkTraffic.class),
+      @DiscriminatorMapping(
+          value = WebAttackPayload.WEB_ATTACK_TYPE,
+          schema = WebAttackPayload.class)
     })
 @Grantable(Grant.GRANT_RESOURCE_TYPE.PAYLOAD)
 public class Payload implements GrantableBase {

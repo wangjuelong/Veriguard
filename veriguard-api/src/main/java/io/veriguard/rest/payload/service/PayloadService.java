@@ -282,6 +282,12 @@ public class PayloadService {
         payloadUtils.duplicateCommonProperties(originNetworkTraffic, duplicateNetworkTraffic);
         yield duplicateNetworkTraffic;
       }
+      case WEB_ATTACK -> {
+        WebAttackPayload originWebAttack = (WebAttackPayload) Hibernate.unproxy(originalPayload);
+        WebAttackPayload duplicateWebAttack = new WebAttackPayload();
+        payloadUtils.duplicateCommonProperties(originWebAttack, duplicateWebAttack);
+        yield duplicateWebAttack;
+      }
     };
   }
 
