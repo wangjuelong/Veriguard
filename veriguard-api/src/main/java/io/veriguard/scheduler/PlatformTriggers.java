@@ -108,4 +108,34 @@ public class PlatformTriggers {
         .withSchedule(cronSchedule("0 0/5 * * * ?"))
         .build();
   }
+
+  /**
+   * IPv6 安全验证系统 §3.2 PR C4 —— 边界策略监控调度（每分钟 tick）
+   *
+   * @return the trigger
+   */
+  @Bean
+  @Profile("!test")
+  public Trigger boundaryMonitoringTrigger() {
+    return newTrigger()
+        .forJob(this.platformJobs.getBoundaryMonitoringJob())
+        .withIdentity(io.veriguard.scheduler.jobs.BoundaryMonitoringJob.TRIGGER_NAME)
+        .withSchedule(cronSchedule("0 0/1 * * * ?"))
+        .build();
+  }
+
+  /**
+   * IPv6 安全验证系统 §3.2 PR C4 —— 监控历史回填扫描（每分钟）
+   *
+   * @return the trigger
+   */
+  @Bean
+  @Profile("!test")
+  public Trigger monitoringHistoryUpdaterTrigger() {
+    return newTrigger()
+        .forJob(this.platformJobs.getMonitoringHistoryUpdaterJob())
+        .withIdentity(io.veriguard.scheduler.jobs.MonitoringHistoryUpdaterJob.TRIGGER_NAME)
+        .withSchedule(cronSchedule("0 0/1 * * * ?"))
+        .build();
+  }
 }
