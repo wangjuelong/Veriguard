@@ -60,6 +60,7 @@ class ClusterAnalyzerTest {
   @Mock BypassDimensionRepository dimensionRepository;
   @Mock AssetRepository assetRepository;
   @Mock TransactionTemplate transactionTemplate;
+  @Mock io.veriguard.combination.severity.SeverityClassifier severityClassifier;
 
   private DeviceKeyExtractor deviceKeyExtractor;
   private ClusterAnalyzer analyzer;
@@ -76,6 +77,7 @@ class ClusterAnalyzerTest {
             assetRepository,
             deviceKeyExtractor,
             transactionTemplate,
+            severityClassifier,
             /*payloadSamplesPerCluster=*/ 5);
 
     // TransactionTemplate.executeWithoutResult takes Consumer<TransactionStatus>: run inline.

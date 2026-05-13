@@ -1,6 +1,7 @@
 package io.veriguard.rest.attack_combination;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +117,12 @@ public final class AttackCombinationDtos {
           List<Map<String, Object>> topBypassDimensions,
       @JsonProperty("attack_combination_cluster_computed_at") Instant computedAt,
       @JsonProperty("attack_combination_cluster_created_at") Instant createdAt,
-      @JsonProperty("attack_combination_cluster_updated_at") Instant updatedAt) {}
+      @JsonProperty("attack_combination_cluster_updated_at") Instant updatedAt,
+      // PR D4: 分级输出（severityLevel/label/color 在 cluster 尚未被分级时返回 null）
+      @JsonProperty("attack_combination_cluster_severity_score") BigDecimal severityScore,
+      @JsonProperty("attack_combination_cluster_severity_level") String severityLevel,
+      @JsonProperty("attack_combination_cluster_severity_label") String severityLabel,
+      @JsonProperty("attack_combination_cluster_severity_color") String severityColor) {}
 
   public record AttackCombinationClusterPageOutput(
       @JsonProperty("content") List<AttackCombinationClusterOutput> content,
@@ -129,4 +135,32 @@ public final class AttackCombinationDtos {
       @JsonProperty("attack_combination_run_id") String runId,
       @JsonProperty("cluster_recompute_status") String status,
       @JsonProperty("cluster_recompute_job_id") String jobId) {}
+
+  // ============================================================
+  // PR D4 — 分级配置 + 重算 DTO
+  // ============================================================
+
+  public record SeverityConfigOutput(
+      @JsonProperty("severity_config_id") String id,
+      @JsonProperty("severity_config_miss_count_weight") BigDecimal missCountWeight,
+      @JsonProperty("severity_config_attack_type_weight") BigDecimal attackTypeWeight,
+      @JsonProperty("severity_config_asset_sensitivity_weight") BigDecimal assetSensitivityWeight,
+      @JsonProperty("severity_config_critical_threshold") BigDecimal criticalThreshold,
+      @JsonProperty("severity_config_high_threshold") BigDecimal highThreshold,
+      @JsonProperty("severity_config_medium_threshold") BigDecimal mediumThreshold,
+      @JsonProperty("severity_config_critical_label") String criticalLabel,
+      @JsonProperty("severity_config_high_label") String highLabel,
+      @JsonProperty("severity_config_medium_label") String mediumLabel,
+      @JsonProperty("severity_config_info_label") String infoLabel,
+      @JsonProperty("severity_config_critical_color") String criticalColor,
+      @JsonProperty("severity_config_high_color") String highColor,
+      @JsonProperty("severity_config_medium_color") String mediumColor,
+      @JsonProperty("severity_config_info_color") String infoColor,
+      @JsonProperty("severity_config_created_at") Instant createdAt,
+      @JsonProperty("severity_config_updated_at") Instant updatedAt) {}
+
+  public record SeverityRecomputeOutput(
+      @JsonProperty("attack_combination_run_id") String runId,
+      @JsonProperty("severity_recompute_status") String status,
+      @JsonProperty("severity_recompute_job_id") String jobId) {}
 }
