@@ -89,7 +89,7 @@
     {"name": "noise.tab", "category": "noise", "transform_type": "noise_surround", "transform_config": {"prefix": "\t", "suffix": "\t"}, "description": "tab 前后包裹"},
     {"name": "noise.crlf", "category": "noise", "transform_type": "noise_surround", "transform_config": {"prefix": "\r\n", "suffix": "\r\n"}, "description": "CRLF 前后包裹"},
     {"name": "noise.lf", "category": "noise", "transform_type": "noise_surround", "transform_config": {"prefix": "\n", "suffix": "\n"}, "description": "LF 前后包裹"},
-    {"name": "noise.null_byte", "category": "noise", "transform_type": "noise_surround", "transform_config": {"prefix": "\u0000", "suffix": "\u0000"}, "description": "null byte 前后包裹"},
+    {"name": "noise.null_byte", "category": "noise", "transform_type": "noise_surround", "transform_config": {"prefix": "%00", "suffix": "%00"}, "description": "null byte 前后包裹（以 %00 字面形式存储以兼容 PostgreSQL JSONB）"},
     {"name": "noise.bell", "category": "noise", "transform_type": "noise_surround", "transform_config": {"prefix": "\u0007", "suffix": "\u0007"}, "description": "ASCII bell (0x07)"},
     {"name": "noise.vertical_tab", "category": "noise", "transform_type": "noise_surround", "transform_config": {"prefix": "\u000b", "suffix": "\u000b"}, "description": "垂直 tab (0x0B)"},
     {"name": "noise.form_feed", "category": "noise", "transform_type": "noise_surround", "transform_config": {"prefix": "\u000c", "suffix": "\u000c"}, "description": "form feed (0x0C)"},
