@@ -42,24 +42,33 @@ public interface MonitoringRunHistoryRepository extends JpaRepository<Monitoring
       @Param("from") Instant from,
       @Param("to") Instant to);
 
-  /** 时间窗 + status 过滤分页（明细）. */
-  @Query(
-      value =
-          "select h from MonitoringRunHistory h "
-              + "where h.jobId = :jobId "
-              + "and (:from is null or h.scheduledAt >= :from) "
-              + "and (:to is null or h.scheduledAt < :to) "
-              + "and (:status is null or h.status = :status)",
-      countQuery =
-          "select count(h) from MonitoringRunHistory h "
-              + "where h.jobId = :jobId "
-              + "and (:from is null or h.scheduledAt >= :from) "
-              + "and (:to is null or h.scheduledAt < :to) "
-              + "and (:status is null or h.status = :status)")
-  Page<MonitoringRunHistory> findFilteredByJobId(
-      @Param("jobId") String jobId,
-      @Param("from") Instant from,
-      @Param("to") Instant to,
-      @Param("status") MonitoringRunStatus status,
-      Pageable pageable);
+  // 时间窗 + status 过滤分页（明细）—— 拆分为多个 finder 避免 PG 「could not determine
+  // data type of parameter」（Hibernate 6 在 :param is null 时不发送 type hint）。
+  Page<MonitoringRunHistory> findAllByJobId(String jobId, Pageable pageable);
+
+  Page<MonitoringRunHistory> findAllByJobIdAndStatus(
+      String jobId, MonitoringRunStatus status, Pageable pageable);
+
+  Page<MonitoringRunHistory> findAllByJobIdAndScheduledAtGreaterThanEqualAndScheduledAtLessThan(
+      String jobId, Instant from, Instant to, Pageable pageable);
+
+  Page<MonitoringRunHistory>
+      findAllByJobIdAndStatusAndScheduledAtGreaterThanEqualAndScheduledAtLessThan(
+          String jobId,
+          MonitoringRunStatus status,
+          Instant from,
+          Instant to,
+          Pageable pageable);
+
+  Page<MonitoringRunHistory> findAllByJobIdAndScheduledAtGreaterThanEqual(
+      String jobId, Instant from, Pageable pageable);
+
+  Page<MonitoringRunHistory> findAllByJobIdAndStatusAndScheduledAtGreaterThanEqual(
+      String jobId, MonitoringRunStatus status, Instant from, Pageable pageable);
+
+  Page<MonitoringRunHistory> findAllByJobIdAndScheduledAtLessThan(
+      String jobId, Instant to, Pageable pageable);
+
+  Page<MonitoringRunHistory> findAllByJobIdAndStatusAndScheduledAtLessThan(
+      String jobId, MonitoringRunStatus status, Instant to, Pageable pageable);
 }

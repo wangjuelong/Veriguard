@@ -156,15 +156,54 @@ public class MonitoringService {
     loadJob(jobId);
     Pageable pageable =
         PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "scheduledAt"));
-    Page<MonitoringRunHistory> p =
-        historyRepository.findFilteredByJobId(
-            jobId, from.orElse(null), to.orElse(null), status.orElse(null), pageable);
+    Page<MonitoringRunHistory> p = dispatchHistoryQuery(jobId, from, to, status, pageable);
     return new MonitoringHistoryPageOutput(
         p.getContent().stream().map(MonitoringService::toHistoryOutput).toList(),
         p.getNumber(),
         p.getSize(),
         p.getTotalElements(),
         p.getTotalPages());
+  }
+
+  /** Dispatch 8 种 (from?, to?, status?) 组合到对应 finder（避免 :param is null 的 PG 问题）. */
+  private Page<MonitoringRunHistory> dispatchHistoryQuery(
+      String jobId,
+      Optional<Instant> from,
+      Optional<Instant> to,
+      Optional<MonitoringRunStatus> status,
+      Pageable pageable) {
+    boolean hasFrom = from.isPresent();
+    boolean hasTo = to.isPresent();
+    boolean hasStatus = status.isPresent();
+    if (hasFrom && hasTo && hasStatus) {
+      return historyRepository
+          .findAllByJobIdAndStatusAndScheduledAtGreaterThanEqualAndScheduledAtLessThan(
+              jobId, status.get(), from.get(), to.get(), pageable);
+    }
+    if (hasFrom && hasTo) {
+      return historyRepository
+          .findAllByJobIdAndScheduledAtGreaterThanEqualAndScheduledAtLessThan(
+              jobId, from.get(), to.get(), pageable);
+    }
+    if (hasFrom && hasStatus) {
+      return historyRepository.findAllByJobIdAndStatusAndScheduledAtGreaterThanEqual(
+          jobId, status.get(), from.get(), pageable);
+    }
+    if (hasTo && hasStatus) {
+      return historyRepository.findAllByJobIdAndStatusAndScheduledAtLessThan(
+          jobId, status.get(), to.get(), pageable);
+    }
+    if (hasFrom) {
+      return historyRepository.findAllByJobIdAndScheduledAtGreaterThanEqual(
+          jobId, from.get(), pageable);
+    }
+    if (hasTo) {
+      return historyRepository.findAllByJobIdAndScheduledAtLessThan(jobId, to.get(), pageable);
+    }
+    if (hasStatus) {
+      return historyRepository.findAllByJobIdAndStatus(jobId, status.get(), pageable);
+    }
+    return historyRepository.findAllByJobId(jobId, pageable);
   }
 
   // ============================================================
