@@ -86,4 +86,30 @@ public class PlatformJobDefinitions {
         .storeDurably()
         .build();
   }
+
+  /**
+   * IPv6 安全验证系统 §3.2 PR C4 —— 边界策略常态化监控调度 job（每分钟 tick）.
+   *
+   * @return the job
+   */
+  @Bean
+  public JobDetail getBoundaryMonitoringJob() {
+    return JobBuilder.newJob(BoundaryMonitoringJob.class)
+        .withIdentity(BoundaryMonitoringJob.JOB_NAME)
+        .storeDurably()
+        .build();
+  }
+
+  /**
+   * IPv6 安全验证系统 §3.2 PR C4 —— 监控历史回填 job（每分钟扫描 triggered 状态）.
+   *
+   * @return the job
+   */
+  @Bean
+  public JobDetail getMonitoringHistoryUpdaterJob() {
+    return JobBuilder.newJob(MonitoringHistoryUpdaterJob.class)
+        .withIdentity(MonitoringHistoryUpdaterJob.JOB_NAME)
+        .storeDurably()
+        .build();
+  }
 }

@@ -1,4 +1,4 @@
-import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, GpsFixedOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, ShieldOutlined, SubscriptionsOutlined, TimelineOutlined, TuneOutlined, VerifiedUserOutlined, ViewModuleOutlined } from '@mui/icons-material';
+import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, GpsFixedOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MonitorHeartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, ShieldOutlined, SubscriptionsOutlined, TimelineOutlined, TuneOutlined, VerifiedUserOutlined, ViewModuleOutlined } from '@mui/icons-material';
 import { Binoculars, NewspaperVariantMultipleOutline, SecurityNetwork, SelectGroup, Target } from 'mdi-material-ui';
 import { useContext } from 'react';
 
@@ -178,6 +178,12 @@ const LeftBar = () => {
           path: `/admin/coverage`,
           icon: () => (<GpsFixedOutlined />),
           label: '边界覆盖度',
+          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
+        },
+        {
+          path: `/admin/monitoring`,
+          icon: () => (<MonitorHeartOutlined />),
+          label: '策略监控',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
         },
         {
