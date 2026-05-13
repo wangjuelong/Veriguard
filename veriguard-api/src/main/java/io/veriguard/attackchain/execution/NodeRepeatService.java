@@ -7,10 +7,11 @@ import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_STATUS
 import io.veriguard.database.model.AttackChainNodeExpectation.EXPECTATION_TYPE;
 import io.veriguard.database.model.AttackChainRun;
 import io.veriguard.database.model.ExecutionMode;
+import io.veriguard.stability.StabilityCalculator;
 import java.time.Instant;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,11 +34,27 @@ import org.springframework.stereotype.Service;
  * 调用本服务的 {@link #handleSettled(AttackChainNode)}.
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class NodeRepeatService {
 
   private final NodeRepeatPlanner planner;
+
+  /**
+   * 稳定性引擎（PR C5 / 招标 §3.3 + §4.2）—— 节点结算后聚合命中率写快照. 用 nullable 字段 + 多构造支持既有 9 个 NodeRepeatServiceTest
+   * 单测（用 {@code new NodeRepeatService(planner)}）继续工作；生产路径由 Spring 通过主构造注入.
+   */
+  private final StabilityCalculator stabilityCalculator;
+
+  @Autowired
+  public NodeRepeatService(NodeRepeatPlanner planner, StabilityCalculator stabilityCalculator) {
+    this.planner = planner;
+    this.stabilityCalculator = stabilityCalculator;
+  }
+
+  /** 测试便捷构造：未注入稳定性引擎时 hook 安全跳过. */
+  public NodeRepeatService(NodeRepeatPlanner planner) {
+    this(planner, null);
+  }
 
   /**
    * 节点结算后调用：决定下一步动作并应用 REPEAT 路径的 side-effects（推进迭代号、清空 status、设下次起始时刻）。
@@ -62,7 +79,30 @@ public class NodeRepeatService {
       case FINALIZE, FINALIZE_BLOCKED ->
           log.debug("Node {} {} ({})", node.getId(), decision.action(), decision.reason());
     }
+    onSettledForStability(node, decision);
     return decision;
+  }
+
+  /**
+   * PR C5: 稳定性引擎 hook —— FINALIZE / FINALIZE_BLOCKED 终态时让 StabilityCalculator 写一行快照. 仅当节点 {@code
+   * repeat_count > 1} 时启用（由 calculator 内部判断）；calculator 未注入（单测路径）时静默跳过.
+   */
+  private void onSettledForStability(
+      AttackChainNode node, NodeRepeatPlanner.Decision decision) {
+    if (stabilityCalculator == null) {
+      return;
+    }
+    try {
+      stabilityCalculator.onNodeSettled(node, decision);
+    } catch (Exception e) {
+      // 稳定性快照失败不影响 repeat 主路径（fail-fast 但隔离）
+      log.error(
+          "Stability snapshot failed for node {} after {}: {}",
+          node.getId(),
+          decision.action(),
+          e.getMessage(),
+          e);
+    }
   }
 
   /**

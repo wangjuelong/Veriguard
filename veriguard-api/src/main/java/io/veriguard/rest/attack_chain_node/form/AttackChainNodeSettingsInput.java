@@ -2,6 +2,7 @@ package io.veriguard.rest.attack_chain_node.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import lombok.Data;
@@ -32,7 +33,13 @@ public class AttackChainNodeSettingsInput {
   @JsonProperty("node_validation_parameter_set_id")
   private UUID validationParameterSetId;
 
+  /**
+   * 重复执行次数（PR C5 / 招标 §3.3 ★1 + §4.2 ★3 稳定性引擎）.
+   *
+   * <p>N=1 → 普通验证；2 ≤ N ≤ 100 → 启用稳定性引擎，节点终态时产出 stability_trend_snapshot 行.
+   */
   @Min(value = 1L)
+  @Max(value = 100L)
   @JsonProperty("node_repeat_count")
   private int repeatCount = 1;
 
