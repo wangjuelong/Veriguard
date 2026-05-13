@@ -169,7 +169,7 @@ const MonitoringHistoryTable = ({ jobId }: MonitoringHistoryTableProps) => {
                           }}
                           onClick={() =>
                             navigate(
-                              `/admin/coverage/baselines/${h.monitoring_run_history_coverage_run_id}`,
+                              `/admin/coverage/runs/${h.monitoring_run_history_coverage_run_id}`,
                             )}
                         >
                           {h.monitoring_run_history_coverage_run_id.slice(0, 8)}
