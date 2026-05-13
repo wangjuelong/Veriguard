@@ -10,6 +10,26 @@ const RUNS_URI = `${COMBINATION_URI}/runs`;
 const DIMENSIONS_URI = `${COMBINATION_URI}/dimensions`;
 const PREVIEW_URI = `${COMBINATION_URI}/templates/preview`;
 const SEVERITY_CONFIG_URI = `${COMBINATION_URI}/severity-config`;
+const BASE_ATTACK_TYPES_URI = `${COMBINATION_URI}/base-attack-types`;
+
+// PR B5 base_attack_types 类别（与 BaseAttackTypeCategory.java 对齐）.
+export type BaseAttackTypeCategory
+  = | 'web_injection'
+    | 'web_business'
+    | 'credential'
+    | 'network_protocol'
+    | 'c2'
+    | 'persistence'
+    | 'privilege_escalation'
+    | 'discovery'
+    | 'exploit_cve';
+
+// PR B5 base_attack_types 目标层（与 BaseAttackTypeTargetLayer.java 对齐）.
+export type BaseAttackTypeTargetLayer
+  = | 'boundary'
+    | 'traffic'
+    | 'host'
+    | 'application';
 
 export type AttackCombinationRunStatus
   = | 'pending'
@@ -411,4 +431,57 @@ export const recomputeSeverity = async (
     `${RUNS_URI}/${encodeURIComponent(id)}/severity/recompute`,
   );
   return response.data as SeverityRecomputeOutput;
+};
+
+// ===================== Base Attack Types (PR B5) =====================
+
+export interface BaseAttackTypeOutput {
+  base_attack_type_id: string;
+  base_attack_type_name: string;
+  base_attack_type_category: BaseAttackTypeCategory;
+  base_attack_type_display_label: string;
+  base_attack_type_description: string;
+  base_attack_type_severity_score: number;
+  base_attack_type_default_payload: string;
+  base_attack_type_attack_pattern_id: string | null;
+  base_attack_type_target_layer: BaseAttackTypeTargetLayer;
+  base_attack_type_created_at: string;
+  base_attack_type_updated_at: string;
+}
+
+export interface BaseAttackTypePageOutput {
+  content: BaseAttackTypeOutput[];
+  page: number;
+  size: number;
+  total_elements: number;
+  total_pages: number;
+}
+
+export interface ListBaseAttackTypesQuery {
+  category?: BaseAttackTypeCategory;
+  target_layer?: BaseAttackTypeTargetLayer;
+  page?: number;
+  size?: number;
+}
+
+export const listBaseAttackTypes = async (
+  query: ListBaseAttackTypesQuery = {},
+): Promise<BaseAttackTypePageOutput> => {
+  const qs = buildQueryString({
+    category: query.category,
+    target_layer: query.target_layer,
+    page: query.page,
+    size: query.size,
+  });
+  const response = await simpleCall(`${BASE_ATTACK_TYPES_URI}${qs}`);
+  return response.data as BaseAttackTypePageOutput;
+};
+
+export const getBaseAttackType = async (
+  name: string,
+): Promise<BaseAttackTypeOutput> => {
+  const response = await simpleCall(
+    `${BASE_ATTACK_TYPES_URI}/${encodeURIComponent(name)}`,
+  );
+  return response.data as BaseAttackTypeOutput;
 };

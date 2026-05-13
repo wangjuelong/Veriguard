@@ -13,58 +13,7 @@ import {
   createCombinationRun,
   fetchBypassDimensions,
 } from '../../../actions/combination/combination-actions';
-
-// 基础攻击类型 —— 与后端 §3.5 attack_category 对齐. 选项硬编码避免动态枚举接口.
-// 当后端新增类型时回到此列表追加（KISS：组合任务不需要客户端自动发现）.
-const BASE_ATTACK_TYPES: ReadonlyArray<{
-  value: string;
-  label: string;
-}> = [
-  {
-    value: 'sql_injection',
-    label: 'SQL 注入',
-  },
-  {
-    value: 'xss',
-    label: 'XSS',
-  },
-  {
-    value: 'xxe',
-    label: 'XXE',
-  },
-  {
-    value: 'ssrf',
-    label: 'SSRF',
-  },
-  {
-    value: 'ssti',
-    label: 'SSTI',
-  },
-  {
-    value: 'command_execution',
-    label: '命令执行',
-  },
-  {
-    value: 'directory_traversal',
-    label: '目录遍历',
-  },
-  {
-    value: 'csrf',
-    label: 'CSRF',
-  },
-  {
-    value: 'weak_credential',
-    label: '弱口令',
-  },
-  {
-    value: 'upload_bypass',
-    label: '上传绕过',
-  },
-  {
-    value: 'oversized_upload',
-    label: '超大文件上传',
-  },
-];
+import BaseAttackTypeSelector from './BaseAttackTypeSelector';
 
 const RATE_LIMIT_MIN = 25;
 const RATE_LIMIT_MAX = 500;
@@ -157,15 +106,6 @@ const CombinationTaskEditor = ({ open, onCancel, onCreated }: Props) => {
 
   const totalCombinations = baseTypes.length * selectedDimensions.size;
   const totalResults = totalCombinations * assetIds.length;
-
-  const toggleBaseType = (value: string) => {
-    setBaseTypes((prev) => {
-      if (prev.includes(value)) {
-        return prev.filter(v => v !== value);
-      }
-      return [...prev, value];
-    });
-  };
 
   const toggleDimension = (id: string) => {
     setSelectedDimensions((prev) => {
@@ -268,21 +208,16 @@ const CombinationTaskEditor = ({ open, onCancel, onCreated }: Props) => {
               基础攻击类型
               {' '}
               <span style={{ color: 'red' }}>*</span>
+              {' '}
+              <Typography component="span" variant="caption" color="text.secondary">
+                （从 base_attack_types 库动态加载，覆盖 ≥ 250 类）
+              </Typography>
             </Typography>
-            <FormGroup row>
-              {BASE_ATTACK_TYPES.map(t => (
-                <FormControlLabel
-                  key={t.value}
-                  control={(
-                    <Checkbox
-                      checked={baseTypes.includes(t.value)}
-                      onChange={() => toggleBaseType(t.value)}
-                    />
-                  )}
-                  label={`${t.label} (${t.value})`}
-                />
-              ))}
-            </FormGroup>
+            <BaseAttackTypeSelector
+              selectedNames={baseTypes}
+              onSelectionChange={setBaseTypes}
+              enabled={open}
+            />
           </Box>
 
           <Box>
