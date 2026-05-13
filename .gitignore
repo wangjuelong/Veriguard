@@ -41,3 +41,6 @@ veriguard-dev/.telemetry.json
 
 ### 技术方案文档（本地参考，不纳入版本控制） ###
 docs/solution/
+
+### Nuclei templates upstream（PR B8 导入源；体积 ~5GB，不纳入版本控制） ###
+datasets/nuclei-templates/
