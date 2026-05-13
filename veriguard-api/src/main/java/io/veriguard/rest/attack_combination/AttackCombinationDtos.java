@@ -163,4 +163,28 @@ public final class AttackCombinationDtos {
       @JsonProperty("attack_combination_run_id") String runId,
       @JsonProperty("severity_recompute_status") String status,
       @JsonProperty("severity_recompute_job_id") String jobId) {}
+
+  // ============================================================
+  // PR B5 — 基础攻击类型库 DTO
+  // ============================================================
+
+  public record BaseAttackTypeOutput(
+      @JsonProperty("base_attack_type_id") String id,
+      @JsonProperty("base_attack_type_name") String name,
+      @JsonProperty("base_attack_type_category") String category,
+      @JsonProperty("base_attack_type_display_label") String displayLabel,
+      @JsonProperty("base_attack_type_description") String description,
+      @JsonProperty("base_attack_type_severity_score") Integer severityScore,
+      @JsonProperty("base_attack_type_default_payload") String defaultPayload,
+      @JsonProperty("base_attack_type_attack_pattern_id") String attackPatternId,
+      @JsonProperty("base_attack_type_target_layer") String targetLayer,
+      @JsonProperty("base_attack_type_created_at") Instant createdAt,
+      @JsonProperty("base_attack_type_updated_at") Instant updatedAt) {}
+
+  public record BaseAttackTypePageOutput(
+      @JsonProperty("content") List<BaseAttackTypeOutput> content,
+      @JsonProperty("page") int page,
+      @JsonProperty("size") int size,
+      @JsonProperty("total_elements") long totalElements,
+      @JsonProperty("total_pages") int totalPages) {}
 }

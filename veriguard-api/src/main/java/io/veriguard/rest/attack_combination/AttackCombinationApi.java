@@ -8,6 +8,8 @@ import io.veriguard.database.model.ResourceType;
 import io.veriguard.database.model.combination.AttackCombinationClusterDim;
 import io.veriguard.database.model.combination.AttackCombinationHitState;
 import io.veriguard.database.model.combination.AttackCombinationRunStatus;
+import io.veriguard.database.model.combination.BaseAttackTypeCategory;
+import io.veriguard.database.model.combination.BaseAttackTypeTargetLayer;
 import io.veriguard.database.model.combination.BypassDimensionCategory;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationClusterOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationClusterPageOutput;
@@ -15,6 +17,8 @@ import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinat
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationResultPageOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationRunOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationRunPageOutput;
+import io.veriguard.rest.attack_combination.AttackCombinationDtos.BaseAttackTypeOutput;
+import io.veriguard.rest.attack_combination.AttackCombinationDtos.BaseAttackTypePageOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.BypassDimensionPageOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.CombinationPreviewOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.SeverityConfigOutput;
@@ -58,21 +62,25 @@ public class AttackCombinationApi {
   public static final String TEMPLATE_PREVIEW_URI = "/api/attack_combination/templates/preview";
   public static final String RUNS_URI = "/api/attack_combination/runs";
   public static final String SEVERITY_CONFIG_URI = "/api/attack_combination/severity-config";
+  public static final String BASE_ATTACK_TYPES_URI = "/api/attack_combination/base-attack-types";
 
   private final AttackCombinationService service;
   private final AttackCombinationRunService runService;
   private final AttackCombinationClusterService clusterService;
   private final SeverityConfigService severityConfigService;
+  private final BaseAttackTypeService baseAttackTypeService;
 
   public AttackCombinationApi(
       AttackCombinationService service,
       AttackCombinationRunService runService,
       AttackCombinationClusterService clusterService,
-      SeverityConfigService severityConfigService) {
+      SeverityConfigService severityConfigService,
+      BaseAttackTypeService baseAttackTypeService) {
     this.service = service;
     this.runService = runService;
     this.clusterService = clusterService;
     this.severityConfigService = severityConfigService;
+    this.baseAttackTypeService = baseAttackTypeService;
   }
 
   @GetMapping(DIMENSIONS_URI)
@@ -304,6 +312,43 @@ public class AttackCombinationApi {
     } catch (IllegalStateException e) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
     }
+  }
+
+  // ============================================================
+  // PR B5 —— 基础攻击类型库（≥ 250 类）端点
+  // ============================================================
+
+  @GetMapping(BASE_ATTACK_TYPES_URI)
+  @Operation(
+      summary = "List base attack types (paged, optional category / target_layer filter)")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public BaseAttackTypePageOutput listBaseAttackTypes(
+      @Parameter(description = "Optional category filter (web_injection / web_business / ...)")
+          @RequestParam(value = "category", required = false)
+          BaseAttackTypeCategory category,
+      @Parameter(description = "Optional target_layer filter (boundary / traffic / host / application)")
+          @RequestParam(value = "target_layer", required = false)
+          BaseAttackTypeTargetLayer targetLayer,
+      @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
+      @RequestParam(value = "size", defaultValue = "50") @Min(1) @Max(500) int size) {
+    try {
+      return baseAttackTypeService.list(
+          Optional.ofNullable(category), Optional.ofNullable(targetLayer), page, size);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+  }
+
+  @GetMapping(BASE_ATTACK_TYPES_URI + "/{name}")
+  @Operation(summary = "Get base attack type detail by name")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public BaseAttackTypeOutput getBaseAttackType(@PathVariable("name") @NotBlank String name) {
+    return baseAttackTypeService
+        .findByName(name)
+        .orElseThrow(
+            () ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Base attack type not found: " + name));
   }
 
   /** 创建任务请求体（snake_case wire 字段）. */
