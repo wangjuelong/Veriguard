@@ -43,6 +43,8 @@ const IndexCustomDashboard = lazy(() => import('./components/workspaces/custom_d
 const Payloads = lazy(() => import('./components/payloads/Payloads'));
 const VeriguardConsole = lazy(() => import('./components/veriguard/VeriguardConsole'));
 const StabilityTrendView = lazy(() => import('./components/stability/StabilityTrendView'));
+const CombinationsList = lazy(() => import('./components/combination/CombinationsList'));
+const CombinationRunCanvas = lazy(() => import('./components/combination/CombinationRunCanvas'));
 const IndexSettings = lazy(() => import('./components/settings/Index'));
 
 const useStyles = makeStyles()(theme => ({ toolbar: theme.mixins.toolbar as CSSObject }));
@@ -232,6 +234,31 @@ const Index = () => {
                     subject: SUBJECTS.ASSESSMENT,
                   }]}
                   Component={errorWrapper(StabilityTrendView)()}
+                />
+              )}
+            />
+            {/* PR D5: 攻击组合引擎（招标 §3.6 ★2） */}
+            <Route
+              path="combinations"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.PLATFORM_SETTINGS,
+                  }]}
+                  Component={errorWrapper(CombinationsList)()}
+                />
+              )}
+            />
+            <Route
+              path="combinations/:id"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.PLATFORM_SETTINGS,
+                  }]}
+                  Component={errorWrapper(CombinationRunCanvas)()}
                 />
               )}
             />
