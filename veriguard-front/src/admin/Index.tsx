@@ -45,6 +45,8 @@ const VeriguardConsole = lazy(() => import('./components/veriguard/VeriguardCons
 const StabilityTrendView = lazy(() => import('./components/stability/StabilityTrendView'));
 const CombinationsList = lazy(() => import('./components/combination/CombinationsList'));
 const CombinationRunCanvas = lazy(() => import('./components/combination/CombinationRunCanvas'));
+const CoverageBaselinesList = lazy(() => import('./components/coverage/CoverageBaselinesList'));
+const CoverageRunCanvas = lazy(() => import('./components/coverage/CoverageRunCanvas'));
 const IndexSettings = lazy(() => import('./components/settings/Index'));
 
 const useStyles = makeStyles()(theme => ({ toolbar: theme.mixins.toolbar as CSSObject }));
@@ -259,6 +261,31 @@ const Index = () => {
                     subject: SUBJECTS.PLATFORM_SETTINGS,
                   }]}
                   Component={errorWrapper(CombinationRunCanvas)()}
+                />
+              )}
+            />
+            {/* PR C3: 边界覆盖度子模块（招标 §3.1 + §4.1） */}
+            <Route
+              path="coverage"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.PLATFORM_SETTINGS,
+                  }]}
+                  Component={errorWrapper(CoverageBaselinesList)()}
+                />
+              )}
+            />
+            <Route
+              path="coverage/baselines/:id"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.PLATFORM_SETTINGS,
+                  }]}
+                  Component={errorWrapper(CoverageRunCanvas)()}
                 />
               )}
             />
