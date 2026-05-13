@@ -73,4 +73,17 @@ public class PlatformJobDefinitions {
         .storeDurably()
         .build();
   }
+
+  /**
+   * IPv6 安全验证系统 §3.6 PR D2 —— 攻击组合任务超时扫描 job
+   *
+   * @return the job
+   */
+  @Bean
+  public JobDetail getCombinationTimeoutJob() {
+    return JobBuilder.newJob(CombinationTimeoutJob.class)
+        .withIdentity(CombinationTimeoutJob.JOB_NAME)
+        .storeDurably()
+        .build();
+  }
 }

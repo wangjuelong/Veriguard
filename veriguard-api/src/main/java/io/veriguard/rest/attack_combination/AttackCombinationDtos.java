@@ -40,4 +40,60 @@ public final class AttackCombinationDtos {
       @JsonProperty("sample_size") int sampleSize,
       @JsonProperty("samples") List<CombinationSampleOutput> samples,
       @JsonProperty("preview_base_payload") String previewBasePayload) {}
+
+  // ============================================================
+  // PR D2 — 任务（run）相关 DTO
+  // ============================================================
+
+  public record AttackCombinationRunOutput(
+      @JsonProperty("attack_combination_run_id") String id,
+      @JsonProperty("attack_combination_run_name") String name,
+      @JsonProperty("attack_combination_run_base_attack_types") List<String> baseAttackTypes,
+      @JsonProperty("attack_combination_run_bypass_dimension_ids") List<String> bypassDimensionIds,
+      @JsonProperty("attack_combination_run_asset_ids") List<String> assetIds,
+      @JsonProperty("attack_combination_run_status") String status,
+      @JsonProperty("attack_combination_run_total_combinations") int totalCombinations,
+      @JsonProperty("attack_combination_run_total_results") int totalResults,
+      @JsonProperty("attack_combination_run_completed_count") int completedCount,
+      @JsonProperty("attack_combination_run_failed_count") int failedCount,
+      @JsonProperty("attack_combination_run_rate_limit_per_second") int rateLimitPerSecond,
+      @JsonProperty("attack_combination_run_concurrency") int concurrency,
+      @JsonProperty("attack_combination_run_max_retries") int maxRetries,
+      @JsonProperty("attack_combination_run_timeout_hours") int timeoutHours,
+      @JsonProperty("attack_combination_run_progress_percent") double progressPercent,
+      @JsonProperty("attack_combination_run_hit_state_counts") Map<String, Long> hitStateCounts,
+      @JsonProperty("attack_combination_run_started_at") Instant startedAt,
+      @JsonProperty("attack_combination_run_completed_at") Instant completedAt,
+      @JsonProperty("attack_combination_run_expires_at") Instant expiresAt,
+      @JsonProperty("attack_combination_run_created_at") Instant createdAt,
+      @JsonProperty("attack_combination_run_updated_at") Instant updatedAt) {}
+
+  public record AttackCombinationRunPageOutput(
+      @JsonProperty("content") List<AttackCombinationRunOutput> content,
+      @JsonProperty("page") int page,
+      @JsonProperty("size") int size,
+      @JsonProperty("total_elements") long totalElements,
+      @JsonProperty("total_pages") int totalPages) {}
+
+  public record AttackCombinationResultOutput(
+      @JsonProperty("attack_combination_result_id") String id,
+      @JsonProperty("attack_combination_result_run_id") String runId,
+      @JsonProperty("attack_combination_result_combination_id") String combinationId,
+      @JsonProperty("attack_combination_result_base_attack_type") String baseAttackType,
+      @JsonProperty("attack_combination_result_bypass_dimension_id") String bypassDimensionId,
+      @JsonProperty("attack_combination_result_asset_id") String assetId,
+      @JsonProperty("attack_combination_result_hit_state") String hitState,
+      @JsonProperty("attack_combination_result_retry_count") int retryCount,
+      @JsonProperty("attack_combination_result_payload_sample") String payloadSample,
+      @JsonProperty("attack_combination_result_error_message") String errorMessage,
+      @JsonProperty("attack_combination_result_executed_at") Instant executedAt,
+      @JsonProperty("attack_combination_result_created_at") Instant createdAt,
+      @JsonProperty("attack_combination_result_updated_at") Instant updatedAt) {}
+
+  public record AttackCombinationResultPageOutput(
+      @JsonProperty("content") List<AttackCombinationResultOutput> content,
+      @JsonProperty("page") int page,
+      @JsonProperty("size") int size,
+      @JsonProperty("total_elements") long totalElements,
+      @JsonProperty("total_pages") int totalPages) {}
 }

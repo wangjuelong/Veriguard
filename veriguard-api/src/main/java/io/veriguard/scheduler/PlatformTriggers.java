@@ -93,4 +93,19 @@ public class PlatformTriggers {
         .withSchedule(repeatSecondlyForever(15))
         .build();
   }
+
+  /**
+   * IPv6 安全验证系统 §3.6 PR D2 —— 每 5 min 扫描超时的攻击组合任务
+   *
+   * @return the trigger
+   */
+  @Bean
+  @Profile("!test")
+  public Trigger combinationTimeoutTrigger() {
+    return newTrigger()
+        .forJob(this.platformJobs.getCombinationTimeoutJob())
+        .withIdentity(io.veriguard.scheduler.jobs.CombinationTimeoutJob.TRIGGER_NAME)
+        .withSchedule(cronSchedule("0 0/5 * * * ?"))
+        .build();
+  }
 }
