@@ -5,9 +5,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.veriguard.aop.RBAC;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.ResourceType;
+import io.veriguard.database.model.combination.AttackCombinationClusterDim;
 import io.veriguard.database.model.combination.AttackCombinationHitState;
 import io.veriguard.database.model.combination.AttackCombinationRunStatus;
 import io.veriguard.database.model.combination.BypassDimensionCategory;
+import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationClusterOutput;
+import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationClusterPageOutput;
+import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationClusterRecomputeOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationResultPageOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationRunOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationRunPageOutput;
@@ -52,11 +56,15 @@ public class AttackCombinationApi {
 
   private final AttackCombinationService service;
   private final AttackCombinationRunService runService;
+  private final AttackCombinationClusterService clusterService;
 
   public AttackCombinationApi(
-      AttackCombinationService service, AttackCombinationRunService runService) {
+      AttackCombinationService service,
+      AttackCombinationRunService runService,
+      AttackCombinationClusterService clusterService) {
     this.service = service;
     this.runService = runService;
+    this.clusterService = clusterService;
   }
 
   @GetMapping(DIMENSIONS_URI)
@@ -184,6 +192,74 @@ public class AttackCombinationApi {
       @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
       @RequestParam(value = "size", defaultValue = "50") @Min(1) @Max(500) int size) {
     return runService.listResults(id, Optional.ofNullable(hitState), page, size);
+  }
+
+  // ============================================================
+  // PR D3 —— 聚类端点
+  // ============================================================
+
+  @GetMapping(RUNS_URI + "/{id}/clusters")
+  @Operation(summary = "List attack combination clusters for a run (paged, by dim)")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public AttackCombinationClusterPageOutput listClusters(
+      @PathVariable("id") @NotBlank String id,
+      @Parameter(description = "Cluster dim: asset or device")
+          @RequestParam(value = "dim", defaultValue = "asset")
+          AttackCombinationClusterDim dim,
+      @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
+      @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(500) int size) {
+    try {
+      return clusterService.list(id, dim, page, size);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+  }
+
+  @GetMapping(RUNS_URI + "/{id}/clusters/{cluster_id}")
+  @Operation(summary = "Get attack combination cluster detail (incl. payload samples + top distributions)")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public AttackCombinationClusterOutput getCluster(
+      @PathVariable("id") @NotBlank String id,
+      @PathVariable("cluster_id") @NotBlank String clusterId) {
+    try {
+      return clusterService.detail(id, clusterId);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+  }
+
+  @GetMapping(RUNS_URI + "/{id}/clusters/{cluster_id}/results")
+  @Operation(summary = "List cluster member results (drill-down)")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public AttackCombinationResultPageOutput listClusterMembers(
+      @PathVariable("id") @NotBlank String id,
+      @PathVariable("cluster_id") @NotBlank String clusterId,
+      @Parameter(description = "Optional hit_state filter")
+          @RequestParam(value = "hit_state", required = false)
+          AttackCombinationHitState hitState,
+      @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
+      @RequestParam(value = "size", defaultValue = "50") @Min(1) @Max(500) int size) {
+    try {
+      return clusterService.listClusterMembers(
+          id, clusterId, Optional.ofNullable(hitState), page, size);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+  }
+
+  @PostMapping(RUNS_URI + "/{id}/cluster/recompute")
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  @Operation(summary = "Manually re-run cluster analysis (run must be completed)")
+  @RBAC(actionPerformed = Action.LAUNCH, resourceType = ResourceType.PLATFORM_SETTING)
+  public AttackCombinationClusterRecomputeOutput recomputeClusters(
+      @PathVariable("id") @NotBlank String id) {
+    try {
+      return clusterService.recompute(id);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+    } catch (IllegalStateException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+    }
   }
 
   /** 创建任务请求体（snake_case wire 字段）. */
