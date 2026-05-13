@@ -1,4 +1,4 @@
-import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, ShieldOutlined, SubscriptionsOutlined, TuneOutlined, VerifiedUserOutlined } from '@mui/icons-material';
+import { DashboardOutlined, DescriptionOutlined, DevicesOtherOutlined, DnsOutlined, Groups3Outlined, GroupsOutlined, HubOutlined, InsertChartOutlined, MovieFilterOutlined, PersonOutlined, SchoolOutlined, SettingsOutlined, ShieldOutlined, SubscriptionsOutlined, TimelineOutlined, TuneOutlined, VerifiedUserOutlined, ViewModuleOutlined } from '@mui/icons-material';
 import { Binoculars, NewspaperVariantMultipleOutline, SecurityNetwork, SelectGroup, Target } from 'mdi-material-ui';
 import { useContext } from 'react';
 
@@ -167,6 +167,18 @@ const LeftBar = () => {
           icon: () => (<VerifiedUserOutlined />),
           label: '沙箱',
           userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
+        },
+        {
+          path: `/admin/combinations`,
+          icon: () => (<ViewModuleOutlined />),
+          label: '攻击组合',
+          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.PLATFORM_SETTINGS),
+        },
+        {
+          path: `/admin/stability`,
+          icon: () => (<TimelineOutlined />),
+          label: '稳定性趋势',
+          userRight: ability.can(ACTIONS.ACCESS, SUBJECTS.ASSESSMENT),
         },
       ],
     },
