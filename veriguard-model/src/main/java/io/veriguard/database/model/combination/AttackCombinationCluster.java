@@ -16,6 +16,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import static java.time.Instant.now;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +104,19 @@ public class AttackCombinationCluster implements Base {
   @JsonProperty("attack_combination_cluster_computed_at")
   @NotNull
   private Instant computedAt = now();
+
+  // ---- PR D4: 严重度评分与分级（可空：在 SeverityClassifier 异步回填） ----
+
+  @Queryable(sortable = true)
+  @Column(name = "attack_combination_cluster_severity_score")
+  @JsonProperty("attack_combination_cluster_severity_score")
+  private BigDecimal severityScore;
+
+  @Queryable(filterable = true, sortable = true)
+  @Column(name = "attack_combination_cluster_severity_level")
+  @Enumerated(EnumType.STRING)
+  @JsonProperty("attack_combination_cluster_severity_level")
+  private SeverityLevel severityLevel;
 
   @CreationTimestamp
   @Column(name = "attack_combination_cluster_created_at")

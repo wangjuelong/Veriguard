@@ -17,7 +17,10 @@ import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinat
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationRunPageOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.BypassDimensionPageOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.CombinationPreviewOutput;
+import io.veriguard.rest.attack_combination.AttackCombinationDtos.SeverityConfigOutput;
+import io.veriguard.rest.attack_combination.AttackCombinationDtos.SeverityRecomputeOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationRunService.CreateRunRequest;
+import io.veriguard.rest.attack_combination.SeverityConfigService.UpdateRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -30,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -53,18 +57,22 @@ public class AttackCombinationApi {
   public static final String DIMENSIONS_URI = "/api/attack_combination/dimensions";
   public static final String TEMPLATE_PREVIEW_URI = "/api/attack_combination/templates/preview";
   public static final String RUNS_URI = "/api/attack_combination/runs";
+  public static final String SEVERITY_CONFIG_URI = "/api/attack_combination/severity-config";
 
   private final AttackCombinationService service;
   private final AttackCombinationRunService runService;
   private final AttackCombinationClusterService clusterService;
+  private final SeverityConfigService severityConfigService;
 
   public AttackCombinationApi(
       AttackCombinationService service,
       AttackCombinationRunService runService,
-      AttackCombinationClusterService clusterService) {
+      AttackCombinationClusterService clusterService,
+      SeverityConfigService severityConfigService) {
     this.service = service;
     this.runService = runService;
     this.clusterService = clusterService;
+    this.severityConfigService = severityConfigService;
   }
 
   @GetMapping(DIMENSIONS_URI)
@@ -255,6 +263,42 @@ public class AttackCombinationApi {
       @PathVariable("id") @NotBlank String id) {
     try {
       return clusterService.recompute(id);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+    } catch (IllegalStateException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+    }
+  }
+
+  // ============================================================
+  // PR D4 —— 分级配置 + 手动重算端点
+  // ============================================================
+
+  @GetMapping(SEVERITY_CONFIG_URI)
+  @Operation(summary = "Get severity config (returns defaults if none persisted)")
+  @RBAC(actionPerformed = Action.READ, resourceType = ResourceType.PLATFORM_SETTING)
+  public SeverityConfigOutput getSeverityConfig() {
+    return severityConfigService.get();
+  }
+
+  @PutMapping(SEVERITY_CONFIG_URI)
+  @Operation(summary = "Update severity config (weights must sum to 1.0 ± 0.001)")
+  @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.PLATFORM_SETTING)
+  public SeverityConfigOutput updateSeverityConfig(@Valid @RequestBody UpdateRequest body) {
+    try {
+      return severityConfigService.update(body);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+  }
+
+  @PostMapping(RUNS_URI + "/{id}/severity/recompute")
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  @Operation(summary = "Manually re-run severity classification (run must be completed)")
+  @RBAC(actionPerformed = Action.LAUNCH, resourceType = ResourceType.PLATFORM_SETTING)
+  public SeverityRecomputeOutput recomputeSeverity(@PathVariable("id") @NotBlank String id) {
+    try {
+      return severityConfigService.recompute(id);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
     } catch (IllegalStateException e) {

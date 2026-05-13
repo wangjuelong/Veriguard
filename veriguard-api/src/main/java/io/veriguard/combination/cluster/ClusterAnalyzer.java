@@ -8,6 +8,7 @@ import io.veriguard.database.model.combination.AttackCombinationResult;
 import io.veriguard.database.model.combination.AttackCombinationRun;
 import io.veriguard.database.model.combination.AttackCombinationRunStatus;
 import io.veriguard.database.model.combination.BypassDimension;
+import io.veriguard.combination.severity.SeverityClassifier;
 import io.veriguard.database.repository.AssetRepository;
 import io.veriguard.database.repository.AttackCombinationClusterRepository;
 import io.veriguard.database.repository.AttackCombinationResultRepository;
@@ -68,6 +69,7 @@ public class ClusterAnalyzer {
   private final AssetRepository assetRepository;
   private final DeviceKeyExtractor deviceKeyExtractor;
   private final TransactionTemplate transactionTemplate;
+  private final SeverityClassifier severityClassifier;
   private final int payloadSamplesPerCluster;
 
   public ClusterAnalyzer(
@@ -78,6 +80,7 @@ public class ClusterAnalyzer {
       AssetRepository assetRepository,
       DeviceKeyExtractor deviceKeyExtractor,
       TransactionTemplate transactionTemplate,
+      SeverityClassifier severityClassifier,
       @Value("${veriguard.combination.cluster.payload-samples-per-cluster:5}")
           int payloadSamplesPerCluster) {
     this.runRepository = runRepository;
@@ -87,6 +90,7 @@ public class ClusterAnalyzer {
     this.assetRepository = assetRepository;
     this.deviceKeyExtractor = deviceKeyExtractor;
     this.transactionTemplate = transactionTemplate;
+    this.severityClassifier = severityClassifier;
     this.payloadSamplesPerCluster = Math.max(1, payloadSamplesPerCluster);
   }
 
@@ -192,6 +196,14 @@ public class ClusterAnalyzer {
         runId,
         assetClusters.size(),
         deviceClusters.size());
+
+    // PR D4 链调：cluster 落库后异步触发分级。失败不污染聚类路径（classifyAsync 自吞异常）。
+    try {
+      severityClassifier.classifyAsync(runId, true);
+    } catch (Exception e) {
+      log.error(
+          "Failed to schedule severity classification for run {}: {}", runId, e.getMessage(), e);
+    }
   }
 
   // ============================================================

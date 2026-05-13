@@ -7,9 +7,12 @@ import io.veriguard.database.model.combination.AttackCombinationHitState;
 import io.veriguard.database.model.combination.AttackCombinationResult;
 import io.veriguard.database.model.combination.AttackCombinationRun;
 import io.veriguard.database.model.combination.AttackCombinationRunStatus;
+import io.veriguard.database.model.combination.SeverityConfig;
+import io.veriguard.database.model.combination.SeverityLevel;
 import io.veriguard.database.repository.AttackCombinationClusterRepository;
 import io.veriguard.database.repository.AttackCombinationResultRepository;
 import io.veriguard.database.repository.AttackCombinationRunRepository;
+import io.veriguard.database.repository.SeverityConfigRepository;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationClusterOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationClusterPageOutput;
 import io.veriguard.rest.attack_combination.AttackCombinationDtos.AttackCombinationClusterRecomputeOutput;
@@ -37,16 +40,19 @@ public class AttackCombinationClusterService {
   private final AttackCombinationClusterRepository clusterRepository;
   private final AttackCombinationResultRepository resultRepository;
   private final ClusterAnalyzer clusterAnalyzer;
+  private final SeverityConfigRepository severityConfigRepository;
 
   public AttackCombinationClusterService(
       AttackCombinationRunRepository runRepository,
       AttackCombinationClusterRepository clusterRepository,
       AttackCombinationResultRepository resultRepository,
-      ClusterAnalyzer clusterAnalyzer) {
+      ClusterAnalyzer clusterAnalyzer,
+      SeverityConfigRepository severityConfigRepository) {
     this.runRepository = runRepository;
     this.clusterRepository = clusterRepository;
     this.resultRepository = resultRepository;
     this.clusterAnalyzer = clusterAnalyzer;
+    this.severityConfigRepository = severityConfigRepository;
   }
 
   @Transactional(readOnly = true)
@@ -61,8 +67,9 @@ public class AttackCombinationClusterService {
             page, size, Sort.by(Sort.Direction.DESC, "missCount"));
     Page<AttackCombinationCluster> result =
         clusterRepository.findAllByRunIdAndClusterDim(runId, dim, pageable);
+    SeverityConfig severityConfig = loadSeverityConfigOrDefault();
     List<AttackCombinationClusterOutput> content =
-        result.getContent().stream().map(AttackCombinationClusterService::toOutput).toList();
+        result.getContent().stream().map(c -> toOutput(c, severityConfig)).toList();
     return new AttackCombinationClusterPageOutput(
         content,
         result.getNumber(),
@@ -81,7 +88,11 @@ public class AttackCombinationClusterService {
       throw new IllegalArgumentException(
           "Cluster " + clusterId + " does not belong to run " + runId);
     }
-    return toOutput(cluster);
+    return toOutput(cluster, loadSeverityConfigOrDefault());
+  }
+
+  private SeverityConfig loadSeverityConfigOrDefault() {
+    return severityConfigRepository.findSingleton().orElseGet(SeverityConfig::new);
   }
 
   /** 下钻 cluster 成员 result：按 cluster_dim + cluster_key 反向定位 + 可选 hit_state 过滤 + 分页. */
@@ -173,7 +184,11 @@ public class AttackCombinationClusterService {
     }
   }
 
-  private static AttackCombinationClusterOutput toOutput(AttackCombinationCluster c) {
+  static AttackCombinationClusterOutput toOutput(
+      AttackCombinationCluster c, SeverityConfig severityConfig) {
+    SeverityLevel level = c.getSeverityLevel();
+    String label = labelFor(level, severityConfig);
+    String color = colorFor(level, severityConfig);
     return new AttackCombinationClusterOutput(
         c.getId(),
         c.getRunId(),
@@ -187,7 +202,35 @@ public class AttackCombinationClusterService {
         c.getTopBypassDimensions(),
         c.getComputedAt(),
         c.getCreatedAt(),
-        c.getUpdatedAt());
+        c.getUpdatedAt(),
+        c.getSeverityScore(),
+        level == null ? null : level.name(),
+        label,
+        color);
+  }
+
+  private static String labelFor(SeverityLevel level, SeverityConfig cfg) {
+    if (level == null) {
+      return null;
+    }
+    return switch (level) {
+      case critical -> cfg.getCriticalLabel();
+      case high -> cfg.getHighLabel();
+      case medium -> cfg.getMediumLabel();
+      case info -> cfg.getInfoLabel();
+    };
+  }
+
+  private static String colorFor(SeverityLevel level, SeverityConfig cfg) {
+    if (level == null) {
+      return null;
+    }
+    return switch (level) {
+      case critical -> cfg.getCriticalColor();
+      case high -> cfg.getHighColor();
+      case medium -> cfg.getMediumColor();
+      case info -> cfg.getInfoColor();
+    };
   }
 
   private static AttackCombinationResultOutput toResultOutput(AttackCombinationResult r) {
