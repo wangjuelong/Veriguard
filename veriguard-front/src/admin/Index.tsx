@@ -47,6 +47,8 @@ const CombinationsList = lazy(() => import('./components/combination/Combination
 const CombinationRunCanvas = lazy(() => import('./components/combination/CombinationRunCanvas'));
 const CoverageBaselinesList = lazy(() => import('./components/coverage/CoverageBaselinesList'));
 const CoverageRunCanvas = lazy(() => import('./components/coverage/CoverageRunCanvas'));
+const MonitoringJobsList = lazy(() => import('./components/monitoring/MonitoringJobsList'));
+const MonitoringTrendView = lazy(() => import('./components/monitoring/MonitoringTrendView'));
 const IndexSettings = lazy(() => import('./components/settings/Index'));
 
 const useStyles = makeStyles()(theme => ({ toolbar: theme.mixins.toolbar as CSSObject }));
@@ -286,6 +288,31 @@ const Index = () => {
                     subject: SUBJECTS.PLATFORM_SETTINGS,
                   }]}
                   Component={errorWrapper(CoverageRunCanvas)()}
+                />
+              )}
+            />
+            {/* PR C4: 边界策略常态化监控（招标 §3.2） */}
+            <Route
+              path="monitoring"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.PLATFORM_SETTINGS,
+                  }]}
+                  Component={errorWrapper(MonitoringJobsList)()}
+                />
+              )}
+            />
+            <Route
+              path="monitoring/:id"
+              element={(
+                <ProtectedRoute
+                  checks={[{
+                    action: ACTIONS.ACCESS,
+                    subject: SUBJECTS.PLATFORM_SETTINGS,
+                  }]}
+                  Component={errorWrapper(MonitoringTrendView)()}
                 />
               )}
             />
