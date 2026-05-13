@@ -163,6 +163,9 @@ class ClusterAnalyzerTest {
             .orElseThrow();
     assertThat(cb.getMissCount()).isEqualTo(1);
     assertThat(cb.getTotalInCluster()).isEqualTo(1);
+
+    // PR D4 链调：saveAll 之后 ClusterAnalyzer 应调 severityClassifier.classifyAsync.
+    verify(severityClassifier, times(1)).classifyAsync(RUN_ID, true);
   }
 
   @Test
