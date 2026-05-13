@@ -96,4 +96,37 @@ public final class AttackCombinationDtos {
       @JsonProperty("size") int size,
       @JsonProperty("total_elements") long totalElements,
       @JsonProperty("total_pages") int totalPages) {}
+
+  // ============================================================
+  // PR D3 — 聚类相关 DTO
+  // ============================================================
+
+  public record AttackCombinationClusterOutput(
+      @JsonProperty("attack_combination_cluster_id") String id,
+      @JsonProperty("attack_combination_cluster_run_id") String runId,
+      @JsonProperty("attack_combination_cluster_dim") String clusterDim,
+      @JsonProperty("attack_combination_cluster_key") String clusterKey,
+      @JsonProperty("attack_combination_cluster_label") String clusterLabel,
+      @JsonProperty("attack_combination_cluster_miss_count") int missCount,
+      @JsonProperty("attack_combination_cluster_total_in_cluster") int totalInCluster,
+      @JsonProperty("attack_combination_cluster_payload_samples") List<String> payloadSamples,
+      @JsonProperty("attack_combination_cluster_top_base_attack_types")
+          List<Map<String, Object>> topBaseAttackTypes,
+      @JsonProperty("attack_combination_cluster_top_bypass_dimensions")
+          List<Map<String, Object>> topBypassDimensions,
+      @JsonProperty("attack_combination_cluster_computed_at") Instant computedAt,
+      @JsonProperty("attack_combination_cluster_created_at") Instant createdAt,
+      @JsonProperty("attack_combination_cluster_updated_at") Instant updatedAt) {}
+
+  public record AttackCombinationClusterPageOutput(
+      @JsonProperty("content") List<AttackCombinationClusterOutput> content,
+      @JsonProperty("page") int page,
+      @JsonProperty("size") int size,
+      @JsonProperty("total_elements") long totalElements,
+      @JsonProperty("total_pages") int totalPages) {}
+
+  public record AttackCombinationClusterRecomputeOutput(
+      @JsonProperty("attack_combination_run_id") String runId,
+      @JsonProperty("cluster_recompute_status") String status,
+      @JsonProperty("cluster_recompute_job_id") String jobId) {}
 }

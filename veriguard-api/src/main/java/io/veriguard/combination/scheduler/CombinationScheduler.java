@@ -2,6 +2,7 @@ package io.veriguard.combination.scheduler;
 
 import io.veriguard.combination.AttackCombinationGenerator;
 import io.veriguard.combination.CombinationInstance;
+import io.veriguard.combination.cluster.ClusterAnalyzer;
 import io.veriguard.combination.executor.CombinationExecutorRouter;
 import io.veriguard.database.model.combination.AttackCombinationHitState;
 import io.veriguard.database.model.combination.AttackCombinationResult;
@@ -24,6 +25,8 @@ import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
@@ -56,6 +59,7 @@ public class CombinationScheduler {
   private final BypassDimensionRepository dimensionRepository;
   private final AttackCombinationGenerator generator;
   private final CombinationExecutorRouter router;
+  private final ClusterAnalyzer clusterAnalyzer;
   private final TransactionTemplate transactionTemplate;
   private final int runnerPoolSize;
 
@@ -71,6 +75,7 @@ public class CombinationScheduler {
       BypassDimensionRepository dimensionRepository,
       AttackCombinationGenerator generator,
       CombinationExecutorRouter router,
+      ClusterAnalyzer clusterAnalyzer,
       TransactionTemplate transactionTemplate,
       @Value("${veriguard.combination.scheduler.runner-pool-size:4}") int runnerPoolSize) {
     this.runRepository = runRepository;
@@ -78,6 +83,7 @@ public class CombinationScheduler {
     this.dimensionRepository = dimensionRepository;
     this.generator = generator;
     this.router = router;
+    this.clusterAnalyzer = clusterAnalyzer;
     this.transactionTemplate = transactionTemplate;
     this.runnerPoolSize = Math.max(1, runnerPoolSize);
     this.runnerPool = Executors.newFixedThreadPool(this.runnerPoolSize);
@@ -360,6 +366,35 @@ public class CombinationScheduler {
           run.setStatus(AttackCombinationRunStatus.completed);
           run.setCompletedAt(Instant.now());
           runRepository.save(run);
+          // PR D3: 在 TX commit 之后异步触发聚类，避免 async 线程在 commit 前读不到 completed 状态.
+          if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                  @Override
+                  public void afterCommit() {
+                    try {
+                      clusterAnalyzer.analyzeAsync(runId, true);
+                    } catch (Exception e) {
+                      log.error(
+                          "Failed to enqueue cluster analysis for run {}: {}",
+                          runId,
+                          e.getMessage(),
+                          e);
+                    }
+                  }
+                });
+          } else {
+            // 同步路径（极少触发，例如手动 runSynchronously 未在 TX 内调用）—— 直接异步派发.
+            try {
+              clusterAnalyzer.analyzeAsync(runId, true);
+            } catch (Exception e) {
+              log.error(
+                  "Failed to enqueue cluster analysis (no active TX) for run {}: {}",
+                  runId,
+                  e.getMessage(),
+                  e);
+            }
+          }
         });
   }
 }
