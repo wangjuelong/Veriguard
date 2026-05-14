@@ -3,19 +3,28 @@ package io.veriguard.rest.agent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.RBAC;
+import io.veriguard.audit.OfflinePackAuditService;
 import io.veriguard.crypto.Ed25519SignatureService;
 import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VresultsSerializer;
 import io.veriguard.crypto.X25519BoxService;
 import io.veriguard.database.model.Action;
 import io.veriguard.database.model.ResourceType;
+import io.veriguard.database.repository.AgentRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,11 +47,12 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * <ul>
  *   <li>Export uses an empty plaintext tasks JSON for the encrypted envelope content (real task
- *       selection from Inject DB is C1-Platform-2 scope)
+ *       selection from Inject DB is C1-Platform-3 scope)
  *   <li>Import accepts and parses the envelope only — does not yet write results to
- *       inject_execution / execution_traces (C1-Platform-2 scope)
- *   <li>offline_pack_audit DB write is also scaffolded (logged but not persisted) — full audit
- *       service is later
+ *       inject_execution / execution_traces (C1-Platform-3 scope)
+ *   <li>{@link OfflinePackAuditService} writes one row per export and updates it on import; if the
+ *       in-memory agent has not been persisted as a JPA Agent row yet (still scaffold mode), audit
+ *       is skipped with a WARN log so that the FK to agents.agent_id is honored
  * </ul>
  */
 @RestController
@@ -51,6 +61,8 @@ public class AgentOfflinePackApi {
   public static final String EXPORT_URI = "/api/agent/offline-pack/export";
   public static final String IMPORT_URI = "/api/agent/offline-pack/import";
 
+  private static final Logger log = LoggerFactory.getLogger(AgentOfflinePackApi.class);
+
   private final PlatformIdentityService platformIdentity;
   private final VpackSerializer vpackSerializer;
   private final VresultsSerializer vresultsSerializer;
@@ -58,6 +70,8 @@ public class AgentOfflinePackApi {
   private final Ed25519SignatureService ed25519;
   private final AgentOnboardingService onboardingService;
   private final ObjectMapper objectMapper;
+  private final OfflinePackAuditService auditService;
+  private final AgentRepository agentRepository;
 
   public AgentOfflinePackApi(
       PlatformIdentityService platformIdentity,
@@ -66,7 +80,9 @@ public class AgentOfflinePackApi {
       X25519BoxService x25519,
       Ed25519SignatureService ed25519,
       AgentOnboardingService onboardingService,
-      ObjectMapper objectMapper) {
+      ObjectMapper objectMapper,
+      OfflinePackAuditService auditService,
+      AgentRepository agentRepository) {
     this.platformIdentity = platformIdentity;
     this.vpackSerializer = vpackSerializer;
     this.vresultsSerializer = vresultsSerializer;
@@ -74,6 +90,8 @@ public class AgentOfflinePackApi {
     this.ed25519 = ed25519;
     this.onboardingService = onboardingService;
     this.objectMapper = objectMapper;
+    this.auditService = auditService;
+    this.agentRepository = agentRepository;
   }
 
   /**
@@ -88,7 +106,8 @@ public class AgentOfflinePackApi {
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.AGENT)
   public ResponseEntity<byte[]> export(
       @Valid @RequestBody AgentDtos.OfflinePackExportInput input,
-      @RequestParam(value = "onboard_token") String onboardToken) {
+      @RequestParam(value = "onboard_token") String onboardToken,
+      HttpServletRequest request) {
     Optional<AgentOnboardingService.AgentOnboardingState> state =
         onboardingService.findByToken(onboardToken);
     if (state.isEmpty()) {
@@ -102,12 +121,13 @@ public class AgentOfflinePackApi {
       return ResponseEntity.badRequest().build();
     }
 
-    // Scaffold — real task selection from JPA Inject lookup is C1-Platform-2 scope.
+    // Scaffold — real task selection from JPA Inject lookup is C1-Platform-3 scope.
     byte[] plaintextTasks = "{\"tasks\":[]}".getBytes(java.nio.charset.StandardCharsets.UTF_8);
     X25519BoxService.SealedBox box =
         x25519.seal(plaintextTasks, s.agentEncPub(), platformIdentity.getPlatformEncPriv());
 
     UUID packId = UUID.randomUUID();
+    String exportedBy = currentUsername();
     VpackSerializer.VpackMetadata meta =
         new VpackSerializer.VpackMetadata(
             packId,
@@ -116,7 +136,7 @@ public class AgentOfflinePackApi {
             Instant.now(),
             0,
             "1.0",
-            "operator-c1-platform-1-scaffold");
+            exportedBy);
     VpackSerializer.VpackEncryptedEnvelope env =
         new VpackSerializer.VpackEncryptedEnvelope(
             platformIdentity.getPlatformEncPub(), box.nonce(), box.ciphertext());
@@ -124,6 +144,26 @@ public class AgentOfflinePackApi {
     byte[] envelopeBytes =
         vpackSerializer.build(
             new VpackSerializer.VpackPayload(meta, env), platformIdentity.getPlatformSignPriv());
+
+    // Audit — best-effort. If the agent is not in JPA yet (scaffold mode pre-C1-Platform-3), the
+    // FK constraint would fail. Skip with WARN to keep the export usable; production agents (post
+    // JPA migration) will get full audit rows.
+    if (agentRepository.findById(input.agentId()).isPresent()) {
+      auditService.recordExport(
+          packId,
+          input.agentId(),
+          platformIdentity.getPlatformId(),
+          exportedBy,
+          clientIp(request),
+          sha256(box.ciphertext()),
+          0); // task_count = 0 until real task selection lands
+    } else {
+      log.warn(
+          "OfflinePackAudit skipped for export pack_id={}: agent_id={} not persisted in JPA"
+              + " (scaffold mode pre-C1-Platform-3)",
+          packId,
+          input.agentId());
+    }
 
     return ResponseEntity.ok()
         .header("Content-Disposition", "attachment; filename=\"" + packId + ".vpack\"")
@@ -141,7 +181,8 @@ public class AgentOfflinePackApi {
   @RBAC(actionPerformed = Action.WRITE, resourceType = ResourceType.AGENT)
   public ResponseEntity<AgentDtos.OfflinePackImportOutput> importPack(
       @RequestParam("file") MultipartFile file,
-      @RequestParam(value = "onboard_token") String onboardToken) {
+      @RequestParam(value = "onboard_token") String onboardToken,
+      HttpServletRequest request) {
     Optional<AgentOnboardingService.AgentOnboardingState> state =
         onboardingService.findByToken(onboardToken);
     if (state.isEmpty()) {
@@ -191,7 +232,15 @@ public class AgentOfflinePackApi {
                   java.util.List.of("agent_id_mismatch")));
     }
 
-    // Scaffold — actual result decryption + persist is C1-Platform-2 scope.
+    // Audit — only if the export row exists in DB (else recordImport logs WARN + returns empty).
+    auditService.recordImport(
+        parsed.metadata().packId(),
+        currentUsername(),
+        clientIp(request),
+        parsed.metadata().resultCount(),
+        0);
+
+    // Scaffold — actual result decryption + persist is C1-Platform-3 scope.
     // We've validated signature + agent identity; that's the security boundary for this PR.
     return ResponseEntity.ok(
         new AgentDtos.OfflinePackImportOutput(
@@ -199,5 +248,40 @@ public class AgentOfflinePackApi {
             parsed.metadata().resultCount(),
             0,
             java.util.List.of()));
+  }
+
+  // ---- helpers ----
+
+  /** Current admin username from SecurityContext; falls back to "unknown" if not authenticated. */
+  private static String currentUsername() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getName() == null) {
+      return "unknown";
+    }
+    return auth.getName();
+  }
+
+  /** Client IP from request — prefers X-Forwarded-For if present, else remoteAddr. */
+  private static String clientIp(HttpServletRequest request) {
+    if (request == null) {
+      return null;
+    }
+    String xff = request.getHeader("X-Forwarded-For");
+    if (xff != null && !xff.isBlank()) {
+      // X-Forwarded-For can be "client, proxy1, proxy2" — take first hop.
+      int comma = xff.indexOf(',');
+      return (comma >= 0 ? xff.substring(0, comma) : xff).trim();
+    }
+    return request.getRemoteAddr();
+  }
+
+  /** SHA-256 digest as 32-byte array. */
+  private static byte[] sha256(byte[] bytes) {
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
+      return md.digest(bytes);
+    } catch (NoSuchAlgorithmException ex) {
+      throw new IllegalStateException("SHA-256 not available", ex);
+    }
   }
 }
