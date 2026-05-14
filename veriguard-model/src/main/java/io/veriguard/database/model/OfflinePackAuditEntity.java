@@ -14,9 +14,9 @@ import lombok.Setter;
  * JPA entity mirroring the {@code offline_pack_audit} table (Flyway V20 / Task C.13).
  *
  * <p>Audit trail row for each {@code .vpack} export and matching {@code .vresults} import in the
- * Veriguard Agent (C1) Mode C 离线工作 flow. Export rows are created at {@code recordExport} time
- * with the import fields NULL; import rows update the SAME pack row (matched by UUID PK) with the
- * import fields when the operator returns a {@code .vresults} file.
+ * Veriguard Agent (C1) Mode C 离线工作 flow. Export rows are created at {@code recordExport} time with
+ * the import fields NULL; import rows update the SAME pack row (matched by UUID PK) with the import
+ * fields when the operator returns a {@code .vresults} file.
  *
  * <p>FK to {@code agents.agent_id} is enforced at the SQL level (V20); the entity stores the agent
  * id as a VARCHAR(255) string to mirror {@link Agent#getId()}.
