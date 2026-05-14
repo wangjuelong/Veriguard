@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.UUID;
@@ -163,7 +164,7 @@ public class VpackSerializer {
     byte[] signerPub = Base64.getDecoder().decode(signerPubB64);
     byte[] sig = Base64.getDecoder().decode(sigB64);
 
-    if (!java.util.Arrays.equals(signerPub, expectedSignerPub)) {
+    if (!MessageDigest.isEqual(signerPub, expectedSignerPub)) {
       throw new SignatureVerificationException(
           "Signer public key does not match expected platform key");
     }
