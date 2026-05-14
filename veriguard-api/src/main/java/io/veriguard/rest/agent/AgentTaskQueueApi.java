@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.async.WebAsyncManager;
 
 /**
  * Veriguard Agent (C1) task queue REST — Mode A polling + result post (spec §3.5.1 Mode A).
@@ -91,8 +89,7 @@ public class AgentTaskQueueApi {
       @RequestParam("agent_id") @NotBlank String agentId,
       @RequestHeader(value = SIGNATURE_HEADER, required = false) String signatureB64,
       @RequestHeader(value = TIMESTAMP_HEADER, required = false) String timestamp,
-      @RequestHeader(value = "X-Veriguard-Onboard-Token", required = false) String onboardToken,
-      WebRequest req) {
+      @RequestHeader(value = "X-Veriguard-Onboard-Token", required = false) String onboardToken) {
     if (!verifyAgentSignature(agentId, onboardToken, timestamp, new byte[0], signatureB64)) {
       return ResponseEntity.status(401).build();
     }
@@ -109,8 +106,7 @@ public class AgentTaskQueueApi {
       @RequestHeader(value = SIGNATURE_HEADER, required = false) String signatureB64,
       @RequestHeader(value = TIMESTAMP_HEADER, required = false) String timestamp,
       @RequestHeader(value = "X-Veriguard-Onboard-Token", required = false) String onboardToken,
-      @Valid @RequestBody AgentDtos.ResultInput input,
-      WebAsyncManager asyncManager) {
+      @Valid @RequestBody AgentDtos.ResultInput input) {
     // For signature verification we need the raw body bytes; in Spring MVC with @RequestBody
     // we have already parsed JSON. We rebuild a canonical byte representation covering ALL fields
     // the controller persists (task_id + 7 ResultInput fields) so the agent's Ed25519 signature
