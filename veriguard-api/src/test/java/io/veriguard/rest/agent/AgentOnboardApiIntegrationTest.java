@@ -222,4 +222,20 @@ class AgentOnboardApiIntegrationTest extends IntegrationTest {
                 .content(body))
         .andExpect(status().isNotFound());
   }
+
+  /**
+   * Real Rust agents authenticate via {@code X-Veriguard-Signature} headers, not session cookies,
+   * so the CSRF filter must not block {@code /api/agent/**} POSTs. Without the explicit exemption
+   * in {@link io.veriguard.config.AppSecurityConfig#filterChain}, this POST (no {@code
+   * .with(csrf())}) would return 403; the assertion below locks that exemption in.
+   */
+  @Test
+  void csrfExemptForAgentEndpoints() throws Exception {
+    mockMvc
+        .perform(
+            post(AgentOnboardApi.ONBOARD_INIT_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(INIT_BODY))
+        .andExpect(result -> assertThat(result.getResponse().getStatus()).isNotEqualTo(403));
+  }
 }
