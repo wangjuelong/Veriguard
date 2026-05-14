@@ -1,6 +1,7 @@
 package io.veriguard.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import io.veriguard.database.model.Agent;
 import io.veriguard.database.repository.AgentRepository;
+import io.veriguard.service.exception.CapabilityNotSupportedException;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -113,5 +115,61 @@ class AgentServiceSelectByCapabilityTest {
     service.selectAgentsForCapability("HTTP_Attack");
 
     verify(agentRepository).findByCapability("[\"HTTP_Attack\"]");
+  }
+
+  // ---- Task C.14: selectByCapability 严校 ----
+
+  @Test
+  @DisplayName("selectByCapability: null/blank → IllegalArgumentException")
+  void selectByCapability_blankThrowsIllegalArgument() {
+    assertThatThrownBy(() -> service.selectByCapability(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("capability");
+    assertThatThrownBy(() -> service.selectByCapability("   "))
+        .isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  @DisplayName("selectByCapability: 无匹配 → CapabilityNotSupportedException (含 capability 名)")
+  void selectByCapability_noAgentThrowsCapabilityNotSupported() {
+    when(agentRepository.findByCapability(any())).thenReturn(List.of());
+
+    assertThatThrownBy(() -> service.selectByCapability("http_attack"))
+        .isInstanceOf(CapabilityNotSupportedException.class)
+        .hasMessageContaining("http_attack");
+  }
+
+  @Test
+  @DisplayName("selectByCapability: 1 个匹配 → 返回该 Agent")
+  void selectByCapability_singleAgentMatch() {
+    Agent a1 = agent("a1");
+    when(agentRepository.findByCapability(any())).thenReturn(List.of(a1));
+
+    Agent result = service.selectByCapability("http_attack");
+    assertThat(result.getId()).isEqualTo("a1");
+  }
+
+  @Test
+  @DisplayName("selectByCapability: 多个匹配 → 返回第一个（确定性）")
+  void selectByCapability_multipleAgentsReturnsFirst() {
+    Agent a1 = agent("a1");
+    Agent a2 = agent("a2");
+    Agent a3 = agent("a3");
+    when(agentRepository.findByCapability(any())).thenReturn(List.of(a1, a2, a3));
+
+    Agent result = service.selectByCapability("pcap_replay");
+    assertThat(result.getId()).isEqualTo("a1");
+  }
+
+  @Test
+  @DisplayName("selectByCapability: agent 仅声明 pcap_replay, 问 http_attack → CapabilityNotSupported")
+  void selectByCapability_wrongCapabilityThrows() {
+    when(agentRepository.findByCapability("[\"http_attack\"]")).thenReturn(List.of()); // 没匹配
+    when(agentRepository.findByCapability("[\"pcap_replay\"]")).thenReturn(List.of(agent("a1")));
+
+    // 实际下发到 service 的是 http_attack, repo 返 [] → 抛 CapabilityNotSupportedException
+    assertThatThrownBy(() -> service.selectByCapability("http_attack"))
+        .isInstanceOf(CapabilityNotSupportedException.class)
+        .hasMessageContaining("http_attack");
   }
 }

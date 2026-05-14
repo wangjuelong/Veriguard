@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.*;
 import io.veriguard.database.repository.AgentRepository;
+import io.veriguard.service.exception.CapabilityNotSupportedException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
@@ -128,5 +129,34 @@ public class AgentService {
     } catch (JsonProcessingException e) {
       throw new IllegalStateException("Failed to serialize capability to JSON: " + capability, e);
     }
+  }
+
+  /**
+   * 严格校验: 选一个声明了 {@code capability} 的 Agent（Task C.14）.
+   *
+   * <p>区别于 {@link #selectAgentsForCapability(String)} 返回列表（可能为空）, 本方法 fail-fast: 找不到匹配的 Agent 时抛
+   * {@link CapabilityNotSupportedException}, 让 caller 立即得到具体能力的失败原因. 多匹配时取首个（确定性, 与 dispatch 服务对齐,
+   * 后续可加负载均衡策略）.
+   *
+   * @param capability capability 标签（如 {@code http_attack} / {@code command_inject} / {@code
+   *     pcap_replay}）
+   * @return 命中的第一个 Agent
+   * @throws CapabilityNotSupportedException 当没有任何在线 Agent 声明此能力
+   * @throws IllegalArgumentException 当 {@code capability} 为 null / 空白
+   */
+  public Agent selectByCapability(String capability) {
+    if (capability == null || capability.isBlank()) {
+      throw new IllegalArgumentException("capability must not be blank");
+    }
+    List<Agent> candidates = selectAgentsForCapability(capability);
+    if (candidates.isEmpty()) {
+      throw new CapabilityNotSupportedException(
+          capability,
+          "No Agent currently declares capability '"
+              + capability
+              + "'; deploy an Agent that exposes this capability before dispatching"
+              + " tasks that require it");
+    }
+    return candidates.get(0);
   }
 }
