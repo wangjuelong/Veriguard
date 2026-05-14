@@ -49,7 +49,7 @@ public class X25519BoxService {
   private final SecureRandom secureRandom;
 
   public X25519BoxService() {
-    this.secureRandom = pickRandom();
+    this.secureRandom = SecureRandoms.strongOrDefault();
   }
 
   /** Generate a fresh X25519 keypair. */
@@ -156,14 +156,6 @@ public class X25519BoxService {
     if (buf.length != expected) {
       throw new IllegalArgumentException(
           name + " must be " + expected + " bytes, was " + buf.length);
-    }
-  }
-
-  private static SecureRandom pickRandom() {
-    try {
-      return SecureRandom.getInstanceStrong();
-    } catch (Exception ex) {
-      return new SecureRandom();
     }
   }
 

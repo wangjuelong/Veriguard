@@ -1,6 +1,7 @@
 package io.veriguard.rest.agent;
 
 import io.veriguard.crypto.Ed25519SignatureService;
+import io.veriguard.crypto.SecureRandoms;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
@@ -39,7 +40,7 @@ public class AgentOnboardingService {
   public static final int ONBOARD_TOKEN_BYTES = 32;
 
   private final Ed25519SignatureService ed25519;
-  private final SecureRandom secureRandom = new SecureRandom();
+  private final SecureRandom secureRandom = SecureRandoms.strongOrDefault();
 
   /** token -> state. Lookup is O(1); pruning expired entries is opportunistic on next read. */
   private final Map<String, AgentOnboardingState> byToken = new ConcurrentHashMap<>();

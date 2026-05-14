@@ -36,11 +36,11 @@ public class Ed25519SignatureService {
   /** Ed25519 detached signature 固定 64 字节. */
   public static final int SIGNATURE_LENGTH_BYTES = 64;
 
-  /** Random source for keypair generation — {@link SecureRandom#getInstanceStrong()} 优先. */
+  /** Random source for keypair generation — {@link SecureRandoms#strongOrDefault()}. */
   private final SecureRandom secureRandom;
 
   public Ed25519SignatureService() {
-    this.secureRandom = pickRandom();
+    this.secureRandom = SecureRandoms.strongOrDefault();
   }
 
   /**
@@ -110,19 +110,6 @@ public class Ed25519SignatureService {
     if (buf.length != expected) {
       throw new IllegalArgumentException(
           name + " must be " + expected + " bytes, was " + buf.length);
-    }
-  }
-
-  /**
-   * Prefer {@link SecureRandom#getInstanceStrong()} (blocking, /dev/random on Linux). 平台已被卡在
-   * /dev/random 的极端旧环境 fall back 到默认 {@link SecureRandom} (urandom)；不放任 RuntimeException 让 Spring
-   * context 起不来.
-   */
-  private static SecureRandom pickRandom() {
-    try {
-      return SecureRandom.getInstanceStrong();
-    } catch (Exception ex) {
-      return new SecureRandom();
     }
   }
 
