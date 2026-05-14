@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import io.veriguard.combination.CombinationInstance;
 import io.veriguard.database.model.combination.AttackCombinationHitState;
+import io.veriguard.injectors.pcap_replay.service.PcapReplayDispatchService;
 import io.veriguard.injectors.web_attack.service.WebAttackDispatchService;
 import java.time.Duration;
 import java.util.List;
@@ -29,7 +30,9 @@ class CombinationExecutorRouterPriorityTest {
   }
 
   private PcapReplayExecutor newPcap() {
-    return new PcapReplayExecutor();
+    PcapReplayDispatchService svc = mock(PcapReplayDispatchService.class);
+    when(svc.selectAgent()).thenReturn(Optional.empty());
+    return new PcapReplayExecutor(svc, Duration.ofMillis(100));
   }
 
   @Test

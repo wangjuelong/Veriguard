@@ -1,23 +1,33 @@
 package io.veriguard.injectors.pcap_replay.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.veriguard.database.model.Agent;
 import io.veriguard.injectors.pcap_replay.PcapReplayContract;
 import io.veriguard.injectors.pcap_replay.model.PcapReplayContent;
+import io.veriguard.rest.agent.AgentDtos;
+import io.veriguard.rest.agent.AgentTaskQueueService;
 import io.veriguard.service.AgentService;
+import io.veriguard.service.exception.CapabilityNotSupportedException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * 选择有 {@code pcap_replay} 能力的协作主机 Agent，并校验 pcap 回放 inject 内容.
+ * 选择有 {@code pcap_replay} 能力的协作主机 Agent，校验 pcap 回放 inject 内容，并向 Agent 队列派发任务.
  *
- * <p>本 PR 不发起真实 tcpreplay；agent 客户端独立项目落地后由 agent 侧完成 tcpreplay 执行 + 结果回填.
+ * <p>C1-Platform-2 (Task C.12): 新增 {@link #dispatch(String, Agent, PcapReplayContent)} 方法 — 把任务推到
+ * {@link AgentTaskQueueService} 的 mock 队列，并返回一个 {@link CompletableFuture}，待 Agent POST 回执时通过 {@link
+ * AgentTaskQueueService#acceptResult} 触发 future 完成 (PcapReplayExecutor / Combination executor 调用并
+ * await 结果).
+ *
+ * <p>tcpreplay 本身仍然由 Agent 侧实施 — 平台只做"投信箱 + 收信箱"模式。
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class PcapReplayDispatchService {
 
@@ -29,6 +39,17 @@ public class PcapReplayDispatchService {
       Set.of("ORIGINAL", "MBPS", "PPS", "MULTIPLIER", "TOPSPEED");
 
   private final AgentService agentService;
+  private final AgentTaskQueueService taskQueueService;
+  private final ObjectMapper objectMapper;
+
+  public PcapReplayDispatchService(
+      AgentService agentService,
+      AgentTaskQueueService taskQueueService,
+      ObjectMapper objectMapper) {
+    this.agentService = agentService;
+    this.taskQueueService = taskQueueService;
+    this.objectMapper = objectMapper;
+  }
 
   /**
    * 校验 pcap_replay 内容必填字段 + mode 合法性 + mode/rate 一致性.
@@ -70,5 +91,63 @@ public class PcapReplayDispatchService {
       return Optional.empty();
     }
     return Optional.of(candidates.get(0));
+  }
+
+  /**
+   * 派发一个 pcap_replay 任务并返回结果 future.
+   *
+   * @throws CapabilityNotSupportedException Agent 未声明 {@code pcap_replay} 能力
+   */
+  public CompletableFuture<AgentTaskQueueService.ReceivedResult> dispatch(
+      String taskId, Agent agent, PcapReplayContent content) {
+    if (taskId == null || agent == null || content == null) {
+      throw new IllegalArgumentException("taskId, agent, and content must not be null");
+    }
+    requireCapability(agent, PcapReplayContract.CAPABILITY_PCAP_REPLAY);
+
+    String payloadJson;
+    try {
+      payloadJson = objectMapper.writeValueAsString(content);
+    } catch (JsonProcessingException ex) {
+      throw new IllegalStateException(
+          "Failed to serialize PcapReplayContent to JSON for task " + taskId, ex);
+    }
+
+    AgentDtos.AgentTask task =
+        new AgentDtos.AgentTask(
+            taskId,
+            PcapReplayContract.CAPABILITY_PCAP_REPLAY,
+            PcapReplayContract.TYPE,
+            payloadJson,
+            List.of());
+
+    log.info(
+        "PcapReplayDispatchService.dispatch: task_id={}, agent={}, interface={}, mode={}",
+        taskId,
+        agent.getId(),
+        content.getTargetInterface(),
+        content.getReplayMode());
+    taskQueueService.enqueue(agent.getId(), task);
+    return taskQueueService.awaitResult(taskId);
+  }
+
+  /** Generate a fresh dispatch task_id (UUID). */
+  public String newTaskId() {
+    return UUID.randomUUID().toString();
+  }
+
+  private static void requireCapability(Agent agent, String capability) {
+    List<String> caps = agent.getCapabilities();
+    if (caps == null || !caps.contains(capability)) {
+      throw new CapabilityNotSupportedException(
+          capability,
+          "Agent "
+              + agent.getId()
+              + " does not declare capability '"
+              + capability
+              + "' (has="
+              + caps
+              + ")");
+    }
   }
 }
