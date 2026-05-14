@@ -261,16 +261,24 @@ public class AgentOfflinePackApi {
     return auth.getName();
   }
 
-  /** Client IP from request — prefers X-Forwarded-For if present, else remoteAddr. */
-  private static String clientIp(HttpServletRequest request) {
+  /**
+   * Returns the immediate connection's remote IP for audit attribution.
+   *
+   * <p><strong>Does NOT trust {@code X-Forwarded-For}.</strong> In production deployments, a
+   * reverse proxy (nginx / ALB / CloudFront) is expected to either rewrite {@code RemoteAddr} via
+   * PROXY protocol / {@code set_real_ip_from} so that {@link HttpServletRequest#getRemoteAddr()}
+   * returns the true client IP, or perform its own audit-side attribution. Trusting {@code
+   * X-Forwarded-For} directly here would let any agent client spoof an arbitrary IP into the {@code
+   * offline_pack_audit.exported_from_ip} column.
+   *
+   * <p>When deployment hardening lands (C1-Platform-3 or operations doc), this method may be
+   * enhanced with a trusted-proxy CIDR allowlist that conditionally honors XFF.
+   *
+   * <p>Package-private for test access (see {@code AgentOfflinePackApiClientIpTest}).
+   */
+  static String clientIp(HttpServletRequest request) {
     if (request == null) {
       return null;
-    }
-    String xff = request.getHeader("X-Forwarded-For");
-    if (xff != null && !xff.isBlank()) {
-      // X-Forwarded-For can be "client, proxy1, proxy2" — take first hop.
-      int comma = xff.indexOf(',');
-      return (comma >= 0 ? xff.substring(0, comma) : xff).trim();
     }
     return request.getRemoteAddr();
   }
