@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.veriguard.IntegrationTest;
 import io.veriguard.crypto.Ed25519SignatureService;
 import io.veriguard.crypto.X25519BoxService;
@@ -189,11 +191,9 @@ class AgentTaskQueueApiIntegrationTest extends IntegrationTest {
 
     String timestamp = String.valueOf(System.currentTimeMillis());
     byte[] canonicalBody =
-        (taskId + ":completed:0").getBytes(java.nio.charset.StandardCharsets.UTF_8);
-    byte[] tsBytes = timestamp.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-    byte[] signedInput = new byte[tsBytes.length + canonicalBody.length];
-    System.arraycopy(tsBytes, 0, signedInput, 0, tsBytes.length);
-    System.arraycopy(canonicalBody, 0, signedInput, tsBytes.length, canonicalBody.length);
+        canonicalResultBytes(
+            taskId, "completed", 0, "ok", "", "2026-05-14T10:00:00Z", "2026-05-14T10:00:05Z", "");
+    byte[] signedInput = concatTimestampBody(timestamp, canonicalBody);
     byte[] sig = ed25519.sign(agent.signPair().privateKey(), signedInput);
 
     mockMvc
@@ -208,6 +208,94 @@ class AgentTaskQueueApiIntegrationTest extends IntegrationTest {
                 .content(resultBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("accepted"));
+  }
+
+  /**
+   * Verify that tampering with {@code stdout} after signing breaks verification — proves the
+   * Ed25519 signature covers all 7 ResultInput fields (+ task_id), not just status/exit_code.
+   */
+  @Test
+  void tamperedStdoutFailsSignatureVerification() throws Exception {
+    RegisteredAgent agent = registerAgent();
+
+    String taskId = "T-tamper-1";
+    String originalStdout = "ok";
+    // Sign over the original (untampered) canonical bytes
+    byte[] canonicalBody =
+        canonicalResultBytes(
+            taskId,
+            "completed",
+            0,
+            originalStdout,
+            "",
+            "2026-05-14T10:00:00Z",
+            "2026-05-14T10:00:05Z",
+            "");
+    String timestamp = String.valueOf(System.currentTimeMillis());
+    byte[] signedInput = concatTimestampBody(timestamp, canonicalBody);
+    byte[] sig = ed25519.sign(agent.signPair().privateKey(), signedInput);
+
+    // POST a body whose stdout differs from what was signed — server-side canonicalization will
+    // reconstruct different bytes → Ed25519 verify must fail → 401.
+    String tamperedBody =
+        """
+        {
+          "status": "completed",
+          "exit_code": 0,
+          "stdout": "HACKED",
+          "stderr": "",
+          "started_at": "2026-05-14T10:00:00Z",
+          "finished_at": "2026-05-14T10:00:05Z"
+        }
+        """;
+
+    mockMvc
+        .perform(
+            post("/api/agent/task/" + taskId + "/result")
+                .with(csrf())
+                .param("agent_id", agent.agentId())
+                .header(AgentTaskQueueApi.TIMESTAMP_HEADER, timestamp)
+                .header(AgentTaskQueueApi.SIGNATURE_HEADER, Base64.getEncoder().encodeToString(sig))
+                .header("X-Veriguard-Onboard-Token", agent.onboardToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(tamperedBody))
+        .andExpect(status().isUnauthorized());
+  }
+
+  /**
+   * Mirror of {@link AgentTaskQueueApi#canonicalResultBytes} on the agent side — Rust agent
+   * eventually replicates this same canonical form (sorted-keys, no-whitespace JSON).
+   */
+  private byte[] canonicalResultBytes(
+      String taskId,
+      String status,
+      int exitCode,
+      String stdout,
+      String stderr,
+      String startedAt,
+      String finishedAt,
+      String errorMessage)
+      throws Exception {
+    ObjectMapper canonical =
+        objectMapper.copy().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+    ObjectNode node = canonical.getNodeFactory().objectNode();
+    node.put("error_message", errorMessage);
+    node.put("exit_code", exitCode);
+    node.put("finished_at", finishedAt);
+    node.put("started_at", startedAt);
+    node.put("status", status);
+    node.put("stderr", stderr);
+    node.put("stdout", stdout);
+    node.put("task_id", taskId);
+    return canonical.writeValueAsBytes(node);
+  }
+
+  private static byte[] concatTimestampBody(String timestamp, byte[] body) {
+    byte[] tsBytes = timestamp.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    byte[] signedInput = new byte[tsBytes.length + body.length];
+    System.arraycopy(tsBytes, 0, signedInput, 0, tsBytes.length);
+    System.arraycopy(body, 0, signedInput, tsBytes.length, body.length);
+    return signedInput;
   }
 
   @Test

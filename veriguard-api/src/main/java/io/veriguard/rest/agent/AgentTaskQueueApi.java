@@ -1,5 +1,9 @@
 package io.veriguard.rest.agent;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.veriguard.aop.RBAC;
 import io.veriguard.crypto.Ed25519SignatureService;
@@ -64,14 +68,20 @@ public class AgentTaskQueueApi {
   private final AgentTaskQueueService queueService;
   private final AgentOnboardingService onboardingService;
   private final Ed25519SignatureService ed25519;
+  private final ObjectMapper canonicalMapper;
 
   public AgentTaskQueueApi(
       AgentTaskQueueService queueService,
       AgentOnboardingService onboardingService,
-      Ed25519SignatureService ed25519) {
+      Ed25519SignatureService ed25519,
+      ObjectMapper objectMapper) {
     this.queueService = queueService;
     this.onboardingService = onboardingService;
     this.ed25519 = ed25519;
+    // Sorted-keys + no-whitespace canonical mapper, matching VpackSerializer / VresultsSerializer
+    // style. Result signature input is byte-deterministic across Java + Rust agent.
+    this.canonicalMapper =
+        objectMapper.copy().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
   }
 
   @GetMapping(POLL_URI)
@@ -102,18 +112,46 @@ public class AgentTaskQueueApi {
       @Valid @RequestBody AgentDtos.ResultInput input,
       WebAsyncManager asyncManager) {
     // For signature verification we need the raw body bytes; in Spring MVC with @RequestBody
-    // we have already parsed JSON. For this scaffold we sign over the canonical JSON re-serialized
-    // to a deterministic representation (status||taskId pair) — Rust agent must use the same
-    // canonical form. Real-world implementation should use a HttpServletRequest filter to
-    // capture raw body bytes before JSON parsing.
-    byte[] canonicalBody =
-        (taskId + ":" + input.status() + ":" + input.exitCode())
-            .getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    // we have already parsed JSON. We rebuild a canonical byte representation covering ALL fields
+    // the controller persists (task_id + 7 ResultInput fields) so the agent's Ed25519 signature
+    // binds to every field the platform stores. Rust agent MUST construct the same canonical form
+    // before signing. TODO C1-Platform-2: switch to ContentCachingRequestWrapper so the agent can
+    // sign the actual raw bytes the platform parses.
+    byte[] canonicalBody = canonicalResultBytes(taskId, input);
     if (!verifyAgentSignature(agentId, onboardToken, timestamp, canonicalBody, signatureB64)) {
       return ResponseEntity.status(401).build();
     }
     queueService.acceptResult(taskId, agentId, input);
     return ResponseEntity.ok(new AgentDtos.ResultOutput("accepted"));
+  }
+
+  /**
+   * Build the canonical byte representation of a result payload for Ed25519 signing/verification.
+   *
+   * <p>Covers all 8 fields the controller binds: {@code task_id} (path) plus the 7 {@link
+   * AgentDtos.ResultInput} body fields ({@code error_message}, {@code exit_code}, {@code
+   * finished_at}, {@code started_at}, {@code status}, {@code stderr}, {@code stdout}). Serialized
+   * as sorted-keys, no-whitespace JSON (consistent with {@link io.veriguard.crypto.VpackSerializer}
+   * / {@link io.veriguard.crypto.VresultsSerializer} canonical style).
+   *
+   * <p>Null body fields are coerced to empty strings to keep the byte representation deterministic;
+   * the Rust agent must do the same.
+   */
+  private byte[] canonicalResultBytes(String taskId, AgentDtos.ResultInput body) {
+    ObjectNode canonical = canonicalMapper.getNodeFactory().objectNode();
+    canonical.put("error_message", body.errorMessage() != null ? body.errorMessage() : "");
+    canonical.put("exit_code", body.exitCode());
+    canonical.put("finished_at", body.finishedAt() != null ? body.finishedAt() : "");
+    canonical.put("started_at", body.startedAt() != null ? body.startedAt() : "");
+    canonical.put("status", body.status());
+    canonical.put("stderr", body.stderr() != null ? body.stderr() : "");
+    canonical.put("stdout", body.stdout() != null ? body.stdout() : "");
+    canonical.put("task_id", taskId);
+    try {
+      return canonicalMapper.writeValueAsBytes(canonical);
+    } catch (JsonProcessingException ex) {
+      throw new IllegalStateException("Failed to canonicalize result signature input", ex);
+    }
   }
 
   /**
