@@ -13,6 +13,7 @@ import io.veriguard.crypto.Ed25519SignatureService;
 import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VresultsSerializer;
 import io.veriguard.crypto.X25519BoxService;
+import io.veriguard.database.repository.OfflinePackAuditRepository;
 import io.veriguard.utils.mockUser.WithMockUser;
 import java.time.Instant;
 import java.util.Base64;
@@ -38,6 +39,7 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
   @Autowired private X25519BoxService x25519;
   @Autowired private VpackSerializer vpackSerializer;
   @Autowired private VresultsSerializer vresultsSerializer;
+  @Autowired private OfflinePackAuditRepository auditRepository;
 
   private static final String INIT_BODY =
       """
@@ -219,5 +221,35 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(exportBody))
         .andExpect(status().isBadRequest());
+  }
+
+  /**
+   * Task C.13 — scaffold-mode audit skip. The in-memory AgentOnboardingService never persists a JPA
+   * Agent row, so AgentOfflinePackApi must skip the audit write (FK to agents.agent_id would fail).
+   * This test asserts that the export still succeeds AND no audit row is written. Full audit
+   * roundtrip is exercised in {@link io.veriguard.audit.OfflinePackAuditServiceTest} with a mocked
+   * repository.
+   */
+  @Test
+  void export_skipsAuditWhenAgentNotPersisted() throws Exception {
+    long before = auditRepository.count();
+    RegisteredAgent agent = registerAgent();
+
+    String exportBody =
+        objectMapper.writeValueAsString(new AgentDtos.OfflinePackExportInput(agent.agentId(), 100));
+
+    mockMvc
+        .perform(
+            post(AgentOfflinePackApi.EXPORT_URI)
+                .with(csrf())
+                .param("onboard_token", agent.onboardToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(exportBody))
+        .andExpect(status().isOk());
+
+    long after = auditRepository.count();
+    org.assertj.core.api.Assertions.assertThat(after)
+        .as("audit row should NOT be written when JPA Agent is missing (scaffold mode)")
+        .isEqualTo(before);
   }
 }
