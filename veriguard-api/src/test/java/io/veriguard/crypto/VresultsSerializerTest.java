@@ -114,6 +114,20 @@ class VresultsSerializerTest {
   }
 
   @Test
+  void parseRejectsMalformedBase64() throws Exception {
+    byte[] envelope = serializer.build(samplePayload(), agentSignPriv);
+    ObjectNode root = (ObjectNode) mapper.readTree(envelope);
+    // sig_b64 is decoded before signature verification, so malformed input here exercises the
+    // decodeBase64OrFail path rather than tripping the SignatureVerificationException first.
+    ((ObjectNode) root.get("signature")).put("sig_b64", "!not-valid-base64!");
+    byte[] malformed = mapper.writeValueAsBytes(root);
+
+    assertThatThrownBy(() -> serializer.parse(malformed, agentSignPub))
+        .isInstanceOf(VpackSerializer.VpackParseException.class)
+        .hasMessageContaining("sig_b64");
+  }
+
+  @Test
   void buildProducesValidJsonStructure() throws Exception {
     byte[] envelope = serializer.build(samplePayload(), agentSignPriv);
     ObjectNode root = (ObjectNode) mapper.readTree(envelope);

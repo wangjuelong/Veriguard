@@ -161,8 +161,8 @@ public class VpackSerializer {
 
     String signerPubB64 = textOrThrow(signatureNode, "signer_pub_b64");
     String sigB64 = textOrThrow(signatureNode, "sig_b64");
-    byte[] signerPub = Base64.getDecoder().decode(signerPubB64);
-    byte[] sig = Base64.getDecoder().decode(sigB64);
+    byte[] signerPub = decodeBase64OrFail(signerPubB64, "signer_pub_b64");
+    byte[] sig = decodeBase64OrFail(sigB64, "sig_b64");
 
     if (!MessageDigest.isEqual(signerPub, expectedSignerPub)) {
       throw new SignatureVerificationException(
@@ -226,10 +226,24 @@ public class VpackSerializer {
   }
 
   private VpackEncryptedEnvelope nodeToEncryptedEnvelope(JsonNode n) {
-    byte[] senderPub = Base64.getDecoder().decode(textOrThrow(n, "sender_x25519_pub_b64"));
-    byte[] nonce = Base64.getDecoder().decode(textOrThrow(n, "nonce_b64"));
-    byte[] ct = Base64.getDecoder().decode(textOrThrow(n, "ciphertext_b64"));
+    byte[] senderPub =
+        decodeBase64OrFail(textOrThrow(n, "sender_x25519_pub_b64"), "sender_x25519_pub_b64");
+    byte[] nonce = decodeBase64OrFail(textOrThrow(n, "nonce_b64"), "nonce_b64");
+    byte[] ct = decodeBase64OrFail(textOrThrow(n, "ciphertext_b64"), "ciphertext_b64");
     return new VpackEncryptedEnvelope(senderPub, nonce, ct);
+  }
+
+  /**
+   * Decode a base64 string, converting {@link IllegalArgumentException} (malformed base64) to a
+   * {@link VpackParseException} so the global advice maps it to a 4xx instead of leaking a raw 500.
+   */
+  private static byte[] decodeBase64OrFail(String b64, String fieldName) {
+    try {
+      return Base64.getDecoder().decode(b64);
+    } catch (IllegalArgumentException ex) {
+      throw new VpackParseException(
+          "Invalid base64 in field '" + fieldName + "': " + ex.getMessage(), ex);
+    }
   }
 
   private static String textOrThrow(JsonNode parent, String field) {
