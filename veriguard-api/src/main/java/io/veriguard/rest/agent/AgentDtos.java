@@ -43,11 +43,9 @@ public final class AgentDtos {
 
   // --- /api/agent/onboard/bootstrap ---
 
-  public record BootstrapInput(
-      @JsonProperty("onboard_token") @NotBlank String onboardToken) {}
+  public record BootstrapInput(@JsonProperty("onboard_token") @NotBlank String onboardToken) {}
 
-  public record BootstrapOutput(
-      @JsonProperty("install_pack") InstallPack installPack) {}
+  public record BootstrapOutput(@JsonProperty("install_pack") InstallPack installPack) {}
 
   public record InstallPack(
       @JsonProperty("agent_id") String agentId,

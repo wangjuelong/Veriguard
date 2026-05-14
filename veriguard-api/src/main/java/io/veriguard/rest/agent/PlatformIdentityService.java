@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * Holds the platform's 4 long-lived crypto identities (P_sign + P_enc, both Ed25519 and X25519
- * key pairs) — used by all Veriguard Agent (C1) crypto operations.
+ * Holds the platform's 4 long-lived crypto identities (P_sign + P_enc, both Ed25519 and X25519 key
+ * pairs) — used by all Veriguard Agent (C1) crypto operations.
  *
- * <p>这是 C1-Platform-1 内的 scaffold 实现：keys 在 Spring 启动时 SecureRandom 生成。
- * <strong>生产场景</strong>必须替换为 HSM/KMS 持久化加载 (C1-Platform-2 后续 step)：
+ * <p>这是 C1-Platform-1 内的 scaffold 实现：keys 在 Spring 启动时 SecureRandom 生成。 <strong>生产场景</strong>必须替换为
+ * HSM/KMS 持久化加载 (C1-Platform-2 后续 step)：
  *
  * <ul>
  *   <li>{@code P_sign_priv} 落 {@code /var/lib/veriguard/keys/p_sign.priv} chmod 0600

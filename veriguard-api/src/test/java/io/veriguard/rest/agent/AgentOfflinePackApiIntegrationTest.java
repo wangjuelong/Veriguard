@@ -122,8 +122,7 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
     String signerPubB64 = parsed.get("signature").get("signer_pub_b64").asText();
     byte[] platformSignPub = Base64.getDecoder().decode(signerPubB64);
 
-    VpackSerializer.VpackContents contents =
-        vpackSerializer.parse(envelopeBytes, platformSignPub);
+    VpackSerializer.VpackContents contents = vpackSerializer.parse(envelopeBytes, platformSignPub);
     org.assertj.core.api.Assertions.assertThat(contents.metadata().agentId())
         .isEqualTo(agent.agentId());
   }
@@ -200,7 +199,9 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
                 .with(csrf())
                 .param("onboard_token", agent.onboardToken()))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.errors[0]").value(org.hamcrest.Matchers.containsString("envelope_invalid")));
+        .andExpect(
+            jsonPath("$.errors[0]")
+                .value(org.hamcrest.Matchers.containsString("envelope_invalid")));
   }
 
   @Test

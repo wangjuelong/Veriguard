@@ -24,7 +24,9 @@ class AgentImplantDownloadApiIntegrationTest extends IntegrationTest {
   @Test
   void download_returns_404_when_binary_absent() throws Exception {
     // macos/arm64 — no fixture provided in src/test/resources, only a .keep main resource
-    mockMvc.perform(get("/api/agent/implant/download/macos/arm64")).andExpect(status().isNotFound());
+    mockMvc
+        .perform(get("/api/agent/implant/download/macos/arm64"))
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -38,9 +40,7 @@ class AgentImplantDownloadApiIntegrationTest extends IntegrationTest {
         .andExpect(header().exists("X-SHA256"))
         .andExpect(header().string("Content-Length", "36"))
         .andExpect(
-            header()
-                .string(
-                    "Content-Disposition", "attachment; filename=\"veriguard-implant\""));
+            header().string("Content-Disposition", "attachment; filename=\"veriguard-implant\""));
   }
 
   @Test

@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
  * Unit tests for {@link Ed25519SignatureService}.
  *
  * <p>Crypto round-trip + cross-language compatibility validated via RFC 8032 §7.1 Test 1 vector
- * (empty message). 该 vector 不依赖 Rust agent fixture，可在本 PR 单独 verify Java 端
- * Ed25519 实现与 RFC 一致。Rust 端 ed25519-dalek 通过同 vector 自验。
+ * (empty message). 该 vector 不依赖 Rust agent fixture，可在本 PR 单独 verify Java 端 Ed25519 实现与 RFC 一致。Rust
+ * 端 ed25519-dalek 通过同 vector 自验。
  */
 class Ed25519SignatureServiceTest {
 

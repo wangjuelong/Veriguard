@@ -21,9 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Integration tests for {@link AgentTaskQueueApi} — poll + result with signature verification.
- */
+/** Integration tests for {@link AgentTaskQueueApi} — poll + result with signature verification. */
 @DirtiesContext
 @Transactional
 @WithMockUser(isAdmin = true)

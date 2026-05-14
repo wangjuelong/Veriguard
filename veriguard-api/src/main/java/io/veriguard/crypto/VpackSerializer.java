@@ -47,9 +47,9 @@ import org.springframework.stereotype.Component;
  * </pre>
  *
  * <p>Canonical signature input — Jackson with {@link
- * SerializationFeature#ORDER_MAP_ENTRIES_BY_KEYS} enabled, no whitespace, UTF-8. The sign input
- * is a 2-key JSON object {@code { "envelope_encrypted": ..., "metadata_plaintext": ... }} (keys
- * sorted alphabetically). Rust agent 端 serde_json + serde with field-sort 生成同字节序，互验签可行.
+ * SerializationFeature#ORDER_MAP_ENTRIES_BY_KEYS} enabled, no whitespace, UTF-8. The sign input is
+ * a 2-key JSON object {@code { "envelope_encrypted": ..., "metadata_plaintext": ... }} (keys sorted
+ * alphabetically). Rust agent 端 serde_json + serde with field-sort 生成同字节序，互验签可行.
  *
  * <p>API：
  *
@@ -59,8 +59,8 @@ import org.springframework.stereotype.Component;
  * </ul>
  *
  * <p>Caller responsibility — encryption (X25519BoxService) is performed before {@link #build} and
- * decryption is performed after {@link #parse} (separation of concern: serializer 只管 JSON
- * envelope + 签名层，不做 ChaCha20-Poly1305).
+ * decryption is performed after {@link #parse} (separation of concern: serializer 只管 JSON envelope
+ * + 签名层，不做 ChaCha20-Poly1305).
  */
 @Component
 public class VpackSerializer {
@@ -78,14 +78,15 @@ public class VpackSerializer {
   public VpackSerializer(ObjectMapper baseMapper, Ed25519SignatureService ed25519) {
     // Build a clone of the injected mapper with key-sort enabled so the canonical signature input
     // is byte-deterministic for the same logical content.
-    this.canonicalMapper = baseMapper.copy().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+    this.canonicalMapper =
+        baseMapper.copy().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
     this.canonicalMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     this.ed25519 = ed25519;
   }
 
   /**
-   * Build a complete {@code .vpack} envelope bytes from already-encrypted payload + platform
-   * sign priv key.
+   * Build a complete {@code .vpack} envelope bytes from already-encrypted payload + platform sign
+   * priv key.
    *
    * @param payload metadata + encrypted envelope (caller pre-runs ChaCha20-Poly1305 seal)
    * @param platformSignPriv 32-byte platform Ed25519 secret seed
@@ -278,14 +279,13 @@ public class VpackSerializer {
       String exportedBy) {}
 
   /**
-   * Encrypted envelope structure — caller-provided fields (sender X25519 public key, 12-byte
-   * nonce, ChaCha20-Poly1305 ciphertext+tag).
+   * Encrypted envelope structure — caller-provided fields (sender X25519 public key, 12-byte nonce,
+   * ChaCha20-Poly1305 ciphertext+tag).
    */
   public record VpackEncryptedEnvelope(byte[] senderX25519Pub, byte[] nonce, byte[] ciphertext) {
     public VpackEncryptedEnvelope {
       if (senderX25519Pub == null || nonce == null || ciphertext == null) {
-        throw new IllegalArgumentException(
-            "senderX25519Pub / nonce / ciphertext must not be null");
+        throw new IllegalArgumentException("senderX25519Pub / nonce / ciphertext must not be null");
       }
     }
   }
@@ -312,5 +312,4 @@ public class VpackSerializer {
       super(message, cause);
     }
   }
-
 }

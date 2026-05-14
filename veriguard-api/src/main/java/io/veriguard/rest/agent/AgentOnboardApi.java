@@ -25,14 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <ul>
  *   <li>{@code /init} — admin-only (RBAC: WRITE on AGENT)
- *   <li>{@code /register} — agent self-service; signature-protected (the agent proves possession
- *       of the X25519 + Ed25519 priv keys via the {@code registration_sig_b64} field)
+ *   <li>{@code /register} — agent self-service; signature-protected (the agent proves possession of
+ *       the X25519 + Ed25519 priv keys via the {@code registration_sig_b64} field)
  *   <li>{@code /bootstrap} — agent self-service; token-protected (only the one-time onboard_token
  *       holder can fetch the install pack)
  * </ul>
  *
- * <p>{@code AppSecurityConfig} already maps {@code /api/agent/**} as {@code permitAll()}; per-endpoint
- * auth is handled at the controller layer (token + signature checks).
+ * <p>{@code AppSecurityConfig} already maps {@code /api/agent/**} as {@code permitAll()};
+ * per-endpoint auth is handled at the controller layer (token + signature checks).
  */
 @RestController
 public class AgentOnboardApi {
@@ -123,7 +123,8 @@ public class AgentOnboardApi {
       return ResponseEntity.badRequest()
           .body(new AgentDtos.RegisterOutput("token_already_used", input.agentId()));
     }
-    return ResponseEntity.ok(new AgentDtos.RegisterOutput("registered", registered.get().agentId()));
+    return ResponseEntity.ok(
+        new AgentDtos.RegisterOutput("registered", registered.get().agentId()));
   }
 
   /**

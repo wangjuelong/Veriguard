@@ -30,15 +30,15 @@ import org.springframework.web.context.request.async.WebAsyncManager;
  * </ul>
  *
  * <p>Both endpoints expect {@code X-Veriguard-Signature: <base64 Ed25519 sig over body+timestamp>}
- * header. The {@code X-Veriguard-Timestamp} header carries a Unix epoch millis. The signature
- * input is {@code utf8(timestamp) || rawBody} (rawBody empty for GET).
+ * header. The {@code X-Veriguard-Timestamp} header carries a Unix epoch millis. The signature input
+ * is {@code utf8(timestamp) || rawBody} (rawBody empty for GET).
  *
  * <p><strong>Scaffold mode</strong>: actual signature verification requires looking up the agent's
- * Ed25519 pub key, which lives on the agent_onboarding state (not yet persisted to JPA — see
- * {@link AgentOnboardingService}). For this PR, signature verification is gated on whether the
- * agent_id has been registered (via {@link AgentOnboardingService#findByToken} look-ups would
- * need an inverse index by agent_id which we don't have yet). Tests exercise the gating by
- * registering an agent first and reusing the same key pair.
+ * Ed25519 pub key, which lives on the agent_onboarding state (not yet persisted to JPA — see {@link
+ * AgentOnboardingService}). For this PR, signature verification is gated on whether the agent_id
+ * has been registered (via {@link AgentOnboardingService#findByToken} look-ups would need an
+ * inverse index by agent_id which we don't have yet). Tests exercise the gating by registering an
+ * agent first and reusing the same key pair.
  *
  * <p>TODO C1-Platform-2:
  *
@@ -123,11 +123,7 @@ public class AgentTaskQueueApi {
    * @return true if signature verifies, false otherwise
    */
   private boolean verifyAgentSignature(
-      String agentId,
-      String onboardToken,
-      String timestamp,
-      byte[] body,
-      String signatureB64) {
+      String agentId, String onboardToken, String timestamp, byte[] body, String signatureB64) {
     if (signatureB64 == null
         || onboardToken == null
         || timestamp == null

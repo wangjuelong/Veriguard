@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for {@link VpackSerializer}.
  *
- * <p>Validates round-trip + 4 reject paths (T-1 tamper, T-2 forge, schema_version mismatch,
- * format mismatch). Cross-language fixture (Rust agent ↔ Java platform) is deferred to
- * C1-Integration phase per the project plan.
+ * <p>Validates round-trip + 4 reject paths (T-1 tamper, T-2 forge, schema_version mismatch, format
+ * mismatch). Cross-language fixture (Rust agent ↔ Java platform) is deferred to C1-Integration
+ * phase per the project plan.
  */
 class VpackSerializerTest {
 

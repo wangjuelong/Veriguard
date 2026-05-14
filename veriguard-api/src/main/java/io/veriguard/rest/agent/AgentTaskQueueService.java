@@ -40,8 +40,8 @@ public class AgentTaskQueueService {
 
   /**
    * Fetch (and drain) pending tasks for an agent. Idempotent only within a single call — once
-   * returned, tasks are removed from queue. This mirrors the upstream OpenAEV manage_jobs
-   * "claim + execute" semantics.
+   * returned, tasks are removed from queue. This mirrors the upstream OpenAEV manage_jobs "claim +
+   * execute" semantics.
    */
   public List<AgentDtos.AgentTask> drainTasks(String agentId) {
     if (agentId == null) {
@@ -57,8 +57,7 @@ public class AgentTaskQueueService {
    * @return {@code true} if accepted (always accepted in scaffold mode — caller may store audit)
    */
   public boolean acceptResult(String taskId, String agentId, AgentDtos.ResultInput result) {
-    receivedResults.put(
-        taskId, new ReceivedResult(taskId, agentId, result, Instant.now()));
+    receivedResults.put(taskId, new ReceivedResult(taskId, agentId, result, Instant.now()));
     return true;
   }
 

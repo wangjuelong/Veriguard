@@ -77,8 +77,8 @@ public class AgentOfflinePackApi {
   }
 
   /**
-   * Export — generate a {@code .vpack} envelope for {@code agent_id} (no real task selection
-   * yet — scaffold uses empty tasks array).
+   * Export — generate a {@code .vpack} envelope for {@code agent_id} (no real task selection yet —
+   * scaffold uses empty tasks array).
    *
    * <p>Caller must provide an onboard_token via header so the platform can locate the agent's
    * X25519 enc pub key (which it uses as the recipient for envelope encryption).
@@ -126,9 +126,7 @@ public class AgentOfflinePackApi {
             new VpackSerializer.VpackPayload(meta, env), platformIdentity.getPlatformSignPriv());
 
     return ResponseEntity.ok()
-        .header(
-            "Content-Disposition",
-            "attachment; filename=\"" + packId + ".vpack\"")
+        .header("Content-Disposition", "attachment; filename=\"" + packId + ".vpack\"")
         .body(envelopeBytes);
   }
 

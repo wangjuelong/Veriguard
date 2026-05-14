@@ -22,8 +22,8 @@ import org.springframework.stereotype.Service;
  * </ol>
  *
  * <p><strong>Scaffold mode</strong>: tokens are stored in-memory ({@link ConcurrentHashMap}) with
- * TTL 24h. Single-node deploy only — multi-node coordination + DB persistence is C1-Platform-2 scope.
- * The longer-term persistence target is the {@code agents} table加密列 (V19) — but Agent JPA
+ * TTL 24h. Single-node deploy only — multi-node coordination + DB persistence is C1-Platform-2
+ * scope. The longer-term persistence target is the {@code agents} table加密列 (V19) — but Agent JPA
  * row creation requires {@code agent_asset / executor / privilege} that are not in the spec's
  * onboard body; this PR defers that wiring intentionally.
  *
@@ -93,8 +93,8 @@ public class AgentOnboardingService {
   }
 
   /**
-   * Bootstrap fetch — same as {@link #findByToken} but encapsulates the semantics that the token
-   * is being exchanged for an install_pack. Token is NOT consumed (register step consumes it).
+   * Bootstrap fetch — same as {@link #findByToken} but encapsulates the semantics that the token is
+   * being exchanged for an install_pack. Token is NOT consumed (register step consumes it).
    */
   public Optional<AgentOnboardingState> bootstrap(String token) {
     return findByToken(token);
@@ -106,8 +106,8 @@ public class AgentOnboardingService {
    * @param token the onboard_token returned from {@link #init}
    * @param agentSignPub agent Ed25519 public key (32 bytes)
    * @param agentEncPub agent X25519 public key (32 bytes)
-   * @param registrationSig agent-signed proof of pub key possession (signature over canonical
-   *     bytes {@code token || agentSignPub || agentEncPub})
+   * @param registrationSig agent-signed proof of pub key possession (signature over canonical bytes
+   *     {@code token || agentSignPub || agentEncPub})
    * @return registered state (with agent_id), or empty if token invalid / expired
    * @throws RegistrationSignatureInvalidException if {@code registrationSig} does not verify
    */
@@ -158,11 +158,7 @@ public class AgentOnboardingService {
     System.arraycopy(tokenBytes, 0, out, 0, tokenBytes.length);
     System.arraycopy(agentSignPub, 0, out, tokenBytes.length, agentSignPub.length);
     System.arraycopy(
-        agentEncPub,
-        0,
-        out,
-        tokenBytes.length + agentSignPub.length,
-        agentEncPub.length);
+        agentEncPub, 0, out, tokenBytes.length + agentSignPub.length, agentEncPub.length);
     return out;
   }
 

@@ -33,9 +33,9 @@ import org.springframework.stereotype.Component;
  * }
  * </pre>
  *
- * <p>Re-uses {@link VpackSerializer} exception hierarchy ({@code SchemaVersionException},
- * {@code SignatureVerificationException}, {@code VpackParseException}) for consistency — caller
- * handles both serializers' failures uniformly.
+ * <p>Re-uses {@link VpackSerializer} exception hierarchy ({@code SchemaVersionException}, {@code
+ * SignatureVerificationException}, {@code VpackParseException}) for consistency — caller handles
+ * both serializers' failures uniformly.
  */
 @Component
 public class VresultsSerializer {
@@ -95,8 +95,8 @@ public class VresultsSerializer {
   }
 
   /**
-   * Parse a {@code .vresults} envelope, verifying its signature against the agent's expected
-   * public key.
+   * Parse a {@code .vresults} envelope, verifying its signature against the agent's expected public
+   * key.
    */
   public VresultsContents parse(byte[] envelopeBytes, byte[] expectedAgentSignerPub) {
     JsonNode root;
@@ -194,8 +194,7 @@ public class VresultsSerializer {
   private static String textOrThrow(JsonNode parent, String field) {
     JsonNode v = parent.get(field);
     if (v == null || !v.isTextual()) {
-      throw new VpackSerializer.VpackParseException(
-          "Missing or non-textual field: " + field, null);
+      throw new VpackSerializer.VpackParseException("Missing or non-textual field: " + field, null);
     }
     return v.asText();
   }
@@ -203,8 +202,7 @@ public class VresultsSerializer {
   private static int intOrThrow(JsonNode parent, String field) {
     JsonNode v = parent.get(field);
     if (v == null || !v.canConvertToInt()) {
-      throw new VpackSerializer.VpackParseException(
-          "Missing or non-integer field: " + field, null);
+      throw new VpackSerializer.VpackParseException("Missing or non-integer field: " + field, null);
     }
     return v.asInt();
   }
@@ -223,19 +221,15 @@ public class VresultsSerializer {
       VresultsMetadata metadata, VresultsEncryptedEnvelope encryptedEnvelope) {}
 
   public record VresultsContents(
-      VresultsMetadata metadata,
-      VresultsEncryptedEnvelope encryptedEnvelope,
-      byte[] signerPub) {}
+      VresultsMetadata metadata, VresultsEncryptedEnvelope encryptedEnvelope, byte[] signerPub) {}
 
   public record VresultsMetadata(
       UUID packId, String agentId, Instant executedAt, int resultCount) {}
 
-  public record VresultsEncryptedEnvelope(
-      byte[] senderX25519Pub, byte[] nonce, byte[] ciphertext) {
+  public record VresultsEncryptedEnvelope(byte[] senderX25519Pub, byte[] nonce, byte[] ciphertext) {
     public VresultsEncryptedEnvelope {
       if (senderX25519Pub == null || nonce == null || ciphertext == null) {
-        throw new IllegalArgumentException(
-            "senderX25519Pub / nonce / ciphertext must not be null");
+        throw new IllegalArgumentException("senderX25519Pub / nonce / ciphertext must not be null");
       }
     }
   }

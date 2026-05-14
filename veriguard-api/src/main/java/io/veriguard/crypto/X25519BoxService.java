@@ -22,8 +22,8 @@ import org.springframework.stereotype.Service;
  *   <li>无 AAD（associated data）— `.vpack` envelope 把 metadata 走 Ed25519 签名，与加密层正交
  * </ol>
  *
- * <p>Cross-language 兼容 — Rust agent 用 {@code x25519-dalek} + {@code chacha20poly1305} crate
- * (IETF 12-byte nonce 模式) 一一对应：
+ * <p>Cross-language 兼容 — Rust agent 用 {@code x25519-dalek} + {@code chacha20poly1305} crate (IETF
+ * 12-byte nonce 模式) 一一对应：
  *
  * <ul>
  *   <li>{@code x25519_dalek::x25519(priv, pub)} → 同等 ECDH
@@ -31,9 +31,8 @@ import org.springframework.stereotype.Service;
  *   <li>nonce 12 字节匹配
  * </ul>
  *
- * <p>注意：BC 1.84 不带 XChaCha20-Poly1305 引擎；用 IETF ChaCha20-Poly1305 (12B nonce) 是
- * 务实的双端对齐方案。spec §3.5.2 中 {@code "cipher": "chacha20-poly1305"} 字段未指定 nonce 长度，
- * 此处实现把 12B 锁为契约。
+ * <p>注意：BC 1.84 不带 XChaCha20-Poly1305 引擎；用 IETF ChaCha20-Poly1305 (12B nonce) 是 务实的双端对齐方案。spec
+ * §3.5.2 中 {@code "cipher": "chacha20-poly1305"} 字段未指定 nonce 长度， 此处实现把 12B 锁为契约。
  */
 @Service
 public class X25519BoxService {
@@ -87,8 +86,8 @@ public class X25519BoxService {
   }
 
   /**
-   * Seal {@code plaintext} for {@code recipientPublicKey}, signed (via shared secret)
-   * for {@code senderPrivateKey}.
+   * Seal {@code plaintext} for {@code recipientPublicKey}, signed (via shared secret) for {@code
+   * senderPrivateKey}.
    *
    * @return ({@code ciphertext} including Poly1305 tag, 12-byte {@code nonce})
    */
@@ -179,8 +178,8 @@ public class X25519BoxService {
   public record SealedBox(byte[] ciphertext, byte[] nonce) {}
 
   /**
-   * Thrown when {@link #open} fails authentication (tampered ciphertext, wrong key,
-   * wrong nonce). Carries a meaningful message but never the failed inputs (defence in depth).
+   * Thrown when {@link #open} fails authentication (tampered ciphertext, wrong key, wrong nonce).
+   * Carries a meaningful message but never the failed inputs (defence in depth).
    */
   public static class BoxOpenException extends RuntimeException {
     public BoxOpenException(String message, Throwable cause) {

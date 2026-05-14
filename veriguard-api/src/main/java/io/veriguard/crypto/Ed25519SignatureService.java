@@ -115,8 +115,8 @@ public class Ed25519SignatureService {
 
   /**
    * Prefer {@link SecureRandom#getInstanceStrong()} (blocking, /dev/random on Linux). 平台已被卡在
-   * /dev/random 的极端旧环境 fall back 到默认 {@link SecureRandom} (urandom)；不放任 RuntimeException 让
-   * Spring context 起不来.
+   * /dev/random 的极端旧环境 fall back 到默认 {@link SecureRandom} (urandom)；不放任 RuntimeException 让 Spring
+   * context 起不来.
    */
   private static SecureRandom pickRandom() {
     try {

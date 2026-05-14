@@ -28,11 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <p>Binaries are bundled under {@code classpath:agents/veriguard-implant/<os>/<arch>/} and added
  * to the Spring Boot fat jar at build time. In dev/test environments these are typically empty
- * placeholder files (the real release pipeline rebuilds the implant fork from CI and drops
- * binaries here during {@code mvn package}).
+ * placeholder files (the real release pipeline rebuilds the implant fork from CI and drops binaries
+ * here during {@code mvn package}).
  *
- * <p>If the binary is missing (e.g. a fresh checkout that has not yet pulled implant releases),
- * the endpoint returns 404 with a clear message guiding the operator to the expected path.
+ * <p>If the binary is missing (e.g. a fresh checkout that has not yet pulled implant releases), the
+ * endpoint returns 404 with a clear message guiding the operator to the expected path.
  */
 @RestController
 public class AgentImplantDownloadApi {
