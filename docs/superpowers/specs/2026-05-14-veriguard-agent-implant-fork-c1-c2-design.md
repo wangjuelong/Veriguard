@@ -16,11 +16,11 @@
 
 本文档定义 IPv6 安全验证系统中 **平台自有验证 Agent**（招标 §9.2 模块 `veriguard-agent`）的二次开发设计。范围包括：
 
-- **C1**：从 OpenBAS-Platform 上游 fork 两个 Go 项目（`agent` + `implant`），实现平台 ↔ 攻击机 ↔ 靶机的真实模拟攻击通道；让招标 §3 边界 / §4 流量 / §5 主机三场景的攻击模拟由"骨架 + mock"升级为"真打 + 真反查"。
+- **C1**：从 OpenAEV-Platform（旧 OpenBAS-Platform 重定向）上游 fork 两个 **Rust** 项目（`agent` + `implant`，release 2.3.5 baseline），实现平台 ↔ 攻击机 ↔ 靶机的真实模拟攻击通道；让招标 §3 边界 / §4 流量 / §5 主机三场景的攻击模拟由"骨架 + mock"升级为"真打 + 真反查"。
 - **C2**：完成 §5.1 12 类主机攻击的 ATT&CK ↔ Implant payload ↔ ART 数据集映射对照表，配套真靶机演练剧本与部署文档（含一行 curl 安装与 sneakernet 离线兜底）。
 
 **核心交付物**：
-1. 2 个新 Go 仓 + 6 standard 二进制 (Linux/Win/macOS × x86_64/arm64) × 2 = 12 个产物
+1. 2 个新 Rust 仓 + 6 standard 二进制 (Linux/Win/macOS × x86_64/arm64) × 2 = 12 个产物
 2. Veriguard 主仓 `veriguard-api` 内对接改造（去骨架 + 新 executor + 新 REST）
 3. Flyway V19 + V20 迁移
 4. `.vpack` / `.vresults` JSON envelope 加密文件格式（NaCl box + Ed25519）
@@ -111,7 +111,7 @@
         │  (standard Linux/Win/macOS x86_64 or arm64)                          │
         │                                                                      │
         │  ┌────────────────────────────────────────────────────────────────┐  │
-        │  │   wangjuelong/veriguard-agent  (Go fork ← OpenBAS/agent)       │  │
+        │  │   wangjuelong/veriguard-agent  (Rust fork ← OpenAEV/agent)     │  │
         │  │   Mode 检测:                                                    │  │
         │  │     无 --offline-pack* flag → Mode A (HTTPS poll)              │  │
         │  │     --offline-pack <file>    → Mode C 单包                     │  │
@@ -128,7 +128,7 @@
         │  └────────────────────────────────────────────────────────────────┘  │
         │                              ↓ drop + exec (仅 §5)                  │
         │  ┌────────────────────────────────────────────────────────────────┐  │
-        │  │   wangjuelong/veriguard-implant  (Go fork ← OpenBAS/implant)   │  │
+        │  │   wangjuelong/veriguard-implant  (Rust fork ← OpenAEV/implant) │  │
         │  │   一次性短命 / 自清理                                          │  │
         │  │   Payloads: Command / Executable / FileDrop /                   │  │
         │  │             DnsResolution / NetworkTraffic                      │  │
@@ -153,7 +153,7 @@
 
 | 场景 | 执行体 | Agent 角色 | Implant 角色 | 流量出口 |
 | --- | --- | --- | --- | --- |
-| **§3 边界 WAF/IPS** | **Agent 自己**（内置 Go `net/http`）| 控制 + 执行双角色 | **不参与** | 攻击机 → 边界 WAF/IPS → 内网靶 URL |
+| **§3 边界 WAF/IPS** | **Agent 自己**（内置 Rust `reqwest`）| 控制 + 执行双角色 | **不参与** | 攻击机 → 边界 WAF/IPS → 内网靶 URL |
 | **§4 流量 pcap 回放** | **Agent fork `tcpreplay`** 子进程 | 控制 + 子进程管理 | **不参与** | Agent host eth → 内部 IDS → 同段靶 |
 | **§5 主机 12 类** | **Implant 进程**（落盘 + 启动）| 仅"快递员"（drop + collect）| **核心执行体** | 主机内 syscalls → HIDS → SIEM → NxSOC |
 
@@ -240,39 +240,44 @@ veriguard-agent / veriguard-implant 各自 CI:
 
 **Fork 策略声明**：两仓 fork 后**一次性脱钩**——baseline commit 仅作 LICENSE / attribution 归属保留（上游 Apache 2.0 协议要求），代码侧后续 100% 独立演化。不做 cherry-pick / 不跟上游 patch / 不强求协议兼容。
 
-**Baseline commit**（C1 fork 时锁定，记入两仓 README 顶部）：
+**Baseline commit**（C1 W1 fork 时锁定，记入两仓 README 顶部）：
 
 ```
-veriguard-agent     ← OpenBAS-Platform/agent     @ <C1 W1 锁定时的 commit hash>
-veriguard-implant   ← OpenBAS-Platform/implant   @ <C1 W1 锁定时的 commit hash>
+veriguard-agent     ← OpenAEV-Platform/agent     @ 531f9d120a92f1af3ce78b0c37a356738584af18  (release 2.3.5)
+veriguard-implant   ← OpenAEV-Platform/implant   @ 3b16615e95d0f9187328a73fbe26c5fd38e3b18a  (release 2.3.5)
 ```
 
-#### veriguard-agent 改造矩阵（上游代码保留 ≈ 30%）
+**重要事实**：上游是 **Rust 2021 edition** 项目（非最初猜想的 Go）。已有相对成熟的 `api/{register_agent, manage_jobs}` + `process/{agent_job, keep_alive, agent_cleanup, agent_exec}` + `windows/service` 模块。本 fork 在此基础上**加密码学层 + Mode C + 4 capabilities + bootstrap + NDJSON pipe**，并替换原 api_key 鉴权为 Ed25519 签名 + X25519 加密模型。
+
+#### veriguard-agent 改造矩阵（上游代码保留 ≈ 60-70%）
+
+> 上游 Rust agent 已有 `api/{register_agent, manage_jobs}` + `process/{agent_job, keep_alive, agent_cleanup, agent_exec}` + `windows/service` + `config/{settings, execution_details}` + 完整 logging/panic 处理；本 fork **重用绝大部分骨架**，仅在认证 / 加密 / Mode C / capabilities 层做替换 + 扩展。
 
 | 类别 | 改动 | 类型 |
 | --- | --- | --- |
-| 认证模型 | api_key bearer → Ed25519 + X25519 keypair onboarding | **删 + 加** |
-| 加密层 | 新增 `nacl/box` 加 / 解能力 | **加** |
-| 通信模式 | 上游只有 poll → 新增 Mode C `.vpack` 离线（单包 + 目录扫描）| **加** |
-| 能力清单 | 上游主要是 implant 投放 → 新增 `http_attack` agent 直发 | **加** |
-| Bootstrap | 上游无 → 新增 `--bootstrap` flag 配合一行 curl | **加** |
-| 包路径 / 标识 | `openbas-*` → `veriguard-*` 全量重命名 | **改** |
-| Service 安装 | 加固跨平台 systemd / launchd / Windows service 安装器 | **改 / 加** |
-| 请求签名格式 | 新增 `X-Veriguard-Signature` header 协议 | **加** |
-| Capability 注册 | 上游单一 implant_drop → 显式 4 类注册 | **改** |
-| 状态库 | 新增 `executed_packs.db` SQLite 黑名单 | **加** |
-| CI/CD | 替换为 wangjuelong 仓 release pipeline + 6 binary 矩阵 | **改** |
+| 包名 | `openaev-agent` → `veriguard-agent`（Cargo.toml + 日志前缀 + service 名）| **改** |
+| 认证模型 | api_key bearer (`api/register_agent.rs`) → Ed25519 + X25519 keypair onboarding | **改** |
+| 加密层 | 新增 `crypto/` 模块（`ed25519-dalek` + `x25519-dalek` + `chacha20poly1305` 或 `dryoc`）| **加** |
+| 通信模式 | 上游 `api/manage_jobs.rs` 只有 poll → 新增 Mode C `.vpack` 离线（单包 + 目录扫描）| **加** |
+| 能力清单 | 上游 `process/agent_exec.rs` 主要执行 implant → 新增 `capabilities/` 注册中心 + `http_attack` agent 直发 + `pcap_replay` tcpreplay 子进程 + `command_inject` / `implant_drop` 区分 | **改 + 加** |
+| Bootstrap | 上游无 → 新增 `--bootstrap` subcommand 配合一行 curl | **加** |
+| Service 安装 | 上游已有 `windows/service.rs`；新增 `service/{systemd_linux,launchd_darwin}.rs` 跨平台 | **改 + 加** |
+| 请求签名 | 新增 `X-Veriguard-Signature` header 协议（拦截器层挂接到 reqwest）| **加** |
+| 状态库 | 新增 `state/sqlite.rs`（`rusqlite` bundled）+ `executed_packs.db` 黑名单 | **加** |
+| Pack 解析 | 新增 `pack/{vpack,vresults,multi,blacklist}.rs` 模块（NaCl box JSON envelope）| **加** |
+| Implant 管理 | 新增 `implant/{manager,pipe}.rs`（命名管道 + NDJSON 解析）| **加** |
+| CI/CD | 替换为 wangjuelong 仓 release pipeline + 6 binary 矩阵（`actions/setup-rust` + `cargo zigbuild` 跨编译）| **改** |
 
 #### veriguard-implant 改造矩阵（上游代码保留 ≈ 80%）
 
 | 类别 | 改动 | 类型 |
 | --- | --- | --- |
-| Payload 执行核 | Command / Executable / FileDrop / DnsResolution / NetworkTraffic 5 类 | **保留上游** |
-| 包路径 / 标识 | `openbas-*` → `veriguard-*` 全量重命名 | **改** |
-| Agent 调用契约 | `--task-id` / `--payload-type` / `--payload-b64` / `--result-pipe` / `--timeout` / `--self-delete` flag 协议 | **改 / 加** |
-| Result pipe 协议 | 双方约定的 JSON 一行格式（见 §3.3.3）| **改** |
+| Payload 执行核 | Command / Executable / FileDrop / DnsResolution / NetworkTraffic 5 类（含 `mailparse` 解析）| **保留上游** |
+| 包名 | `openaev-implant` → `veriguard-implant`（Cargo.toml + binary name）| **改** |
+| Agent 调用契约 | 已有 `clap` CLI；调整 flags：`--task-id` / `--payload-type` / `--payload-b64` / `--result-pipe` / `--timeout` / `--self-delete` | **改 / 加** |
+| Result pipe 协议 | 上游可能用 stdout 上报；改为 NDJSON 写命名管道（见 §3.3.3）| **改** |
 | 自删除 / cleanup | 跨平台一致化加固 | **改** |
-| CI/CD | 替换为 wangjuelong/veriguard-implant 仓 release pipeline | **改** |
+| CI/CD | 替换为 wangjuelong/veriguard-implant release pipeline | **改** |
 | **不做** | 国产 OS 平台代码 / TPM key handling / 自定义 §5.1 类 12 payload 子类 | — |
 
 ---
@@ -290,7 +295,8 @@ veriguard-implant   ← OpenBAS-Platform/implant   @ <C1 W1 锁定时的 commit 
 | Implant payload | Command / Executable / FileDrop / DnsResolution / NetworkTraffic |
 | 通信模式 | Mode A 在线（含一行 curl + forward proxy）+ Mode C 离线（单包 + 目录扫描）|
 | 加密 | NaCl box (X25519 + ChaCha20-Poly1305) + Ed25519 签名；JSON envelope `.vpack` / `.vresults` |
-| IPv6 兼容 | Happy Eyeballs (Go stdlib)；URL 接受 IPv4 / IPv6 字面量 / DNS |
+| IPv6 兼容 | Happy Eyeballs（`reqwest` 经 `hyper` + `tokio` 自动支持）；URL 接受 IPv4 / IPv6 字面量 / DNS |
+| 语言 | **Rust 2021 edition**（agent + implant）+ Java 21 (主仓改造) |
 | 不做 | 国产 OS / Reverse tunnel / Implant 加 http_attack / 包 TTL / 4 项安全加强（见 §5）|
 
 ### 3.2 `veriguard-agent` 仓设计
@@ -298,38 +304,68 @@ veriguard-implant   ← OpenBAS-Platform/implant   @ <C1 W1 锁定时的 commit 
 #### 3.2.1 仓目录结构
 
 ```
-wangjuelong/veriguard-agent/
-├── cmd/veriguard-agent/main.go              ← CLI 入口
-├── internal/
-│   ├── config/                              ← CLI flags + env
-│   ├── transport/
-│   │   ├── poll.go                          ← Mode A: HTTPS long-poll
-│   │   └── offline.go                       ← Mode C: file IO
-│   ├── crypto/
-│   │   ├── ed25519.go                       ← 签 / 验签
-│   │   ├── x25519_box.go                    ← nacl/box
-│   │   └── keys.go                          ← 生成 / 持久 / 加载
-│   ├── capabilities/
-│   │   ├── http_attack.go                   ← §3 - agent 内置 net/http
-│   │   ├── pcap_replay.go                   ← §4 - fork tcpreplay
-│   │   ├── command_inject.go                ← §5 - drop implant + run
-│   │   └── implant_drop.go                  ← §5 - 通用 implant 投放
-│   ├── implant/manager.go                   ← 二进制下载 / 启停 / pipe read
-│   ├── pack/
-│   │   ├── vpack.go                         ← 解析 + 校签 + 解密
-│   │   ├── vresults.go                      ← 签 + 加密
-│   │   ├── blacklist.go                     ← executed_packs.db
-│   │   └── multi.go                         ← 目录 lex 排序串行
-│   ├── onboard/
-│   │   ├── init.go                          ← install_pack 加载 + 注册
-│   │   └── bootstrap.go                     ← 一行 curl 用：token → install_pack
-│   ├── service/                             ← systemd / launchd / Windows service
-│   ├── state/sqlite.go                      ← SQLite 持久层
-│   └── logging/logger.go                    ← structured JSON logs
-├── build/
-│   ├── Makefile                             ← cross-compile 6 matrix
-│   └── ci/github-actions.yml                ← CI release pipeline
-├── go.mod / go.sum / README.md / LICENSE
+wangjuelong/veriguard-agent/  (Rust 2021 edition; fork ← OpenAEV-Platform/agent@531f9d120)
+├── Cargo.toml                                ← package "veriguard-agent" + deps
+├── Cargo.lock
+├── src/
+│   ├── main.rs                               ← 入口；mod 声明 + clap subcommand 路由
+│   ├── config/                               ← (上游已有) settings + execution_details
+│   ├── common/                               ← (上游已有) error_model
+│   ├── api/                                  ← (上游已有，本仓改造)
+│   │   ├── register_agent.rs                 ← 改造：api_key → install_pack onboarding
+│   │   ├── manage_jobs.rs                    ← 改造：加 X-Veriguard-Signature header
+│   │   └── bootstrap.rs                      ← 新增：一行 curl bootstrap 入口
+│   ├── crypto/                               ← 新增模块
+│   │   ├── mod.rs
+│   │   ├── ed25519.rs                        ← ed25519-dalek wrapper
+│   │   ├── x25519_box.rs                     ← x25519-dalek + chacha20poly1305 (NaCl box)
+│   │   ├── keys.rs                           ← 生成 / 持久 / 加载（chmod 0600）
+│   │   └── cert_pin.rs                       ← TLS leaf cert SHA256 pin verifier
+│   ├── capabilities/                         ← 新增模块
+│   │   ├── mod.rs                            ← Capability trait + Registry
+│   │   ├── http_attack.rs                    ← §3 - agent 内置 reqwest 直发
+│   │   ├── pcap_replay.rs                    ← §4 - 启 tcpreplay 子进程
+│   │   ├── command_inject.rs                 ← §5 - drop implant + run
+│   │   └── implant_drop.rs                   ← §5 - 通用 implant 投放
+│   ├── implant/                              ← 新增模块
+│   │   ├── mod.rs
+│   │   ├── manager.rs                        ← 二进制下载 / 启停 / pipe read
+│   │   └── pipe.rs                           ← 命名管道跨平台抽象
+│   ├── pack/                                 ← 新增模块
+│   │   ├── mod.rs
+│   │   ├── vpack.rs                          ← 解析 + 校签 + 解密 (9 步决策树)
+│   │   ├── vresults.rs                       ← 签 + 加密 + 写盘
+│   │   ├── blacklist.rs                      ← executed_packs SQLite 黑名单
+│   │   └── multi.rs                          ← 目录 lex 排序串行
+│   ├── onboard/                              ← 新增模块（上游 register_agent 重构进此）
+│   │   ├── mod.rs
+│   │   ├── install_pack.rs                   ← JSON 解析 + 必填校验
+│   │   ├── init.rs                           ← 标准 onboarding 流程
+│   │   ├── bootstrap.rs                      ← 一行 curl 用：token → install_pack
+│   │   └── register.rs                       ← 在线 / 离线 .vregister 注册
+│   ├── service/                              ← 跨平台 service 安装
+│   │   ├── mod.rs
+│   │   ├── systemd.rs                        ← Linux (#[cfg(target_os = "linux")])
+│   │   ├── launchd.rs                        ← macOS
+│   │   └── windows_svc.rs                    ← Windows (复用上游 windows/service.rs)
+│   ├── process/                              ← (上游已有) agent_job + cleanup + keep_alive + agent_exec
+│   ├── state/                                ← 新增
+│   │   ├── mod.rs
+│   │   └── sqlite.rs                         ← rusqlite (bundled) 持久层
+│   └── windows/                              ← (上游已有) Windows-specific
+├── tests/                                    ← 集成测试 (cargo test --test integration)
+│   ├── crypto_interop.rs                     ← Go/Java 跨语言互测 fixture
+│   ├── pack_security.rs                      ← T-1 ~ T-7 安全测
+│   └── onboarding.rs
+├── testdata/
+│   ├── install_pack_valid.json
+│   ├── pack_valid.vpack
+│   ├── pack_signature_tampered.vpack
+│   ├── pack_wrong_agent.vpack
+│   └── pack_oversize.vpack
+├── .github/workflows/release.yml             ← matrix build 6 binary（cargo zigbuild）
+├── README.md                                 ← 头部含 fork baseline 声明
+└── LICENSE                                   ← 继承上游 Apache 2.0
 ```
 
 #### 3.2.2 CLI 接口契约
@@ -424,23 +460,37 @@ for _, p := range packs {
 #### 3.3.1 仓目录结构
 
 ```
-wangjuelong/veriguard-implant/
-├── cmd/veriguard-implant/main.go             ← 单入口，一次性短命
-├── internal/
-│   ├── payload/
-│   │   ├── command.go                        ← shell command 执行
-│   │   ├── executable.go                     ← drop + execve 二进制
-│   │   ├── filedrop.go                       ← 落盘文件 + 权限
-│   │   ├── dns_resolution.go                 ← DNS A/AAAA/MX 查询
-│   │   └── network_traffic.go                ← 发自定义 TCP/UDP/ICMP 包
-│   ├── result/writer.go                      ← named pipe 写回 agent
-│   ├── cleanup/self_delete.go                ← 退出前自删二进制
-│   └── platform/
-│       ├── linux.go                          ← /proc, fork/exec, pipe
-│       ├── windows.go                        ← CreateProcessW, named pipe
-│       └── darwin.go
-├── build/Makefile + ci/
-└── go.mod
+wangjuelong/veriguard-implant/  (Rust 2021 edition; fork ← OpenAEV-Platform/implant@3b16615e9)
+├── Cargo.toml                                 ← package "veriguard-implant"
+├── Cargo.lock
+├── src/
+│   ├── main.rs                                ← clap CLI 入口（上游已有 clap dep）
+│   ├── payload/                               ← 5 类 payload（上游已有，本仓微调）
+│   │   ├── mod.rs
+│   │   ├── command.rs                         ← shell command 执行
+│   │   ├── executable.rs                      ← drop + execve 二进制
+│   │   ├── filedrop.rs                        ← 落盘文件 + 权限
+│   │   ├── dns_resolution.rs                  ← DNS A/AAAA/MX 查询
+│   │   └── network_traffic.rs                 ← 发自定义 TCP/UDP/ICMP
+│   ├── result/                                ← 新增（替换上游 stdout 上报）
+│   │   ├── mod.rs
+│   │   ├── writer.rs                          ← NDJSON 命名管道 writer
+│   │   └── chunked.rs                         ← stdout/stderr chunk 拆分
+│   ├── cleanup/                               ← 新增
+│   │   ├── mod.rs
+│   │   └── self_delete.rs                     ← 跨平台自删（含 #[cfg] 分支）
+│   └── platform/                              ← 跨平台抽象
+│       ├── mod.rs
+│       ├── linux.rs                           ← /proc, fork/exec, mkfifo
+│       ├── windows.rs                         ← CreateProcessW, CreateNamedPipeW
+│       └── darwin.rs
+├── tests/integration.rs                       ← cargo test 集成
+├── testdata/
+│   ├── eicar.txt                              ← EICAR 标样
+│   └── webshell_sample.php
+├── .github/workflows/release.yml              ← matrix build 6 binary
+├── README.md
+└── LICENSE
 ```
 
 #### 3.3.2 Agent → Implant 调用契约
@@ -510,7 +560,7 @@ Agent 与 Implant 之间通过 named pipe（Linux/macOS `mkfifo` / Windows `Crea
 
 **为什么 NDJSON 而不是 length-prefixed binary**：
 - 调试可读（`cat <pipe>` 可见）
-- Go / 多语言 stdlib 直接 `bufio.Scanner` 逐行解析
+- Rust `BufRead::lines()` / Go `bufio.Scanner` / Python `for line in fh` 等多语言 stdlib 直接逐行解析
 - 单行损坏不污染后续 event（fail-soft）
 - 加密 envelope 已在 §3.5 层处理；pipe 层无加密需求（同主机进程间通信）
 
@@ -752,7 +802,7 @@ CREATE INDEX idx_pack_audit_imported ON offline_pack_audit(imported_at)
 
 ### 3.8 测试策略
 
-#### 单元测试（Go agent + Java platform）
+#### 单元测试（Rust agent / implant + Java platform）
 
 ```
 Crypto layer:
@@ -1011,7 +1061,7 @@ Chapter 5: Mode C sneakernet 兜底演练（15 分钟）
 | 飞腾 ARM64 | ARM64 | ≈ 0.5 天 | 与 standard arm64 二进制兼容 80% |
 | 统信 UOS V20 (x86_64) | x86_64 | ≈ 1 天 | 基于 Debian，glibc 版本差异 + systemd unit 差异 |
 | 麒麟 V10 (x86_64) | x86_64 | ≈ 1 天 | 基于 RHEL，需特殊编译 flag |
-| 龙芯 LoongArch64 | LoongArch64 | ≈ 1 周 | Go toolchain LoongArch 支持 + 单独 CI 矩阵 + 兼容性测 |
+| 龙芯 LoongArch64 | LoongArch64 | ≈ 1 周 | Rust LoongArch target 自 1.71+ 标准；`cargo zigbuild --target loongarch64-unknown-linux-gnu` 跨编 + 单独 CI 矩阵 + 兼容性测 |
 
 **合计 C3 工作量 ≈ 2-3 周**（独立 PR）
 
@@ -1065,7 +1115,7 @@ Chapter 5: Mode C sneakernet 兜底演练（15 分钟）
 | 一行 curl 安装被运维拒（curl + sudo bash 反模式）| 🟢 低 | 文档提示先 `curl ... | less` 审阅；UI 内嵌脚本预览 |
 | sneakernet 周期长于 24h 后 token 过期 | ✅ 已消解 | 包不再有 TTL；onboard_token 24h 但一次性 |
 | Mode A poll latency 影响 §3.6 ★2 30k 组合吞吐 | 🟡 中 | poll_interval 可配；platform 任务队列批量化 |
-| 国产 OS 上 Go binary glibc 兼容性 | 🟢 低（C3 范围）| 飞腾 / 鲲鹏 ARM64 直接复用 standard arm64；C3 跨编译时再细分 |
+| 国产 OS 上 Rust binary 兼容性（musl / glibc / LoongArch ABI）| 🟢 低（C3 范围）| 飞腾 / 鲲鹏 ARM64 直接复用 standard arm64；LoongArch 需 `cargo zigbuild --target loongarch64-unknown-linux-gnu`；C3 跨编译时再细分 |
 | 甲方网络策略禁 DMZ → 内网 inbound（T2 拓扑）| 🟢 低（已设计兜底）| Mode C sneakernet 保底；Forward proxy 需甲方协助部署 1 台 bridge |
 
 > **不再列入风险**：上游 OpenBAS 后续版本变更——fork 已一次性脱钩（见 §1.3 / §2.6），后续上游演化与本仓无关。

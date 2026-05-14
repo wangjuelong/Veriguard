@@ -12,11 +12,20 @@
 - **Fork 一次性脱钩**：不跟上游 patch / 不 cherry-pick
 
 **Tech Stack:**
-- **Go 1.22+**：`golang.org/x/crypto/{ed25519,nacl/box,curve25519}` / `modernc.org/sqlite` / `gopkg.in/yaml.v3` / `github.com/spf13/cobra`
-- **Java 21 / Spring Boot 3.3.7**：Jackson / JPA / Hibernate JsonType / `org.bouncycastle:bcprov-jdk18on`（Ed25519 + X25519 + ChaCha20-Poly1305）/ Mockito
-- **CI**：GitHub Actions matrix（Linux/Win/macOS × x86_64/arm64）
+- **Rust 2021 edition**（agent + implant 两仓，fork 自 OpenAEV-Platform release 2.3.5 baseline；非最初猜想的 Go）：
+  - **Crypto**: `ed25519-dalek` (签名) + `x25519-dalek` (ECDH) + `chacha20poly1305` (AEAD) 或一比一对应 `dryoc` (NaCl-compat)
+  - **HTTP**: `reqwest` 0.12+ (rustls-tls；上游已用)
+  - **CLI**: `clap` 4+ (derive feature；上游 implant 已用)
+  - **JSON**: `serde` + `serde_json` (上游已用)
+  - **SQLite**: `rusqlite` (bundled feature)
+  - **Logging**: `tracing-subscriber` + `tracing-appender` + `rolling-file` (上游已用)
+  - **Cross-compile**: `cargo zigbuild` + `actions/setup-rust` (CI matrix 6 binary)
+- **Java 21 / Spring Boot 3.3.7**（主仓 veriguard-api 改造）：Jackson / JPA / Hibernate JsonType / `org.bouncycastle:bcprov-jdk18on`（Ed25519 + X25519 + ChaCha20-Poly1305 Go/Java 互操作）/ Mockito
+- **CI**：GitHub Actions matrix（Linux/Win/macOS × x86_64/arm64 共 6 binary 每仓）
 
-**Spec 出处**：`docs/superpowers/specs/2026-05-14-veriguard-agent-implant-fork-c1-c2-design.md` (commit `43f7a293e`, draft PR #55)
+**Spec 出处**：`docs/superpowers/specs/2026-05-14-veriguard-agent-implant-fork-c1-c2-design.md`（commit `43f7a293e` 含初版 + 后续 Rust 适配 amend）
+
+**重要：本 plan 中部分 Go 代码示例**（Phase A.1 Ed25519 / X25519 / SQLite 等）**为概念骨架**——由于初版 spec 误判上游为 Go，示例语法未替换。**实现 subagent 须按 Rust 习惯重写**，crate 选择见上方 Tech Stack；架构 / 算法 / 接口契约**完全不变**。
 
 ---
 
@@ -58,116 +67,67 @@ cd .claude/worktrees/c1-c2-impl
 
 ## 1. 文件结构
 
-### 1.1 `wangjuelong/veriguard-agent` (新仓)
+### 1.1 `wangjuelong/veriguard-agent` (Rust 2021 fork ← OpenAEV-Platform/agent@531f9d120)
+
+完整 Rust 仓目录结构见 **spec § 3.2.1**（已 amend）。摘要：
 
 ```
 veriguard-agent/
-├── cmd/veriguard-agent/main.go                    # CLI 入口 + cobra 命令
-├── internal/
-│   ├── config/config.go                           # CLI flags + env loading
-│   ├── config/config_test.go
-│   ├── crypto/
-│   │   ├── ed25519.go                             # sign / verify
-│   │   ├── ed25519_test.go
-│   │   ├── x25519_box.go                          # nacl/box seal / open
-│   │   ├── x25519_box_test.go
-│   │   ├── keys.go                                # keypair 生成 / 持久 / 加载
-│   │   └── keys_test.go
-│   ├── transport/
-│   │   ├── poll.go                                # Mode A HTTPS long-poll
-│   │   ├── poll_test.go
-│   │   ├── sign.go                                # X-Veriguard-Signature header
-│   │   ├── sign_test.go
-│   │   └── proxy.go                               # HTTPS_PROXY env handling
-│   ├── pack/
-│   │   ├── vpack.go                               # .vpack 解析 + 校签 + 解密
-│   │   ├── vpack_test.go
-│   │   ├── vresults.go                            # .vresults 签 + 加密
-│   │   ├── vresults_test.go
-│   │   ├── blacklist.go                           # SQLite executed_packs.db
-│   │   ├── blacklist_test.go
-│   │   ├── multi.go                               # 目录 lex 排序串行
-│   │   └── multi_test.go
-│   ├── capabilities/
-│   │   ├── registry.go                            # capability 注册中心
-│   │   ├── http_attack.go                         # §3 边界 - agent 内置 net/http
-│   │   ├── http_attack_test.go
-│   │   ├── pcap_replay.go                         # §4 流量 - fork tcpreplay
-│   │   ├── pcap_replay_test.go
-│   │   ├── command_inject.go                      # §5 主机 - drop implant + 启
-│   │   ├── command_inject_test.go
-│   │   ├── implant_drop.go                        # 通用 implant 落盘
-│   │   └── implant_drop_test.go
-│   ├── implant/
-│   │   ├── manager.go                             # 下载 / 启停 / pipe read
-│   │   ├── manager_test.go
-│   │   └── pipe.go                                # named pipe 跨平台抽象
-│   ├── onboard/
-│   │   ├── init.go                                # install_pack 加载
-│   │   ├── init_test.go
-│   │   ├── bootstrap.go                           # 一行 curl 入口
-│   │   ├── bootstrap_test.go
-│   │   └── register.go                            # 注册请求 (在线 / 离线)
-│   ├── service/
-│   │   ├── systemd_linux.go                       # systemd unit
-│   │   ├── launchd_darwin.go                      # launchd plist
-│   │   └── windows.go                             # Windows service
-│   ├── state/
-│   │   ├── sqlite.go                              # SQLite 持久层
-│   │   └── sqlite_test.go
-│   └── logging/logger.go                          # structured JSON logs
-├── build/
-│   ├── Makefile                                   # cross-compile 6 matrix
-│   └── ci/
-│       └── build-release.yml                      # GitHub Actions
-├── testdata/
-│   ├── install_pack_valid.json
-│   ├── pack_valid.vpack
-│   ├── pack_signature_tampered.vpack
-│   ├── pack_wrong_agent.vpack
-│   └── pack_oversize.vpack
-├── go.mod
-├── go.sum
-├── README.md                                      # 头部含 fork baseline 声明
-└── LICENSE                                        # Apache 2.0（继承上游）
+├── Cargo.toml / Cargo.lock                     # package "veriguard-agent" + deps
+├── src/
+│   ├── main.rs                                 # clap subcommand 路由
+│   ├── api/                                    # (上游已有，本仓改造)
+│   │   ├── register_agent.rs                   # 改造: api_key → install_pack
+│   │   ├── manage_jobs.rs                      # 改造: 加 X-Veriguard-Signature
+│   │   └── bootstrap.rs                        # 新增: 一行 curl 入口
+│   ├── crypto/                                 # 新增: ed25519-dalek + x25519-dalek + chacha20poly1305
+│   ├── capabilities/                           # 新增: http_attack / pcap_replay / command_inject / implant_drop
+│   ├── implant/                                # 新增: 下载 + 启停 + 命名管道 NDJSON 读取
+│   ├── pack/                                   # 新增: vpack / vresults / blacklist (rusqlite) / multi
+│   ├── onboard/                                # 新增: install_pack / init / bootstrap / register
+│   ├── service/                                # 跨平台: systemd / launchd / windows_svc
+│   ├── state/sqlite.rs                         # rusqlite (bundled)
+│   ├── process/                                # (上游已有) agent_job + keep_alive + cleanup + exec
+│   ├── windows/                                # (上游已有)
+│   ├── config/                                 # (上游已有)
+│   └── common/                                 # (上游已有) error_model
+├── tests/                                      # 集成 + 安全测 (cargo test --test)
+│   ├── crypto_interop.rs                       # Go/Java/Rust 互测 fixture
+│   ├── pack_security.rs                        # T-1 ~ T-7 安全测
+│   └── onboarding.rs
+├── testdata/{install_pack_valid.json, pack_*.vpack}
+├── .github/workflows/release.yml               # matrix build 6 binary
+├── README.md / LICENSE                         # 含 fork baseline 声明 + Apache 2.0
 ```
 
-### 1.2 `wangjuelong/veriguard-implant` (新仓)
+**单测**：每个模块配套 `mod tests { ... }`（Rust 习惯 inline 测）；集成测试在 `tests/` 顶层目录。
+**Lint**：`cargo clippy -- -D warnings` 强制零警告进 CI。
+
+### 1.2 `wangjuelong/veriguard-implant` (Rust 2021 fork ← OpenAEV-Platform/implant@3b16615e9)
+
+完整 Rust 仓目录结构见 **spec § 3.3.1**（已 amend）。摘要：
 
 ```
 veriguard-implant/
-├── cmd/veriguard-implant/main.go                  # 单入口，一次性短命
-├── internal/
-│   ├── payload/
-│   │   ├── command.go                             # shell command 执行
-│   │   ├── command_test.go
-│   │   ├── executable.go                          # drop + execve 二进制
-│   │   ├── executable_test.go
-│   │   ├── filedrop.go                            # 落盘文件 + 权限
-│   │   ├── filedrop_test.go
-│   │   ├── dns_resolution.go                      # DNS A/AAAA/MX 查询
-│   │   ├── dns_resolution_test.go
-│   │   ├── network_traffic.go                     # 自定义 TCP/UDP/ICMP 包
-│   │   └── network_traffic_test.go
-│   ├── result/
-│   │   ├── writer.go                              # NDJSON pipe writer
-│   │   ├── writer_test.go
-│   │   └── chunked.go                             # stdout/stderr chunk 拆分
-│   ├── cleanup/
-│   │   ├── self_delete_linux.go                   # POSIX unlink-after-exec
-│   │   ├── self_delete_darwin.go
-│   │   └── self_delete_windows.go                 # MoveFileExW + reboot delete
-│   ├── platform/
-│   │   ├── linux.go                               # /proc, fork/exec, named pipe
-│   │   ├── windows.go                             # CreateProcessW, named pipe
-│   │   └── darwin.go
-│   └── logging/logger.go
-├── build/Makefile + ci/build-release.yml
-├── testdata/
-│   ├── eicar.txt                                  # EICAR 标准杀软测试样本
-│   └── webshell_sample.php
-├── go.mod
-├── go.sum
+├── Cargo.toml / Cargo.lock                       # package "veriguard-implant" + clap/serde/reqwest/mailparse/...
+├── src/
+│   ├── main.rs                                   # clap CLI 入口（上游已有）
+│   ├── payload/                                  # (上游已有，本仓微调)
+│   │   ├── command.rs                            # shell command
+│   │   ├── executable.rs                         # drop + execve
+│   │   ├── filedrop.rs                           # 落盘文件
+│   │   ├── dns_resolution.rs                     # DNS
+│   │   └── network_traffic.rs                    # TCP/UDP/ICMP
+│   ├── result/                                   # 新增 (替换上游 stdout 上报)
+│   │   ├── writer.rs                             # NDJSON 命名管道 writer
+│   │   └── chunked.rs                            # chunk 拆分
+│   ├── cleanup/self_delete.rs                    # 跨平台自删（#[cfg] 分支）
+│   └── platform/                                 # 跨平台
+│       ├── linux.rs
+│       ├── windows.rs
+│       └── darwin.rs
+├── tests/integration.rs                          # cargo test 集成
+├── testdata/{eicar.txt, webshell_sample.php}
 ├── README.md
 └── LICENSE
 ```
@@ -1615,7 +1575,7 @@ Commits（每篇 1 commit 或合 1 commit）：
 
 | 测试层 | 工具 | 范围 | 哪里跑 |
 | --- | --- | --- | --- |
-| **单元测试** | Go `testing` / JUnit + Mockito | 每个文件配 `*_test.go`/`*Test.java`；覆盖率目标 ≥ 95%（crypto）/ ≥ 80%（业务）| `go test ./...` / `mvn test` |
+| **单元测试** | Rust `cargo test` / JUnit + Mockito | Rust 每模块 inline `mod tests`；Java `*Test.java`；覆盖率目标 ≥ 95%（crypto）/ ≥ 80%（业务）| `cargo test --all` / `mvn test` |
 | **集成测试** | docker-compose.演练.yml + 真 SQLite / 真 PG | Mode A / Mode C / 三场景端到端 / Onboarding 在线+离线 | CI `integration` profile + 本地 `docker compose up` |
 | **安全测试** | 黑盒 fixture-based | T-1 ~ T-8（spec § 3.8）| CI `security` profile + 每次 PR |
 | **跨平台冒烟** | GitHub Actions matrix | `veriguard-agent version` 在 6 个 OS/arch 跑通 + 一行 curl 三平台 | CI release pipeline 自动 |
