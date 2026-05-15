@@ -42,6 +42,16 @@ import org.springframework.stereotype.Component;
  * the M1 {@code NotImplementedSandboxDriver} stays in charge — CI / dev hosts that lack CAPEv2
  * reachability still boot.
  *
+ * <h2>Response envelope</h2>
+ *
+ * <p>CAPE 2.5+ wraps every {@code /apiv2/...} response in {@code {"error": bool, "data": ...,
+ * "error_value": "..."}}; older versions return the payload directly. This driver accepts both
+ * forms via {@link #unwrapApiv2Response}: if {@code error: true}, the response is surfaced as
+ * {@link ReasonCode#REMOTE_ERROR} with {@code error_value} as the message (common when an endpoint
+ * is administratively disabled in {@code api.conf} — e.g. CAPE 2.5 returns this for {@code
+ * cuckoo/status/} and {@code machines/list/} unless explicitly enabled). The {@code data} field is
+ * then peeled off so each SPI method works against the inner payload regardless of envelope shape.
+ *
  * <h2>Endpoints</h2>
  *
  * <p>All paths are prefixed with {@code /apiv2/} and terminated with a trailing slash because
@@ -107,7 +117,7 @@ public class CapeV2SandboxDriver implements SandboxDriver {
   @Override
   public void healthCheck() {
     HttpRequest request = baseRequest("/apiv2/cuckoo/status/").GET().build();
-    JsonNode body = sendForJson(request, "healthCheck");
+    JsonNode body = unwrapApiv2Response(sendForJson(request, "healthCheck"), "healthCheck");
     // CAPEv2 status payload always contains at least `version` and `hostname`.
     // Missing either means we hit a non-CAPE endpoint (wrong base-url / nginx
     // catch-all). Treat as protocol mismatch so ops sees a clear hint.
@@ -121,7 +131,7 @@ public class CapeV2SandboxDriver implements SandboxDriver {
   @Override
   public List<MachineSnapshot> listMachines() {
     HttpRequest request = baseRequest("/apiv2/machines/list/").GET().build();
-    JsonNode body = sendForJson(request, "listMachines");
+    JsonNode body = unwrapApiv2Response(sendForJson(request, "listMachines"), "listMachines");
     // CAPE wraps the list under `{"machines": [...]}` in some versions, returns
     // a bare array in others — accept both.
     JsonNode arr = body.isArray() ? body : body.path("machines");
@@ -170,7 +180,7 @@ public class CapeV2SandboxDriver implements SandboxDriver {
             .POST(HttpRequest.BodyPublishers.ofByteArray(body))
             .build();
 
-    JsonNode json = sendForJson(httpRequest, "submitSample");
+    JsonNode json = unwrapApiv2Response(sendForJson(httpRequest, "submitSample"), "submitSample");
     JsonNode taskIdNode = json.path("task_id");
     if (!taskIdNode.canConvertToLong()) {
       // CAPEv2 also returns task_ids as a singleton list for some submitters; accept both.
@@ -188,8 +198,9 @@ public class CapeV2SandboxDriver implements SandboxDriver {
   @Override
   public SandboxTaskStatus fetchTaskStatus(long capeTaskId) {
     HttpRequest request = baseRequest("/apiv2/tasks/view/" + capeTaskId + "/").GET().build();
-    JsonNode body = sendForJson(request, "fetchTaskStatus");
-    // CAPEv2 wraps the task under `task` in most versions: {"task": {"status": "...", ...}}
+    JsonNode body = unwrapApiv2Response(sendForJson(request, "fetchTaskStatus"), "fetchTaskStatus");
+    // CAPEv2 wraps the task under `task` in some versions: {"task": {"status": "...", ...}}.
+    // CAPE 2.5 unwraps it (after envelope strip) directly: {"id": 1, "status": "...", ...}.
     JsonNode task = body.has("task") ? body.path("task") : body;
     String rawStatus = textOrNull(task, "status");
     String errorMessage = textOrNull(task, "errors");
@@ -221,6 +232,30 @@ public class CapeV2SandboxDriver implements SandboxDriver {
       case "completed", "reported" -> SandboxTaskStatus.Status.COMPLETED;
       default -> SandboxTaskStatus.Status.UNKNOWN;
     };
+  }
+
+  /**
+   * Strip the CAPE 2.5+ apiv2 envelope and surface backend errors.
+   *
+   * <p>CAPE 2.5 wraps every {@code /apiv2/...} response in {@code {"error": bool, "data": ...}}.
+   * Older CAPE versions return the payload directly. We accept both — if {@code error: true} is
+   * set, throw with {@code error_value} as the message (typical when an endpoint is
+   * administratively disabled in {@code api.conf} — e.g. "Cuckoo Status API is disabled"); if a
+   * {@code data} field is present, return that as the working payload; otherwise return the body
+   * unchanged for backwards compatibility.
+   */
+  private JsonNode unwrapApiv2Response(JsonNode body, String operation) {
+    JsonNode err = body.path("error");
+    if (err.isBoolean() && err.asBoolean()) {
+      String errMsg = body.path("error_value").asText("(no error_value)");
+      throw new SandboxIntegrationException(
+          ReasonCode.REMOTE_ERROR,
+          "CAPEv2 " + operation + " server-side error: " + errMsg,
+          null,
+          null);
+    }
+    JsonNode data = body.path("data");
+    return data.isMissingNode() ? body : data;
   }
 
   /** Common request builder — applies endpoint, read-timeout, auth header. */

@@ -385,6 +385,98 @@ class CapeV2SandboxDriverTest {
     assertThat(capturedAuthHeader.get()).isEqualTo("Token the-token");
   }
 
+  // ---- CAPE 2.5+ envelope handling (wrapped response shape) ----------------
+  //
+  // CAPE 2.5 wraps every /apiv2/... response in {"error": bool, "data": ...,
+  // "error_value": "..."}. These tests verify the driver accepts the wrapped
+  // shape AND surfaces server-side "error:true" payloads as REMOTE_ERROR
+  // (typical when an endpoint is administratively disabled in api.conf).
+
+  @Test
+  void healthCheck_accepts_cape25_wrapped_response() {
+    handlers.put(
+        "/apiv2/cuckoo/status/",
+        ex ->
+            respondJson(
+                ex,
+                200,
+                """
+                {"error":false,
+                 "data":{"version":"2.5","hostname":"cape-host",
+                         "machines":{"available":1,"total":1}}}
+                """));
+    driver(propsBuilder()).healthCheck();
+  }
+
+  @Test
+  void healthCheck_remote_error_when_endpoint_disabled() {
+    // Real shape returned by CAPE 2.5 when `cuckoostatus` is disabled in api.conf.
+    handlers.put(
+        "/apiv2/cuckoo/status/",
+        ex ->
+            respondJson(
+                ex, 200, "{\"error\":true,\"error_value\":\"Cuckoo Status API is disabled\"}"));
+    assertThatThrownBy(() -> driver(propsBuilder()).healthCheck())
+        .isInstanceOf(SandboxIntegrationException.class)
+        .satisfies(
+            t -> {
+              SandboxIntegrationException sie = (SandboxIntegrationException) t;
+              assertThat(sie.getReasonCode()).isEqualTo(ReasonCode.REMOTE_ERROR);
+              assertThat(sie.getMessage()).contains("Cuckoo Status API is disabled");
+            });
+  }
+
+  @Test
+  void listMachines_accepts_cape25_wrapped_array() {
+    handlers.put(
+        "/apiv2/machines/list/",
+        ex ->
+            respondJson(
+                ex,
+                200,
+                """
+                {"error":false,
+                 "data":[{"name":"win10","platform":"windows","status":"poweroff"}]}
+                """));
+    List<MachineSnapshot> result = driver(propsBuilder()).listMachines();
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).name()).isEqualTo("win10");
+  }
+
+  @Test
+  void submitSample_accepts_cape25_wrapped_task_ids_array() {
+    // Real shape: {"error":false,"data":{"task_ids":[2],"message":"Task ID 2 has been submitted"}}.
+    handlers.put(
+        "/apiv2/tasks/create/file/",
+        ex ->
+            respondJson(
+                ex,
+                200,
+                "{\"error\":false,\"data\":{\"task_ids\":[42],\"message\":\"Task ID 42 has been submitted\"}}"));
+    SampleSubmissionRequest req =
+        new SampleSubmissionRequest(
+            "p", "RANSOMWARE", "x.exe", "h", new byte[] {1, 2, 3}, null, null);
+    SubmissionResult res = driver(propsBuilder()).submitSample(req);
+    assertThat(res.capeTaskId()).isEqualTo(42L);
+  }
+
+  @Test
+  void fetchTaskStatus_accepts_cape25_wrapped_task_object() {
+    // Real shape: {"error":false,"data":{"id":1,"status":"pending",...}} — `status`
+    // sits directly under `data`, NOT nested under `task`.
+    handlers.put(
+        "/apiv2/tasks/view/77/",
+        ex ->
+            respondJson(
+                ex,
+                200,
+                "{\"error\":false,\"data\":{\"id\":77,\"status\":\"pending\","
+                    + "\"added_on\":\"2026-05-15 06:29:31\"}}"));
+    SandboxTaskStatus s = driver(propsBuilder()).fetchTaskStatus(77);
+    assertThat(s.status()).isEqualTo(SandboxTaskStatus.Status.QUEUED);
+    assertThat(s.rawRemoteStatus()).isEqualTo("pending");
+  }
+
   // ---- misc -----------------------------------------------------------------
 
   @Test
