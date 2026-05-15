@@ -4,7 +4,6 @@ import io.veriguard.audit.OfflinePackAuditService;
 import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VpackTaskListBuilder;
 import io.veriguard.database.model.OfflinePackAuditEntity;
-import io.veriguard.database.repository.AgentRepository;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -47,7 +46,6 @@ public class OfflinePackExportService {
   private final VpackTaskListBuilder vpackTaskListBuilder;
   private final VpackSerializer vpackSerializer;
   private final OfflinePackAuditService auditService;
-  private final AgentRepository agentRepository;
 
   public OfflinePackExportService(
       PlatformIdentityService platformIdentity,
@@ -55,15 +53,13 @@ public class OfflinePackExportService {
       AgentTaskQueueService taskQueueService,
       VpackTaskListBuilder vpackTaskListBuilder,
       VpackSerializer vpackSerializer,
-      OfflinePackAuditService auditService,
-      AgentRepository agentRepository) {
+      OfflinePackAuditService auditService) {
     this.platformIdentity = platformIdentity;
     this.onboardingService = onboardingService;
     this.taskQueueService = taskQueueService;
     this.vpackTaskListBuilder = vpackTaskListBuilder;
     this.vpackSerializer = vpackSerializer;
     this.auditService = auditService;
-    this.agentRepository = agentRepository;
   }
 
   /**
@@ -148,25 +144,17 @@ public class OfflinePackExportService {
         vpackSerializer.parse(envelopeBytes, platformIdentity.getPlatformSignPub());
     byte[] ctSha256 = sha256(parsed.encryptedEnvelope().ciphertext());
 
-    // Audit — best-effort. If the agent_id has not yet been persisted as a JPA row (scaffold mode),
-    // skip the FK-bound write with WARN so the export remains usable. Full audit lands once
-    // C1-Platform-3 persists the in-memory onboarding state into the agents table.
-    if (agentRepository.findById(input.agentId()).isPresent()) {
-      auditService.recordExport(
-          packId,
-          input.agentId(),
-          platformIdentity.getPlatformId(),
-          exportedBy,
-          clientIp,
-          ctSha256,
-          packTasks.size());
-    } else {
-      log.warn(
-          "OfflinePackAudit skipped for export pack_id={}: agent_id={} not persisted in JPA"
-              + " (scaffold mode pre-C1-Platform-3)",
-          packId,
-          input.agentId());
-    }
+    // Audit — V21 dropped the agent_id FK to the OpenAEV agents table, so the per-export audit
+    // row always writes regardless of whether the agent has a row in the upstream agents table.
+    // Mode C agents go through /api/agent/onboard/register and do not own an OpenAEV Asset.
+    auditService.recordExport(
+        packId,
+        input.agentId(),
+        platformIdentity.getPlatformId(),
+        exportedBy,
+        clientIp,
+        ctSha256,
+        packTasks.size());
 
     return Optional.of(new ExportResult(packId, envelopeBytes, packTasks.size()));
   }

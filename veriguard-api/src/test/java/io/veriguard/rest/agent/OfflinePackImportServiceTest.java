@@ -18,6 +18,8 @@ import io.veriguard.crypto.Ed25519SignatureService;
 import io.veriguard.crypto.VresultsSerializer;
 import io.veriguard.crypto.VresultsTaskResultParser;
 import io.veriguard.crypto.X25519BoxService;
+import io.veriguard.database.model.OfflinePackResultEntity;
+import io.veriguard.database.repository.OfflinePackResultRepository;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
@@ -51,6 +53,7 @@ class OfflinePackImportServiceTest {
   private PlatformIdentityService platformIdentity;
   private AgentOnboardingService onboardingService;
   private OfflinePackAuditService auditService;
+  private OfflinePackResultRepository resultRepository;
 
   private OfflinePackImportService importService;
 
@@ -91,9 +94,11 @@ class OfflinePackImportServiceTest {
                     Instant.now())));
 
     auditService = Mockito.mock(OfflinePackAuditService.class);
+    resultRepository = Mockito.mock(OfflinePackResultRepository.class);
 
     importService =
-        new OfflinePackImportService(platformIdentity, onboardingService, parser, auditService);
+        new OfflinePackImportService(
+            platformIdentity, onboardingService, parser, auditService, resultRepository);
   }
 
   @Test
@@ -125,6 +130,35 @@ class OfflinePackImportServiceTest {
     assertThat(out.results().get(1).status()).isEqualTo("FAILURE");
     verify(auditService, times(1))
         .recordImport(eq(packId), eq(OPERATOR), eq(CLIENT_IP), eq(2), eq(0));
+
+    // Persistence: two offline_pack_result rows must have been saved with verbatim agent fields.
+    @SuppressWarnings("unchecked")
+    org.mockito.ArgumentCaptor<List<OfflinePackResultEntity>> rowsCaptor =
+        org.mockito.ArgumentCaptor.forClass(List.class);
+    verify(resultRepository, times(1)).saveAll(rowsCaptor.capture());
+    List<OfflinePackResultEntity> saved = rowsCaptor.getValue();
+    assertThat(saved).hasSize(2);
+
+    OfflinePackResultEntity row0 = saved.get(0);
+    assertThat(row0.getPackId()).isEqualTo(packId);
+    assertThat(row0.getOrdinal()).isZero();
+    assertThat(row0.getTaskId()).isNull();
+    assertThat(row0.getStatus()).isEqualTo("SUCCESS");
+    assertThat(row0.getExitCode()).isZero();
+    assertThat(row0.getStdout()).isEqualTo("ok");
+    assertThat(row0.getStderr()).isEmpty();
+    assertThat(row0.getStartedAt()).isEqualTo("2026-05-15T10:00:00Z");
+    assertThat(row0.getFinishedAt()).isEqualTo("2026-05-15T10:00:01Z");
+    assertThat(row0.getErrorMessage()).isNull();
+    assertThat(row0.getAgentId()).isEqualTo(AGENT_ID);
+    assertThat(row0.getImportedAt()).isNotNull();
+
+    OfflinePackResultEntity row1 = saved.get(1);
+    assertThat(row1.getOrdinal()).isEqualTo(1);
+    assertThat(row1.getStatus()).isEqualTo("FAILURE");
+    assertThat(row1.getExitCode()).isEqualTo(1);
+    assertThat(row1.getStderr()).isEqualTo("boom");
+    assertThat(row1.getErrorMessage()).isEqualTo("non-zero exit");
   }
 
   @Test

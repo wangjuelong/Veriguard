@@ -17,8 +17,6 @@ import io.veriguard.crypto.Ed25519SignatureService;
 import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VpackTaskListBuilder;
 import io.veriguard.crypto.X25519BoxService;
-import io.veriguard.database.model.Agent;
-import io.veriguard.database.repository.AgentRepository;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -54,7 +52,6 @@ class OfflinePackExportServiceTest {
   private AgentOnboardingService onboardingService;
   private AgentTaskQueueService taskQueueService;
   private OfflinePackAuditService auditService;
-  private AgentRepository agentRepository;
 
   private OfflinePackExportService exportService;
 
@@ -101,7 +98,6 @@ class OfflinePackExportServiceTest {
 
     taskQueueService = Mockito.mock(AgentTaskQueueService.class);
     auditService = Mockito.mock(OfflinePackAuditService.class);
-    agentRepository = Mockito.mock(AgentRepository.class);
 
     exportService =
         new OfflinePackExportService(
@@ -110,8 +106,7 @@ class OfflinePackExportServiceTest {
             taskQueueService,
             builder,
             vpackSerializer,
-            auditService,
-            agentRepository);
+            auditService);
   }
 
   @Test
@@ -123,7 +118,6 @@ class OfflinePackExportServiceTest {
             new AgentDtos.AgentTask(
                 "task-2", "command_inject", "veriguard-command", "{}", List.of()));
     when(taskQueueService.drainTasks(AGENT_ID)).thenReturn(queued);
-    when(agentRepository.findById(AGENT_ID)).thenReturn(Optional.of(new Agent()));
 
     Optional<OfflinePackExportService.ExportResult> result =
         exportService.export(
@@ -200,28 +194,6 @@ class OfflinePackExportServiceTest {
   }
 
   @Test
-  void export_skips_audit_when_agent_not_persisted_in_jpa() {
-    when(taskQueueService.drainTasks(AGENT_ID))
-        .thenReturn(
-            List.of(
-                new AgentDtos.AgentTask(
-                    "task-1", "http_attack", "veriguard-web-attack", "{}", List.of())));
-    when(agentRepository.findById(AGENT_ID)).thenReturn(Optional.empty());
-
-    Optional<OfflinePackExportService.ExportResult> result =
-        exportService.export(
-            new AgentDtos.OfflinePackExportInput(AGENT_ID, 100),
-            ONBOARD_TOKEN,
-            OPERATOR,
-            CLIENT_IP);
-
-    assertThat(result).isPresent();
-    assertThat(result.get().taskCount()).isEqualTo(1);
-    verify(auditService, never())
-        .recordExport(any(), anyString(), anyString(), anyString(), anyString(), any(), anyInt());
-  }
-
-  @Test
   void export_respects_max_tasks_and_reenqueues_overflow() {
     List<AgentDtos.AgentTask> queued =
         List.of(
@@ -231,8 +203,6 @@ class OfflinePackExportServiceTest {
             mkTask("task-4"),
             mkTask("task-5"));
     when(taskQueueService.drainTasks(AGENT_ID)).thenReturn(queued);
-    when(agentRepository.findById(AGENT_ID)).thenReturn(Optional.empty());
-
     Optional<OfflinePackExportService.ExportResult> result =
         exportService.export(
             new AgentDtos.OfflinePackExportInput(AGENT_ID, 2), ONBOARD_TOKEN, OPERATOR, CLIENT_IP);
@@ -250,8 +220,6 @@ class OfflinePackExportServiceTest {
   @Test
   void export_empty_queue_emits_zero_task_pack() {
     when(taskQueueService.drainTasks(AGENT_ID)).thenReturn(List.of());
-    when(agentRepository.findById(AGENT_ID)).thenReturn(Optional.empty());
-
     Optional<OfflinePackExportService.ExportResult> result =
         exportService.export(
             new AgentDtos.OfflinePackExportInput(AGENT_ID, 100),

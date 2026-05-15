@@ -4,11 +4,15 @@ import io.veriguard.audit.OfflinePackAuditService;
 import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VresultsTaskResultParser;
 import io.veriguard.crypto.X25519BoxService;
+import io.veriguard.database.model.OfflinePackResultEntity;
+import io.veriguard.database.repository.OfflinePackResultRepository;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Verify + decrypt + parse a {@code .vresults} envelope and update the matching {@code
@@ -31,16 +35,19 @@ public class OfflinePackImportService {
   private final AgentOnboardingService onboardingService;
   private final VresultsTaskResultParser vresultsParser;
   private final OfflinePackAuditService auditService;
+  private final OfflinePackResultRepository resultRepository;
 
   public OfflinePackImportService(
       PlatformIdentityService platformIdentity,
       AgentOnboardingService onboardingService,
       VresultsTaskResultParser vresultsParser,
-      OfflinePackAuditService auditService) {
+      OfflinePackAuditService auditService,
+      OfflinePackResultRepository resultRepository) {
     this.platformIdentity = platformIdentity;
     this.onboardingService = onboardingService;
     this.vresultsParser = vresultsParser;
     this.auditService = auditService;
+    this.resultRepository = resultRepository;
   }
 
   /**
@@ -55,6 +62,7 @@ public class OfflinePackImportService {
    *     populated (preserving the existing 400 contract on the controller side) or a success result
    *     with {@code packId / importedCount / rejectedCount} set
    */
+  @Transactional
   public ImportResult importPack(
       byte[] envelopeBytes, String onboardToken, String importedBy, String clientIp) {
     if (envelopeBytes == null) {
@@ -109,6 +117,34 @@ public class OfflinePackImportService {
               + parsed.results().size());
     }
 
+    // Persist one offline_pack_result row per decoded result so admins can review per-task
+    // outputs after import (招标 demo requirement — see V21__offline_pack_result.sql). The
+    // metadata recordImport call below references this same pack_id; everything in this method
+    // runs under the single @Transactional boundary so partial inserts are not visible if the
+    // audit update fails.
+    Instant importedAt = Instant.now();
+    List<OfflinePackResultEntity> rows = new ArrayList<>(parsed.results().size());
+    for (int i = 0; i < parsed.results().size(); i++) {
+      AgentDtos.ResultInput r = parsed.results().get(i);
+      OfflinePackResultEntity row = new OfflinePackResultEntity();
+      row.setPackId(parsed.metadata().packId());
+      row.setOrdinal(i);
+      row.setTaskId(null); // (pack_id, ordinal) → task_id mapping is a future PR
+      row.setStatus(r.status());
+      row.setExitCode(r.exitCode());
+      row.setStdout(r.stdout());
+      row.setStderr(r.stderr());
+      row.setStartedAt(parseInstantOrNull(r.startedAt()));
+      row.setFinishedAt(parseInstantOrNull(r.finishedAt()));
+      row.setErrorMessage(r.errorMessage());
+      row.setAgentId(state.agentId());
+      row.setImportedAt(importedAt);
+      rows.add(row);
+    }
+    if (!rows.isEmpty()) {
+      resultRepository.saveAll(rows);
+    }
+
     // Audit — recordImport tolerates a missing export row (logs WARN + returns empty). We always
     // call it so successful imports are observable in audit, and the lack of a matching export is
     // diagnosable from the same row search.
@@ -117,7 +153,7 @@ public class OfflinePackImportService {
         importedBy,
         clientIp,
         parsed.results().size(),
-        0); // rejected_count is 0 until C1-Platform-3 persistence introduces per-row rejection
+        0); // rejected_count is 0 until per-row rejection lands
 
     return new ImportResult(
         parsed.metadata().packId().toString(),
@@ -125,6 +161,24 @@ public class OfflinePackImportService {
         0,
         warnings,
         parsed.results());
+  }
+
+  /**
+   * Parse an agent-supplied RFC 3339 timestamp string (e.g. {@code "2026-05-15T10:00:10Z"}) into an
+   * {@link Instant}; returns {@code null} for null / blank / unparseable inputs so a single bad
+   * field never blocks the whole pack import. Soft tolerance is deliberate — wire schema says these
+   * are optional, and the platform should not reject a {@code .vresults} envelope solely because
+   * the agent's clock formatter emitted something unusual.
+   */
+  private static Instant parseInstantOrNull(String iso) {
+    if (iso == null || iso.isBlank()) {
+      return null;
+    }
+    try {
+      return Instant.parse(iso);
+    } catch (java.time.format.DateTimeParseException ex) {
+      return null;
+    }
   }
 
   /**
