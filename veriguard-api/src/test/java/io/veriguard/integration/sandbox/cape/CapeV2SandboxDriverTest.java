@@ -113,7 +113,7 @@ class CapeV2SandboxDriverTest {
   @Test
   void healthCheck_accepts_real_cape_status_payload() {
     handlers.put(
-        "/cuckoo/status/",
+        "/apiv2/cuckoo/status/",
         ex ->
             respondJson(
                 ex,
@@ -128,7 +128,7 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void healthCheck_protocol_mismatch_when_version_missing() {
-    handlers.put("/cuckoo/status/", ex -> respondJson(ex, 200, "{\"hostname\":\"x\"}"));
+    handlers.put("/apiv2/cuckoo/status/", ex -> respondJson(ex, 200, "{\"hostname\":\"x\"}"));
     assertThatThrownBy(() -> driver(propsBuilder()).healthCheck())
         .isInstanceOf(SandboxIntegrationException.class)
         .satisfies(
@@ -139,7 +139,8 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void healthCheck_auth_failed_on_401() {
-    handlers.put("/cuckoo/status/", ex -> respondJson(ex, 401, "{\"detail\":\"unauthorized\"}"));
+    handlers.put(
+        "/apiv2/cuckoo/status/", ex -> respondJson(ex, 401, "{\"detail\":\"unauthorized\"}"));
     assertThatThrownBy(() -> driver(propsBuilder()).healthCheck())
         .isInstanceOf(SandboxIntegrationException.class)
         .satisfies(
@@ -152,7 +153,8 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void healthCheck_remote_error_on_500() {
-    handlers.put("/cuckoo/status/", ex -> respondJson(ex, 500, "{\"error\":\"backend exploded\"}"));
+    handlers.put(
+        "/apiv2/cuckoo/status/", ex -> respondJson(ex, 500, "{\"error\":\"backend exploded\"}"));
     assertThatThrownBy(() -> driver(propsBuilder()).healthCheck())
         .isInstanceOf(SandboxIntegrationException.class)
         .satisfies(
@@ -168,7 +170,7 @@ class CapeV2SandboxDriverTest {
   @Test
   void listMachines_parses_wrapped_array() {
     handlers.put(
-        "/machines/list",
+        "/apiv2/machines/list/",
         ex ->
             respondJson(
                 ex,
@@ -193,7 +195,7 @@ class CapeV2SandboxDriverTest {
   @Test
   void listMachines_parses_bare_array() {
     handlers.put(
-        "/machines/list",
+        "/apiv2/machines/list/",
         ex ->
             respondJson(
                 ex,
@@ -208,7 +210,7 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void listMachines_protocol_mismatch_when_not_array() {
-    handlers.put("/machines/list", ex -> respondJson(ex, 200, "{\"unexpected\":\"shape\"}"));
+    handlers.put("/apiv2/machines/list/", ex -> respondJson(ex, 200, "{\"unexpected\":\"shape\"}"));
     assertThatThrownBy(() -> driver(propsBuilder()).listMachines())
         .isInstanceOf(SandboxIntegrationException.class)
         .satisfies(
@@ -221,7 +223,7 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void submitSample_posts_multipart_and_returns_task_id() {
-    handlers.put("/tasks/create/file", ex -> respondJson(ex, 200, "{\"task_id\":42}"));
+    handlers.put("/apiv2/tasks/create/file/", ex -> respondJson(ex, 200, "{\"task_id\":42}"));
 
     SampleSubmissionRequest req =
         new SampleSubmissionRequest(
@@ -249,7 +251,8 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void submitSample_protocol_mismatch_when_task_id_missing() {
-    handlers.put("/tasks/create/file", ex -> respondJson(ex, 200, "{\"oops\":\"no task_id\"}"));
+    handlers.put(
+        "/apiv2/tasks/create/file/", ex -> respondJson(ex, 200, "{\"oops\":\"no task_id\"}"));
     SampleSubmissionRequest req =
         new SampleSubmissionRequest("p", "MINER", "x.exe", "h", new byte[] {1, 2, 3}, null, null);
     assertThatThrownBy(() -> driver(propsBuilder()).submitSample(req))
@@ -276,7 +279,7 @@ class CapeV2SandboxDriverTest {
   @Test
   void fetchTaskStatus_maps_running() {
     handlers.put(
-        "/tasks/view/7",
+        "/apiv2/tasks/view/7/",
         ex -> respondJson(ex, 200, "{\"task\":{\"id\":7,\"status\":\"running\"}}"));
     SandboxTaskStatus s = driver(propsBuilder()).fetchTaskStatus(7);
     assertThat(s.status()).isEqualTo(SandboxTaskStatus.Status.RUNNING);
@@ -286,7 +289,7 @@ class CapeV2SandboxDriverTest {
   @Test
   void fetchTaskStatus_maps_reported_to_completed() {
     handlers.put(
-        "/tasks/view/8", ex -> respondJson(ex, 200, "{\"task\":{\"status\":\"reported\"}}"));
+        "/apiv2/tasks/view/8/", ex -> respondJson(ex, 200, "{\"task\":{\"status\":\"reported\"}}"));
     assertThat(driver(propsBuilder()).fetchTaskStatus(8).status())
         .isEqualTo(SandboxTaskStatus.Status.COMPLETED);
   }
@@ -294,7 +297,7 @@ class CapeV2SandboxDriverTest {
   @Test
   void fetchTaskStatus_maps_failed_variants() {
     handlers.put(
-        "/tasks/view/9",
+        "/apiv2/tasks/view/9/",
         ex ->
             respondJson(
                 ex, 200, "{\"task\":{\"status\":\"failed_analysis\",\"errors\":\"VM crashed\"}}"));
@@ -306,7 +309,8 @@ class CapeV2SandboxDriverTest {
   @Test
   void fetchTaskStatus_unknown_for_unrecognized_string() {
     handlers.put(
-        "/tasks/view/10", ex -> respondJson(ex, 200, "{\"task\":{\"status\":\"mystery-state\"}}"));
+        "/apiv2/tasks/view/10/",
+        ex -> respondJson(ex, 200, "{\"task\":{\"status\":\"mystery-state\"}}"));
     assertThat(driver(propsBuilder()).fetchTaskStatus(10).status())
         .isEqualTo(SandboxTaskStatus.Status.UNKNOWN);
   }
@@ -314,7 +318,8 @@ class CapeV2SandboxDriverTest {
   @Test
   void fetchTaskStatus_accepts_unwrapped_task_object() {
     handlers.put(
-        "/tasks/view/11", ex -> respondJson(ex, 200, "{\"status\":\"completed\",\"id\":11}"));
+        "/apiv2/tasks/view/11/",
+        ex -> respondJson(ex, 200, "{\"status\":\"completed\",\"id\":11}"));
     assertThat(driver(propsBuilder()).fetchTaskStatus(11).status())
         .isEqualTo(SandboxTaskStatus.Status.COMPLETED);
   }
@@ -323,7 +328,7 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void api_token_sets_token_authorization_header() {
-    handlers.put("/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
+    handlers.put("/apiv2/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
     CapeV2SandboxDriverProperties props =
         new CapeV2SandboxDriverProperties(
             baseUrl,
@@ -340,7 +345,7 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void basic_auth_sets_basic_authorization_header() {
-    handlers.put("/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
+    handlers.put("/apiv2/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
     CapeV2SandboxDriverProperties props =
         new CapeV2SandboxDriverProperties(
             baseUrl,
@@ -358,14 +363,14 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void no_auth_when_neither_token_nor_basic_set() {
-    handlers.put("/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
+    handlers.put("/apiv2/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
     driver(propsBuilder()).healthCheck();
     assertThat(capturedAuthHeader.get()).isNull();
   }
 
   @Test
   void token_wins_over_basic_when_both_set() {
-    handlers.put("/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
+    handlers.put("/apiv2/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
     CapeV2SandboxDriverProperties props =
         new CapeV2SandboxDriverProperties(
             baseUrl,
@@ -407,7 +412,7 @@ class CapeV2SandboxDriverTest {
 
   @Test
   void endpoint_strips_trailing_slash() {
-    handlers.put("/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
+    handlers.put("/apiv2/cuckoo/status/", ex -> respondJson(ex, 200, "{\"version\":\"1.0\"}"));
     CapeV2SandboxDriverProperties props =
         new CapeV2SandboxDriverProperties(
             baseUrl + "/",

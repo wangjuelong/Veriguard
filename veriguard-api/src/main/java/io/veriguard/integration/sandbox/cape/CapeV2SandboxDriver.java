@@ -34,8 +34,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * CAPEv2 sandbox driver (M2) — connects the platform to a running <a
- * href="https://github.com/kevoreilly/CAPEv2">CAPEv2</a> instance via its REST API (default port
- * 8000; user deployments often expose 8090 via nginx).
+ * href="https://github.com/kevoreilly/CAPEv2">CAPEv2</a> instance via its embedded Django REST API
+ * (mounted under {@code /apiv2/} on the same port that serves the Web UI, default 8000 or 8090).
  *
  * <p>Registered as the {@code @Primary} {@link SandboxDriver} only when {@code
  * veriguard.sandbox.cape.endpoint} is populated (Spring {@link ConditionalOnProperty}); otherwise
@@ -44,13 +44,16 @@ import org.springframework.stereotype.Component;
  *
  * <h2>Endpoints</h2>
  *
+ * <p>All paths are prefixed with {@code /apiv2/} and terminated with a trailing slash because
+ * CAPEv2 runs Django with {@code APPEND_SLASH=True}; a missing slash returns 404.
+ *
  * <table>
  *   <caption>CAPEv2 REST API surface consumed by this driver</caption>
  *   <tr><th>SPI method</th><th>HTTP</th><th>Path</th></tr>
- *   <tr><td>healthCheck</td><td>GET</td><td>/cuckoo/status/</td></tr>
- *   <tr><td>listMachines</td><td>GET</td><td>/machines/list</td></tr>
- *   <tr><td>submitSample</td><td>POST (multipart)</td><td>/tasks/create/file</td></tr>
- *   <tr><td>fetchTaskStatus</td><td>GET</td><td>/tasks/view/{id}</td></tr>
+ *   <tr><td>healthCheck</td><td>GET</td><td>/apiv2/cuckoo/status/</td></tr>
+ *   <tr><td>listMachines</td><td>GET</td><td>/apiv2/machines/list/</td></tr>
+ *   <tr><td>submitSample</td><td>POST (multipart)</td><td>/apiv2/tasks/create/file/</td></tr>
+ *   <tr><td>fetchTaskStatus</td><td>GET</td><td>/apiv2/tasks/view/{id}/</td></tr>
  * </table>
  *
  * <h2>Authentication</h2>
@@ -103,7 +106,7 @@ public class CapeV2SandboxDriver implements SandboxDriver {
 
   @Override
   public void healthCheck() {
-    HttpRequest request = baseRequest("/cuckoo/status/").GET().build();
+    HttpRequest request = baseRequest("/apiv2/cuckoo/status/").GET().build();
     JsonNode body = sendForJson(request, "healthCheck");
     // CAPEv2 status payload always contains at least `version` and `hostname`.
     // Missing either means we hit a non-CAPE endpoint (wrong base-url / nginx
@@ -111,13 +114,13 @@ public class CapeV2SandboxDriver implements SandboxDriver {
     if (!body.has("version")) {
       throw new SandboxIntegrationException(
           ReasonCode.PROTOCOL_MISMATCH,
-          "CAPEv2 /cuckoo/status/ response missing `version` field: " + body.toString());
+          "CAPEv2 /apiv2/cuckoo/status/ response missing `version` field: " + body.toString());
     }
   }
 
   @Override
   public List<MachineSnapshot> listMachines() {
-    HttpRequest request = baseRequest("/machines/list").GET().build();
+    HttpRequest request = baseRequest("/apiv2/machines/list/").GET().build();
     JsonNode body = sendForJson(request, "listMachines");
     // CAPE wraps the list under `{"machines": [...]}` in some versions, returns
     // a bare array in others — accept both.
@@ -125,7 +128,8 @@ public class CapeV2SandboxDriver implements SandboxDriver {
     if (!arr.isArray()) {
       throw new SandboxIntegrationException(
           ReasonCode.PROTOCOL_MISMATCH,
-          "CAPEv2 /machines/list response is neither an array nor `{machines:[...]}`: " + body);
+          "CAPEv2 /apiv2/machines/list/ response is neither an array nor `{machines:[...]}`: "
+              + body);
     }
     List<MachineSnapshot> out = new ArrayList<>(arr.size());
     Instant fetchedAt = Instant.now();
@@ -158,7 +162,7 @@ public class CapeV2SandboxDriver implements SandboxDriver {
     byte[] body = buildMultipart(request, boundary);
 
     HttpRequest httpRequest =
-        baseRequest("/tasks/create/file")
+        baseRequest("/apiv2/tasks/create/file/")
             // Sample uploads may take longer than a list / status fetch — use the
             // dedicated submit timeout (defaults to readTimeout when unset).
             .timeout(props.sampleSubmitTimeout())
@@ -169,16 +173,21 @@ public class CapeV2SandboxDriver implements SandboxDriver {
     JsonNode json = sendForJson(httpRequest, "submitSample");
     JsonNode taskIdNode = json.path("task_id");
     if (!taskIdNode.canConvertToLong()) {
+      // CAPEv2 also returns task_ids as a singleton list for some submitters; accept both.
+      JsonNode ids = json.path("task_ids");
+      if (ids.isArray() && !ids.isEmpty() && ids.get(0).canConvertToLong()) {
+        return new SubmissionResult(ids.get(0).asLong());
+      }
       throw new SandboxIntegrationException(
           ReasonCode.PROTOCOL_MISMATCH,
-          "CAPEv2 /tasks/create/file response missing numeric `task_id`: " + json);
+          "CAPEv2 /apiv2/tasks/create/file/ response missing numeric `task_id`: " + json);
     }
     return new SubmissionResult(taskIdNode.asLong());
   }
 
   @Override
   public SandboxTaskStatus fetchTaskStatus(long capeTaskId) {
-    HttpRequest request = baseRequest("/tasks/view/" + capeTaskId).GET().build();
+    HttpRequest request = baseRequest("/apiv2/tasks/view/" + capeTaskId + "/").GET().build();
     JsonNode body = sendForJson(request, "fetchTaskStatus");
     // CAPEv2 wraps the task under `task` in most versions: {"task": {"status": "...", ...}}
     JsonNode task = body.has("task") ? body.path("task") : body;
@@ -187,7 +196,7 @@ public class CapeV2SandboxDriver implements SandboxDriver {
     if (rawStatus == null || rawStatus.isBlank()) {
       throw new SandboxIntegrationException(
           ReasonCode.PROTOCOL_MISMATCH,
-          "CAPEv2 /tasks/view/" + capeTaskId + " missing `task.status`: " + body);
+          "CAPEv2 /apiv2/tasks/view/" + capeTaskId + "/ missing `task.status`: " + body);
     }
     return new SandboxTaskStatus(mapStatus(rawStatus), rawStatus, errorMessage);
   }
