@@ -7,6 +7,7 @@ import io.veriguard.database.model.Agent;
 import io.veriguard.database.model.combination.AttackCombinationHitState;
 import io.veriguard.injectors.web_attack.model.WebAttackContent;
 import io.veriguard.injectors.web_attack.service.WebAttackDispatchService;
+import io.veriguard.rest.agent.AgentDtos;
 import io.veriguard.rest.agent.AgentTaskQueueService;
 import io.veriguard.service.exception.CapabilityNotSupportedException;
 import java.time.Duration;
@@ -101,7 +102,7 @@ public class HttpInjectExecutor implements CombinationExecutor {
   }
 
   @Override
-  public AttackCombinationHitState execute(CombinationInstance instance) {
+  public CombinationExecutionResult execute(CombinationInstance instance) {
     if (instance == null) {
       throw new IllegalArgumentException("instance must not be null");
     }
@@ -132,7 +133,7 @@ public class HttpInjectExecutor implements CombinationExecutor {
           "HttpInjectExecutor: no Agent with http_attack capability for combination {} —"
               + " marking INCONCLUSIVE (timeout)",
           instance.combinationId());
-      return AttackCombinationHitState.timeout;
+      return CombinationExecutionResult.of(AttackCombinationHitState.timeout);
     }
 
     // 4) Dispatch + await with timeout.
@@ -142,13 +143,22 @@ public class HttpInjectExecutor implements CombinationExecutor {
           dispatchService
               .dispatch(taskId, agentOpt.get(), content)
               .get(awaitTimeout.toMillis(), TimeUnit.MILLISECONDS);
-      return mapStatusToHitState(received.input().status());
+      // AB-2: propagate agent stdout/stderr/exit_code/error_message so the scheduler can
+      // persist them to attack_combination_results.{stdout,stderr,exit_code,error_message}
+      // (Flyway V22) — admins can post-mortem each combination without re-running.
+      AgentDtos.ResultInput input = received.input();
+      return new CombinationExecutionResult(
+          mapStatusToHitState(input.status()),
+          input.stdout(),
+          input.stderr(),
+          input.exitCode(),
+          input.errorMessage());
     } catch (TimeoutException ex) {
       log.info(
           "HttpInjectExecutor: dispatch timeout after {}ms for combination {} — INCONCLUSIVE",
           awaitTimeout.toMillis(),
           instance.combinationId());
-      return AttackCombinationHitState.timeout;
+      return CombinationExecutionResult.of(AttackCombinationHitState.timeout);
     } catch (CapabilityNotSupportedException ex) {
       // Agent we selected does not actually have the capability — shouldn't happen if
       // selectAgent() honored the filter, but fail visibly (no fallback) per project rule.

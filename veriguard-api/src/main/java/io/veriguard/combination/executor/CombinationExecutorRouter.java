@@ -1,16 +1,15 @@
 package io.veriguard.combination.executor;
 
 import io.veriguard.combination.CombinationInstance;
-import io.veriguard.database.model.combination.AttackCombinationHitState;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
 /**
  * Executor 路由器 —— IPv6 安全验证系统 §3.6 ★2 PR D2.
  *
- * <p>按 base_attack_type 选择第一个 {@link CombinationExecutor#supports(String)} 返回 true 的实现.
- * 具体 executor 在 PR D5+ 注册到容器（如 HttpInjectExecutor / XmlPayloadExecutor / SmtpInjectExecutor 等），
- * {@link StubCombinationExecutor} 永远作为兜底（顺序由 Spring bean 注入顺序保证，stub 用 @Order 控制最低优先级）.
+ * <p>按 base_attack_type 选择第一个 {@link CombinationExecutor#supports(String)} 返回 true 的实现. 具体 executor
+ * 在 PR D5+ 注册到容器（如 HttpInjectExecutor / XmlPayloadExecutor / SmtpInjectExecutor 等）， {@link
+ * StubCombinationExecutor} 永远作为兜底（顺序由 Spring bean 注入顺序保证，stub 用 @Order 控制最低优先级）.
  *
  * <p>当前 PR D2 容器内只有 stub，故所有 base_type 都路由到 stub.
  */
@@ -47,7 +46,7 @@ public class CombinationExecutorRouter {
   }
 
   /** 派发执行：路由 + 执行. */
-  public AttackCombinationHitState dispatch(CombinationInstance instance) {
+  public CombinationExecutionResult dispatch(CombinationInstance instance) {
     return select(instance.baseAttackType()).execute(instance);
   }
 }

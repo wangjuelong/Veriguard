@@ -95,7 +95,7 @@ class PcapReplayExecutorTest {
     when(dispatchService.dispatch(anyString(), any(Agent.class), any(PcapReplayContent.class)))
         .thenReturn(CompletableFuture.completedFuture(received));
 
-    AttackCombinationHitState state = executor.execute(pcapInstance());
+    AttackCombinationHitState state = executor.execute(pcapInstance()).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.hit);
     verify(dispatchService).validateContent(any(PcapReplayContent.class));
   }
@@ -113,7 +113,7 @@ class PcapReplayExecutorTest {
     when(dispatchService.dispatch(anyString(), any(Agent.class), any(PcapReplayContent.class)))
         .thenReturn(CompletableFuture.completedFuture(received));
 
-    AttackCombinationHitState state = executor.execute(pcapInstance());
+    AttackCombinationHitState state = executor.execute(pcapInstance()).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.miss);
   }
 
@@ -125,7 +125,7 @@ class PcapReplayExecutorTest {
     when(dispatchService.dispatch(anyString(), any(Agent.class), any(PcapReplayContent.class)))
         .thenReturn(new CompletableFuture<>());
 
-    AttackCombinationHitState state = executor.execute(pcapInstance());
+    AttackCombinationHitState state = executor.execute(pcapInstance()).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.timeout);
   }
 
@@ -134,7 +134,7 @@ class PcapReplayExecutorTest {
   void execute_noAgentYieldsTimeout() {
     when(dispatchService.selectAgent()).thenReturn(Optional.empty());
 
-    AttackCombinationHitState state = executor.execute(pcapInstance());
+    AttackCombinationHitState state = executor.execute(pcapInstance()).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.timeout);
   }
 }

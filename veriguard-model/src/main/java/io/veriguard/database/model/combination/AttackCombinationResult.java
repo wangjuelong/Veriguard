@@ -1,5 +1,7 @@
 package io.veriguard.database.model.combination;
 
+import static java.time.Instant.now;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.veriguard.annotation.Queryable;
 import io.veriguard.database.audit.ModelBaseListener;
@@ -13,8 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import static java.time.Instant.now;
-
 import java.time.Instant;
 import java.util.UUID;
 import lombok.Getter;
@@ -25,8 +25,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 /**
  * 攻击组合结果 —— IPv6 安全验证系统 §3.6 ★2 攻击组合 PR D2.
  *
- * <p>每行 = 一次 (run × combination × asset) 的执行结果. combination_id 是「虚拟 ID」=
- * base_attack_type + ":" + bypass_dimension_id（不引用 templates 表，因为组合是即时笛卡尔积）.
+ * <p>每行 = 一次 (run × combination × asset) 的执行结果. combination_id 是「虚拟 ID」= base_attack_type + ":" +
+ * bypass_dimension_id（不引用 templates 表，因为组合是即时笛卡尔积）.
  *
  * <p>对应 Flyway V12 表 {@code attack_combination_results}.
  */
@@ -95,6 +95,23 @@ public class AttackCombinationResult implements Base {
   @Column(name = "attack_combination_result_executed_at")
   @JsonProperty("attack_combination_result_executed_at")
   private Instant executedAt;
+
+  // -- C1-Platform-3 follow-up (AB-2) --
+  // Agent 端 dispatch 跑完后的原始输出 — V22 新增 3 列承载，让 admin 在
+  // attack_combination_results 视图能逐行 review HTTP 攻击包真实跑下来的
+  // stdout/stderr/exit_code。HIT/MISS/TIMEOUT 三态分类沿用 hitState 字段。
+
+  @Column(name = "attack_combination_result_stdout")
+  @JsonProperty("attack_combination_result_stdout")
+  private String stdout;
+
+  @Column(name = "attack_combination_result_stderr")
+  @JsonProperty("attack_combination_result_stderr")
+  private String stderr;
+
+  @Column(name = "attack_combination_result_exit_code")
+  @JsonProperty("attack_combination_result_exit_code")
+  private Integer exitCode;
 
   @CreationTimestamp
   @Column(name = "attack_combination_result_created_at")

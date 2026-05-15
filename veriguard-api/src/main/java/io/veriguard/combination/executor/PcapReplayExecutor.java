@@ -84,7 +84,7 @@ public class PcapReplayExecutor implements CombinationExecutor {
   }
 
   @Override
-  public AttackCombinationHitState execute(CombinationInstance instance) {
+  public CombinationExecutionResult execute(CombinationInstance instance) {
     if (instance == null) {
       throw new IllegalArgumentException("instance must not be null");
     }
@@ -114,7 +114,7 @@ public class PcapReplayExecutor implements CombinationExecutor {
           "PcapReplayExecutor: no Agent with pcap_replay capability for combination {} —"
               + " marking INCONCLUSIVE (timeout)",
           instance.combinationId());
-      return AttackCombinationHitState.timeout;
+      return CombinationExecutionResult.of(AttackCombinationHitState.timeout);
     }
 
     // 4) Dispatch + await with timeout.
@@ -124,13 +124,13 @@ public class PcapReplayExecutor implements CombinationExecutor {
           dispatchService
               .dispatch(taskId, agentOpt.get(), content)
               .get(awaitTimeout.toMillis(), TimeUnit.MILLISECONDS);
-      return mapStatusToHitState(received.input().status());
+      return CombinationExecutionResult.of(mapStatusToHitState(received.input().status()));
     } catch (TimeoutException ex) {
       log.info(
           "PcapReplayExecutor: dispatch timeout after {}ms for combination {} — INCONCLUSIVE",
           awaitTimeout.toMillis(),
           instance.combinationId());
-      return AttackCombinationHitState.timeout;
+      return CombinationExecutionResult.of(AttackCombinationHitState.timeout);
     } catch (CapabilityNotSupportedException ex) {
       throw ex;
     } catch (InterruptedException ex) {

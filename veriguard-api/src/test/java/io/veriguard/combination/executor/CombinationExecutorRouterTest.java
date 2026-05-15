@@ -36,8 +36,9 @@ class CombinationExecutorRouterTest {
     CombinationExecutorRouter router = new CombinationExecutorRouter(List.of(sqlExec, stub), stub);
 
     CombinationInstance sqlInstance =
-        new CombinationInstance("run1", "sql_injection:dim1", "sql_injection", "dim1", "asset-1", "p", "p");
-    AttackCombinationHitState state = router.dispatch(sqlInstance);
+        new CombinationInstance(
+            "run1", "sql_injection:dim1", "sql_injection", "dim1", "asset-1", "p", "p");
+    AttackCombinationHitState state = router.dispatch(sqlInstance).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.hit);
     assertThat(sqlExec.callCount()).isEqualTo(1);
   }
@@ -45,10 +46,8 @@ class CombinationExecutorRouterTest {
   @Test
   void blank_base_type_throws() {
     CombinationExecutorRouter router = new CombinationExecutorRouter(List.of(stub), stub);
-    assertThatThrownBy(() -> router.select(""))
-        .isInstanceOf(IllegalArgumentException.class);
-    assertThatThrownBy(() -> router.select(null))
-        .isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> router.select("")).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> router.select(null)).isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
@@ -76,9 +75,9 @@ class CombinationExecutorRouterTest {
     }
 
     @Override
-    public AttackCombinationHitState execute(CombinationInstance instance) {
+    public CombinationExecutionResult execute(CombinationInstance instance) {
       callCount++;
-      return AttackCombinationHitState.hit;
+      return CombinationExecutionResult.of(AttackCombinationHitState.hit);
     }
 
     int callCount() {

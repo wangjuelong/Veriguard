@@ -3,6 +3,7 @@ package io.veriguard.combination.scheduler;
 import io.veriguard.combination.AttackCombinationGenerator;
 import io.veriguard.combination.CombinationInstance;
 import io.veriguard.combination.cluster.ClusterAnalyzer;
+import io.veriguard.combination.executor.CombinationExecutionResult;
 import io.veriguard.combination.executor.CombinationExecutorRouter;
 import io.veriguard.database.model.combination.AttackCombinationHitState;
 import io.veriguard.database.model.combination.AttackCombinationResult;
@@ -33,16 +34,16 @@ import org.springframework.transaction.support.TransactionTemplate;
  * 攻击组合任务调度器 —— IPv6 安全验证系统 §3.6 ★2 PR D2.
  *
  * <p>职责：
+ *
  * <ul>
- *   <li>给定 run id，加载 dimensions / asset_ids，预生成 result 行（pending）</li>
- *   <li>启动 {@link RateLimitedDispatcher} 拉 generator 流并派发到 {@link CombinationExecutorRouter}</li>
- *   <li>累积每 N 个结果批量 flush（默认 100），减少 DB 往返</li>
- *   <li>暂停 / 恢复 / 取消由 run id → dispatcher 映射承担</li>
- *   <li>重试（指数退避 1/5/30s）：result.retry_count++ 直到 max_retries 后标 failed</li>
+ *   <li>给定 run id，加载 dimensions / asset_ids，预生成 result 行（pending）
+ *   <li>启动 {@link RateLimitedDispatcher} 拉 generator 流并派发到 {@link CombinationExecutorRouter}
+ *   <li>累积每 N 个结果批量 flush（默认 100），减少 DB 往返
+ *   <li>暂停 / 恢复 / 取消由 run id → dispatcher 映射承担
+ *   <li>重试（指数退避 1/5/30s）：result.retry_count++ 直到 max_retries 后标 failed
  * </ul>
  *
- * <p>不引入 RabbitMQ —— 在进程内用 fixed-pool 派发即可满足 ≤500 req/s 目标；
- * 真要跨进程 scale-out 时再切回 BatchQueueService.
+ * <p>不引入 RabbitMQ —— 在进程内用 fixed-pool 派发即可满足 ≤500 req/s 目标； 真要跨进程 scale-out 时再切回 BatchQueueService.
  */
 @Slf4j
 @Component
@@ -229,7 +230,8 @@ public class CombinationScheduler {
 
     List<BypassDimension> dimensions = loadDimensionsInOrder(run.getBypassDimensionIds());
     List<String> assetIds = run.getAssetIds();
-    Iterator<CombinationInstance> instances = generator.generate(run, dimensions, assetIds).iterator();
+    Iterator<CombinationInstance> instances =
+        generator.generate(run, dimensions, assetIds).iterator();
 
     RateLimitedDispatcher dispatcher =
         new RateLimitedDispatcher(runId, run.getRateLimitPerSecond(), run.getConcurrency());
@@ -274,8 +276,7 @@ public class CombinationScheduler {
    *
    * <p>每次失败前 sleep 退避时间；总尝试次数 = 1 + maxRetries.
    */
-  private AttackCombinationResult dispatchWithRetry(
-      CombinationInstance instance, int maxRetries) {
+  private AttackCombinationResult dispatchWithRetry(CombinationInstance instance, int maxRetries) {
     AttackCombinationResult result = new AttackCombinationResult();
     result.setRunId(instance.runId());
     result.setCombinationId(instance.combinationId());
@@ -288,8 +289,17 @@ public class CombinationScheduler {
     Exception lastError = null;
     while (attempt <= maxRetries) {
       try {
-        AttackCombinationHitState state = router.dispatch(instance);
-        result.setHitState(state);
+        CombinationExecutionResult execResult = router.dispatch(instance);
+        result.setHitState(execResult.hitState());
+        // AB-2: persist agent stdout/stderr/exit_code/error_message captured by the executor —
+        // Mode A combination output was previously discarded; admins can now post-mortem each
+        // combination's actual HTTP response (Flyway V22 added the 3 columns).
+        result.setStdout(execResult.stdout());
+        result.setStderr(execResult.stderr());
+        result.setExitCode(execResult.exitCode());
+        if (execResult.errorMessage() != null) {
+          result.setErrorMessage(execResult.errorMessage());
+        }
         result.setRetryCount(attempt);
         result.setExecutedAt(Instant.now());
         return result;

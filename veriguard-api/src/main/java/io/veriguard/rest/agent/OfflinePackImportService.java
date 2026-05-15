@@ -5,10 +5,14 @@ import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VresultsTaskResultParser;
 import io.veriguard.crypto.X25519BoxService;
 import io.veriguard.database.model.OfflinePackResultEntity;
+import io.veriguard.database.model.OfflinePackTaskEntity;
 import io.veriguard.database.repository.OfflinePackResultRepository;
+import io.veriguard.database.repository.OfflinePackTaskRepository;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,18 +40,21 @@ public class OfflinePackImportService {
   private final VresultsTaskResultParser vresultsParser;
   private final OfflinePackAuditService auditService;
   private final OfflinePackResultRepository resultRepository;
+  private final OfflinePackTaskRepository taskRepository;
 
   public OfflinePackImportService(
       PlatformIdentityService platformIdentity,
       AgentOnboardingService onboardingService,
       VresultsTaskResultParser vresultsParser,
       OfflinePackAuditService auditService,
-      OfflinePackResultRepository resultRepository) {
+      OfflinePackResultRepository resultRepository,
+      OfflinePackTaskRepository taskRepository) {
     this.platformIdentity = platformIdentity;
     this.onboardingService = onboardingService;
     this.vresultsParser = vresultsParser;
     this.auditService = auditService;
     this.resultRepository = resultRepository;
+    this.taskRepository = taskRepository;
   }
 
   /**
@@ -117,6 +124,24 @@ public class OfflinePackImportService {
               + parsed.results().size());
     }
 
+    // AB-1 (V22): load the (pack_id, ordinal) → task_id mapping captured at export time so
+    // each offline_pack_result row gets its original task_id backfilled. Missing mapping (e.g.
+    // the export happened on a different platform, or the audit row was wiped) → task_id stays
+    // null on the result row + we log a single warning (not per-result, to avoid log spam).
+    List<OfflinePackTaskEntity> taskRows =
+        taskRepository.findByPackIdOrderByOrdinalAsc(parsed.metadata().packId());
+    Map<Integer, String> taskIdByOrdinal = new HashMap<>(taskRows.size());
+    for (OfflinePackTaskEntity t : taskRows) {
+      taskIdByOrdinal.put(t.getOrdinal(), t.getTaskId());
+    }
+    if (taskIdByOrdinal.isEmpty() && !parsed.results().isEmpty()) {
+      log.warn(
+          "OfflinePackImportService: no offline_pack_task rows found for pack_id={} — task_id on"
+              + " {} result rows will be null (export likely happened on a different platform)",
+          parsed.metadata().packId(),
+          parsed.results().size());
+    }
+
     // Persist one offline_pack_result row per decoded result so admins can review per-task
     // outputs after import (招标 demo requirement — see V21__offline_pack_result.sql). The
     // metadata recordImport call below references this same pack_id; everything in this method
@@ -129,7 +154,7 @@ public class OfflinePackImportService {
       OfflinePackResultEntity row = new OfflinePackResultEntity();
       row.setPackId(parsed.metadata().packId());
       row.setOrdinal(i);
-      row.setTaskId(null); // (pack_id, ordinal) → task_id mapping is a future PR
+      row.setTaskId(taskIdByOrdinal.get(i)); // V22: backfill from offline_pack_task mapping
       row.setStatus(r.status());
       row.setExitCode(r.exitCode());
       row.setStdout(r.stdout());

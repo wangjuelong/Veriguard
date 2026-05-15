@@ -17,6 +17,8 @@ import io.veriguard.crypto.Ed25519SignatureService;
 import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VpackTaskListBuilder;
 import io.veriguard.crypto.X25519BoxService;
+import io.veriguard.database.model.OfflinePackTaskEntity;
+import io.veriguard.database.repository.OfflinePackTaskRepository;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -52,6 +54,7 @@ class OfflinePackExportServiceTest {
   private AgentOnboardingService onboardingService;
   private AgentTaskQueueService taskQueueService;
   private OfflinePackAuditService auditService;
+  private OfflinePackTaskRepository taskRepository;
 
   private OfflinePackExportService exportService;
 
@@ -98,6 +101,7 @@ class OfflinePackExportServiceTest {
 
     taskQueueService = Mockito.mock(AgentTaskQueueService.class);
     auditService = Mockito.mock(OfflinePackAuditService.class);
+    taskRepository = Mockito.mock(OfflinePackTaskRepository.class);
 
     exportService =
         new OfflinePackExportService(
@@ -106,7 +110,8 @@ class OfflinePackExportServiceTest {
             taskQueueService,
             builder,
             vpackSerializer,
-            auditService);
+            auditService,
+            taskRepository);
   }
 
   @Test
@@ -164,6 +169,19 @@ class OfflinePackExportServiceTest {
             any(byte[].class),
             taskCountCaptor.capture());
     assertThat(taskCountCaptor.getValue()).isEqualTo(2);
+
+    // AB-1 (V22): two offline_pack_task rows must persist the (pack_id, ordinal) → task_id
+    // mapping captured at export time so the import side can backfill result.task_id.
+    @SuppressWarnings("unchecked")
+    ArgumentCaptor<List<OfflinePackTaskEntity>> taskRowsCaptor =
+        ArgumentCaptor.forClass(List.class);
+    verify(taskRepository, times(1)).saveAll(taskRowsCaptor.capture());
+    List<OfflinePackTaskEntity> savedTasks = taskRowsCaptor.getValue();
+    assertThat(savedTasks).hasSize(2);
+    assertThat(savedTasks.get(0).getOrdinal()).isZero();
+    assertThat(savedTasks.get(0).getTaskId()).isEqualTo("task-1");
+    assertThat(savedTasks.get(1).getOrdinal()).isEqualTo(1);
+    assertThat(savedTasks.get(1).getTaskId()).isEqualTo("task-2");
   }
 
   @Test

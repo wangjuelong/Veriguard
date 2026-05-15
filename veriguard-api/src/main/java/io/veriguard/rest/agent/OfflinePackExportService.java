@@ -4,14 +4,18 @@ import io.veriguard.audit.OfflinePackAuditService;
 import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VpackTaskListBuilder;
 import io.veriguard.database.model.OfflinePackAuditEntity;
+import io.veriguard.database.model.OfflinePackTaskEntity;
+import io.veriguard.database.repository.OfflinePackTaskRepository;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Build a real {@code .vpack} for the Veriguard Agent (C1) Mode C 离线工作 export endpoint.
@@ -46,6 +50,7 @@ public class OfflinePackExportService {
   private final VpackTaskListBuilder vpackTaskListBuilder;
   private final VpackSerializer vpackSerializer;
   private final OfflinePackAuditService auditService;
+  private final OfflinePackTaskRepository taskRepository;
 
   public OfflinePackExportService(
       PlatformIdentityService platformIdentity,
@@ -53,13 +58,15 @@ public class OfflinePackExportService {
       AgentTaskQueueService taskQueueService,
       VpackTaskListBuilder vpackTaskListBuilder,
       VpackSerializer vpackSerializer,
-      OfflinePackAuditService auditService) {
+      OfflinePackAuditService auditService,
+      OfflinePackTaskRepository taskRepository) {
     this.platformIdentity = platformIdentity;
     this.onboardingService = onboardingService;
     this.taskQueueService = taskQueueService;
     this.vpackTaskListBuilder = vpackTaskListBuilder;
     this.vpackSerializer = vpackSerializer;
     this.auditService = auditService;
+    this.taskRepository = taskRepository;
   }
 
   /**
@@ -76,6 +83,7 @@ public class OfflinePackExportService {
    *     Optional#empty()} if {@code onboardToken} is invalid / not yet registered or the {@code
    *     agentId} in the request body does not match the token state
    */
+  @Transactional
   public Optional<ExportResult> export(
       AgentDtos.OfflinePackExportInput input,
       String onboardToken,
@@ -155,6 +163,22 @@ public class OfflinePackExportService {
         clientIp,
         ctSha256,
         packTasks.size());
+
+    // AB-1 (V22): capture (pack_id, ordinal) → task_id mapping so the import-time call to
+    // OfflinePackImportService can backfill offline_pack_result.task_id for each result row.
+    // The agent's wire-schema results are a JSON array correlated by index — without this row
+    // set the result table would have a permanent null in task_id.
+    if (!packTasks.isEmpty()) {
+      List<OfflinePackTaskEntity> taskRows = new ArrayList<>(packTasks.size());
+      for (int i = 0; i < packTasks.size(); i++) {
+        OfflinePackTaskEntity row = new OfflinePackTaskEntity();
+        row.setPackId(packId);
+        row.setOrdinal(i);
+        row.setTaskId(packTasks.get(i).taskId());
+        taskRows.add(row);
+      }
+      taskRepository.saveAll(taskRows);
+    }
 
     return Optional.of(new ExportResult(packId, envelopeBytes, packTasks.size()));
   }
