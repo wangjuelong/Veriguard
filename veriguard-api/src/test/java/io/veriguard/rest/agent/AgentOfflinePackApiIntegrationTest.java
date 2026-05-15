@@ -13,7 +13,9 @@ import io.veriguard.crypto.Ed25519SignatureService;
 import io.veriguard.crypto.VpackSerializer;
 import io.veriguard.crypto.VresultsSerializer;
 import io.veriguard.crypto.X25519BoxService;
+import io.veriguard.database.model.OfflinePackResultEntity;
 import io.veriguard.database.repository.OfflinePackAuditRepository;
+import io.veriguard.database.repository.OfflinePackResultRepository;
 import io.veriguard.utils.mockUser.WithMockUser;
 import java.time.Instant;
 import java.util.Base64;
@@ -41,6 +43,7 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
   @Autowired private VpackSerializer vpackSerializer;
   @Autowired private VresultsSerializer vresultsSerializer;
   @Autowired private OfflinePackAuditRepository auditRepository;
+  @Autowired private OfflinePackResultRepository resultRepository;
   @Autowired private PlatformIdentityService platformIdentity;
   @Autowired private AgentTaskQueueService taskQueueService;
 
@@ -209,6 +212,20 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
         .andExpect(jsonPath("$.pack_id").value(packId.toString()))
         .andExpect(jsonPath("$.imported_count").value(2))
         .andExpect(jsonPath("$.rejected_count").value(0));
+
+    // 6. Per-result persistence (V21 offline_pack_result) — two rows in ordinal order with the
+    //    agent's verbatim fields. Joins the proof from the wire layer (envelope decrypted, sig
+    //    verified) onto the admin-visibility layer (rows queryable by pack_id).
+    List<OfflinePackResultEntity> persisted =
+        resultRepository.findByPackIdOrderByOrdinalAsc(packId);
+    org.assertj.core.api.Assertions.assertThat(persisted).hasSize(2);
+    org.assertj.core.api.Assertions.assertThat(persisted.get(0).getOrdinal()).isZero();
+    org.assertj.core.api.Assertions.assertThat(persisted.get(0).getStatus()).isEqualTo("SUCCESS");
+    org.assertj.core.api.Assertions.assertThat(persisted.get(0).getStdout()).isEqualTo("ok-1");
+    org.assertj.core.api.Assertions.assertThat(persisted.get(0).getAgentId())
+        .isEqualTo(agent.agentId());
+    org.assertj.core.api.Assertions.assertThat(persisted.get(1).getOrdinal()).isEqualTo(1);
+    org.assertj.core.api.Assertions.assertThat(persisted.get(1).getStdout()).isEqualTo("ok-2");
   }
 
   @Test
@@ -311,14 +328,14 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
   }
 
   /**
-   * Task C.13 — scaffold-mode audit skip. The in-memory AgentOnboardingService never persists a JPA
-   * Agent row, so AgentOfflinePackApi must skip the audit write (FK to agents.agent_id would fail).
-   * This test asserts that the export still succeeds AND no audit row is written. Full audit
-   * roundtrip is exercised in {@link io.veriguard.audit.OfflinePackAuditServiceTest} with a mocked
-   * repository.
+   * V21 dropped the {@code fk_pack_audit_agent} FK on {@code offline_pack_audit.agent_id}, so the
+   * per-export audit row now writes unconditionally (Mode C agents go through {@code
+   * /api/agent/onboard/register} and do not own an OpenAEV Asset / row in {@code agents}). This
+   * test pins that the audit row IS written so a future migration cannot silently re-introduce the
+   * dependency.
    */
   @Test
-  void export_skipsAuditWhenAgentNotPersisted() throws Exception {
+  void export_audit_row_persists() throws Exception {
     long before = auditRepository.count();
     RegisteredAgent agent = registerAgent();
 
@@ -336,7 +353,7 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
 
     long after = auditRepository.count();
     org.assertj.core.api.Assertions.assertThat(after)
-        .as("audit row should NOT be written when JPA Agent is missing (scaffold mode)")
-        .isEqualTo(before);
+        .as("audit row MUST be written even when the agent has no OpenAEV agents row (V21)")
+        .isEqualTo(before + 1);
   }
 }
