@@ -17,6 +17,7 @@ import io.veriguard.database.repository.OfflinePackAuditRepository;
 import io.veriguard.utils.mockUser.WithMockUser;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
   @Autowired private VpackSerializer vpackSerializer;
   @Autowired private VresultsSerializer vresultsSerializer;
   @Autowired private OfflinePackAuditRepository auditRepository;
+  @Autowired private PlatformIdentityService platformIdentity;
+  @Autowired private AgentTaskQueueService taskQueueService;
 
   private static final String INIT_BODY =
       """
@@ -84,7 +87,7 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
                 token,
                 Base64.getEncoder().encodeToString(signPair.publicKey()),
                 Base64.getEncoder().encodeToString(encPair.publicKey()),
-                java.util.List.of("http_attack"),
+                List.of("http_attack"),
                 Base64.getEncoder().encodeToString(sig)));
 
     mockMvc
@@ -119,7 +122,6 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
     byte[] envelopeBytes = result.getResponse().getContentAsByteArray();
 
     // Parse the vpack envelope back — we need the platform sign pub key to verify.
-    // The PlatformIdentityService bean's pub key is exposed via init() — easier to pluck via:
     JsonNode parsed = objectMapper.readTree(envelopeBytes);
     String signerPubB64 = parsed.get("signature").get("signer_pub_b64").asText();
     byte[] platformSignPub = Base64.getDecoder().decode(signerPubB64);
@@ -130,13 +132,96 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
   }
 
   @Test
+  void export_then_import_full_roundtrip_with_two_tasks() throws Exception {
+    RegisteredAgent agent = registerAgent();
+
+    // Pre-load the queue so export drains real tasks (no longer the empty-stub case).
+    taskQueueService.enqueue(
+        agent.agentId(),
+        new AgentDtos.AgentTask("task-1", "http_attack", "veriguard-web-attack", "{}", List.of()));
+    taskQueueService.enqueue(
+        agent.agentId(),
+        new AgentDtos.AgentTask("task-2", "command_inject", "veriguard-command", "{}", List.of()));
+
+    // 1. Export
+    String exportBody =
+        objectMapper.writeValueAsString(new AgentDtos.OfflinePackExportInput(agent.agentId(), 100));
+    MvcResult exportResult =
+        mockMvc
+            .perform(
+                post(AgentOfflinePackApi.EXPORT_URI)
+                    .with(csrf())
+                    .param("onboard_token", agent.onboardToken())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(exportBody))
+            .andExpect(status().isOk())
+            .andReturn();
+    byte[] vpackBytes = exportResult.getResponse().getContentAsByteArray();
+
+    // 2. Open the vpack body so the test acts as the agent: decrypt + read the task list.
+    VpackSerializer.VpackContents vpackContents =
+        vpackSerializer.parse(vpackBytes, platformIdentity.getPlatformSignPub());
+    org.assertj.core.api.Assertions.assertThat(vpackContents.metadata().taskCount()).isEqualTo(2);
+    byte[] tasksPlaintext =
+        x25519.open(
+            vpackContents.encryptedEnvelope().ciphertext(),
+            vpackContents.encryptedEnvelope().nonce(),
+            vpackContents.encryptedEnvelope().senderX25519Pub(),
+            agent.encPair().privateKey());
+    @SuppressWarnings("unchecked")
+    List<java.util.Map<String, Object>> decodedTasks =
+        objectMapper.readValue(tasksPlaintext, List.class);
+    org.assertj.core.api.Assertions.assertThat(decodedTasks).hasSize(2);
+
+    // 3. Synthesize per-task results 1-to-1 (matching what the Rust agent would emit).
+    UUID packId = vpackContents.metadata().packId();
+    List<AgentDtos.ResultInput> results =
+        List.of(
+            new AgentDtos.ResultInput(
+                "SUCCESS", 0, "ok-1", "", "2026-05-15T10:00:00Z", "2026-05-15T10:00:01Z", null),
+            new AgentDtos.ResultInput(
+                "SUCCESS", 0, "ok-2", "", "2026-05-15T10:00:02Z", "2026-05-15T10:00:03Z", null));
+    byte[] resultsPlaintext = objectMapper.writeValueAsBytes(results);
+
+    // 4. Encrypt the results toward the platform (NOT the agent) — that is the real Mode C flow.
+    X25519BoxService.SealedBox resultsBox =
+        x25519.seal(
+            resultsPlaintext, platformIdentity.getPlatformEncPub(), agent.encPair().privateKey());
+    VresultsSerializer.VresultsMetadata meta =
+        new VresultsSerializer.VresultsMetadata(packId, agent.agentId(), Instant.now(), 2);
+    VresultsSerializer.VresultsEncryptedEnvelope env =
+        new VresultsSerializer.VresultsEncryptedEnvelope(
+            agent.encPair().publicKey(), resultsBox.nonce(), resultsBox.ciphertext());
+    byte[] vresultsBytes =
+        vresultsSerializer.build(
+            new VresultsSerializer.VresultsPayload(meta, env), agent.signPair().privateKey());
+
+    // 5. Import
+    MockMultipartFile file =
+        new MockMultipartFile("file", packId + ".vresults", "application/json", vresultsBytes);
+    mockMvc
+        .perform(
+            multipart(AgentOfflinePackApi.IMPORT_URI)
+                .file(file)
+                .with(csrf())
+                .param("onboard_token", agent.onboardToken()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.pack_id").value(packId.toString()))
+        .andExpect(jsonPath("$.imported_count").value(2))
+        .andExpect(jsonPath("$.rejected_count").value(0));
+  }
+
+  @Test
   void import_accepts_valid_vresults() throws Exception {
     RegisteredAgent agent = registerAgent();
 
     UUID packId = UUID.randomUUID();
-    byte[] plaintextResults = "{\"results\":[]}".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    // Plaintext per Rust-locked wire schema: JSON array of ResultInput (empty array == empty list).
+    byte[] plaintextResults = "[]".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    // Encrypt toward the platform — the import service decrypts with platformEncPriv.
     X25519BoxService.SealedBox box =
-        x25519.seal(plaintextResults, agent.encPair().publicKey(), agent.encPair().privateKey());
+        x25519.seal(
+            plaintextResults, platformIdentity.getPlatformEncPub(), agent.encPair().privateKey());
 
     VresultsSerializer.VresultsMetadata meta =
         new VresultsSerializer.VresultsMetadata(packId, agent.agentId(), Instant.now(), 0);
@@ -159,6 +244,7 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
                 .param("onboard_token", agent.onboardToken()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.pack_id").value(packId.toString()))
+        .andExpect(jsonPath("$.imported_count").value(0))
         .andExpect(jsonPath("$.rejected_count").value(0));
   }
 
@@ -167,9 +253,10 @@ class AgentOfflinePackApiIntegrationTest extends IntegrationTest {
     RegisteredAgent agent = registerAgent();
 
     UUID packId = UUID.randomUUID();
-    byte[] plaintextResults = "{\"results\":[]}".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    byte[] plaintextResults = "[]".getBytes(java.nio.charset.StandardCharsets.UTF_8);
     X25519BoxService.SealedBox box =
-        x25519.seal(plaintextResults, agent.encPair().publicKey(), agent.encPair().privateKey());
+        x25519.seal(
+            plaintextResults, platformIdentity.getPlatformEncPub(), agent.encPair().privateKey());
 
     VresultsSerializer.VresultsMetadata meta =
         new VresultsSerializer.VresultsMetadata(packId, agent.agentId(), Instant.now(), 0);
