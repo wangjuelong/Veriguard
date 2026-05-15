@@ -20,6 +20,7 @@ import io.veriguard.crypto.VresultsTaskResultParser;
 import io.veriguard.crypto.X25519BoxService;
 import io.veriguard.database.model.OfflinePackResultEntity;
 import io.veriguard.database.repository.OfflinePackResultRepository;
+import io.veriguard.database.repository.OfflinePackTaskRepository;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
@@ -54,6 +55,7 @@ class OfflinePackImportServiceTest {
   private AgentOnboardingService onboardingService;
   private OfflinePackAuditService auditService;
   private OfflinePackResultRepository resultRepository;
+  private OfflinePackTaskRepository taskRepository;
 
   private OfflinePackImportService importService;
 
@@ -95,10 +97,20 @@ class OfflinePackImportServiceTest {
 
     auditService = Mockito.mock(OfflinePackAuditService.class);
     resultRepository = Mockito.mock(OfflinePackResultRepository.class);
+    taskRepository = Mockito.mock(OfflinePackTaskRepository.class);
+    // Default empty mapping — individual tests override to assert task_id backfill.
+    Mockito.lenient()
+        .when(taskRepository.findByPackIdOrderByOrdinalAsc(Mockito.any(java.util.UUID.class)))
+        .thenReturn(List.of());
 
     importService =
         new OfflinePackImportService(
-            platformIdentity, onboardingService, parser, auditService, resultRepository);
+            platformIdentity,
+            onboardingService,
+            parser,
+            auditService,
+            resultRepository,
+            taskRepository);
   }
 
   @Test

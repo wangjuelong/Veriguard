@@ -115,7 +115,7 @@ class HttpInjectExecutorTest {
     when(dispatchService.dispatch(anyString(), any(Agent.class), any(WebAttackContent.class)))
         .thenReturn(CompletableFuture.completedFuture(received));
 
-    AttackCombinationHitState state = executor.execute(sqlInstance());
+    AttackCombinationHitState state = executor.execute(sqlInstance()).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.hit);
     verify(dispatchService).validateContent(any(WebAttackContent.class));
   }
@@ -133,7 +133,7 @@ class HttpInjectExecutorTest {
     when(dispatchService.dispatch(anyString(), any(Agent.class), any(WebAttackContent.class)))
         .thenReturn(CompletableFuture.completedFuture(received));
 
-    AttackCombinationHitState state = executor.execute(sqlInstance());
+    AttackCombinationHitState state = executor.execute(sqlInstance()).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.miss);
   }
 
@@ -146,7 +146,7 @@ class HttpInjectExecutorTest {
     when(dispatchService.dispatch(anyString(), any(Agent.class), any(WebAttackContent.class)))
         .thenReturn(new CompletableFuture<>());
 
-    AttackCombinationHitState state = executor.execute(sqlInstance());
+    AttackCombinationHitState state = executor.execute(sqlInstance()).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.timeout);
   }
 
@@ -155,7 +155,7 @@ class HttpInjectExecutorTest {
   void execute_noAgentYieldsTimeout() {
     when(dispatchService.selectAgent()).thenReturn(Optional.empty());
 
-    AttackCombinationHitState state = executor.execute(sqlInstance());
+    AttackCombinationHitState state = executor.execute(sqlInstance()).hitState();
     // No agent → can't differentiate hit/miss → INCONCLUSIVE == timeout in enum.
     assertThat(state).isEqualTo(AttackCombinationHitState.timeout);
   }

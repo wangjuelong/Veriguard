@@ -94,7 +94,7 @@ class CombinationExecutorRouterPriorityTest {
             "a1",
             "{\"web_request_method\":\"GET\",\"web_request_url\":\"https://x\"}",
             "<script>");
-    AttackCombinationHitState state = router.dispatch(instance);
+    AttackCombinationHitState state = router.dispatch(instance).hitState();
     assertThat(state).isEqualTo(AttackCombinationHitState.timeout);
   }
 
@@ -105,7 +105,7 @@ class CombinationExecutorRouterPriorityTest {
 
     CombinationInstance instance =
         new CombinationInstance("r1", "sql_injection:d1", "sql_injection", "d1", "a1", "p", "p");
-    AttackCombinationHitState state = router.dispatch(instance);
+    AttackCombinationHitState state = router.dispatch(instance).hitState();
     // Stub 概率返 hit/miss/timeout 之一（不抛）
     assertThat(state)
         .isIn(
