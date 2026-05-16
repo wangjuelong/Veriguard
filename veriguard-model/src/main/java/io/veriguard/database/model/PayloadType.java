@@ -9,7 +9,9 @@ public enum PayloadType {
   FILE_DROP(FileDrop.FILE_DROP_TYPE, FileDrop::new),
   DNS_RESOLUTION(DnsResolution.DNS_RESOLUTION_TYPE, DnsResolution::new),
   NETWORK_TRAFFIC(NetworkTraffic.NETWORK_TRAFFIC_TYPE, NetworkTraffic::new),
-  WEB_ATTACK(WebAttackPayload.WEB_ATTACK_TYPE, WebAttackPayload::new);
+  WEB_ATTACK(WebAttackPayload.WEB_ATTACK_TYPE, WebAttackPayload::new),
+  HOST_ATTACK(HostAttackPayload.HOST_ATTACK_TYPE, HostAttackPayload::new),
+  TRAFFIC_PATTERN(TrafficPatternPayload.TRAFFIC_PATTERN_TYPE, TrafficPatternPayload::new);
 
   public final String key;
   @Getter public final Supplier<Payload> payloadSupplier;

@@ -17,19 +17,9 @@ Veriguard REST API 的 upsert 端点幂等灌入 payloads 表。
     payloads upsert by payload_external_id (HIDS-REVERSESHELL-001 ..
     HIDS-HOSTPERSISTENCE-030)；同一 external_id 重跑覆盖旧字段。
 
-注意:
-    与 B6 同一节奏：本脚本写出的 payload_type = "HostAttack" 当前未被
-    Veriguard PayloadType 枚举（COMMAND/EXECUTABLE/FILE_DROP/DNS_RESOLUTION/
-    NETWORK_TRAFFIC/WEB_ATTACK）支持，所以真实 POST 在当前 main 上会被
-    PayloadUpsertInput 校验拒绝。
-
-    本 PR 仅交付：
-      1. 12 类共 310 条 HIDS 用例数据（hids_p1/*.json）
-      2. importer 框架 + dry-run 验证 + JSON 校验测试
-
-    后续 PR 可在 PayloadType 中加入 HOST_ATTACK 子类（仿 B7 加 WEB_ATTACK）
-    后让本 importer 真正落库；或独立实现一个 HostAttackPayload Catalog 表
-    读取这批 JSON。
+依赖的后端能力:
+    PayloadType.HOST_ATTACK + HostAttackPayload 子类 + V25 迁移
+    (payload_hids_* 列)。详见 veriguard-model HostAttackPayload.java.
 """
 
 import argparse
