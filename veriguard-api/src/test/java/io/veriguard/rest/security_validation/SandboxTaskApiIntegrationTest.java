@@ -22,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -190,6 +191,157 @@ class SandboxTaskApiIntegrationTest extends IntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.sandbox_task_status").value("RUNNING"))
         .andExpect(jsonPath("$.sandbox_task_raw_status").value("running"));
+  }
+
+  /**
+   * 完整状态机：QUEUED → RUNNING → COMPLETED 跨两次轮询都被正确写入.
+   *
+   * <p>覆盖 {@link SandboxTaskService#pollAllActive()} 在中间态 (running) 不提前 set completedAt 的关键路径 ——
+   * completedAt 仅在终态 (COMPLETED / FAILED) 写入.
+   */
+  @Test
+  void running_then_completed_two_polls() throws Exception {
+    HANDLERS.put(
+        "/apiv2/tasks/create/file/",
+        ex -> {
+          drain(ex);
+          respondJson(ex, 200, "{\"task_id\":555}");
+        });
+    MockMultipartFile sample =
+        new MockMultipartFile("sample", "two.bin", "application/octet-stream", new byte[] {7});
+    String body =
+        mockMvc
+            .perform(multipart("/api/sandbox-tasks").file(sample).with(csrf()))
+            .andExpect(status().isCreated())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+    String taskId = objectMapper.readTree(body).get("sandbox_task_id").asText();
+
+    // First poll: CAPE reports "running" — DB transitions QUEUED → RUNNING, completedAt null.
+    HANDLERS.put(
+        "/apiv2/tasks/view/555/",
+        ex -> {
+          drain(ex);
+          respondJson(ex, 200, "{\"task\":{\"id\":555,\"status\":\"running\",\"errors\":null}}");
+        });
+    int firstTransitions = sandboxTaskService.pollAllActive();
+    assertThat(firstTransitions).isEqualTo(1);
+    VeriguardSandboxTask afterFirst = taskRepository.findById(taskId).orElseThrow();
+    assertThat(afterFirst.getStatus()).isEqualTo(VeriguardSandboxTask.Status.RUNNING);
+    assertThat(afterFirst.getRawStatus()).isEqualTo("running");
+    assertThat(afterFirst.getCompletedAt()).isNull();
+    assertThat(afterFirst.getLastPolledAt()).isNotNull();
+
+    // Second poll: CAPE reports "reported" — DB transitions RUNNING → COMPLETED, completedAt set.
+    HANDLERS.put(
+        "/apiv2/tasks/view/555/",
+        ex -> {
+          drain(ex);
+          respondJson(ex, 200, "{\"task\":{\"id\":555,\"status\":\"reported\",\"errors\":null}}");
+        });
+    int secondTransitions = sandboxTaskService.pollAllActive();
+    assertThat(secondTransitions).isEqualTo(1);
+    VeriguardSandboxTask afterSecond = taskRepository.findById(taskId).orElseThrow();
+    assertThat(afterSecond.getStatus()).isEqualTo(VeriguardSandboxTask.Status.COMPLETED);
+    assertThat(afterSecond.getRawStatus()).isEqualTo("reported");
+    assertThat(afterSecond.getCompletedAt()).isNotNull();
+  }
+
+  /**
+   * CAPE 返回 {@code failed_analysis} —— driver 映射为 FAILED 终态; rawStatus 透传; completedAt 写入.
+   *
+   * <p>招标 §8 demo 物料：恶意样本沙箱失败也要能被运维看到.
+   */
+  @Test
+  void cape_failed_status_transitions_to_failed() throws Exception {
+    HANDLERS.put(
+        "/apiv2/tasks/create/file/",
+        ex -> {
+          drain(ex);
+          respondJson(ex, 200, "{\"task_id\":666}");
+        });
+    MockMultipartFile sample =
+        new MockMultipartFile("sample", "bad.bin", "application/octet-stream", new byte[] {6});
+    String body =
+        mockMvc
+            .perform(multipart("/api/sandbox-tasks").file(sample).with(csrf()))
+            .andExpect(status().isCreated())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+    String taskId = objectMapper.readTree(body).get("sandbox_task_id").asText();
+
+    HANDLERS.put(
+        "/apiv2/tasks/view/666/",
+        ex -> {
+          drain(ex);
+          respondJson(
+              ex,
+              200,
+              "{\"task\":{\"id\":666,\"status\":\"failed_analysis\","
+                  + "\"errors\":[\"VM crashed\"]}}");
+        });
+    int transitions = sandboxTaskService.pollAllActive();
+    assertThat(transitions).isEqualTo(1);
+    VeriguardSandboxTask reloaded = taskRepository.findById(taskId).orElseThrow();
+    assertThat(reloaded.getStatus()).isEqualTo(VeriguardSandboxTask.Status.FAILED);
+    assertThat(reloaded.getRawStatus()).isEqualTo("failed_analysis");
+    assertThat(reloaded.getCompletedAt()).isNotNull();
+  }
+
+  /**
+   * 批量轮询多个任务彼此独立 —— 一条 done / 一条仍 running, 计数 transitioned=2, 状态各自正确, 不会相互污染.
+   *
+   * <p>这是 {@link SandboxTaskService#pollAllActive()} 批处理保证的最关键性质.
+   */
+  @Test
+  void batch_poll_multiple_tasks_independently() throws Exception {
+    AtomicInteger taskIdCounter = new AtomicInteger(1000);
+    HANDLERS.put(
+        "/apiv2/tasks/create/file/",
+        ex -> {
+          drain(ex);
+          int id = taskIdCounter.getAndIncrement();
+          respondJson(ex, 200, "{\"task_id\":" + id + "}");
+        });
+    String taskOneId = submitMinimal("a.bin");
+    String taskTwoId = submitMinimal("b.bin");
+
+    HANDLERS.put(
+        "/apiv2/tasks/view/1000/",
+        ex -> {
+          drain(ex);
+          respondJson(ex, 200, "{\"task\":{\"id\":1000,\"status\":\"reported\",\"errors\":null}}");
+        });
+    HANDLERS.put(
+        "/apiv2/tasks/view/1001/",
+        ex -> {
+          drain(ex);
+          respondJson(ex, 200, "{\"task\":{\"id\":1001,\"status\":\"running\",\"errors\":null}}");
+        });
+
+    int transitions = sandboxTaskService.pollAllActive();
+    assertThat(transitions).isEqualTo(2);
+    VeriguardSandboxTask one = taskRepository.findById(taskOneId).orElseThrow();
+    VeriguardSandboxTask two = taskRepository.findById(taskTwoId).orElseThrow();
+    assertThat(one.getStatus()).isEqualTo(VeriguardSandboxTask.Status.COMPLETED);
+    assertThat(one.getCompletedAt()).isNotNull();
+    assertThat(two.getStatus()).isEqualTo(VeriguardSandboxTask.Status.RUNNING);
+    assertThat(two.getCompletedAt()).isNull();
+  }
+
+  private String submitMinimal(String filename) throws Exception {
+    MockMultipartFile sample =
+        new MockMultipartFile("sample", filename, "application/octet-stream", new byte[] {1});
+    String body =
+        mockMvc
+            .perform(multipart("/api/sandbox-tasks").file(sample).with(csrf()))
+            .andExpect(status().isCreated())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+    return objectMapper.readTree(body).get("sandbox_task_id").asText();
   }
 
   // ---- helpers --------------------------------------------------------------
