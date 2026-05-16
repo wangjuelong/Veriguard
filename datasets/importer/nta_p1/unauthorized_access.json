@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Anonymous FTP login",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "FTP 21 + USER anonymous + 230 logged in。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "USER anonymous + 230",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ftp_anon_230"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: SMB null session",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SMB IPC$ NULL session 枚举。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1135"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "SMB",
+    "nta_signature": "Session Setup NULL + IPC$ TreeConnect",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: smb_null_ipc"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: NFS no_root_squash mount",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "NFS mount no_root_squash root 写。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "NFS MOUNT + NFS WRITE root uid=0",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: nfs_no_root_squash"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Redis no AUTH",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Redis 6379 没 AUTH 直接 CONFIG SET。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "RESP CONFIG SET + no AUTH first",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: redis_no_auth"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: MongoDB no auth",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "MongoDB 27017 unauth 直接 db.collection.find()。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "Mongo wire OP_QUERY + no authenticate",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mongo_no_auth"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Elasticsearch no shield",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ES 9200 unauth /_cluster/health。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /_cluster/health + no Authorization",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: es_unauth_cluster"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Kibana no auth",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Kibana 5601 unauth /api/* 访问。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET kibana + 200 + no Authorization",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: kibana_no_auth"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Docker daemon TCP 2375",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Docker daemon 2375 unauth。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "Docker REST /containers/json + no TLS",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: docker_tcp_2375"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Kubelet 10250 anon",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "kubelet anonymous-auth=true 暴露。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET /pods + no Authorization",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: kubelet_anon"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: etcd no auth",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "etcd 2379 / 4001 unauth。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "etcd gRPC + no token",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: etcd_unauth"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Jenkins anonymous",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Jenkins 配置匿名 Job 列表。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /api/json + no Authorization + jobs",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jenkins_anon"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Gitlab guest project",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Gitlab public project + sensitive code。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET /api/v4/projects + visibility=public",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: gitlab_public_sensitive"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: S3 public list",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "AWS S3 bucket public list.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "s3.amazonaws.com + ListObjects no Authorization",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: s3_public_list"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Azure blob anonymous",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Azure blob storage 公开匿名访问。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "*.blob.core.windows.net + ListBlobs no SAS",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: azure_blob_anon"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Gcloud bucket public",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GCS bucket allUsers reader。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "storage.googleapis.com + ListBuckets allUsers",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: gcs_allusers_public"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Solr admin",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Solr /solr/admin/ 无认证。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /solr/admin/cores + no auth",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: solr_admin_anon"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: ZooKeeper 2181",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ZK ruok / mntr 4-letter unauth。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "ruok / mntr command + 'imok' reply",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: zk_4letter"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Memcached 11211",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "memcached 11211 unauth get all。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "memcached 'get' or 'stats' no auth",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: memcached_unauth"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: CouchDB",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "CouchDB 5984 admin party。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /_all_dbs + no auth + admin party",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: couchdb_admin_party"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: PHP-info exposed",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "phpinfo() 页面暴露在 /info.php。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /phpinfo.php / /info.php → 200 + phpinfo()",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: phpinfo_exposed"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Spring boot actuator",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/actuator/* 未认证可读。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /actuator/ + 200 + no Authorization",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: actuator_unauth"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Prometheus 9090",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Prometheus /metrics unauth + 内部指标。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /metrics + 200 + no Authorization",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: prom_metrics_unauth"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Grafana anonymous",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Grafana anonymous-auth-enabled + dashboard 暴露。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /api/dashboards + no Authorization",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: grafana_anon"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Consul HTTP",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Consul 8500 ACL disabled。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /v1/kv/?recurse + no token",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: consul_acl_off"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Vault unsealed root",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Vault unsealed + root token 暴露。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /v1/sys/seal-status + sealed=false",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: vault_unsealed"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: Rsync no auth",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "rsync :: 模块未配 secrets。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "rsync handshake + no challenge",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: rsync_unauth"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: VNC no password",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "VNC RFB SecurityType=None 直接连。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "RFB 3.3 + SecurityType=1 (None)",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: vnc_no_password"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: RDP NLA off",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "RDP 不强制 NLA + 任意账号尝试。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "RDP TPKT + COTP + no NLA",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: rdp_no_nla"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: SNMP public",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SNMP community 'public' 全 OID 读。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "UDP",
+    "nta_signature": "SNMP v2c + community 'public'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: snmp_public"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "未授权访问: IPMI cipher 0",
+    "payload_external_id": "NTA-UNAUTHORIZEDACCESS-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "IPMI cipher 0 (no auth) 漏洞。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "unauthorized_access"
+    ],
+    "nta_category": "unauthorized_access",
+    "nta_protocol": "TCP",
+    "nta_signature": "IPMI auth + cipher 0 selected",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ipmi_cipher_0"
+  }
+]

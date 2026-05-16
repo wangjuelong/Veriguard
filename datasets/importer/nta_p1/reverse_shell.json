@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: bash /dev/tcp pattern",
+    "payload_external_id": "NTA-REVERSESHELL-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "bash 内置 /dev/tcp/{C2}/{PORT} 出向 TCP，进程从 bash fork。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "outbound to non-business IP + bash spawn correlation",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: bash_spawn + non_corporate_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: python pty.spawn signature",
+    "payload_external_id": "NTA-REVERSESHELL-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "python3 pty.spawn /bin/bash 起反弹，TCP socket + os.dup2。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "python proc + outbound + tty alloc syscall",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: python_egress_nonstandard"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: netcat -e ascii signature",
+    "payload_external_id": "NTA-REVERSESHELL-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "nc -e /bin/sh 的 ASCII feature in transit。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "ASCII '/bin/sh' followed by interactive prompt",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: nc_e_inline_string"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: powershell TCPClient stream",
+    "payload_external_id": "NTA-REVERSESHELL-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PowerShell TCPClient + GetStream() reverse shell pattern。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "PS bytes 'TCPClient' + GetStream', uncompressed",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ps_tcpclient_string + outbound"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: certutil + reverse exec",
+    "payload_external_id": "NTA-REVERSESHELL-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "certutil 下载 + cmd.exe spawn + outbound 反弹。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1105"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTP",
+    "nta_signature": "certutil GET + .exe download + new process spawn",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: certutil_download_exec_chain"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: msfvenom shell_reverse_tcp",
+    "payload_external_id": "NTA-REVERSESHELL-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Meterpreter handshake 字节级特征（首 4 字节 size + stages）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "msf reverse_tcp handshake bytes (0x00 0x00 0x00 .. size)",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: msf_meterpreter_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: socat pty reverse",
+    "payload_external_id": "NTA-REVERSESHELL-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "socat TCP:.. EXEC:'bash',pty 反弹流量带 PTY 控制符。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "socat ascii + TTY control codes",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: socat_pty_ctrl"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: hex-decoded reverse cmd",
+    "payload_external_id": "NTA-REVERSESHELL-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "base64/hex 编码 reverse-shell loader 在 HTTP body 中。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1027"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTP",
+    "nta_signature": "base64 'bash -i' / hex 0x62 0x61 0x73 0x68 in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: base64_bash_in_http_body"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: ssh -R reverse tunnel",
+    "payload_external_id": "NTA-REVERSESHELL-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ssh -R 反向 tunnel 字符特征 + listening port on C2。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "SSH",
+    "nta_signature": "SSH client → server R-forward request packets",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ssh_r_forward + non_business_dest"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: openssl s_client tls",
+    "payload_external_id": "NTA-REVERSESHELL-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "openssl s_client 反弹（TLS 加密但 SNI/cert 异常）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1573.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TLS",
+    "nta_signature": "outbound TLS to self-signed cert + bash spawn",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: tls_self_signed + bash_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: xterm X11 reverse",
+    "payload_external_id": "NTA-REVERSESHELL-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "xterm -display C2:port 反向 X11 连接。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "X11 protocol bytes + outbound 6000-6005",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: x11_egress_to_non_workstation"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: perl IO::Socket::INET",
+    "payload_external_id": "NTA-REVERSESHELL-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "perl Socket reverse shell + sysread sysout 模式。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "perl proc + sysread/syswrite tight loop",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: perl_proc_egress_nonstandard"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: php fsockopen exec",
+    "payload_external_id": "NTA-REVERSESHELL-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "php fsockopen + exec /bin/sh -i 流量从 web 服务器外出。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "php-fpm child + outbound TCP + /bin/sh strings",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: php_fpm_egress_shell"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: ruby TCPSocket reverse",
+    "payload_external_id": "NTA-REVERSESHELL-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ruby Socket reverse shell 模式。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "ruby proc + outbound + /bin/sh -i strings",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ruby_egress_shell"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: nodejs net.Socket reverse",
+    "payload_external_id": "NTA-REVERSESHELL-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Node.js child_process.spawn 反弹流量。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "node proc + outbound + bash/sh spawn",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: node_egress_shell"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: /dev/udp variant",
+    "payload_external_id": "NTA-REVERSESHELL-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "bash /dev/udp 反弹（绕过仅匹配 TCP 告警）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "UDP",
+    "nta_signature": "bash proc + outbound UDP non-DNS port",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: bash_udp_non_dns_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: DNS-based reverse shell",
+    "payload_external_id": "NTA-REVERSESHELL-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "iodine / dnscat 把 reverse shell 隧道封装到 DNS。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "DNS",
+    "nta_signature": "DNS TXT/NULL queries with high entropy + small intervals",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dns_high_entropy_txt"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: ICMP shell channel",
+    "payload_external_id": "NTA-REVERSESHELL-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ICMP echo payload 携带 reverse shell 字节。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1095"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "ICMP",
+    "nta_signature": "ICMP echo with non-trivial 64+ byte ASCII payload",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: icmp_payload_ascii_shell"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: HTTPS C2 (CS beacon)",
+    "payload_external_id": "NTA-REVERSESHELL-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Cobalt Strike HTTPS beacon GET /load + sleep_jitter。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET /jquery-3.x.min.js anomalous interval + JA3",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ja3_match_cs_default + non_business_dst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: WebSocket reverse",
+    "payload_external_id": "NTA-REVERSESHELL-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WebSocket binary frame + bash exec on websocket server。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTP",
+    "nta_signature": "WS Upgrade + binary frames bursts",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ws_bidirectional_binary_burst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: HTTP/2 reverse shell",
+    "payload_external_id": "NTA-REVERSESHELL-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "HTTP/2 long-lived stream + DATA frames bidirectional shell。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTP",
+    "nta_signature": "HTTP/2 long stream + bidirectional DATA",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: http2_long_stream_bidirectional"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: QUIC reverse channel",
+    "payload_external_id": "NTA-REVERSESHELL-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "QUIC stream + reverse shell 流量。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TLS",
+    "nta_signature": "QUIC port 443 long stream + small bidirectional packets",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: quic_long_bidi"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: Telegram bot C2",
+    "payload_external_id": "NTA-REVERSESHELL-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Telegram Bot API HTTPS 长轮询作为 reverse shell C2。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1102"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "api.telegram.org getUpdates long poll",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: telegram_bot_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: Discord webhook C2",
+    "payload_external_id": "NTA-REVERSESHELL-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Discord webhook 反弹 shell（POST 命令 + response 输出）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1102"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "discord.com/api/webhooks POST burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: discord_webhook_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: Slack incoming webhook",
+    "payload_external_id": "NTA-REVERSESHELL-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Slack webhook 反弹 shell（合法服务做 C2）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1102"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "hooks.slack.com/services POST burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: slack_webhook_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: Pastebin paste pull",
+    "payload_external_id": "NTA-REVERSESHELL-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "pastebin.com raw 反弹 shell 命令通道。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1102"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "pastebin.com/raw/* GET burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: pastebin_raw_pull_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: GitHub Gist C2",
+    "payload_external_id": "NTA-REVERSESHELL-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "gist.github.com 作为 reverse shell 命令分发。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1102.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "gist.github.com/raw/* GET periodic",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: gist_raw_periodic_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: IRC private channel",
+    "payload_external_id": "NTA-REVERSESHELL-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "IRC 6667 / 6697 私聊作为反弹 shell 命令通道。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "TCP",
+    "nta_signature": "IRC PRIVMSG to operator + JOIN private",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: irc_egress_non_business"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: Mattermost webhook",
+    "payload_external_id": "NTA-REVERSESHELL-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Mattermost incoming webhook 反弹。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1102"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "/hooks/* POST burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mattermost_webhook_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "反弹 shell: Wireguard tunnel + shell",
+    "payload_external_id": "NTA-REVERSESHELL-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Wireguard UDP 隧道 + 内部反弹（双层）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "reverse_shell"
+    ],
+    "nta_category": "reverse_shell",
+    "nta_protocol": "UDP",
+    "nta_signature": "WG handshake + sustained noise",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: wireguard_egress_non_corporate"
+  }
+]

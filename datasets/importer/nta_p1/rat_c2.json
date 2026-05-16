@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Cobalt Strike beacon HTTP",
+    "payload_external_id": "NTA-RATC2-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "CS HTTP beacon GET /load + checksum8 URI。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET + URI checksum8=92 + JA3 known CS",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cs_beacon_uri_checksum"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Cobalt Strike beacon HTTPS",
+    "payload_external_id": "NTA-RATC2-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "CS HTTPS beacon JA3 + jitter。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "JA3 4d7a28d6f2263ed61de88ca66eb011e3 + periodic",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cs_https_ja3"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Cobalt Strike DNS beacon",
+    "payload_external_id": "NTA-RATC2-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "CS DNS-only beacon TXT 周期查询。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname /^[a-f0-9]{16}\\./ + TXT",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cs_dns_beacon"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Sliver mtls implant",
+    "payload_external_id": "NTA-RATC2-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Sliver mTLS beacon 双向证书。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TLS",
+    "nta_signature": "mTLS client cert + Sliver cert OU",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: sliver_mtls"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Sliver HTTP implant",
+    "payload_external_id": "NTA-RATC2-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Sliver HTTP beacon URI 模式。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET /api/v1/* + sliver UA",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: sliver_http_uri"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Sliver DNS implant",
+    "payload_external_id": "NTA-RATC2-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Sliver DNS beacon qname pattern。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname has '_sliver' or specific suffix",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: sliver_dns_pattern"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Mythic apfell",
+    "payload_external_id": "NTA-RATC2-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Apfell HTTPS beacon。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET / + Apfell UA + base64 task in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mythic_apfell_ua"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Havoc demon",
+    "payload_external_id": "NTA-RATC2-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Havoc C2 framework demon beacon。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "POST /api/* + 'demon' in JA3 signature",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: havoc_demon_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Brute Ratel C4",
+    "payload_external_id": "NTA-RATC2-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Brc4 badger HTTPS。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET / + Brc4 cert subject + interval",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: brc4_cert_subject"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Empire stager",
+    "payload_external_id": "NTA-RATC2-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PowerShell Empire stager.ps1 下载。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET /<random16>?session= + base64 IEX",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: empire_stager_uri"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Covenant grunt",
+    "payload_external_id": "NTA-RATC2-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Covenant Grunt HTTP/HTTPS beacon。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET / + Covenant cert subject pattern",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: covenant_grunt_cert"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Merlin Go agent",
+    "payload_external_id": "NTA-RATC2-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Merlin HTTP/3 QUIC beacon。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TLS",
+    "nta_signature": "QUIC ALPN 'h3' to non-business + interval",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: merlin_quic_pattern"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Mythic Apollo",
+    "payload_external_id": "NTA-RATC2-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Apollo C# implant HTTPS。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET / + Apollo UA + jitter",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: apollo_pattern"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: PoshC2 implant",
+    "payload_external_id": "NTA-RATC2-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PoshC2 PS implant cookie pattern。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET / + Cookie 'sessionid' + JA3 match",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: poshc2_cookie"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Quasar RAT",
+    "payload_external_id": "NTA-RATC2-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Quasar RAT TLS 50080 端口。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TLS",
+    "nta_signature": "TLS port 50080 + Quasar cert SubjectKey",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: quasar_cert"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: njRAT C2",
+    "payload_external_id": "NTA-RATC2-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "njRAT 命令字段（cd|sd|md|inv|rev）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TCP",
+    "nta_signature": "ASCII 'cd|sd|md' + base64 commands",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: njrat_command_prefix"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: DarkComet C2",
+    "payload_external_id": "NTA-RATC2-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "DarkComet RC4 流量 + magic prefix。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TCP",
+    "nta_signature": "first 4 bytes 0x88 0x88 0x88 0x88 (DarkComet magic)",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: darkcomet_magic"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: AsyncRAT C2",
+    "payload_external_id": "NTA-RATC2-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "AsyncRAT TLS port 6606 / 6606。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TLS",
+    "nta_signature": "TLS port 6606 + self-signed cert",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: asyncrat_port"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Remcos RAT",
+    "payload_external_id": "NTA-RATC2-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Remcos RC4 keep-alive。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TCP",
+    "nta_signature": "Remcos magic + persistent 3210 port",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: remcos_port_3210"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: NanoCore RAT",
+    "payload_external_id": "NTA-RATC2-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "NanoCore self-signed cert + AES。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TLS",
+    "nta_signature": "NanoCore signature in TLS payload",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: nanocore_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: PlugX HTTPS",
+    "payload_external_id": "NTA-RATC2-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PlugX APT 木马 HTTPS C2。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET /api/* + custom UA + China-APT TTP",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: plugx_pattern"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: gh0st RAT linux",
+    "payload_external_id": "NTA-RATC2-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "gh0st RAT linux variant TCP port 8088。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TCP",
+    "nta_signature": "gh0st magic 'Gh0st' + port 8088",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: gh0st_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: PupyRAT reflective",
+    "payload_external_id": "NTA-RATC2-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PupyRAT reflective DLL + TLS。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TLS",
+    "nta_signature": "Pupy ALPN + persistent",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: pupy_alpn"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Koadic JS RAT",
+    "payload_external_id": "NTA-RATC2-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Koadic mshta JS + GET /<stagername>",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /<random> + Cookie 'session=' + UA mshta",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: koadic_mshta"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Empire DNS C2",
+    "payload_external_id": "NTA-RATC2-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Empire DNS beacon TXT 查询。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname encoded + TXT large",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: empire_dns_pattern"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: WaterBear backdoor",
+    "payload_external_id": "NTA-RATC2-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WaterBear APT C2 流量。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "specific cert + UA + WaterBear TTP",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: waterbear_pattern"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Volt Typhoon LotL",
+    "payload_external_id": "NTA-RATC2-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Volt Typhoon living-off-the-land WMIc.",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TCP",
+    "nta_signature": "wmiprvse outbound + non-corp dst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: volt_typhoon_wmic"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: APT41 Crosswalk",
+    "payload_external_id": "NTA-RATC2-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "APT41 Crosswalk DLL + HTTPS。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "Crosswalk hash + UA pattern",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: crosswalk_pattern"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: APT29 Cozy Bear sunshuttle",
+    "payload_external_id": "NTA-RATC2-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Sunshuttle backdoor SSL pattern。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "TLS",
+    "nta_signature": "Sunshuttle cert + UA",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: sunshuttle_pattern"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "远控木马执行: Lazarus AppleJeus",
+    "payload_external_id": "NTA-RATC2-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Lazarus AppleJeus 木马 HTTPS。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "rat_c2"
+    ],
+    "nta_category": "rat_c2",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "specific cert + AppleJeus UA",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: applejeus_pattern"
+  }
+]

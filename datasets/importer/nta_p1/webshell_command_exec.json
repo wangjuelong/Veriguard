@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: php eval POST",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST 含 base64 eval 命令 + 同 IP 大量请求。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + body base64 + eval('cmd')",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: php_eval_burst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: php passthru",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST + passthru($_REQUEST['cmd'])",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + 'passthru' in body or param",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: php_passthru_param"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: jsp Runtime.exec",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST 含 Runtime.getRuntime().exec(...)。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + body 'Runtime.getRuntime' + 'exec'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jsp_runtime_exec"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: aspx Process Start",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST .aspx + System.Diagnostics.Process。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + body has 'Process.Start'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: aspx_process_start"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: china chopper signature",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "中国菜刀 1 行 PHP webshell 流量特征。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + body '@eval' + base64",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: chopper_eval_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: behinder bin POST",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "冰蝎 v3 AES POST 二进制特征。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + Content-Type: application/octet-stream + sized 16N",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: behinder_octet_aligned"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: godzilla POST",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "哥斯拉 webshell POST + AES + XOR。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + Cookie pad + body high entropy",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: godzilla_aes_xor"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: antsword POST",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "蚁剑 POST + 自定义编码。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + body has antswordKey + encoded payload",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: antsword_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: suo5 chunked tunnel",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "suo5 HTTP 隧道 chunked POST 流量。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Transfer-Encoding: chunked + sustained POST",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: suo5_chunked"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: neo-reGeorg",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Neo-reGeorg POST + Cookie 'reGeorg'。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + Cookie contains 'reGeorg' or proxy header",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: neo_regeorg_cookie"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: HTTP body 'whoami' output",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Response body 包含 'uid=' 'gid=' 'whoami' 输出。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "response body has 'uid=' AND 'gid='",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cmd_output_uid_gid"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Response 'C:\\\\Users'",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Response 含 Windows 路径。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has 'C:\\\\Users' or 'C:\\\\Windows'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: windows_path_response"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Multipart upload + exec",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "webshell 上传后立即执行 + cmd 输出。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST multipart + .php / .jsp + sustained POST",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: upload_then_exec_chain"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Response 'root:x:0:0'",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Response 含 /etc/passwd 头部行。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has 'root:x:0:0' or 'daemon:x'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: etc_passwd_in_response"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: HTTP body large output",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST 响应 > 100KB + 含 ASCII command 输出。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + response size>100K + ASCII high ratio",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: large_cmd_output"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: HTTP Cookie based shell",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Cookie 中传输 base64 命令（绕过 body 检查）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Cookie length>200 + base64 + repeat POST",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cookie_base64_oversize"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: HTTP Referer based shell",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Referer header 携带 webshell 命令。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Referer contains base64 + repeat",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: referer_base64"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: HTTP User-Agent shell",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "User-Agent header 携带命令（绕过 body 检查）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "User-Agent has base64 + same shell url",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ua_base64_shell"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: websocket shell",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "websocket 建立后双向命令。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Upgrade websocket + binary frame burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ws_shell_bidir_burst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: JSP system.exec",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "JSP 调用 Runtime.exec 流量特征。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + body 'getRuntime().exec' or 'ProcessBuilder'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jsp_processbuilder"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: ASP / VBScript shell",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ASP classic shell（eval request('cmd')）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + 'eval Request(' in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: asp_eval_request"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Python CGI shell",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/cgi-bin/*.py 执行 os.system。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /cgi-bin/* + ?cmd= param",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cgi_py_cmd_param"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Perl CGI shell",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/cgi-bin/*.pl 执行 system。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /cgi-bin/*.pl + cmd=",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cgi_pl_cmd"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: PHP cmd via GET",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /shell.php?cmd= 简单形态。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /*.php + cmd=",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: php_get_cmd_param"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: WAR jsp shell upload",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "上传 war/jsp + 后续 GET 执行。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST .war + later GET /cmd.jsp + cmd=",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: war_jsp_upload_then_get"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Tomcat manager deploy",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat /manager/text/deploy 上传恶意 war。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "PUT /manager/text/deploy?path=/x",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: tomcat_manager_deploy"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Tomcat manager undeploy",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat /manager/text/undeploy 清痕迹。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /manager/text/undeploy?path=/x",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: tomcat_manager_undeploy"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Jenkins script console",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Jenkins /script + groovy 命令执行。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /scriptText + groovy code",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jenkins_script_console"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Confluence /admin",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Confluence admin 路径 + groovy or RCE。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /admin/* + groovy or template",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: confluence_admin_groovy"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "webshell 命令执行: Jira velocity template",
+    "payload_external_id": "NTA-WEBSHELLCOMMANDEXEC-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Jira velocity template injection 执行命令。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "webshell_command_exec"
+    ],
+    "nta_category": "webshell_command_exec",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + body '#set' '$user.execute'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jira_velocity_template"
+  }
+]

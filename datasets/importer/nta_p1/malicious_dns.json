@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DGA random domain query",
+    "payload_external_id": "NTA-MALICIOUSDNS-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Domain Generation Algorithm 高熵随机域名查询。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1568.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname entropy>0.85 + length>15 + non-existent TLD",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dga_high_entropy"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Fast-flux DNS",
+    "payload_external_id": "NTA-MALICIOUSDNS-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "短 TTL + 同域名多 IP 轮替（fast-flux botnet）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1568.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "TTL<60 + same domain → ≥3 distinct A/AAAA in 5min",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: fastflux_ttl_low_ip_rot"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Punycode lookalike",
+    "payload_external_id": "NTA-MALICIOUSDNS-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Punycode 编码的相似域名（xn--*）做钓鱼。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname startswith xn-- + lookalike of business domain",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: punycode_lookalike"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Typo squatting",
+    "payload_external_id": "NTA-MALICIOUSDNS-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "拼写错误的合作伙伴域名 querying（gooogle.com 等）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname levenshtein<=2 from business domain",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: typosquat_business_domains"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Newly registered domain",
+    "payload_external_id": "NTA-MALICIOUSDNS-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "近 7 天注册的新域名 + 大量查询。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1568"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "WHOIS creation_date<7d + frequent queries",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: nrd_high_query_count"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS over HTTPS (DoH) leak",
+    "payload_external_id": "NTA-MALICIOUSDNS-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "客户端绕过企业 DNS 用 DoH（443 端口）查询。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "POST /dns-query + Accept: application/dns-message",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: doh_egress_non_corp"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS over TLS (DoT)",
+    "payload_external_id": "NTA-MALICIOUSDNS-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "客户端绕过企业 DNS 用 DoT (853 端口)。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "TLS",
+    "nta_signature": "outbound 853 to public DoT resolver",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dot_egress_non_corp"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS rebinding",
+    "payload_external_id": "NTA-MALICIOUSDNS-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "DNS rebinding 攻击：TTL=0 + 域名解析切换内外网 IP。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "same qname → public IP then private IP in 30s",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dns_rebind_public_to_private"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS amplification",
+    "payload_external_id": "NTA-MALICIOUSDNS-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "DNS ANY 查询 reflection 攻击源（小请求大响应）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1498.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "ANY query large response from open resolvers",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dns_amplification_any"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Algorithm-generated Sinkhole-bait",
+    "payload_external_id": "NTA-MALICIOUSDNS-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "查询已被 sinkhole 的恶意域名（CTI feed 命中）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname matches CTI blocklist",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dns_match_blocklist"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Wildcard subdomain probe",
+    "payload_external_id": "NTA-MALICIOUSDNS-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "*.evil.tld 大量子域查询。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "same parent domain + many unique subdomains in 1m",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: wildcard_subdomain_explosion"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Stealth C2 via .top/.xyz",
+    "payload_external_id": "NTA-MALICIOUSDNS-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": ".top / .xyz / .info 等异常 TLD 查询。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname endswith suspicious TLD + new domain",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: rare_tld_new_domain"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS TXT C2 payload",
+    "payload_external_id": "NTA-MALICIOUSDNS-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "DNS TXT 记录承载 base64 命令。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "TXT response large + base64 content",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: txt_large_base64"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS exfil long qname",
+    "payload_external_id": "NTA-MALICIOUSDNS-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "qname>50 bytes 做数据外传。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1048.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname length>200 + non-business domain",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dns_qname_oversize"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS sinkhole evasion",
+    "payload_external_id": "NTA-MALICIOUSDNS-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "用 DoH 绕过 sinkhole。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "DoH POST + question is sinkholed domain",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: doh_sinkholed_question"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Onion .onion lookup",
+    "payload_external_id": "NTA-MALICIOUSDNS-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tor .onion 域查询（应转发到 Tor SOCKS）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname endswith .onion",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: onion_dns_lookup"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DOH bootstrap pinning bypass",
+    "payload_external_id": "NTA-MALICIOUSDNS-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "客户端硬编码 DoH endpoint IP（绕过企业拦截）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "outbound 443 to 1.1.1.1 / 8.8.8.8 + POST /dns-query",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: doh_ip_pinned"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS TXT large beacon",
+    "payload_external_id": "NTA-MALICIOUSDNS-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Cobalt Strike DNS-mode beacon (TXT/CNAME)。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname suffix domain + periodic TXT",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cs_dns_beacon"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: dnscat2 protocol",
+    "payload_external_id": "NTA-MALICIOUSDNS-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "dnscat2 standard protocol 标识。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname format Hex32 + sequence + domain",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dnscat2_proto"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: iodine NULL queries",
+    "payload_external_id": "NTA-MALICIOUSDNS-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "iodine 用 NULL 记录 + 序号字段。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "Type=NULL bursts + base32 qname",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: iodine_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS CNAME chain redirect",
+    "payload_external_id": "NTA-MALICIOUSDNS-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "异常长 CNAME 链路（≥10 跳）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "answer CNAME chain length>=10",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cname_chain_long"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS poisoning probe",
+    "payload_external_id": "NTA-MALICIOUSDNS-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "外部 NS 查询响应不一致 + TTL 异常。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1557.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "same qname different A in different responses",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dns_poison_inconsistency"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DOH stale CA fallback",
+    "payload_external_id": "NTA-MALICIOUSDNS-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "DoH 使用过期/自签 CA。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "TLS handshake fail + cert.notAfter < now",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: doh_cert_invalid"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DGA Conficker",
+    "payload_external_id": "NTA-MALICIOUSDNS-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Conficker 的 DGA 域名模式。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1568.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname matches Conficker DGA regex",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: conficker_dga_match"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DGA Mirai variant",
+    "payload_external_id": "NTA-MALICIOUSDNS-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Mirai 变种 DGA。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1568.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname matches Mirai DGA regex",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mirai_dga_match"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DGA NotPetya",
+    "payload_external_id": "NTA-MALICIOUSDNS-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "NotPetya DGA 域名（仿真）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1568.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "qname matches NotPetya hash-based DGA",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: notpetya_dga_match"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Outbound to .ru/.cn TLD",
+    "payload_external_id": "NTA-MALICIOUSDNS-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "出境到非业务 TLD 大量查询。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "outbound .ru / .cn / .top + not in allowlist",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: unusual_tld_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: CDN bypass via DNS",
+    "payload_external_id": "NTA-MALICIOUSDNS-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "强制走非业务 IP 解析合法域名。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "DNS",
+    "nta_signature": "business domain → non-CDN IP",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cdn_bypass_business_dns"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: DNS over QUIC",
+    "payload_external_id": "NTA-MALICIOUSDNS-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "DoQ (853/UDP) 绕企业 DNS。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "UDP",
+    "nta_signature": "outbound 853 UDP + DoQ proto",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: doq_egress_non_corp"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "恶意域名解析: Sinkhole pinned IP",
+    "payload_external_id": "NTA-MALICIOUSDNS-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "客户端绕过 DNS 直接访问已知恶意 IP。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "malicious_dns"
+    ],
+    "nta_category": "malicious_dns",
+    "nta_protocol": "TCP",
+    "nta_signature": "outbound to malicious CTI IP + no DNS query first",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ip_no_dns_outbound_cti_match"
+  }
+]

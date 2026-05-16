@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: SSH password burst",
+    "payload_external_id": "NTA-BRUTEFORCE-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "短时间内同 IP 对 22 端口发起 ≥30 次 auth_method=password 失败包。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "ssh banner + repeated SSH_MSG_USERAUTH_FAILURE",
+    "nta_pcap_path": "datasets/PCAP-ATTACK/brute/ssh-burst.pcap",
+    "nta_detection_hint": "rule: ssh.auth_failed_count > 20 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: RDP brute auth fail",
+    "payload_external_id": "NTA-BRUTEFORCE-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "TCP 3389 多个 SSL Client Hello → ConnectInitial 后 reject。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "TPKT + COTP + MCSConnectInitial + reject loop",
+    "nta_pcap_path": "datasets/PCAP-ATTACK/brute/rdp-brute.pcap",
+    "nta_detection_hint": "rule: rdp.cred_failed_count > 10 in 5m"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: SMB null session enum",
+    "payload_external_id": "NTA-BRUTEFORCE-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "445 端口 SMB2 NEGOTIATE + 多用户名空口令尝试。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "SMB",
+    "nta_signature": "SMB2 SessionSetup with NULL credentials + STATUS_LOGON_FAILURE",
+    "nta_pcap_path": "datasets/PCAP-ATTACK/brute/smb-null.pcap",
+    "nta_detection_hint": "rule: smb.status==STATUS_LOGON_FAILURE count > 5"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: WinRM HTTP brute",
+    "payload_external_id": "NTA-BRUTEFORCE-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "5985/5986 端口 Basic auth 多账号循环。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1021.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /wsman HTTP/1.1 + Authorization: Basic <base64> repeat",
+    "nta_pcap_path": "datasets/PCAP-ATTACK/brute/winrm-brute.pcap",
+    "nta_detection_hint": "rule: winrm.basic_auth_fail > 20 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: FTP password spray",
+    "payload_external_id": "NTA-BRUTEFORCE-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "FTP 21 端口 USER+PASS 多账号 530 Login incorrect。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "USER xxx\\r\\n PASS yyy\\r\\n 530 Login incorrect",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ftp.530_count > 15 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: MySQL handshake brute",
+    "payload_external_id": "NTA-BRUTEFORCE-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "3306 端口 mysql_native_password 多次 ERR 1045。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "MySQL Handshake + Login Request + ERR 1045 Access denied",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mysql.err_1045 > 10 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: PostgreSQL pwd brute",
+    "payload_external_id": "NTA-BRUTEFORCE-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "5432 端口 SCRAM-SHA-256 多次 AuthenticationFailed。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "PostgreSQL Startup + PasswordMessage + ErrorResponse SASL fail",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: postgres.auth_fail > 10 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Kerberos AS-REQ spray",
+    "payload_external_id": "NTA-BRUTEFORCE-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "88 端口 KRB5KDC_ERR_PREAUTH_FAILED 多账号。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "AS-REQ no preauth + KRB5KDC_ERR_PREAUTH_FAILED bursts",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: krb5.preauth_failed_count > 20 in 5m"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: LDAP simple bind spray",
+    "payload_external_id": "NTA-BRUTEFORCE-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "389 端口 LDAP bindRequest 多账号 invalidCredentials。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "LDAP bindRequest simple + bindResponse resultCode=49",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ldap.bind_fail > 15 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: VNC RFB auth fail",
+    "payload_external_id": "NTA-BRUTEFORCE-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "5900 RFB 3.3 protocol 多次 security failure。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "RFB 003.003 + SecurityResult=1 (failed) loop",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: vnc.security_fail > 10 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Telnet legacy brute",
+    "payload_external_id": "NTA-BRUTEFORCE-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "23 端口 telnet password prompt 多账号失败。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "Telnet 'Login incorrect' string bursts",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: telnet.fail_string_count > 15"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: SNMP community brute",
+    "payload_external_id": "NTA-BRUTEFORCE-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "161 UDP 多 community string + GET-NEXT 失败。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "UDP",
+    "nta_signature": "SNMPv2c GetNextRequest + 报错 noSuchName burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: snmp.errcode > 20 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: HTTP basic auth brute",
+    "payload_external_id": "NTA-BRUTEFORCE-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "401 → Authorization: Basic 多次错口令。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "HTTP 401 + Authorization: Basic <new base64> repeat",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: http.401_basic_retry > 20 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: HTTP form login brute",
+    "payload_external_id": "NTA-BRUTEFORCE-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST /login form-data 多账号 302/401。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /login username= + password= burst, no captcha",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: http.form_login_fail > 15 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: OAuth2 password grant",
+    "payload_external_id": "NTA-BRUTEFORCE-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST /oauth/token grant_type=password 多账号 invalid_grant。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /oauth/token + invalid_grant burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: oauth.invalid_grant > 10 in 60s"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Kerberos AS-REP roast",
+    "payload_external_id": "NTA-BRUTEFORCE-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "AS-REP roasting 流量（账户禁用 pre-auth）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1558.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "KRB5_AS_REP no preauth + offline crack possible",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: krb5.as_rep_no_preauth_count > 3"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: SMB password spray",
+    "payload_external_id": "NTA-BRUTEFORCE-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "1 个口令喷洒多用户 SMB（避免锁定）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "SMB",
+    "nta_signature": "SMB2 SessionSetup multi-user same password",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: smb.same_pass_multi_user_count > 5"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: PPTP/L2TP brute",
+    "payload_external_id": "NTA-BRUTEFORCE-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PPTP 1723 / L2TP UDP 1701 多次连接失败。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "PPTP CHAP fail + retry",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: pptp.chap_fail > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: IPSec IKEv1 aggressive",
+    "payload_external_id": "NTA-BRUTEFORCE-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "IKEv1 aggressive mode + PSK hash 提取后离线爆破。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "UDP",
+    "nta_signature": "IKEv1 aggressive HASH_R leak",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ike.aggressive_mode_detected"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: MSSQL TDS pre-login brute",
+    "payload_external_id": "NTA-BRUTEFORCE-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "1433 TDS pre-login + login7 多账号 LOGINFAIL。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "TDS LOGIN7 + login_fail token > N",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mssql.loginfail_count > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: MongoDB auth brute",
+    "payload_external_id": "NTA-BRUTEFORCE-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "27017 SASL SCRAM-SHA-1 多次 saslContinue fail。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "MongoDB Wire saslStart + AuthenticationFailed",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mongo.auth_fail > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Redis AUTH brute",
+    "payload_external_id": "NTA-BRUTEFORCE-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "6379 端口 RESP *2\\r\\n$4\\r\\nAUTH + WRONGPASS bursts。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "RESP +ERR WRONGPASS or invalid bursts",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: redis.wrongpass_count > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Memcached SASL brute",
+    "payload_external_id": "NTA-BRUTEFORCE-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "11211 memcached binary protocol SASL Step burst。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "memcached binary SASL Step + STATUS_AUTHENTICATION_ERROR",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: memcached.auth_err > 5"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: AMQP credentials brute",
+    "payload_external_id": "NTA-BRUTEFORCE-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "5672 AMQP 0.9 Connection.Start-OK 多账号失败。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "TCP",
+    "nta_signature": "AMQP Connection.Close reply-code=403",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: amqp.close_403 > 5"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Elasticsearch security brute",
+    "payload_external_id": "NTA-BRUTEFORCE-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "9200 ES _security/_authenticate 401 重复。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET _security/_authenticate + 401 burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: es.auth_401 > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Jenkins crumb-less brute",
+    "payload_external_id": "NTA-BRUTEFORCE-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Jenkins /j_acegi_security_check 多账号 302。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /j_acegi_security_check + j_username= burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jenkins.acegi_fail > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Confluence basic brute",
+    "payload_external_id": "NTA-BRUTEFORCE-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Confluence /dologin.action 401。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /dologin.action user= burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: confluence.login_fail > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Jira basic brute",
+    "payload_external_id": "NTA-BRUTEFORCE-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Jira /rest/auth/1/session 401。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /rest/auth/1/session + 401 burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jira.auth_fail > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: VPN Fortinet portal",
+    "payload_external_id": "NTA-BRUTEFORCE-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "FortiGate SSL VPN /remote/logincheck 多次 ret=-1。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /remote/logincheck + ret=-1 burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: fortinet.ssl_vpn_fail > 10"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "暴力破解: Citrix gateway brute",
+    "payload_external_id": "NTA-BRUTEFORCE-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "NetScaler /cgi/login + Set-Cookie 401。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "brute_force"
+    ],
+    "nta_category": "brute_force",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /cgi/login + state=AUTH_FAIL burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: citrix.login_fail > 10"
+  }
+]
