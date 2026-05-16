@@ -138,4 +138,23 @@ public class PlatformTriggers {
         .withSchedule(cronSchedule("0 0/1 * * * ?"))
         .build();
   }
+
+  /**
+   * IPv6 安全验证系统 §8.1 / §8.2 / §8.3 PR C1-Platform-5 —— 沙箱任务轮询（每 30s）.
+   *
+   * <p>{@code @Profile("!test")} 关掉测试 profile 的自动触发 —— 集成测试通过显式调用 {@code
+   * SandboxTaskService.pollAllActive()} 验证轮询逻辑，避免测试时 Quartz 异步介入打乱断言。
+   *
+   * @return the trigger
+   */
+  @Bean
+  @Profile("!test")
+  public Trigger sandboxTaskPollingTrigger() {
+    SimpleScheduleBuilder _30_seconds = simpleSchedule().withIntervalInSeconds(30).repeatForever();
+    return newTrigger()
+        .forJob(this.platformJobs.getSandboxTaskPollingJob())
+        .withIdentity(io.veriguard.scheduler.jobs.SandboxTaskPollingJob.TRIGGER_NAME)
+        .withSchedule(_30_seconds.withMisfireHandlingInstructionNextWithRemainingCount())
+        .build();
+  }
 }
