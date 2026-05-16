@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: HTTP path traversal",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "请求路径 contains ../ 多次。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "URI ?file=../../etc/passwd",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: path_traversal_uri"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: HTTP Host header injection",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Host header 改成 ../localhost 绕鉴权。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Host header has special chars",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: host_header_special"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: HTTP method override",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "X-HTTP-Method-Override: PUT 改方法绕过 GET 限制。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "X-HTTP-Method-Override header",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: http_method_override"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Forwarded-For spoof",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "X-Forwarded-For: 127.0.0.1 试图绕 IP 限制。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "X-Forwarded-For: 127.0.0.1 + non-trusted client",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: xff_127_from_untrusted"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: JWT alg=none",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "JWT header alg=none + 修改 claim。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Authorization: Bearer eyJhbGciOiJub25lI...",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jwt_alg_none"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: JWT confusion",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "JWT HS256 vs RS256 confusion。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "JWT signed HS256 with public key as secret",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jwt_alg_confusion"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: OAuth state CSRF",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "OAuth flow 缺 state 参数。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1565"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "/oauth/callback?code= without state",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: oauth_missing_state"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Session fixation",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Set-Cookie 写定固定 session id。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1565.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Set-Cookie: SESSID=fixed_string",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: fixed_sessionid"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: CRLF injection",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "HTTP header injection via CRLF。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "header value contains %0d%0a",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: crlf_in_header"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: SAML signature wrapping",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SAML XML signature wrapping。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "SAMLResponse + multiple Assertion elements",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: saml_wrapping"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Spring boot heap dump",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /actuator/heapdump 暴露内存。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /actuator/heapdump",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: actuator_heapdump"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Spring boot env",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /actuator/env 泄露环境变量。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /actuator/env",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: actuator_env"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: AWS metadata SSRF",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SSRF 访问 169.254.169.254 metadata。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "url param has 169.254.169.254",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: aws_metadata_ssrf"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: GCP metadata SSRF",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SSRF 访问 metadata.google.internal。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "url has metadata.google.internal",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: gcp_metadata_ssrf"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Kubernetes serviceaccount",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SSRF 访问 /var/run/secrets/kubernetes.io/serviceaccount。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "url has /var/run/secrets/kubernetes",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: k8s_sa_ssrf"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: LFI via include",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "include?file=/etc/passwd。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "param 'file' has '/etc/passwd' / '../etc/'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: lfi_etc_passwd"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: LFI via php filter",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "php://filter/convert.base64-encode/.../*.php。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "param contains 'php://filter'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: php_filter_protocol"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Apache .ht* read",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /.htaccess / .htpasswd 试图读敏感。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET .htaccess or .htpasswd",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: htaccess_request"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: HTTP redirect open",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "?redirect=http://evil.com 钓鱼。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1583.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "param ends with full URL different domain",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: open_redirect"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: CORS misconfig",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Access-Control-Allow-Origin: * + Credentials true。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "response has ACAO * + ACAC true",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cors_wildcard_creds"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: CSRF token absent",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST /admin without CSRF token。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1565.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /admin/* + no _csrf or X-XSRF header",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: admin_csrf_missing"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Authn cookie tampering",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Cookie 中 role=admin 篡改。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Cookie 'role' or 'admin=true'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cookie_role_tamper"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Mass assignment",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST /user + 'is_admin=true' 包含越权字段。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST body has 'is_admin' or 'role' admin",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mass_assignment_admin"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Insecure direct object",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "?user_id=N 改 ID 越权访问。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "user_id param != session user_id",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: idor_param"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: Forced browsing",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "枚举 /admin /backup /.git 等隐藏路径。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /.git/HEAD / /admin / /backup",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: forced_browse_hidden"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: HTTP cache poison",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Host header poison + cache key 不同 → 内网 SSRF。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Host header anomalous + cached",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cache_poison"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: WebDAV propfind",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PROPFIND 访问受保护 webdav 路径。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "PROPFIND / + Depth header",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: webdav_propfind"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: RCE via header inject",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "User-Agent: () { :;}; /bin/bash (shellshock-like)",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "header value with () { ",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: shellshock_header"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: XML XXE entity",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST + xml entity external file。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + <!ENTITY x SYSTEM 'file:'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: xxe_entity"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "权限绕过: SSO IdP forgery",
+    "payload_external_id": "NTA-PRIVILEGEBYPASS-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SAML assertion forging + signature bypass。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1078"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "privilege_bypass"
+    ],
+    "nta_category": "privilege_bypass",
+    "nta_protocol": "HTTP",
+    "nta_signature": "SAML POST + signature anomaly",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: saml_signature_anomaly"
+  }
+]

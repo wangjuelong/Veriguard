@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: .env file expose",
+    "payload_external_id": "NTA-INFOLEAKAGE-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/.env 文件公网可访问。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /.env + 200 + 'AWS_SECRET' or 'DB_PASS'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dotenv_exposed"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: .git/HEAD expose",
+    "payload_external_id": "NTA-INFOLEAKAGE-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/.git/HEAD 公网可访问。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /.git/HEAD + 200 + 'ref: refs/heads'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: git_head_exposed"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: .svn/entries expose",
+    "payload_external_id": "NTA-INFOLEAKAGE-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/.svn/entries 公网可访问。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /.svn/entries + 200",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: svn_exposed"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Backup file expose",
+    "payload_external_id": "NTA-INFOLEAKAGE-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "*.bak / *.old / *~ 备份文件。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET *.bak / *.old / *~ + 200",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: backup_file_exposed"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: composer.lock expose",
+    "payload_external_id": "NTA-INFOLEAKAGE-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "composer.lock 公网可访问（含依赖版本）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /composer.lock + 200",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: composer_lock"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: package.json expose",
+    "payload_external_id": "NTA-INFOLEAKAGE-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/package.json 暴露内部依赖。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /package.json + 200 + 'dependencies'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: package_json"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Stack trace in 500",
+    "payload_external_id": "NTA-INFOLEAKAGE-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "500 response 含 Java/PHP/.NET stack trace。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "5xx + body 'at com.' / 'at System.'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: stacktrace_in_5xx"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Verbose debug output",
+    "payload_external_id": "NTA-INFOLEAKAGE-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/?debug=1 触发详细 debug。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "?debug or trace + body has 'SELECT' / 'INSERT'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: debug_sql_leak"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: X-Powered-By revealing",
+    "payload_external_id": "NTA-INFOLEAKAGE-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "X-Powered-By: PHP/7.4.1 暴露版本。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "X-Powered-By specific version",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: x_powered_by_version"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Server header revealing",
+    "payload_external_id": "NTA-INFOLEAKAGE-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Server: Apache/2.4.41 (Debian) 暴露详细版本。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Server header full version + OS",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: server_header_full"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: /api/users dump",
+    "payload_external_id": "NTA-INFOLEAKAGE-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /api/users 没 pagination 直接全列。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /api/users + 200 + large json",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: users_full_dump"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: MongoDB direct dump",
+    "payload_external_id": "NTA-INFOLEAKAGE-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /find?filter={} 通配大量返回。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /find?filter={} → large",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mongo_full_filter"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Email harvesting",
+    "payload_external_id": "NTA-INFOLEAKAGE-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /api/users 含 email 字段（PII）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "response body has multiple email patterns",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: email_harvest"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Phone harvesting",
+    "payload_external_id": "NTA-INFOLEAKAGE-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "API 响应含手机号格式（PII 泄露）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "response body has phone regex 1\\d{10}",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: phone_harvest"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: ID card SSN leakage",
+    "payload_external_id": "NTA-INFOLEAKAGE-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "API 响应含身份证号 18 位（中国 PII）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "response body has /\\d{17}[0-9Xx]/",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: id_card_leak"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: AWS key in response",
+    "payload_external_id": "NTA-INFOLEAKAGE-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "response 含 AKIA* key（AWS）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has AKIA[0-9A-Z]{16}",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: aws_key_in_body"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Slack webhook leak",
+    "payload_external_id": "NTA-INFOLEAKAGE-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "body 含 https://hooks.slack.com/services/* secret。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has hooks.slack.com/services/T",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: slack_webhook_in_body"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Stripe key leak",
+    "payload_external_id": "NTA-INFOLEAKAGE-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "body 含 sk_live_ / sk_test_ stripe secret。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has sk_(live|test)_",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: stripe_secret_in_body"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: GitHub PAT leak",
+    "payload_external_id": "NTA-INFOLEAKAGE-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "body 含 ghp_* / gho_* GitHub PAT。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has ghp_[0-9A-Za-z]{36}",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: github_pat_leak"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Google API key",
+    "payload_external_id": "NTA-INFOLEAKAGE-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "body 含 AIza...39 字符 Google API key。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has AIza[0-9A-Za-z\\-_]{35}",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: google_api_key"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: JWT secret in JS",
+    "payload_external_id": "NTA-INFOLEAKAGE-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /static/*.js 返回 hardcoded JWT secret。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "JS body has 'jwt' + secret key string",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jwt_secret_in_js"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Database connection string",
+    "payload_external_id": "NTA-INFOLEAKAGE-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "body 含 mysql:// postgres:// jdbc:// 连接串。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1552.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has 'jdbc:' or 'mongodb://' + password",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: db_conn_string_leak"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: SAML metadata leak",
+    "payload_external_id": "NTA-INFOLEAKAGE-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /saml/metadata 暴露内部 IdP 信息。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /saml/metadata + 200 + 'EntityDescriptor'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: saml_metadata"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: OpenAPI spec leak",
+    "payload_external_id": "NTA-INFOLEAKAGE-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /v3/api-docs 直接暴露 OpenAPI。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /v3/api-docs + 200 + 'openapi'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: openapi_spec_leak"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: GraphQL introspection",
+    "payload_external_id": "NTA-INFOLEAKAGE-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST /graphql + __schema query 全暴露。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + body '__schema' + 200",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: graphql_introspection"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: WSDL exposure",
+    "payload_external_id": "NTA-INFOLEAKAGE-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GET /service?wsdl 暴露 SOAP 接口。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET ?wsdl + 200 + xml",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: wsdl_exposed"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Internal IP leakage",
+    "payload_external_id": "NTA-INFOLEAKAGE-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Response body 含 RFC1918 内网 IP。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "body has 10.|192.168.|172.16-31.",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: internal_ip_in_body"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Service banner leak",
+    "payload_external_id": "NTA-INFOLEAKAGE-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "TCP banner 暴露版本（Postfix 2.x, OpenSSH 7.x）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1592"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "TCP",
+    "nta_signature": "banner has full version string",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: banner_full_version"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Robots.txt sensitive",
+    "payload_external_id": "NTA-INFOLEAKAGE-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/robots.txt 含 Disallow 内部路径。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /robots.txt + 'Disallow: /admin'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: robots_admin_disallow"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "信息泄露: Sitemap.xml leak",
+    "payload_external_id": "NTA-INFOLEAKAGE-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/sitemap.xml 含敏感 URL 列表。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1083"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "info_leakage"
+    ],
+    "nta_category": "info_leakage",
+    "nta_protocol": "HTTP",
+    "nta_signature": "GET /sitemap.xml + 'admin' / 'internal'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: sitemap_internal_urls"
+  }
+]

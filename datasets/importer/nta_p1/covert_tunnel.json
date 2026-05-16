@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: DNS tunnel TXT bursts",
+    "payload_external_id": "NTA-COVERTTUNNEL-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "iodine / dnscat2 TXT queries 高熵 + 短间隔。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "DNS",
+    "nta_signature": "TXT queries entropy>0.8 + interval<1s",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dns_high_entropy_txt + interval_burst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: DNS NULL record tunnel",
+    "payload_external_id": "NTA-COVERTTUNNEL-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "DNS NULL/CNAME 大查询封 TCP payload。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "DNS",
+    "nta_signature": "DNS Type=10 (NULL) outbound bursts",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dns_null_outbound_burst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: ICMP echo tunnel",
+    "payload_external_id": "NTA-COVERTTUNNEL-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ICMP echo payload >64 byte 高熵 + 上下行配对。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1095"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "ICMP",
+    "nta_signature": "ICMP echo bidirectional + payload entropy>0.7",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: icmp_payload_bidir_entropy"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: HTTPS C2 jitter+sleep",
+    "payload_external_id": "NTA-COVERTTUNNEL-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "C2 HTTPS beacon 固定 jitter + sleep 间隔。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "GET /api/v1/* periodic + JA3 match CS",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cs_ja3 + periodic_beacon"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Domain fronting CDN",
+    "payload_external_id": "NTA-COVERTTUNNEL-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "TLS SNI = cdn.cloudfront.net, Host header = c2.evil。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TLS",
+    "nta_signature": "SNI ≠ Host header + non-business URL",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: tls_sni_host_mismatch"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: WebSocket cover channel",
+    "payload_external_id": "NTA-COVERTTUNNEL-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WS Upgrade 后长连接小帧双向。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "HTTP",
+    "nta_signature": "WS Upgrade + binary frame burst long-lived",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ws_long_lived_binary"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: HTTP/2 stream tunnel",
+    "payload_external_id": "NTA-COVERTTUNNEL-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "HTTP/2 多 stream 长连接覆盖率高。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "HTTP",
+    "nta_signature": "HTTP/2 sustained low-rate bidirectional",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: http2_low_rate_bidir"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: QUIC fallback tunnel",
+    "payload_external_id": "NTA-COVERTTUNNEL-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "QUIC UDP 443 长流量做 C2 隧道。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TLS",
+    "nta_signature": "QUIC 443 long stream + small packets",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: quic_long_small_packets"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Tor onion connection",
+    "payload_external_id": "NTA-COVERTTUNNEL-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tor 浏览器 SOCKS 9050 + 出 9001。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TLS",
+    "nta_signature": "outbound 9001/9050/443 to known tor relays",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: tor_relay_destination"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Cloudflared argo tunnel",
+    "payload_external_id": "NTA-COVERTTUNNEL-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "cloudflared tunnel 把内网暴露到 cloudflare 边缘。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1567"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "argotunnel.com long persistent + bidirectional",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: cloudflared_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: ngrok tunnel",
+    "payload_external_id": "NTA-COVERTTUNNEL-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ngrok TCP/HTTP tunnel 流量到 *.ngrok.io。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1567"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TCP",
+    "nta_signature": "*.ngrok.io DNS + sustained TCP",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ngrok_io_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: frp client persistent",
+    "payload_external_id": "NTA-COVERTTUNNEL-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "frpc tunnel 客户端持续上联。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1567"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TCP",
+    "nta_signature": "frp.* dst + long-lived inbound exposure",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: frp_signature_egress"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: chisel WS over HTTPS",
+    "payload_external_id": "NTA-COVERTTUNNEL-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "chisel websocket over HTTPS 隧道。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "WS Upgrade + chisel proto string",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: chisel_ws_proto"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: gost socks5 over TLS",
+    "payload_external_id": "NTA-COVERTTUNNEL-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "gost SOCKS5 over TLS 隧道。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TLS",
+    "nta_signature": "SNI ≠ business + sustained TLS small packets",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: gost_tls_proto_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: SSH dynamic forwarding",
+    "payload_external_id": "NTA-COVERTTUNNEL-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ssh -D 1080 / -R SOCKS 隧道。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "SSH",
+    "nta_signature": "SSH channel data + forwarded-tcpip msg",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ssh_forwarded_tcpip_open"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: OpenVPN egress",
+    "payload_external_id": "NTA-COVERTTUNNEL-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "OpenVPN UDP 1194 / TCP 1194 隐蔽。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "UDP",
+    "nta_signature": "OpenVPN handshake to non-business endpoint",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: openvpn_non_corp_dst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: WireGuard egress",
+    "payload_external_id": "NTA-COVERTTUNNEL-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WireGuard handshake + noise traffic。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "UDP",
+    "nta_signature": "WG handshake + Type=1/2/3/4",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: wireguard_non_corp_dst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: SoftEther SSL VPN",
+    "payload_external_id": "NTA-COVERTTUNNEL-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SoftEther 通过 443 SSL 把流量封装。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "443 long-lived + SE-VPN signature in TLS data",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: softether_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: VMess (v2ray)",
+    "payload_external_id": "NTA-COVERTTUNNEL-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "v2ray vmess 加密代理。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1573.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TLS",
+    "nta_signature": "TLS 443 + vmess header signature",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: vmess_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Shadowsocks",
+    "payload_external_id": "NTA-COVERTTUNNEL-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Shadowsocks AES 加密代理流量特征。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1573"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TCP",
+    "nta_signature": "Shadowsocks AEAD 16-byte salt + payload",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ss_aead_salt"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Trojan-go TLS",
+    "payload_external_id": "NTA-COVERTTUNNEL-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "trojan-go TLS 伪装合法网站。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1573.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TLS",
+    "nta_signature": "TLS 443 + SNI = legit cdn + trojan password",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: trojan_go_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Hysteria UDP",
+    "payload_external_id": "NTA-COVERTTUNNEL-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hysteria QUIC-based proxy。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "UDP",
+    "nta_signature": "QUIC + non-standard ALPN 'hysteria'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: hysteria_alpn"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Pingtunnel",
+    "payload_external_id": "NTA-COVERTTUNNEL-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "pingtunnel ICMP/UDP based tunnel。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1095"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "ICMP",
+    "nta_signature": "ICMP echo + large payload bidirectional + ping signature",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: pingtunnel_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: SoftEther SSTP",
+    "payload_external_id": "NTA-COVERTTUNNEL-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SSTP HTTPS-based VPN tunnel。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "SSTP signature in TLS body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: sstp_signature"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Stowaway agent",
+    "payload_external_id": "NTA-COVERTTUNNEL-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Stowaway 多级代理 agent。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1572"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TCP",
+    "nta_signature": "stowaway proto magic",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: stowaway_magic"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: 3proxy SOCKS",
+    "payload_external_id": "NTA-COVERTTUNNEL-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "3proxy SOCKS / HTTP 代理。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1090"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TCP",
+    "nta_signature": "SOCKS5 0x05 0x01 + non-business dst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: socks5_egress_non_corp"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: Telegram MTProto",
+    "payload_external_id": "NTA-COVERTTUNNEL-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Telegram MTProto 流量。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1102"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TCP",
+    "nta_signature": "TG MTProto signature port 443/80",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: telegram_mtproto"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: WeChat / DingTalk side channel",
+    "payload_external_id": "NTA-COVERTTUNNEL-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "通过即时通讯软件文件传输做 C2。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1102"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "HTTPS",
+    "nta_signature": "im. tencent / dingtalk + file upload burst",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: im_file_upload_burst"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: MQTT C2",
+    "payload_external_id": "NTA-COVERTTUNNEL-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "MQTT broker 作为 C2 控制点。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "TCP",
+    "nta_signature": "1883 / 8883 MQTT CONNECT + persistent subscribe",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: mqtt_persistent_subscribe"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "隐秘隧道: CoAP C2",
+    "payload_external_id": "NTA-COVERTTUNNEL-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "CoAP (constrained app proto) 作为隐蔽 C2。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "covert_tunnel"
+    ],
+    "nta_category": "covert_tunnel",
+    "nta_protocol": "UDP",
+    "nta_signature": "5683 CoAP GET/PUT pattern persistent",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: coap_persistent_iot"
+  }
+]

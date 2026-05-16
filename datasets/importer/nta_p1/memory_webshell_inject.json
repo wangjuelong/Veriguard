@@ -1,0 +1,1022 @@
+[
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Tomcat Filter inject HTTP",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST 含 BCEL/CAFEBABE 字节流注入恶意 Filter。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /xx with multipart bytes 0xCA 0xFE 0xBA 0xBE",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: http_body_has_cafebabe_magic"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Tomcat Listener inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST 注入 Lifecycle Listener 字节码。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /xx body=base64 class + listener method",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: http_post_class_listener"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Spring Controller inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST RequestMappingHandlerMapping 动态注册路径。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + magic class + /api new path appearing in same conn",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: spring_dynamic_path_add"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Spring Interceptor inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST 注入 HandlerInterceptor。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + class name HandlerInterceptor in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: spring_interceptor_class_in_body"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Spring webfilter inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POST 注入 WebFilter（Spring WebFlux）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + class WebFilter + base64 bytecode",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: spring_webfilter_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Struts2 OGNL memshell",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Struts2 OGNL 利用注入新 Action（CVE-2017-5638 等）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Content-Type: multipart with OGNL '%{...}'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: ognl_in_content_type"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Weblogic Filter inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Weblogic WebAppServletContext 加 Filter（CVE-2019-2725 等利用）。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST _async/AsyncResponseService + soap class",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: weblogic_async_class_body"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: JBoss Undertow Handler",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "JBoss Undertow HttpHandler 注入流量特征。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /admin-console + class HttpHandler in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jboss_undertow_handler_class"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Jetty Handler inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Jetty HandlerCollection 注入字节码。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + class jetty AbstractHandler in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jetty_abstracthandler_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: WebSphere PluginRegistry",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WebSphere 注入恶意 Plugin。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /websphere + class WSPlugin in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: websphere_plugin_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Resin Filter inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Resin Filter inject 字节码。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + Resin filter class in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: resin_filter_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Glassfish memshell",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Glassfish/Payara endpoint 注入。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /glassfish + class endpoint",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: glassfish_endpoint_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: FastJson autotype inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "FastJson @type=javax.naming.RefAddr + ldap://memshell。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "JSON body has '@type' and 'rmi://' or 'ldap://'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: fastjson_autotype_ldap_rmi"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Log4Shell memshell deploy",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Log4j JNDI lookup 拉远端 class + 内存马挂载。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "TCP",
+    "nta_signature": "LDAP query + outbound LDAP fetch + class jar",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jndi_ldap_outbound_class"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Shiro deserialize memshell",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Shiro AES key default + memshell payload。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "Cookie: rememberMe=<base64 large> + outbound class fetch",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: shiro_rememberme_large_payload"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: dubbo memshell",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Apache Dubbo + Java deserialization memshell。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "TCP",
+    "nta_signature": "Dubbo magic 0xDABB + Class loader payload",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: dubbo_class_loader"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: ASP.NET HttpHandler inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ASP.NET 内存 HttpHandler 注入。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /api + assembly class IHttpHandler",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: aspnet_handler_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: ASP.NET HttpModule inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ASP.NET HttpModule 内存注入。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + IHttpModule class in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: aspnet_module_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: IIS Native Module",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "IIS Native Module 流量注入。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST iisapp + binary CILModule signature",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: iis_native_module_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: MVC Razor view inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ASP.NET MVC Razor 视图动态加载。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /Views/_Layout.cshtml change in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: razor_view_post_modify"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: JSP fileless dynamic",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "FastJson + BCEL 动态加载 Servlet 字节码。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + 'org.apache.commons.beanutils.BeanComparator'",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: bcel_in_body"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Java agent attach + memshell",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Java Attach API 远程附加 agent。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "TCP",
+    "nta_signature": "JVM Attach socket + class loader payload",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jvm_attach_socket_class"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Servlet 3.0 lazy register",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Servlet 3.0 programmatic register + bytecode。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + class ServletRegistration in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: servlet_registration_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Spring Reactive Handler",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Spring WebFlux RouterFunction 注入。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /webflux/* + RouterFunction class",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: webflux_router_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: ControllerAdvice inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Spring @ControllerAdvice 全局异常处理注入。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + ControllerAdvice annotation in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: controller_advice_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Tomcat WebSocket inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat WebSocket Endpoint 内存注入。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST /ws + Endpoint class in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: tomcat_ws_endpoint_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Tomcat Valve inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat StandardEngine Valve 注入。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + StandardValve class in body",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: tomcat_valve_class_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Tomcat Servlet inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat 动态 Servlet 注册流量。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + ServletContext.addServlet bytes",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: servlet_context_addservlet"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Jasper JSP dynamic compile",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Jasper jsp_servlet 动态编译写入 jsp 内存。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "HTTP",
+    "nta_signature": "POST + jsp_servlet compile + class",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: jasper_jsp_compile_post"
+  },
+  {
+    "payload_type": "TrafficPattern",
+    "payload_name": "内存注入 webshell: Generic JNDI inject",
+    "payload_external_id": "NTA-MEMORYWEBSHELLINJECT-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "JNDI lookup → 内存马 - 通用模式。",
+    "payload_platforms": [
+      "Generic"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1190"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "nta",
+      "memory_webshell_inject"
+    ],
+    "nta_category": "memory_webshell_inject",
+    "nta_protocol": "TCP",
+    "nta_signature": "outbound LDAP / RMI port 1389 / 1099",
+    "nta_pcap_path": null,
+    "nta_detection_hint": "rule: outbound_jndi_ports"
+  }
+]
