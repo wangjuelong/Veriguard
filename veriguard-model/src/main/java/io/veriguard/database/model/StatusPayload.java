@@ -66,6 +66,17 @@ public class StatusPayload {
   @NotNull
   private String protocol;
 
+  /**
+   * 额外四元组 wire 形态 —— IPv6 安全验证系统招标 §4 "支持同一个流量安全验证用例中，包含多个端口不同的四元组".
+   *
+   * <p>主四元组继续由上方 5 个标量字段承载（向后兼容）。本字段从 {@link NetworkTraffic#getExtraTuples()} 透传，让 executor / 前端 /
+   * 报告侧能拿到 payload 声明的全部 (src/dst/port/proto) 组合，无需再回查 Payload entity。
+   *
+   * <p>非 NetworkTraffic payload 此字段为 null（不输出 JSON 节点 / Jackson 默认不写入 null）。
+   */
+  @JsonProperty("network_traffic_extra_tuples")
+  private List<NetworkTrafficTuple> extraTuples;
+
   public StatusPayload() {}
 
   public StatusPayload(

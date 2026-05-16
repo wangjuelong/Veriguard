@@ -175,23 +175,29 @@ public class AttackChainNodeUtils {
     if (NETWORK_TRAFFIC_TYPE.equals(nodeContract.getPayload().getType())) {
       // AttackChainNode has a command payload
       NetworkTraffic payloadNetworkTraffic = (NetworkTraffic) Hibernate.unproxy(payload);
-      return new StatusPayload(
-          payloadNetworkTraffic.getName(),
-          payloadNetworkTraffic.getDescription(),
-          NETWORK_TRAFFIC_TYPE,
-          payloadNetworkTraffic.getProtocol(),
-          payloadNetworkTraffic.getPortDst(),
-          payloadNetworkTraffic.getPortSrc(),
-          payloadNetworkTraffic.getIpDst(),
-          payloadNetworkTraffic.getIpSrc(),
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          emptyList(),
-          null);
+      StatusPayload statusPayload =
+          new StatusPayload(
+              payloadNetworkTraffic.getName(),
+              payloadNetworkTraffic.getDescription(),
+              NETWORK_TRAFFIC_TYPE,
+              payloadNetworkTraffic.getProtocol(),
+              payloadNetworkTraffic.getPortDst(),
+              payloadNetworkTraffic.getPortSrc(),
+              payloadNetworkTraffic.getIpDst(),
+              payloadNetworkTraffic.getIpSrc(),
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              emptyList(),
+              null);
+      // §4.4 IPv6 安全验证系统招标 "支持同一个流量安全验证用例中包含多个端口不同的四元组"
+      // —— 把 entity 上的额外四元组列表透传到 wire 形态 StatusPayload，
+      // executor / 前端 / 报告侧由此可见单条 payload 声明的全部 (src/dst/port/proto) 组合。
+      statusPayload.setExtraTuples(payloadNetworkTraffic.getExtraTuples());
+      return statusPayload;
     }
 
     return null;
