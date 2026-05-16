@@ -16,6 +16,15 @@ This is a Spring Boot + React monorepo.
 - `docs/IPv6安全验证系统*.md` — IPv6 安全验证系统二开工作的权威文档系列：`IPv6安全验证系统.md` 是导航总览；`-技术方案.md` / `-研发拆解.md` / `-GAP分析.md` 是设计与落差分析；`-用例清单.md` / `-外部接口清单.md` / `-业务模块Agent与数据流.md` / `-靶机环境.md` 是工程清单；`-甲方待澄清清单.md` 是单一待澄清问题源。
 - `docs/参考资料/` — Chinese-language reference notes; `Veriguard二开落地说明.md` is the source of truth for the current customization scope. 甲方原档（`招标文件正文.pdf`）与对接说明（`需要对接的内容.md`、`靶机环境.md`）一并放此目录。
 
+### Sibling forks (Rust 2021, hosted on `wangjuelong/`)
+
+The IPv6 安全验证系统 招标 §9.2 platform agent ships as two separate Rust binaries forked from `OpenAEV-Platform` (formerly OpenBAS-Platform, GitHub 301 redirect):
+
+- `/Users/lamba/github/veriguard-agent` — agent client (← `OpenAEV-Platform/agent@531f9d120`, release 2.3.5). Talks to this Java backend over `/api/agent/*`. Adds Ed25519/X25519 crypto + Mode C offline pack + capabilities + bootstrap.
+- `/Users/lamba/github/veriguard-implant` — payload executor (← `OpenAEV-Platform/implant@3b16615e9`, release 2.3.5). Dropped onto target by agent; 5 payload types (Command / Executable / FileDrop / DnsResolution / NetworkTraffic).
+
+**Forks are decoupled** — no cherry-picks or rebase-from-upstream; baseline commit is retained only for LICENSE attribution. Detailed design in `docs/superpowers/specs/2026-05-14-veriguard-agent-implant-fork-c1-c2-design.md`; implementation plan in `docs/superpowers/plans/2026-05-14-veriguard-agent-implant-fork-c1-c2-plan.md`.
+
 ## Conventions Index
 
 Authoritative coding standards live under `.github/instructions/`. When working in a given area, read the matching file first:
@@ -38,6 +47,14 @@ mvn -pl veriguard-api -am test                   # run all tests in a module
 mvn -pl veriguard-api test -Dtest=ClassName#method   # single JUnit test
 mvn -pl veriguard-api spring-boot:run            # run the API (after `cd veriguard-dev && docker compose up -d`)
 mvn spotless:apply                               # format Java (configured at the root pom)
+```
+
+**Single-test gotcha**: `mvn -Dtest=ClassName#method test` silently reports "no tests" unless paired with `-Dsurefire.failIfNoSpecifiedTests=false`. Always include it for targeted runs.
+
+**JDK 21 required**: ensure `JAVA_HOME` points to a JDK 21 install before any mvn command:
+
+```sh
+export JAVA_HOME=/usr/local/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
 ```
 
 `co.elastic.clients:elasticsearch-java` may 502 from the configured mirror; retry or switch repositories — do not pin a stale version to work around it.
