@@ -116,6 +116,52 @@ public class PayloadUpsertInput {
   @Schema(nullable = true)
   private String expectedBodyRegex;
 
+  // -- PR #68 follow-up: HostAttack subtype fields (HIDS P1.1) --
+  // Property names mirror HostAttackPayload getters/setters so PayloadUtils.copyProperties (via
+  // BeanUtils.copyProperties) auto-binds them. Service layer enforces required fields when
+  // payload_type == "HostAttack".
+
+  @JsonProperty("hids_category")
+  @Schema(nullable = true, description = "Required when payload_type=HostAttack")
+  private String hidsCategory;
+
+  @JsonProperty("hids_execution_mode")
+  @Schema(nullable = true, description = "Required when payload_type=HostAttack")
+  private String hidsExecutionMode;
+
+  @JsonProperty("hids_command_template")
+  @Schema(nullable = true, description = "Required when payload_type=HostAttack")
+  private String hidsCommandTemplate;
+
+  @JsonProperty("hids_artifact_path")
+  @Schema(nullable = true)
+  private String hidsArtifactPath;
+
+  @JsonProperty("hids_expected_artifacts")
+  private List<String> hidsExpectedArtifacts = new ArrayList<>();
+
+  // -- PR #68 follow-up: TrafficPattern subtype fields (NTA P1.2) --
+
+  @JsonProperty("nta_category")
+  @Schema(nullable = true, description = "Required when payload_type=TrafficPattern")
+  private String ntaCategory;
+
+  @JsonProperty("nta_protocol")
+  @Schema(nullable = true, description = "Required when payload_type=TrafficPattern")
+  private String ntaProtocol;
+
+  @JsonProperty("nta_signature")
+  @Schema(nullable = true, description = "Required when payload_type=TrafficPattern")
+  private String ntaSignature;
+
+  @JsonProperty("nta_pcap_path")
+  @Schema(nullable = true)
+  private String ntaPcapPath;
+
+  @JsonProperty("nta_detection_hint")
+  @Schema(nullable = true)
+  private String ntaDetectionHint;
+
   @JsonProperty("payload_arguments")
   private List<PayloadArgument> arguments;
 
