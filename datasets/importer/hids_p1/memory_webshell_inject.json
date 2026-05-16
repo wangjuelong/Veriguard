@@ -1,0 +1,950 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Tomcat Filter inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat StandardContext 注入恶意 Filter（拦截所有请求 + 命令执行）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/load HTTP/1.1\\nClass: MaliciousFilter\\nBody: <filter bytecode>",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "proc:java",
+      "memory_filter:tomcat"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Tomcat Valve inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat StandardEngine Pipeline 注入 Valve（更上层，可处理所有请求）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/valve",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_valve:tomcat"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Tomcat Listener inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat Lifecycle Listener 注入（Container 启动时执行）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/listener",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_listener:tomcat"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Tomcat Servlet inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "动态注册 Servlet 到 ServletContext。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/servlet",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_servlet:tomcat"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Tomcat WebSocket inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat WebSocket Endpoint 注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/ws",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_endpoint:tomcat"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Spring Controller inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Spring RequestMappingHandlerMapping 注入新 Controller。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/spring-ctrl",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_controller:spring"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Spring Interceptor inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Spring HandlerInterceptor 注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/interceptor",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_interceptor:spring"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Spring ControllerAdvice",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Spring @ControllerAdvice 全局异常处理注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/advice",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_advice:spring"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Spring WebFilter inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Spring WebFlux WebFilter 注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/webfilter",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_webfilter:spring"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Spring Reactive Handler",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Spring WebFlux RouterFunction 注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /vuln/reactive",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_handler:spring"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Struts2 OGNL memshell",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Struts2 OGNL 注入注册新 Action（CVE-2017-5638 类）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "GET /act.action?cmd=...",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_action:struts2"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Weblogic Filter inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Weblogic WebAppServletContext 注入 Filter。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /weblogic/filter",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_filter:weblogic"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Weblogic Listener inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Weblogic SessionListener 注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /weblogic/listener",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_listener:weblogic"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: JBoss/Wildfly inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "JBoss Undertow HttpHandler 注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /jboss/handler",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_handler:undertow"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: WebSphere PluginRegistry",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "WebSphere PluginRegistry 注入恶意 Plugin。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /websphere/plugin",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_plugin:websphere"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Jetty HandlerCollection",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Jetty HandlerCollection 动态追加 Handler。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /jetty/handler",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_handler:jetty"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Resin Filter inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Caucho Resin Filter 内存注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /resin/filter",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_filter:resin"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Glassfish Endpoint",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Glassfish/Payara Endpoint 注入。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /glassfish/endpoint",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_endpoint:glassfish"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: JSP fileless dynamic",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "FastJson 反序列化加载 BCEL 字节码动态生成 Servlet。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /api/fastjson",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_bcel"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Agent attach inject",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Java Attach API 把 agent.jar 注入到目标 JVM。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "executable",
+    "hids_command_template": "java -jar agent_injector.jar {{TARGET_PID}}",
+    "hids_artifact_path": "agent_injector.jar",
+    "hids_expected_artifacts": [
+      "proc:java",
+      "jvm_attach:{{TARGET_PID}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Aspnet HttpHandler",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ASP.NET 动态注册 HttpHandler 内存马。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /aspnet/handler",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_handler:aspnet"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Aspnet HttpModule",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ASP.NET 动态注册 HttpModule 全局拦截内存马。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /aspnet/module",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_module:aspnet"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: IIS Native Module",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "IIS Native Module 注册到 applicationHost.config 内存挂载。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /iis/native-mod",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_module:iis"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Mvc Razor view",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "ASP.NET MVC Razor 动态视图注入。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /mvc/razor",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_view:aspnet"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Memory Webshell Inject: Generic ServletAPI Lazy",
+    "payload_external_id": "HIDS-MEMORYWEBSHELLINJECT-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Servlet 3.0+ programmatic registration（无 web.xml）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1055.001"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "memory_webshell_inject"
+    ],
+    "hids_category": "memory_webshell_inject",
+    "hids_execution_mode": "memory_inject",
+    "hids_command_template": "POST /api/servlet-lazy",
+    "hids_artifact_path": null,
+    "hids_expected_artifacts": [
+      "memory_servlet:lazy"
+    ]
+  }
+]

