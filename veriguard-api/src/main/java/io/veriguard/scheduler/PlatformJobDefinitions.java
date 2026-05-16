@@ -112,4 +112,17 @@ public class PlatformJobDefinitions {
         .storeDurably()
         .build();
   }
+
+  /**
+   * IPv6 安全验证系统 §8.1 / §8.2 / §8.3 PR C1-Platform-5 —— 沙箱任务轮询 job（每 30s 扫描 active 行）.
+   *
+   * @return the job
+   */
+  @Bean
+  public JobDetail getSandboxTaskPollingJob() {
+    return JobBuilder.newJob(SandboxTaskPollingJob.class)
+        .withIdentity(SandboxTaskPollingJob.JOB_NAME)
+        .storeDurably()
+        .build();
+  }
 }

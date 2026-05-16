@@ -27,6 +27,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Primary;
@@ -96,6 +97,7 @@ public class CapeV2SandboxDriver implements SandboxDriver {
   private final HttpClient httpClient;
   private final ObjectMapper objectMapper;
 
+  @Autowired
   public CapeV2SandboxDriver(CapeV2SandboxDriverProperties props) {
     this(props, buildHttpClient(props), new ObjectMapper());
   }
