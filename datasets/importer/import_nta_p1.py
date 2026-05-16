@@ -17,19 +17,9 @@ Veriguard REST API 的 upsert 端点幂等灌入 payloads 表。
     payloads upsert by payload_external_id (NTA-BRUTEFORCE-001 ..
     NTA-INFOLEAKAGE-030)；同一 external_id 重跑覆盖旧字段。
 
-注意:
-    与 HIDS P1.1 同节奏：本脚本写出的 payload_type = "TrafficPattern" 当前
-    未被 Veriguard PayloadType 枚举（COMMAND/EXECUTABLE/FILE_DROP/
-    DNS_RESOLUTION/NETWORK_TRAFFIC/WEB_ATTACK）支持，所以真实 POST 在当前
-    main 上会被 PayloadUpsertInput 校验拒绝。
-
-    本 PR 仅交付：
-      1. 11 类共 330 条 NTA 用例数据（nta_p1/*.json）
-      2. importer 框架 + dry-run 验证 + JSON 校验测试
-
-    后续 PR 可在 PayloadType 中加入 TRAFFIC_PATTERN 子类（仿 B7 加 WEB_ATTACK）
-    后让本 importer 真正落库；或独立实现一个 TrafficPatternCatalog 表
-    读取这批 JSON。
+依赖的后端能力:
+    PayloadType.TRAFFIC_PATTERN + TrafficPatternPayload 子类 + V25 迁移
+    (payload_nta_* 列)。详见 veriguard-model TrafficPatternPayload.java.
 """
 
 import argparse
