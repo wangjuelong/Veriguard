@@ -13,8 +13,8 @@ This is a Spring Boot + React monorepo.
 - `veriguard-front/` — Vite + React 19 + TypeScript SPA (Yarn 4 workspaces, package manager pinned via `packageManager`).
 - `veriguard-dev/` — `docker-compose.yml` for backend dev infra (Postgres dev/test, Elasticsearch/OpenSearch, MinIO, RabbitMQ, Caldera, pgAdmin, Kibana) plus IntelliJ run configs. Required when running `mvn spring-boot:run` locally.
 - `docker-compose.yml` (repo root) — quickstart stack used by the README; layered above `veriguard-dev/` for new contributors who want a single `docker compose up`.
-- `docs/prd/产品要求.md` — the PRD that drives the 二开 (secondary-development) work.
-- `docs/参考资料/` — Chinese-language reference notes; `Veriguard二开落地说明.md` is the source of truth for the current customization scope.
+- `docs/IPv6安全验证系统*.md` — IPv6 安全验证系统二开工作的权威文档系列：`IPv6安全验证系统.md` 是导航总览；`-技术方案.md` / `-研发拆解.md` / `-GAP分析.md` 是设计与落差分析；`-用例清单.md` / `-外部接口清单.md` / `-业务模块Agent与数据流.md` / `-靶机环境.md` 是工程清单；`-甲方待澄清清单.md` 是单一待澄清问题源。
+- `docs/参考资料/` — Chinese-language reference notes; `Veriguard二开落地说明.md` is the source of truth for the current customization scope. 甲方原档（`招标文件正文.pdf`）与对接说明（`需要对接的内容.md`、`靶机环境.md`）一并放此目录。
 
 ## Conventions Index
 
