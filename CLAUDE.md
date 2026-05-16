@@ -13,7 +13,8 @@ This is a Spring Boot + React monorepo.
 - `veriguard-front/` — Vite + React 19 + TypeScript SPA (Yarn 4 workspaces, package manager pinned via `packageManager`).
 - `veriguard-dev/` — `docker-compose.yml` for backend dev infra (Postgres dev/test, Elasticsearch/OpenSearch, MinIO, RabbitMQ, Caldera, pgAdmin, Kibana) plus IntelliJ run configs. Required when running `mvn spring-boot:run` locally.
 - `docker-compose.yml` (repo root) — quickstart stack used by the README; layered above `veriguard-dev/` for new contributors who want a single `docker compose up`.
-- `docs/IPv6安全验证系统*.md` — IPv6 安全验证系统二开工作的权威文档系列：`IPv6安全验证系统.md` 是导航总览；`-技术方案.md` / `-研发拆解.md` / `-GAP分析.md` 是设计与落差分析；`-用例清单.md` / `-外部接口清单.md` / `-业务模块Agent与数据流.md` / `-靶机环境.md` 是工程清单；`-甲方待澄清清单.md` 是单一待澄清问题源。
+- `docs/IPv6安全验证系统*.md` — IPv6 安全验证系统二开工作的权威文档系列：`IPv6安全验证系统.md` 是导航总览；`-技术方案.md` / `-研发拆解.md` / `-GAP分析.md` 是设计与落差分析；`-用例清单.md` / `-外部接口清单.md` / `-业务模块Agent与数据流.md` / `-靶机环境.md` / `-攻击类型与ATTCK平台能力对照表.md` 是工程清单；`-一行curl部署文档.md` 是 agent 部署操作手册；`-甲方待澄清清单.md` 是项目内部工作版（含 brainstorm）。
+- `docs/启动会议-甲方澄清清单.md` — 对外干净版甲方澄清清单（启动会议对齐基线）；与上面 `IPv6安全验证系统-甲方待澄清清单.md` 是两份独立文档：前者外发，后者内部。
 - `docs/参考资料/` — Chinese-language reference notes; `Veriguard二开落地说明.md` is the source of truth for the current customization scope. 甲方原档（`招标文件正文.pdf`）与对接说明（`需要对接的内容.md`、`靶机环境.md`）一并放此目录。
 
 ### Sibling forks (Rust 2021, hosted on `wangjuelong/`)
@@ -21,7 +22,7 @@ This is a Spring Boot + React monorepo.
 The IPv6 安全验证系统 招标 §9.2 platform agent ships as two separate Rust binaries forked from `OpenAEV-Platform` (formerly OpenBAS-Platform, GitHub 301 redirect):
 
 - `/Users/lamba/github/veriguard-agent` — agent client (← `OpenAEV-Platform/agent@531f9d120`, release 2.3.5). Talks to this Java backend over `/api/agent/*`. Adds Ed25519/X25519 crypto + Mode C offline pack + capabilities + bootstrap.
-- `/Users/lamba/github/veriguard-implant` — payload executor (← `OpenAEV-Platform/implant@3b16615e9`, release 2.3.5). Dropped onto target by agent; 5 payload types (Command / Executable / FileDrop / DnsResolution / NetworkTraffic).
+- `/Users/lamba/github/veriguard-implant` — payload executor (← `OpenAEV-Platform/implant@3b16615e9`, release 2.3.5). Dropped onto target by agent. Dispatcher in `src/main.rs` currently dispatches 4 payload types (Command / Executable / FileDrop / DnsResolution); `NetworkTraffic` struct (含 §4.4 `extra_tuples`) 已就绪但 `main.rs` 尚未接通——见 `// "NetworkTraffic" => {}, // Not implemented yet`.
 
 **Forks are decoupled** — no cherry-picks or rebase-from-upstream; baseline commit is retained only for LICENSE attribution. Detailed design in `docs/superpowers/specs/2026-05-14-veriguard-agent-implant-fork-c1-c2-design.md`; implementation plan in `docs/superpowers/plans/2026-05-14-veriguard-agent-implant-fork-c1-c2-plan.md`.
 
@@ -91,7 +92,7 @@ rg -n 'TODO|FIXME|待补充' docs
 
 - The API is a single Spring Boot app exposing REST under `/api/...`. Controllers are organized by feature folder (`rest/<feature>/`). Custom Veriguard二开 endpoints live under `rest/security_validation/` (capability matrix, attack use cases, attack orchestration, sandbox CRUD); URI constants are declared on `SecurityValidationApi`.
 - **Attack-chain orchestration is the largest active area** (PRD §2.4). Backend lives in `rest/attack_chain*/`, `attackchain/`, and `AttackChainNodesExecutionJob`; frontend lives in `veriguard-front/src/admin/components/attack_chains/` and `attack_chain_runs/`. Wire format uses snake_case `attack_chain_*` / `attack_chain_run_*` / `node_*` after Phase 12b-A.
-- Persistence uses JPA against Postgres with Flyway migrations under `veriguard-api/src/main/resources/db/migration/`. `V1__Init.sql` is the baseline (generated from `pg_dump -s` in Phase 11), `V2__Drop_channel_challenge_article_email.sql` and `V3__attack_chain_module_init.sql` are already applied — **add new SQL migrations starting from `V4__...`**. Default tenant UUID for seed data is `2cffad3a-0001-4078-b0e2-ef74274022c3`.
+- Persistence uses JPA against Postgres with Flyway migrations under `veriguard-api/src/main/resources/db/migration/`. `V1__Init.sql` is the baseline (generated from `pg_dump -s` in Phase 11); migrations through `V25__host_attack_traffic_pattern_payload_columns.sql` are applied — **add new SQL migrations starting from `V26__...`** (并发 PR 抢占同一版本号需重排). Default tenant UUID for seed data is `2cffad3a-0001-4078-b0e2-ef74274022c3`.
 - AuthZ uses an `@RBAC` AOP annotation referencing `io.veriguard.database.model.Action` / `ResourceType` — preserve those when adding endpoints.
 - The frontend admin shell mounts at `/admin/...`; the Veriguard二开 console is at `/admin/veriguard` (`veriguard-front/src/admin/components/veriguard/VeriguardConsole.tsx`), wired through `admin/Index.tsx` and the left nav.
 - Real traffic replay, HIDS collection, SOC queries, and sandbox virtualization drivers are **external adapters**. Do not fake their results in code — expose them as integration boundaries on the API/UI per the PRD.
@@ -107,3 +108,4 @@ rg -n 'TODO|FIXME|待补充' docs
 - For multi-step work, define verifiable goals and loop until each check passes; complex features should use `git worktree` + a feature branch and only ask for confirmation if blocked by safety, permissions, or missing info.
 - If requirements are ambiguous, stop and ask before silently choosing an interpretation.
 - **Never push or rebase `master`**: this fork keeps `master` aligned with upstream OpenBAS baseline. All二开 PRs base on `main`.
+- **`gh pr merge` worktree 锁陷阱**：当前 `cwd` 在 `.claude/worktrees/<xxx>` 且 `main` 已被另一 worktree checkout 时，`gh pr merge` 会因本地 checkout 冲突失败。改走 REST：`gh api -X PUT repos/<owner>/<repo>/pulls/<N>/merge -f merge_method=squash`，合并完再 `gh api -X DELETE repos/<owner>/<repo>/git/refs/heads/<branch>` 删远端分支。
