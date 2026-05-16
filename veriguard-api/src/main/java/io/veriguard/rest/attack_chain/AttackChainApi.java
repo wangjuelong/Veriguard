@@ -452,6 +452,33 @@ public class AttackChainApi extends RestBehavior {
     return this.attackChainService.updateAttackChain(attackChain);
   }
 
+  /**
+   * §6.3 IPv6 安全验证系统招标 "场景包含的具体用例范围根据筛选条件自动变化，当用例更新时，根据筛选条件自动进入自定义场景" —— 读时预览端点.
+   *
+   * <p>每次调用都现算（re-query NodeContract by filter，无缓存），所以新建 / 更新 / 删除的用例只要命中 filter，下一次调用就会出现在返回列表里 ——
+   * "用例更新自动进入" 语义的核心呈现位置。前端 chain 编辑器据此渲染 "动态节点" 区块；admin 据此在配置 filter 后立即预览命中集合。
+   *
+   * <p>底层复用 {@link AttackChainService#computeDynamicContracts(AttackChain)}，与 {@link
+   * io.veriguard.scheduler.jobs.AttackChainNodesExecutionJob#handleAutoStartAttackChainRuns()}
+   * run-time 派生路径同源。
+   */
+  @LogExecutionTime
+  @GetMapping(SCENARIO_URI + "/{attackChainId}/dynamic_contracts")
+  @RBAC(
+      resourceId = "#attackChainId",
+      actionPerformed = Action.READ,
+      resourceType = ResourceType.SCENARIO)
+  @Operation(
+      summary = "Preview NodeContracts currently matching the chain's dynamic filter.",
+      description =
+          "Re-evaluated on every call — newly added / updated payloads that match the filter "
+              + "surface immediately without modifying the chain. Powers §6.3 dynamic scene UI.")
+  public List<NodeContract> attackChainDynamicContracts(
+      @PathVariable @NotBlank final String attackChainId) {
+    AttackChain attackChain = this.attackChainService.attackChain(attackChainId);
+    return this.attackChainService.computeDynamicContracts(attackChain);
+  }
+
   // region asset groups, endpoints, documents and channels
   @GetMapping(SCENARIO_URI + "/{attackChainId}/asset-groups")
   @RBAC(
