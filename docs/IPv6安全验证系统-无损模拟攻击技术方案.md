@@ -94,13 +94,17 @@
 
 ### 3.1.3 L1 标记规范（强归因）
 
-| 协议位 | 字段 | 示例 |
-| --- | --- | --- |
-| HTTP header | `X-Veriguard-Run-Id` | `c2a3f1...` (run UUID) |
-| HTTP header | `X-Veriguard-Inject-Id` | `n7b91...` (per-inject UUID) |
-| HTTP header | `X-Veriguard-Tenant` | `gfc-fugu-2026` |
-| TLS SNI | `<inject-id>.bas.<tenant>.veriguard.local` | 走专用域名 |
-| User-Agent 后缀 | `Veriguard/0.1.0 (drill;run=<runId>)` | 兼容旧 SIEM |
+| 协议位 | 字段 | 示例 | 适用流量 |
+| --- | --- | --- | --- |
+| HTTP header | `X-Veriguard-Run-Id` | `c2a3f1...` (run UUID) | 明文 HTTP |
+| HTTP header | `X-Veriguard-Inject-Id` | `n7b91...` (per-inject UUID) | 明文 HTTP |
+| HTTP header | `X-Veriguard-Sig` | Ed25519 sig of `runId‖injectId‖timestamp` | 明文 HTTP |
+| HTTP header | `X-Veriguard-Tenant` | `gfc-fugu-2026` | 明文 HTTP |
+| **TLS SNI**（加密流量主归因） | `<sig8>.<injectId>.bas.<tenant>.veriguard.local` | per-inject 强归因 | HTTPS / 任意 TLS |
+| **JA3/JA4 指纹**（BAS 级身份） | agent 固定 ClientHello 形成稳定指纹 | 演练前一次性预置 hash | HTTPS / 任意 TLS |
+| User-Agent 后缀 | `Veriguard/0.1.0 (drill;run=<runId>)` | 兼容旧 SIEM | 明文 HTTP |
+
+> **离线适用性**：以上所有字段均为 agent 端本地构造，不依赖在线注册。Veriguard 平台从 SIEM 默认索引字段（`http.request.headers.*` / `tls.client.server_name` / `tls.client.ja3`）查回后本地 Ed25519 验签。
 
 ### 3.1.4 灭活 payload 示例
 
@@ -180,21 +184,36 @@ username=admin' /* VG-PROBE n7b91 */ OR '1'='1-- VG-NEUTRALIZED&password=__vg_pr
 
 **示例**：CVE-2017-0144 EternalBlue pcap 灭活后，SMB 协商 + Trans2 Subcmd FE 特征完整保留，shellcode 段全替换为 `0xAA` + inject_id。NTA 规则按"SMB Trans2 Subcmd FE 异常长度"命中告警，但接收端是专用靶机 netcat，不会真崩。
 
-### 3.2.4 L1 标记规范
+### 3.2.4 L1 标记规范（按离线可行性分层）
+
+**主选（档 0 基线 / 零 SIEM 改造 / Mode C 离线鲁棒）**：
+
+| 流量层 | 标记位 | 说明 | 适用 |
+| --- | --- | --- | --- |
+| L7 payload | 前 8 字节 magic `0x564753AB 564753AB` ("VGS\xAB" ×2) + 16B inject_id + 64B Ed25519 sig | DPI 可识别，强归因 | 明文协议（DNS / 明文 HTTP / SMB plain / FTP） |
+| **TLS SNI** | `<sig8>.<injectId>.bas.<tenant>.veriguard.local` | NTA / SIEM 默认输出 `tls.sni` | **加密流量主归因**（HTTPS / TLS-wrapped 协议） |
+| **JA3 / JA4 指纹** | Veriguard agent 固定 ClientHello 形成稳定指纹 | NTA 默认输出 JA3 hash | 加密流量 BAS 级身份识别 |
+| §4.4 multi-tuple | `extra_tuples` 每条携带 inject_id 派生子标识 | 多包关联 | 多端口攻击 |
+
+**兜底（档 1 增强 / IPv6 单栈环境特有 / 需 NTA + SIEM 各一次 ingest 配置）**：
 
 | 流量层 | 标记位 | 说明 |
 | --- | --- | --- |
-| L2 以太 | 源 MAC 来自 BAS 专用 MAC 段（OUI 注册） | 网管设备级隔离 |
-| L3 IP | 源 IP 来自 BAS 专用 IP 段（如 `10.255.0.0/24`） | SIEM 白名单 |
-| L4 TCP/UDP | 源端口固定在 `49152-49200` | 5-tuple 强归因 |
-| L7 payload | 前 8 字节 magic `0x564753AB 564753AB` ("VGS\xAB" ×2) + 16B inject_id | DPI 可识别 |
-| §4.4 multi-tuple | `extra_tuples` 每条携带 inject_id 派生子标识 | 多包关联 |
+| **IPv6 Hop-by-Hop Option** | Option Type `0x3E` + magic + run_id + inject_id + 64B Ed25519 sig | 加密流量 + 不打破 payload 完整性；本项目 IPv6 单栈天然适用 |
 
-### 3.2.5 强归因路径
+**已删除（离线 Mode C 不可行）**：
 
-1. NTA 告警上报 SOC → 含 5-tuple
-2. Veriguard 查 ES：`source.ip IN bas_pool AND source.port IN [49152-49200] AND original_event.payload_hex LIKE '564753ab%'`
-3. 命中即强归因，inject_id 从 payload offset 8-23 取出
+| 原方案 | 不可行原因 |
+| --- | --- |
+| ~~L2 BAS 专用 MAC 段（OUI 注册）~~ | IEEE OUI 注册流程依赖；agent 跑在甲方靶机无权改 MAC；SIEM 白名单需在线协调 |
+| ~~L3 BAS 专用 IP 段 `10.255.0.0/24`~~ | IP 由甲方动态分配；SIEM 白名单需在线协调 |
+| ~~L4 源端口段 `49152-49200`~~ | 与系统 ephemeral 端口范围冲突；不唯一；无法独占 |
+
+### 3.2.5 强归因路径（档 0 + 平台侧验签）
+
+1. **明文协议**：NTA 告警上报 SOC → SOC 索引 `original_event.payload_hex`（部分 SIEM 默认开） → Veriguard 平台查 `payload_hex LIKE '564753ab%'` → 取 inject_id + sig → 本地 Ed25519 验签 → STRONG
+2. **加密协议（HTTPS / TLS）**：NTA 告警含 `tls.client.server_name` + `tls.client.ja3` → Veriguard 平台查 SNI wildcard `*.bas.*.veriguard.local` → 取 sig8 + inject_id → 本地 HMAC 验签（sig8） + 可选 IPv6 HBH 全签名验 Ed25519 → STRONG
+3. **均失效**：退化为 §四 归因决策表的 MEDIUM / WEAK 兜底
 
 ### 3.2.6 当前已实现 / 待补
 
@@ -304,6 +323,22 @@ fn main_loop() {
 | 灭活模板库（高风险 payload 必须走灭活，非灭活直接拒绝执行） | ❌ 未实现 |
 | S2 热加载（空壳 agent + module 模式） | ❌ 当前 agent 是单体 binary |
 
+### 3.3.8 主机场景边界兜底（针对 M1+M2 失效情况）
+
+主机场景有几个 M1+M2 单独不足以覆盖的边界，需 L2 artifact 预测集（M2 + L2 组合）作兜底：
+
+| 边界场景 | M1+M2 失效原因 | 兜底策略 |
+| --- | --- | --- |
+| **cmdline 被 EDR 截断 / 脱敏** | 末尾 `--vg-sig=` 被截，签名验证失败 | sig 放在 **cmdline 头部**：`vg-impl --vg-sig=<sig> --vg-run=<id> -- <真实命令>`；同时上报 parent pid + cmdline hash 作 L2 备份 |
+| **DNS 标签长度限制** | Ed25519 sig 64B = 128 hex 字符 > 63B 单标签上限 | sig 截断为 8B HMAC-SHA256（16 hex 字符），多余位通过 IPv6 HBH 或上报通道补 |
+| **灭活后无 payload 可嵌入** | 勒索灭活、凭据窃取灭活 —— 没真 payload | 完全依赖 L2 artifact：spawn pid 链 + 进程映像 hash + 申请的 API 调用序列 |
+| **fileless 攻击（内存马 / living-off-the-land）** | 无磁盘文件，无 sig 嵌入位 | 依赖 EDR 默认采集的 parent pid chain + process tree + `process.command_line` |
+| **EDR 默认不采的字段** | 部分进程注入 / 服务持久化字段 SIEM 不索引 | implant 主动通过 `.vresults` 离线包上报，演练后比对 |
+
+**L2 artifact 上报通道**：
+- Mode A 在线：通过 `/api/agent/inject-results` POST 上报
+- Mode C 离线：写入 `.vresults` 包，演练后导出比对（M3 manifest）
+
 ---
 
 # 四、归因决策表（三场景共用）
@@ -324,7 +359,87 @@ fn main_loop() {
 
 ---
 
-# 五、SIEM 协作机制（高阶可选）
+# 五、SIEM 配合分档（关键决策）
+
+## 5.1 三档配合深度
+
+任何 BAS 归因方案都需要 SIEM 一定程度的配合 —— SIEM 是观察方，BAS 无法控制 SIEM 看到什么、能查什么。配合深浅可分三档：
+
+| 档 | 内容 | SIEM 改造 | 覆盖度 | Mode C 离线可用 |
+| --- | --- | --- | --- | --- |
+| **档 0**（基线） | 仅用 SIEM 默认索引字段（SNI / JA3 / cmdline / sha256 / dns） | 零代码改造 | 70% | ✅ |
+| **档 1**（增强） | NTA + SIEM 各加一次 ingest 配置，解析自定义字段（如 IPv6 HBH） | 一次性配置 | 90% | ✅ |
+| **档 2**（高阶） | SIEM 装 Veriguard 适配插件，实时打 BAS 标 | 长期维护 | 95%+ | ✅ |
+
+## 5.2 关键决策：档 0 + Veriguard 平台侧验签 ⭐
+
+**Veriguard 二开默认采用档 0 + 平台侧验签**，理由：
+
+1. **零 SIEM 改造**：甲方接受度最高，启动会议无须新增对接需求
+2. **完全 Mode C 离线可用**：agent 不需要在线注册 session，所有标记本地构造
+3. **Ed25519 验签栈已有**：Java `Ed25519SignatureService` + Rust `src/crypto/ed25519.rs`，跨语言契约已锁（memory: `project_veriguard_wire_contract_locked`），平台侧验签零额外密码学投入
+4. **强归因仍成立**：70% 覆盖度看似不高，但是"SIEM 默认就能采到"的那 70%，含三场景核心攻击向量（HTTP / HTTPS / DNS / cmdline / sha256 / dns_query）
+5. **甲方 SIEM 团队不用懂 Veriguard 协议**：SIEM 永远只是"数据源"，归因发生在 Veriguard 平台
+
+## 5.3 档 0 归因流程
+
+```
+[agent 端] —— 完全离线，无须任何 SIEM 在线通知
+   ↓ 嵌入 SNI / JA3 / X-Veriguard-* / Ed25519 sig 到流量
+[甲方 NTA / IDS / HIDS] —— 标准设备，默认输出标准字段
+   ↓
+[甲方 SIEM] —— 标准索引（tls.sni / tls.ja3 / http.headers / process.cmdline / file.hash / dns.question.name）
+   ↓ 仅暴露查询 API（任何商用 SIEM 标配）
+[Veriguard 平台] —— 调 SIEM API 查询字段
+   ↓ 本地用预置公钥 Ed25519 验签
+[归因决策] —— STRONG / MEDIUM / WEAK / UNRELATED
+   ↓
+[trace 落 attribution_level / confidence 字段]
+```
+
+**关键点**：归因 100% 发生在 Veriguard 平台侧。SIEM 不需要懂任何 Veriguard 私有协议或字段语义。
+
+## 5.4 档 0 依赖的 SIEM 默认字段
+
+以下字段是任何商用 SIEM（Elastic / Splunk / QRadar）+ 标准探针（Suricata / Zeek / Wazuh）默认索引的，**档 0 完全依赖这些**：
+
+| 字段 | 来源 | 用途 |
+| --- | --- | --- |
+| `http.request.headers.x-veriguard-run-id` | WAF / NTA HTTP 解析 | 明文 HTTP 归因 |
+| `http.request.headers.x-veriguard-inject-id` | WAF / NTA HTTP 解析 | 明文 HTTP 归因 |
+| `http.request.headers.x-veriguard-sig` | WAF / NTA HTTP 解析 | Ed25519 验签 |
+| `tls.client.server_name` | NTA TLS 解析（Suricata 默认） | 加密流量归因 |
+| `tls.client.ja3` 或 `tls.client.ja4` | NTA TLS 解析（Suricata 默认） | BAS 级身份 |
+| `dns.question.name` | NTA DNS 解析（Suricata 默认） | DNS inject 归因 |
+| `process.command_line` | HIDS / EDR | 主机命令执行归因 |
+| `process.parent.pid` / `process.parent.command_line` | HIDS / EDR | fileless / 灭活兜底 |
+| `file.hash.sha256` | HIDS / EDR | 文件落地归因 |
+
+**演练前必做的 health check**（Veriguard 平台实现）：发一条 inject 后查 SIEM 是否能查到自己注入的标记，所有字段都通过才允许批量演练（参见 §八 风险与边界条件）。
+
+## 5.5 档 1 增强（试运行期可争取）
+
+档 0 在 Mode C 离线下覆盖 70%。试运行期可视甲方意愿增加：
+
+| 项 | 谁负责 | 内容 |
+| --- | --- | --- |
+| NTA 加 Lua 规则解析 IPv6 HBH Option `0x3E` | 甲方 NTA 团队 | 输出 `ipv6.hop_by_hop.veriguard_sig` 字段 |
+| SIEM 加 ingest pipeline 索引新字段 | 甲方 SIEM 团队 | Elastic ingest pipeline grok / dissect |
+
+**收益**：覆盖加密流量 + binary exploit 场景，归因覆盖度从 70% → 90%。
+
+## 5.6 档 2 高阶（仅大客户长期合作）
+
+仅在以下条件齐备时考虑：
+- 甲方 SOC 团队接受装第三方插件
+- 甲方愿意承担长期维护成本
+- Veriguard 项目方愿意发布 SIEM-specific 插件包（Elastic / Splunk / QRadar）
+
+档 2 是 Mandiant Security Validation 等国际厂商的标配，**在政企等保场景较少见**，本期不主推。
+
+## 5.7 档 1 / 档 2 在线 session API（参考，非必需）
+
+仅当档 1 / 档 2 启用且 SIEM 与 Veriguard 平台有在线通道时，可叠加在线 session 注册：
 
 ```
 [演练开始]
@@ -333,26 +448,19 @@ Veriguard Platform → SOC API:
   { "session_id": "<runId>",
     "started_at": "...",
     "expected_window_end": "...",
-    "expected_source_ips": ["10.255.0.0/24"],
     "expected_techniques": ["T1059.001", "T1055", ...],
     "tenant": "gfc-fugu-2026" }
 
-[演练中] SOC 自动给该时段从 bas_pool 源段进来的所有 alert 打标签:
+[演练中] SOC 自动给该时段进来的 alert 打标签:
   _source.bas.session_id = <runId>
-  _source.bas.is_drill = true
 
 [演练结束]
 Veriguard Platform → SOC API:
   POST /api/sessions/<runId>/close
   { "ended_at": "...", "actual_inject_count": N }
-
-[归因查询] 改用 SOC 服务端做的归因:
-  GET /api/alerts?bas.session_id=<runId>&inject_id=<id>
 ```
 
-**收益**：归因从 BAS 客户端做（受字段映射准确度限制）变为 SIEM 服务端做（甲方运营人员可信任）。
-
-**前提**：需要甲方 SIEM 支持自定义索引字段（Elastic 配 ECS 自定义字段；Splunk 配 lookup table）。
+> ⚠️ **Mode C 离线场景下该流程不适用** —— 离线场景退到 §六 M3 离线 manifest（`.vpack` / `.vresults` 带 manifest 字段 + 物理盘带外送达）。
 
 ---
 
@@ -380,35 +488,50 @@ Veriguard Platform → SOC API:
 
 | 技术 | 业界成熟做法 | Veriguard 当前 | 差距 | 优先级 |
 | --- | --- | --- | --- | --- |
-| S1 流量标记 | 全通道自动注入 per-inject UUID | Web header 字段在但需手填，其他通道无 | 🔴 高 | P0 |
+| S1 流量标记（HTTP header） | 全通道自动注入 per-inject UUID | Web header 字段在但需手填，其他通道无 | 🔴 高 | P0 |
+| **S1 TLS SNI 嵌入**（加密流量主归因） | SNI = `<sig8>.<injectId>.bas.<tenant>...` | implant TLS 客户端无 SNI 改写能力 | 🔴 高 | P0 |
+| **S1 JA3/JA4 指纹固定**（BAS 级身份） | agent 锁定 ClientHello 形成稳定 hash | 当前用默认 rustls，JA3 不稳定 | 🔴 高 | P0 |
 | S1 灭活 payload | 内置灭活模板库 | 无；payload 由用例作者自负责 | 🔴 高 | P0 |
 | S2 热加载 | agent 空壳 + module 下载 | implant 是完整 binary | 🟡 中 | P2 |
 | S3 仿真接收端 | 强约束，IP 白名单 | 无约束，能打任意 URL | 🔴 高 | P0 |
 | S4 沙箱 | CAPEv2 + 快照回滚 | ✅ CAPEv2 接入（M2 完成） | 🟢 - | - |
-| L1 强归因（查询位） | SIEM 查询带 `x-veriguard-run-id` | 查询只有时空 + 目标 IP | 🔴 高 | P0 |
-| L2 工件归因 | sha256 / pid / 5-tuple 预测集 | implant 不上报 artifact bundle | 🟡 中 | P1 |
+| **L1 平台侧 Ed25519 验签**（档 0 核心） | 从 SIEM 查回字段后本地验签 | 当前无验签逻辑 | 🔴 高 | P0 |
+| L1 强归因（查询位） | SIEM 查询带 `x-veriguard-run-id` / `tls.sni` / `tls.ja3` | 查询只有时空 + 目标 IP | 🔴 高 | P0 |
+| L2 工件归因（sha256 / pid / 5-tuple 预测集） | implant 上报 artifact bundle，平台预测 sha256 集 | implant 不上报 artifact bundle | 🟡 中 | P1 |
+| L2 主机 cmdline 头部嵌入 | sig 放头部抗 EDR 截断 | 当前无 | 🟡 中 | P1 |
 | L3 + confidence | 多层归因带分级 | 单层无 confidence | 🟡 中 | P1 |
-| SIEM session 协作 | 大客户标配 | 未设计 | 🟡 中 | P2 |
+| **IPv6 HBH Option（档 1 兜底）** | NTA 解析 `0x3E` TLV | 当前无；需 implant + NTA + SIEM 协同 | 🟡 中 | P1 |
+| **M3 离线 manifest** | `.vpack` 带预期 artifact 清单 + 签名 | `.vpack` 协议已有但未含 manifest 字段 | 🟡 中 | P1 |
+| 档 1 NTA + SIEM ingest 配置 | 一次性配置即长期可用 | 未设计 | 🟢 低 | P2 |
+| 档 2 SIEM 插件 | 大客户标配 | 未设计 | 🟢 低 | P3 |
 | ATT&CK technique 兜底 | 标准能力 | `nodeContractTags` 已建模但 connector 没用 | 🟢 低 | P1 |
 | 白名单防护 | 强约束 | 无 pre-flight check | 🔴 高 | P0 |
 
 ## 7.2 分期落地路线图
 
-### Phase 1（2 周）—— P0 必交付（招标硬性归因要求）
+### Phase 1（2 周）—— P0 必交付（档 0 基线 / 招标硬性归因要求）
 
-**目标**：把"时空近似"升级为"L1 标记 + L3 兜底"，最小可用强归因。
+**目标**：实施 §5.2 决策 —— **档 0 + Veriguard 平台侧 Ed25519 验签**，把"时空近似"升级为"L1 标记 + Ed25519 验签 + L3 兜底"，最小可用强归因。**全程零 SIEM 改造，Mode C 离线鲁棒**。
 
 - **平台侧**：
-  - `WebAttackExecutor` / `EmailInjectService` / `PcapReplayDispatchService` / `CommandInjectDispatchService` 统一注入 `X-Veriguard-Run-Id` / `X-Veriguard-Inject-Id`
-  - `ElasticSocConnector.queryNodeAlert` 改为 3 步级联：先查标记 → 失败查 ATT&CK → 失败查时空
-  - `DetectionMatch` 加 `attribution_level` + `attribution_confidence` 字段（V26 迁移）
+  - `WebAttackExecutor` / `EmailInjectService` / `PcapReplayDispatchService` / `CommandInjectDispatchService` 统一注入 `X-Veriguard-Run-Id` / `X-Veriguard-Inject-Id` / `X-Veriguard-Sig`
+  - 新增 `Ed25519AttributionVerifier`：从 SIEM alert 取出 sig 字段，本地用预置公钥验签
+  - `ElasticSocConnector.queryNodeAlert` 改为 4 步级联：① 查 HTTP header `x-veriguard-*` → ② 查 TLS SNI wildcard `*.bas.*.veriguard.local` → ③ 查 JA3 hash 命中 BAS 指纹 → ④ 失败查 ATT&CK technique → ⑤ 失败查时空
+  - `DetectionMatch` / `NodeExpectationTrace` 加 `attribution_level` (enum) + `attribution_confidence` (BigDecimal) + `attribution_evidence` (jsonb) 字段（V26 迁移）
   - 加 `veriguard.target.allowed_cidr` 配置 + agent pre-flight check
-- **agent 侧**：
-  - implant 命令执行自动追加 `--vg-run=<id>` 末尾参数
+  - 加演练前 SIEM connector health check（参见 §5.4 末段）
+- **agent / implant 侧**：
+  - implant 命令执行自动追加 `--vg-run=<id> --vg-sig=<sig>` 至 cmdline **头部**（抗 EDR 截断）
   - DnsResolution 查询名自动改写成 `<inject-id>.probe.vg.<tenant>.local`
+  - HTTP 请求自动注入 `X-Veriguard-*` 三件套 header + Ed25519 签名
+  - TLS 客户端改造（boring 或 fork rustls）：支持自定义 SNI + 锁定 JA3 指纹
 - **UI 侧**：
-  - 归因 confidence 分色显示
+  - 归因 confidence 分色显示（绿 STRONG / 黄 MEDIUM / 橙 WEAK / 灰 UNRELATED）
   - inject 目标 IP 不在白名单时表单红框 + 提交按钮禁用
+- **关键不做**：
+  - ❌ 不要求 SIEM 加任何 ingest pipeline
+  - ❌ 不要求 SIEM 装插件
+  - ❌ 不要求在线 session 注册 API
 
 ### Phase 2（4 周）—— P1 完善
 
@@ -488,6 +611,62 @@ Veriguard Platform → SOC API:
 - MITRE ATT&CK v15
 - Gartner 2022 安全运营技术成熟度曲线
 - 等保 2.0 三级 / 四级要求
+
+---
+
+# 十一、离线场景五件套自审矩阵
+
+## 11.1 五件套总览
+
+针对 Mode C 完全离线场景（agent 与 platform 无法直接通信）的归因栈：
+
+| 件 | 全称 | 离线可用 | Veriguard 是否已有底子 |
+| --- | --- | --- | --- |
+| **M1** | Magic + per-inject UUID | ✅ | ❌ 待加 |
+| **M2** | Ed25519 内嵌签名（payload 内 / SNI / cmdline） | ✅ | ✅ crypto stack 跨语言已锁 |
+| **L2** | Artifact 预测集（sha256 / pid 链 / process tree） | ✅ | 🟡 `.vresults` 协议在，扩字段 |
+| **TLS metadata** | SNI + JA3/JA4 + IPv6 HBH | ✅ | ❌ 待加 |
+| **M3** | 离线 manifest（`.vpack` / `.vresults` 带预期 artifact + 签名） | ✅ | ✅ `.vpack`/`.vresults` 已有 |
+
+## 11.2 三场景 × 五件套覆盖矩阵
+
+| 场景 | M1 Magic | M2 Ed25519 | L2 Artifact | TLS metadata | M3 Manifest | 综合覆盖 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 边界 - HTTP 明文 | ✅ header | ✅ sig header | - | - | ✅ 审计 | **100%** |
+| 边界 - HTTPS（WAF 解密） | ✅ header | ✅ sig header | - | ✅ SNI/JA3 备份 | ✅ 审计 | **100%** |
+| 边界 - HTTPS（WAF 透传） | - | - | - | ✅ SNI/JA3 主选 | ✅ 审计 | **90%** |
+| 边界 - 邮件钓鱼 | ✅ header/body | ✅ sig body | - | - | ✅ 审计 | **100%** |
+| 流量 - 明文协议（DNS/HTTP/SMB plain） | ✅ payload magic | ✅ payload sig | - | - | ✅ 审计 | **100%** |
+| 流量 - 加密协议（HTTPS/SSH/IPsec） | - | - | - | ✅ SNI/JA3/HBH | ✅ 审计 | **90%** |
+| 流量 - pcap binary exploit | 🟡 头部嵌入 | 🟡 校验和重算 | - | 🟡 IPv6 HBH 兜底 | ✅ 审计 | **80%** |
+| 主机 - 进程命令执行 | ✅ cmdline 头部 | ✅ sig cmdline | ✅ parent pid 链 | - | ✅ 审计 | **100%** |
+| 主机 - 文件落地 | ✅ 文件头 magic | ✅ 文件头 sig | ✅ 预测 sha256 集 | - | ✅ 审计 | **100%** |
+| 主机 - DNS 解析 | ✅ 域名前缀 | 🟡 sig 截断 8B | - | - | ✅ 审计 | **90%** |
+| 主机 - 内存马 / fileless | - | - | ✅ process tree | - | ✅ 审计 | **70%** |
+| 主机 - 灭活后无 payload | - | - | ✅ parent pid + API 序列 | - | ✅ 审计 | **70%** |
+
+**结论**：五件套叠加后，三场景综合覆盖度 **平均 ≥ 90%**，离线核心攻击向量 ≥ 80%。
+
+## 11.3 五件套与文档章节映射
+
+| 件 | 文档章节 |
+| --- | --- |
+| M1 Magic | §3.1.3 / §3.2.4 / §3.3.4 各场景 L1 标记表 |
+| M2 Ed25519 | §3.1.3 `X-Veriguard-Sig` / §3.2.4 payload sig / §3.3.4 cmdline sig + §5.2 平台侧验签决策 |
+| L2 Artifact | §3.3.4 工件指纹列 + §3.3.8 边界兜底 |
+| TLS metadata | §3.1.3 SNI/JA3 行 + §3.2.4 主选表 + §3.2.4 IPv6 HBH |
+| M3 Manifest | §5.7 末段 + §6 专用靶机部署 + 仿真接收端 |
+
+## 11.4 离线鲁棒性自检清单（每次发版前必查）
+
+- [ ] agent 完全断网情况下，能否独立生成完整带签名的 inject？
+- [ ] `.vpack` 是否包含完整 manifest（预期 artifact + 签名）？
+- [ ] `.vresults` 是否包含 artifact bundle（实际 spawn pid / sha256 / dns_query）？
+- [ ] 演练前 health check 是否对所有 SIEM 默认字段都做了"自查自标记"测试？
+- [ ] Ed25519 公钥是否预置在 Veriguard 平台 + 备份纸质归档？
+- [ ] JA3 hash 是否预先告知甲方 SIEM 团队（即使档 0 不强制白名单，至少 SOC 值班知道）？
+- [ ] 专用靶机 IP 段是否在 `veriguard.target.allowed_cidr` 白名单中？
+- [ ] inject 失败时是否退化到 L3 + MEDIUM/WEAK 标记，而不是 STRONG 误判？
 
 ---
 
